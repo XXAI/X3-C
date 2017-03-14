@@ -33,20 +33,6 @@ export class NuevoComponent implements OnInit {
   // # FIN SECCION
 
 
-/*
-  // # SECCION: Resultados de búsqueda
-  private ultimoTerminoBuscado = "";
-  private terminosBusqueda = new Subject<string>();
-  private resultadosBusqueda: string[] = [];
-  private busquedaActivada:boolean = false;
-  private paginaActualBusqueda = 1;
-  private resultadosPorPaginaBusqueda = 5;
-  private totalBusqueda = 0;
-  private paginasTotalesBusqueda = 0;
-  private indicePaginasBusqueda:number[] = []
-  // # FIN SECCION
-
-*/
 
   // # SECCION: Modal Insumos
   private mostrarModalInsumos = false;
