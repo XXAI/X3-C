@@ -1,0 +1,31 @@
+<aside class="menu" style="padding: 1em;">
+  <!--  <p class="menu-label">
+        Pedidos
+    </p>-->
+    <a routerLink="/farmacia/pedidos/nuevo" routerLinkActive="is-active" class="button is-primary is-inverted is-medium is-fullwidth" ><span class="icon"  ><i class="fa fa-plus"></i></span> <span>Nuevo pedido</span></a>
+    <br>
+    <!--<a routerLink="/farmacia/pedidos/abierto" routerLinkActive="is-active" class="button is-info is-medium is-fullwidth"><span class="icon"  ><i class="fa fa-file-text"></i></span> <span>1 abierto</span></a>
+    <br>-->
+    <ul class="menu-list">
+        
+        <li>
+            <a routerLink="/farmacia/pedidos" routerLinkActive="is-active"><span class="icon"  ><i class="fa fa-minus-circle"></i></span> Pendientes</a>
+             <ul>
+                <li>
+                    <a routerLink="/farmacia/abiertos" routerLinkActive="is-active"><!--<span class="icon"  ><i class="fa fa-file-text"></i></span>--> Abiertos <span class="tag is-danger">1</span></a>
+                </li>
+                <li><a>En proceso </a></li>
+                <li><a>Liberados <span class="tag is-danger">1</span></a></li>
+            </ul>
+        </li>
+        <li>
+            <a routerLink="/farmacia/pedidos/recibidos" routerLinkActive="is-active"><span class="icon"><i class="fa fa-check-circle"></i></span> <span>Recibidos</span></a>
+            <ul>
+                <li><a>Completos</a></li>
+                <li><a>Incompletos</a></li>
+            </ul>
+        </li>
+       
+    </ul>
+        
+</aside>
