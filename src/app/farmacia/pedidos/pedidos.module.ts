@@ -8,6 +8,8 @@ import { PerfilModule } from '../../perfil/perfil.module';
 import { BloquearPantallaModule } from '../../bloquear-pantalla/bloquear-pantalla.module';
 import { PaginacionModule } from '../../paginacion/paginacion.module';
 
+import { BuscarInsumosModule } from '../buscar-insumos/buscar-insumos.module';
+
 import { PedidosRoutingModule } from './pedidos-routing.module';
 import { IndexFarmaciaModule } from '../index-farmacia/index-farmacia.module';
 
@@ -24,6 +26,7 @@ import { ListaComponent } from './lista/lista.component';
     PerfilModule,
     BloquearPantallaModule,
     PaginacionModule,
+    BuscarInsumosModule,
     PedidosRoutingModule,
     IndexFarmaciaModule
   ],

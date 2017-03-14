@@ -33,7 +33,7 @@ export class ListaComponent implements OnInit {
   mensajeError: Mensaje = new Mensaje();
   mensajeExito: Mensaje = new Mensaje();
   ultimaPeticion:any;
-// # FIN SECCION
+  // # FIN SECCION
 
   // # SECCION: Lista de usuarios
   usuarios: Usuario[] = [];

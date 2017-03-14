@@ -4,10 +4,11 @@ export class Mensaje {
     mostrar:boolean = false;
     cuentaAtras:number = 6;
 
-    constructor(autodestruccion:boolean = false){
+    constructor(autodestruccion:boolean = false, cuentaAtras: number = 6){
         if(autodestruccion){
             this.iniciarCuentaAtras();
         }
+        this.cuentaAtras = cuentaAtras;
         
     }
     

@@ -41,7 +41,7 @@
           <div class="top-bar" [ngClass]="{'is-primary':!filtroActivado,'is-dark': filtroActivado}">
             <span *ngIf="!filtroActivado">Claves: {{ total }} Insumos: 0</span>
             <span *ngIf="filtroActivado">Resultados: {{ totalFiltro }}</span>
-            <a class="button is-primary is-inverted is-pulled-right" (click)="toggleModalInsumos(); agregarItem();">
+            <a class="button is-primary is-inverted is-pulled-right" title="Ctrl + espacio" (click)="toggleModalInsumos(); agregarItem();">
             <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span>
             </a>
           </div> 
@@ -65,7 +65,6 @@
                   </tr>
               </thead>
               <tbody *ngIf="!filtroActivado">
-
                 <tr *ngFor="let item of listaInsumosPaginada; let i = index;">
                   <td class="has-text-centered">{{ item.lote }}</td>
                   <th class="has-text-centered">{{ item.clave }}</th>
@@ -78,13 +77,9 @@
                       <p class="control is-expanded">
                       <input class="input is-small has-text-centered"  type="text" placeholder="Cant" [(ngModel)]="item.cantidad">
                       </p>
-                  </th>
-                  
+                  </th>                  
                   <td><a (click)="eliminarItem(item,i)"><span class="icon"><i class="fa fa-trash"></i></span></a></td>
-                </tr>
-
-                
-                
+                </tr>                
               </tbody>
               <tbody *ngIf="filtroActivado">
                 <tr *ngFor="let item of listaInsumosFiltroPaginada; let i = index;">
@@ -99,15 +94,10 @@
                       <p class="control is-expanded">
                       <input class="input is-small has-text-centered"  type="text" placeholder="Cant" [(ngModel)]="item.cantidad">
                       </p>
-                  </th>
-                  
+                  </th>                  
                   <td><a (click)="eliminarItem(item,i)"><span class="icon"><i class="fa fa-trash"></i></span></a></td>
                 </tr>
-
-                
-                
-              </tbody>
-              
+              </tbody>              
           </table>
          
           <paginacion 
@@ -133,8 +123,6 @@
                 *ngIf="totalFiltro > 0 && totalFiltro > resultadosPorPaginaFiltro && filtroActivado"></paginacion>
           
           <br>
-          
-            
         </div>
         
     </div>
@@ -153,98 +141,5 @@
     <p style="text-align: center;"><small >Este mensaje desaparecerá en {{ mensajeExito.cuentaAtras }} segundos.</small></p>       
 </div>
 
-<div class="modal" [ngClass]="{ 'is-active': mostrarModalInsumos}">
-  <div class="modal-background" (click)="toggleModalInsumos()"></div>
-  <div class="modal-card" style="width:95%; height: 100%;">
-   
-    <header class="modal-card-head" style="background: #00d1b2;">
-      <a class="button  is-primary" style="position:absolute; top:1em; right:1em;" (click)="toggleModalInsumos()"><span class="icon "><i class="fa fa-close"></i></span></a>
-                    
-      <div class="container is-fluid"  style="width:100%;">
-          <h1 class="title" style="color:#FFF;">
-            <span class="icon is-medium"><i class="fa fa-search"></i></span> Insumos médicos 
-          </h1>
-          <p class="control is-expanded">
-              <input class="input " type="text" placeholder="Buscar insumo" #searchBox id="search-box" (keyup)="buscar(searchBox.value)">
-          </p>
-      </div>            
-    </header>
-    <section class="modal-card-body" style="padding:0px;" >
-      <table class="table" *ngIf="!cargando" style="font-size: 0.8em;" >
-                <thead>
-                
-                    <tr>
-                    <th></th>
-                    <!--<th>Clave</th>-->
-                    <th>Descripción</th>
-                    <th class="is-hidden-mobile">Grupo</th>
-                    <th colspan="3"class="is-hidden-mobile" style="text-align:center"><abbr title="Tipo de insumo">Tipo</abbr></th>
-                    <th><abbr title="Información">Info</abbr></th>
-                    
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td valign="middle"><span class="icon" style="color:#999"><i class="fa fa-circle-thin"></i></span></td>
-                      <!--<th>010.000.000.00</th>-->
-                      <td>
-                        <b style="font-size: 1.2; font-weight:bold;">AMLODIPINO/VALSARTÁN/HIDROCLOROTIAZIDA</b> <small>(010.000.000.00)</small> <br>
-                        <i>TABLETA</i> <span class="tag is-warning" style="font-size: 0.7em">Controlado</span><br>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat.
-                      </td>
-                      <td class="is-hidden-mobile">Enfermedades infecciosas y parasitarias</td>
-                      <td class="is-hidden-mobile"><abbr title="Medicamento">ME</abbr></td>
-                      <td class="is-hidden-mobile"><abbr title="Causes">CA</abbr></td>
-                      <td class="is-hidden-mobile"><abbr title="Cuadro básico">CB</abbr></td>
-                      <td><a class="button is-info"><span class="icon"><i class="fa fa-info-circle"></i></span></a></td>
-                    </tr>
-                    <tr style="background: #F5F5F5; font-weight: bold;">
-                      <td valign="middle"><span class="icon" style="color:#00d1b2"><i class="fa fa-check-circle"></i></span></td>
-                      <!--<th>010.000.000.00</th>-->
-                      <td>
-                        <b>Paracetamol</b> <small>(010.000.000.00)</small><br>
-                        <i>TABLETA</i><br>
-                        <small>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat.</small>
-                      </td>
-                      <td class="is-hidden-mobile">Analgésicos</td>
-                      <td class="is-hidden-mobile"><abbr title="Medicamento">ME</abbr></td>
-                      <td class="is-hidden-mobile"><abbr title="Causes">CA</abbr></td>
-                      <td class="is-hidden-mobile"><abbr title="Cuadro básico">CB</abbr></td>
-                      <td><a class="button is-info"><span class="icon"><i class="fa fa-info-circle"></i></span></a></td>
-                    </tr>                    
-                </tbody>  
-            </table>
-            <br>
-            
-    </section>
-    <footer class="" style="padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em " >
-      <nav class="pagination">
-        <a class="pagination-previous is-disabled">Previous</a>
-        <a class="pagination-next">Next page</a>
-        <ul class="pagination-list">
-          <li>
-            <a class="pagination-link is-current">1</a>
-          </li>
-          <li>
-            <a class="pagination-link">2</a>
-          </li>
-          <li>
-            <a class="pagination-link">3</a>
-          </li>
-        </ul>
-      </nav><br>
-      <div class="control is-grouped is-pulled-right " >
-        <p class="control is-expanded">
-            <input class="input is-medium" type="text" placeholder="Cantidad" #searchBox id="search-box" (keyup)="buscar(searchBox.value)">
-        </p>
-        <p class="control">
-            <a class="button is-medium is-primary ">
-            <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span>
-            </a>
-        </p>
-      </div>
-      
-    </footer>
-  </div>
-</div>
+<buscar-insumos *ngIf="mostrarModalInsumos" (onCerrar)="mostrarModalInsumos = false" (onEnviar)="agregarItem($event)"></buscar-insumos>
 

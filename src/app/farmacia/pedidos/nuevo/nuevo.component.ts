@@ -19,7 +19,8 @@ import { Mensaje } from '../../../mensaje';
 @Component({
   selector: 'app-nuevo',
   templateUrl: './nuevo.component.html',
-  styleUrls: ['./nuevo.component.css']
+  styleUrls: ['./nuevo.component.css'],
+  host: { '(window:keydown)' : 'keyboardInput($event)'}
 })
 export class NuevoComponent implements OnInit {
 
@@ -638,7 +639,9 @@ export class NuevoComponent implements OnInit {
   }
 
   toggleModalInsumos(){
+    console.log(this.mostrarModalInsumos)
     this.mostrarModalInsumos = !this.mostrarModalInsumos
+    console.log(this.mostrarModalInsumos)
   }
 
   // # SECCION Pedido
@@ -659,19 +662,7 @@ export class NuevoComponent implements OnInit {
   agregarItem(item:any = {}){
     let auxPaginasTotales = this.paginasTotales;
    
-    this.listaInsumos.push(
-      {
-        clave: "010.000.1327.00",
-        tipo: "ME",
-        generico: "CHUCHI",
-        concentracion: "150mg/ml",
-        presentacion: "SUSPENCIÓN",
-        cantidad: null,
-        causes: true,
-        controlado: false,
-        descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
-      }
-    );
+    this.listaInsumos.push(item);
     
     this.indexarLista();
 
@@ -770,5 +761,16 @@ export class NuevoComponent implements OnInit {
   }
   paginaAnteriorFiltro():void {
     this.listarFiltro(this.paginaActualFiltro-1);
+  }
+
+  // # SECCION: Eventos del teclado
+  keyboardInput(e: KeyboardEvent) {
+    
+    if(e.keyCode == 32 &&  e.ctrlKey){ // Ctrl + barra espaciadora
+      event.preventDefault();
+      event.stopPropagation();
+      this.mostrarModalInsumos = true;
+    }
+        
   }
 }
