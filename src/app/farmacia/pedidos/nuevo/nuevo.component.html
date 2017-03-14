@@ -38,35 +38,56 @@
     </div>
     <div class="column" >
         <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
-          <div style="padding: 1em; background: #00d1b2;">
-            <span style="font-size: 1.5em; color:#FFF">Claves: {{ total }} Insumos: 0</span>
-            <a class="button is-primary is-inverted is-pulled-right" (click)="toggleModalInsumos()">
+          <div class="top-bar" [ngClass]="{'is-primary':!filtroActivado,'is-dark': filtroActivado}">
+            <span *ngIf="!filtroActivado">Claves: {{ total }} Insumos: 0</span>
+            <span *ngIf="filtroActivado">Resultados: {{ totalFiltro }}</span>
+            <a class="button is-primary is-inverted is-pulled-right" (click)="toggleModalInsumos(); agregarItem();">
             <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span>
             </a>
           </div> 
           
           <table class="table is-unselectable" *ngIf="!cargando" style="font-size: 0.8em;">
               <thead>
-                  <tr>
-                    <th class="has-text-centered">Lote</th>
-                    <th>
-                      <p class="control is-expanded">
-                      <input class="input is-small" type="text" placeholder="Clave" #searchBox id="search-box" (keyup)="buscar(searchBox.value)">
+                  <tr >
+                    <th style="width:41px;vertical-align: middle;" class="has-text-centered" >Lote</th>
+                    <th style="width:118px;">
+                      <p class="control is-expanded" >
+                      <input class="input is-small" type="text" placeholder="Clave" #searchBoxClave id="search-box" (keyup)="buscar(['clave'],searchBoxClave.value)">
                       </p>
                     </th>
                     <th>
                       <p class="control is-expanded">
-                      <input class="input is-small" type="text" placeholder="Genérico" #searchBox id="search-box" (keyup)="buscar(searchBox.value)">
+                      <input class="input is-small" type="text" placeholder="Genérico" #searchBoxDescripcion id="search-box" (keyup)="buscar(['generico','concentracion','presentacion'],searchBoxDescripcion.value)">
                       </p>
-                    </th>
-                    
-                    <th style="text-align: center;"><abbr title="Cantidad">Cant.</abbr></th>
+                    </th>                    
+                    <th style="text-align: center; vertical-align: middle;"><abbr title="Cantidad">Cant.</abbr></th>
                     <th></th>
                   </tr>
               </thead>
-              <tbody>
+              <tbody *ngIf="!filtroActivado">
 
                 <tr *ngFor="let item of listaInsumosPaginada; let i = index;">
+                  <td class="has-text-centered">{{ item.lote }}</td>
+                  <th class="has-text-centered">{{ item.clave }}</th>
+                  <td >
+                    <b>{{ item.generico }}</b> <small><b>{{ item.concentracion }}</b></small><br>
+                    <i>{{ item.presentacion }}</i> <span *ngIf="item.controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span> <span *ngIf="!item.causes" class="tag is-info" style="font-size: 0.7em">No causes</span><br>
+                    <small>{{ item.descripcion }}</small>
+                  </td>
+                  <th>
+                      <p class="control is-expanded">
+                      <input class="input is-small has-text-centered"  type="text" placeholder="Cant" [(ngModel)]="item.cantidad">
+                      </p>
+                  </th>
+                  
+                  <td><a (click)="eliminarItem(item,i)"><span class="icon"><i class="fa fa-trash"></i></span></a></td>
+                </tr>
+
+                
+                
+              </tbody>
+              <tbody *ngIf="filtroActivado">
+                <tr *ngFor="let item of listaInsumosFiltroPaginada; let i = index;">
                   <td class="has-text-centered">{{ item.lote }}</td>
                   <th class="has-text-centered">{{ item.clave }}</th>
                   <td>
@@ -98,7 +119,18 @@
                 (onSiguiente)="paginaSiguiente()" 
                 (onAnterior)="paginaAnterior()" 
                 (onListar)="listar($event)" 
-                *ngIf="total>0 && total > resultadosPorPagina"></paginacion>
+                *ngIf="total > 0 && total > resultadosPorPagina && !filtroActivado"></paginacion>
+          
+          <paginacion 
+                [total]="totalFiltro" 
+                [paginasTotales]="paginasTotalesFiltro" 
+                [resultadosPorPagina]="resultadosPorPaginaFiltro" 
+                [paginaActual]="paginaActualFiltro" 
+                [indicePaginas]="indicePaginasFiltro"
+                (onSiguiente)="paginaSiguienteFiltro()" 
+                (onAnterior)="paginaAnteriorFiltro()" 
+                (onListar)="listarFiltro($event)" 
+                *ngIf="totalFiltro > 0 && totalFiltro > resultadosPorPaginaFiltro && filtroActivado"></paginacion>
           
           <br>
           
