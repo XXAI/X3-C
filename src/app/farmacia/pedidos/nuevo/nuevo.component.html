@@ -37,12 +37,18 @@
         
     </div>
     <div class="column" >
-        <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
-          <div class="top-bar" [ngClass]="{'is-primary':!filtroActivado,'is-dark': filtroActivado}">
-            <span *ngIf="!filtroActivado">Claves: {{ total }} Insumos: 0</span>
-            <span *ngIf="filtroActivado">Resultados: {{ totalFiltro }}</span>
-            <a class="button is-primary is-inverted is-pulled-right" title="Ctrl + espacio" (click)="toggleModalInsumos(); agregarItem();">
-            <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span>
+        <div class="tabs  is-boxed" style="margin-bottom:0px; " *ngIf="pedidos.length > 1" >
+          <ul>
+            <li *ngFor="let pedido of pedidos; let i = index" [ngClass]="{ 'is-active': i == pedidoActivo}"><a (click)="pedidoActivo = i">{{ pedido.nombre}}</a></li>
+          </ul>
+        </div>
+        <div *ngFor="let pedido of pedidos; let indexPedido = index" class="contenedor-pedido" [ngClass]="{ 'con-tabs' : pedidos.length > 1 }" [hidden]="indexPedido != pedidoActivo">
+          
+          <div class="top-bar" [ngClass]="{'is-primary':!pedido.filtro.activo && pedidos.length == 1,'is-dark': pedido.filtro.activo }">
+            <span *ngIf="!pedido.filtro.activo">Claves: {{ pedido.lista.length }} Insumos: 0</span>
+            <span *ngIf="pedido.filtro.activo"><span class="icon"><i class="fa fa-search"></i></span> Resultados: {{ pedido.filtro.lista.length }}</span>
+            <a class="button is-primary  is-pulled-right" [ngClass]="{ 'is-inverted': pedidos.length == 1 || pedido.filtro.activo }" style="margin-top:-0.25em;" title="Ctrl + espacio" (click)="toggleModalInsumos(); ">
+              <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span>
             </a>
           </div> 
           
@@ -52,22 +58,24 @@
                     <th style="width:41px;vertical-align: middle;" class="has-text-centered" >Lote</th>
                     <th style="width:118px;">
                       <p class="control is-expanded" >
-                      <input class="input is-small" type="text" placeholder="Clave" #searchBoxClave id="search-box" (keyup)="buscar(['clave'],searchBoxClave.value)">
+                        <input type="hidden" #searchBoxClavePrevia >
+                        <input class="input is-small" type="text" placeholder="Clave" #searchBoxClave id="search-box-clave-{{indexPedido}}" (keyup)="buscar($event,searchBoxClave, searchBoxClavePrevia,[{ input: searchBoxDescripcion, campos: ['generico','concentracion','presentacion']}, { input: searchBoxClave, campos: ['clave']}])">
                       </p>
                     </th>
                     <th>
                       <p class="control is-expanded">
-                      <input class="input is-small" type="text" placeholder="Genérico" #searchBoxDescripcion id="search-box" (keyup)="buscar(['generico','concentracion','presentacion'],searchBoxDescripcion.value)">
+                        <input type="hidden" #searchBoxDescripcionPrevia >
+                        <input class="input is-small" type="text" placeholder="Genérico" #searchBoxDescripcion id="search-box-descripcion-{{indexPedido}}" (keyup)="buscar($event,searchBoxDescripcion,searchBoxDescripcionPrevia,[{ input: searchBoxDescripcion, campos: ['generico','concentracion','presentacion']}, { input: searchBoxClave, campos: ['clave']}])">
                       </p>
                     </th>                    
                     <th style="text-align: center; vertical-align: middle;"><abbr title="Cantidad">Cant.</abbr></th>
                     <th></th>
                   </tr>
               </thead>
-              <tbody *ngIf="!filtroActivado">
-                <tr *ngFor="let item of listaInsumosPaginada; let i = index;">
+              <tbody *ngIf="!pedido.filtro.activo">
+                <tr *ngFor="let item of pedido.paginacion.lista; let i = index;">
                   <td class="has-text-centered">{{ item.lote }}</td>
-                  <th class="has-text-centered">{{ item.clave }}</th>
+                  <th class="has-text-centered"><a (click)="mostrarFichaInformativa(item.clave)" style="cursor:help;">{{ item.clave }}</a></th>
                   <td >
                     <b>{{ item.generico }}</b> <small><b>{{ item.concentracion }}</b></small><br>
                     <i>{{ item.presentacion }}</i> <span *ngIf="item.controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span> <span *ngIf="!item.causes" class="tag is-info" style="font-size: 0.7em">No causes</span><br>
@@ -78,13 +86,13 @@
                       <input class="input is-small has-text-centered"  type="text" placeholder="Cant" [(ngModel)]="item.cantidad">
                       </p>
                   </th>                  
-                  <td><a (click)="eliminarItem(item,i)"><span class="icon"><i class="fa fa-trash"></i></span></a></td>
+                  <td><a (click)="pedido.eliminarItem(item,i)"><span class="icon"><i class="fa fa-trash"></i></span></a></td>
                 </tr>                
               </tbody>
-              <tbody *ngIf="filtroActivado">
-                <tr *ngFor="let item of listaInsumosFiltroPaginada; let i = index;">
+              <tbody *ngIf="pedido.filtro.activo">
+                <tr *ngFor="let item of pedido.filtro.paginacion.lista; let i = index;">
                   <td class="has-text-centered">{{ item.lote }}</td>
-                  <th class="has-text-centered">{{ item.clave }}</th>
+                  <th class="has-text-centered"><a (click)="mostrarFichaInformativa(item.clave)" style="cursor:help;">{{ item.clave }}</a></th>
                   <td>
                     <b>{{ item.generico }}</b> <small><b>{{ item.concentracion }}</b></small><br>
                     <i>{{ item.presentacion }}</i> <span *ngIf="item.controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span> <span *ngIf="!item.causes" class="tag is-info" style="font-size: 0.7em">No causes</span><br>
@@ -95,32 +103,32 @@
                       <input class="input is-small has-text-centered"  type="text" placeholder="Cant" [(ngModel)]="item.cantidad">
                       </p>
                   </th>                  
-                  <td><a (click)="eliminarItem(item,i)"><span class="icon"><i class="fa fa-trash"></i></span></a></td>
+                  <td><a (click)="pedido.filtro.eliminarItem(item,i)"><span class="icon"><i class="fa fa-trash"></i></span></a></td>
                 </tr>
               </tbody>              
           </table>
          
           <paginacion 
-                [total]="total" 
-                [paginasTotales]="paginasTotales" 
-                [resultadosPorPagina]="resultadosPorPagina" 
-                [paginaActual]="paginaActual" 
-                [indicePaginas]="indicePaginas"
-                (onSiguiente)="paginaSiguiente()" 
-                (onAnterior)="paginaAnterior()" 
-                (onListar)="listar($event)" 
-                *ngIf="total > 0 && total > resultadosPorPagina && !filtroActivado"></paginacion>
+                [total]="pedido.lista.length" 
+                [paginasTotales]="pedido.paginacion.totalPaginas" 
+                [resultadosPorPagina]="pedido.paginacion.resultadosPorPagina" 
+                [paginaActual]="pedido.paginacion.paginaActual" 
+                [indicePaginas]="pedido.paginacion.indice"
+                (onSiguiente)="pedido.paginaSiguiente()" 
+                (onAnterior)="pedido.paginaAnterior()" 
+                (onListar)="pedido.listar($event)" 
+                *ngIf="pedido.lista.length > 0 && pedido.lista.length > pedido.paginacion.resultadosPorPagina && !pedido.filtro.activo"></paginacion>
           
           <paginacion 
-                [total]="totalFiltro" 
-                [paginasTotales]="paginasTotalesFiltro" 
-                [resultadosPorPagina]="resultadosPorPaginaFiltro" 
-                [paginaActual]="paginaActualFiltro" 
-                [indicePaginas]="indicePaginasFiltro"
-                (onSiguiente)="paginaSiguienteFiltro()" 
-                (onAnterior)="paginaAnteriorFiltro()" 
-                (onListar)="listarFiltro($event)" 
-                *ngIf="totalFiltro > 0 && totalFiltro > resultadosPorPaginaFiltro && filtroActivado"></paginacion>
+                [total]="pedido.filtro.lista.length" 
+                [paginasTotales]="pedido.filtro.paginacion.totalPaginas" 
+                [resultadosPorPagina]="pedido.filtro.paginacion.resultadosPorPagina" 
+                [paginaActual]="pedido.filtro.paginacion.paginaActual" 
+                [indicePaginas]="pedido.filtro.paginacion.indice"
+                (onSiguiente)="pedido.filtro.paginaSiguiente()" 
+                (onAnterior)="pedido.filtro.paginaAnterior()" 
+                (onListar)="pedido.filtro.listar($event)" 
+                *ngIf="pedido.filtro.lista.length > 0 && pedido.filtro.lista.length > pedido.filtro.paginacion.resultadosPorPagina && pedido.filtro.activo"></paginacion>
           
           <br>
         </div>

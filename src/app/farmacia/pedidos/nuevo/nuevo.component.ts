@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Location}           from '@angular/common';
-//import { FormControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -16,12 +16,16 @@ import 'rxjs/add/operator/catch';
 
 import { Mensaje } from '../../../mensaje';
 
+import { Pedido } from '../pedido';
+
 @Component({
   selector: 'app-nuevo',
   templateUrl: './nuevo.component.html',
   styleUrls: ['./nuevo.component.css'],
   host: { '(window:keydown)' : 'keyboardInput($event)'}
 })
+
+
 export class NuevoComponent implements OnInit {
 
   cargando: boolean = false;
@@ -30,9 +34,7 @@ export class NuevoComponent implements OnInit {
   mensajeError: Mensaje = new Mensaje();
   mensajeExito: Mensaje = new Mensaje();
   ultimaPeticion:any;
-  // # FIN SECCION
-
-
+  // # FIN SECCION  
 
   // # SECCION: Modal Insumos
   private mostrarModalInsumos = false;
@@ -40,25 +42,12 @@ export class NuevoComponent implements OnInit {
 
 
   // # SECCION: Pedido
-  private listaInsumos:any[] = [];
-  private listaInsumosPaginada:any[] = [];
-  private paginaActual = 1;
-  private resultadosPorPagina = 5;
-  private total = 0;
-  private paginasTotales = 0;
-  private indicePaginas:number[] = []
-  // # FIN SECCION
-
-  // # SECCION: Resultados de filtro
-  private filtroActivado:boolean = false;
-  private listaInsumosFiltro:any[] = [];
-  private listaInsumosFiltroPaginada:any[] = [];
-  private paginaActualFiltro = 1;
-  private resultadosPorPaginaFiltro = 5;
-  private totalFiltro = 0;
-  private paginasTotalesFiltro = 0;
-  private indicePaginasFiltro:number[] = []
-
+  
+  // Los pedidos tienen que ser en un array por si se va a generar mas de un pedido de golpe
+  private pedidos: Pedido[] = []; 
+  // esta variable es para saber el pedido seleccionado (por si hay mas)
+  private pedidoActivo:number = 0; 
+  
   // # FIN SECCION
 
 
@@ -68,7 +57,46 @@ export class NuevoComponent implements OnInit {
   ngOnInit() {
     this.title.setTitle('Nuevo pedido / Farmacia');
 
-    this.listaInsumos.push(
+    // Inicialicemos el pedido
+    this.pedidos.push(new Pedido(true) );
+
+    this.pedidos[0].nombre = "General";
+    this.pedidos[0].observaciones = null;
+
+    this.pedidos.push(new Pedido(true) );
+
+    this.pedidos[1].nombre = "Causes";
+    this.pedidos[1].observaciones = null;
+
+    this.pedidos[1].lista.push(
+      {
+        clave: "010.000.0001.00",
+        tipo: "ME",
+        generico: "PACHUCHE",
+        concentracion: "500mg",
+        presentacion: "TABLETAS",
+        cantidad: null,
+        causes: false,
+        controlado: false,
+        descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
+      }
+    );
+
+    this.pedidos[1].lista.push(
+      {
+        clave: "010.000.0002.00",
+        tipo: "ME",
+        generico: "MOTA",
+        concentracion: "150mg",
+        presentacion: "COMPRIMIDOS",
+        cantidad: null,
+        causes: false,
+        controlado: true,
+        descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
+      }
+    );
+
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.0001.00",
         tipo: "ME",
@@ -82,7 +110,7 @@ export class NuevoComponent implements OnInit {
       }
     );
 
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.0002.00",
         tipo: "ME",
@@ -95,7 +123,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.0002.01",
         tipo: "ME",
@@ -108,7 +136,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.0002.02",
         tipo: "ME",
@@ -121,7 +149,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1322.00",
         tipo: "ME",
@@ -134,7 +162,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1323.00",
         tipo: "ME",
@@ -147,7 +175,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1324.00",
         tipo: "ME",
@@ -160,7 +188,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1325.00",
         tipo: "ME",
@@ -173,7 +201,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1326.00",
         tipo: "ME",
@@ -187,7 +215,7 @@ export class NuevoComponent implements OnInit {
       }
     );
 
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -200,7 +228,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -213,7 +241,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -226,7 +254,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -239,7 +267,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -252,7 +280,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -265,7 +293,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -278,7 +306,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -291,7 +319,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -304,7 +332,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -317,7 +345,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -330,7 +358,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -343,7 +371,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -356,7 +384,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -369,7 +397,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -382,7 +410,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -395,7 +423,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -408,7 +436,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -421,7 +449,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -434,7 +462,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -447,7 +475,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -460,7 +488,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -473,7 +501,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -486,7 +514,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -499,7 +527,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -512,7 +540,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -525,7 +553,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -538,7 +566,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -551,7 +579,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -564,7 +592,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -577,7 +605,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -590,7 +618,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -603,7 +631,7 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.listaInsumos.push(
+    this.pedidos[0].lista.push(
       {
         clave: "010.000.1327.00",
         tipo: "ME",
@@ -616,8 +644,15 @@ export class NuevoComponent implements OnInit {
         descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat."
       }
     );
-    this.indexarLista();
-    this.listar(1);
+
+    this.pedidos[0].indexar();
+    this.pedidos[0].listar();
+
+    this.pedidos[1].indexar();
+    this.pedidos[1].listar();
+
+
+    
   }
   regresar(){
     
@@ -630,123 +665,112 @@ export class NuevoComponent implements OnInit {
     console.log(this.mostrarModalInsumos)
   }
 
-  // # SECCION Pedido
-  indexarLista(){
-    var contador = 1;
-    for(let i in this.listaInsumos){
-      this.listaInsumos[i].lote = contador++;
-    }
-
-    this.paginasTotales = Math.ceil(this.listaInsumos.length / this.resultadosPorPagina);
-    this.total = this.listaInsumos.length;
-
-    this.indicePaginas = [];
-    for(let i=0; i< this.paginasTotales; i++){
-      this.indicePaginas.push(i+1);
-    }
-  }
+  // # SECCION Funciones globales
+  
   agregarItem(item:any = {}){
-    let auxPaginasTotales = this.paginasTotales;
+    let auxPaginasTotales = this.pedidos[this.pedidoActivo].paginacion.totalPaginas;
    
-    this.listaInsumos.push(item);
+    this.pedidos[this.pedidoActivo].lista.push(item);
     
-    this.indexarLista();
+    this.pedidos[this.pedidoActivo].indexar();
 
     // El siguiente proceso es para cambiar de página automáticamente si se encuentra en la última.
-    if(this.listaInsumosPaginada.length == this.resultadosPorPagina 
-      && this.paginaActual == auxPaginasTotales
-      && !this.filtroActivado){
-      this.listar(this.paginaActual + 1);
-    } else{
-      this.listar(this.paginaActual);
-    }
-  }
-  eliminarItem(item:any, index:number){
-    var contador: number = 0;
-    for(let i in this.listaInsumos){
-      if(this.listaInsumos[i] === item){
-        this.listaInsumosPaginada.splice(index, 1);  
-        this.listaInsumos.splice(contador, 1);  
-        this.indexarLista();
-        if(this.listaInsumosPaginada.length == 0){
-          this.listar(this.paginaActual);
-        }
-        
-        return;
-      }
-      
-      contador++;
-    }
     
-  }
-
-  // # SECCION: Paginación
-  listar(pagina: number){
-    this.paginaActual = pagina;    
-
-    let inicio = (this.paginaActual - 1) * this.resultadosPorPagina;
-    let fin = inicio + this.resultadosPorPagina;
-    try {
-      this.listaInsumosPaginada = this.listaInsumos.slice(inicio,fin);
-    } catch(e){
-      this.listaInsumosPaginada = [];
-    }
-    
-  }
-
-  paginaSiguiente():void {
-    this.listar(this.paginaActual+1);
-  }
-  paginaAnterior():void {
-    this.listar(this.paginaActual-1);
-  }
-
-  // # - Filtros 
-  buscar(campos:string[],term:string){
-    if(term != ""){
-      this.filtroActivado = true;      
+    if(this.pedidos[this.pedidoActivo].paginacion.lista.length == this.pedidos[this.pedidoActivo].paginacion.resultadosPorPagina
+      && this.pedidos[this.pedidoActivo].paginacion.paginaActual == auxPaginasTotales
+      && !this.pedidos[this.pedidoActivo].filtro.activo){
+        this.pedidos[this.pedidoActivo].listar(this.pedidos[this.pedidoActivo].paginacion.paginaActual + 1);
     } else {
-      this.filtroActivado = false;
-      this.listaInsumosFiltro = [];
+      this.pedidos[this.pedidoActivo].listar(this.pedidos[this.pedidoActivo].paginacion.paginaActual);
+    }
+    
+  }
+  
+  buscar(e: KeyboardEvent, input:HTMLInputElement, inputAnterior: HTMLInputElement,  parametros:any[]){
+    
+    let term = input.value;
+
+    // Quitamos la busqueda
+    if(e.keyCode == 27){
+      e.preventDefault();
+      e.stopPropagation();
+      input.value = "";
+      inputAnterior.value = "";
+
+      this.pedidos[this.pedidoActivo].filtro.activo = false;
+      this.pedidos[this.pedidoActivo].filtro.lista = [];      
+
+      return;      
+    }
+
+    
+    //Verificamos que la busqueda no sea la misma que la anterior para no filtrar en vano
+    if(inputAnterior.value == term){
+      
+      return
+    }
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    inputAnterior.value = term;    
+
+    if(term != ""){
+      this.pedidos[this.pedidoActivo].filtro.activo = true;      
+    } else {
+      this.pedidos[this.pedidoActivo].filtro.activo = false;
+      this.pedidos[this.pedidoActivo].filtro.lista = [];
       return;
     }
 
-    this.listaInsumosFiltro = this.listaInsumos.filter((item)=> {   
-      var cadena = "";
-      for (let i in campos){
-        cadena += " " + item[campos[i]].toLowerCase();
+    var arregloResultados:any[] = []
+    for(let i in parametros){
+
+      let termino = (parametros[i].input as HTMLInputElement).value;
+      if(termino == ""){
+        continue;
       }
-      return cadena.includes(term.toLowerCase())
-    });
+            
+      let listaFiltrada = this.pedidos[this.pedidoActivo].lista.filter((item)=> {   
+        var cadena = "";
+        let campos = parametros[i].campos;
+        for (let l in campos){
+          cadena += " " + item[campos[l]].toLowerCase();
+        }
+        return cadena.includes(termino.toLowerCase())
+      });
 
-    this.paginaActualFiltro = 1;
-    this.listarFiltro(this.paginaActualFiltro);
-  }
-
-  listarFiltro(pagina: number){
-    this.paginaActualFiltro = pagina;
-    this.paginasTotalesFiltro = Math.ceil(this.listaInsumosFiltro.length / this.resultadosPorPaginaFiltro);
-    this.totalFiltro = this.listaInsumosFiltro.length;
-
-    this.indicePaginasFiltro = [];
-    for(let i=0; i< this.paginasTotalesFiltro; i++){
-      this.indicePaginasFiltro.push(i+1);
-    }
-
-    let inicio = (this.paginaActualFiltro - 1) * this.resultadosPorPaginaFiltro;
-    let fin = inicio + this.resultadosPorPaginaFiltro;
-    try {
-      this.listaInsumosFiltroPaginada = this.listaInsumosFiltro.slice(inicio,fin);
-    } catch(e){
-      this.listaInsumosFiltroPaginada = [];
+      arregloResultados.push(listaFiltrada)
     }
     
-  }
-  paginaSiguienteFiltro():void {
-    this.listarFiltro(this.paginaActualFiltro+1);
-  }
-  paginaAnteriorFiltro():void {
-    this.listarFiltro(this.paginaActualFiltro-1);
+    if(arregloResultados.length > 1 ){
+      // Ordenamos Ascendente
+
+      arregloResultados = arregloResultados.sort( function(a,b){ return  a.length - b.length });
+      
+      var filtro = arregloResultados[0];
+      var match: any[] = [];
+      for(let k = 1; k <  arregloResultados.length ; k++){
+        
+        for(let i in arregloResultados[k]){
+          for(let j in filtro){
+            if(arregloResultados[k][i] === filtro[j]){
+              match.push(filtro[j]);
+            }
+          }
+        };
+      }
+      this.pedidos[this.pedidoActivo].filtro.lista = match;
+    } else {
+      this.pedidos[this.pedidoActivo].filtro.lista = arregloResultados[0];
+    }
+
+
+    this.pedidos[this.pedidoActivo].filtro.indexar(false);
+    
+    this.pedidos[this.pedidoActivo].filtro.paginacion.paginaActual = 1;
+    this.pedidos[this.pedidoActivo].filtro.listar(1); 
+
   }
 
   // # SECCION: Eventos del teclado
@@ -757,6 +781,33 @@ export class NuevoComponent implements OnInit {
       event.stopPropagation();
       this.mostrarModalInsumos = true;
     }
+
+    // Cambiar página hacia adelante ctrl + shift + ->
+    if (e.keyCode == 39 && ((e.ctrlKey && e.shiftKey) || e.ctrlKey )){
+      event.preventDefault();
+      event.stopPropagation();
+
+      if (!this.pedidos[this.pedidoActivo].filtro.activo){
+        this.pedidos[this.pedidoActivo].paginaSiguiente();
+      } else {
+        this.pedidos[this.pedidoActivo].filtro.paginaSiguiente();
+      }
+      
+    }
+    // Cambiar página hacia adelante ctrl + shift + <-
+    if (e.keyCode == 37 && ((e.ctrlKey && e.shiftKey) || e.ctrlKey )){
+      
+      event.preventDefault();
+      event.stopPropagation();
+
+      if (!this.pedidos[this.pedidoActivo].filtro.activo){
+        this.pedidos[this.pedidoActivo].paginaAnterior();
+      } else {
+        this.pedidos[this.pedidoActivo].filtro.paginaAnterior();
+      }
+      
+    }
+    
         
   }
 }
