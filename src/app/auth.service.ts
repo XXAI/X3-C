@@ -4,7 +4,8 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
-import { API_URL } from './config';
+//import { API_URL } from './config';
+import { environment } from '../environments/environment';
 
 
 @Injectable()
@@ -15,7 +16,7 @@ export class AuthService {
 
   login(id: string, password: string) {
     const url: string = 'obtener-token';
-    return this.http.post(`${API_URL}/${url}`,JSON.stringify({id: id, password: password}),{ headers: this.headers }).map( (response: Response) => {
+    return this.http.post(`${environment.API_URL}/${url}`,JSON.stringify({id: id, password: password}),{ headers: this.headers }).map( (response: Response) => {
    
       let json = response.json();
       if (json.token) {
@@ -33,7 +34,7 @@ export class AuthService {
 
   refreshToken() {
     const url: string = 'refresh-token?token=' + localStorage.getItem('token');
-    return this.http.post(`${API_URL}/${url}`,{},{ headers: this.headers }).map( (response: Response) => {
+    return this.http.post(`${environment.API_URL}/${url}`,{},{ headers: this.headers }).map( (response: Response) => {
    
       let json = response.json();
       if (json.token) {

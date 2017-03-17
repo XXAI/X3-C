@@ -7,7 +7,8 @@ import { JwtHelper } from 'angular2-jwt';
 import { AuthService } from  './auth.service';
 import { BloquearPantallaService }     from './bloquear-pantalla/bloquear-pantalla.service';
 
-import { API_URL } from './config';
+//import { API_URL } from './config';
+import { environment } from '../environments/environment';
 
 
 
@@ -102,7 +103,7 @@ export class JwtRequestService {
                         }
                       }
                       if (id == null){                 
-                        this.http.get(`${API_URL}/${url}`,{ headers: headers, search: urlSearchParams })
+                        this.http.get(`${environment.API_URL}/${url}`,{ headers: headers, search: urlSearchParams })
                         .subscribe( 
                           data => {
                             observer.next(data)
@@ -110,7 +111,7 @@ export class JwtRequestService {
                           error => {observer.error(error)}
                         );
                       } else {          
-                        this.http.get(`${API_URL}/${url}/${id}`,{ headers: headers, search: urlSearchParams  })
+                        this.http.get(`${environment.API_URL}/${url}/${id}`,{ headers: headers, search: urlSearchParams  })
                           .subscribe( 
                             data => {
                               observer.next(data)
@@ -121,7 +122,7 @@ export class JwtRequestService {
                     }
 
                     if (method == 'post' ){
-                      this.http.post(`${API_URL}/${url}`,params,{ headers: headers })
+                      this.http.post(`${environment.API_URL}/${url}`,params,{ headers: headers })
                         .subscribe( 
                           data => {
                             observer.next(data)
@@ -131,7 +132,7 @@ export class JwtRequestService {
                     }
 
                     if (method == 'put' && id != null){
-                      this.http.put(`${API_URL}/${url}/${id}`,params,{ headers: headers })
+                      this.http.put(`${environment.API_URL}/${url}/${id}`,params,{ headers: headers })
                         .subscribe( 
                           data => {
                             observer.next(data)
@@ -141,7 +142,7 @@ export class JwtRequestService {
                     }
 
                     if (method == 'delete' && id != null){
-                      this.http.delete(`${API_URL}/${url}/${id}`,{ headers: headers })
+                      this.http.delete(`${environment.API_URL}/${url}/${id}`,{ headers: headers })
                         .subscribe( 
                           data => {
                             observer.next(data)
@@ -171,7 +172,7 @@ export class JwtRequestService {
             }
           }
           if (id == null){                 
-            this.http.get(`${API_URL}/${url}`,{ headers: headers, search: urlSearchParams })
+            this.http.get(`${environment.API_URL}/${url}`,{ headers: headers, search: urlSearchParams })
             .subscribe( 
               data => {
                 observer.next(data)
@@ -179,7 +180,7 @@ export class JwtRequestService {
               error => {observer.error(error)}
             );
           } else {          
-            this.http.get(`${API_URL}/${url}/${id}`,{ headers: headers, search: urlSearchParams  })
+            this.http.get(`${environment.API_URL}/${url}/${id}`,{ headers: headers, search: urlSearchParams  })
               .subscribe( 
                 data => {
                   observer.next(data)
@@ -191,7 +192,7 @@ export class JwtRequestService {
         
 
         if (method == 'post' ){
-          this.http.post(`${API_URL}/${url}`,params,{ headers: headers })
+          this.http.post(`${environment.API_URL}/${url}`,params,{ headers: headers })
             .subscribe( 
               data => {
                 observer.next(data)
@@ -201,7 +202,7 @@ export class JwtRequestService {
         }
 
         if (method == 'put' && id != null){
-          this.http.put(`${API_URL}/${url}/${id}`,params,{ headers: headers })
+          this.http.put(`${environment.API_URL}/${url}/${id}`,params,{ headers: headers })
             .subscribe( 
               data => {
                 observer.next(data)
@@ -211,7 +212,7 @@ export class JwtRequestService {
         }
 
         if (method == 'delete' && id != null){
-          this.http.delete(`${API_URL}/${url}/${id}`,{ headers: headers })
+          this.http.delete(`${environment.API_URL}/${url}/${id}`,{ headers: headers })
             .subscribe( 
               data => {
                 observer.next(data)

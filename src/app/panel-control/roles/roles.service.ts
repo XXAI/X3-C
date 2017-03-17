@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 
 import { JwtRequestService } from '../../jwt-request.service';
 
-import { API_URL } from '../../config';
+//import { API_URL } from '../../config';
 
 import { Rol } from './rol';
 
