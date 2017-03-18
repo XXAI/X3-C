@@ -4,7 +4,7 @@
 - Bulma.io
 - Angular Cli
 
-#Instrucciones para publicar en producción
+## Instrucciones para publicar en producción
 
 - Crear el directorio en el servidor donde se va alojar:
 
@@ -35,11 +35,13 @@ git pull github master
 +-- .git
 +-- dist/
 |   +-- assets/
-|       +-- *.*
+|   |   +-- *.*
+|   +-- favicon.ico
+|   +-- index.html
 |   +-- *.*
 ```
 
-- Configurar el archivo de apache **httpd.conf** para que apunte a la carpeta **dist** del proyecto
+- Configurar el archivo de apache **httpd.conf** para que apunte a la carpeta **dist/** del proyecto
 
 ```
 <VirtualHost *:80>
