@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 
 import { BuscarInsumosComponent } from './buscar-insumos.component';
 
+import { BuscarInsumosService } from './buscar-insumos.service';
+
 @NgModule({
   imports: [
     CommonModule
@@ -10,6 +12,7 @@ import { BuscarInsumosComponent } from './buscar-insumos.component';
   exports: [
     BuscarInsumosComponent
   ],
-  declarations: [BuscarInsumosComponent]
+  declarations: [BuscarInsumosComponent],
+  providers: [BuscarInsumosService]
 })
 export class BuscarInsumosModule { }
