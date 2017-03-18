@@ -26,5 +26,5 @@ echo dist/assets >> .git/info/sparse-checkout
 
 - La configuración anterior solo es al inicio y una sola vez, a partir de aqui, solo hacemos pull y nada mas bajaremos el directorio de distribución de angular cli.
 ```
-git pull origin master
+git pull github master
 ```
