@@ -2,22 +2,29 @@
 
 - Angular 2
 - Bulma.io
+- Angular Cli
 
 #Instrucciones para publicar en producción
 
+- Crear el directorio en el servidor donde se va alojar:
 
-- Seguir los pasos comunes para crear la carpeta en producción y agregar el repositorio git
+```
+mkdir sial  && cd sial
+```
+- Inicializar repositorio apuntando al proyecto cambiamos la palabra origin por github para saber de donde viene:
 ```
 git init
-git remote add origin https://github.com/XXAI/X3-C.git
+git remote add -f github https://github.com/XXAI/X3-C.git
 ```
 
-- A partir de aqui, se baja solamente la carpeta de distribución generada por el angular-cli
+- Configuramos para que solo baje la carpeta de distribucion:
 ```
-git config core.sparseCheckout true
-echo 'dist/*' > .git/info/sparse-checkout
-git fetch origin
+git config core.sparsecheckout true
+echo dist/ >> .git/info/sparse-checkout
+echo dist/assets >> .git/info/sparse-checkout
+```
+
+- La configuración anterior solo es al inicio y una sola vez, a partir de aqui, solo hacemos pull y nada mas bajaremos el directorio de distribución de angular cli.
+```
 git pull origin master
 ```
-
--En teoria para actualizar solo tendriamos que hacer un pull a origin master y nos estaría descargando unicamente la carpeta dist/
