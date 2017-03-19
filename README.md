@@ -22,6 +22,8 @@ git remote add -f github https://github.com/XXAI/X3-C.git
 git config core.sparsecheckout true
 echo dist/ >> .git/info/sparse-checkout
 echo dist/assets >> .git/info/sparse-checkout
+echo dist/scripts >> .git/info/sparse-checkout
+echo dist/web-workers >> .git/info/sparse-checkout
 ```
 
 - La configuración anterior solo es al inicio y una sola vez, a partir de aqui, solo hacemos pull y nada mas bajaremos el directorio de distribución de angular cli.
@@ -35,6 +37,10 @@ git pull github master
 +-- .git
 +-- dist/
 |   +-- assets/
+|   |   +-- *.*
+|   +-- scripts/
+|   |   +-- *.*
+|   +-- web-workers/
 |   |   +-- *.*
 |   +-- favicon.ico
 |   +-- index.html
