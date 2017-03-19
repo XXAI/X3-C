@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Location}           from '@angular/common';
 import { FormControl } from '@angular/forms';
@@ -13,6 +13,8 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/catch';
+
+import  * as FileSaver    from 'file-saver'; 
 
 import { Mensaje } from '../../../mensaje';
 
@@ -51,11 +53,44 @@ export class NuevoComponent implements OnInit {
   // # FIN SECCION
 
 
+  // # SECCION: Reportes
+  private pdfworker:Worker;
+  private cargandoPdf:boolean = false;
+  // # FIN SECCION
 
-  constructor(private title:Title, private location:Location) { }
+
+  constructor(private title:Title, private location:Location, private _ngZone: NgZone) { }
 
   ngOnInit() {
     this.title.setTitle('Nuevo pedido / Farmacia');
+
+    // Inicializamos el objeto para los reportes con web Webworkers
+    this.pdfworker = new Worker("web-workers/farmacia/pedidos/imprimir.js")
+    
+    // Este es un hack para poder usar variables del componente dentro de una funcion del worker
+    var self = this;    
+    var $ngZone = this._ngZone;
+
+    this.pdfworker.onmessage = function( evt ) {       
+      
+      
+      // Esto es un hack porque estamos fuera de contexto dentro del worker
+      // Y se usa esto para actualizar alginas variables
+      $ngZone.run(() => {
+         self.cargandoPdf = false;
+      });
+
+      FileSaver.saveAs( self.base64ToBlob( evt.data.base64, 'application/pdf' ), evt.data.fileName );
+      //open( 'data:application/pdf;base64,' + evt.data.base64 ); // Popup PDF
+    };
+    this.pdfworker.onerror = function( e ) {
+      $ngZone.run(() => {
+         self.cargandoPdf = false;
+      });
+      console.log(e)
+    };
+    
+    
 
     // Inicialicemos el pedido
     this.pedidos.push(new Pedido(true) );
@@ -809,5 +844,27 @@ export class NuevoComponent implements OnInit {
     }
     
         
+  }
+
+  // # SECCION - Webworkers
+
+  imprimir() {
+    
+    try {
+      this.cargandoPdf = true;
+      this.pdfworker.postMessage(JSON.stringify(this.pedidos));
+    } catch (e){
+      this.cargandoPdf = false;
+      console.log(e);
+    }
+    
+  }
+
+  base64ToBlob( base64, type ) {
+      var bytes = atob( base64 ), len = bytes.length;
+      var buffer = new ArrayBuffer( len ), view = new Uint8Array( buffer );
+      for ( var i=0 ; i < len ; i++ )
+      view[i] = bytes.charCodeAt(i) & 0xff;
+      return new Blob( [ buffer ], { type: type } );
   }
 }
