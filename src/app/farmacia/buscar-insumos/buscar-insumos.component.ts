@@ -49,47 +49,18 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   
   // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
-  mensajeExito: Mensaje = new Mensaje();
+ // mensajeExito: Mensaje = new Mensaje();
   mensajeAgregado: Mensaje = new Mensaje();
   ultimaPeticion:any;
   // # FIN SECCION
 
   private cantidadValida: boolean = false;
   private insumoSeleccionado:InsumoMedico;
-  
-  /*{
-        clave: "010.000.1327.00",
-        tipo: "ME",
-        generico_id: 1,
-        generico_nombre: "CHUCHI",
-        es_cuadro_basico: 1,
-        grupo_insumo_nombre: "",
-        es_causes: 0,
-        descripcion: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse. Inventore quasi dolore sapiente sequi, sunt natus fugiat quas eos, quia nostrum corporis voluptatem a distinctio! Adipisci, aperiam amet placeat.",
-        medicamento:{
-          id: 1,
-          insumo_medico_clave: "010.000.1327.00",
-          presentacion_id: 1,
-          presentacion_nombre: "PRESEN",
-          es_controlado: 0,
-          es_surfactante: 0,
-          descripcion: "Lorem",
-          concentracion: "ceonetr",
-          cantidad_x_envase: 20,
-          unidad_medida_id: 1,
-          unidad_medida_nombre: "pza",
-          indicaciones: "indicscion",
-          via_administracion_id: 1,
-          via_administracion_nombre: "oral",
-          dosis: "recomendada"
-        },
-        cantidad: 0,
-        cargando:false
-  };*/
 
   constructor(private buscarInsumosService: BuscarInsumosService) { }
 
   ngOnInit() {
+    
     var self = this;
 
     var busquedaSubject = this.terminosBusqueda
@@ -109,12 +80,17 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
     ).catch( function handleError(error){ 
      
       self.cargando = false;      
+      self.mensajeError =  new Mensaje();
       self.mensajeError.mostrar = true;
       self.ultimaPeticion = function(){self.listar(self.ultimoTerminoBuscado,self.paginaActual);};//OJO
       try {
         let e = error.json();
         if (error.status == 401 ){
           self.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+        }
+        
+        if (error.status == 0 ){
+          self.mensajeError.texto = "El servidor no responde.";
         }
       } catch(e){
         console.log("No se puede interpretar el error");
@@ -148,11 +124,22 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
 
     );
   }
-  ngAfterViewInit() {            
-        this.searchBoxViewChildren.first.nativeElement.focus();
+  ngAfterViewInit() {
+    try{
+      // Por alguna razón si no implemento un setTimeout me lanza error
+      // investigar porque ocurre esto
+
+      // Poner el focus en la barra de busqueda
+      setTimeout(() => { this.searchBoxViewChildren.first.nativeElement.focus();} ); 
+      
+    } catch(e){
+      console.log(e);
+    }           
+      
   }
 
   cerrar(){
+    this.searchBoxViewChildren.first.nativeElement.value = "";
     this.onCerrar.emit();
   }
 
@@ -189,6 +176,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
     e.preventDefault();
     this.mensajeAgregado = new Mensaje(true, 2);
     this.mensajeAgregado.mostrar = true;    
+    this.insumoSeleccionado.cantidad = this.cantidadBoxViewChildren.first.nativeElement.value;
     this.onEnviar.emit(this.insumoSeleccionado);
     this.searchBoxViewChildren.first.nativeElement.focus();
     this.resetItemSeleccionado();
@@ -196,6 +184,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   
   buscar(term: string): void {
     this.terminosBusqueda.next(term);
+    this.mensajeError.mostrar = false;
   }
 
   listar(term:string, pagina:number): void {
@@ -243,12 +232,28 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       );
   }
 
+  mostrarFichaInformativa(e, clave: string){    
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Mostrar el componente de Ficha Informativa
+    // Falta hacerlo sumamiiiii :)
+    alert(clave);
+    console.log(clave);
+  }
+
   // # SECCION: Paginación
   paginaSiguiente(term:string):void {
+    if (this.paginaActual == this.paginasTotales){
+        return;
+    }
     this.resetItemSeleccionado();
     this.listar(term,this.paginaActual+1);
   }
   paginaAnterior(term:string):void {
+     if (this.paginaActual == 1){
+        return;
+    }
     this.resetItemSeleccionado();
     this.listar(term,this.paginaActual-1);
   }
@@ -259,6 +264,26 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       event.stopPropagation();
       this.cerrar();
     }
+        
+
+    // Cambiar página hacia adelante ctrl + shift + ->
+    if (e.keyCode == 39 && ((e.ctrlKey && e.shiftKey) || e.ctrlKey )){
+      event.preventDefault();
+      event.stopPropagation();
+
+      this.paginaSiguiente(this.searchBoxViewChildren.first.nativeElement.value);
+      
+    }
+    // Cambiar página hacia adelante ctrl + shift + <-
+    if (e.keyCode == 37 && ((e.ctrlKey && e.shiftKey) || e.ctrlKey )){
+      
+      event.preventDefault();
+      event.stopPropagation();
+
+      this.paginaAnterior(this.searchBoxViewChildren.first.nativeElement.value);
+      
+    }
+    
         
   }
 }

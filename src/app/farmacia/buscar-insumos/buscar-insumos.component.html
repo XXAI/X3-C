@@ -46,11 +46,11 @@
               <td class="is-hidden-mobile">{{ item.clave }}</td>
               <td >
                 <small class="is-hidden-tablet">{{ item.clave }} <br></small>
-                <b>{{ item.generico_nombre }}</b> <br  class="is-hidden-mobile"><small *ngIf="item.tipo == 'ME'"><b>{{ item.medicamento_detalle.concentracion }}</b></small><br>
+                <b>{{ item.generico_nombre }}</b> <br  class="is-hidden-mobile"><small *ngIf="item.tipo == 'ME'"><b>{{ item.informacion.concentracion }}</b></small><br>
                 
                 <div class="is-hidden-tablet" *ngIf="item.tipo == 'ME'" style="line-height:1em;">
-                  <small><i>{{ item.medicamento_detalle.presentacion_nombre }}</i></small><br>
-                  <small><i>{{ item.medicamento_detalle.contenido }} </i></small>
+                  <small><i>{{ item.informacion.presentacion_nombre }}</i></small><br>
+                  <small><i>{{ item.informacion.contenido }} </i></small>
                 </div>
                 <div class="is-hidden-tablet" *ngIf="item.tipo != 'ME'" style="line-height:1em;">
                   <small>{{ item.descripcion }}</small>
@@ -61,8 +61,8 @@
                   <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
                   
                   <span *ngIf="item.tipo == 'ME'">
-                    <span *ngIf="item.medicamento_detalle.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
-                    <span *ngIf="item.medicamento_detalle.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>  
+                    <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
+                    <span *ngIf="item.informacion.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>  
                   </span>
                   
                 </div>
@@ -70,8 +70,8 @@
 
               <td class="is-hidden-mobile">
                 <div *ngIf="item.tipo == 'ME'" style="line-height:1em;">
-                  <small><i>{{ item.medicamento_detalle.presentacion_nombre }}</i></small><br>
-                  <small><i>{{ item.medicamento_detalle.contenido }} </i></small>
+                  <small><i>{{ item.informacion.presentacion_nombre }}</i></small><br>
+                  <small><i>{{ item.informacion.contenido }} </i></small>
                 </div>
                 <div  *ngIf="item.tipo != 'ME'" style="line-height:1em;">
                   <small>{{ item.descripcion }}</small>
@@ -81,8 +81,8 @@
                   <span *ngIf="!item.es_causes" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
                   <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
                   <span *ngIf="item.tipo == 'ME'">
-                    <span *ngIf="item.medicamento_detalle.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
-                    <span *ngIf="item.medicamento_detalle.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>  
+                    <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
+                    <span *ngIf="item.informacion.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>  
                   </span>
                   
                 </div>
@@ -96,7 +96,7 @@
                 </b>
               </td>
               <td style="text-align:center">
-                <a (click)="mostrarFichaInformativa(item.clave)"><span class="icon"><i class="fa fa-info-circle"></i></span></a>
+                <a (click)="mostrarFichaInformativa($event,item.clave)"><span class="icon"><i class="fa fa-info-circle"></i></span></a>
               </td>
 
             </tr>  
@@ -145,5 +145,10 @@
       
 
     </footer>
+      
+    <div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeError.mostrar">
+        <button class="delete" (click)="mensajeError.mostrar = false"></button>        
+        <b>Error:</b> {{ mensajeError.texto }}
+    </div>
   </div>
 </div>

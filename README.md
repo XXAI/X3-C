@@ -56,5 +56,16 @@ git pull github master
     ServerName mi.proyecto.com
     ErrorLog logs/error_log
     CustomLog logs/access_log combined
+    <Directory /var/www/html/mi_proyecto/dist>
+        RewriteEngine on
+
+        # No reescribir archivos o directorios
+        RewriteCond %{REQUEST_FILENAME} -f [OR]
+        RewriteCond %{REQUEST_FILENAME} -d
+        RewriteRule ^ - [L]
+
+        # Reescribir todo lo demas a index.html para permitir html5 state links
+        RewriteRule ^ index.html [L]
+    </Directory>
 </VirtualHost>
 ```

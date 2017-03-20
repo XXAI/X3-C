@@ -1,12 +1,15 @@
-export class Medicamento {
+/*export class Medicamento {
     id: number;
     insumo_medico_clave: string;
     presentacion_id: number;
     presentacion_nombre: string;
+    concentracion: string;
+    contenido:string;
     es_controlado: number;
     es_surfactante: number;
-    descripcion: string;
-    concentracion: string;
+
+    //descripcion: string;
+    
     cantidad_x_envase: number;
     unidad_medida_id: number;
     unidad_medida_nombre: string;
@@ -14,7 +17,9 @@ export class Medicamento {
     via_administracion_id: number;
     via_administracion_nombre: string;
     dosis: string;
-}
+
+    informacion_importante:any;
+}*/
 
 export class InsumoMedico {
     clave: string;
@@ -25,7 +30,8 @@ export class InsumoMedico {
     grupo_insumo_nombre: string;
     es_causes: number;
     descripcion: string;
-    medicamento?: {};
+    informacion: any; // Puede ser de un medicamento, material de curacion o auxiliares o lo que sea
+    informacionAmpliada: any; // Puede ser de un medicamento, material de curacion o auxiliares o lo que sea
     cantidad: number;
     cargando:boolean = false;
 }
