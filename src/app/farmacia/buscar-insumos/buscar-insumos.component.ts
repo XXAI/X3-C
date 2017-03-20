@@ -1,9 +1,22 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChildren, AfterViewInit } from '@angular/core';
+
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+
+import 'rxjs/add/observable/of';
+import 'rxjs/add/observable/throw';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/operator/catch';
+
 import { Mensaje } from '../../mensaje';
 
 import { BuscarInsumosService } from './buscar-insumos.service';
 import { InsumoMedico } from '../insumo-medico';
-import { Subject } from "rxjs/Subject";
+
+
 
 @Component({
   selector: 'buscar-insumos',
@@ -14,7 +27,8 @@ import { Subject } from "rxjs/Subject";
 
 export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   
-  @ViewChildren('searchBox') vc;
+  @ViewChildren('searchBox') searchBoxViewChildren;
+  @ViewChildren('cantidadBox') cantidadBoxViewChildren;
   
   @Output() onCerrar = new EventEmitter<void>();
   @Output() onEnviar = new EventEmitter<any>();
@@ -31,6 +45,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   private paginasTotales = 0;
   private indicePaginas:number[] = [];
   // # FIN SECCION
+
   
   // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
@@ -39,7 +54,10 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   ultimaPeticion:any;
   // # FIN SECCION
 
-  private insumoSeleccionado:InsumoMedico = {
+  private cantidadValida: boolean = false;
+  private insumoSeleccionado:InsumoMedico;
+  
+  /*{
         clave: "010.000.1327.00",
         tipo: "ME",
         generico_id: 1,
@@ -67,37 +85,126 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
         },
         cantidad: 0,
         cargando:false
-  };
+  };*/
 
   constructor(private buscarInsumosService: BuscarInsumosService) { }
 
   ngOnInit() {
-    //this.listar(1);
+    var self = this;
+
+    var busquedaSubject = this.terminosBusqueda
+    .debounceTime(300) // Esperamos 300 ms pausando eventos
+    .distinctUntilChanged() // Ignorar si la busqueda es la misma que la ultima
+    .switchMap((term:string)  =>  { 
+      console.log("Cargando búsqueda.");
+      //this.busquedaActivada = term != "" ? true: false;
+
+      this.ultimoTerminoBuscado = term;
+      this.paginaActual = 1;
+      this.cargando = true;
+      return term  ? this.buscarInsumosService.buscar(term, this.paginaActual, this.resultadosPorPagina) : Observable.of<any>({data:[]}) 
+    }
+      
+    
+    ).catch( function handleError(error){ 
+     
+      self.cargando = false;      
+      self.mensajeError.mostrar = true;
+      self.ultimaPeticion = function(){self.listar(self.ultimoTerminoBuscado,self.paginaActual);};//OJO
+      try {
+        let e = error.json();
+        if (error.status == 401 ){
+          self.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+        }
+      } catch(e){
+        console.log("No se puede interpretar el error");
+        
+        if (error.status == 500 ){
+          self.mensajeError.texto = "500 (Error interno del servidor)";
+        } else {
+          self.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+        }            
+      }
+      // Devolvemos el subject porque si no se detiene el funcionamiento del stream 
+      return busquedaSubject
+    
+    });
+
+    busquedaSubject.subscribe(
+      resultado => {
+        this.cargando = false;
+        this.resetItemSeleccionado();
+        this.insumos = resultado.data as InsumoMedico[];
+        this.total = resultado.total | 0;
+        this.paginasTotales = Math.ceil(this.total / this.resultadosPorPagina);
+
+        this.indicePaginas = [];
+        for(let i=0; i< this.paginasTotales; i++){
+          this.indicePaginas.push(i+1);
+        }
+        
+        console.log("Búsqueda cargada.");
+      }
+
+    );
   }
   ngAfterViewInit() {            
-        this.vc.first.nativeElement.focus();
+        this.searchBoxViewChildren.first.nativeElement.focus();
   }
 
   cerrar(){
     this.onCerrar.emit();
   }
 
-  enviar(){
+  resetItemSeleccionado(){
+    this.cantidadBoxViewChildren.first.nativeElement.value = "";
+    this.insumoSeleccionado = null;
+    this.cantidadValida = false;
+  }
+  seleccionar(item:InsumoMedico){
+    this.insumoSeleccionado = item;
+    this.cantidadBoxViewChildren.first.nativeElement.disabled = false;
+    this.cantidadBoxViewChildren.first.nativeElement.focus();
+  }
+  comprobarCantidad(value: any){
+    if (value.replace(/ /g,'') == ""){
+      this.cantidadValida = false;
+      return false;
+    }
+    if (isNaN(value)){
+      this.cantidadValida = false;
+      return false;
+    }
+
+    let x = value % 1;
+    if ( x != 0 ){
+      this.cantidadValida = false;
+      return false;
+    }
+    this.cantidadValida = true;
+    return true;
+
+  }
+  enviar(e){
+    e.preventDefault();
     this.mensajeAgregado = new Mensaje(true, 2);
     this.mensajeAgregado.mostrar = true;    
     this.onEnviar.emit(this.insumoSeleccionado);
+    this.searchBoxViewChildren.first.nativeElement.focus();
+    this.resetItemSeleccionado();
   }
   
   buscar(term: string): void {
-    //this.terminosBusqueda.next(term);
+    this.terminosBusqueda.next(term);
   }
 
-  listar(pagina:number): void {
+  listar(term:string, pagina:number): void {
     this.paginaActual = pagina;
+    this.resetItemSeleccionado();
     console.log("Cargando insumos.");
    
     this.cargando = true;
-    this.buscarInsumosService.lista(pagina,this.resultadosPorPagina).subscribe(
+    this.buscarInsumosService.buscar(term, pagina, this.resultadosPorPagina).subscribe(
         resultado => {
           this.cargando = false;
           this.insumos = resultado.data as InsumoMedico[];
@@ -137,11 +244,13 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   }
 
   // # SECCION: Paginación
-  paginaSiguiente():void {
-    this.listar(this.paginaActual+1);
+  paginaSiguiente(term:string):void {
+    this.resetItemSeleccionado();
+    this.listar(term,this.paginaActual+1);
   }
-  paginaAnterior():void {
-    this.listar(this.paginaActual-1);
+  paginaAnterior(term:string):void {
+    this.resetItemSeleccionado();
+    this.listar(term,this.paginaActual-1);
   }
 
   keyboardInput(e: KeyboardEvent) {

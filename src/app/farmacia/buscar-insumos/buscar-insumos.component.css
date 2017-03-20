@@ -10,3 +10,7 @@
     0%   {  bottom:0em; opacity:0.0; }
     100% {  bottom:3em; opacity:1.0; }
 }
+
+.item-seleccionado {
+    background: #F5F5F5 !important; font-weight: bold !important;
+}
