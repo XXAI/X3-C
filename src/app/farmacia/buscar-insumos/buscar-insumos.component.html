@@ -31,14 +31,14 @@
             <th class="is-hidden-mobile">Clave</th>
             <th>Generico</th>
             <th class="is-hidden-mobile">Descripción</th>
-            <th style="text-align:center" class="is-hidden-mobile">Grupo</th>
+            <th style="text-align:center" class="is-hidden-mobile">Grupo(s)</th>
             <th style="text-align:center"><abbr title="Tipo de insumo">Tipo</abbr></th>
             <th style="text-align:center"><abbr title="Información">Info</abbr></th>
             
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let item of insumos" class="is-unselectable" [ngClass]="{'item-seleccionado': item == insumoSeleccionado}" style="cursor: pointer" (click)="seleccionar(item)">
+            <tr *ngFor="let item of insumos" class="is-unselectable" [ngClass]="{'item-seleccionado': item == insumoSeleccionado, 'is-disabled': (listaAgregados.indexOf(item.clave) >= 0)}" style="cursor: pointer" (click)="seleccionar(item)">
               <td valign="middle">
                 <span *ngIf="item != insumoSeleccionado" class="icon is-small" style="color:#999"><i class="fa fa-circle-thin"></i></span>
                 <span *ngIf="item == insumoSeleccionado" class="icon is-small" style="color:#00d1b2"><i class="fa fa-check-circle"></i></span>
@@ -87,7 +87,9 @@
                   
                 </div>
               </td> 
-              <td style="text-align:center;" class="is-hidden-mobile">{{ item.grupo_nombre }}</td>
+              <td style="text-align:center;" class="is-hidden-mobile">
+                <span *ngFor="let grupo of item.generico.grupos">{{grupo.nombre}}<br></span>
+              </td>
               <td style="text-align:center;">
                 <b>
                   <abbr *ngIf="item.tipo == 'ME'" title="Medicamento">ME</abbr>

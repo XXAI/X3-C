@@ -137,7 +137,7 @@
                       <input class="input is-small has-text-centered"  type="text" placeholder="Cant" [(ngModel)]="item.cantidad">
                       </p>
                   </td>                  
-                  <td style="width:21px !important;"><a (click)="pedido.eliminarItem(item,i)"><span class="icon"><i class="fa fa-trash"></i></span></a></td>
+                  <td style="width:21px !important;"><a (click)="eliminarInsumo(item,i)"><span class="icon"><i class="fa fa-trash"></i></span></a></td>
                 </tr>      
               </tbody>
               <tbody *ngIf="pedido.filtro.activo">
@@ -193,7 +193,7 @@
                       <input class="input is-small has-text-centered"  type="text" placeholder="Cant" [(ngModel)]="item.cantidad">
                       </p>
                   </td>                  
-                  <td style="width:21px !important;"><a (click)="pedido.filtro.eliminarItem(item,i)"><span class="icon"><i class="fa fa-trash"></i></span></a></td>
+                  <td style="width:21px !important;"><a (click)="eliminarInsumo(item,i,true)"><span class="icon"><i class="fa fa-trash"></i></span></a></td>
                 </tr>   
 
 
@@ -242,5 +242,5 @@
     <p style="text-align: center;"><small >Este mensaje desaparecerá en {{ mensajeExito.cuentaAtras }} segundos.</small></p>       
 </div>
 
-<buscar-insumos *ngIf="mostrarModalInsumos" (onCerrar)="mostrarModalInsumos = false" (onEnviar)="agregarItem($event)"></buscar-insumos>
+<buscar-insumos *ngIf="mostrarModalInsumos" (onCerrar)="mostrarModalInsumos = false" (onEnviar)="agregarItem($event)" [listaAgregados]="listaClaveAgregadas"></buscar-insumos>
 

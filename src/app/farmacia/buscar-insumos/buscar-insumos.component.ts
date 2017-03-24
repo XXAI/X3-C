@@ -33,6 +33,9 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   @Output() onCerrar = new EventEmitter<void>();
   @Output() onEnviar = new EventEmitter<any>();
 
+  //Harima: Para evitar agregar insumos que ya estan en la lista
+  @Input() listaAgregados: Array<string>;
+
   cargando: boolean = false;
 
   // # SECCION: Lista de insumos
@@ -174,12 +177,22 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   }
   enviar(e){
     e.preventDefault();
-    this.mensajeAgregado = new Mensaje(true, 2);
-    this.mensajeAgregado.mostrar = true;    
-    this.insumoSeleccionado.cantidad = this.cantidadBoxViewChildren.first.nativeElement.value;
-    this.onEnviar.emit(this.insumoSeleccionado);
-    this.searchBoxViewChildren.first.nativeElement.focus();
-    this.resetItemSeleccionado();
+    //Harima: Checamos si el insumo que seleccionamos no se encuentra agregado
+    if(this.listaAgregados.indexOf(this.insumoSeleccionado.clave) < 0){
+      this.mensajeAgregado = new Mensaje(true, 2);
+      this.mensajeAgregado.mostrar = true;    
+      this.insumoSeleccionado.cantidad = this.cantidadBoxViewChildren.first.nativeElement.value;
+      this.onEnviar.emit(this.insumoSeleccionado);
+      this.searchBoxViewChildren.first.nativeElement.focus();
+      //Harima: Agregamos la clave al arreglo de items agregados
+      this.listaAgregados.push(this.insumoSeleccionado.clave);
+      this.resetItemSeleccionado();
+    }else{
+      //Harima: Mostramos un mensaje de error al intentar agregar un insumo ya presente en la lista
+      this.mensajeError = new Mensaje(true,2);
+      this.mensajeError.texto = "El insumo seleccionado ya se encuentra en la lista";
+      this.mensajeError.mostrar = true;
+    }
   }
   
   buscar(term: string): void {

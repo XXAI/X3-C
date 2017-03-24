@@ -40,8 +40,9 @@ export class NuevoComponent implements OnInit {
 
   // # SECCION: Modal Insumos
   private mostrarModalInsumos = false;
+  //Harima: Lista de claves agregadas al pedido, para checar duplicidad
+  listaClaveAgregadas: Array<string> = [];
   // # FIN SECCION
-
 
   // # SECCION: Pedido
   
@@ -105,9 +106,9 @@ export class NuevoComponent implements OnInit {
   }
 
   toggleModalInsumos(){
-    console.log(this.mostrarModalInsumos)
+    //console.log(this.mostrarModalInsumos)
     this.mostrarModalInsumos = !this.mostrarModalInsumos
-    console.log(this.mostrarModalInsumos)
+    //console.log(this.mostrarModalInsumos)
   }
 
   // # SECCION Funciones globales
@@ -228,6 +229,20 @@ export class NuevoComponent implements OnInit {
 
   }
 
+  //Harima: necesitamos eliminar también de la lista de claves agregadas
+  eliminarInsumo(item,index,filtro:boolean = false){
+    //Harima: eliminar el elemento en la lista de claves agregadas, para poder agregarla de nuevo si se desea
+    var i = this.listaClaveAgregadas.indexOf(item.clave);
+    this.listaClaveAgregadas.splice(i,1);
+
+    //Harima: si no es el filtro(busqueda), borrar de la lista principal de insumos
+    if(!filtro){
+      this.pedidos[this.pedidoActivo].eliminarItem(item,index);
+    }else{
+      this.pedidos[this.pedidoActivo].filtro.eliminarItem(item,index);
+    }
+  }
+
   mostrarFichaInformativa(e, clave: string){
     e.preventDefault();
     e.stopPropagation();
@@ -283,7 +298,11 @@ export class NuevoComponent implements OnInit {
     
     try {
       this.cargandoPdf = true;
-      this.pdfworker.postMessage(JSON.stringify(this.pedidos));
+      var pedidos_imprimir = {
+        datos:{alamcen:'colicitar',solicitante:'unidad',observaciones:'texto'},
+        lista: this.pedidos[this.pedidoActivo].lista
+      };
+      this.pdfworker.postMessage(JSON.stringify(pedidos_imprimir));
     } catch (e){
       this.cargandoPdf = false;
       console.log(e);

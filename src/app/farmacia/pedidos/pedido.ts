@@ -10,12 +10,15 @@ export class Pedido {
   public lista:any[] = [];
   public paginacion:Paginacion = new Paginacion();
   public filtro: Pedido;
+  //Harima: Para tener acceso al objeto que contiene la lista principal sin filtro
+  private padre: Pedido;
   public activo:boolean = false;
   constructor(conFiltro:boolean = false){
     if (conFiltro){
         this.filtro = new Pedido();
+        //Harima: se asigna el pedido actual como padre del filtro
+        this.filtro.padre = this;
     }
-    
   }
   public indexar = function(conLote: boolean = true ){
     if(conLote){
@@ -55,7 +58,7 @@ export class Pedido {
     }
     this.listar(this.paginacion.paginaActual-1);
   }
-
+  
   public  eliminarItem = function (item:any, index:number){
     var contador: number = 0;
     for(let i in this.lista){
@@ -63,15 +66,54 @@ export class Pedido {
         this.paginacion.lista.splice(index, 1);  
         this.lista.splice(contador, 1);  
         this.indexar();
-        if(this.paginacion.lista.length == 0){
-          this.listar(this.paginacion.paginaActual);
-        }
         
+        //Harima: con esto calculamos el siguiente indice, de la lista total de elementos, a agregar al final de la página
+        let proximoIndice = (contador + (this.paginacion.resultadosPorPagina - index)) - 1;
+        //Harima:  si ese indice existe, lo agregamos al final de la pagina
+        if(this.lista[proximoIndice]){
+          this.paginacion.lista.push(this.lista[proximoIndice]);
+        }
+
+        //Harima: Si la pagina quedo vacía, listamos la pagina anterior, en caso de que la página actual sea mayor a 1
+        if(this.paginacion.lista.length == 0){
+          if(this.paginacion.paginaActual > 1){
+            this.listar(this.paginacion.paginaActual-1);
+          }else{
+            this.listar(1);
+          }
+        }
+
+        //Harima: si el objeto padre esta inicializado, significa que se esta eliminando desde una busqueda, por tanto hay que eliminar también en el objeto padre
+        if(this.padre){
+          //Harima: se obtiene el indice y la pagina del item eliminado
+          var indice = this.padre.lista.indexOf(item);
+          var pagina = Math.ceil(indice/this.padre.paginacion.resultadosPorPagina);
+          //Harima: se calcula el indice que tiene el item en la pagina en la que se encuentra
+          var ajusteIndices = (pagina-1) * this.padre.paginacion.resultadosPorPagina;
+          var indiceEnPagina = indice - ajusteIndices;
+
+          //Harima: eliminamos el elemento del padre, de ser necesario cambiamos de pagina
+          if(this.padre.paginacion.paginaActual == pagina){
+            this.padre.eliminarItem(item,indiceEnPagina);
+          }else{
+            var respaldoPagina = this.padre.paginacion.paginaActual;
+            this.padre.listar(pagina);
+            this.padre.eliminarItem(item,indiceEnPagina);
+            this.padre.listar(respaldoPagina);
+
+            //Harima: tenemos que checar si en la pagina actual del padre aun hay elementos, de lo contrario listamos la pagina anterior, cuando sea posible
+            if(this.padre.paginacion.lista.length == 0){
+              if(this.padre.paginacion.paginaActual > 1){
+                this.padre.listar(this.padre.paginacion.paginaActual-1);
+              }else{
+                this.padre.listar(1);
+              }
+            }
+          }
+        }
         return;
       }
-      
       contador++;
     }
-    
   }
 }

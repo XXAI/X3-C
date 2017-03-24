@@ -30,6 +30,7 @@ export class InsumoMedico {
     grupo_insumo_nombre: string;
     es_causes: number;
     descripcion: string;
+    generico: any; //contendra informacion del objeto, ademas de una lista de grupos asignada al generico
     informacion: any; // Puede ser de un medicamento, material de curacion o auxiliares o lo que sea
     informacionAmpliada: any; // Puede ser de un medicamento, material de curacion o auxiliares o lo que sea
     cantidad: number;
