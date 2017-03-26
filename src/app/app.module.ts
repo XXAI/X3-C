@@ -26,6 +26,7 @@ import { UsuariosModule } from './panel-control/usuarios/usuarios.module';
 // # Hub Farmacia
 import { IndexFarmaciaModule } from './farmacia/index-farmacia/index-farmacia.module';
 import { PedidosModule } from './farmacia/pedidos/pedidos.module';
+import { EntregasModule } from './farmacia/entregas/entregas.module';
 
 
 
@@ -55,6 +56,7 @@ import { PedidosModule } from './farmacia/pedidos/pedidos.module';
     UsuariosModule,
     IndexFarmaciaModule,
     PedidosModule,
+    EntregasModule,
     WildcardRoutingModule, // Este siempre debe ir al final para que no haga conflicto con otras rutas
     
   ],

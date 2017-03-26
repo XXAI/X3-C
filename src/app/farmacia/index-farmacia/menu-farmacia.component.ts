@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 import { BuscarModuloPipe } from '../../pipes/buscar-modulo.pipe';
 
@@ -11,10 +11,15 @@ export class MenuFarmaciaComponent implements OnInit {
 
   private usuario: any = {}
 
+  @Input() modulo:string;
+  @Input() icono:string;
+  @Input() url:string;
+
   constructor() { }
 
   ngOnInit() {
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
+
 
   }
 

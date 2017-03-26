@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+
 import { Title } from '@angular/platform-browser';
 
 import { Observable } from 'rxjs/Observable';
@@ -17,9 +18,8 @@ import { UsuariosService } from '../../../panel-control/usuarios/usuarios.servic
 import { Usuario } from '../../../panel-control/usuarios/usuario';
 import { Mensaje } from '../../../mensaje';
 
-
 @Component({
-  selector: 'farmacia-pedidos-lista',
+  selector: 'app-lista',
   templateUrl: './lista.component.html',
   styleUrls: ['./lista.component.css']
 })
@@ -57,7 +57,7 @@ export class ListaComponent implements OnInit {
   constructor(private title: Title, private usuariosService: UsuariosService) { }
 
   ngOnInit() {
-    this.title.setTitle("Pedidos / Farmacia");
+    this.title.setTitle("Entregas / Farmacia");
 
     this.listar(1);
     this.mensajeError = new Mensaje();

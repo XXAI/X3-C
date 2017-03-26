@@ -13,6 +13,12 @@ const routes: Routes = [
     path: 'farmacia/pedidos',
     children: [
        { path: 'pendientes', component: ListaComponent},
+       { path: 'pendientes/abiertos', component: ListaComponent},
+       { path: 'pendientes/en-proceso', component: ListaComponent},
+       { path: 'pendientes/liberados', component: ListaComponent},
+       { path: 'recibidos', component: ListaComponent},
+       { path: 'recibidos/completos', component: ListaComponent},
+       { path: 'recibidos/incompletos', component: ListaComponent},
        { path: 'nuevo', component: NuevoComponent},
     ],
     canActivate: [AuthGuard]

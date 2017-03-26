@@ -1,0 +1,14 @@
+<aside class="menu" style="padding: 1em;">
+    <ul class="menu-list">        
+        <li>
+            <a routerLink="/farmacia/entregas/pendientes" routerLinkActive="is-active"><span class="icon"  ><i class="fa fa-minus-circle"></i></span> Pendientes <span class="tag is-danger is-pulled-right">1</span></a>            
+        </li>
+        <li>
+            <a routerLink="/farmacia/entregas/realizadas" routerLinkActive="is-active"><span class="icon"><i class="fa fa-check-circle"></i></span> <span>Realizadas</span></a>
+            <ul>
+                <li><a routerLink="/farmacia/entregas/realizadas/completas" routerLinkActive="is-active">Completas</a></li>
+                <li><a routerLink="/farmacia/entregas/realizadas/incompletas" routerLinkActive="is-active">Incompletas</a></li>
+            </ul>
+        </li>        
+    </ul>        
+</aside>

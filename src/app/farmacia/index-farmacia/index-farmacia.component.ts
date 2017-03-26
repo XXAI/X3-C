@@ -30,7 +30,7 @@ export class IndexFarmaciaComponent implements OnInit {
       { permiso: '', icono: 'assets/icono-recetas.svg', titulo:"Recetas", url:"/farmacia/recetas" },
       { permiso: '', icono: 'assets/icono-colectivo.svg', titulo:"Colectivos", url:"/farmacia/colectivos" },
       { permiso: '', icono: 'assets/icono-pagina-lista.svg', titulo:"Pedidos", url:"/farmacia/pedidos", badge:1 },
-      { permiso: '', icono: 'assets/icono-pedidos-alt.svg', titulo:"Entregas de pedidos", url:"/farmacia/entregas-pedidos" },
+      { permiso: '', icono: 'assets/icono-pedidos-alt.svg', titulo:"Entregas de pedidos", url:"/farmacia/entregas" },
       { permiso: '', icono: 'assets/icono-camion.svg', titulo:"Reabastecimiento", url:"/farmacia/pedidos-reabastecimiento" },
       { permiso: '', icono: 'assets/icono-pagina-lista.svg', titulo:"Actas por desabasto", url:"/farmacia/actas" },
       { permiso: '', icono: 'assets/icono-pagina-lista.svg', titulo:"Actas colectivas por desabasto", url:"/farmacia/actas-colectivas" },

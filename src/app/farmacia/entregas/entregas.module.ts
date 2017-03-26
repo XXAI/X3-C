@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
+
 import { FormsModule } from '@angular/forms';
 
 
@@ -9,14 +11,11 @@ import { BloquearPantallaModule } from '../../bloquear-pantalla/bloquear-pantall
 import { PaginacionModule } from '../../paginacion/paginacion.module';
 
 import { BuscarInsumosModule } from '../buscar-insumos/buscar-insumos.module';
-
-import { PedidosRoutingModule } from './pedidos-routing.module';
 import { IndexFarmaciaModule } from '../index-farmacia/index-farmacia.module';
 
-import { PedidosComponent } from './pedidos.component';
-import { MenuLateralComponent } from './menu-lateral/menu-lateral.component';
-import { NuevoComponent } from './nuevo/nuevo.component';
+import { EntregasRoutingModule } from './entregas-routing.module';
 import { ListaComponent } from './lista/lista.component';
+import { MenuLateralComponent } from './menu-lateral/menu-lateral.component';
 
 @NgModule({
   imports: [
@@ -27,9 +26,9 @@ import { ListaComponent } from './lista/lista.component';
     BloquearPantallaModule,
     PaginacionModule,
     BuscarInsumosModule,
-    PedidosRoutingModule,
-    IndexFarmaciaModule
+    IndexFarmaciaModule,
+    EntregasRoutingModule
   ],
-  declarations: [PedidosComponent, MenuLateralComponent, NuevoComponent, ListaComponent]
+  declarations: [ListaComponent, MenuLateralComponent]
 })
-export class PedidosModule { }
+export class EntregasModule { }
