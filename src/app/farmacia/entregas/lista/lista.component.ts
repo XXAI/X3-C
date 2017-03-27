@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-
 import { Title } from '@angular/platform-browser';
 
 import { Observable } from 'rxjs/Observable';
@@ -13,15 +12,16 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/catch';
 
-import { UsuariosService } from '../../../panel-control/usuarios/usuarios.service';
+import { EntregasService } from '../entregas.service';
 
-import { Usuario } from '../../../panel-control/usuarios/usuario';
+import { Pedido } from '../../pedidos/pedido';
 import { Mensaje } from '../../../mensaje';
 
 @Component({
-  selector: 'app-lista',
+  selector: 'farmacia-entregas-lista',
   templateUrl: './lista.component.html',
-  styleUrls: ['./lista.component.css']
+  styleUrls: ['./lista.component.css'],
+  providers: [EntregasService]
 })
 export class ListaComponent implements OnInit {
 
@@ -34,7 +34,7 @@ export class ListaComponent implements OnInit {
   // # FIN SECCION
 
   // # SECCION: Lista de usuarios
-  usuarios: Usuario[] = [];
+  pedidos: Pedido[] = [];
   private paginaActual = 1;
   private resultadosPorPagina = 5;
   private total = 0;
@@ -45,7 +45,7 @@ export class ListaComponent implements OnInit {
   // # SECCION: Resultados de búsqueda
   private ultimoTerminoBuscado = "";
   private terminosBusqueda = new Subject<string>();
-  private resultadosBusqueda: Usuario[] = [];
+  private resultadosBusqueda: Pedido[] = [];
   private busquedaActivada:boolean = false;
   private paginaActualBusqueda = 1;
   private resultadosPorPaginaBusqueda = 5;
@@ -54,7 +54,7 @@ export class ListaComponent implements OnInit {
   private indicePaginasBusqueda:number[] = []
   // # FIN SECCION
 
-  constructor(private title: Title, private usuariosService: UsuariosService) { }
+  constructor(private title: Title, private entregasService: EntregasService) { }
 
   ngOnInit() {
     this.title.setTitle("Entregas / Farmacia");
@@ -75,7 +75,7 @@ export class ListaComponent implements OnInit {
       this.ultimoTerminoBuscado = term;
       this.paginaActualBusqueda = 1;
       this.cargando = true;
-      return term  ? this.usuariosService.buscar(term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]}) 
+      return term  ? this.entregasService.buscar(term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]}) 
     }
       
     
@@ -106,7 +106,7 @@ export class ListaComponent implements OnInit {
     busquedaSubject.subscribe(
       resultado => {
         this.cargando = false;
-        this.resultadosBusqueda = resultado.data as Usuario[];
+        this.resultadosBusqueda = resultado.data as Pedido[];
         this.totalBusqueda = resultado.total | 0;
         this.paginasTotalesBusqueda = Math.ceil(this.totalBusqueda / this.resultadosPorPaginaBusqueda);
 
@@ -129,11 +129,11 @@ export class ListaComponent implements OnInit {
     console.log("Cargando búsqueda.");
    
     this.cargando = true;
-    this.usuariosService.buscar(term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
+    this.entregasService.buscar(term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
         resultado => {
           this.cargando = false;
 
-          this.resultadosBusqueda = resultado.data as Usuario[];
+          this.resultadosBusqueda = resultado.data as Pedido[];
 
           this.totalBusqueda = resultado.total | 0;
           this.paginasTotalesBusqueda = Math.ceil(this.totalBusqueda / this.resultadosPorPaginaBusqueda);
@@ -175,10 +175,10 @@ export class ListaComponent implements OnInit {
     console.log("Cargando usuarios.");
    
     this.cargando = true;
-    this.usuariosService.lista(pagina,this.resultadosPorPagina).subscribe(
+    this.entregasService.lista(pagina,this.resultadosPorPagina).subscribe(
         resultado => {
           this.cargando = false;
-          this.usuarios = resultado.data as Usuario[];
+          this.pedidos = resultado.data as Pedido[];
 
           this.total = resultado.total | 0;
           this.paginasTotales = Math.ceil(this.total / this.resultadosPorPagina);
@@ -188,7 +188,7 @@ export class ListaComponent implements OnInit {
             this.indicePaginas.push(i+1);
           }
 
-          console.log("Usuarios cargados.");
+          console.log("Pedidos cargados.");
           
         },
         error => {
@@ -213,44 +213,7 @@ export class ListaComponent implements OnInit {
         }
       );
   }
-  eliminar(usuario: Usuario, index): void {
-    usuario.cargando = true;
-    this.usuariosService.eliminar(usuario.id).subscribe(
-        data => {
-          usuario.cargando = false;
-          this.usuarios.splice(index, 1);  
-          console.log("Se eliminó el elemento de la lista.");
-
-          this.mensajeExito = new Mensaje(true)
-          this.mensajeExito.mostrar = true;
-          this.mensajeExito.texto = "Usuario eliminado";
-        },
-        error => {
-          usuario.cargando = false;
-          this.mensajeError.mostrar = true;
-          this.ultimaPeticion = function(){
-            this.eliminar(usuario, index);
-          }
-        
-          
-          try {
-            let e = error.json();
-            if (error.status == 401 ){
-              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
-            }
-          } catch(e){
-            console.log("No se puede interpretar el error");
-            
-            if (error.status == 500 ){
-              this.mensajeError.texto = "500 (Error interno del servidor)";
-            } else {
-              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
-            }            
-          }
-          
-        }
-      );
-  }
+  
 
   // # SECCION: Paginación
   paginaSiguiente():void {

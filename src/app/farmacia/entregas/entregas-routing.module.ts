@@ -7,10 +7,11 @@ import { ListaComponent } from './lista/lista.component';
 //import { NuevoComponent } from './nuevo/nuevo.component';
 
 const routes: Routes = [
-  { path: 'farmacia/entregas', redirectTo: '/farmacia/entregas/pendientes', pathMatch: 'full' },
+  { path: 'farmacia/entregas', redirectTo: '/farmacia/entregas/bandeja', pathMatch: 'full' },
   {
     path: 'farmacia/entregas',
     children: [
+       { path: 'bandeja', component: ListaComponent},
        { path: 'pendientes', component: ListaComponent},
        { path: 'realizadas', component: ListaComponent},
        { path: 'realizadas/completas', component: ListaComponent},

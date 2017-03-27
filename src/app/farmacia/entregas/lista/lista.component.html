@@ -16,7 +16,7 @@
                     <div class="container is-fluid">
                         
                         <h1 class="title" *ngIf="!busquedaActivada">
-                            <span class="icon is-medium"><i class="fa fa-minus-circle"></i></span>Pendientes
+                            <span class="icon is-medium"><i class="fa fa-inbox"></i></span> Bandeja de entrada
                         </h1>
                         <h1 class="title" *ngIf="busquedaActivada">
                             <span class="icon is-medium"><i class="fa fa-search"></i></span> Búsqueda 
@@ -37,34 +37,34 @@
             <table class="table" *ngIf="!cargando">
                 <thead>
                     <tr>
-                    <th></th>
-                    <th><abbr title="Usuario ID">ID</abbr></th>
-                    <th>Nombre</th>
-                    <th>Servidor</th>
-                    <th style="text-align:center;">Opciones</th>
+                    <th><abbr title="Número del pedido">Pedido</abbr></th>
+                    <th>Solicitado por</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th style="text-align:center;"></th>
                     </tr>
                 </thead>
                 <tbody  *ngIf="!busquedaActivada">
-                    <tr *ngFor="let item of usuarios; let i=index">
-                        <th><a routerLink="/panel-control/usuarios/editar/{{item.id}}"><img style="min-width: 1.5em; width:2em;" src="assets/{{ item.avatar || 'avatar-unknow' }}.svg" alt="avatar"></a></th>
-                        <th style="vertical-align: middle;"><a routerLink="/panel-control/usuarios/editar/{{item.id}}">{{ item.id }}</a></th>
-                        <td style="vertical-align: middle;"><a routerLink="/panel-control/usuarios/editar/{{item.id}}">{{ item.nombre }} {{ item.apellidos }}</a></td>
-                        <td style="vertical-align: middle;"><a routerLink="/panel-control/usuarios/editar/{{item.id}}">{{ item.servidor_id }}</a></td>
-                        <td style="vertical-align: middle;" class="has-text-centered"><span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>
+                    <tr *ngFor="let item of pedidos; let i=index">
+                       
+                        <th style="vertical-align: middle;"><a routerLink="/farmacia/entregas/surtir/{{item.id}}">{{ item.id }}</a></th>
+                        <td style="vertical-align: middle;"><a routerLink="/farmacia/entregas/surtir/{{item.id}}">{{ item.almacen_solicitante.nombre }} {{ item.apellidos }}</a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/farmacia/entregas/surtir/{{item.id}}">{{ item.created_at | date:'dd/MM/y' }}</a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/farmacia/entregas/surtir/{{item.id}}">{{ item.created_at | date: 'HH:mm'}}</a></td>
+                        <td></td>
                         
                     </tr>
-                    <tr *ngIf="usuarios.length == 0">
+                    <tr *ngIf="pedidos.length == 0">
                         <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
                     </tr>
                 </tbody>
                 <tbody *ngIf="busquedaActivada">
                     <tr *ngFor="let item of resultadosBusqueda; let i=index">
-                    <th><a routerLink="/panel-control/usuarios/editar/{{item.id}}"><img style="min-width: 1.5em; width:2em;" src="assets/{{ item.avatar || 'avatar-unknow' }}.svg" alt="avatar"></a></th>
-                    <th style="vertical-align: middle;"><a routerLink="/panel-control/usuarios/editar/{{item.id}}">{{ item.id }}</a></th>
-                    <td style="vertical-align: middle;"><a routerLink="/panel-control/usuarios/editar/{{item.id}}">{{ item.nombre }} {{ item.apellidos }}</a></td>
-                    <td style="vertical-align: middle;"><a routerLink="/panel-control/usuarios/editar/{{item.id}}">{{ item.servidor_id }}</a></td>
-                    <td style="vertical-align: middle;" class="has-text-centered"><span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>
-                    
+                    <th style="vertical-align: middle;"><a routerLink="/farmacia/entregas/surtir/{{item.id}}">{{ item.id }}</a></th>
+                    <td style="vertical-align: middle;"><a routerLink="/farmacia/entregas/surtir/{{item.id}}">{{ item.almacen_solicitante.nombre }} {{ item.apellidos }}</a></td>
+                    <td style="vertical-align: middle;"><a routerLink="/farmacia/entregas/surtir/{{item.id}}">{{ item.created_at | date:'dd/MM/y' }}</a></td>
+                    <td style="vertical-align: middle;"><a routerLink="/farmacia/entregas/surtir/{{item.id}}">{{ item.created_at | date: 'HH:mm'}}</a></td>
+                     
                     </tr>
 
                     <tr *ngIf="resultadosBusqueda.length == 0 && busquedaActivada">

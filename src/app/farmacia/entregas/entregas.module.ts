@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-
 import { FormsModule } from '@angular/forms';
 
 
@@ -14,8 +12,9 @@ import { BuscarInsumosModule } from '../buscar-insumos/buscar-insumos.module';
 import { IndexFarmaciaModule } from '../index-farmacia/index-farmacia.module';
 
 import { EntregasRoutingModule } from './entregas-routing.module';
-import { ListaComponent } from './lista/lista.component';
+
 import { MenuLateralComponent } from './menu-lateral/menu-lateral.component';
+import { ListaComponent } from './lista/lista.component';
 
 @NgModule({
   imports: [

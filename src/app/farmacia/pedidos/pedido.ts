@@ -5,6 +5,7 @@ class PedidoFiltro {
     public paginacion:Paginacion;
 }
 export class Pedido {
+  public id:String;
   public nombre:String;
   public observaciones:string;
   public lista:any[] = [];
@@ -13,6 +14,7 @@ export class Pedido {
   //Harima: Para tener acceso al objeto que contiene la lista principal sin filtro
   private padre: Pedido;
   public activo:boolean = false;
+  public cargando:boolean = false;
   constructor(conFiltro:boolean = false){
     if (conFiltro){
         this.filtro = new Pedido();

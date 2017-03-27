@@ -13,7 +13,7 @@ const routes: Routes = [
     path: 'farmacia/pedidos',
     children: [
        { path: 'pendientes', component: ListaComponent},
-       { path: 'pendientes/abiertos', component: ListaComponent},
+       { path: 'abiertos', component: ListaComponent},
        { path: 'pendientes/en-proceso', component: ListaComponent},
        { path: 'pendientes/liberados', component: ListaComponent},
        { path: 'recibidos', component: ListaComponent},

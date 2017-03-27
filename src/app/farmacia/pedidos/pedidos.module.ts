@@ -9,9 +9,9 @@ import { BloquearPantallaModule } from '../../bloquear-pantalla/bloquear-pantall
 import { PaginacionModule } from '../../paginacion/paginacion.module';
 
 import { BuscarInsumosModule } from '../buscar-insumos/buscar-insumos.module';
+import { IndexFarmaciaModule } from '../index-farmacia/index-farmacia.module';
 
 import { PedidosRoutingModule } from './pedidos-routing.module';
-import { IndexFarmaciaModule } from '../index-farmacia/index-farmacia.module';
 
 import { PedidosComponent } from './pedidos.component';
 import { MenuLateralComponent } from './menu-lateral/menu-lateral.component';
