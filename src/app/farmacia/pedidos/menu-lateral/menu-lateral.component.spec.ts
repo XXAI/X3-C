@@ -6,18 +6,18 @@ import { DebugElement } from '@angular/core';
 import { MenuLateralComponent } from './menu-lateral.component';
 
 describe('FarmaciaMenuPedidosComponent', () => {
-  let component: FarmaciaMenuPedidosComponent;
-  let fixture: ComponentFixture<FarmaciaMenuPedidosComponent>;
+  let component: MenuLateralComponent;
+  let fixture: ComponentFixture<MenuLateralComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FarmaciaMenuPedidosComponent ]
+      declarations: [ MenuLateralComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FarmaciaMenuPedidosComponent);
+    fixture = TestBed.createComponent(MenuLateralComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
