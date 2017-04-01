@@ -1,4 +1,5 @@
 import { Paginacion } from '../../paginacion/paginacion';
+import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 
 class PedidoFiltro {
     public lista:any[];
@@ -6,28 +7,55 @@ class PedidoFiltro {
 }
 export class Pedido {
   public id:String;
-  public nombre:String;
-  public observaciones:string;
+  public datos: FormGroup; //Harima: Agregamos los datos para el formulario y la validación
+  //public nombre:String;
+  //public observaciones:string;
   public lista:any[] = [];
+  public totalInsumos:number = 0;
   public paginacion:Paginacion = new Paginacion();
   public filtro: Pedido;
   //Harima: Para tener acceso al objeto que contiene la lista principal sin filtro
   private padre: Pedido;
   public activo:boolean = false;
   public cargando:boolean = false;
+  private fb:FormBuilder;
+
   constructor(conFiltro:boolean = false){
     if (conFiltro){
         this.filtro = new Pedido();
         //Harima: se asigna el pedido actual como padre del filtro
         this.filtro.padre = this;
+        //Harima: se crea el formulario para las validaciones
+        this.fb  = new FormBuilder();
+        this.datos = this.fb.group({
+          descripcion: ['', [Validators.required]],
+          almacen_proveedor: ['',[Validators.required]],
+          observaciones: ''
+        });
     }
   }
+
+  public tieneError = function(atributo:string, error:string){
+    return (this.datos.get(atributo).hasError(error) && this.datos.get(atributo).touched);
+  }
+
+  //Harima: es necesario para evitar un error al enviar los datos al servidor
+  public obtenerDatosGuardar = function(){
+    var datos = {
+      datos: this.datos.value,
+      insumos: this.lista
+    };
+    return datos;
+  }
+
   public indexar = function(conLote: boolean = true ){
     if(conLote){
-        var contador = 1;
-        for(let i in this.lista){
-            this.lista[i].lote = contador++;
-        }
+      this.totalInsumos = 0;
+      var contador = 1;
+      for(let i in this.lista){
+          this.lista[i].lote = contador++;
+          this.totalInsumos += +this.lista[i].cantidad;
+      }
     }
     
     this.paginacion.totalPaginas = Math.ceil(this.lista.length / this.paginacion.resultadosPorPagina);

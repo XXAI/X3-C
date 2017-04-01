@@ -20,6 +20,7 @@ const routes: Routes = [
        { path: 'recibidos/completos', component: ListaComponent},
        { path: 'recibidos/incompletos', component: ListaComponent},
        { path: 'nuevo', component: NuevoComponent},
+       { path: 'editar/:id', component: NuevoComponent},
     ],
     canActivate: [AuthGuard]
   }

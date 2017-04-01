@@ -1,7 +1,8 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Location}           from '@angular/common';
-import { FormControl } from '@angular/forms';
+import { ActivatedRoute, Params }   from '@angular/router'
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -18,7 +19,10 @@ import  * as FileSaver    from 'file-saver';
 
 import { Mensaje } from '../../../mensaje';
 
+import { AlmacenesService } from '../../../catalogos/almacenes/almacenes.service';
+import { PedidosService } from '../pedidos.service';
 import { Pedido } from '../pedido';
+import { Almacen } from '../../../catalogos/almacenes/almacen';
 
 @Component({
   selector: 'app-nuevo',
@@ -31,13 +35,19 @@ import { Pedido } from '../pedido';
 export class NuevoComponent implements OnInit {
 
   cargando: boolean = false;
-
+  cargandoAlmacenes: boolean = false;
+  cargandoInsumos: boolean = false;
   // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
+  mensajeAdvertencia: Mensaje = new Mensaje()
   mensajeExito: Mensaje = new Mensaje();
-  ultimaPeticion:any;
+  ultimaPeticion: any;
   // # FIN SECCION  
 
+  //Harima: para ver si el formulaior es para crear o para editar
+  formularioTitulo:string = 'Nuevo';
+  private esEditar:boolean = false;
+  
   // # SECCION: Modal Insumos
   private mostrarModalInsumos = false;
   //Harima: Lista de claves agregadas al pedido, para checar duplicidad
@@ -45,7 +55,9 @@ export class NuevoComponent implements OnInit {
   // # FIN SECCION
 
   // # SECCION: Pedido
-  
+
+  private almacenes: Almacen[];
+
   // Los pedidos tienen que ser en un array por si se va a generar mas de un pedido de golpe
   private pedidos: Pedido[] = []; 
   // esta variable es para saber el pedido seleccionado (por si hay mas)
@@ -60,7 +72,15 @@ export class NuevoComponent implements OnInit {
   // # FIN SECCION
 
 
-  constructor(private title:Title, private location:Location, private _ngZone: NgZone) { }
+  constructor(
+    private title: Title, 
+    private location: Location, 
+    private route: ActivatedRoute,
+    private _ngZone: NgZone, 
+    private pedidosService: PedidosService,
+    private almacenesService: AlmacenesService,
+    private fb: FormBuilder
+  ) { }
 
   ngOnInit() {
     this.title.setTitle('Nuevo pedido / Farmacia');
@@ -72,9 +92,10 @@ export class NuevoComponent implements OnInit {
     var self = this;    
     var $ngZone = this._ngZone;
 
+    //Harima:cargamos catalogos
+    this.cargarAlmacenes();
+
     this.pdfworker.onmessage = function( evt ) {       
-      
-      
       // Esto es un hack porque estamos fuera de contexto dentro del worker
       // Y se usa esto para actualizar alginas variables
       $ngZone.run(() => {
@@ -84,6 +105,7 @@ export class NuevoComponent implements OnInit {
       FileSaver.saveAs( self.base64ToBlob( evt.data.base64, 'application/pdf' ), evt.data.fileName );
       //open( 'data:application/pdf;base64,' + evt.data.base64 ); // Popup PDF
     };
+
     this.pdfworker.onerror = function( e ) {
       $ngZone.run(() => {
          self.cargandoPdf = false;
@@ -91,14 +113,64 @@ export class NuevoComponent implements OnInit {
       console.log(e)
     };
     
-    
-
     // Inicialicemos el pedido
     this.pedidos.push(new Pedido(true) );
-    this.pedidos[0].nombre = "General";
-    this.pedidos[0].observaciones = null;
 
-    
+    this.route.params.subscribe(params => {
+      //this.id = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number
+      if(params['id']){
+        this.pedidos[0].id = params['id'];
+        //cargar datos del pedido
+        this.esEditar = true;
+        this.formularioTitulo = 'Editar';
+
+        this.pedidosService.ver(params['id']).subscribe(
+          pedido => {
+            this.cargando = false;
+            //this.datosCargados = true;
+            this.pedidos[0].datos.patchValue(pedido);
+
+            for(let i in pedido.insumos){
+              let dato = pedido.insumos[i];
+              let insumo = dato.insumos_con_descripcion;
+              insumo.cantidad = +dato.cantidad_solicitada_um;
+              this.pedidos[0].lista.push(insumo);
+              this.listaClaveAgregadas.push(insumo.clave);
+            }
+            this.pedidos[0].indexar();
+            this.pedidos[0].listar(1);
+          },
+          error => {
+            this.cargando = false;
+
+            this.mensajeError = new Mensaje(true);
+            this.mensajeError = new Mensaje(true);
+            this.mensajeError.mostrar;
+
+            try {
+              let e = error.json();
+              if (error.status == 401 ){
+                this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+              }
+              
+            } catch(e){
+                          
+              if (error.status == 500 ){
+                this.mensajeError.texto = "500 (Error interno del servidor)";
+              } else {
+                this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+              }            
+            }
+          }
+        );
+        console.log('editar pedido');
+      }else{
+        console.log('nuevo pedido');
+      }
+      //this.cargarDatos();
+    });
+    //this.pedidos[0].nombre = "General";
+    //this.pedidos[0].observaciones = null;
   }
   regresar(){
     
@@ -253,6 +325,152 @@ export class NuevoComponent implements OnInit {
     console.log(clave);
   }
 
+  guardar(){
+    this.cargando = true;
+    var guardar_pedidos = [];
+    for(var i in this.pedidos){
+      guardar_pedidos.push(this.pedidos[i].obtenerDatosGuardar());
+    }
+
+    if(this.esEditar){
+      this.pedidosService.editar(this.pedidos[0].id,guardar_pedidos).subscribe(
+        pedido => {
+          this.cargando = false;
+          console.log('Pedido editado');
+          //hacer cosas para dejar editar
+        },
+        error => {
+          this.cargando = false;
+          console.log(error);
+          this.mensajeError = new Mensaje(true);
+          this.mensajeError.texto = 'No especificado';
+          this.mensajeError.mostrar = true;
+
+          try{
+            let e = error.json();
+              if (error.status == 401 ){
+                this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+              }
+              // Problema de validación
+              if (error.status == 409){
+                this.mensajeError.texto = "Por favor verfique los campos marcados en rojo.";
+                /*for (var input in e.error){
+                  // Iteramos todos los errores
+                  for (var i in e.error[input]){
+
+                    if(input == 'id' && e.error[input][i] == 'unique'){
+                      this.usuarioRepetido = true;
+                    }
+                    if(input == 'id' && e.error[input][i] == 'email'){
+                      this.usuarioInvalido = true;
+                    }
+                  }                      
+                }*/
+              }
+          }catch(e){
+            if (error.status == 500 ){
+              this.mensajeError.texto = "500 (Error interno del servidor)";
+            } else {
+              console.log(e);
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }
+          }
+        }
+      );
+    }else{
+      this.pedidosService.crear(guardar_pedidos).subscribe(
+        pedido => {
+          this.cargando = false;
+          console.log('Pedido creado');
+          //hacer cosas para dejar editar
+        },
+        error => {
+          this.cargando = false;
+          console.log(error);
+          this.mensajeError = new Mensaje(true);
+          this.mensajeError.texto = 'No especificado';
+          this.mensajeError.mostrar = true;
+
+          try{
+            let e = error.json();
+              if (error.status == 401 ){
+                this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+              }
+              // Problema de validación
+              if (error.status == 409){
+                this.mensajeError.texto = "Por favor verfique los campos marcados en rojo.";
+                /*for (var input in e.error){
+                  // Iteramos todos los errores
+                  for (var i in e.error[input]){
+
+                    if(input == 'id' && e.error[input][i] == 'unique'){
+                      this.usuarioRepetido = true;
+                    }
+                    if(input == 'id' && e.error[input][i] == 'email'){
+                      this.usuarioInvalido = true;
+                    }
+                  }                      
+                }*/
+              }
+          }catch(e){
+            if (error.status == 500 ){
+              this.mensajeError.texto = "500 (Error interno del servidor)";
+            } else {
+              console.log(e);
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }
+          }
+        }
+      );
+    }
+  }
+
+  cargarAlmacenes() {
+    this.cargandoAlmacenes = true;
+    this.almacenesService.catalogo().subscribe(
+        almacenes => {
+          this.cargandoAlmacenes = false;
+          this.almacenes = almacenes;
+
+          console.log("Almacenes cargados.");
+
+          if (this.almacenes.length == 0){
+            this.mensajeAdvertencia = new Mensaje(true);
+            this.mensajeAdvertencia.texto = `No hay almacenes registrados en el sistema, póngase en contacto con un administrador.`;
+            this.mensajeAdvertencia.mostrar = true;
+          }
+        },
+        error => {
+          this.cargandoAlmacenes = false;
+          
+          this.mensajeError = new Mensaje(true);
+          this.mensajeError.texto = "No especificado.";
+          this.mensajeError.mostrar = true;
+
+          try {
+
+            let e = error.json();
+
+            if (error.status == 401 ){
+              this.mensajeError.texto = "No tiene permiso para ver los almacenes.";
+            }
+
+            if (error.status == 500 ){
+              this.mensajeError.texto = "500 (Error interno del servidor). No se pudieron cargar los almacenes";
+            }
+          } catch(e){
+
+            if (error.status == 500 ){
+              this.mensajeError.texto = "500 (Error interno del servidor). No se pudieron cargar los almacenes";
+            } else {
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.  No se pudieron cargar los almacenes";
+            }          
+          }
+
+        }
+      );
+  }
+
   // # SECCION: Eventos del teclado
   keyboardInput(e: KeyboardEvent) {
     
@@ -299,7 +517,7 @@ export class NuevoComponent implements OnInit {
     try {
       this.cargandoPdf = true;
       var pedidos_imprimir = {
-        datos:{alamcen:'colicitar',solicitante:'unidad',observaciones:'texto'},
+        datos:{almacen:'solicitar',solicitante:'unidad',observaciones:'texto'},
         lista: this.pedidos[this.pedidoActivo].lista
       };
       this.pdfworker.postMessage(JSON.stringify(pedidos_imprimir));

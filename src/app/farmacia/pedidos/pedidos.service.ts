@@ -21,7 +21,7 @@ export class PedidosService {
     return this.jwtRequest.get(PedidosService.URL,null,{page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
   }
 
-  ver(id:any): Observable<Pedido>{
+  ver(id:any): Observable<any>{
     return this.jwtRequest.get(PedidosService.URL,id,{}).map( (response: Response) => {
      
        let jsonData = response.json().data;
@@ -30,17 +30,17 @@ export class PedidosService {
           roles.push(""+item.id)
         })*/
 
-        var pedido = jsonData as Pedido;
+        var pedido = jsonData as any;
         //usuario.roles = roles;
         return pedido;
       }) as Observable<Pedido>;
   }
 
-  crear(pedido: Pedido): Observable<Pedido> {
+  crear(pedido: Pedido[]): Observable<Pedido> {
     return this.jwtRequest.post(PedidosService.URL,pedido).map( (response: Response) => response.json().data) as Observable<Pedido>;
   }
 
-  editar(id:any, pedido: Pedido): Observable<Pedido> {
+  editar(id:any, pedido: Pedido[]): Observable<Pedido> {
     return this.jwtRequest.put(PedidosService.URL,id, pedido).map( (response: Response) => response.json().data) as Observable<Pedido>;
   }
 

@@ -20,7 +20,7 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
                 table: {
                     headerRows: 7,
                     dontBreakRows: true,
-                    widths: [ 35, 70, 175, 40, 'auto',45, 45],
+                    widths: [ 35, 70, 'auto', 'auto', 40 ,45, 45],
                     body: [
                         [{
                             image: 'header',
@@ -44,9 +44,9 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
                         [
                             { text: 'NO. DE LOTE', style: 'tableHeader', alignment: 'center'},
                             { text: 'CLAVE', style: 'tableHeader', alignment: 'center'},
-                            { text: 'DESCRIPCIÓN DEL INSUMO', style: 'tableHeader', alignment: 'center'},
+                            { text: 'DESCRIPCIÓN DEL INSUMO', style: 'tableHeader', alignment: 'center', colSpan:2},{},
+                            //{ text: 'PRESENTACIÓN', style: 'tableHeader', alignment: 'center'},
                             { text: 'CANTIDAD', style: 'tableHeader', alignment: 'center'},
-                            { text: 'UNIDAD DE MEDIDA', style: 'tableHeader', alignment: 'center'},
                             { text: 'PRECIO UNITARIO', style: 'tableHeader', alignment: 'center'},
                             { text: 'TOTAL', style: 'tableHeader', alignment: 'center'}
                         ]
@@ -143,16 +143,16 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
 
         for(var i in data.lista){
             var insumo = data.lista[i];
-            var unidad_medida = 'Pieza';
+            var presentacion = 'PIEZA';
             if(insumo.informacion){
-                unidad_medida = insumo.informacion.unidad_medida_nombre;
+                presentacion = insumo.informacion.presentacion_nombre;
             }
             dd.content[0].table.body.push([
                 { text: insumo.lote, style: 'tableRow',  alignment: 'center'},
                 { text: insumo.clave, style: 'tableRow', alignment: 'center'},
-                { text: insumo.descripcion, style: 'tableRow', alignment: 'left'},
+                { text: insumo.descripcion, style: 'tableRow', alignment: 'left', colSpan:2},{},
+                //{ text: presentacion, style: 'tableRow', alignment: 'center'},
                 { text: insumo.cantidad, style: 'tableRow', alignment: 'center'},
-                { text: unidad_medida, style: 'tableRow', alignment: 'center'},
                 { text: '$ 0.00', style: 'tableRow', alignment: 'center'},
                 { text: '$ 0.00', style: 'tableRow', alignment: 'center'}
             ]);
