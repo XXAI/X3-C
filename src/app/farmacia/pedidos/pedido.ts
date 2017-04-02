@@ -20,6 +20,8 @@ export class Pedido {
   public cargando:boolean = false;
   private fb:FormBuilder;
 
+  
+
   constructor(conFiltro:boolean = false){
     if (conFiltro){
         this.filtro = new Pedido();
