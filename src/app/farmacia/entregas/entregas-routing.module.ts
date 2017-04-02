@@ -4,7 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from '../../auth-guard.service';
 
 import { ListaComponent } from './lista/lista.component';
-//import { NuevoComponent } from './nuevo/nuevo.component';
+import { SurtirComponent } from './surtir/surtir.component';
 
 const routes: Routes = [
   { path: 'farmacia/entregas', redirectTo: '/farmacia/entregas/nuevas', pathMatch: 'full' },
@@ -17,7 +17,8 @@ const routes: Routes = [
        { path: 'finalizadas/completas', component: ListaComponent},
        { path: 'finalizadas/incompletas', component: ListaComponent},
        { path: 'realizadas', component: ListaComponent},
-       //{ path: 'nuevo', component: NuevoComponent},
+       { path: 'historial', component: ListaComponent},
+       { path: 'surtir/:id', component: SurtirComponent},
     ],
     canActivate: [AuthGuard]
   },

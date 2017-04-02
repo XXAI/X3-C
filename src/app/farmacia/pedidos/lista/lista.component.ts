@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -33,7 +34,10 @@ export class ListaComponent implements OnInit {
   ultimaPeticion:any;
   // # FIN SECCION
 
-  // # SECCION: Lista de usuarios
+  // # SECCION: Lista
+  status: string = "ES";
+  titulo: string = "En espera";
+  icono = "fa-clock-o";
   pedidos: Pedido[] = [];
   private paginaActual = 1;
   private resultadosPorPagina = 5;
@@ -54,9 +58,33 @@ export class ListaComponent implements OnInit {
   private indicePaginasBusqueda:number[] = []
   // # FIN SECCION
 
-  constructor(private title: Title, private pedidosService: PedidosService) { }
+  constructor(private title: Title, private route: ActivatedRoute, private pedidosService: PedidosService) { }
 
   ngOnInit() {
+    switch(this.route.snapshot.url[0].path){
+      case 'abiertos': this.status = "AB"; this.titulo = "Abiertos"; this.icono = "fa-pencil-square-o"; break;
+      case 'pendientes': this.status = "PE"; this.titulo = "Pendientes"; this.icono = "fa-minus-circle"; break;
+      case 'finalizados': 
+          this.status = "FI";
+          this.icono = "fa-check-circle";
+          if (this.route.snapshot.url.length > 1){
+            if(this.route.snapshot.url[1].path == "completas"){
+              this.titulo = "Finalizados (completos)";
+            } else if(this.route.snapshot.url[1].path == "incompletas"){
+              this.titulo = "Finalizados (incompletos)";
+            } else {
+              this.titulo = "Finalizados";
+            }
+          } else {
+            this.titulo = "Finalizados";
+          }
+          
+          
+      break;
+      
+      default: this.status = "ES"; this.titulo = "En espera"; this.icono = "fa-clock-o"; break;
+    }
+
     this.title.setTitle("Pedidos / Farmacia");
 
     this.listar(1);
@@ -75,7 +103,7 @@ export class ListaComponent implements OnInit {
       this.ultimoTerminoBuscado = term;
       this.paginaActualBusqueda = 1;
       this.cargando = true;
-      return term  ? this.pedidosService.buscar(term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]}) 
+      return term  ? this.pedidosService.buscar(this.status,term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]}) 
     }
       
     
@@ -106,7 +134,14 @@ export class ListaComponent implements OnInit {
     busquedaSubject.subscribe(
       resultado => {
         this.cargando = false;
-        this.resultadosBusqueda = resultado.data as Pedido[];
+
+        let parsed = resultado.data ;
+        for(var i in parsed) {
+          parsed[i].created_at = parsed[i].created_at.replace(" ","T");
+
+        }
+
+        this.resultadosBusqueda = parsed as Pedido[];
         this.totalBusqueda = resultado.total | 0;
         this.paginasTotalesBusqueda = Math.ceil(this.totalBusqueda / this.resultadosPorPaginaBusqueda);
 
@@ -129,11 +164,17 @@ export class ListaComponent implements OnInit {
     console.log("Cargando búsqueda.");
    
     this.cargando = true;
-    this.pedidosService.buscar(term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
+    this.pedidosService.buscar(this.status, term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
         resultado => {
           this.cargando = false;
 
-          this.resultadosBusqueda = resultado.data as Pedido[];
+          let parsed = resultado.data ;
+          for(var i in parsed) {
+            parsed[i].created_at = parsed[i].created_at.replace(" ","T"); // En safari fallan las fechas por eso se pone esto
+
+          }
+
+          this.resultadosBusqueda = parsed as Pedido[];
 
           this.totalBusqueda = resultado.total | 0;
           this.paginasTotalesBusqueda = Math.ceil(this.totalBusqueda / this.resultadosPorPaginaBusqueda);
@@ -175,7 +216,7 @@ export class ListaComponent implements OnInit {
     console.log("Cargando usuarios.");
    
     this.cargando = true;
-    this.pedidosService.lista(pagina,this.resultadosPorPagina).subscribe(
+    this.pedidosService.lista(this.status, pagina,this.resultadosPorPagina).subscribe(
         resultado => {
           this.cargando = false;
           this.pedidos = resultado.data as Pedido[];

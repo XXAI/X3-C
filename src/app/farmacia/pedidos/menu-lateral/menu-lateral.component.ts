@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { PedidosService } from '../pedidos.service';
 
 @Component({
   selector: 'menu-lateral',
@@ -8,15 +9,27 @@ import { Component, OnInit } from '@angular/core';
 export class MenuLateralComponent implements OnInit {
   private cargando: boolean = false;
   private stats: any = { 
-    abiertos: 1,
-    en_espera: 2,
-    pendientes: 3,
-    en_camino: 1
+    abiertos: 0,
+    en_espera: 0,
+    pendientes: 0,
+    en_camino: 0
   };
 
-  constructor() { }
+  constructor(private pedidosService:PedidosService) { }
 
   ngOnInit() {
+    
+    this.cargando = true;
+    this.pedidosService.stats().subscribe(
+      response => {
+        this.cargando = false;
+        this.stats = response;
+      },
+      error => {
+        this.cargando = false;
+        console.log(error);
+      }
+    );
   }
 
 }

@@ -5,7 +5,7 @@
             <a routerLink="/farmacia/entregas/nuevas" #nuevas routerLinkActive="is-active">
                 <span class="icon"><i class="fa fa-inbox"></i></span> Nuevas
                 <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
-                <span *ngIf="stats.en_proceso>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': nuevas.className == 'is-active', 'is-danger': nuevas.className != 'is-active' }" >{{  stats.en_proceso }}</span>
+                <span *ngIf="stats.en_espera>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': nuevas.className == 'is-active', 'is-danger': nuevas.className != 'is-active' }" >{{  stats.en_espera }}</span>
             </a>            
         </li>
         <li>

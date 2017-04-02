@@ -35,8 +35,9 @@ export class ListaComponent implements OnInit {
   // # FIN SECCION
 
   // # SECCION: Lista
-  status: string = "PR";
-  titulo: string = "Bandeja de entrada";
+  status: string = "ES";
+  titulo: string = "";
+  icono: string = "f";
   pedidos: Pedido[] = [];
   private paginaActual = 1;
   private resultadosPorPagina = 5;
@@ -62,25 +63,27 @@ export class ListaComponent implements OnInit {
   ngOnInit() {
     
     switch(this.route.snapshot.url[0].path){
-      case 'pendientes': this.status = "PE"; this.titulo = "Pendientes"; break;
-      case 'realizadas': 
-          this.status = "RE";
+      case 'pendientes': this.status = "PE"; this.titulo = "Pendientes"; this.icono = "fa-minus-circle"; break;
+      case 'finalizadas': 
+          this.status = "FI";
+          this.icono = "fa-check-circle";
           
           if (this.route.snapshot.url.length > 1){
             if(this.route.snapshot.url[1].path == "completas"){
-              this.titulo = "Realizadas (completas)";
+              this.titulo = "Finalizadas (completas)";
             } else if(this.route.snapshot.url[1].path == "incompletas"){
-              this.titulo = "Realizadas (incompletas)";
+              this.titulo = "Finalizadas (incompletas)";
             } else {
-              this.titulo = "Realizadas";
+              this.titulo = "Finalizadas";
             }
           } else {
-            this.titulo = "Realizadas";
+            this.titulo = "Finalizadas";
           }
           
+
           
       break;
-      default: this.status = "PR"; this.titulo = "Bandeja de entrada"; break;
+      default: this.status = "ES"; this.titulo = "Nuevas"; this.icono = "fa-inbox"; break;
     }
 
     this.title.setTitle("Entregas / Farmacia");
