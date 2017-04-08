@@ -25,14 +25,14 @@ import { Pedido } from '../pedido';
 import { Almacen } from '../../../catalogos/almacenes/almacen';
 
 @Component({
-  selector: 'app-nuevo',
-  templateUrl: './nuevo.component.html',
-  styleUrls: ['./nuevo.component.css'],
+  selector: 'app-formulario',
+  templateUrl: './formulario.component.html',
+  styleUrls: ['./formulario.component.css'],
   host: { '(window:keydown)' : 'keyboardInput($event)'}
 })
 
 
-export class NuevoComponent implements OnInit {
+export class FormularioComponent implements OnInit {
 
   cargando: boolean = false;
   cargandoAlmacenes: boolean = false;
@@ -172,9 +172,14 @@ export class NuevoComponent implements OnInit {
     //this.pedidos[0].nombre = "General";
     //this.pedidos[0].observaciones = null;
   }
-  regresar(){
-    
-    this.location.back();
+
+  obtenerDireccion(): string{
+    console.log('dpdpd');
+    if(this.pedidos[this.pedidoActivo].status == 'AB'){
+      return '/farmacia/pedidos/abiertos';
+    }else{
+      return '/farmacia/pedidos/en-espera';
+    }
   }
 
   toggleModalInsumos(){
@@ -325,11 +330,21 @@ export class NuevoComponent implements OnInit {
     console.log(clave);
   }
 
-  guardar(){
+  finalizar(){
+    this.guardar(true);
+  }
+
+  guardar(finalizar:boolean = false){
     this.cargando = true;
     var guardar_pedidos = [];
     for(var i in this.pedidos){
       guardar_pedidos.push(this.pedidos[i].obtenerDatosGuardar());
+    }
+
+    if(finalizar){
+      for(var i in guardar_pedidos){
+        guardar_pedidos[i].datos.status = 'ES';
+      }
     }
 
     if(this.esEditar){
@@ -431,6 +446,12 @@ export class NuevoComponent implements OnInit {
         almacenes => {
           this.cargandoAlmacenes = false;
           this.almacenes = almacenes;
+
+          if(almacenes.length == 1 && !this.esEditar){
+            for(let i in this.pedidos){
+              this.pedidos[i].datos.setValue({almacen_proveedor:almacenes[0].id,descripcion:'',observaciones:''});
+            }
+          }
 
           console.log("Almacenes cargados.");
 

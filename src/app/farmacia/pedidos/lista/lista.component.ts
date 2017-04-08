@@ -155,6 +155,15 @@ export class ListaComponent implements OnInit {
 
     );
   }
+
+  obtenerDireccion(id:string): string{
+    if(this.status == 'AB'){
+      return '/farmacia/pedidos/editar/'+id;
+    }else{
+      return '/farmacia/pedidos/ver/'+id;
+    }
+  }
+
   buscar(term: string): void {
     this.terminosBusqueda.next(term);
   }
@@ -208,8 +217,7 @@ export class ListaComponent implements OnInit {
 
         }
       );
-  }  
-
+  }
 
   listar(pagina:number): void {
     this.paginaActual = pagina;
@@ -254,6 +262,7 @@ export class ListaComponent implements OnInit {
         }
       );
   }
+
   eliminar(pedido: Pedido, index): void {
     pedido.cargando = true;
     this.pedidosService.eliminar(pedido.id).subscribe(

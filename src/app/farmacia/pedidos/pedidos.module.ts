@@ -15,10 +15,11 @@ import { PedidosRoutingModule } from './pedidos-routing.module';
 
 import { PedidosComponent } from './pedidos.component';
 import { MenuLateralComponent } from './menu-lateral/menu-lateral.component';
-import { NuevoComponent } from './nuevo/nuevo.component';
 import { ListaComponent } from './lista/lista.component';
 import { PedidosService } from './pedidos.service';
 import { AlmacenesService } from '../../catalogos/almacenes/almacenes.service';
+import { VerComponent } from './ver/ver.component';
+import { FormularioComponent } from './formulario/formulario.component';
 
 @NgModule({
   imports: [
@@ -33,7 +34,7 @@ import { AlmacenesService } from '../../catalogos/almacenes/almacenes.service';
     PedidosRoutingModule,
     IndexFarmaciaModule
   ],
-  declarations: [PedidosComponent, MenuLateralComponent, NuevoComponent, ListaComponent],
+  declarations: [PedidosComponent, MenuLateralComponent, ListaComponent, VerComponent, FormularioComponent],
   providers:[PedidosService,AlmacenesService]
 })
 export class PedidosModule { }

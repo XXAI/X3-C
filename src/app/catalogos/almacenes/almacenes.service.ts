@@ -22,7 +22,7 @@ export class AlmacenesService {
   }
 
   catalogo(): Observable<Almacen[]>{
-    return this.jwtRequest.get(AlmacenesService.URL).map( (response: Response) => response.json().data) as Observable<Almacen[]>;
+    return this.jwtRequest.get(AlmacenesService.URL,null,{filtro_usuario:1}).map( (response: Response) => response.json().data) as Observable<Almacen[]>;
   }
 
   ver(id:any): Observable<Almacen>{

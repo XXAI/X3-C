@@ -3,7 +3,8 @@ import { Routes, RouterModule } from '@angular/router';
 
 //import { PedidosComponent } from './pedidos.component';
 import { ListaComponent } from './lista/lista.component';
-import { NuevoComponent } from './nuevo/nuevo.component';
+import { FormularioComponent } from './formulario/formulario.component';
+import { VerComponent } from './ver/ver.component';
 
 import { AuthGuard } from '../../auth-guard.service';
 
@@ -20,8 +21,9 @@ const routes: Routes = [
        { path: 'finalizados', component: ListaComponent},
        { path: 'finalizados/completos', component: ListaComponent},
        { path: 'finalizados/incompletos', component: ListaComponent},
-       { path: 'nuevo', component: NuevoComponent},
-       { path: 'editar/:id', component: NuevoComponent},
+       { path: 'nuevo', component: FormularioComponent},
+       { path: 'editar/:id', component: FormularioComponent},
+       { path: 'ver/:id', component: VerComponent},
     ],
     canActivate: [AuthGuard]
   }

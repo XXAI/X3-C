@@ -7,7 +7,9 @@ class PedidoFiltro {
 }
 export class Pedido {
   public id:String;
+  public status: string;
   public datos: FormGroup; //Harima: Agregamos los datos para el formulario y la validación
+  public datosImprimir?: any;
   //public nombre:String;
   //public observaciones:string;
   public lista:any[] = [];
@@ -34,6 +36,7 @@ export class Pedido {
           almacen_proveedor: ['',[Validators.required]],
           observaciones: ''
         });
+        this.status = 'AB';
     }
   }
 
