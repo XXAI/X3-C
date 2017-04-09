@@ -41,6 +41,9 @@ export class SurtirComponent implements OnInit {
   // # FIN SECCION  
 
   private pedido: Pedido; 
+
+  //Harima: Lista de claves agregadas al pedido, para checar duplicidad
+  listaClaveAgregadas: Array<string> = [];
   
   constructor(private title: Title, private route:ActivatedRoute, private pedidosService:PedidosService) { }
 
@@ -58,20 +61,20 @@ export class SurtirComponent implements OnInit {
     this.pedidosService.ver(this.id).subscribe(
           pedido => {
             this.cargando = false;
-            console.log(pedido)
             //this.datosCargados = true;
-            //this.pedido.datos.patchValue(pedido);
+            //this.pedidos[0].datos.patchValue(pedido);
+            //this.pedido.datosImprimir = pedido;
             this.pedido = new Pedido(true);
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];
               let insumo = dato.insumos_con_descripcion;
               insumo.cantidad = +dato.cantidad_solicitada_um;
               this.pedido.lista.push(insumo);
-             // this.listaClaveAgregadas.push(insumo.clave);
+              this.listaClaveAgregadas.push(insumo.clave);
             }
-            /*
+            pedido.insumos = undefined;
             this.pedido.indexar();
-            this.pedido.listar(1);*/
+            this.pedido.listar(1);
           },
           error => {
             this.cargando = false;
@@ -96,6 +99,105 @@ export class SurtirComponent implements OnInit {
             }
           }
     );
+  }
+
+  itemSeleccionado: any = null;
+  seleccionarItem(item){  this.itemSeleccionado = item; }
+  buscar(e: KeyboardEvent, input:HTMLInputElement, inputAnterior: HTMLInputElement,  parametros:any[]){
+    
+    let term = input.value;
+
+    // Quitamos la busqueda
+    if(e.keyCode == 27){
+      e.preventDefault();
+      e.stopPropagation();
+      input.value = "";
+      inputAnterior.value = "";
+
+      this.pedido.filtro.activo = false;
+      this.pedido.filtro.lista = [];      
+
+      return;      
+    }
+
+    
+    //Verificamos que la busqueda no sea la misma que la anterior para no filtrar en vano
+    if(inputAnterior.value == term){
+      
+      return
+    }
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    inputAnterior.value = term;    
+
+    if(term != ""){
+      this.pedido.filtro.activo = true;      
+    } else {
+      this.pedido.filtro.activo = false;
+      this.pedido.filtro.lista = [];
+      return;
+    }
+
+    var arregloResultados:any[] = []
+    for(let i in parametros){
+
+      let termino = (parametros[i].input as HTMLInputElement).value;
+      if(termino == ""){
+        continue;
+      }
+            
+      let listaFiltrada = this.pedido.lista.filter((item)=> {   
+        var cadena = "";
+        let campos = parametros[i].campos;
+        for (let l in campos){
+          try{
+            // Esto es por si escribieron algo como "objeto.propiedad" en lugar de: "propiedad"
+            let prop = campos[l].split(".");            
+            if (prop.length > 1){
+              cadena += " " + item[prop[0]][prop[1]].toLowerCase();
+            } else {
+               cadena += " " + item[campos[l]].toLowerCase();
+            }
+           
+          } catch(e){}
+          
+        }
+        return cadena.includes(termino.toLowerCase())
+      });
+
+      arregloResultados.push(listaFiltrada)
+    }
+    
+    if(arregloResultados.length > 1 ){
+      // Ordenamos Ascendente
+
+      arregloResultados = arregloResultados.sort( function(a,b){ return  a.length - b.length });
+      
+      var filtro = arregloResultados[0];
+      var match: any[] = [];
+      for(let k = 1; k <  arregloResultados.length ; k++){
+        
+        for(let i in arregloResultados[k]){
+          for(let j in filtro){
+            if(arregloResultados[k][i] === filtro[j]){
+              match.push(filtro[j]);
+            }
+          }
+        };
+      }
+      this.pedido.filtro.lista = match;
+    } else {
+      this.pedido.filtro.lista = arregloResultados[0];
+    }
+
+
+    this.pedido.filtro.indexar(false);
+    
+    this.pedido.filtro.paginacion.paginaActual = 1;
+    this.pedido.filtro.listar(1); 
+
   }
 
 }

@@ -1,126 +1,59 @@
 <menu-farmacia [modulo]="'Entregas'" [icono]="'assets/icono-entregas.svg'" [url]="'/farmacia/entregas'"></menu-farmacia>
 
-<div style="height:50px;"></div>
-<div class="contenedor columns " style="height:100%; padding:1em;">
-    
-  <div class="column" >
-    <div class="is-fullwidth has-text-centered" *ngIf="cargando">
-        <br>
-        <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
-        <br>
-        <br>
+
+
+<div class="is-fullwidth has-text-centered" style="padding-top:70px;" *ngIf="cargando">
+  <br>
+  <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
+  <br>
+  <br>
+</div>
+
+<div style="position:relative; padding-top:70px; margin-left: 1.5%; display:block; width:97%; height:100% !important;" *ngIf="pedido">    
+  <div class="tile is-ancestor is-vertical" style="height:100% !important; max-height:100% !important;">
+    <div class="tile is-parent is-12 ">
+      <div class="tile is-child notification is-dark">
+       Pedido: {{ id }} Claves: {{ pedido.lista.length }}
+      </div>
     </div>
-    <div *ngIf="pedido">
-          
-            <div class="top-bar" [ngClass]="{'is-primary':!pedido.filtro.activo,'is-dark': pedido.filtro.activo }">
-             <span *ngIf="!pedido.filtro.activo">Claves: {{ pedido.lista.length }} Insumos: {{pedido.totalInsumos}}</span>
-              <span *ngIf="pedido.filtro.activo"><span class="icon"><i class="fa fa-search"></i></span> Resultados: {{ pedido.filtro.lista.length }}</span>
-              <a class="button is-primary  is-pulled-right" [ngClass]="{ 'is-inverted':  pedido.filtro.activo }" style="margin-top:-0.25em;" title="Ctrl + espacio" (click)="toggleModalInsumos(); ">
-                <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span>
-              </a>
-            </div> 
-            
-            <table class="table is-unselectable" *ngIf="!cargando" style="font-size: 0.8em;">
-                <thead>
-                    <tr  >
-                      <th style="width:41px;vertical-align: middle;" class="has-text-centered" >Lote</th>
-                      <th class="is-hidden-mobile" style="width:118px;">
-                        <p class="control is-expanded" >
-                          <input type="hidden" #searchBoxClavePrevia >
-                          <input class="input is-small" type="text" placeholder="Clave" #searchBoxClave id="search-box-clave-{{indexPedido}}" (keyup)="buscar($event,searchBoxClave, searchBoxClavePrevia,[{ input: searchBoxDescripcion, campos: ['generico','informacion.concentracion','informacion.presentacion']}, { input: searchBoxClave, campos: ['clave']}])">
-                        </p>
-                      </th>
-                      <th class="is-hidden-mobile">
-                        <p class="control is-expanded">
-                          <input type="hidden" #searchBoxDescripcionPrevia >
-                          <input class="input is-small" type="text" placeholder="Genérico" #searchBoxDescripcion id="search-box-descripcion-{{indexPedido}}" (keyup)="buscar($event,searchBoxDescripcion,searchBoxDescripcionPrevia,[{ input: searchBoxDescripcion, campos: ['generico_nombre','informacion.concentracion','informacion.presentacion']}, { input: searchBoxClave, campos: ['clave']}])">
-                        </p>
-                      </th> 
-                      <th class="is-hidden-tablet">
-                        <p class="control is-expanded">
-                          <input type="hidden" #searchBoxDescripcionClavePrevia >
-                          <input class="input is-small" type="text" placeholder="Clave o Genérico" #searchBoxDescripcionClave id="search-box-descripcion-clave-{{indexPedido}}" (keyup)="buscar($event,searchBoxDescripcionClave,searchBoxDescripcionClavePrevia,[{ input: searchBoxDescripcionClave, campos: ['clave','generico_nombre','informacion.concentracion','informacion.presentacion']}])">
-                        </p>
-                      </th>  
-                      <th style="vertical-align: middle;" class="is-hidden-mobile is-hidden-tablet-only" >Descripcion</th>                  
-                      <th style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Cantidad">Cant.</abbr></th>
-                      <th  style="width:21px !important;"></th>
-                    </tr>
-                </thead>
-                <tbody *ngIf="!pedido.filtro.activo">
-
-                  <tr   *ngFor="let item of pedido.paginacion.lista; let i = index;">
-                    <td class="has-text-centered">{{ item.lote }}</td>
-                    <td class="has-text-centered is-hidden-mobile"><a (click)="mostrarFichaInformativa($event, item.clave)" style="cursor:help;">{{ item.clave }}</a></td>            
-                    
-                    <td >
-                      <small class="is-hidden-tablet">{{ item.clave }} <br></small>
-                      <b>{{ item.generico_nombre }}</b> <br  class="is-hidden-mobile"><small *ngIf="(item.tipo == 'ME' && item.informacion)"><b>{{ item.informacion.concentracion }}</b></small><br>
+    <div class="tile">
+      <div class="tile is-parent ">
+        <div class="tile is-child notification is-white" >
+          <div class="contenedor-tabla" >
                       
-                      <div class="is-hidden-desktop" *ngIf="(item.tipo == 'ME' && item.informacion)" style="line-height:1em;">
-                        <small><i>{{ item.informacion.presentacion_nombre }}</i></small><br>
-                        <small><i>{{ item.informacion.contenido }} </i></small>
-                      </div>
-                      <div class="is-hidden-desktop" *ngIf="item.tipo != 'ME'" style="line-height:1em;">
-                        <small>{{ item.descripcion }}</small>
-                      </div>
-                      <div class="is-hidden-desktop" style="padding: 0.5em 0 0.5em 0; ">
-                        <span *ngIf="item.es_causes" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
-                        <span *ngIf="!item.es_causes" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
-                        <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
-                        
-                        <span *ngIf="(item.tipo == 'ME' && item.informacion)">
-                          <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
-                          <span *ngIf="item.informacion.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>  
-                        </span>
-                        
-                      </div>
-                    </td> 
-
-                    <td class="is-hidden-mobile is-hidden-tablet-only">
-                      <div *ngIf="(item.tipo == 'ME' && item.informacion)" style="line-height:1em;">
-                        <small><i>{{ item.informacion.presentacion_nombre }}</i></small><br>
-                        <small><i>{{ item.informacion.contenido }} </i></small>
-                      </div>
-                      <div  *ngIf="item.tipo != 'ME'" style="line-height:1em;">
-                        <small>{{ item.descripcion }}</small>
-                      </div>
-                      <div style="padding: 0.5em 0 0.5em 0; ">
-                        <span *ngIf="item.es_causes" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
-                        <span *ngIf="!item.es_causes" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
-                        <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
-                        <span *ngIf="(item.tipo == 'ME' && item.informacion)">
-                          <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
-                          <span *ngIf="item.informacion.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>  
-                        </span>
-                        
-                      </div>
-                    </td> 
-                    <td style="width:78px !important;">
-                        <p class="control is-expanded">
-                        <input class="input is-small has-text-centered"  type="text" placeholder="Cant" [(ngModel)]="item.cantidad">
-                        </p>
-                    </td>                  
-                    <td style="width:21px !important;"><a (click)="eliminarInsumo(item,i)"><span class="icon"><i class="fa fa-trash"></i></span></a></td>
-                  </tr>      
-                </tbody>
-                <tbody *ngIf="pedido.filtro.activo">
-                  <tr  *ngFor="let item of pedido.filtro.paginacion.lista; let i = index;">
-                    <td class="has-text-centered">{{ item.lote }}</td>
-                    <td class="has-text-centered is-hidden-mobile"><a (click)="mostrarFichaInformativa($event, item.clave)" style="cursor:help;">{{ item.clave }}</a></td>            
+            <table class="table is-unselectable" *ngIf="!cargando" style="font-size: 0.8em; ">
+              <thead>
+                  <tr  [ngClass]="{ 'filtro': pedido.filtro.activo}">
+                    <th style="width:41px;vertical-align: middle;" class="has-text-centered" >Lote</th>
+                    <th>
+                      <p class="control is-expanded">
+                        <input type="hidden" #searchBoxDescripcionClavePrevia >
+                        <input class="input is-small" type="text" placeholder="Clave o Genérico" #searchBoxDescripcionClave id="search-box-descripcion-clave-{{indexPedido}}" (keyup)="buscar($event,searchBoxDescripcionClave,searchBoxDescripcionClavePrevia,[{ input: searchBoxDescripcionClave, campos: ['clave','generico_nombre','informacion.concentracion','informacion.presentacion']}])">
+                      </p>
+                    </th>  
                     
-                    <td >
-                      <small class="is-hidden-tablet">{{ item.clave }} <br></small>
-                      <b>{{ item.generico_nombre }}</b> <br  class="is-hidden-mobile"><small *ngIf="(item.tipo == 'ME' && item.informacion)"><b>{{ item.informacion.concentracion }}</b></small><br>
-                      
-                      <div class="is-hidden-desktop" *ngIf="(item.tipo == 'ME' && item.informacion)" style="line-height:1em;">
+                    <th style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Cantidad">Cant.</abbr></th>
+                    <th style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Surtido">Surt.</abbr></th>
+                    <th  style="width:21px !important; text-align: center; vertical-align: middle;">Surtido</th>
+                  </tr>
+              </thead>
+              <tbody *ngIf="!pedido.filtro.activo">
+
+                <tr class="item" *ngFor="let item of pedido.paginacion.lista; let i = index;" (click)="seleccionarItem(item)" [ngClass]="{ 'seleccionado': item == itemSeleccionado}">
+                  <td class="has-text-centered">{{ item.lote }}</td>
+                  <td >
+                    <small >{{ item.clave }} <br></small>
+                    <b>{{ item.generico_nombre }}</b> <small *ngIf="(item.tipo == 'ME' && item.informacion)"><b>{{ item.informacion.concentracion }}</b></small><br>
+                    <div class="item-detalle">
+                      <div   *ngIf="(item.tipo == 'ME' && item.informacion)" style="line-height:1em;">
                         <small><i>{{ item.informacion.presentacion_nombre }}</i></small><br>
                         <small><i>{{ item.informacion.contenido }} </i></small>
                       </div>
-                      <div class="is-hidden-desktop" *ngIf="item.tipo != 'ME'" style="line-height:1em;">
+                      <div   *ngIf="item.tipo != 'ME'" style="line-height:1em;">
                         <small>{{ item.descripcion }}</small>
                       </div>
-                      <div class="is-hidden-desktop" style="padding: 0.5em 0 0.5em 0; ">
+                    
+                      <div  style="padding: 0.5em 0 0.5em 0; ">
                         <span *ngIf="item.es_causes" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
                         <span *ngIf="!item.es_causes" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
                         <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
@@ -131,66 +64,180 @@
                         </span>
                         
                       </div>
-                    </td> 
-
-                    <td class="is-hidden-mobile is-hidden-tablet-only">
-                      <div *ngIf="(item.tipo == 'ME' && item.informacion)" style="line-height:1em;">
+                    </div>
+                  </td> 
+                  <td style="width:78px !important; text-align:center;">{{ item.cantidad }}</td>     
+                  <th style="width:78px !important; text-align:center;">0</th>                                  
+                  <td style="width:21px !important; text-align:center; color: gray"><span class="icon"><i class="fa fa-minus-circle"></i></span></td>
+                </tr>      
+              </tbody>
+              <tbody *ngIf="pedido.filtro.activo">
+                <tr class="item"  *ngFor="let item of pedido.filtro.paginacion.lista; let i = index;" (click)="seleccionarItem(item)" [ngClass]="{ 'seleccionado': item == itemSeleccionado}">
+                  <td class="has-text-centered">{{ item.lote }}</td>
+                  <td >
+                    <small >{{ item.clave }} <br></small>
+                    <b>{{ item.generico_nombre }}</b> <small *ngIf="(item.tipo == 'ME' && item.informacion)"><b>{{ item.informacion.concentracion }}</b></small><br>
+                    <div class="item-detalle">
+                      <div   *ngIf="(item.tipo == 'ME' && item.informacion)" style="line-height:1em;">
                         <small><i>{{ item.informacion.presentacion_nombre }}</i></small><br>
                         <small><i>{{ item.informacion.contenido }} </i></small>
                       </div>
-                      <div  *ngIf="item.tipo != 'ME'" style="line-height:1em;">
+                      <div   *ngIf="item.tipo != 'ME'" style="line-height:1em;">
                         <small>{{ item.descripcion }}</small>
                       </div>
-                      <div style="padding: 0.5em 0 0.5em 0; ">
+                    
+                      <div  style="padding: 0.5em 0 0.5em 0; ">
                         <span *ngIf="item.es_causes" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
                         <span *ngIf="!item.es_causes" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
                         <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
+                        
                         <span *ngIf="(item.tipo == 'ME' && item.informacion)">
                           <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
                           <span *ngIf="item.informacion.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>  
                         </span>
                         
                       </div>
-                    </td> 
-                    <td style="width:78px !important;">
-                        <p class="control is-expanded">
-                        <input class="input is-small has-text-centered"  type="text" placeholder="Cant" [(ngModel)]="item.cantidad">
-                        </p>
-                    </td>                  
-                    <td style="width:21px !important;"><a (click)="eliminarInsumo(item,i,true)"><span class="icon"><i class="fa fa-trash"></i></span></a></td>
-                  </tr>   
-
-
-                
-                </tbody>              
+                    </div>
+                  </td> 
+                  <td style="width:78px !important; text-align:center;">{{ item.cantidad }}</td>     
+                  <th style="width:78px !important; text-align:center;">0</th>                                  
+                  <td style="width:21px !important; text-align:center; color: gray"><span class="icon"><i class="fa fa-minus-circle"></i></span></td>
+                </tr>   
+              </tbody>              
             </table>
-      
+            <paginacion style=" width:100%; height:auto; bottom:0; left:0px; background:#FFF;"
+                [total]="pedido.lista.length" 
+                [paginasTotales]="pedido.paginacion.totalPaginas" 
+                [resultadosPorPagina]="pedido.paginacion.resultadosPorPagina" 
+                [paginaActual]="pedido.paginacion.paginaActual" 
+                [indicePaginas]="pedido.paginacion.indice"
+                (onSiguiente)="pedido.paginaSiguiente(); itemSeleccionado=null;" 
+                (onAnterior)="pedido.paginaAnterior(); itemSeleccionado=null;" 
+                (onListar)="pedido.listar($event); itemSeleccionado=null;" 
+                *ngIf="pedido.lista.length > 0 && pedido.lista.length > pedido.paginacion.resultadosPorPagina && !pedido.filtro.activo"></paginacion>
+
             <paginacion 
-                  [total]="pedido.lista.length" 
-                  [paginasTotales]="pedido.paginacion.totalPaginas" 
-                  [resultadosPorPagina]="pedido.paginacion.resultadosPorPagina" 
-                  [paginaActual]="pedido.paginacion.paginaActual" 
-                  [indicePaginas]="pedido.paginacion.indice"
-                  (onSiguiente)="pedido.paginaSiguiente()" 
-                  (onAnterior)="pedido.paginaAnterior()" 
-                  (onListar)="pedido.listar($event)" 
-                  *ngIf="pedido.lista.length > 0 && pedido.lista.length > pedido.paginacion.resultadosPorPagina && !pedido.filtro.activo"></paginacion>
+                [total]="pedido.filtro.lista.length" 
+                [paginasTotales]="pedido.filtro.paginacion.totalPaginas" 
+                [resultadosPorPagina]="pedido.filtro.paginacion.resultadosPorPagina" 
+                [paginaActual]="pedido.filtro.paginacion.paginaActual" 
+                [indicePaginas]="pedido.filtro.paginacion.indice"
+                (onSiguiente)="pedido.filtro.paginaSiguiente(); itemSeleccionado=null;" 
+                (onAnterior)="pedido.filtro.paginaAnterior(); itemSeleccionado=null;" 
+                (onListar)="pedido.filtro.listar($event); itemSeleccionado=null;" 
+                *ngIf="pedido.filtro.lista.length > 0 && pedido.filtro.lista.length > pedido.filtro.paginacion.resultadosPorPagina && pedido.filtro.activo"></paginacion>
+
+
+          </div>
+
+        </div>
+      </div>
+      <div class="tile is-parent is-vertical ">
+        <div class="tile is-child notification" style="background:#CCC;">
+          <div class="contenedor-tabla">
             
-            <paginacion 
-                  [total]="pedido.filtro.lista.length" 
-                  [paginasTotales]="pedido.filtro.paginacion.totalPaginas" 
-                  [resultadosPorPagina]="pedido.filtro.paginacion.resultadosPorPagina" 
-                  [paginaActual]="pedido.filtro.paginacion.paginaActual" 
-                  [indicePaginas]="pedido.filtro.paginacion.indice"
-                  (onSiguiente)="pedido.filtro.paginaSiguiente()" 
-                  (onAnterior)="pedido.filtro.paginaAnterior()" 
-                  (onListar)="pedido.filtro.listar($event)" 
-                  *ngIf="pedido.filtro.lista.length > 0 && pedido.filtro.lista.length > pedido.filtro.paginacion.resultadosPorPagina && pedido.filtro.activo"></paginacion>
-          
-            <br>
+            <table class="table" *ngIf="!cargando" style="font-size: 0.8em;" >
+              <thead>
+                <tr>
+                  <td colspan="5">
+                    <p class="control">
+                      <input class="input" type="text" placeholder="Código" >
+                    </p>
+                  </td>
+
+                </tr>
+              
+                <tr>
+                  <th>Código</th>
+                  <th>Marca</th>
+                  <th>Lote</th>
+                  <th>Caducidad</th>
+                  <th><abbr title="Cantidad">Cant.</abbr></th>                
+                </tr>
+              </thead>
+              <tbody>
+                  <tr  class="is-unselectable" >
+                                      
+                    <td>0712345123450</td>
+                    <td>Laboratorios Shering Ploau</td>
+                    <td>2345678G9</td>
+                    <td>31/12/2018</td>
+                    <td style="width:78px !important;">
+                        2
+                    </td>   
+                  </tr>
+                  <tr  class="is-unselectable" >
+                                      
+                    <td>0712345123450</td>
+                    <td>Laboratorios Shering Ploau</td>
+                    <td>2345678G9</td>
+                    <td>31/12/2018</td>
+                    <td style="width:78px !important;">
+                        3
+                    </td>   
+                  </tr>
+                      
+              </tbody>  
+            </table>
+          </div>
+        </div>
+        <div class="tile is-child  notification is-white">
+          <div class="contenedor-tabla">
+            <table class="table" *ngIf="!cargando" style="font-size: 0.8em;" >
+              <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Marca</th>
+                    <th>Lote</th>
+                    <th>Caducidad</th>
+                    <th><abbr title="Cantidad">Cant.</abbr></th>                
+                  </tr>
+              </thead>
+              <tfoot>
+                <tr>
+                  <th colspan="4" style="text-align:right">
+                    <span class="icon is-small" ><i class="fa fa-check-circle"></i></span> <span>Completo &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Total 
+                  </th>
+                  <td style="text-align:center">3 / 3</td>
+                </tr>
+              </tfoot>
+              <tbody>
+                  <tr  class="is-unselectable" >
+                                      
+                    <td>0712345123450</td>
+                    <td>Laboratorios Shering Ploau</td>
+                    <td>2345678G9</td>
+                    <td>31/12/2018</td>
+                    <td style="width:78px !important;">
+                        <p class="control is-expanded">
+                        <input class="input is-small has-text-centered"  type="text" placeholder="Cant" value="2">
+                        </p>
+                    </td>   
+                  </tr>
+                  <tr  class="is-unselectable" >
+                                      
+                    <td>0712345123450</td>
+                    <td>Laboratorios Shering Ploau</td>
+                    <td>2345678G9</td>
+                    <td>31/12/2018</td>
+                    <td style="width:78px !important;">
+                        <p class="control is-expanded">
+                        <input class="input is-small has-text-centered"  type="text" placeholder="Cant" value ="1">
+                        </p>
+                    </td>   
+                  </tr>
+                      
+              </tbody>  
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
+    
   </div>
 </div>
+  
+
 
 <div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeError.mostrar">
     <button class="delete" (click)="mensajeError.mostrar = false"></button>        
@@ -205,5 +252,5 @@
     <p style="text-align: center;"><small >Este mensaje desaparecerá en {{ mensajeExito.cuentaAtras }} segundos.</small></p>       
 </div>
 
-<buscar-insumos *ngIf="mostrarModalInsumos" (onCerrar)="mostrarModalInsumos = false" (onEnviar)="agregarItem($event)" [listaAgregados]="listaClaveAgregadas"></buscar-insumos>
+
 
