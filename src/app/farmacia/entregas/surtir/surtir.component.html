@@ -111,9 +111,9 @@
                 [resultadosPorPagina]="pedido.paginacion.resultadosPorPagina" 
                 [paginaActual]="pedido.paginacion.paginaActual" 
                 [indicePaginas]="pedido.paginacion.indice"
-                (onSiguiente)="pedido.paginaSiguiente(); itemSeleccionado=null;" 
-                (onAnterior)="pedido.paginaAnterior(); itemSeleccionado=null;" 
-                (onListar)="pedido.listar($event); itemSeleccionado=null;" 
+                (onSiguiente)="pedido.paginaSiguiente(); limpiarStock();" 
+                (onAnterior)="pedido.paginaAnterior(); limpiarStock();" 
+                (onListar)="pedido.listar($event);limpiarStock();" 
                 *ngIf="pedido.lista.length > 0 && pedido.lista.length > pedido.paginacion.resultadosPorPagina && !pedido.filtro.activo"></paginacion>
 
             <paginacion 
@@ -122,9 +122,9 @@
                 [resultadosPorPagina]="pedido.filtro.paginacion.resultadosPorPagina" 
                 [paginaActual]="pedido.filtro.paginacion.paginaActual" 
                 [indicePaginas]="pedido.filtro.paginacion.indice"
-                (onSiguiente)="pedido.filtro.paginaSiguiente(); itemSeleccionado=null;" 
-                (onAnterior)="pedido.filtro.paginaAnterior(); itemSeleccionado=null;" 
-                (onListar)="pedido.filtro.listar($event); itemSeleccionado=null;" 
+                (onSiguiente)="pedido.filtro.paginaSiguiente(); limpiarStock();" 
+                (onAnterior)="pedido.filtro.paginaAnterior();  limpiarStock();" 
+                (onListar)="pedido.filtro.listar($event); limpiarStock();" 
                 *ngIf="pedido.filtro.lista.length > 0 && pedido.filtro.lista.length > pedido.filtro.paginacion.resultadosPorPagina && pedido.filtro.activo"></paginacion>
 
 
@@ -141,7 +141,7 @@
                 <tr>
                   <td colspan="5">
                     <p class="control">
-                      <input class="input" type="text" placeholder="Código" >
+                      <input class="input" type="text" placeholder="Código" #searchBoxStock (keyup)="buscarStock($event, searchBoxStock.value)" >
                     </p>
                   </td>
 
@@ -156,41 +156,34 @@
                 </tr>
               </thead>
               <tbody>
-                  <tr  class="is-unselectable" >
+                  <tr  class="is-unselectable item" *ngFor="let item of listaStock" (click)="asignarLote(item)">
                                       
-                    <td>0712345123450</td>
-                    <td>Laboratorios Shering Ploau</td>
-                    <td>2345678G9</td>
-                    <td>31/12/2018</td>
-                    <td style="width:78px !important;">
-                        2
-                    </td>   
-                  </tr>
-                  <tr  class="is-unselectable" >
-                                      
-                    <td>0712345123450</td>
-                    <td>Laboratorios Shering Ploau</td>
-                    <td>2345678G9</td>
-                    <td>31/12/2018</td>
-                    <td style="width:78px !important;">
-                        3
-                    </td>   
-                  </tr>
-                      
+                    <td>{{ item.codigo_barras }}</td>
+                    <td>{{ item.marca.nombre }}</td>
+                    <td>{{ item.lote }}</td>
+                    <td>{{ item.fecha_caducidad | date:'dd/MM/y' }}</td>
+                    <td style="width:78px !important;">{{ item.existencia }}</td>   
+                  </tr>                      
               </tbody>  
             </table>
+
+            <div class="is-fullwidth has-text-centered" style="padding-top:0px;" *ngIf="cargandoStock">
+              <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
+              <br>
+              <br>
+            </div>
           </div>
         </div>
         <div class="tile is-child  notification is-white">
           <div class="contenedor-tabla">
-            <table class="table" *ngIf="!cargando" style="font-size: 0.8em;" >
+            <table class="table" *ngIf="!cargando && itemSeleccionado != null" style="font-size: 0.8em;" >
               <thead>
-                  <tr>
-                    <th>Código</th>
-                    <th>Marca</th>
-                    <th>Lote</th>
-                    <th>Caducidad</th>
-                    <th><abbr title="Cantidad">Cant.</abbr></th>                
+                  <tr style="background: #00d1b2;">
+                    <th style="color:#FFF !important;">Código</th>
+                    <th style="color:#FFF !important;">Marca</th>
+                    <th style="color:#FFF !important;">Lote</th>
+                    <th style="color:#FFF !important;">Caducidad</th>
+                    <th style="color:#FFF !important;"><abbr title="Cantidad">Cant.</abbr></th>                
                   </tr>
               </thead>
               <tfoot>
@@ -198,31 +191,19 @@
                   <th colspan="4" style="text-align:right">
                     <span class="icon is-small" ><i class="fa fa-check-circle"></i></span> <span>Completo &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Total 
                   </th>
-                  <td style="text-align:center">3 / 3</td>
+                  <td style="text-align:center">{{ itemSeleccionado.totalStockAsignado || 0 }} / {{ itemSeleccionado.cantidad }}</td>
                 </tr>
               </tfoot>
               <tbody>
-                  <tr  class="is-unselectable" >
+                  <tr  class="is-unselectable" *ngFor="let item of itemSeleccionado.listaStockAsignado">
                                       
-                    <td>0712345123450</td>
-                    <td>Laboratorios Shering Ploau</td>
-                    <td>2345678G9</td>
-                    <td>31/12/2018</td>
+                    <td>{{ item.codigo_barras}}</td>
+                    <td>{{ item.marca.nombre }}</td>
+                    <td>{{ item.lote }}</td>
+                    <td>{{ item.fecha_caducidad | date:'dd/MM/y' }}</td>
                     <td style="width:78px !important;">
                         <p class="control is-expanded">
-                        <input class="input is-small has-text-centered"  type="text" placeholder="Cant" value="2">
-                        </p>
-                    </td>   
-                  </tr>
-                  <tr  class="is-unselectable" >
-                                      
-                    <td>0712345123450</td>
-                    <td>Laboratorios Shering Ploau</td>
-                    <td>2345678G9</td>
-                    <td>31/12/2018</td>
-                    <td style="width:78px !important;">
-                        <p class="control is-expanded">
-                        <input class="input is-small has-text-centered"  type="text" placeholder="Cant" value ="1">
+                        <input class="input is-small has-text-centered"  type="text" placeholder="Cant" [(ngModel)]="item.cantidad">
                         </p>
                     </td>   
                   </tr>

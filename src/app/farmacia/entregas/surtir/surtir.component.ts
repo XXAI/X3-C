@@ -18,6 +18,7 @@ import  * as FileSaver    from 'file-saver';
 
 
 import { PedidosService } from '../../pedidos/pedidos.service';
+import { StockService } from '../../stock/stock.service';
 
 import { Pedido } from '../../pedidos/pedido';
 import { Mensaje } from '../../../mensaje';
@@ -27,11 +28,13 @@ import { Mensaje } from '../../../mensaje';
 @Component({
   selector: 'app-surtir',
   templateUrl: './surtir.component.html',
-  styleUrls: ['./surtir.component.css']
+  styleUrls: ['./surtir.component.css'],
+  providers: [StockService]
 })
 export class SurtirComponent implements OnInit {
   id:string ;
   cargando: boolean = false;
+  cargandoStock: boolean = false;
   
    // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
@@ -42,10 +45,13 @@ export class SurtirComponent implements OnInit {
 
   private pedido: Pedido; 
 
-  //Harima: Lista de claves agregadas al pedido, para checar duplicidad
-  listaClaveAgregadas: Array<string> = [];
   
-  constructor(private title: Title, private route:ActivatedRoute, private pedidosService:PedidosService) { }
+  private listaStock: any[] = [];  
+  private claveInsumoSeleccionado:string = null;
+  
+
+  
+  constructor(private title: Title, private route:ActivatedRoute, private pedidosService:PedidosService, private stockService:StockService) { }
 
   ngOnInit() {
     this.title.setTitle('Surtir pedido / Farmacia');
@@ -61,16 +67,14 @@ export class SurtirComponent implements OnInit {
     this.pedidosService.ver(this.id).subscribe(
           pedido => {
             this.cargando = false;
-            //this.datosCargados = true;
-            //this.pedidos[0].datos.patchValue(pedido);
-            //this.pedido.datosImprimir = pedido;
             this.pedido = new Pedido(true);
+            this.pedido.paginacion.resultadosPorPagina = 2
+            this.pedido.filtro.paginacion.resultadosPorPagina = 2
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];
               let insumo = dato.insumos_con_descripcion;
               insumo.cantidad = +dato.cantidad_solicitada_um;
               this.pedido.lista.push(insumo);
-              this.listaClaveAgregadas.push(insumo.clave);
             }
             pedido.insumos = undefined;
             this.pedido.indexar();
@@ -102,7 +106,12 @@ export class SurtirComponent implements OnInit {
   }
 
   itemSeleccionado: any = null;
-  seleccionarItem(item){  this.itemSeleccionado = item; }
+
+  seleccionarItem(item){  
+    this.itemSeleccionado = item; 
+    this.buscarStockApi(null,item.clave)
+  }
+
   buscar(e: KeyboardEvent, input:HTMLInputElement, inputAnterior: HTMLInputElement,  parametros:any[]){
     
     let term = input.value;
@@ -122,8 +131,7 @@ export class SurtirComponent implements OnInit {
 
     
     //Verificamos que la busqueda no sea la misma que la anterior para no filtrar en vano
-    if(inputAnterior.value == term){
-      
+    if(inputAnterior.value == term){      
       return
     }
 
@@ -198,6 +206,108 @@ export class SurtirComponent implements OnInit {
     this.pedido.filtro.paginacion.paginaActual = 1;
     this.pedido.filtro.listar(1); 
 
+  }
+
+
+  buscarStockApi(term:string, clave:string = null){
+    this.cargandoStock = true;
+    this.stockService.buscar(term, clave).subscribe(
+        resultado => {
+          this.cargandoStock = false;
+
+          this.listaStock = resultado ;
+
+          if(resultado.length>0){
+            this.claveInsumoSeleccionado = resultado[0].clave_insumo_medico;
+
+            for(var  i = 0; i < this.pedido.lista.length ; i++){
+          
+              if(this.pedido.lista[i].clave == this.claveInsumoSeleccionado){
+                // Calculamos la pagina
+                this.pedido.filtro.activo = false;
+                let pag = Math.ceil((i + 1) /this.pedido.paginacion.resultadosPorPagina);
+                this.pedido.listar(pag);
+                this.itemSeleccionado = this.pedido.lista[i] ;
+              }
+            }
+          }
+
+          
+          console.log("Stock cargado.");
+          
+        },
+        error => {
+          this.cargandoStock = false;
+          this.mensajeError.mostrar = true;
+          this.ultimaPeticion = function(){ /*this.listarBusqueda(term);*/ };
+          try {
+            let e = error.json();
+            if (error.status == 401 ){
+              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }
+          } catch(e){
+            console.log("No se puede interpretar el error");
+            
+            if (error.status == 500 ){
+              this.mensajeError.texto = "500 (Error interno del servidor)";
+            } else {
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }            
+          }
+
+        }
+      );
+  }
+
+
+
+  buscarStock(e: KeyboardEvent, term:string){
+    if(e.keyCode == 13){
+      e.preventDefault();
+      e.stopPropagation();
+      if (term == ""){
+        return false;
+      }
+      this.buscarStockApi(term);
+    }
+    return false;
+  }
+
+  limpiarStock(){
+  
+    this.listaStock = [];
+    this.itemSeleccionado = null;
+  }
+  asignarLote(item:any){
+    if( this.itemSeleccionado.listaStockAsignado == null ){
+      this.itemSeleccionado.listaStockAsignado = [];
+    }
+    var acumulado = 0;
+    for(var i in this.itemSeleccionado.listaStockAsignado) {
+      if(item.id == this.itemSeleccionado.listaStockAsignado[i].id){
+
+        // No podemos asignar dos veces el mismo item
+        return;
+      }
+      acumulado += this.itemSeleccionado.listaStockAsignado[i].cantidad;
+    }
+
+    if (acumulado < this.itemSeleccionado.cantidad){
+
+
+      if(item.existencia > this.itemSeleccionado.cantidad){
+        item.cantidad = this.itemSeleccionado.cantidad
+      }
+
+      if(item.existencia <= this.itemSeleccionado.cantidad){
+        item.cantidad = item.existencia
+      }
+      this.itemSeleccionado.totalStockAsignado = acumulado + item.cantidad;
+      this.itemSeleccionado.listaStockAsignado.push(item)
+    } else {
+      //Ya no se puede asignar mas
+    }
+    
   }
 
 }
