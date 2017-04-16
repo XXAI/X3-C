@@ -1,7 +1,7 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Location}           from '@angular/common';
-import { ActivatedRoute, Params }   from '@angular/router'
+import { ActivatedRoute, Params, Router } from '@angular/router'
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 
 import { Observable } from 'rxjs/Observable';
@@ -75,6 +75,7 @@ export class FormularioComponent implements OnInit {
   constructor(
     private title: Title, 
     private location: Location, 
+    private router: Router,
     private route: ActivatedRoute,
     private _ngZone: NgZone, 
     private pedidosService: PedidosService,
@@ -352,6 +353,9 @@ export class FormularioComponent implements OnInit {
         pedido => {
           this.cargando = false;
           console.log('Pedido editado');
+          if(pedido.status == 'ES'){
+            this.router.navigate(['/farmacia/pedidos/ver/'+pedido.id]);
+          }
           //hacer cosas para dejar editar
         },
         error => {
@@ -397,6 +401,8 @@ export class FormularioComponent implements OnInit {
         pedido => {
           this.cargando = false;
           console.log('Pedido creado');
+          console.log(pedido);
+          this.router.navigate(['/farmacia/pedidos/editar/'+pedido.id]);
           //hacer cosas para dejar editar
         },
         error => {
