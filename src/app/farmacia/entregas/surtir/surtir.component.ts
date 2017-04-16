@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChildren } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Params }   from '@angular/router'
@@ -29,9 +29,14 @@ import { Mensaje } from '../../../mensaje';
   selector: 'app-surtir',
   templateUrl: './surtir.component.html',
   styleUrls: ['./surtir.component.css'],
+  host: { '(window:keydown)' : 'keyboardInput($event)'},
   providers: [StockService]
 })
 export class SurtirComponent implements OnInit {
+
+  @ViewChildren('searchBoxStock') searchBoxStockViewChildren;
+
+
   id:string ;
   cargando: boolean = false;
   cargandoStock: boolean = false;
@@ -44,10 +49,11 @@ export class SurtirComponent implements OnInit {
   // # FIN SECCION  
 
   private pedido: Pedido; 
-
-  
+  private lotesSurtidos:any[] = [];
   private listaStock: any[] = [];  
   private claveInsumoSeleccionado:string = null;
+  private claveNoSolicitada:boolean = false;
+  private itemSeleccionado: any = null;
   
 
   
@@ -73,8 +79,16 @@ export class SurtirComponent implements OnInit {
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];
               let insumo = dato.insumos_con_descripcion;
-              insumo.cantidad = +dato.cantidad_solicitada_um;
-              this.pedido.lista.push(insumo);
+             
+              if (insumo != null){
+                insumo.cantidad = +dato.cantidad_solicitada_um;              
+                this.pedido.lista.push(insumo);
+              } else {
+                // OJO:
+                //¿Qué hacemos con las claves que no existan? y porque puedo agregar claves que no existen a un pedido
+                // No hay llave Foránea??
+              }
+             
             }
             pedido.insumos = undefined;
             this.pedido.indexar();
@@ -105,7 +119,7 @@ export class SurtirComponent implements OnInit {
     );
   }
 
-  itemSeleccionado: any = null;
+  
 
   seleccionarItem(item){  
     this.itemSeleccionado = item; 
@@ -214,11 +228,15 @@ export class SurtirComponent implements OnInit {
     this.stockService.buscar(term, clave).subscribe(
         resultado => {
           this.cargandoStock = false;
+          this.claveNoSolicitada = false;
 
           this.listaStock = resultado ;
 
           if(resultado.length>0){
             this.claveInsumoSeleccionado = resultado[0].clave_insumo_medico;
+
+
+            var existeClaveEnPedido = false;
 
             for(var  i = 0; i < this.pedido.lista.length ; i++){
           
@@ -228,10 +246,25 @@ export class SurtirComponent implements OnInit {
                 let pag = Math.ceil((i + 1) /this.pedido.paginacion.resultadosPorPagina);
                 this.pedido.listar(pag);
                 this.itemSeleccionado = this.pedido.lista[i] ;
+                existeClaveEnPedido = true;
               }
             }
+
+            if(!existeClaveEnPedido){
+              this.claveNoSolicitada = true;
+              this.listaStock =[];
+            } else {
+              this.verificarItemsAsignadosStockApi();
+            }
+
+          } else {
+            if( this.searchBoxStockViewChildren.first.nativeElement.value != ""){
+              this.itemSeleccionado = null;
+            }
+            
           }
 
+          
           
           console.log("Stock cargado.");
           
@@ -259,16 +292,22 @@ export class SurtirComponent implements OnInit {
       );
   }
 
+  surtir (){
+    alert("Preguntar quién recibe, observaciones, etc. Y si quiere imprimir de una vez.")
+  }
 
 
-  buscarStock(e: KeyboardEvent, term:string){
+
+  buscarStock(e: KeyboardEvent, input:HTMLInputElement, term:string){
     if(e.keyCode == 13){
       e.preventDefault();
       e.stopPropagation();
       if (term == ""){
         return false;
-      }
+      }      
       this.buscarStockApi(term);
+      input.select();
+      return false;
     }
     return false;
   }
@@ -277,8 +316,19 @@ export class SurtirComponent implements OnInit {
   
     this.listaStock = [];
     this.itemSeleccionado = null;
+    this.searchBoxStockViewChildren.first.nativeElement.value = "";
   }
-  asignarLote(item:any){
+
+  eliminarStock(index): void {
+    
+    this.itemSeleccionado.listaStockAsignado.splice(index, 1);  
+     
+    this.calcularTotalStockItem();
+    
+    this.verificarItemsAsignadosStockApi();
+  }
+
+  asignarStock(item:any){
     if( this.itemSeleccionado.listaStockAsignado == null ){
       this.itemSeleccionado.listaStockAsignado = [];
     }
@@ -294,20 +344,146 @@ export class SurtirComponent implements OnInit {
 
     if (acumulado < this.itemSeleccionado.cantidad){
 
+      let faltante = this.itemSeleccionado.cantidad - acumulado;
 
-      if(item.existencia > this.itemSeleccionado.cantidad){
-        item.cantidad = this.itemSeleccionado.cantidad
+      if(item.existencia > faltante){
+        item.cantidad = faltante
       }
 
-      if(item.existencia <= this.itemSeleccionado.cantidad){
+      if(item.existencia <= faltante){
         item.cantidad = item.existencia
       }
-      this.itemSeleccionado.totalStockAsignado = acumulado + item.cantidad;
+      //this.itemSeleccionado.totalStockAsignado = acumulado + item.cantidad;
       this.itemSeleccionado.listaStockAsignado.push(item)
+      this.calcularTotalStockItem()
+      item.asignado = true;
     } else {
       //Ya no se puede asignar mas
     }
     
+  }
+
+
+  validarItemStock(item:any, setMaxVal:boolean = false){
+
+   
+    if(item.cantidad == null){
+      if(setMaxVal){
+        this.asignarMaximoPosible(item)
+      }
+      this.calcularTotalStockItem();
+      return;
+    }
+
+    var cantidad = parseInt(item.cantidad);
+
+    if(isNaN(cantidad)){
+      this.asignarMaximoPosible(item)
+      this.calcularTotalStockItem();
+      return;
+    }
+
+    if(cantidad <= 0){
+      this.asignarMaximoPosible(item)
+      this.calcularTotalStockItem();
+      return;
+    }
+
+    
+
+    if( cantidad > item.existencia){
+      item.cantidad = item.existencia;
+    }
+
+    if(!this.verificarTotalStockItem()){
+      this.asignarMaximoPosible(item)
+    }
+
+    this.calcularTotalStockItem();
+    
+  }
+  asignarMaximoPosible(item:any){
+    var acumulado = 0;
+    for(var i in this.itemSeleccionado.listaStockAsignado) {
+      if(this.itemSeleccionado.listaStockAsignado[i] != item ){
+        acumulado += this.itemSeleccionado.listaStockAsignado[i].cantidad;
+      }
+      
+    }
+
+    var faltante = this.itemSeleccionado.cantidad - acumulado;
+
+    if(faltante >= item.existencia){
+      item.cantidad = item.existencia;
+    }
+    if(faltante < item.existencia){
+      item.cantidad = faltante;
+    }
+  }
+
+  verificarItemsAsignadosStockApi(){
+    
+    for(var i in this.listaStock){
+      this.listaStock[i].asignado = false;
+      for(var j in this.itemSeleccionado.listaStockAsignado){
+        if(this.itemSeleccionado.listaStockAsignado[j].id == this.listaStock[i].id){
+          this.listaStock[i].asignado = true;
+          break;
+        } 
+      }
+    }
+
+  }
+  verificarTotalStockItem():boolean{
+    var acumulado = 0;
+    for(var i in this.itemSeleccionado.listaStockAsignado) {
+      acumulado += this.itemSeleccionado.listaStockAsignado[i].cantidad;
+    }
+    return this.itemSeleccionado.totalStockAsignado <= this.itemSeleccionado.cantidad;
+  }
+  calcularTotalStockItem(){
+    
+    var acumulado = 0;
+    for(var i in this.itemSeleccionado.listaStockAsignado) {
+      acumulado += this.itemSeleccionado.listaStockAsignado[i].cantidad;
+    }
+    if (acumulado == 0){
+      var indice = 0;
+      for(var i  in this.lotesSurtidos) {
+        if(this.lotesSurtidos[i].clave == this.itemSeleccionado.clave){
+          
+          this.lotesSurtidos.splice(indice,1);
+        }
+        indice++;
+      }
+    } else {
+     
+      var bandera = false;
+      for(var i  in this.lotesSurtidos) {
+        if(this.lotesSurtidos[i].clave == this.itemSeleccionado.clave){
+          bandera = true;
+          this.lotesSurtidos[i].cantidad = acumulado;
+        }
+      }
+      if(!bandera){
+        
+        this.lotesSurtidos.push({ clave: this.itemSeleccionado.clave, cantidad:  acumulado});
+      }
+    }
+    this.itemSeleccionado.totalStockAsignado = acumulado;
+  }
+
+  // # SECCION: Eventos del teclado
+  keyboardInput(e: KeyboardEvent) {
+    
+    if(e.keyCode == 32 &&  e.ctrlKey){ // Ctrl + barra espaciadora
+      event.preventDefault();
+      event.stopPropagation();
+      
+       this.searchBoxStockViewChildren.first.nativeElement.focus();
+    }
+    
+        
   }
 
 }

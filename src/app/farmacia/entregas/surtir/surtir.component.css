@@ -4,11 +4,19 @@
 .item.seleccionado {
     background: #CCC;
 }
+.item.seleccionado .icon {
+    color:white !important;
+}
 .item.seleccionado .item-detalle {
     display: inherit;
 }
 .item .item-detalle {
     display: none;
+}
+
+.item.asignado {
+    background: #DDD;
+    color: #777;
 }
 
 
