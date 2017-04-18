@@ -8,47 +8,44 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
 
     onmessage = function( evt ) {
         let data = JSON.parse(evt.data)
-        console.log(data);    
+        //console.log(data);
         pdf(data);
     };
 
     function pdf(data) {
+        console.log(data);
         var contadorLineasHorizontalesV = 0;
         var dd = {
             content: [{
                 style: 'Pedido',
                 table: {
-                    headerRows: 7,
+                    headerRows: 4,
                     dontBreakRows: true,
-                    widths: [ 35, 70, 'auto', 'auto', 40 ,45, 45],
+                    //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
+                    widths: [ 35, 70, 'auto', 'auto', 60],
                     body: [
                         [{
                             image: 'header',
                             width: 500,
-                            style: 'tableHeaderTop', colSpan: 7, alignment: 'center'
-                        },{},{},{},{},{},{}],
-                        [{ text: 'PEDIDO DE INSUMOS', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },{},{},{},{},{},{}],
-                        [{ text: 'ALMACÉN SOLICITANTE', style: 'tableHeader', colSpan: 2, alignment: 'left' },{},{ text: 'SOLICITANTE', style: 'tableHeader', colSpan: 5, alignment: 'left' },{},{},{},{}],
-                        [{ text: 'ALMACÉN AL QUE SOLICTA', style: 'tableHeader', colSpan: 2, alignment: 'left' },{},{ text: 'PROVEE', style: 'tableHeader', colSpan: 5, alignment: 'left' },{},{},{},{}],
-                        [{ text: 'REQUISICIÓN DE INSUMOS MEDICOS', style: 'tableHeader', colSpan: 7, alignment: 'center' },{},{},{},{},{},{}],
+                            style: 'tableHeaderTop', colSpan: 5, alignment: 'center'
+                        },{},{},{},{}],
+                        [{ text: 'PEDIDO DE INSUMOS', style: 'tableHeaderTop', colSpan: 5, alignment: 'center' },{},{},{},{}],
+                        [{ text: data.datos.almacen_solicitante.unidad_medica.nombre, style: 'tableHeaderTop', colSpan: 5, alignment: 'center' },{},{},{},{}],
+
                         [
-                            { text: 'NO. DE PEDIDO', style: 'tableHeader', colSpan:2,  alignment: 'center' },{},
-                            { text: 'UNIDAD MÉDICA', style: 'tableHeader', colSpan:3, alignment: 'center' },{},{},
-                            { text: 'LOTES A ADJUDICAR', style: 'tableHeader', colSpan:2, alignment: 'center' },{}
+                            { text: 'ALMACÉN SOLICITANTE', style: 'tableHeader', colSpan: 2, alignment: 'left' },{},{ text: data.datos.almacen_solicitante.nombre, style: 'tableHeader', alignment: 'left' },
+                            { text: 'No. PEDIDO', style: 'tableHeader', alignment: 'right' },{ text: data.datos.id , style: 'tableHeader', alignment: 'center' }
                         ],
                         [
-                            { text: 'No. 23', style: 'tableHeaderData',  colSpan:2, alignment: 'center' },{},
-                            { text: 'Nombre Unidad Medica', style: 'tableHeaderData', colSpan:3,  alignment: 'center' },{},{},
-                            { text: '9999', style: 'tableHeaderData',  colSpan:2, alignment: 'center' },{}
+                            { text: 'ALMACÉN AL QUE SOLICTA', style: 'tableHeader', colSpan: 2, alignment: 'left' },{},{ text: data.datos.almacen_proveedor.nombre, style: 'tableHeader', alignment: 'left' },
+                            { text: 'TOTAL DE CLAVES', style: 'tableHeader', alignment: 'right' },{ text: data.lista.length, style: 'tableHeader', alignment: 'center' }
                         ],
                         [
                             { text: 'NO. DE LOTE', style: 'tableHeader', alignment: 'center'},
                             { text: 'CLAVE', style: 'tableHeader', alignment: 'center'},
                             { text: 'DESCRIPCIÓN DEL INSUMO', style: 'tableHeader', alignment: 'center', colSpan:2},{},
                             //{ text: 'PRESENTACIÓN', style: 'tableHeader', alignment: 'center'},
-                            { text: 'CANTIDAD', style: 'tableHeader', alignment: 'center'},
-                            { text: 'PRECIO UNITARIO', style: 'tableHeader', alignment: 'center'},
-                            { text: 'TOTAL', style: 'tableHeader', alignment: 'center'}
+                            { text: 'CANTIDAD', style: 'tableHeader', alignment: 'center'}
                         ]
                         //Body -> insumos
                     ]
@@ -59,7 +56,7 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
                     paddingLeft: function(i, node) { return 0; },
                     paddingRight: function(i, node) { return 0; },
                     hLineWidth: function(i, node){
-                        if (i<2 ){ return 0;} else {
+                        if (i<3 ){ return 0;} else {
                             return 0.25
                         }
                         return (i === 0 || i === node.table.body.length) ? 0.5 : 0.5;
@@ -74,7 +71,7 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
                             Si se agregan mas filas solo debemos aumentar este numero a modo de cuadrar
                             el encabezado
                         */
-                        if (contadorLineasHorizontalesV > 4){
+                        if (contadorLineasHorizontalesV > 5){
                             return 0.5
                         } else {
                             return 0
@@ -139,8 +136,8 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
             }
         };
 
-        //console.log(data.lista);
-
+        var suma_total_insumos = 0;
+        
         for(var i in data.lista){
             var insumo = data.lista[i];
             var presentacion = 'PIEZA';
@@ -152,34 +149,25 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
                 { text: insumo.clave, style: 'tableRow', alignment: 'center'},
                 { text: insumo.descripcion, style: 'tableRow', alignment: 'left', colSpan:2},{},
                 //{ text: presentacion, style: 'tableRow', alignment: 'center'},
-                { text: insumo.cantidad, style: 'tableRow', alignment: 'center'},
-                { text: '$ 0.00', style: 'tableRow', alignment: 'center'},
-                { text: '$ 0.00', style: 'tableRow', alignment: 'center'}
+                { text: insumo.cantidad, style: 'tableRow', alignment: 'center'}
             ]);
+            suma_total_insumos += insumo.cantidad;
         }
 
         dd.content[0].table.body.push(
             // Footer
             [
-                { text: '', style: 'tableHeader', colSpan:5, rowSpan:3,  alignment: 'center' },
-                '','','','',{ text: 'SUBTOTAL', style: 'tableHeader',  alignment: 'right' },{ text: '$ 9,999.99', style: 'tableRow', alignment: 'center'}
-            ],
-            [
-                '','','','','',
-                { text: 'IVA', style: 'tableHeader',  alignment: 'right' },{ text: '$  9,999.99', style: 'tableRow', alignment: 'center'} 
-            ],
-            [
-                '','','','','',
-                { text: 'TOTAL', style: 'tableHeader',  alignment: 'right' },{ text: '$  9,999.99', style: 'tableRow', alignment: 'center'} 
+                { text: '', style: 'tableHeader', colSpan:3, alignment: 'center' },'','',
+                { text: 'TOTAL', style: 'tableHeader',  alignment: 'right' },{ text: suma_total_insumos, style: 'tableRow', alignment: 'center'}
             ],
             // Firmas
             [{ 
                 table: {
-                    widths: [ '*', '*',  '*'],
+                    widths: [ '*', '*'],
                     body: [
-                        [ 'SOLICITA', 'DIRECCIÓN O UNIDAD', { text: '',  rowSpan:3 }],
-                        [{text:'\n\n\n\n'+'Coordinacion de abasto',style:'tableRow'},{text:'\n\n\n\n'+'director unidad medica',style:'tableRow'},''],
-                        ['COORDINADOR DE ABASTO ','DIRECTORA DE ATENCIÓN MÉDICA','']
+                        [ 'SOLICITA', { text: '',  rowSpan:3 }],
+                        [{text:'\n\n\n\n'+'Coordinacion de abasto',style:'tableRow'},''],
+                        ['COORDINADOR DE ABASTO ','']
                     ],
                 },
                 layout: {
@@ -196,8 +184,8 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
                         return 0.5;
                     },
                 },
-                style: 'tableHeader', 	margin: [0, 0, 0, 0],colSpan: 7, alignment: 'center' ,
-            },{},{},{},{},{},{}]
+                style: 'tableHeader', 	margin: [0, 0, 0, 0],colSpan: 5, alignment: 'center' ,
+            },{},{},{},{}]
         );
 
         pdfMake.createPdf( dd ).getBase64( function( base64 ) {
