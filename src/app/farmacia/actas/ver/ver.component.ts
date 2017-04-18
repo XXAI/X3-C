@@ -20,8 +20,8 @@ import  * as FileSaver    from 'file-saver';
 import { Mensaje } from '../../../mensaje';
 
 import { AlmacenesService } from '../../../catalogos/almacenes/almacenes.service';
-import { PedidosService } from '../pedidos.service';
-import { Pedido } from '../pedido';
+import { ActasService } from '../actas.service';
+import { Pedido } from '../../pedidos/pedido';
 import { Almacen } from '../../../catalogos/almacenes/almacen';
 
 @Component({
@@ -57,7 +57,11 @@ export class VerComponent implements OnInit {
   // # SECCION: Pedido
 
   private almacenes: Almacen[];
-  private pedido: Pedido;
+
+  // Los pedidos tienen que ser en un array por si se va a generar mas de un pedido de golpe
+  private pedidos: Pedido[] = []; 
+  // esta variable es para saber el pedido seleccionado (por si hay mas)
+  private pedidoActivo:number = 0; 
   
   // # FIN SECCION
 
@@ -73,7 +77,7 @@ export class VerComponent implements OnInit {
     private location: Location, 
     private route: ActivatedRoute,
     private _ngZone: NgZone, 
-    private pedidosService: PedidosService,
+    private actasService: ActasService,
     private almacenesService: AlmacenesService,
     private fb: FormBuilder
   ) { }
@@ -107,33 +111,35 @@ export class VerComponent implements OnInit {
     };
     
     // Inicialicemos el pedido
-    this.pedido = new Pedido(true);
+    this.pedidos.push(new Pedido(true) );
 
     this.route.params.subscribe(params => {
       //this.id = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number
       if(params['id']){
-        this.pedido.id = params['id'];
+        this.pedidos[0].id = params['id'];
         //cargar datos del pedido
         this.esEditar = true;
         this.formularioTitulo = 'Editar';
 
-        this.pedidosService.ver(params['id']).subscribe(
+        this.actasService.ver(params['id']).subscribe(
           pedido => {
             this.cargando = false;
             //this.datosCargados = true;
             //this.pedidos[0].datos.patchValue(pedido);
-            this.pedido.datosImprimir = pedido;
+            this.pedidos[0].datosImprimir = pedido;
 
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];
               let insumo = dato.insumos_con_descripcion;
               insumo.cantidad = +dato.cantidad_solicitada_um;
-              this.pedido.lista.push(insumo);
+              this.pedidos[0].lista.push(insumo);
               this.listaClaveAgregadas.push(insumo.clave);
             }
             pedido.insumos = undefined;
-            this.pedido.indexar();
-            this.pedido.listar(1);
+            this.pedidos[0].indexar();
+            this.pedidos[0].listar(1);
+
+            console.log(this.pedidos[0]);
           },
           error => {
             this.cargando = false;
@@ -169,17 +175,23 @@ export class VerComponent implements OnInit {
   }
 
   obtenerDireccion(): string{
-    if(this.pedido.datosImprimir){
-      if(this.pedido.datosImprimir.status == 'ES'){
-        return '/farmacia/pedidos/en-espera';
-      }else if(this.pedido.datosImprimir.status == 'PE'){
-        return '/farmacia/pedidos/pendientes';
-      }else if(this.pedido.datosImprimir.status == 'FI'){
-        return '/farmacia/pedidos/finalizados';
+    if(this.pedidos[this.pedidoActivo].datosImprimir){
+      if(this.pedidos[this.pedidoActivo].datosImprimir.status == 'ES'){
+        return '/farmacia/actas/en-espera';
+      }else if(this.pedidos[this.pedidoActivo].datosImprimir.status == 'PE'){
+        return '/farmacia/actas/pendientes';
+      }else if(this.pedidos[this.pedidoActivo].datosImprimir.status == 'FI'){
+        return '/farmacia/actas/finalizados';
       }
     }
   }
 
+  toggleModalInsumos(){
+    //console.log(this.mostrarModalInsumos)
+    this.mostrarModalInsumos = !this.mostrarModalInsumos
+    //console.log(this.mostrarModalInsumos)
+  }
+  
   buscar(e: KeyboardEvent, input:HTMLInputElement, inputAnterior: HTMLInputElement,  parametros:any[]){
     
     let term = input.value;
@@ -191,8 +203,8 @@ export class VerComponent implements OnInit {
       input.value = "";
       inputAnterior.value = "";
 
-      this.pedido.filtro.activo = false;
-      this.pedido.filtro.lista = [];      
+      this.pedidos[this.pedidoActivo].filtro.activo = false;
+      this.pedidos[this.pedidoActivo].filtro.lista = [];      
 
       return;      
     }
@@ -210,10 +222,10 @@ export class VerComponent implements OnInit {
     inputAnterior.value = term;    
 
     if(term != ""){
-      this.pedido.filtro.activo = true;      
+      this.pedidos[this.pedidoActivo].filtro.activo = true;      
     } else {
-      this.pedido.filtro.activo = false;
-      this.pedido.filtro.lista = [];
+      this.pedidos[this.pedidoActivo].filtro.activo = false;
+      this.pedidos[this.pedidoActivo].filtro.lista = [];
       return;
     }
 
@@ -225,7 +237,7 @@ export class VerComponent implements OnInit {
         continue;
       }
             
-      let listaFiltrada = this.pedido.lista.filter((item)=> {   
+      let listaFiltrada = this.pedidos[this.pedidoActivo].lista.filter((item)=> {   
         var cadena = "";
         let campos = parametros[i].campos;
         for (let l in campos){
@@ -264,15 +276,16 @@ export class VerComponent implements OnInit {
           }
         };
       }
-      this.pedido.filtro.lista = match;
+      this.pedidos[this.pedidoActivo].filtro.lista = match;
     } else {
-      this.pedido.filtro.lista = arregloResultados[0];
+      this.pedidos[this.pedidoActivo].filtro.lista = arregloResultados[0];
     }
 
-    this.pedido.filtro.indexar(false);
+
+    this.pedidos[this.pedidoActivo].filtro.indexar(false);
     
-    this.pedido.filtro.paginacion.paginaActual = 1;
-    this.pedido.filtro.listar(1); 
+    this.pedidos[this.pedidoActivo].filtro.paginacion.paginaActual = 1;
+    this.pedidos[this.pedidoActivo].filtro.listar(1); 
 
   }
 
@@ -301,10 +314,10 @@ export class VerComponent implements OnInit {
       event.preventDefault();
       event.stopPropagation();
 
-      if (!this.pedido.filtro.activo){
-        this.pedido.paginaSiguiente();
+      if (!this.pedidos[this.pedidoActivo].filtro.activo){
+        this.pedidos[this.pedidoActivo].paginaSiguiente();
       } else {
-        this.pedido.filtro.paginaSiguiente();
+        this.pedidos[this.pedidoActivo].filtro.paginaSiguiente();
       }
       
     }
@@ -314,10 +327,10 @@ export class VerComponent implements OnInit {
       event.preventDefault();
       event.stopPropagation();
 
-      if (!this.pedido.filtro.activo){
-        this.pedido.paginaAnterior();
+      if (!this.pedidos[this.pedidoActivo].filtro.activo){
+        this.pedidos[this.pedidoActivo].paginaAnterior();
       } else {
-        this.pedido.filtro.paginaAnterior();
+        this.pedidos[this.pedidoActivo].filtro.paginaAnterior();
       }
       
     }
@@ -332,8 +345,8 @@ export class VerComponent implements OnInit {
     try {
       this.cargandoPdf = true;
       var pedidos_imprimir = {
-        datos: this.pedido.datosImprimir,
-        lista: this.pedido.lista
+        datos:{almacen:'solicitar',solicitante:'unidad',observaciones:'texto'},
+        lista: this.pedidos[this.pedidoActivo].lista
       };
       this.pdfworker.postMessage(JSON.stringify(pedidos_imprimir));
     } catch (e){

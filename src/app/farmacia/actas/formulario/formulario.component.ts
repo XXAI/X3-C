@@ -20,8 +20,8 @@ import  * as FileSaver    from 'file-saver';
 import { Mensaje } from '../../../mensaje';
 
 import { AlmacenesService } from '../../../catalogos/almacenes/almacenes.service';
-import { PedidosService } from '../pedidos.service';
-import { Pedido } from '../pedido';
+import { ActasService } from '../actas.service';
+import { Pedido } from '../../pedidos/pedido';
 import { Almacen } from '../../../catalogos/almacenes/almacen';
 
 @Component({
@@ -58,8 +58,10 @@ export class FormularioComponent implements OnInit {
 
   private almacenes: Almacen[];
 
-  // Harima: Se genera un unico pedido
-  private pedido: Pedido;
+  // Los pedidos tienen que ser en un array por si se va a generar mas de un pedido de golpe
+  private pedidos: Pedido[] = []; 
+  // esta variable es para saber el pedido seleccionado (por si hay mas)
+  private pedidoActivo:number = 0; 
   
   // # FIN SECCION
 
@@ -76,7 +78,7 @@ export class FormularioComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private _ngZone: NgZone, 
-    private pedidosService: PedidosService,
+    private actasService: ActasService,
     private almacenesService: AlmacenesService,
     private fb: FormBuilder
   ) { }
@@ -112,33 +114,32 @@ export class FormularioComponent implements OnInit {
       console.log(e)
     };
     
-    // Harima: Inicializamos el pedido
-    this.pedido = new Pedido(true);
+    // Inicialicemos el pedido
+    this.pedidos.push(new Pedido(true) );
 
     this.route.params.subscribe(params => {
       //this.id = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number
       if(params['id']){
-        this.pedido.id = params['id'];
-
+        this.pedidos[0].id = params['id'];
         //cargar datos del pedido
         this.esEditar = true;
         this.formularioTitulo = 'Editar';
 
-        this.pedidosService.ver(params['id']).subscribe(
+        this.actasService.ver(params['id']).subscribe(
           pedido => {
             this.cargando = false;
             //this.datosCargados = true;
-            this.pedido.datos.patchValue(pedido);
+            this.pedidos[0].datos.patchValue(pedido);
 
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];
               let insumo = dato.insumos_con_descripcion;
               insumo.cantidad = +dato.cantidad_solicitada_um;
-              this.pedido.lista.push(insumo);
+              this.pedidos[0].lista.push(insumo);
               this.listaClaveAgregadas.push(insumo.clave);
             }
-            this.pedido.indexar();
-            this.pedido.listar(1);
+            this.pedidos[0].indexar();
+            this.pedidos[0].listar(1);
           },
           error => {
             this.cargando = false;
@@ -174,8 +175,8 @@ export class FormularioComponent implements OnInit {
   }
 
   obtenerDireccion(): string{
-    //if(this.pedidos[this.pedidoActivo].status == 'AB'){
-    if(this.pedido.status == 'AB'){
+    console.log('dpdpd');
+    if(this.pedidos[this.pedidoActivo].status == 'AB'){
       return '/farmacia/pedidos/abiertos';
     }else{
       return '/farmacia/pedidos/en-espera';
@@ -191,16 +192,20 @@ export class FormularioComponent implements OnInit {
   // # SECCION Funciones globales
   
   agregarItem(item:any = {}){
-    let auxPaginasTotales = this.pedido.paginacion.totalPaginas;
-    this.pedido.lista.push(item);
-    this.pedido.indexar();
+    let auxPaginasTotales = this.pedidos[this.pedidoActivo].paginacion.totalPaginas;
+   
+    this.pedidos[this.pedidoActivo].lista.push(item);
+    
+    this.pedidos[this.pedidoActivo].indexar();
 
-    if(this.pedido.paginacion.lista.length == this.pedido.paginacion.resultadosPorPagina
-      && this.pedido.paginacion.paginaActual == auxPaginasTotales
-      && !this.pedido.filtro.activo){
-        this.pedido.listar(this.pedido.paginacion.paginaActual + 1);
+    // El siguiente proceso es para cambiar de página automáticamente si se encuentra en la última.
+    
+    if(this.pedidos[this.pedidoActivo].paginacion.lista.length == this.pedidos[this.pedidoActivo].paginacion.resultadosPorPagina
+      && this.pedidos[this.pedidoActivo].paginacion.paginaActual == auxPaginasTotales
+      && !this.pedidos[this.pedidoActivo].filtro.activo){
+        this.pedidos[this.pedidoActivo].listar(this.pedidos[this.pedidoActivo].paginacion.paginaActual + 1);
     } else {
-      this.pedido.listar(this.pedido.paginacion.paginaActual);
+      this.pedidos[this.pedidoActivo].listar(this.pedidos[this.pedidoActivo].paginacion.paginaActual);
     }
     
   }
@@ -216,14 +221,16 @@ export class FormularioComponent implements OnInit {
       input.value = "";
       inputAnterior.value = "";
 
-      this.pedido.filtro.activo = false;
-      this.pedido.filtro.lista = [];
+      this.pedidos[this.pedidoActivo].filtro.activo = false;
+      this.pedidos[this.pedidoActivo].filtro.lista = [];      
 
       return;      
     }
 
+    
     //Verificamos que la busqueda no sea la misma que la anterior para no filtrar en vano
     if(inputAnterior.value == term){
+      
       return
     }
 
@@ -233,10 +240,10 @@ export class FormularioComponent implements OnInit {
     inputAnterior.value = term;    
 
     if(term != ""){
-      this.pedido.filtro.activo = true;
+      this.pedidos[this.pedidoActivo].filtro.activo = true;      
     } else {
-      this.pedido.filtro.activo = false;
-      this.pedido.filtro.lista = [];
+      this.pedidos[this.pedidoActivo].filtro.activo = false;
+      this.pedidos[this.pedidoActivo].filtro.lista = [];
       return;
     }
 
@@ -247,8 +254,8 @@ export class FormularioComponent implements OnInit {
       if(termino == ""){
         continue;
       }
-      
-      let listaFiltrada = this.pedido.lista.filter((item)=> {   
+            
+      let listaFiltrada = this.pedidos[this.pedidoActivo].lista.filter((item)=> {   
         var cadena = "";
         let campos = parametros[i].campos;
         for (let l in campos){
@@ -287,13 +294,17 @@ export class FormularioComponent implements OnInit {
           }
         };
       }
-      this.pedido.filtro.lista = match;
+      this.pedidos[this.pedidoActivo].filtro.lista = match;
     } else {
-      this.pedido.filtro.lista = arregloResultados[0];
+      this.pedidos[this.pedidoActivo].filtro.lista = arregloResultados[0];
     }
-    this.pedido.filtro.indexar(false);
-    this.pedido.filtro.paginacion.paginaActual = 1;
-    this.pedido.filtro.listar(1); 
+
+
+    this.pedidos[this.pedidoActivo].filtro.indexar(false);
+    
+    this.pedidos[this.pedidoActivo].filtro.paginacion.paginaActual = 1;
+    this.pedidos[this.pedidoActivo].filtro.listar(1); 
+
   }
 
   //Harima: necesitamos eliminar también de la lista de claves agregadas
@@ -304,11 +315,9 @@ export class FormularioComponent implements OnInit {
 
     //Harima: si no es el filtro(busqueda), borrar de la lista principal de insumos
     if(!filtro){
-      //this.pedidos[this.pedidoActivo].eliminarItem(item,index);
-      this.pedido.eliminarItem(item,index);
+      this.pedidos[this.pedidoActivo].eliminarItem(item,index);
     }else{
-      //this.pedidos[this.pedidoActivo].filtro.eliminarItem(item,index);
-      this.pedido.filtro.eliminarItem(item,index);
+      this.pedidos[this.pedidoActivo].filtro.eliminarItem(item,index);
     }
   }
 
@@ -319,7 +328,7 @@ export class FormularioComponent implements OnInit {
     // Mostrar el componente de Ficha Informativa
     // Falta hacerlo sumamiiiii :)
     alert(clave);
-    //console.log(clave);
+    console.log(clave);
   }
 
   finalizar(){
@@ -328,26 +337,22 @@ export class FormularioComponent implements OnInit {
 
   guardar(finalizar:boolean = false){
     this.cargando = true;
-    var guardar_pedido;
-    /*var guardar_pedidos = [];
+    var guardar_pedidos = [];
     for(var i in this.pedidos){
       guardar_pedidos.push(this.pedidos[i].obtenerDatosGuardar());
-    }*/
-    guardar_pedido = this.pedido.obtenerDatosGuardar();
+    }
 
     if(finalizar){
-      guardar_pedido.datos.status = 'ES';
-      /*for(var i in guardar_pedidos){
+      for(var i in guardar_pedidos){
         guardar_pedidos[i].datos.status = 'ES';
-      }*/
+      }
     }
 
     if(this.esEditar){
-      //this.pedidosService.editar(this.pedidos[0].id,guardar_pedidos).subscribe(
-      this.pedidosService.editar(this.pedido.id,guardar_pedido).subscribe(
+      this.actasService.editar(this.pedidos[0].id,guardar_pedidos).subscribe(
         pedido => {
           this.cargando = false;
-          //console.log('Pedido editado');
+          console.log('Pedido editado');
           if(pedido.status == 'ES'){
             this.router.navigate(['/farmacia/pedidos/ver/'+pedido.id]);
           }
@@ -355,7 +360,7 @@ export class FormularioComponent implements OnInit {
         },
         error => {
           this.cargando = false;
-          //console.log(error);
+          console.log(error);
           this.mensajeError = new Mensaje(true);
           this.mensajeError.texto = 'No especificado';
           this.mensajeError.mostrar = true;
@@ -392,11 +397,11 @@ export class FormularioComponent implements OnInit {
         }
       );
     }else{
-      this.pedidosService.crear(guardar_pedido).subscribe(
+      this.actasService.crear(guardar_pedidos).subscribe(
         pedido => {
           this.cargando = false;
-          //console.log('Pedido creado');
-          //console.log(pedido);
+          console.log('Pedido creado');
+          console.log(pedido);
           this.router.navigate(['/farmacia/pedidos/editar/'+pedido.id]);
           //hacer cosas para dejar editar
         },
@@ -449,7 +454,9 @@ export class FormularioComponent implements OnInit {
           this.almacenes = almacenes;
 
           if(almacenes.length == 1 && !this.esEditar){
-            this.pedido.datos.setValue({almacen_proveedor:almacenes[0].id,descripcion:'',observaciones:''});
+            for(let i in this.pedidos){
+              this.pedidos[i].datos.setValue({almacen_proveedor:almacenes[0].id,descripcion:'',observaciones:''});
+            }
           }
 
           console.log("Almacenes cargados.");
@@ -506,10 +513,10 @@ export class FormularioComponent implements OnInit {
       event.preventDefault();
       event.stopPropagation();
 
-      if (!this.pedido.filtro.activo){
-        this.pedido.paginaSiguiente();
+      if (!this.pedidos[this.pedidoActivo].filtro.activo){
+        this.pedidos[this.pedidoActivo].paginaSiguiente();
       } else {
-        this.pedido.filtro.paginaSiguiente();
+        this.pedidos[this.pedidoActivo].filtro.paginaSiguiente();
       }
       
     }
@@ -519,11 +526,12 @@ export class FormularioComponent implements OnInit {
       event.preventDefault();
       event.stopPropagation();
 
-      if (!this.pedido.filtro.activo){
-        this.pedido.paginaAnterior();
+      if (!this.pedidos[this.pedidoActivo].filtro.activo){
+        this.pedidos[this.pedidoActivo].paginaAnterior();
       } else {
-        this.pedido.filtro.paginaAnterior();
+        this.pedidos[this.pedidoActivo].filtro.paginaAnterior();
       }
+      
     }
     
         
@@ -533,11 +541,11 @@ export class FormularioComponent implements OnInit {
 
   imprimir() {
     try {
-      console.log(this.pedido);
+      console.log(this.pedidos[this.pedidoActivo]);
       this.cargandoPdf = true;
       var pedidos_imprimir = {
         datos:{almacen:'solicitar',solicitante:'unidad',observaciones:'texto'},
-        lista: this.pedido.lista
+        lista: this.pedidos[this.pedidoActivo].lista
       };
       this.pdfworker.postMessage(JSON.stringify(pedidos_imprimir));
     } catch (e){

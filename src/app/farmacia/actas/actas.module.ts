@@ -11,18 +11,15 @@ import { PaginacionModule } from '../../paginacion/paginacion.module';
 import { BuscarInsumosModule } from '../buscar-insumos/buscar-insumos.module';
 import { IndexFarmaciaModule } from '../index-farmacia/index-farmacia.module';
 
-import { PedidosRoutingModule } from './pedidos-routing.module';
+import { ActasRoutingModule } from './actas-routing.module';
 
-import { PedidosComponent } from './pedidos.component';
+import { ActasComponent } from './actas.component';
 import { MenuLateralComponent } from './menu-lateral/menu-lateral.component';
 import { ListaComponent } from './lista/lista.component';
-import { PedidosService } from './pedidos.service';
+import { ActasService } from './actas.service';
 import { AlmacenesService } from '../../catalogos/almacenes/almacenes.service';
-import { StockService } from '../stock/stock.service';
-
 import { VerComponent } from './ver/ver.component';
 import { FormularioComponent } from './formulario/formulario.component';
-import { RecepcionComponent } from './recepcion/recepcion.component';
 
 @NgModule({
   imports: [
@@ -34,10 +31,10 @@ import { RecepcionComponent } from './recepcion/recepcion.component';
     BloquearPantallaModule,
     PaginacionModule,
     BuscarInsumosModule,
-    PedidosRoutingModule,
+    ActasRoutingModule,
     IndexFarmaciaModule
   ],
-  declarations: [PedidosComponent, MenuLateralComponent, ListaComponent, VerComponent, FormularioComponent, RecepcionComponent],
-  providers:[PedidosService,AlmacenesService,StockService]
+  declarations: [ActasComponent, MenuLateralComponent, ListaComponent, VerComponent, FormularioComponent],
+  providers:[ActasService,AlmacenesService]
 })
-export class PedidosModule { }
+export class ActasModule { }

@@ -22,7 +22,7 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
                     headerRows: 4,
                     dontBreakRows: true,
                     //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
-                    widths: [ 35, 70, 'auto', 60, 60],
+                    widths: [ 35, 70, 'auto', 'auto', 60],
                     body: [
                         [{
                             image: 'header',
@@ -30,15 +30,15 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
                             style: 'tableHeaderTop', colSpan: 5, alignment: 'center'
                         },{},{},{},{}],
                         [{ text: 'PEDIDO DE INSUMOS', style: 'tableHeaderTop', colSpan: 5, alignment: 'center' },{},{},{},{}],
-                        [{ text: 'NOMBRE DE LA UNIDAD MEDICA (CLUES)', style: 'tableHeaderTop', colSpan: 5, alignment: 'center' },{},{},{},{}],
+                        [{ text: data.datos.almacen_solicitante.unidad_medica.nombre, style: 'tableHeaderTop', colSpan: 5, alignment: 'center' },{},{},{},{}],
 
                         [
-                            { text: 'ALMACÉN SOLICITANTE', style: 'tableHeader', colSpan: 2, alignment: 'left' },{},{ text: 'SOLICITANTE', style: 'tableHeader', alignment: 'left' },
-                            { text: 'No. PEDIDO', style: 'tableHeader', alignment: 'left' },{ text: '' , style: 'tableHeader', alignment: 'center' }
+                            { text: 'ALMACÉN SOLICITANTE', style: 'tableHeader', colSpan: 2, alignment: 'left' },{},{ text: data.datos.almacen_solicitante.nombre, style: 'tableHeader', alignment: 'left' },
+                            { text: 'No. PEDIDO', style: 'tableHeader', alignment: 'right' },{ text: data.datos.id , style: 'tableHeader', alignment: 'center' }
                         ],
                         [
-                            { text: 'ALMACÉN AL QUE SOLICTA', style: 'tableHeader', colSpan: 2, alignment: 'left' },{},{ text: 'PROVEE', style: 'tableHeader', alignment: 'left' },
-                            { text: 'TOTAL DE CLAVES', style: 'tableHeader', alignment: 'left' },{ text: data.lista.length, style: 'tableHeader', alignment: 'center' }
+                            { text: 'ALMACÉN AL QUE SOLICTA', style: 'tableHeader', colSpan: 2, alignment: 'left' },{},{ text: data.datos.almacen_proveedor.nombre, style: 'tableHeader', alignment: 'left' },
+                            { text: 'TOTAL DE CLAVES', style: 'tableHeader', alignment: 'right' },{ text: data.lista.length, style: 'tableHeader', alignment: 'center' }
                         ],
                         [
                             { text: 'NO. DE LOTE', style: 'tableHeader', alignment: 'center'},

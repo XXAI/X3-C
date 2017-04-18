@@ -9,14 +9,14 @@
             </section>
 
             <div style="padding: 1em;">
-              <form name="form" novalidate [formGroup]="pedidos[pedidoActivo].datos">
+              <form name="form" novalidate [formGroup]="pedido.datos">
                 <label class="label">Descripción:</label>
                 <p class="control is-expanded  has-icon has-icon-right">
-                  <input type="text" class="input is-fullwidth" [ngClass]="{'is-danger': pedidos[pedidoActivo].tieneError('descripcion','required')}" formControlName="descripcion"/>
-                  <span class="icon is-small" *ngIf="pedidos[pedidoActivo].tieneError('descripcion','required')">
+                  <input type="text" class="input is-fullwidth" [ngClass]="{'is-danger': pedido.tieneError('descripcion','required')}" formControlName="descripcion"/>
+                  <span class="icon is-small" *ngIf="pedido.tieneError('descripcion','required')">
                     <i class="fa fa-warning"></i>
                   </span>
-                  <span class="help is-danger" *ngIf="pedidos[pedidoActivo].tieneError('descripcion','required')">Este campo es requerido.</span>
+                  <span class="help is-danger" *ngIf="pedido.tieneError('descripcion','required')">Este campo es requerido.</span>
                 </p>
 
                 <label class="label">Solicitar a:</label>
@@ -26,7 +26,7 @@
                       <option *ngFor="let item of almacenes" value="{{item.id}}">{{ item.nombre }}</option>
                     </select>
                   </span>
-                  <span class="help is-danger" *ngIf="pedidos[pedidoActivo].tieneError('almacen_proveedor','required')">Debe elegir a quien solicitar.</span>
+                  <span class="help is-danger" *ngIf="pedido.tieneError('almacen_proveedor','required')">Debe elegir a quien solicitar.</span>
                   <span class="help " *ngIf="almacenes?.length == 0"><b>La lista de roles está vacía.</b> <a (click)="cargarRoles()"><span class="icon is-small"><i class="fa fa-refresh"></i></span> <span>Actualizar</span></a></span>
                 </p>
                 
@@ -56,17 +56,12 @@
         
     </div>
     <div class="column" >
-        <div class="tabs  is-boxed" style="margin-bottom:0px; " *ngIf="pedidos.length > 1" >
-          <ul>
-            <li *ngFor="let pedido of pedidos; let i = index" [ngClass]="{ 'is-active': i == pedidoActivo}"><a (click)="pedidoActivo = i">{{ pedido.nombre}}</a></li>
-          </ul>
-        </div>
-        <div *ngFor="let pedido of pedidos; let indexPedido = index" class="contenedor-pedido" [ngClass]="{ 'con-tabs' : pedidos.length > 1 }" [hidden]="indexPedido != pedidoActivo">
+        <div class="contenedor-pedido">
           
-          <div class="top-bar" [ngClass]="{'is-primary':!pedido.filtro.activo && pedidos.length == 1,'is-dark': pedido.filtro.activo }">
+          <div class="top-bar" [ngClass]="{'is-primary':!pedido.filtro.activo,'is-dark': pedido.filtro.activo }">
             <span *ngIf="!pedido.filtro.activo">Claves: {{ pedido.lista.length }} Insumos: {{pedido.totalInsumos}}</span>
             <span *ngIf="pedido.filtro.activo"><span class="icon"><i class="fa fa-search"></i></span> Resultados: {{ pedido.filtro.lista.length }}</span>
-            <a class="button is-primary  is-pulled-right" [ngClass]="{ 'is-inverted': pedidos.length == 1 || pedido.filtro.activo }" style="margin-top:-0.25em;" title="Ctrl + espacio" (click)="toggleModalInsumos(); ">
+            <a class="button is-primary  is-pulled-right" [ngClass]="{ 'is-inverted': pedido.filtro.activo }" style="margin-top:-0.25em;" title="Ctrl + espacio" (click)="toggleModalInsumos(); ">
               <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span>
             </a>
           </div> 

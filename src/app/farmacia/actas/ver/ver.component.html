@@ -11,16 +11,16 @@
             <div style="padding: 1em;">
                 <label class="label">Descripción:</label>
                 <p class="control">
-                  <input type="text" class="input is-fullwidth" readonly="readonly" value="{{(pedido.datosImprimir)?pedido.datosImprimir.descripcion:''}}"/>
+                  <input type="text" class="input is-fullwidth" readonly="readonly" value="{{(pedidos[pedidoActivo].datosImprimir)?pedidos[pedidoActivo].datosImprimir.descripcion:''}}"/>
                 </p>
 
                 <label class="label">Solicitar a:</label>
                 <p class="control">
-                  <input type="text" class="input is-fullwidth" readonly="readonly" value="{{(pedido.datosImprimir)?pedido.datosImprimir.almacen_proveedor.nombre:''}}"/>
+                  <input type="text" class="input is-fullwidth" readonly="readonly" value="{{(pedidos[pedidoActivo].datosImprimir)?pedidos[pedidoActivo].datosImprimir.almacen_proveedor.nombre:''}}"/>
                 </p>
                 
                 <div class="control">
-                  <textarea name="observaciones" class="textarea" placeholder="Observaciones"  readonly="readonly">{{(pedido.datosImprimir)?pedido.datosImprimir.observaciones:''}}</textarea>
+                  <textarea name="observaciones" class="textarea" placeholder="Observaciones"  readonly="readonly">{{(pedidos[pedidoActivo].datosImprimir)?pedidos[pedidoActivo].datosImprimir.observaciones:''}}</textarea>
                 </div>
 
               <div class="control is-grouped" style="padding-top:10px;">
@@ -37,9 +37,14 @@
         
     </div>
     <div class="column" >
-        <div class="contenedor-pedido">
+        <div class="tabs  is-boxed" style="margin-bottom:0px; " *ngIf="pedidos.length > 1" >
+          <ul>
+            <li *ngFor="let pedido of pedidos; let i = index" [ngClass]="{ 'is-active': i == pedidoActivo}"><a (click)="pedidoActivo = i">{{ pedido.nombre}}</a></li>
+          </ul>
+        </div>
+        <div *ngFor="let pedido of pedidos; let indexPedido = index" class="contenedor-pedido" [ngClass]="{ 'con-tabs' : pedidos.length > 1 }" [hidden]="indexPedido != pedidoActivo">
           
-          <div class="top-bar" [ngClass]="{'is-primary':!pedido.filtro.activo,'is-dark': pedido.filtro.activo }">
+          <div class="top-bar" [ngClass]="{'is-primary':!pedido.filtro.activo && pedidos.length == 1,'is-dark': pedido.filtro.activo }">
             <span *ngIf="!pedido.filtro.activo">Claves: {{ pedido.lista.length }} Insumos: {{pedido.totalInsumos}}</span>
             <span *ngIf="pedido.filtro.activo"><span class="icon"><i class="fa fa-search"></i></span> Resultados: {{ pedido.filtro.lista.length }}</span>
           </div> 

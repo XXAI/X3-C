@@ -59,11 +59,7 @@
                         <td style="vertical-align: middle;"><a routerLink="{{obtenerDireccion(item.id)}}">{{ item.almacen_proveedor.nombre }}</a></td>
                         <td style="vertical-align: middle;"><a routerLink="{{obtenerDireccion(item.id)}}">{{ item.created_at | date:'dd/MM/y' }}</a></td>
                         <td style="vertical-align: middle;"><a routerLink="{{obtenerDireccion(item.id)}}">{{ item.created_at | date: 'HH:mm'}}</a></td>
-                        <td style="vertical-align: middle;" class="has-text-centered">
-                            <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
-                            <a *ngIf="!item.cargando && status == 'AB'" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
-                            <a *ngIf="!item.cargando && status == 'ES'" routerLink="/farmacia/pedidos/recepcion/{{item.id}}"><span class="icon"><i class="fa fa-cubes"></i></span></a>
-                        </td>
+                        <td style="vertical-align: middle;" class="has-text-centered"><span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>
                         
                     </tr>
                     <tr *ngIf="pedidos.length == 0">
