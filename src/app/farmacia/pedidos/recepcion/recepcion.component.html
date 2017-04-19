@@ -18,8 +18,8 @@
           </div>
           <div class="column is-4" style="text-align:center; ">
             <div style="margin:1em;">
-            <a  class="button is-primary" style="width:45%; margin-right:5%;" (click)="surtir()"> <span class="icon"><i class="fa fa-check"></i></span> <span>Finalizar</span></a>
-            <a  class="button is-white"  style="width:45%"  routerLink="/farmacia/entregas/nuevas"> <span class="icon"><i class="fa fa-save"></i></span> <span>Guardar</span></a>
+            <a  class="button is-primary" style="width:45%; margin-right:5%;" (click)="guardar(true)"> <span class="icon"><i class="fa fa-check"></i></span> <span>Finalizar</span></a>
+            <a  class="button is-white"  style="width:45%"   (click)="guardar()"> <span class="icon"><i class="fa fa-save"></i></span> <span>Guardar</span></a>
             </div>
           </div>
         </div>       
@@ -142,10 +142,6 @@
             <p class="control is-expanded  has-icon has-icon-right">
               <label class="label">Código de Barras</label>
               <input class="input" autofocus type="text" placeholder="Código de Barras" [(ngModel)]="formStock.codigo_barras">
-              <span class="icon is-small">
-                <i class="fa fa-warning"></i>
-              </span>
-              <span class="help is-danger">Este campo es requerido.</span>
             </p>
             <p class="control has-icon has-icon-right">
               <label class="label">Marca</label>
@@ -154,10 +150,6 @@
                   <option *ngFor="let item of marcas" [ngValue]="item">{{ item.nombre }}</option>
                 </select>
               </span>
-              <span class="icon is-small" >
-                <i class="fa fa-warning"></i>
-              </span>
-              <span class="help is-danger">Este campo es requerido.</span>
             </p>
           </div>
 
@@ -172,7 +164,7 @@
             </p>
             <p class="control is-expanded has-icon has-icon-right">
               <label class="label">Fecha de Caducidad</label>
-              <input class="input" type="text" placeholder="Fecha de Caducidad" [(ngModel)]="formStock.fecha_caducidad">
+              <input class="input" type="text" placeholder="dd/mm/aaaa" [(ngModel)]="formStock.fecha_caducidad">
               <span class="icon is-small" >
                 <i class="fa fa-warning"></i>
               </span>
@@ -197,7 +189,7 @@
                 </button>
             </p>
             <p class="control">
-                <button class="button is-medium " >
+                <button class="button is-medium "  (click)="cancelarCapturaStock()">
                   <span>Cancelar</span>
                 </button>
             </p>
