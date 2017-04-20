@@ -8,11 +8,12 @@ import { PedidosService } from '../pedidos.service';
 })
 export class MenuLateralComponent implements OnInit {
   private cargando: boolean = false;
-  private stats: any = { 
-    abiertos: 0,
-    en_espera: 0,
-    pendientes: 0,
-    en_camino: 0
+  private stats: any = {
+    todos: 0, 
+    borradores: 0,
+    en_transito: 0,
+    por_surtir: 0,
+    finalizados: 0
   };
 
   constructor(private pedidosService:PedidosService) { }

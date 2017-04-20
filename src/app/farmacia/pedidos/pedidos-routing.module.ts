@@ -10,17 +10,18 @@ import { RecepcionComponent } from './recepcion/recepcion.component';
 import { AuthGuard } from '../../auth-guard.service';
 
 const routes: Routes = [
-  { path: 'farmacia/pedidos', redirectTo: '/farmacia/pedidos/pendientes', pathMatch: 'full' },
+  { path: 'farmacia/pedidos', redirectTo: '/farmacia/pedidos/todos', pathMatch: 'full' },
   {
     path: 'farmacia/pedidos',
     children: [
-       { path: 'abiertos', component: ListaComponent},
-       { path: 'en-espera', component: ListaComponent},
-       { path: 'pendientes', component: ListaComponent},
-       { path: 'en-camino', component: ListaComponent},
+       { path: 'todos', component: ListaComponent},
+       { path: 'borradores', component: ListaComponent},
+       { path: 'en-transito', component: ListaComponent},
+       { path: 'por-surtir', component: ListaComponent},
        { path: 'finalizados', component: ListaComponent},
        { path: 'finalizados/completos', component: ListaComponent},
        { path: 'finalizados/incompletos', component: ListaComponent},
+       { path: 'finalizados/cancelados', component: ListaComponent},
        { path: 'nuevo', component: FormularioComponent},
        { path: 'editar/:id', component: FormularioComponent},
        { path: 'ver/:id', component: VerComponent},

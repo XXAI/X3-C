@@ -170,10 +170,10 @@ export class VerComponent implements OnInit {
 
   obtenerDireccion(): string{
     if(this.pedido.datosImprimir){
-      if(this.pedido.datosImprimir.status == 'ES'){
-        return '/farmacia/pedidos/en-espera';
-      }else if(this.pedido.datosImprimir.status == 'PE'){
-        return '/farmacia/pedidos/pendientes';
+      if(this.pedido.datosImprimir.status == 'PS'){
+        return '/farmacia/pedidos/por-surtir';
+      }else if(this.pedido.datosImprimir.status == 'ET'){
+        return '/farmacia/pedidos/en-transito';
       }else if(this.pedido.datosImprimir.status == 'FI'){
         return '/farmacia/pedidos/finalizados';
       }

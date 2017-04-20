@@ -35,9 +35,9 @@ export class ListaComponent implements OnInit {
   // # FIN SECCION
 
   // # SECCION: Lista
-  status: string = "ES";
-  titulo: string = "En espera";
-  icono = "fa-clock-o";
+  status: string;
+  titulo: string = "Pedidos";
+  icono = "fa-file";
   pedidos: Pedido[] = [];
   private paginaActual = 1;
   private resultadosPorPagina = 5;
@@ -62,8 +62,10 @@ export class ListaComponent implements OnInit {
 
   ngOnInit() {
     switch(this.route.snapshot.url[0].path){
-      case 'abiertos': this.status = "AB"; this.titulo = "Abiertos"; this.icono = "fa-pencil-square-o"; break;
-      case 'pendientes': this.status = "PE"; this.titulo = "Pendientes"; this.icono = "fa-minus-circle"; break;
+      //case 'todos': this.status = "TODO"; this.titulo = "Todos"; this.icono = "fa-file"; break;
+      case 'borradores': this.status = "BR"; this.titulo = "Borradores"; this.icono = "fa-pencil-square-o"; break;
+      case 'en-transito': this.status = "ET"; this.titulo = "En transito"; this.icono = "fa-clock-o"; break;
+      case 'por-surtir': this.status = "PS"; this.titulo = "Por surtir"; this.icono = "fa-truck"; break;
       case 'finalizados': 
           this.status = "FI";
           this.icono = "fa-check-circle";
@@ -72,20 +74,19 @@ export class ListaComponent implements OnInit {
               this.titulo = "Finalizados (completos)";
             } else if(this.route.snapshot.url[1].path == "incompletas"){
               this.titulo = "Finalizados (incompletos)";
+            } else if(this.route.snapshot.url[1].path == "cancelados"){
+              this.titulo = "Finalizados (cancelados)";
             } else {
               this.titulo = "Finalizados";
             }
           } else {
             this.titulo = "Finalizados";
           }
-          
-          
       break;
-      
-      default: this.status = "ES"; this.titulo = "En espera"; this.icono = "fa-clock-o"; break;
+      default: this.titulo = "Pedidos"; this.icono = "fa-file"; break;
     }
 
-    this.title.setTitle("Pedidos / Farmacia");
+    this.title.setTitle("Pedidos");
 
     this.listar(1);
     this.mensajeError = new Mensaje();
@@ -156,8 +157,8 @@ export class ListaComponent implements OnInit {
     );
   }
 
-  obtenerDireccion(id:string): string{
-    if(this.status == 'AB'){
+  obtenerDireccion(id:string, status:string): string{
+    if(status == 'BR'){
       return '/farmacia/pedidos/editar/'+id;
     }else{
       return '/farmacia/pedidos/ver/'+id;
@@ -221,7 +222,7 @@ export class ListaComponent implements OnInit {
 
   listar(pagina:number): void {
     this.paginaActual = pagina;
-    console.log("Cargando usuarios.");
+    console.log("Cargando pedidos.");
    
     this.cargando = true;
     this.pedidosService.lista(this.status, pagina,this.resultadosPorPagina).subscribe(
@@ -237,7 +238,7 @@ export class ListaComponent implements OnInit {
             this.indicePaginas.push(i+1);
           }
 
-          console.log("Usuarios cargados.");
+          console.log("Pedidos cargados.");
           
         },
         error => {

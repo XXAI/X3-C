@@ -40,14 +40,14 @@
                   <a class="button is-primary " (click)="guardar()" [ngClass]="{'is-loading': cargando}" >Guardar</a>
                 </p>
                 <p class="control" *ngIf="esEditar">
-                  <a class="button is-danger " (click)="finalizar()" [ngClass]="{'is-loading': cargando}" ><span class="icon"><i class="fa fa-check"></i></span><span>Enviar</span></a>
+                  <a class="button is-danger " (click)="finalizar()" [ngClass]="{'is-loading': cargando}" ><span class="icon"><i class="fa fa-check"></i></span><span>Concluir</span></a>
                 </p>
               
                 <p class="control">
                   <a class="button is-primary " [ngClass]="{ 'is-loading': cargandoPdf, 'is-inverted': !cargandoPdf }" (click)="imprimir()" ><span class="icon"><i class="fa fa-print"></i></span></a>
                 </p>
                 <p class="control">
-                  <a class="button is-white" routerLink="/farmacia/pedidos/abiertos" >Ir a la lista</a>
+                  <a class="button is-white" routerLink="{{obtenerDireccion()}}" >Ir a la lista</a>
                 </p>                
               </div>
             </div>

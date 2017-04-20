@@ -36,7 +36,7 @@ export class Pedido {
           almacen_proveedor: ['',[Validators.required]],
           observaciones: ''
         });
-        this.status = 'AB';
+        this.status = 'BR';
     }
   }
 

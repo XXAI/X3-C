@@ -82,7 +82,7 @@ export class FormularioComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.title.setTitle('Nuevo pedido / Farmacia');
+    this.title.setTitle('Nuevo pedido');
 
     // Inicializamos el objeto para los reportes con web Webworkers
     this.pdfworker = new Worker("web-workers/farmacia/pedidos/imprimir.js")
@@ -129,6 +129,7 @@ export class FormularioComponent implements OnInit {
             this.cargando = false;
             //this.datosCargados = true;
             this.pedido.datos.patchValue(pedido);
+            this.pedido.status = pedido.status;
 
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];
@@ -175,10 +176,10 @@ export class FormularioComponent implements OnInit {
 
   obtenerDireccion(): string{
     //if(this.pedidos[this.pedidoActivo].status == 'AB'){
-    if(this.pedido.status == 'AB'){
-      return '/farmacia/pedidos/abiertos';
+    if(this.pedido.status == 'BR'){
+      return '/farmacia/pedidos/borradores';
     }else{
-      return '/farmacia/pedidos/en-espera';
+      return '/farmacia/pedidos/todos';
     }
   }
 
@@ -336,7 +337,7 @@ export class FormularioComponent implements OnInit {
     guardar_pedido = this.pedido.obtenerDatosGuardar();
 
     if(finalizar){
-      guardar_pedido.datos.status = 'ES';
+      guardar_pedido.datos.status = 'CONCLUIR';
       /*for(var i in guardar_pedidos){
         guardar_pedidos[i].datos.status = 'ES';
       }*/
@@ -348,7 +349,7 @@ export class FormularioComponent implements OnInit {
         pedido => {
           this.cargando = false;
           //console.log('Pedido editado');
-          if(pedido.status == 'ES'){
+          if(pedido.status != 'BR'){
             this.router.navigate(['/farmacia/pedidos/ver/'+pedido.id]);
           }
           //hacer cosas para dejar editar
