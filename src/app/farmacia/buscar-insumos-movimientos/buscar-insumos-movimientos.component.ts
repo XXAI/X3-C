@@ -42,6 +42,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   @Input() listaAgregados: Array<string>;
 
   cargando: boolean = false;
+  @Input() salida: boolean;
 
   // # SECCION: Lista de insumos
   insumos: InsumoMedico[] = [];
@@ -154,9 +155,11 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   }
 
   resetItemSeleccionado(){
-    this.codigoBarrasViewChildren.first.nativeElement.value = "";
-    this.fechaViewChildren.first.nativeElement.value = "";
-    this.loteViewChildren.first.nativeElement.value = "";
+    if(!this.salida){
+      this.codigoBarrasViewChildren.first.nativeElement.value = "";
+      this.fechaViewChildren.first.nativeElement.value = "";
+      this.loteViewChildren.first.nativeElement.value = "";
+    }
     this.cantidadBoxViewChildren.first.nativeElement.value = "";
     this.insumoSeleccionado = null;
     this.cantidadValida = false;
@@ -166,9 +169,11 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
     console.log(item);
     this.cantidadBoxViewChildren.first.nativeElement.disabled = false;
     this.cantidadBoxViewChildren.first.nativeElement.focus();
-    this.codigoBarrasViewChildren.first.nativeElement.disabled = false;
-    this.fechaViewChildren.first.nativeElement.disabled = false;
-    this.loteViewChildren.first.nativeElement.disabled = false;
+    if(!this.salida){
+      this.codigoBarrasViewChildren.first.nativeElement.disabled = false;
+      this.fechaViewChildren.first.nativeElement.disabled = false;
+      this.loteViewChildren.first.nativeElement.disabled = false;
+    }
     //this.codigoBarrasViewChildren.first.nativeElement.focus();
   }
   comprobarCantidad(value: any){
@@ -197,9 +202,11 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       this.mensajeAgregado = new Mensaje(true, 2);
       this.mensajeAgregado.mostrar = true;    
       this.insumoSeleccionado.cantidad = this.cantidadBoxViewChildren.first.nativeElement.value;
-      this.insumoSeleccionado.codigo_barras = this.codigoBarrasViewChildren.first.nativeElement.value;
-      this.insumoSeleccionado.fecha_caducidad = this.fechaViewChildren.first.nativeElement.value;
-      this.insumoSeleccionado.lote = this.loteViewChildren.first.nativeElement.value;
+      if(!this.salida){
+        this.insumoSeleccionado.codigo_barras = this.codigoBarrasViewChildren.first.nativeElement.value;
+        this.insumoSeleccionado.fecha_caducidad = this.fechaViewChildren.first.nativeElement.value;
+        this.insumoSeleccionado.lote = this.loteViewChildren.first.nativeElement.value;
+      }
       this.onEnviar.emit(this.insumoSeleccionado);
       this.searchBoxViewChildren.first.nativeElement.focus();
       //Harima: Agregamos la clave al arreglo de items agregados

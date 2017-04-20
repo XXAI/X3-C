@@ -31,7 +31,7 @@ import { EntradasModule } from './farmacia/entradas/entradas.module';
 import { EntradasV2Module } from './farmacia/entradas-v2/entradas.module';
 
 import { MovimientosEntradasModule    } from './farmacia/movimientos-entradas/movimientos-entradas.module';
-
+import { MovimientosSalidasModule    } from './farmacia/movimientos-salidas/movimientos-salidas.module';
 
 
 
@@ -62,6 +62,7 @@ import { MovimientosEntradasModule    } from './farmacia/movimientos-entradas/mo
     EntradasModule,
     EntradasV2Module,
     MovimientosEntradasModule,
+    MovimientosSalidasModule,
     WildcardRoutingModule, // Este siempre debe ir al final para que no haga conflicto con otras rutas
     
   ],

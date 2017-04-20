@@ -22,7 +22,7 @@ import { Modelo } from '../modelo';
 import { Insumo }  from '../movimiento';
 
 @Component({
-  selector: 'entradas-form-insumos',
+  selector: 'salidas-form-insumos',
   templateUrl: './form-insumos.component.html',
   host: { '(window:keydown)' : 'keyboardInput($event)'}
 })

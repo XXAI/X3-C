@@ -6,7 +6,7 @@ import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../../../auth.service';
-import { MovimientosEntradasService }       from '../movimientos-entradas.service';
+import { MovimientosSalidasService }       from '../movimientos-salidas.service';
 
 import { Mov }       from '../movimiento';
 import { Insumo  } from '../movimiento';
@@ -16,7 +16,7 @@ import { Mensaje } from '../../../mensaje';
   selector: 'app-nuevo',
   templateUrl: './nuevo.component.html',
   styleUrls: ['./nuevo.component.css'],
-  providers: [MovimientosEntradasService]
+  providers: [MovimientosSalidasService]
 })
 export class NuevoComponent implements OnInit {
 
@@ -47,7 +47,7 @@ export class NuevoComponent implements OnInit {
     private title: Title, 
     private authService:AuthService,
     private location: Location,
-    private movimientosEntradasService: MovimientosEntradasService,
+    private movimientosSalidasService: MovimientosSalidasService,
     private fb: FormBuilder
 
   ) { }
@@ -55,12 +55,10 @@ export class NuevoComponent implements OnInit {
   ngOnInit() {
     this.title.setTitle("Nuevo movimiento / Farmacia");
     
-    
-    /**/
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
     //console.log(this.usuario);
     //console.log("*****************");
-    this.movimientosEntradasService.listaDatos("almacenes").subscribe(
+    this.movimientosSalidasService.listaDatos("almacenes").subscribe(
        datos => {
          this.datos = datos;
          for (let data of this.datos) {
@@ -76,7 +74,7 @@ export class NuevoComponent implements OnInit {
               //console.log(this.servidorId);
               this.movimiento.patchValue({almacen_id: this.servidorId});
               this.movimiento.patchValue({cancelado: false});
-              this.movimiento.patchValue({tipo_movimiento_id: 1});
+              this.movimiento.patchValue({tipo_movimiento_id: 2});
              }
            }
           }
@@ -127,7 +125,7 @@ export class NuevoComponent implements OnInit {
     console.log("insumos" + insumosAgregadosForm);
     this.movimiento.value.insumos = insumosAgregadosForm;
     console.log(this.movimiento.value);
-    this.movimientosEntradasService.crear(this.movimiento.value).subscribe(
+    this.movimientosSalidasService.crear(this.movimiento.value).subscribe(
         movimiento => {
           this.cargando = false;
           console.log("movimiento creado.");

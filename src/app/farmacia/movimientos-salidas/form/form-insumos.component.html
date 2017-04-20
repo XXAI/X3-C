@@ -110,19 +110,19 @@
                   <!-- LOTE -->
                   <td style="width:100px !important;">
                       <p class="control is-expanded">
-                      <input class="input is-small has-text-centered"  type="text" placeholder="lote"  disabled [(ngModel)]="item.lote" >
+                      <input class="input is-small has-text-centered"  type="text" placeholder="lote" [(ngModel)]="item.lote">
                       </p>
                   </td>  
                   <!-- CADUCIDAD -->   
                   <td style="width:100px !important;">
                       <p class="control is-expanded">
-                      <input class="input is-small has-text-centered"  type="date" placeholder="Fecha de caducidad"  disabled [(ngModel)]="item.fecha_caducidad">
+                      <input class="input is-small has-text-centered"  type="date" placeholder="Fecha de caducidad" [(ngModel)]="item.fecha_caducidad">
                       </p>
                   </td>  
                   <!-- BARRAS --> 
                   <td style="width:100px !important;">
                       <p class="control is-expanded">
-                      <input class="input is-small has-text-centered"  type="text" placeholder="Codigo de barras"  disabled [(ngModel)]="item.codigo_barras">
+                      <input class="input is-small has-text-centered"  type="text" placeholder="Codigo de barras" [(ngModel)]="item.codigo_barras">
                       </p>
                   </td> 
                  
@@ -237,11 +237,12 @@
         </div>
 
         <buscar-insumos-movimientos 
-          *ngIf="mostrarModalInsumos"
+          *ngIf="mostrarModalInsumos" 
           (onCerrar)="mostrarModalInsumos = false" 
           (onEnviar)="agregarItem($event)" 
-          
-          [listaAgregados]="listaClaveAgregadas" 
+           
+          [listaAgregados]="listaClaveAgregadas"
+          [salida]="true" 
           ></buscar-insumos-movimientos>
 
           
