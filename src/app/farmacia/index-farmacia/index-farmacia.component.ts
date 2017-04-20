@@ -24,6 +24,8 @@ export class IndexFarmaciaComponent implements OnInit {
 
     this.modulos = [
       { permiso: '', icono: 'assets/icono-entradas.svg', titulo:"Entradas", url:"/farmacia/entradas" },
+      { permiso: '', icono: 'assets/icono-entradas.svg', titulo:"Entradas V2", url:"/farmacia/entradas/v2" },
+      { permiso: '', icono: 'assets/icono-entradas.svg', titulo:"Movimientos/entradas", url:"/farmacia/movimientos/entradas" },
       { permiso: '', icono: 'assets/icono-salidas.svg', titulo:"Salidas", url:"/farmacia/salidas" },
       { permiso: '', icono: 'assets/hub-almacen.svg', titulo:"Inventario", url:"/farmacia/inventario" },
       { permiso: '', icono: 'assets/icono-ajustes-inventario.svg', titulo:"Ajustes de inventario", url:"/farmacia/inventario/ajustes" },

@@ -119,7 +119,9 @@ export class ListaComponent implements OnInit {
       }
 
     );
-  }
+  } //Fin ngOnInit
+
+
   buscar(term: string): void {
     this.terminosBusqueda.next(term);
   }
