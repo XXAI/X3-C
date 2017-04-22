@@ -23,7 +23,8 @@ export class IndexFarmaciaComponent implements OnInit {
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
 
     this.modulos = [
-      { permiso: '', icono: 'assets/icono-entradas.svg', titulo:"Entradas", url:"/farmacia/entradas" },
+      { permiso: '', icono: 'assets/icono-entradas.svg', titulo:"Entrada manual", url:"/farmacia/movimientos/entradas" },
+      { permiso: '', icono: 'assets/icono-salidas.svg', titulo:"Salida manual", url:"/farmacia/movimientos/salidas" },
       { permiso: '', icono: 'assets/icono-salidas.svg', titulo:"Salidas", url:"/farmacia/salidas" },
       //{ permiso: '', icono: 'assets/hub-almacen.svg', titulo:"Inventario", url:"/farmacia/inventario" },
       //{ permiso: '', icono: 'assets/icono-ajustes-inventario.svg', titulo:"Ajustes de inventario", url:"/farmacia/inventario/ajustes" },

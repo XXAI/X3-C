@@ -1,0 +1,10 @@
+<menu-farmacia [modulo]="'Salidas'" [icono]="'assets/icono-salidas.svg'" [url]="'/farmacia/movimientos/salidas'"></menu-farmacia>
+
+<div style="height:50px;"></div>
+<entradas-form
+    [movimiento]="movimiento"
+    [insumosForm]="insumosNuevo"
+    [cargando]="cargando"
+    (onEnviar)="enviar($event)"
+></entradas-form>
+

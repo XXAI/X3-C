@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { Title} from  '@angular/platform-browser';
+import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
+
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -13,20 +14,25 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/catch';
 
-import { PedidosService } from '../pedidos.service';
+import { MovimientosEntradasService } from  '../movimientos-entradas.service';
 
-import { Pedido } from '../pedido';
+
+import { Modelo } from '../modelo';
 import { Mensaje } from '../../../mensaje';
+import { Movimiento }  from '../movimiento';
 
 @Component({
-  selector: 'farmacia-pedidos-lista',
+  selector: 'farmacia-entradas-lista',
   templateUrl: './lista.component.html',
   styleUrls: ['./lista.component.css'],
-  providers: [PedidosService]
+  providers: [MovimientosEntradasService]
 })
 export class ListaComponent implements OnInit {
 
   cargando: boolean = false;
+  public movimiento: FormGroup;
+
+  private mostrarModalCancelado = false;
 
   // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
@@ -34,11 +40,11 @@ export class ListaComponent implements OnInit {
   ultimaPeticion:any;
   // # FIN SECCION
 
-  // # SECCION: Lista
-  status: string;
-  titulo: string = "Pedidos";
-  icono = "fa-file";
-  pedidos: Pedido[] = [];
+  // # SECCION: Lista de Modelos, hay que CAMBIAR a movimientos
+  items: Modelo[] = [];
+  //dato: Movimiento[] = [];
+  public dato: Movimiento;
+  public index: any;
   private paginaActual = 1;
   private resultadosPorPagina = 5;
   private total = 0;
@@ -46,10 +52,10 @@ export class ListaComponent implements OnInit {
   private indicePaginas:number[] = []
   // # FIN SECCION
 
-  // # SECCION: Resultados de búsqueda
+   // # SECCION: Resultados de búsqueda
   private ultimoTerminoBuscado = "";
   private terminosBusqueda = new Subject<string>();
-  private resultadosBusqueda: Pedido[] = [];
+  private resultadosBusqueda: Modelo[] = [];
   private busquedaActivada:boolean = false;
   private paginaActualBusqueda = 1;
   private resultadosPorPaginaBusqueda = 5;
@@ -58,35 +64,14 @@ export class ListaComponent implements OnInit {
   private indicePaginasBusqueda:number[] = []
   // # FIN SECCION
 
-  constructor(private title: Title, private route: ActivatedRoute, private pedidosService: PedidosService) { }
+  constructor(
+    private title: Title,
+    private movimientosEntradasService: MovimientosEntradasService,
+    private fb: FormBuilder
+  ) { }
 
   ngOnInit() {
-    switch(this.route.snapshot.url[0].path){
-      //case 'todos': this.status = "TODO"; this.titulo = "Todos"; this.icono = "fa-file"; break;
-      case 'borradores': this.status = "BR"; this.titulo = "Borradores"; this.icono = "fa-pencil-square-o"; break;
-      case 'en-transito': this.status = "ET"; this.titulo = "En transito"; this.icono = "fa-clock-o"; break;
-      case 'por-surtir': this.status = "PS"; this.titulo = "Por surtir"; this.icono = "fa-truck"; break;
-      case 'finalizados': 
-          this.status = "FI";
-          this.icono = "fa-check-circle";
-          if (this.route.snapshot.url.length > 1){
-            if(this.route.snapshot.url[1].path == "completas"){
-              this.titulo = "Finalizados (completos)";
-            } else if(this.route.snapshot.url[1].path == "incompletas"){
-              this.titulo = "Finalizados (incompletos)";
-            } else if(this.route.snapshot.url[1].path == "cancelados"){
-              this.titulo = "Finalizados (cancelados)";
-            } else {
-              this.titulo = "Finalizados";
-            }
-          } else {
-            this.titulo = "Finalizados";
-          }
-      break;
-      default: this.titulo = "Pedidos"; this.icono = "fa-file"; break;
-    }
-
-    this.title.setTitle("Pedidos");
+    this.title.setTitle("Entradas / Farmacia");
 
     this.listar(1);
     this.mensajeError = new Mensaje();
@@ -104,10 +89,8 @@ export class ListaComponent implements OnInit {
       this.ultimoTerminoBuscado = term;
       this.paginaActualBusqueda = 1;
       this.cargando = true;
-      return term  ? this.pedidosService.buscar(this.status,term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]}) 
-    }
-      
-    
+      return term  ? this.movimientosEntradasService.buscar(term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]}) 
+    }    
     ).catch( function handleError(error){ 
      
       self.cargando = false;      
@@ -135,14 +118,7 @@ export class ListaComponent implements OnInit {
     busquedaSubject.subscribe(
       resultado => {
         this.cargando = false;
-
-        let parsed = resultado.data ;
-        for(var i in parsed) {
-          parsed[i].created_at = parsed[i].created_at.replace(" ","T");
-
-        }
-
-        this.resultadosBusqueda = parsed as Pedido[];
+        this.resultadosBusqueda = resultado.data as Modelo[];
         this.totalBusqueda = resultado.total | 0;
         this.paginasTotalesBusqueda = Math.ceil(this.totalBusqueda / this.resultadosPorPaginaBusqueda);
 
@@ -155,20 +131,75 @@ export class ListaComponent implements OnInit {
       }
 
     );
-<<<<<<< HEAD
-  }
 
-  obtenerDireccion(id:string, status:string): string{
-    if(status == 'BR'){
-      return '/farmacia/pedidos/editar/'+id;
-    }else{
-      return '/farmacia/pedidos/ver/'+id;
-    }
-  }
-=======
+    this.movimiento = this.fb.group({
+        almacen_id: ['', [Validators.required]],
+        tipo_movimiento_id: ['', [Validators.required]],
+        fecha_movimiento: ['', [Validators.required]],
+        observaciones: ['', [Validators.required]],
+        cancelado: ['', [Validators.required]],
+        observaciones_cancelacion: ['', [Validators.required]],
+        insumos: this.fb.array([
+          this.initInsumo(),
+        ])
+      });
   } //Fin ngOnInit
 
->>>>>>> deysi_sial
+  initInsumo() {
+        return this.fb.group({
+            clave: ['', Validators.required],
+            cantidad: ['', Validators.required],
+            cantidad_x_envase: ['', Validators.required],
+            lote:  ['', Validators.required],
+            fecha_caducidad:  ['', Validators.required],
+            codigo_barras:  ['', Validators.required],
+        });
+    }
+
+  toggleModalCancelado(item: Movimiento, index){
+    this.mostrarModalCancelado = !this.mostrarModalCancelado
+    this.dato = item;
+    this.index = index;
+
+  }
+
+  guardar(item: Movimiento){
+    console.log(item);
+    item.cancelado=1;
+     this.movimientosEntradasService.editar(item.id,item).subscribe(
+        movimiento => {
+          this.cargando = false;
+          console.log("Movimiento editado.");
+
+          this.mensajeExito = new Mensaje(true);
+          this.mensajeExito.texto = "Se han guardado los cambios.";
+          this.mensajeExito.mostrar = true;
+        },
+        error => {
+          this.cargando = false;
+          
+          this.mensajeError = new Mensaje(true);
+          this.mensajeError.texto = "No especificado.";
+          this.mensajeError.mostrar = true;      
+          
+          try {
+            let e = error.json();
+            if (error.status == 401 ){
+              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }
+            // Problema de validación
+          } catch(e){
+                        
+            if (error.status == 500 ){
+              this.mensajeError.texto = "500 (Error interno del servidor)";
+            } else {
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }            
+          }
+
+        }
+      );
+  }
 
   buscar(term: string): void {
     this.terminosBusqueda.next(term);
@@ -179,17 +210,11 @@ export class ListaComponent implements OnInit {
     console.log("Cargando búsqueda.");
    
     this.cargando = true;
-    this.pedidosService.buscar(this.status, term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
+    this.movimientosEntradasService.buscar(term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
         resultado => {
           this.cargando = false;
 
-          let parsed = resultado.data ;
-          for(var i in parsed) {
-            parsed[i].created_at = parsed[i].created_at.replace(" ","T"); // En safari fallan las fechas por eso se pone esto
-
-          }
-
-          this.resultadosBusqueda = parsed as Pedido[];
+          this.resultadosBusqueda = resultado.data as Modelo[];
 
           this.totalBusqueda = resultado.total | 0;
           this.paginasTotalesBusqueda = Math.ceil(this.totalBusqueda / this.resultadosPorPaginaBusqueda);
@@ -223,17 +248,20 @@ export class ListaComponent implements OnInit {
 
         }
       );
-  }
+  }  //Fin listarBusqueda
 
   listar(pagina:number): void {
     this.paginaActual = pagina;
-    console.log("Cargando pedidos.");
+    console.log("Cargando usuarios.");
    
     this.cargando = true;
-    this.pedidosService.lista(this.status, pagina,this.resultadosPorPagina).subscribe(
+    //Peticion a la API
+    this.movimientosEntradasService.lista(pagina,this.resultadosPorPagina).subscribe(
         resultado => {
           this.cargando = false;
-          this.pedidos = resultado.data as Pedido[];
+          this.items = resultado.data as Modelo[];
+
+          console.log(this.items);
 
           this.total = resultado.total | 0;
           this.paginasTotales = Math.ceil(this.total / this.resultadosPorPagina);
@@ -243,7 +271,7 @@ export class ListaComponent implements OnInit {
             this.indicePaginas.push(i+1);
           }
 
-          console.log("Pedidos cargados.");
+          console.log("Items cargados.");
           
         },
         error => {
@@ -267,14 +295,14 @@ export class ListaComponent implements OnInit {
 
         }
       );
-  }
+  } //Fin listar
 
-  eliminar(pedido: Pedido, index): void {
-    pedido.cargando = true;
-    this.pedidosService.eliminar(pedido.id).subscribe(
+  eliminar(item: Modelo, index): void {
+    item.cargando = true;
+    this.movimientosEntradasService.eliminar(item.id).subscribe(
         data => {
-          pedido.cargando = false;
-          this.pedidos.splice(index, 1);  
+          item.cargando = false;
+          this.items.splice(index, 1);  
           console.log("Se eliminó el elemento de la lista.");
 
           this.mensajeExito = new Mensaje(true)
@@ -282,10 +310,10 @@ export class ListaComponent implements OnInit {
           this.mensajeExito.texto = "Usuario eliminado";
         },
         error => {
-          pedido.cargando = false;
+          item.cargando = false;
           this.mensajeError.mostrar = true;
           this.ultimaPeticion = function(){
-            this.eliminar(pedido, index);
+            this.eliminar(item, index);
           }
         
           
@@ -306,7 +334,7 @@ export class ListaComponent implements OnInit {
           
         }
       );
-  }
+  }//Fin eliminar
 
   // # SECCION: Paginación
   paginaSiguiente():void {
@@ -322,5 +350,6 @@ export class ListaComponent implements OnInit {
   paginaAnteriorBusqueda(term:string):void {
     this.listarBusqueda(term,this.paginaActualBusqueda-1);
   }
+  // Fin # SECCION: Paginación
 
 }

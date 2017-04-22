@@ -1,0 +1,47 @@
+<form name="form" novalidate [formGroup]="movimiento" (ngSubmit)="enviar()">
+  <div class="contenedor columns " style="height:100%; padding:1em;">
+
+    <div class="column is-one-third"><!-- Columna de 1/3 de pantalla -->
+      <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
+        <section class="hero is-primary">
+          <h1 class="title" style="margin:0.5em; "><span class="icon is-medium"><i class="fa fa-file-text"></i></span> Nuevo</h1>
+        </section>
+        <div style="padding: 1em;">
+          <entradas-form-datos 
+            [movimiento]="movimiento"
+            ></entradas-form-datos>
+          <div class="control is-grouped">
+          </div>
+            
+          <div class="control is-grouped">
+            <p class="control">
+              <a class="button is-primary " type="submit" (click)="enviar()" [ngClass]="{'is-loading': cargando}">Guardar</a>
+            </p>
+
+            <p class="control">
+              <a class="button is-primary " [ngClass]="{ 'is-loading': cargandoPdf, 'is-inverted': !cargandoPdf }"
+                (click)="imprimir()"><span class="icon"><i class="fa fa-print"></i></span></a>
+            </p>
+            <p class="control">
+              <a class="button is-white" routerLink="/farmacia/movimientos/entradas/">Ir a la lista</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div><!-- Fin columna de 1/3 de pantalla -->
+
+    <div class="column"><!-- Columna 2/3 -->
+      <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
+        <section class="hero is-primary">
+          <h1 class="title" style="margin:0.5em; "><span class="icon is-medium"><i class="fa fa-file-text"></i></span> Insumos</h1>
+        </section>
+
+        <div style="padding: 1em;">
+          <entradas-form-insumos [insumosAgregados]="insumosAgregadosEntrada"></entradas-form-insumos>
+
+        </div>
+      </div>
+    </div><!-- Fin columna 2/3 -->
+
+  </div>
+</form>
