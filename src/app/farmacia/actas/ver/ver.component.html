@@ -5,34 +5,30 @@
     <div class="column is-one-third" >
       <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
             <section class="hero is-primary" >
-              <h1 class="title" style="margin:0.5em; " ><span class="icon is-medium"><i class="fa fa-file-text"></i></span> Nuevo</h1>
-              
+              <h1 class="title" style="margin:0.5em; " ><span class="icon is-medium"><i class="fa fa-file-text"></i></span> Detalles del Pedido</h1>
             </section>
-            
+
             <div style="padding: 1em;">
-              <label class="label">Solicitar a:</label>
-              <p class="control">
-                <span class="select is-fullwidth">
-                  <select>
-                    <option>Farmacia Exfarma</option>
-                    <option>Almacén general</option>
-                  </select>
-                </span>
-              </p>
-              
-              <div class="control">
-                <textarea class="textarea" placeholder="Observaciones"></textarea>
-              </div>
-              <div class="control is-grouped">
+                <label class="label">Descripción:</label>
                 <p class="control">
-                  <a class="button is-primary " type="submit" [ngClass]="{'is-loading': cargando}" >Guardar</a>
+                  <input type="text" class="input is-fullwidth" readonly="readonly" value="{{(pedidos[pedidoActivo].datosImprimir)?pedidos[pedidoActivo].datosImprimir.descripcion:''}}"/>
                 </p>
-              
+
+                <label class="label">Solicitar a:</label>
+                <p class="control">
+                  <input type="text" class="input is-fullwidth" readonly="readonly" value="{{(pedidos[pedidoActivo].datosImprimir)?pedidos[pedidoActivo].datosImprimir.almacen_proveedor.nombre:''}}"/>
+                </p>
+                
+                <div class="control">
+                  <textarea name="observaciones" class="textarea" placeholder="Observaciones"  readonly="readonly">{{(pedidos[pedidoActivo].datosImprimir)?pedidos[pedidoActivo].datosImprimir.observaciones:''}}</textarea>
+                </div>
+
+              <div class="control is-grouped" style="padding-top:10px;">
                 <p class="control">
                   <a class="button is-primary " [ngClass]="{ 'is-loading': cargandoPdf, 'is-inverted': !cargandoPdf }" (click)="imprimir()" ><span class="icon"><i class="fa fa-print"></i></span></a>
                 </p>
                 <p class="control">
-                  <a class="button is-white" routerLink="/farmacia/pedidos/" >Ir a la lista</a>
+                  <a class="button is-white" routerLink="{{obtenerDireccion()}}" >Ir a la lista</a>
                 </p>                
               </div>
             </div>
@@ -49,11 +45,8 @@
         <div *ngFor="let pedido of pedidos; let indexPedido = index" class="contenedor-pedido" [ngClass]="{ 'con-tabs' : pedidos.length > 1 }" [hidden]="indexPedido != pedidoActivo">
           
           <div class="top-bar" [ngClass]="{'is-primary':!pedido.filtro.activo && pedidos.length == 1,'is-dark': pedido.filtro.activo }">
-            <span *ngIf="!pedido.filtro.activo">Claves: {{ pedido.lista.length }} Insumos: 0</span>
+            <span *ngIf="!pedido.filtro.activo">Claves: {{ pedido.lista.length }} Insumos: {{pedido.totalInsumos}}</span>
             <span *ngIf="pedido.filtro.activo"><span class="icon"><i class="fa fa-search"></i></span> Resultados: {{ pedido.filtro.lista.length }}</span>
-            <a class="button is-primary  is-pulled-right" [ngClass]="{ 'is-inverted': pedidos.length == 1 || pedido.filtro.activo }" style="margin-top:-0.25em;" title="Ctrl + espacio" (click)="toggleModalInsumos(); ">
-              <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span>
-            </a>
           </div> 
           
           <table class="table is-unselectable" *ngIf="!cargando" style="font-size: 0.8em;">
@@ -80,7 +73,6 @@
                     </th>  
                     <th style="vertical-align: middle;" class="is-hidden-mobile is-hidden-tablet-only" >Descripcion</th>                  
                     <th style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Cantidad">Cant.</abbr></th>
-                    <th  style="width:21px !important;"></th>
                   </tr>
               </thead>
               <tbody *ngIf="!pedido.filtro.activo">
@@ -91,9 +83,9 @@
                   
                   <td >
                     <small class="is-hidden-tablet">{{ item.clave }} <br></small>
-                    <b>{{ item.generico_nombre }}</b> <br  class="is-hidden-mobile"><small *ngIf="item.tipo == 'ME'"><b>{{ item.informacion.concentracion }}</b></small><br>
+                    <b>{{ item.generico_nombre }}</b> <br  class="is-hidden-mobile"><small *ngIf="(item.tipo == 'ME' && item.informacion)"><b>{{ item.informacion.concentracion }}</b></small><br>
                     
-                    <div class="is-hidden-desktop" *ngIf="item.tipo == 'ME'" style="line-height:1em;">
+                    <div class="is-hidden-desktop" *ngIf="(item.tipo == 'ME' && item.informacion)" style="line-height:1em;">
                       <small><i>{{ item.informacion.presentacion_nombre }}</i></small><br>
                       <small><i>{{ item.informacion.contenido }} </i></small>
                     </div>
@@ -105,7 +97,7 @@
                       <span *ngIf="!item.es_causes" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
                       <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
                       
-                      <span *ngIf="item.tipo == 'ME'">
+                      <span *ngIf="(item.tipo == 'ME' && item.informacion)">
                         <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
                         <span *ngIf="item.informacion.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>  
                       </span>
@@ -114,7 +106,7 @@
                   </td> 
 
                   <td class="is-hidden-mobile is-hidden-tablet-only">
-                    <div *ngIf="item.tipo == 'ME'" style="line-height:1em;">
+                    <div *ngIf="(item.tipo == 'ME' && item.informacion)" style="line-height:1em;">
                       <small><i>{{ item.informacion.presentacion_nombre }}</i></small><br>
                       <small><i>{{ item.informacion.contenido }} </i></small>
                     </div>
@@ -125,7 +117,7 @@
                       <span *ngIf="item.es_causes" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
                       <span *ngIf="!item.es_causes" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
                       <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
-                      <span *ngIf="item.tipo == 'ME'">
+                      <span *ngIf="(item.tipo == 'ME' && item.informacion)">
                         <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
                         <span *ngIf="item.informacion.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>  
                       </span>
@@ -134,10 +126,9 @@
                   </td> 
                   <td style="width:78px !important;">
                       <p class="control is-expanded">
-                      <input class="input is-small has-text-centered"  type="text" placeholder="Cant" [(ngModel)]="item.cantidad">
+                        {{item.cantidad}}
                       </p>
-                  </td>                  
-                  <td style="width:21px !important;"><a (click)="eliminarInsumo(item,i)"><span class="icon"><i class="fa fa-trash"></i></span></a></td>
+                  </td>
                 </tr>      
               </tbody>
               <tbody *ngIf="pedido.filtro.activo">
@@ -147,9 +138,9 @@
                   
                   <td >
                     <small class="is-hidden-tablet">{{ item.clave }} <br></small>
-                    <b>{{ item.generico_nombre }}</b> <br  class="is-hidden-mobile"><small *ngIf="item.tipo == 'ME'"><b>{{ item.informacion.concentracion }}</b></small><br>
+                    <b>{{ item.generico_nombre }}</b> <br  class="is-hidden-mobile"><small *ngIf="(item.tipo == 'ME' && item.informacion)"><b>{{ item.informacion.concentracion }}</b></small><br>
                     
-                    <div class="is-hidden-desktop" *ngIf="item.tipo == 'ME'" style="line-height:1em;">
+                    <div class="is-hidden-desktop" *ngIf="(item.tipo == 'ME' && item.informacion)" style="line-height:1em;">
                       <small><i>{{ item.informacion.presentacion_nombre }}</i></small><br>
                       <small><i>{{ item.informacion.contenido }} </i></small>
                     </div>
@@ -161,7 +152,7 @@
                       <span *ngIf="!item.es_causes" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
                       <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
                       
-                      <span *ngIf="item.tipo == 'ME'">
+                      <span *ngIf="(item.tipo == 'ME' && item.informacion)">
                         <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
                         <span *ngIf="item.informacion.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>  
                       </span>
@@ -170,7 +161,7 @@
                   </td> 
 
                   <td class="is-hidden-mobile is-hidden-tablet-only">
-                    <div *ngIf="item.tipo == 'ME'" style="line-height:1em;">
+                    <div *ngIf="(item.tipo == 'ME' && item.informacion)" style="line-height:1em;">
                       <small><i>{{ item.informacion.presentacion_nombre }}</i></small><br>
                       <small><i>{{ item.informacion.contenido }} </i></small>
                     </div>
@@ -181,23 +172,18 @@
                       <span *ngIf="item.es_causes" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
                       <span *ngIf="!item.es_causes" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
                       <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
-                      <span *ngIf="item.tipo == 'ME'">
+                      <span *ngIf="(item.tipo == 'ME' && item.informacion)">
                         <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
                         <span *ngIf="item.informacion.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>  
                       </span>
-                      
                     </div>
                   </td> 
                   <td style="width:78px !important;">
                       <p class="control is-expanded">
-                      <input class="input is-small has-text-centered"  type="text" placeholder="Cant" [(ngModel)]="item.cantidad">
+                        {{item.cantidad}}
                       </p>
-                  </td>                  
-                  <td style="width:21px !important;"><a (click)="eliminarInsumo(item,i,true)"><span class="icon"><i class="fa fa-trash"></i></span></a></td>
-                </tr>   
-
-
-               
+                  </td>
+                </tr>
               </tbody>              
           </table>
          
@@ -241,6 +227,3 @@
     <br>
     <p style="text-align: center;"><small >Este mensaje desaparecerá en {{ mensajeExito.cuentaAtras }} segundos.</small></p>       
 </div>
-
-<buscar-insumos *ngIf="mostrarModalInsumos" (onCerrar)="mostrarModalInsumos = false" (onEnviar)="agregarItem($event)" [listaAgregados]="listaClaveAgregadas"></buscar-insumos>
-

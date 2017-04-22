@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 import { HubModule } from '../../hub/hub.module';
@@ -15,13 +15,20 @@ import { PedidosRoutingModule } from './pedidos-routing.module';
 
 import { PedidosComponent } from './pedidos.component';
 import { MenuLateralComponent } from './menu-lateral/menu-lateral.component';
-import { NuevoComponent } from './nuevo/nuevo.component';
 import { ListaComponent } from './lista/lista.component';
+import { PedidosService } from './pedidos.service';
+import { AlmacenesService } from '../../catalogos/almacenes/almacenes.service';
+import { StockService } from '../stock/stock.service';
+
+import { VerComponent } from './ver/ver.component';
+import { FormularioComponent } from './formulario/formulario.component';
+import { RecepcionComponent } from './recepcion/recepcion.component';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     HubModule,
     PerfilModule,
     BloquearPantallaModule,
@@ -30,6 +37,7 @@ import { ListaComponent } from './lista/lista.component';
     PedidosRoutingModule,
     IndexFarmaciaModule
   ],
-  declarations: [PedidosComponent, MenuLateralComponent, NuevoComponent, ListaComponent]
+  declarations: [PedidosComponent, MenuLateralComponent, ListaComponent, VerComponent, FormularioComponent, RecepcionComponent],
+  providers:[PedidosService,AlmacenesService,StockService]
 })
 export class PedidosModule { }

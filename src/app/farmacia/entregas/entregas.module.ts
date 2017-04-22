@@ -15,6 +15,7 @@ import { EntregasRoutingModule } from './entregas-routing.module';
 
 import { MenuLateralComponent } from './menu-lateral/menu-lateral.component';
 import { ListaComponent } from './lista/lista.component';
+import { SurtirComponent } from './surtir/surtir.component';
 
 @NgModule({
   imports: [
@@ -28,6 +29,6 @@ import { ListaComponent } from './lista/lista.component';
     IndexFarmaciaModule,
     EntregasRoutingModule
   ],
-  declarations: [ListaComponent, MenuLateralComponent]
+  declarations: [ListaComponent, MenuLateralComponent, SurtirComponent]
 })
 export class EntregasModule { }

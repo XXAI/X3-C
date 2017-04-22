@@ -5,7 +5,11 @@ import { DebugElement } from '@angular/core';
 
 import { MenuLateralComponent } from './menu-lateral.component';
 
+<<<<<<< HEAD
 describe('FarmaciaMenuPedidosComponent', () => {
+=======
+describe('MenuLateralComponent', () => {
+>>>>>>> df02519422093f139b4701b9ebe398658ca430c2
   let component: MenuLateralComponent;
   let fixture: ComponentFixture<MenuLateralComponent>;
 

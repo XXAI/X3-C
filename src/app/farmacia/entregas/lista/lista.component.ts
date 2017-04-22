@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -33,7 +34,10 @@ export class ListaComponent implements OnInit {
   ultimaPeticion:any;
   // # FIN SECCION
 
-  // # SECCION: Lista de usuarios
+  // # SECCION: Lista
+  status: string = "ES";
+  titulo: string = "";
+  icono: string = "f";
   pedidos: Pedido[] = [];
   private paginaActual = 1;
   private resultadosPorPagina = 5;
@@ -54,10 +58,36 @@ export class ListaComponent implements OnInit {
   private indicePaginasBusqueda:number[] = []
   // # FIN SECCION
 
-  constructor(private title: Title, private entregasService: EntregasService) { }
+  constructor(private title: Title, private route:ActivatedRoute, private entregasService: EntregasService) { }
 
   ngOnInit() {
+    
+    switch(this.route.snapshot.url[0].path){
+      case 'pendientes': this.status = "PE"; this.titulo = "Pendientes"; this.icono = "fa-minus-circle"; break;
+      case 'finalizadas': 
+          this.status = "FI";
+          this.icono = "fa-check-circle";
+          
+          if (this.route.snapshot.url.length > 1){
+            if(this.route.snapshot.url[1].path == "completas"){
+              this.titulo = "Finalizadas (completas)";
+            } else if(this.route.snapshot.url[1].path == "incompletas"){
+              this.titulo = "Finalizadas (incompletas)";
+            } else {
+              this.titulo = "Finalizadas";
+            }
+          } else {
+            this.titulo = "Finalizadas";
+          }
+          
+
+          
+      break;
+      default: this.status = "ES"; this.titulo = "Nuevas"; this.icono = "fa-inbox"; break;
+    }
+
     this.title.setTitle("Entregas / Farmacia");
+    
 
     this.listar(1);
     this.mensajeError = new Mensaje();
@@ -75,7 +105,7 @@ export class ListaComponent implements OnInit {
       this.ultimoTerminoBuscado = term;
       this.paginaActualBusqueda = 1;
       this.cargando = true;
-      return term  ? this.entregasService.buscar(term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]}) 
+      return term  ? this.entregasService.buscar(this.status, term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]}) 
     }
       
     
@@ -129,11 +159,17 @@ export class ListaComponent implements OnInit {
     console.log("Cargando búsqueda.");
    
     this.cargando = true;
-    this.entregasService.buscar(term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
+    this.entregasService.buscar(this.status, term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
         resultado => {
           this.cargando = false;
 
-          this.resultadosBusqueda = resultado.data as Pedido[];
+
+          let parsed = resultado.data ;
+          for(var i in parsed) {
+            parsed[i].created_at = parsed[i].created_at.replace(" ","T");
+
+          }
+          this.resultadosBusqueda = parsed as Pedido[];
 
           this.totalBusqueda = resultado.total | 0;
           this.paginasTotalesBusqueda = Math.ceil(this.totalBusqueda / this.resultadosPorPaginaBusqueda);
@@ -175,10 +211,19 @@ export class ListaComponent implements OnInit {
     console.log("Cargando usuarios.");
    
     this.cargando = true;
-    this.entregasService.lista(pagina,this.resultadosPorPagina).subscribe(
+    this.entregasService.lista(this.status, pagina,this.resultadosPorPagina).subscribe(
         resultado => {
           this.cargando = false;
-          this.pedidos = resultado.data as Pedido[];
+          
+          let parsed = resultado.data ;
+          for(var i in parsed) {
+            console.log(parsed[i].created_at.replace(" ","T"))
+            parsed[i].created_at = parsed[i].created_at.replace(" ","T");
+
+          }
+          this.pedidos = parsed  as Pedido[];;
+
+          //this.pedidos = resultado.data as Pedido[];
 
           this.total = resultado.total | 0;
           this.paginasTotales = Math.ceil(this.total / this.resultadosPorPagina);
@@ -212,8 +257,7 @@ export class ListaComponent implements OnInit {
 
         }
       );
-  }
-  
+  }  
 
   // # SECCION: Paginación
   paginaSiguiente():void {

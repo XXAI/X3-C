@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -33,7 +34,10 @@ export class ListaComponent implements OnInit {
   ultimaPeticion:any;
   // # FIN SECCION
 
-  // # SECCION: Lista de usuarios
+  // # SECCION: Lista
+  status: string;
+  titulo: string = "Pedidos";
+  icono = "fa-file";
   pedidos: Pedido[] = [];
   private paginaActual = 1;
   private resultadosPorPagina = 5;
@@ -54,10 +58,35 @@ export class ListaComponent implements OnInit {
   private indicePaginasBusqueda:number[] = []
   // # FIN SECCION
 
-  constructor(private title: Title, private pedidosService: PedidosService) { }
+  constructor(private title: Title, private route: ActivatedRoute, private pedidosService: PedidosService) { }
 
   ngOnInit() {
-    this.title.setTitle("Pedidos / Farmacia");
+    switch(this.route.snapshot.url[0].path){
+      //case 'todos': this.status = "TODO"; this.titulo = "Todos"; this.icono = "fa-file"; break;
+      case 'borradores': this.status = "BR"; this.titulo = "Borradores"; this.icono = "fa-pencil-square-o"; break;
+      case 'en-transito': this.status = "ET"; this.titulo = "En transito"; this.icono = "fa-clock-o"; break;
+      case 'por-surtir': this.status = "PS"; this.titulo = "Por surtir"; this.icono = "fa-truck"; break;
+      case 'finalizados': 
+          this.status = "FI";
+          this.icono = "fa-check-circle";
+          if (this.route.snapshot.url.length > 1){
+            if(this.route.snapshot.url[1].path == "completas"){
+              this.titulo = "Finalizados (completos)";
+            } else if(this.route.snapshot.url[1].path == "incompletas"){
+              this.titulo = "Finalizados (incompletos)";
+            } else if(this.route.snapshot.url[1].path == "cancelados"){
+              this.titulo = "Finalizados (cancelados)";
+            } else {
+              this.titulo = "Finalizados";
+            }
+          } else {
+            this.titulo = "Finalizados";
+          }
+      break;
+      default: this.titulo = "Pedidos"; this.icono = "fa-file"; break;
+    }
+
+    this.title.setTitle("Pedidos");
 
     this.listar(1);
     this.mensajeError = new Mensaje();
@@ -75,7 +104,7 @@ export class ListaComponent implements OnInit {
       this.ultimoTerminoBuscado = term;
       this.paginaActualBusqueda = 1;
       this.cargando = true;
-      return term  ? this.pedidosService.buscar(term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]}) 
+      return term  ? this.pedidosService.buscar(this.status,term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]}) 
     }
       
     
@@ -106,7 +135,14 @@ export class ListaComponent implements OnInit {
     busquedaSubject.subscribe(
       resultado => {
         this.cargando = false;
-        this.resultadosBusqueda = resultado.data as Pedido[];
+
+        let parsed = resultado.data ;
+        for(var i in parsed) {
+          parsed[i].created_at = parsed[i].created_at.replace(" ","T");
+
+        }
+
+        this.resultadosBusqueda = parsed as Pedido[];
         this.totalBusqueda = resultado.total | 0;
         this.paginasTotalesBusqueda = Math.ceil(this.totalBusqueda / this.resultadosPorPaginaBusqueda);
 
@@ -120,6 +156,15 @@ export class ListaComponent implements OnInit {
 
     );
   }
+
+  obtenerDireccion(id:string, status:string): string{
+    if(status == 'BR'){
+      return '/farmacia/pedidos/editar/'+id;
+    }else{
+      return '/farmacia/pedidos/ver/'+id;
+    }
+  }
+
   buscar(term: string): void {
     this.terminosBusqueda.next(term);
   }
@@ -129,11 +174,17 @@ export class ListaComponent implements OnInit {
     console.log("Cargando búsqueda.");
    
     this.cargando = true;
-    this.pedidosService.buscar(term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
+    this.pedidosService.buscar(this.status, term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
         resultado => {
           this.cargando = false;
 
-          this.resultadosBusqueda = resultado.data as Pedido[];
+          let parsed = resultado.data ;
+          for(var i in parsed) {
+            parsed[i].created_at = parsed[i].created_at.replace(" ","T"); // En safari fallan las fechas por eso se pone esto
+
+          }
+
+          this.resultadosBusqueda = parsed as Pedido[];
 
           this.totalBusqueda = resultado.total | 0;
           this.paginasTotalesBusqueda = Math.ceil(this.totalBusqueda / this.resultadosPorPaginaBusqueda);
@@ -167,15 +218,14 @@ export class ListaComponent implements OnInit {
 
         }
       );
-  }  
-
+  }
 
   listar(pagina:number): void {
     this.paginaActual = pagina;
-    console.log("Cargando usuarios.");
+    console.log("Cargando pedidos.");
    
     this.cargando = true;
-    this.pedidosService.lista(pagina,this.resultadosPorPagina).subscribe(
+    this.pedidosService.lista(this.status, pagina,this.resultadosPorPagina).subscribe(
         resultado => {
           this.cargando = false;
           this.pedidos = resultado.data as Pedido[];
@@ -188,7 +238,7 @@ export class ListaComponent implements OnInit {
             this.indicePaginas.push(i+1);
           }
 
-          console.log("Usuarios cargados.");
+          console.log("Pedidos cargados.");
           
         },
         error => {
@@ -213,6 +263,7 @@ export class ListaComponent implements OnInit {
         }
       );
   }
+
   eliminar(pedido: Pedido, index): void {
     pedido.cargando = true;
     this.pedidosService.eliminar(pedido.id).subscribe(

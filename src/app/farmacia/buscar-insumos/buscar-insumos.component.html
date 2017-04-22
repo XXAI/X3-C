@@ -46,9 +46,9 @@
               <td class="is-hidden-mobile">{{ item.clave }}</td>
               <td >
                 <small class="is-hidden-tablet">{{ item.clave }} <br></small>
-                <b>{{ item.generico_nombre }}</b> <br  class="is-hidden-mobile"><small *ngIf="item.tipo == 'ME'"><b>{{ item.informacion.concentracion }}</b></small><br>
+                <b>{{ item.generico_nombre }}</b> <br  class="is-hidden-mobile"><small *ngIf="(item.tipo == 'ME' && item.informacion)"><b>{{ item.informacion.concentracion }}</b></small><br>
                 
-                <div class="is-hidden-tablet" *ngIf="item.tipo == 'ME'" style="line-height:1em;">
+                <div class="is-hidden-tablet" *ngIf="(item.tipo == 'ME' && item.informacion)" style="line-height:1em;">
                   <small><i>{{ item.informacion.presentacion_nombre }}</i></small><br>
                   <small><i>{{ item.informacion.contenido }} </i></small>
                 </div>
@@ -60,7 +60,7 @@
                   <span *ngIf="!item.es_causes" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
                   <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
                   
-                  <span *ngIf="item.tipo == 'ME'">
+                  <span *ngIf="(item.tipo == 'ME' && item.informacion)">
                     <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
                     <span *ngIf="item.informacion.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>  
                   </span>
@@ -69,7 +69,7 @@
               </td> 
 
               <td class="is-hidden-mobile">
-                <div *ngIf="item.tipo == 'ME'" style="line-height:1em;">
+                <div *ngIf="(item.tipo == 'ME' && item.informacion)" style="line-height:1em;">
                   <small><i>{{ item.informacion.presentacion_nombre }}</i></small><br>
                   <small><i>{{ item.informacion.contenido }} </i></small>
                 </div>
@@ -80,7 +80,7 @@
                   <span *ngIf="item.es_causes" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
                   <span *ngIf="!item.es_causes" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
                   <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
-                  <span *ngIf="item.tipo == 'ME'">
+                  <span *ngIf="(item.tipo == 'ME' && item.informacion)">
                     <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
                     <span *ngIf="item.informacion.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>  
                   </span>

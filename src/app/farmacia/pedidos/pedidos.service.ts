@@ -10,18 +10,23 @@ import { Pedido } from '../pedidos/pedido';
 export class PedidosService {
 
   static readonly URL: string = "pedidos";
+  static readonly URL_STATS: string = "pedidos-stats";
   
   constructor(private http: Http,   private jwtRequest:JwtRequestService) { }
 
-  buscar(term: string, pagina:number = 1, resultados_por_pagina:number =20 ): Observable<any>{
-    return this.jwtRequest.get(PedidosService.URL,null,{q: term, page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
+  stats(): Observable<any>{
+    return this.jwtRequest.get(PedidosService.URL_STATS,null,null).map( (response: Response) => response.json());
   }
 
-  lista(pagina:number = 1, resultados_por_pagina:number =20 ): Observable<any>{
-    return this.jwtRequest.get(PedidosService.URL,null,{page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
+  buscar(status:string, term: string, pagina:number = 1, resultados_por_pagina:number =20 ): Observable<any>{
+    return this.jwtRequest.get(PedidosService.URL,null,{status: status, q: term, page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
   }
 
-  ver(id:any): Observable<Pedido>{
+  lista(status:string, pagina:number = 1, resultados_por_pagina:number =20 ): Observable<any>{
+    return this.jwtRequest.get(PedidosService.URL,null,{status:status, page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
+  }
+
+  ver(id:any): Observable<any>{
     return this.jwtRequest.get(PedidosService.URL,id,{}).map( (response: Response) => {
      
        let jsonData = response.json().data;
@@ -30,17 +35,17 @@ export class PedidosService {
           roles.push(""+item.id)
         })*/
 
-        var pedido = jsonData as Pedido;
+        var pedido = jsonData as any;
         //usuario.roles = roles;
         return pedido;
       }) as Observable<Pedido>;
   }
 
-  crear(pedido: Pedido): Observable<Pedido> {
+  crear(pedido: Pedido[]): Observable<Pedido> {
     return this.jwtRequest.post(PedidosService.URL,pedido).map( (response: Response) => response.json().data) as Observable<Pedido>;
   }
 
-  editar(id:any, pedido: Pedido): Observable<Pedido> {
+  editar(id:any, pedido: Pedido[]): Observable<Pedido> {
     return this.jwtRequest.put(PedidosService.URL,id, pedido).map( (response: Response) => response.json().data) as Observable<Pedido>;
   }
 

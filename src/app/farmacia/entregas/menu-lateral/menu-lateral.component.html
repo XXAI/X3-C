@@ -1,17 +1,34 @@
 <aside class="menu" style="padding: 1em;">
+   <!-- <p class="menu-label">Pedidos</p>-->
     <ul class="menu-list">        
         <li>
-            <a routerLink="/farmacia/entregas/bandeja" routerLinkActive="is-active"><span class="icon"  ><i class="fa fa-inbox"></i></span> Bandeja de entrada <span class="tag is-white is-pulled-right">1</span></a>            
+            <a routerLink="/farmacia/entregas/nuevas" #nuevas routerLinkActive="is-active">
+                <span class="icon"><i class="fa fa-inbox"></i></span> Nuevas
+                <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                <span *ngIf="stats.en_espera>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': nuevas.className == 'is-active', 'is-danger': nuevas.className != 'is-active' }" >{{  stats.en_espera }}</span>
+            </a>            
         </li>
         <li>
-            <a routerLink="/farmacia/entregas/pendientes" routerLinkActive="is-active"><span class="icon"  ><i class="fa fa-minus-circle"></i></span> Pendientes <span class="tag is-danger is-pulled-right">3</span></a>            
+            <a routerLink="/farmacia/entregas/pendientes" #pendientes routerLinkActive="is-active">
+                <span class="icon"  ><i class="fa fa-minus-circle"></i></span> Pendientes
+                <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                <span *ngIf="stats.pendientes>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': pendientes.className == 'is-active', 'is-warning': pendientes.className != 'is-active' }">{{  stats.pendientes }}</span>
+            </a>
         </li>
         <li>
-            <a routerLink="/farmacia/entregas/realizadas" routerLinkActive="is-active"><span class="icon"><i class="fa fa-check-circle"></i></span> <span>Realizadas</span></a>
+            <a routerLink="/farmacia/entregas/finalizadas" routerLinkActive="is-active">
+                <span class="icon"><i class="fa fa-check-circle"></i></span> <span>Finalizadas</span>
+            </a>
             <ul>
-                <li><a routerLink="/farmacia/entregas/realizadas/completas" routerLinkActive="is-active">Completas</a></li>
-                <li><a routerLink="/farmacia/entregas/realizadas/incompletas" routerLinkActive="is-active">Incompletas</a></li>
+                <li><a routerLink="/farmacia/entregas/finalizadas/completas" routerLinkActive="is-active">Completas</a></li>
+                <li><a routerLink="/farmacia/entregas/finalizadas/incompletas" routerLinkActive="is-active">Incompletas</a></li>
             </ul>
+        </li>  
+    </ul>
+    <hr>
+    <ul class="menu-list"> 
+        <li>
+            <a routerLink="/farmacia/entregas/historial" routerLinkActive="is-active"><span class="icon"><i class="fa fa-history"></i></span> <span>Historial</span></a>
         </li>        
     </ul>        
 </aside>

@@ -1,7 +1,8 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Location}           from '@angular/common';
-import { FormControl } from '@angular/forms';
+import { ActivatedRoute, Params }   from '@angular/router'
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -18,26 +19,35 @@ import  * as FileSaver    from 'file-saver';
 
 import { Mensaje } from '../../../mensaje';
 
+import { AlmacenesService } from '../../../catalogos/almacenes/almacenes.service';
+import { PedidosService } from '../pedidos.service';
 import { Pedido } from '../pedido';
+import { Almacen } from '../../../catalogos/almacenes/almacen';
 
 @Component({
-  selector: 'app-nuevo',
-  templateUrl: './nuevo.component.html',
-  styleUrls: ['./nuevo.component.css'],
+  selector: 'app-ver',
+  templateUrl: './ver.component.html',
+  styleUrls: ['./ver.component.css'],
   host: { '(window:keydown)' : 'keyboardInput($event)'}
 })
 
 
-export class NuevoComponent implements OnInit {
+export class VerComponent implements OnInit {
 
   cargando: boolean = false;
-
+  cargandoAlmacenes: boolean = false;
+  cargandoInsumos: boolean = false;
   // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
+  mensajeAdvertencia: Mensaje = new Mensaje()
   mensajeExito: Mensaje = new Mensaje();
-  ultimaPeticion:any;
+  ultimaPeticion: any;
   // # FIN SECCION  
 
+  //Harima: para ver si el formulaior es para crear o para editar
+  formularioTitulo:string = 'Nuevo';
+  private esEditar:boolean = false;
+  
   // # SECCION: Modal Insumos
   private mostrarModalInsumos = false;
   //Harima: Lista de claves agregadas al pedido, para checar duplicidad
@@ -45,11 +55,9 @@ export class NuevoComponent implements OnInit {
   // # FIN SECCION
 
   // # SECCION: Pedido
-  
-  // Los pedidos tienen que ser en un array por si se va a generar mas de un pedido de golpe
-  private pedidos: Pedido[] = []; 
-  // esta variable es para saber el pedido seleccionado (por si hay mas)
-  private pedidoActivo:number = 0; 
+
+  private almacenes: Almacen[];
+  private pedido: Pedido;
   
   // # FIN SECCION
 
@@ -60,7 +68,15 @@ export class NuevoComponent implements OnInit {
   // # FIN SECCION
 
 
-  constructor(private title:Title, private location:Location, private _ngZone: NgZone) { }
+  constructor(
+    private title: Title, 
+    private location: Location, 
+    private route: ActivatedRoute,
+    private _ngZone: NgZone, 
+    private pedidosService: PedidosService,
+    private almacenesService: AlmacenesService,
+    private fb: FormBuilder
+  ) { }
 
   ngOnInit() {
     this.title.setTitle('Nuevo pedido / Farmacia');
@@ -71,10 +87,8 @@ export class NuevoComponent implements OnInit {
     // Este es un hack para poder usar variables del componente dentro de una funcion del worker
     var self = this;    
     var $ngZone = this._ngZone;
-
+    
     this.pdfworker.onmessage = function( evt ) {       
-      
-      
       // Esto es un hack porque estamos fuera de contexto dentro del worker
       // Y se usa esto para actualizar alginas variables
       $ngZone.run(() => {
@@ -84,6 +98,7 @@ export class NuevoComponent implements OnInit {
       FileSaver.saveAs( self.base64ToBlob( evt.data.base64, 'application/pdf' ), evt.data.fileName );
       //open( 'data:application/pdf;base64,' + evt.data.base64 ); // Popup PDF
     };
+
     this.pdfworker.onerror = function( e ) {
       $ngZone.run(() => {
          self.cargandoPdf = false;
@@ -91,47 +106,80 @@ export class NuevoComponent implements OnInit {
       console.log(e)
     };
     
-    
-
     // Inicialicemos el pedido
-    this.pedidos.push(new Pedido(true) );
-    this.pedidos[0].nombre = "General";
-    this.pedidos[0].observaciones = null;
+    this.pedido = new Pedido(true);
 
-    
+    this.route.params.subscribe(params => {
+      //this.id = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number
+      if(params['id']){
+        this.pedido.id = params['id'];
+        //cargar datos del pedido
+        this.esEditar = true;
+        this.formularioTitulo = 'Editar';
+
+        this.pedidosService.ver(params['id']).subscribe(
+          pedido => {
+            this.cargando = false;
+            //this.datosCargados = true;
+            //this.pedidos[0].datos.patchValue(pedido);
+            this.pedido.datosImprimir = pedido;
+
+            for(let i in pedido.insumos){
+              let dato = pedido.insumos[i];
+              let insumo = dato.insumos_con_descripcion;
+              insumo.cantidad = +dato.cantidad_solicitada_um;
+              this.pedido.lista.push(insumo);
+              this.listaClaveAgregadas.push(insumo.clave);
+            }
+            pedido.insumos = undefined;
+            this.pedido.indexar();
+            this.pedido.listar(1);
+          },
+          error => {
+            this.cargando = false;
+
+            this.mensajeError = new Mensaje(true);
+            this.mensajeError = new Mensaje(true);
+            this.mensajeError.mostrar;
+
+            try {
+              let e = error.json();
+              if (error.status == 401 ){
+                this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+              }
+              
+            } catch(e){
+                          
+              if (error.status == 500 ){
+                this.mensajeError.texto = "500 (Error interno del servidor)";
+              } else {
+                this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+              }            
+            }
+          }
+        );
+        console.log('editar pedido');
+      }else{
+        console.log('nuevo pedido');
+      }
+      //this.cargarDatos();
+    });
+    //this.pedidos[0].nombre = "General";
+    //this.pedidos[0].observaciones = null;
   }
-  regresar(){
-    
-    this.location.back();
-  }
 
-  toggleModalInsumos(){
-    //console.log(this.mostrarModalInsumos)
-    this.mostrarModalInsumos = !this.mostrarModalInsumos
-    //console.log(this.mostrarModalInsumos)
-  }
-
-  // # SECCION Funciones globales
-  
-  agregarItem(item:any = {}){
-    let auxPaginasTotales = this.pedidos[this.pedidoActivo].paginacion.totalPaginas;
-   
-    this.pedidos[this.pedidoActivo].lista.push(item);
-    
-    this.pedidos[this.pedidoActivo].indexar();
-
-    // El siguiente proceso es para cambiar de página automáticamente si se encuentra en la última.
-    
-    if(this.pedidos[this.pedidoActivo].paginacion.lista.length == this.pedidos[this.pedidoActivo].paginacion.resultadosPorPagina
-      && this.pedidos[this.pedidoActivo].paginacion.paginaActual == auxPaginasTotales
-      && !this.pedidos[this.pedidoActivo].filtro.activo){
-        this.pedidos[this.pedidoActivo].listar(this.pedidos[this.pedidoActivo].paginacion.paginaActual + 1);
-    } else {
-      this.pedidos[this.pedidoActivo].listar(this.pedidos[this.pedidoActivo].paginacion.paginaActual);
+  obtenerDireccion(): string{
+    if(this.pedido.datosImprimir){
+      if(this.pedido.datosImprimir.status == 'PS'){
+        return '/farmacia/pedidos/por-surtir';
+      }else if(this.pedido.datosImprimir.status == 'ET'){
+        return '/farmacia/pedidos/en-transito';
+      }else if(this.pedido.datosImprimir.status == 'FI'){
+        return '/farmacia/pedidos/finalizados';
+      }
     }
-    
   }
-  
+
   buscar(e: KeyboardEvent, input:HTMLInputElement, inputAnterior: HTMLInputElement,  parametros:any[]){
     
     let term = input.value;
@@ -143,8 +191,8 @@ export class NuevoComponent implements OnInit {
       input.value = "";
       inputAnterior.value = "";
 
-      this.pedidos[this.pedidoActivo].filtro.activo = false;
-      this.pedidos[this.pedidoActivo].filtro.lista = [];      
+      this.pedido.filtro.activo = false;
+      this.pedido.filtro.lista = [];      
 
       return;      
     }
@@ -162,10 +210,10 @@ export class NuevoComponent implements OnInit {
     inputAnterior.value = term;    
 
     if(term != ""){
-      this.pedidos[this.pedidoActivo].filtro.activo = true;      
+      this.pedido.filtro.activo = true;      
     } else {
-      this.pedidos[this.pedidoActivo].filtro.activo = false;
-      this.pedidos[this.pedidoActivo].filtro.lista = [];
+      this.pedido.filtro.activo = false;
+      this.pedido.filtro.lista = [];
       return;
     }
 
@@ -177,7 +225,7 @@ export class NuevoComponent implements OnInit {
         continue;
       }
             
-      let listaFiltrada = this.pedidos[this.pedidoActivo].lista.filter((item)=> {   
+      let listaFiltrada = this.pedido.lista.filter((item)=> {   
         var cadena = "";
         let campos = parametros[i].campos;
         for (let l in campos){
@@ -216,31 +264,16 @@ export class NuevoComponent implements OnInit {
           }
         };
       }
-      this.pedidos[this.pedidoActivo].filtro.lista = match;
+      this.pedido.filtro.lista = match;
     } else {
-      this.pedidos[this.pedidoActivo].filtro.lista = arregloResultados[0];
+      this.pedido.filtro.lista = arregloResultados[0];
     }
 
-
-    this.pedidos[this.pedidoActivo].filtro.indexar(false);
+    this.pedido.filtro.indexar(false);
     
-    this.pedidos[this.pedidoActivo].filtro.paginacion.paginaActual = 1;
-    this.pedidos[this.pedidoActivo].filtro.listar(1); 
+    this.pedido.filtro.paginacion.paginaActual = 1;
+    this.pedido.filtro.listar(1); 
 
-  }
-
-  //Harima: necesitamos eliminar también de la lista de claves agregadas
-  eliminarInsumo(item,index,filtro:boolean = false){
-    //Harima: eliminar el elemento en la lista de claves agregadas, para poder agregarla de nuevo si se desea
-    var i = this.listaClaveAgregadas.indexOf(item.clave);
-    this.listaClaveAgregadas.splice(i,1);
-
-    //Harima: si no es el filtro(busqueda), borrar de la lista principal de insumos
-    if(!filtro){
-      this.pedidos[this.pedidoActivo].eliminarItem(item,index);
-    }else{
-      this.pedidos[this.pedidoActivo].filtro.eliminarItem(item,index);
-    }
   }
 
   mostrarFichaInformativa(e, clave: string){
@@ -268,10 +301,10 @@ export class NuevoComponent implements OnInit {
       event.preventDefault();
       event.stopPropagation();
 
-      if (!this.pedidos[this.pedidoActivo].filtro.activo){
-        this.pedidos[this.pedidoActivo].paginaSiguiente();
+      if (!this.pedido.filtro.activo){
+        this.pedido.paginaSiguiente();
       } else {
-        this.pedidos[this.pedidoActivo].filtro.paginaSiguiente();
+        this.pedido.filtro.paginaSiguiente();
       }
       
     }
@@ -281,10 +314,10 @@ export class NuevoComponent implements OnInit {
       event.preventDefault();
       event.stopPropagation();
 
-      if (!this.pedidos[this.pedidoActivo].filtro.activo){
-        this.pedidos[this.pedidoActivo].paginaAnterior();
+      if (!this.pedido.filtro.activo){
+        this.pedido.paginaAnterior();
       } else {
-        this.pedidos[this.pedidoActivo].filtro.paginaAnterior();
+        this.pedido.filtro.paginaAnterior();
       }
       
     }
@@ -299,8 +332,8 @@ export class NuevoComponent implements OnInit {
     try {
       this.cargandoPdf = true;
       var pedidos_imprimir = {
-        datos:{alamcen:'colicitar',solicitante:'unidad',observaciones:'texto'},
-        lista: this.pedidos[this.pedidoActivo].lista
+        datos: this.pedido.datosImprimir,
+        lista: this.pedido.lista
       };
       this.pdfworker.postMessage(JSON.stringify(pedidos_imprimir));
     } catch (e){
