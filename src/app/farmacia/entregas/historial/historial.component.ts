@@ -19,12 +19,12 @@ import { Pedido } from '../../pedidos/pedido';
 import { Mensaje } from '../../../mensaje';
 
 @Component({
-  selector: 'farmacia-entregas-lista',
-  templateUrl: './lista.component.html',
-  styleUrls: ['./lista.component.css'],
+  selector: 'app-historial',
+  templateUrl: './historial.component.html',
+  styleUrls: ['./historial.component.css'],
   providers: [EntregasService]
 })
-export class ListaComponent implements OnInit {
+export class HistorialComponent implements OnInit {
 
   cargando: boolean = false;
 
@@ -35,8 +35,8 @@ export class ListaComponent implements OnInit {
   // # FIN SECCION
 
   // # SECCION: Lista
-  status: string = "PS";
-  titulo: string = "";
+  
+  titulo: string = "Historial";
   icono: string = "f";
   pedidos: Pedido[] = [];
   private paginaActual = 1;
@@ -62,31 +62,9 @@ export class ListaComponent implements OnInit {
 
   ngOnInit() {
     
-    switch(this.route.snapshot.url[0].path){
-     
-      case 'finalizadas': 
-          this.status = "FI";
-          this.icono = "fa-check-circle";
-          
-          if (this.route.snapshot.url.length > 1){
-            if(this.route.snapshot.url[1].path == "completas"){
-              this.titulo = "Finalizadas (completas)";
-            } else if(this.route.snapshot.url[1].path == "incompletas"){
-              this.titulo = "Finalizadas (incompletas)";
-            } else {
-              this.titulo = "Finalizadas";
-            }
-          } else {
-            this.titulo = "Finalizadas";
-          }
-          
+  
 
-          
-      break;
-      default: this.status = "PS"; this.titulo = "Por surtir"; this.icono = "fa-inbox"; break;
-    }
-
-    this.title.setTitle("Entregas / Farmacia");
+    this.title.setTitle("Historial de entregas / Farmacia");
     
 
     this.listar(1);
@@ -105,7 +83,7 @@ export class ListaComponent implements OnInit {
       this.ultimoTerminoBuscado = term;
       this.paginaActualBusqueda = 1;
       this.cargando = true;
-      return term  ? this.entregasService.buscar(this.status, term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]}) 
+      return term  ? this.entregasService.buscar(null, term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]}) 
     }
       
     
@@ -159,7 +137,7 @@ export class ListaComponent implements OnInit {
     console.log("Cargando búsqueda.");
    
     this.cargando = true;
-    this.entregasService.buscar(this.status, term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
+    this.entregasService.buscar(null, term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
         resultado => {
           this.cargando = false;
 
@@ -211,7 +189,7 @@ export class ListaComponent implements OnInit {
     console.log("Cargando items.");
    
     this.cargando = true;
-    this.entregasService.lista(this.status, pagina,this.resultadosPorPagina).subscribe(
+    this.entregasService.lista(null, pagina,this.resultadosPorPagina).subscribe(
         resultado => {
           this.cargando = false;
           
