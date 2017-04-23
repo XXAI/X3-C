@@ -45,6 +45,7 @@ export class FormDatosComponent implements OnInit {
     this.movimientosEntradasService.listaDatos("almacenes").subscribe(
        datos => {
          this.datos = datos;
+         console.log(this.datos);
          for (let data of this.datos) {
            if(data.usuario_id == this.usuario.id){
               for (let almacen_tipo_movimiento of data.almacen_tipos_movimientos) {

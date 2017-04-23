@@ -73,7 +73,7 @@ export class NuevoComponent implements OnInit {
               this.movimiento.value.almacen_id= almacen_usuario.servidor_id;
               this.servidorId = almacen_usuario.almacen_id;
               //console.log("SERVIDOR ID-------------------------------------");
-              //console.log(this.servidorId);
+              console.log(this.servidorId);
               this.movimiento.patchValue({almacen_id: this.servidorId});
               this.movimiento.patchValue({cancelado: false});
               this.movimiento.patchValue({tipo_movimiento_id: 1});

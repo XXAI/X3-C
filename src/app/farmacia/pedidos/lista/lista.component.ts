@@ -155,7 +155,7 @@ export class ListaComponent implements OnInit {
       }
 
     );
-<<<<<<< HEAD
+
   }
 
   obtenerDireccion(id:string, status:string): string{
@@ -165,10 +165,7 @@ export class ListaComponent implements OnInit {
       return '/farmacia/pedidos/ver/'+id;
     }
   }
-=======
-  } //Fin ngOnInit
-
->>>>>>> deysi_sial
+  
 
   buscar(term: string): void {
     this.terminosBusqueda.next(term);
