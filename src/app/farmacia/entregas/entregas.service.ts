@@ -26,23 +26,12 @@ export class EntregasService {
     return this.jwtRequest.get(EntregasService.URL,null,{status: status, page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
   }
 
-  ver(id:any): Observable<Pedido>{
-    return this.jwtRequest.get(EntregasService.URL,id,{}).map( (response: Response) => {
-     
-       let jsonData = response.json().data;
-       /* var roles:string[] = []
-        jsonData.roles.map(item => {
-          roles.push(""+item.id)
-        })*/
-
-        var pedido = jsonData as Pedido;
-        //usuario.roles = roles;
-        return pedido;
-      }) as Observable<Pedido>;
+  ver(id:any): Observable<any>{
+    return this.jwtRequest.get(EntregasService.URL,id,{}).map( (response: Response) => response.json().data) as Observable<Pedido>;
   }
 
-  surtir(pedido: Pedido): Observable<Pedido> {
-    return this.jwtRequest.post(EntregasService.URL,pedido).map( (response: Response) => response.json().data) as Observable<Pedido>;
+  surtir(lotes: any): Observable<Pedido> {
+    return this.jwtRequest.post(EntregasService.URL,lotes).map( (response: Response) => response.json().data) as Observable<Pedido>;
   }
 
 }

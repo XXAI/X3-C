@@ -20,8 +20,8 @@
           </div>
           <div class="column is-4" style="text-align:center; ">
             <div style="margin:1em;">
-            <a  class="button is-primary" style="width:45%; margin-right:5%;" (click)="surtir()"> <span class="icon"><i class="fa fa-check-circle"></i></span> <span>Surtir</span></a>
-            <a  class="button is-white"  style="width:45%"  routerLink="/farmacia/entregas/"> Cancelar</a>
+            <a  class="button is-primary" style="width:45%; margin-right:5%;" (click)="imprimir()"> <span class="icon"><i class="fa fa-print"></i></span> <span>Imprimir</span></a>
+            <a  class="button is-white"  style="width:45%"  routerLink="/farmacia/entregas/"> Regresar</a>
             </div>
           </div>
         </div>       
@@ -147,63 +147,7 @@
 
         </div>
       </div>
-      <div class="tile is-parent is-vertical ">
-        <div class="tile is-child notification" style="background:#CCC;">
-          <div class="contenedor-tabla">
-            
-            <table class="table" *ngIf="!cargando" style="font-size: 0.8em;" >
-              <thead>
-                <tr>
-                  <td colspan="5">
-                    <h1 class="subtitle"><span class="icon"><i class="fa fa-archive"></i></span> Existencias</h1>
-                  </td>
-
-                </tr>
-                <tr>
-                  <td colspan="5">
-                    <p class="control">
-                      <input class="input" type="text" placeholder="Código" #searchBoxStock (keyup)="buscarStock($event, searchBoxStock , searchBoxStock.value)" (focus)="searchBoxStock.select()" >
-                    </p>
-                  </td>
-
-                </tr>
-              
-                <tr>
-                  <th>Código</th>
-                  <th>Marca</th>
-                  <th>Lote</th>
-                  <th>Caducidad</th>
-                  <th><abbr title="Cantidad">Cant.</abbr></th>                
-                </tr>
-              </thead>
-              <tbody>
-                  <tr  class="is-unselectable item" *ngFor="let item of listaStock" (click)="asignarStock(item)" [ngClass]="{ 'asignado': item.asignado }">
-                                      
-                    <td>{{ item.codigo_barras }}</td>
-                    <td>{{ item.marca.nombre }}</td>
-                    <td>{{ item.lote }}</td>
-                    <td>{{ item.fecha_caducidad | date:'dd/MM/y' }}</td>
-                    <td style="width:78px !important;">{{ item.existencia }}</td>   
-                  </tr>  
-                  <tr *ngIf="claveNoSolicitada">
-                    <td colspan="5">La clave de este producto no fue solicitada en el pedido.</td>
-                  </tr> 
-                  <tr *ngIf="listaStock == 0 && itemSeleccionado == null && !cargando && !claveNoSolicitada">
-                    <td colspan="5">Sin resultados.</td>
-                  </tr> 
-                  <tr *ngIf="listaStock == 0 && itemSeleccionado != null && !cargando && !claveNoSolicitada">
-                    <td colspan="5">No hay stock.</td>
-                  </tr>                    
-              </tbody>  
-            </table>
-
-            <div class="is-fullwidth has-text-centered" style="padding-top:0px;" *ngIf="cargandoStock">
-              <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
-              <br>
-              <br>
-            </div>
-          </div>
-        </div>
+      <div class="tile is-parent  ">
         <div class="tile is-child  notification is-white">
           <div class="contenedor-tabla">
             <table class="table" *ngIf="!cargando && itemSeleccionado != null" style="font-size: 0.8em;" >
@@ -217,10 +161,10 @@
                     <th></th>              
                   </tr>
               </thead>
-              <tfoot>
+              <tfoot *ngIf="itemSeleccionado.totalStockAsignado>0">
                 <tr>
                   <th colspan="4" style="text-align:right">
-                    <span *ngIf="itemSeleccionado.totalStockAsignado == itemSeleccionado.cantidad"><span class="icon is-small" ><i class="fa fa-check-circle"></i></span> <span>Completo &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Total </span>
+                    <span *ngIf="itemSeleccionado.totalStockAsignado == itemSeleccionado.cantidad"><span class="icon is-small" ><i class="fa fa-check-circle"></i></span> <span>Completo &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span> Total 
                   </th>
                   <td style="text-align:center">{{ itemSeleccionado.totalStockAsignado || 0 }} / {{ itemSeleccionado.cantidad }}</td>
                 </tr>
@@ -232,12 +176,11 @@
                     <td>{{ item.marca.nombre }}</td>
                     <td>{{ item.lote }}</td>
                     <td>{{ item.fecha_caducidad | date:'dd/MM/y' }}</td>
-                    <td style="width:78px !important;">
-                        <p class="control is-expanded">
-                        <input class="input is-small has-text-centered"  type="number" min="1" max="{{item.existencia}}" placeholder="Cant" [(ngModel)]="item.cantidad" (change)="validarItemStock(item, true)" (keyup)="validarItemStock(item)">
-                        </p>
-                    </td> 
-                    <td style="vertical-align: middle;" class="has-text-centered"><a  class="is-danger" (click)="eliminarStock(i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>                    
+                    <td>{{ item.cantidad }}</td>
+                    
+                  </tr>
+                  <tr *ngIf="itemSeleccionado.totalStockAsignado==0">
+                    <td colspan="5">No se entregó este insumo</td>
                   </tr>
                   
                       

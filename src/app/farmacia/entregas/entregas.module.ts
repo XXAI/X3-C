@@ -16,6 +16,8 @@ import { EntregasRoutingModule } from './entregas-routing.module';
 import { MenuLateralComponent } from './menu-lateral/menu-lateral.component';
 import { ListaComponent } from './lista/lista.component';
 import { SurtirComponent } from './surtir/surtir.component';
+import { VerComponent } from './ver/ver.component';
+import { HistorialComponent } from './historial/historial.component';
 
 @NgModule({
   imports: [
@@ -29,6 +31,6 @@ import { SurtirComponent } from './surtir/surtir.component';
     IndexFarmaciaModule,
     EntregasRoutingModule
   ],
-  declarations: [ListaComponent, MenuLateralComponent, SurtirComponent]
+  declarations: [ListaComponent, MenuLateralComponent, SurtirComponent, VerComponent, HistorialComponent]
 })
 export class EntregasModule { }

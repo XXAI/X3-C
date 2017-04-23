@@ -4,26 +4,26 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from '../../auth-guard.service';
 
 import { ListaComponent } from './lista/lista.component';
+import { HistorialComponent } from './historial/historial.component';
 import { SurtirComponent } from './surtir/surtir.component';
+import { VerComponent } from './ver/ver.component';
 
 const routes: Routes = [
-  { path: 'farmacia/entregas', redirectTo: '/farmacia/entregas/nuevas', pathMatch: 'full' },
+  { path: 'farmacia/entregas', redirectTo: '/farmacia/entregas/por-surtir', pathMatch: 'full' },
   {
     path: 'farmacia/entregas',
     children: [
-       { path: 'nuevas', component: ListaComponent},
-       { path: 'pendientes', component: ListaComponent},
+       { path: 'por-surtir', component: ListaComponent},
        { path: 'finalizadas', component: ListaComponent},
        { path: 'finalizadas/completas', component: ListaComponent},
        { path: 'finalizadas/incompletas', component: ListaComponent},
-       { path: 'realizadas', component: ListaComponent},
-       { path: 'historial', component: ListaComponent},
+       { path: 'finalizadas/canceladas', component: ListaComponent},       
+       { path: 'historial', component: HistorialComponent},
        { path: 'surtir/:id', component: SurtirComponent},
+       { path: 'ver/:id', component: VerComponent},
     ],
     canActivate: [AuthGuard]
   },
- 
-  
 ];
 
 @NgModule({
