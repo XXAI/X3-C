@@ -31,7 +31,7 @@ export class NuevoComponent implements OnInit {
   private usuario: any ={};
   datos : any[];
 
-  private servidorId: string;
+  private almacenId: string;
  
 
   // # SECCION: Esta sección es para mostrar mensajes
@@ -64,17 +64,12 @@ export class NuevoComponent implements OnInit {
        datos => {
          this.datos = datos;
          for (let data of this.datos) {
-           //console.log(data.almacen_usuarios.length); 
-           for(let almacen_usuario of data.almacen_usuarios){
-             if(almacen_usuario.usuario_id==this.usuario.id){
-              //console.log("NUEVO  nuevo.component.ts"); 
-              //console.log(almacen_usuario.usuario_id);
-              //console.log(almacen_usuario.servidor_id);
-              this.movimiento.value.almacen_id= almacen_usuario.servidor_id;
-              this.servidorId = almacen_usuario.almacen_id;
-              //console.log("SERVIDOR ID-------------------------------------");
-              console.log(this.servidorId);
-              this.movimiento.patchValue({almacen_id: this.servidorId});
+           for(let usuario of data.usuarios){
+             if(usuario.usuario_id==this.usuario.id){
+              this.movimiento.value.almacen_id= usuario.almacen_id;
+              this.almacenId = usuario.almacen_id;
+              console.log(this.almacenId);
+              this.movimiento.patchValue({almacen_id: this.almacenId});
               this.movimiento.patchValue({cancelado: false});
               this.movimiento.patchValue({tipo_movimiento_id: 1});
              }

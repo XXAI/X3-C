@@ -4,7 +4,7 @@
 <div style="height:50px;"></div>
 <div class="contenedor columns " style="height:100%; ">
     <div class="column is-one-quarter is-hidden-mobile">
-     <!--  <menu-lateral></menu-lateral> -->
+      <menu-lateral></menu-lateral>
     </div>
     <!-- -->
     <!-- Columna de la lista de entradas -->
@@ -28,11 +28,6 @@
                         <div class="control is-grouped">
                             <p class="control is-expanded">
                                 <input class="input is-medium" type="text" placeholder="Buscar" #searchBox id="search-box" (keyup)="buscar(searchBox.value)">
-                            </p>
-                            <p class="control">
-                                <a class="button is-medium is-primary is-inverted " routerLink="/farmacia/movimientos/entradas/nuevo">
-                                <span class="icon"><i class="fa fa-plus"></i></span><span>Nuevo</span>
-                                </a>
                             </p>
                         </div>
                     </div>
@@ -61,7 +56,7 @@
                     <!-- Cambiar a movimientos -->
                     <tr *ngFor="let item of items; let i=index">
                         <th style="vertical-align: middle;"><a routerLink="/farmacia/movimientos/entradas/ver/{{item.id}}">{{ item.id }}</a></th>
-                        <td style="vertical-align: middle;"><a routerLink="/farmacia/movimientos/entradas/ver/{{item.id}}">{{ item.cancelado }} </a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/farmacia/movimientos/entradas/ver/{{item.id}}">Entrada manual </a></td>
                         <td style="vertical-align: middle;"><a routerLink="/farmacia/movimientos/entradas/ver/{{item.id}}">{{ item.created_at | date:'dd/MM/y' }}</a></td>
                         <td style="vertical-align: middle;"><a routerLink="/farmacia/movimientos/entradas/ver/{{item.id}}">{{ item.created_at | date: 'HH:mm'}}</a></td>
                         <td style="vertical-align: middle;" class="has-text-centered">

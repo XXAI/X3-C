@@ -39,6 +39,10 @@ export class ListaComponent implements OnInit {
   mensajeExito: Mensaje = new Mensaje();
   ultimaPeticion:any;
   // # FIN SECCION
+  
+  datos : any[];
+  private almacenId: string;
+  private usuario: any ={};
 
   // # SECCION: Lista de Modelos, hay que CAMBIAR a movimientos
   items: Modelo[] = [];
@@ -73,6 +77,7 @@ export class ListaComponent implements OnInit {
   ngOnInit() {
     this.title.setTitle("Entradas / Farmacia");
 
+    this.obtenerAlmacenId();
     this.listar(1);
     this.mensajeError = new Mensaje();
     this.mensajeExito = new Mensaje();
@@ -143,8 +148,34 @@ export class ListaComponent implements OnInit {
           this.initInsumo(),
         ])
       });
+
   } //Fin ngOnInit
 
+  obtenerAlmacenId(){
+
+      this.usuario = JSON.parse(localStorage.getItem("usuario"));
+      
+      this.movimientosEntradasService.listaDatos("almacenes").subscribe(
+       datos => {
+         this.datos = datos;
+         for (let data of this.datos) {
+           for(let usuario of data.usuarios){
+             console.log("usuario");
+             console.log(usuario);
+             if(usuario.usuario_id==this.usuario.id){
+              this.movimiento.value.almacen_id= usuario.almacen_id;
+              this.almacenId = usuario.almacen_id;
+              console.log(this.almacenId);
+             }
+           }
+          }
+         console.log(this.datos);
+        }, //Bind to view
+       err => {
+              // Log errors if any
+              console.log(err);
+          });
+  }
   initInsumo() {
         return this.fb.group({
             clave: ['', Validators.required],

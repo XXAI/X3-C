@@ -260,6 +260,7 @@ export class ListaComponent implements OnInit {
         resultado => {
           this.cargando = false;
           this.items = resultado.data as Modelo[];
+          console.log(resultado);
 
           console.log(this.items);
 

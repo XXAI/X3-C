@@ -33,7 +33,6 @@ export class FormComponent implements OnInit {
 
   ngOnInit() {
     console.log(this.insumosAgregadosEntrada);
-    console.log(this.servidor_id);
   }
 
 
