@@ -48,9 +48,11 @@ export class FormDatosComponent implements OnInit {
          console.log(this.datos);
          for (let data of this.datos) {
            if(data.usuario_id == this.usuario.id){
-              for (let almacen_tipo_movimiento of data.almacen_tipos_movimientos) {
+           console.log(data.usuario_id);
+           console.log(this.usuario.id);
+              for (let tipo_movimiento of data.tipos_movimientos) {
                   //console.log("almacen_tipos_movimientos");
-                  this.listaMovimientos = almacen_tipo_movimiento.tipo_movimiento;
+                  this.listaMovimientos = tipo_movimiento.tipo_movimiento;
                   //console.log(this.listaMovimientos);
                   //console.log(almacen_tipo_movimiento.tipo_movimiento.nombre);                  
               }

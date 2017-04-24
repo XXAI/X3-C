@@ -63,13 +63,13 @@ export class NuevoComponent implements OnInit {
          this.datos = datos;
          for (let data of this.datos) {
            //console.log(data.almacen_usuarios.length); 
-           for(let almacen_usuario of data.almacen_usuarios){
-             if(almacen_usuario.usuario_id==this.usuario.id){
+           for(let usuario of data.usuarios){
+             if(usuario.usuario_id==this.usuario.id){
               //console.log("NUEVO  nuevo.component.ts"); 
               //console.log(almacen_usuario.usuario_id);
               //console.log(almacen_usuario.servidor_id);
-              this.movimiento.value.almacen_id= almacen_usuario.servidor_id;
-              this.servidorId = almacen_usuario.almacen_id;
+              this.movimiento.value.almacen_id= usuario.servidor_id;
+              this.servidorId = usuario.almacen_id;
               //console.log("SERVIDOR ID-------------------------------------");
               //console.log(this.servidorId);
               this.movimiento.patchValue({almacen_id: this.servidorId});

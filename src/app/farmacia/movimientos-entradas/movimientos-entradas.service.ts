@@ -13,18 +13,25 @@ import { Movimiento } from  './movimiento';
 export class MovimientosEntradasService {
 
   static readonly URL: string = "movimientos";
+  static readonly URL_STATS: string = "movimiento-stats";
 
   constructor(
     private http: Http,   
     private jwtRequest:JwtRequestService
     ) { }
 
+  stats(): Observable<any>{
+    return this.jwtRequest.get(MovimientosEntradasService.URL_STATS,null,null).map( (response: Response) => response.json());
+  }
+
   buscar(term: string, pagina:number = 1, resultados_por_pagina:number =5 ): Observable<any>{
     return this.jwtRequest.get(MovimientosEntradasService.URL,null,{q: term, page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
   }
 
   lista(pagina:number = 1, resultados_por_pagina:number =5 ): Observable<any>{
-    return this.jwtRequest.get(MovimientosEntradasService.URL,null,{page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
+    let almacen : string = "00021";
+    return this.jwtRequest.get(`${MovimientosEntradasService.URL}?almacen=${almacen}&tipo=1`,null,{page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
+    //return this.jwtRequest.get(`${MovimientosEntradasService.URL}?almacen=${almacen}&tipo=1`).map( (response: Response) => response.json().data);
   }
 
   //Para listar datos de manera general

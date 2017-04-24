@@ -18,6 +18,7 @@ import { NuevoComponent } from './nuevo/nuevo.component';
 import { FormComponent  } from './form/form.component';
 import { FormDatosComponent   }  from  './form/form-datos.component';
 import { FormInsumosComponent }  from  './form/form-insumos.component';
+import { MenuLateralComponent }  from './menu-lateral/menu-lateral.component';
 
 @NgModule({
   imports: [
@@ -34,6 +35,7 @@ import { FormInsumosComponent }  from  './form/form-insumos.component';
     NuevoComponent,
     FormComponent,
     FormDatosComponent,
+    MenuLateralComponent,
     FormInsumosComponent
   ]
 })

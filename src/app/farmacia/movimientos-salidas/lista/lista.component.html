@@ -4,7 +4,7 @@
 <div style="height:50px;"></div>
 <div class="contenedor columns " style="height:100%; ">
     <div class="column is-one-quarter is-hidden-mobile">
-     <!--  <menu-lateral></menu-lateral> -->
+     <menu-lateral></menu-lateral> 
     </div>
     <!-- -->
     <!-- Columna de la lista de salidas -->
@@ -28,11 +28,6 @@
                         <div class="control is-grouped">
                             <p class="control is-expanded">
                                 <input class="input is-medium" type="text" placeholder="Buscar" #searchBox id="search-box" (keyup)="buscar(searchBox.value)">
-                            </p>
-                            <p class="control">
-                                <a class="button is-medium is-primary is-inverted " routerLink="/farmacia/movimientos/salidas/nuevo">
-                                <span class="icon"><i class="fa fa-plus"></i></span><span>Nuevo</span>
-                                </a>
                             </p>
                         </div>
                     </div>

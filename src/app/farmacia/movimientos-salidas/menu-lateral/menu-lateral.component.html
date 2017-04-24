@@ -1,0 +1,18 @@
+<aside class="menu" style="padding: 1em;">
+  <!--  <p class="menu-label">
+        Pedidos
+    </p>-->
+    <a routerLink="/farmacia/movimientos/salidas/nuevo" routerLinkActive="is-active" class="button is-primary is-inverted is-medium is-fullwidth" ><span class="icon"  ><i class="fa fa-plus"></i></span> <span>Nueva Salida</span></a>
+    <br>
+    <ul class="menu-list">
+        <li>
+            <a routerLink="/farmacia/movimientos/salidas" #todos  routerLinkActive="is-active">
+                <span class="icon"  ><i class="fa fa-file"></i></span> Salida manual
+                <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                <span *ngIf="stats.todos>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': todos.className == 'is-active', 'is-danger': todos.className != 'is-active' }" >{{  stats.todos }}</span>
+            </a>
+        </li>
+        
+    </ul>
+        
+</aside>
