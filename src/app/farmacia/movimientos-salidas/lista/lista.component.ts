@@ -259,8 +259,9 @@ export class ListaComponent implements OnInit {
     this.movimientosSalidasService.lista(pagina, this.resultadosPorPagina).subscribe(
         resultado => {
           this.cargando = false;
-          this.items = resultado.data as Modelo[];
           console.log(resultado);
+          this.items = resultado.data as Modelo[];
+          
 
           console.log(this.items);
 
