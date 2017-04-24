@@ -11,8 +11,7 @@ import { EntregasService } from '../entregas.service';
 export class MenuLateralComponent implements OnInit {
   private cargando: boolean = false;
   private stats: any = { 
-    en_espera: 0,
-    pendientes: 0,
+    por_surtir: 0,
     finalizados: 0
   };
 
