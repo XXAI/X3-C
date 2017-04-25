@@ -71,7 +71,7 @@ export class ListaComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.title.setTitle("Entradas / Farmacia");
+    this.title.setTitle("Salidas / Farmacia");
 
     this.listar(1);
     this.mensajeError = new Mensaje();

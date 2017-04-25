@@ -8,8 +8,6 @@
         <li>
             <a routerLink="/farmacia/movimientos/entradas" #todos  routerLinkActive="is-active">
                 <span class="icon"  ><i class="fa fa-file"></i></span> Entrada manual
-                <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
-                <span *ngIf="stats.todos>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': todos.className == 'is-active', 'is-danger': todos.className != 'is-active' }" >{{  stats.todos }}</span>
             </a>
         </li>
         

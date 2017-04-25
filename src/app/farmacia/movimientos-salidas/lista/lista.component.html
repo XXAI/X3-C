@@ -58,7 +58,7 @@
                     <tr *ngFor="let item of items; let i=index">
                         <th style="vertical-align: middle;"><a routerLink="/farmacia/movimientos/salidas/ver/{{item.id}}">{{ item.id }}</a></th>
                         <th style="vertical-align: middle;"><a routerLink="/farmacia/movimientos/salidas/ver/{{item.id}}">{{ item.usuario_id }}</a></th>
-                        <td style="vertical-align: middle;"><a routerLink="/farmacia/movimientos/salidas/ver/{{item.id}}">{{ item.tipo_movimiento_id }} </a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/farmacia/movimientos/salidas/ver/{{item.id}}">Salida manual </a></td>
                         <td style="vertical-align: middle;"><a routerLink="/farmacia/movimientos/salidas/ver/{{item.id}}">{{ item.created_at | date:'dd/MM/y' }}</a></td>
                         <td style="vertical-align: middle;"><a routerLink="/farmacia/movimientos/salidas/ver/{{item.id}}">{{ item.created_at | date: 'HH:mm'}}</a></td>
                         <td style="vertical-align: middle;" class="has-text-centered">

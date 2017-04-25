@@ -73,7 +73,7 @@ export class FormInsumosComponent implements OnInit {
   constructor(private title:Title, private location:Location, private _ngZone: NgZone) { }
 
   ngOnInit() {
-    this.title.setTitle('Nueva entrada / Farmacia');
+    this.title.setTitle('Nueva salida / Farmacia');
 
     // Inicializamos el objeto para los reportes con web Webworkers
     this.pdfworker = new Worker("web-workers/farmacia/pedidos/imprimir.js")

@@ -17,7 +17,7 @@ export class MenuLateralComponent implements OnInit {
   ngOnInit() {
     
     this.cargando = true;
-    this.movimientosEntradasService.stats().subscribe(
+    /*this.movimientosEntradasService.stats().subscribe(
       response => {
         this.cargando = false;
         this.stats = response;
@@ -26,7 +26,7 @@ export class MenuLateralComponent implements OnInit {
         this.cargando = false;
         console.log(error);
       }
-    );
+    );*/
   }
 
 }
