@@ -131,7 +131,7 @@ export class VerComponent implements OnInit {
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];
               let insumo = dato.insumos_con_descripcion;
-              insumo.cantidad = +dato.cantidad_solicitada_um;
+              insumo.cantidad = +dato.cantidad_solicitada;
               this.pedidos[0].lista.push(insumo);
               this.listaClaveAgregadas.push(insumo.clave);
             }
