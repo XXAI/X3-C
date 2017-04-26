@@ -35,7 +35,7 @@ export class ListaComponent implements OnInit {
   // # FIN SECCION
 
   // # SECCION: Lista
-  status: string = "ES";
+  status: string = "PS";
   titulo: string = "";
   icono: string = "f";
   pedidos: Pedido[] = [];
@@ -63,7 +63,7 @@ export class ListaComponent implements OnInit {
   ngOnInit() {
     
     switch(this.route.snapshot.url[0].path){
-      case 'pendientes': this.status = "PE"; this.titulo = "Pendientes"; this.icono = "fa-minus-circle"; break;
+     
       case 'finalizadas': 
           this.status = "FI";
           this.icono = "fa-check-circle";
@@ -83,7 +83,7 @@ export class ListaComponent implements OnInit {
 
           
       break;
-      default: this.status = "ES"; this.titulo = "Nuevas"; this.icono = "fa-inbox"; break;
+      default: this.status = "PS"; this.titulo = "Por surtir"; this.icono = "fa-inbox"; break;
     }
 
     this.title.setTitle("Entregas / Farmacia");
@@ -208,7 +208,7 @@ export class ListaComponent implements OnInit {
 
   listar(pagina:number): void {
     this.paginaActual = pagina;
-    console.log("Cargando usuarios.");
+    console.log("Cargando items.");
    
     this.cargando = true;
     this.entregasService.lista(this.status, pagina,this.resultadosPorPagina).subscribe(

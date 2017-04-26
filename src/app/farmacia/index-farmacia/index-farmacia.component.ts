@@ -23,7 +23,8 @@ export class IndexFarmaciaComponent implements OnInit {
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
 
     this.modulos = [
-      { permiso: '', icono: 'assets/icono-entradas.svg', titulo:"Entradas", url:"/farmacia/entradas" },
+      { permiso: '', icono: 'assets/icono-entradas.svg', titulo:"Entrada manual", url:"/farmacia/movimientos/entradas" },
+      { permiso: '', icono: 'assets/icono-salidas.svg', titulo:"Salida manual", url:"/farmacia/movimientos/salidas" },
       { permiso: '', icono: 'assets/icono-salidas.svg', titulo:"Salidas", url:"/farmacia/salidas" },
       //{ permiso: '', icono: 'assets/hub-almacen.svg', titulo:"Inventario", url:"/farmacia/inventario" },
       //{ permiso: '', icono: 'assets/icono-ajustes-inventario.svg', titulo:"Ajustes de inventario", url:"/farmacia/inventario/ajustes" },
@@ -36,10 +37,10 @@ export class IndexFarmaciaComponent implements OnInit {
       //{ permiso: '', icono: 'assets/icono-pagina-lista.svg', titulo:"Actas colectivas por desabasto", url:"/farmacia/actas-colectivas" },
     ]
     this.accesosDirectos = [
-      { permiso: '', icono: 'assets/icono-receta.svg', titulo:"Nueva receta", url:"/farmacia/recetas/nueva" },
+      { permiso: '', icono: 'assets/icono-receta.svg', titulo:"Dispensación por Receta", url:"/farmacia/recetas/nueva" },
       //{ permiso: '', icono: 'assets/icono-colectivo.svg', titulo:"Nuevo colectivo", url:"/farmacia/colectivos/nuevo" },      
       { permiso: '', icono: 'assets/icono-pagina-lista.svg', titulo:"Nuevo pedido", url:"/farmacia/pedidos/nuevo" },
-      { permiso: '', icono: 'assets/icono-pedidos-alt.svg', titulo:"Recibir pedido", url:"/farmacia/pedidos/en-camino" },
+      { permiso: '', icono: 'assets/icono-pedidos-alt.svg', titulo:"Recibir pedido", url:"/farmacia/pedidos/por-surtir" },
       //{ permiso: '', icono: 'assets/icono-entradas.svg', titulo:"Nueva entrada", url:"/farmacia/entradas/nueva" },
       //{ permiso: '', icono: 'assets/icono-salidas.svg', titulo:"Nueva salida", url:"/farmacia/salida/nueva" },
     ]

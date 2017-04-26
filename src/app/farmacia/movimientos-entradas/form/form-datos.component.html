@@ -1,0 +1,51 @@
+<div [formGroup]="movimiento" >
+
+          <div class="control is-grouped">
+              <p class="control">
+                <label>Tipo de movimiento</label>
+              </p>
+              <p class="box">
+                <label> <strong> Entrada manual </strong></label>
+              </p>
+          </div>
+          
+          <div class="control is-grouped">
+            <p class="control">
+              <label>Fecha de movimiento</label>
+            </p>
+            <p class="control is-expanded  has-icon has-icon-right">
+              <input class="input" placeholder="Fecha de movimiento" formControlName="fecha_movimiento" autofocus type="date" [ngClass]="{'is-danger': movimiento.get('fecha_movimiento').hasError('required') && movimiento.get('fecha_movimiento').touched}">
+              <span class="icon is-small" *ngIf="movimiento.get('fecha_movimiento').hasError('required') && movimiento.get('fecha_movimiento').touched">
+                <i class="fa fa-warning"></i>
+              </span>
+              <span class="help is-danger" *ngIf="movimiento.get('fecha_movimiento').hasError('required') && movimiento.get('fecha_movimiento').touched">Este campo es requerido.</span>
+            </p>
+          </div>
+          
+          
+          <div class="control">
+            <p class="control is-expanded  has-icon has-icon-right">
+              <textarea class="textarea" autofocus type="text" [ngClass]="{'is-danger': movimiento.get('observaciones').hasError('required') && movimiento.get('observaciones').touched}"  placeholder="Observaciones" formControlName="observaciones"></textarea>
+              <span class="icon is-small" *ngIf="movimiento.get('observaciones').hasError('required') && movimiento.get('observaciones').touched">
+                <i class="fa fa-warning"></i>
+              </span>
+              <span class="help is-danger" *ngIf="movimiento.get('observaciones').hasError('required') && movimiento.get('observaciones').touched">Este campo es requerido.</span>
+            </p>
+          </div>
+          <div class="control" *ngIf="mostrarCancelado"> <!-- *ngIf -->
+            <p class="control">
+              <label class="checkbox">
+                <input type="checkbox" formControlName="cancelado">
+                Cancelado
+              </label>
+            </p>
+            <p class="control is-expanded  has-icon has-icon-right">
+              <textarea class="textarea" autofocus type="text" [ngClass]="{'is-danger': movimiento.get('observaciones_cancelacion').hasError('required') && movimiento.get('observaciones_cancelacion').touched}"  placeholder="Observaciones de cancelacion" formControlName="observaciones_cancelacion"></textarea>
+              <span class="icon is-small" *ngIf="movimiento.get('observaciones_cancelacion').hasError('required') && movimiento.get('observaciones_cancelacion').touched">
+                <i class="fa fa-warning"></i>
+              </span>
+              <span class="help is-danger" *ngIf="movimiento.get('observaciones_cancelacion').hasError('required') && movimiento.get('observaciones_cancelacion').touched">Este campo es requerido.</span>
+            </p>
+          </div>
+          
+</div>      

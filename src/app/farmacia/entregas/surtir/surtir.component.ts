@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChildren } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { FormControl } from '@angular/forms';
-import { ActivatedRoute, Params }   from '@angular/router'
+import { ActivatedRoute, Params, Router }   from '@angular/router'
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -18,7 +18,9 @@ import  * as FileSaver    from 'file-saver';
 
 
 import { PedidosService } from '../../pedidos/pedidos.service';
+import { EntregasService } from '../entregas.service';
 import { StockService } from '../../stock/stock.service';
+
 
 import { Pedido } from '../../pedidos/pedido';
 import { Mensaje } from '../../../mensaje';
@@ -30,7 +32,7 @@ import { Mensaje } from '../../../mensaje';
   templateUrl: './surtir.component.html',
   styleUrls: ['./surtir.component.css'],
   host: { '(window:keydown)' : 'keyboardInput($event)'},
-  providers: [StockService]
+  providers: [StockService, EntregasService]
 })
 export class SurtirComponent implements OnInit {
 
@@ -57,7 +59,7 @@ export class SurtirComponent implements OnInit {
   
 
   
-  constructor(private title: Title, private route:ActivatedRoute, private pedidosService:PedidosService, private stockService:StockService) { }
+  constructor(private title: Title, private route:ActivatedRoute, private router: Router,private entregasService:EntregasService, private pedidosService:PedidosService, private stockService:StockService) { }
 
   ngOnInit() {
     this.title.setTitle('Surtir pedido / Farmacia');
@@ -74,8 +76,8 @@ export class SurtirComponent implements OnInit {
           pedido => {
             this.cargando = false;
             this.pedido = new Pedido(true);
-            this.pedido.paginacion.resultadosPorPagina = 2
-            this.pedido.filtro.paginacion.resultadosPorPagina = 2
+            this.pedido.paginacion.resultadosPorPagina = 10;
+            this.pedido.filtro.paginacion.resultadosPorPagina = 10;
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];
               let insumo = dato.insumos_con_descripcion;
@@ -293,7 +295,72 @@ export class SurtirComponent implements OnInit {
   }
 
   surtir (){
-    alert("Preguntar quién recibe, observaciones, etc. Y si quiere imprimir de una vez.")
+  
+    //alert("Preguntar quién recibe, observaciones, etc. Y si quiere imprimir de una vez.")
+
+    var lista:any[] = [];
+
+    for(var i in this.pedido.lista){
+      for(var j in this.pedido.lista[i].listaStockAsignado){
+        lista.push({
+          id: this.pedido.lista[i].listaStockAsignado[j].id,
+          cantidad: this.pedido.lista[i].listaStockAsignado[j].cantidad
+        })
+      }
+    }
+
+    var entrega :any = {
+      pedido_id: this.id,
+      entrega: "Juan pérez jolote",
+      recibe: "John Salch",
+      observaciones: "Esto es una observacion",
+      lista: lista,
+    }
+
+    this.entregasService.surtir(entrega).subscribe(
+        respuesta => {
+          this.cargando = false;
+          this.router.navigate(['/farmacia/entregas/ver/'+respuesta.id]);
+          
+        },
+        error => {
+          this.cargando = false;
+          console.log(error);
+          this.mensajeError = new Mensaje(true);
+          this.mensajeError.texto = 'No especificado';
+          this.mensajeError.mostrar = true;
+
+          try{
+            let e = error.json();
+              if (error.status == 401 ){
+                this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+              }
+              // Problema de validación
+              if (error.status == 409){
+                this.mensajeError.texto = "Por favor verfique los campos marcados en rojo.";
+                /*for (var input in e.error){
+                  // Iteramos todos los errores
+                  for (var i in e.error[input]){
+
+                    if(input == 'id' && e.error[input][i] == 'unique'){
+                      this.usuarioRepetido = true;
+                    }
+                    if(input == 'id' && e.error[input][i] == 'email'){
+                      this.usuarioInvalido = true;
+                    }
+                  }                      
+                }*/
+              }
+          }catch(e){
+            if (error.status == 500 ){
+              this.mensajeError.texto = "500 (Error interno del servidor)";
+            } else {
+              console.log(e);
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }
+          }
+        }
+      );
   }
 
 

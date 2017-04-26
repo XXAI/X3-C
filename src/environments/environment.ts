@@ -5,5 +5,8 @@
 
 export const environment = {
   production: false,
+
   API_URL: "http://localhost/X3-A/public"
+  
+  /*API_URL: "http://sialapi.yoursoft.com.mx/public"*/
 };

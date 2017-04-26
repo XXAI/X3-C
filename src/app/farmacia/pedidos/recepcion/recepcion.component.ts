@@ -28,9 +28,6 @@ import { Mensaje } from '../../../mensaje';
   styleUrls: ['./recepcion.component.css']
 })
 export class RecepcionComponent implements OnInit {
-
-  @ViewChildren('searchBoxStock') searchBoxStockViewChildren;
-
   id:string ;
   cargando: boolean = false;
   cargandoStock: boolean = false;
@@ -75,8 +72,8 @@ export class RecepcionComponent implements OnInit {
           pedido => {
             this.cargando = false;
             this.pedido = new Pedido(true);
-            this.pedido.paginacion.resultadosPorPagina = 2
-            this.pedido.filtro.paginacion.resultadosPorPagina = 2
+            this.pedido.paginacion.resultadosPorPagina = 10;
+            this.pedido.filtro.paginacion.resultadosPorPagina = 10;
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];
               let insumo = dato.insumos_con_descripcion;
@@ -258,10 +255,7 @@ export class RecepcionComponent implements OnInit {
             }
 
           } else {
-            if( this.searchBoxStockViewChildren.first.nativeElement.value != ""){
-              this.itemSeleccionado = null;
-            }
-            
+            //
           }
 
           
@@ -292,7 +286,8 @@ export class RecepcionComponent implements OnInit {
       );
   }
 
-  surtir (){
+  guardar(finalizar:boolean = false){
+    console.log(this.pedido);
     alert("Preguntar quién recibe, observaciones, etc. Y si quiere imprimir de una vez.")
   }
 
@@ -311,10 +306,9 @@ export class RecepcionComponent implements OnInit {
   }
 
   limpiarStock(){
-  
+    this.capturarStock = false;
     this.listaStock = [];
     this.itemSeleccionado = null;
-    this.searchBoxStockViewChildren.first.nativeElement.value = "";
   }
 
   eliminarStock(index): void {
@@ -327,7 +321,6 @@ export class RecepcionComponent implements OnInit {
   }
 
   asignarStock(){
-    console.log(this.formStock);
     if( this.itemSeleccionado.listaStockAsignado == null ){
       this.itemSeleccionado.listaStockAsignado = [];
     }
@@ -346,15 +339,28 @@ export class RecepcionComponent implements OnInit {
         fecha_caducidad: this.formStock.fecha_caducidad,
         cantidad: this.formStock.cantidad,
       });
-      this.formStock = {};
-      if(this.marcas.length == 1){
-        this.formStock.marca = this.marcas[0];
-      }
+      this.resetearFormStock();
       this.calcularTotalStockItem()
     } else {
       //Ya no se puede asignar mas
     }
-    
+  }
+  
+  cancelarCapturaStock(){
+    this.resetearFormStock(true);
+  }
+
+  resetearFormStock(completo:boolean = false){
+    if(completo){
+      this.formStock = {};
+    }else{
+      this.formStock.lote = undefined;
+      this.formStock.fecha_caducidad = undefined;
+      this.formStock.cantidad = undefined;
+    }
+    if(this.marcas.length == 1){
+      this.formStock.marca = this.marcas[0];
+    }
   }
 
 
@@ -396,6 +402,7 @@ export class RecepcionComponent implements OnInit {
     this.calcularTotalStockItem();
     
   }
+
   asignarMaximoPosible(item:any){
     var acumulado = 0;
     for(var i in this.itemSeleccionado.listaStockAsignado) {
@@ -428,6 +435,7 @@ export class RecepcionComponent implements OnInit {
     }
 
   }
+
   verificarTotalStockItem():boolean{
     var acumulado = 0;
     for(var i in this.itemSeleccionado.listaStockAsignado) {
@@ -435,8 +443,8 @@ export class RecepcionComponent implements OnInit {
     }
     return this.itemSeleccionado.totalStockAsignado <= this.itemSeleccionado.cantidad;
   }
-  calcularTotalStockItem(){
-    
+
+  calcularTotalStockItem(){  
     var acumulado = 0;
     for(var i in this.itemSeleccionado.listaStockAsignado) {
       acumulado += this.itemSeleccionado.listaStockAsignado[i].cantidad;
@@ -473,10 +481,6 @@ export class RecepcionComponent implements OnInit {
     if(e.keyCode == 32 &&  e.ctrlKey){ // Ctrl + barra espaciadora
       event.preventDefault();
       event.stopPropagation();
-      
-       this.searchBoxStockViewChildren.first.nativeElement.focus();
-    }
-    
-        
+    }     
   }
 }

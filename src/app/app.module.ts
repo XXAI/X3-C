@@ -25,11 +25,11 @@ import { UsuariosModule } from './panel-control/usuarios/usuarios.module';
 
 // # Hub Farmacia
 import { IndexFarmaciaModule } from './farmacia/index-farmacia/index-farmacia.module';
-import { PedidosModule } from './farmacia/pedidos/pedidos.module';
+import { PedidosModule  } from './farmacia/pedidos/pedidos.module';
 import { EntregasModule } from './farmacia/entregas/entregas.module';
 
-
-
+import { MovimientosEntradasModule    } from './farmacia/movimientos-entradas/movimientos-entradas.module';
+import { MovimientosSalidasModule    } from './farmacia/movimientos-salidas/movimientos-salidas.module';
 
 
 
@@ -57,6 +57,8 @@ import { EntregasModule } from './farmacia/entregas/entregas.module';
     IndexFarmaciaModule,
     PedidosModule,
     EntregasModule,
+    MovimientosEntradasModule,
+    MovimientosSalidasModule,
     WildcardRoutingModule, // Este siempre debe ir al final para que no haga conflicto con otras rutas
     
   ],
