@@ -79,7 +79,7 @@ export class RecepcionComponent implements OnInit {
               let insumo = dato.insumos_con_descripcion;
              
               if (insumo != null){
-                insumo.cantidad = +dato.cantidad_solicitada_um;              
+                insumo.cantidad = +dato.cantidad_solicitada;              
                 this.pedido.lista.push(insumo);
               } else {
                 // OJO:

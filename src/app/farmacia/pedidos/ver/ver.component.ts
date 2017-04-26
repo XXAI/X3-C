@@ -51,7 +51,7 @@ export class VerComponent implements OnInit {
   // # SECCION: Modal Insumos
   private mostrarModalInsumos = false;
   //Harima: Lista de claves agregadas al pedido, para checar duplicidad
-  listaClaveAgregadas: Array<string> = [];
+  //listaClaveAgregadas: Array<string> = [];
   // # FIN SECCION
 
   // # SECCION: Pedido
@@ -82,7 +82,8 @@ export class VerComponent implements OnInit {
     this.title.setTitle('Nuevo pedido / Farmacia');
 
     // Inicializamos el objeto para los reportes con web Webworkers
-    this.pdfworker = new Worker("web-workers/farmacia/pedidos/imprimir.js")
+    //this.pdfworker = new Worker("web-workers/farmacia/pedidos/imprimir.js")
+    this.pdfworker = new Worker("web-workers/farmacia/pedidos/pedido-proveedor.js")
     
     // Este es un hack para poder usar variables del componente dentro de una funcion del worker
     var self = this;    
@@ -127,9 +128,11 @@ export class VerComponent implements OnInit {
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];
               let insumo = dato.insumos_con_descripcion;
-              insumo.cantidad = +dato.cantidad_solicitada_um;
+              insumo.cantidad = +dato.cantidad_solicitada;
+              insumo.monto = +dato.monto_solicitado;
+              insumo.precio = +dato.precio_unitario;
               this.pedido.lista.push(insumo);
-              this.listaClaveAgregadas.push(insumo.clave);
+              //this.listaClaveAgregadas.push(insumo.clave);
             }
             pedido.insumos = undefined;
             this.pedido.indexar();
@@ -328,7 +331,6 @@ export class VerComponent implements OnInit {
   // # SECCION - Webworkers
 
   imprimir() {
-    
     try {
       this.cargandoPdf = true;
       var pedidos_imprimir = {
@@ -340,7 +342,19 @@ export class VerComponent implements OnInit {
       this.cargandoPdf = false;
       console.log(e);
     }
-    
+    /*
+    try {
+      this.cargandoPdf = true;
+      var pedidos_imprimir = {
+        datos: this.pedido.datosImprimir,
+        lista: this.pedido.lista
+      };
+      this.pdfworker.postMessage(JSON.stringify(pedidos_imprimir));
+    } catch (e){
+      this.cargandoPdf = false;
+      console.log(e);
+    }
+    */
   }
 
   base64ToBlob( base64, type ) {
