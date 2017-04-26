@@ -84,7 +84,7 @@ export class VerComponent implements OnInit {
               }
              
               if (insumo != null){
-                insumo.cantidad = +dato.cantidad_solicitada_um;     
+                insumo.cantidad = +dato.cantidad_solicitada;     
                 var cantidad  = 0;
                 
                 for(let j in entrega.movimiento_insumos){
