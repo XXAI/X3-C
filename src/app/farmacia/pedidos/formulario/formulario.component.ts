@@ -133,8 +133,11 @@ export class FormularioComponent implements OnInit {
 
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];
+              console.log(dato);
               let insumo = dato.insumos_con_descripcion;
-              insumo.cantidad = +dato.cantidad_solicitada_um;
+              insumo.cantidad = +dato.cantidad_solicitada;
+              insumo.monto = +dato.monto_solicitado;
+              insumo.precio = +dato.precio_unitario;
               this.pedido.lista.push(insumo);
               this.listaClaveAgregadas.push(insumo.clave);
             }
@@ -193,6 +196,9 @@ export class FormularioComponent implements OnInit {
   
   agregarItem(item:any = {}){
     let auxPaginasTotales = this.pedido.paginacion.totalPaginas;
+
+    item.monto = item.cantidad * item.precio;
+    
     this.pedido.lista.push(item);
     this.pedido.indexar();
 
@@ -206,6 +212,11 @@ export class FormularioComponent implements OnInit {
     
   }
   
+  modificarItem(item:any = {}){
+    item.monto = item.cantidad * item.precio;
+    this.pedido.actualizarTotales();
+  }
+
   buscar(e: KeyboardEvent, input:HTMLInputElement, inputAnterior: HTMLInputElement,  parametros:any[]){
     
     let term = input.value;
@@ -450,7 +461,7 @@ export class FormularioComponent implements OnInit {
           this.almacenes = almacenes;
 
           if(almacenes.length == 1 && !this.esEditar){
-            this.pedido.datos.setValue({almacen_proveedor:almacenes[0].id,descripcion:'',observaciones:''});
+            this.pedido.datos.setValue({almacen_proveedor:almacenes[0].id,descripcion:'',observaciones:'',fecha:''});
           }
 
           console.log("Almacenes cargados.");

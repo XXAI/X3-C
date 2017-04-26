@@ -14,6 +14,7 @@ export class Pedido {
   //public observaciones:string;
   public lista:any[] = [];
   public totalInsumos:number = 0;
+  public totalMonto:number = 0;
   public paginacion:Paginacion = new Paginacion();
   public filtro: Pedido;
   //Harima: Para tener acceso al objeto que contiene la lista principal sin filtro
@@ -33,10 +34,12 @@ export class Pedido {
         this.fb  = new FormBuilder();
         this.datos = this.fb.group({
           descripcion: ['', [Validators.required]],
+          fecha: ['',[Validators.required]],
           almacen_proveedor: ['',[Validators.required]],
           observaciones: ''
         });
         this.status = 'BR';
+        this.paginacion.resultadosPorPagina = 10;
     }
   }
 
@@ -53,13 +56,28 @@ export class Pedido {
     return datos;
   }
 
+  public actualizarTotales = function(){
+    this.totalInsumos = 0;
+    this.totalMonto = 0;
+    for(let i in this.lista){
+        this.totalInsumos += +this.lista[i].cantidad;
+        if(this.lista[i].monto){
+          this.totalMonto += this.lista[i].monto;
+        }
+    }
+  }
+
   public indexar = function(conLote: boolean = true ){
     if(conLote){
       this.totalInsumos = 0;
+      this.totalMonto = 0;
       var contador = 1;
       for(let i in this.lista){
           this.lista[i].lote = contador++;
           this.totalInsumos += +this.lista[i].cantidad;
+          if(this.lista[i].monto){
+            this.totalMonto += this.lista[i].monto;
+          }
       }
     }
     

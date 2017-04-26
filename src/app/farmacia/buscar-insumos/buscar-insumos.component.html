@@ -33,8 +33,8 @@
             <th class="is-hidden-mobile">Descripción</th>
             <th style="text-align:center" class="is-hidden-mobile">Grupo(s)</th>
             <th style="text-align:center"><abbr title="Tipo de insumo">Tipo</abbr></th>
-            <th style="text-align:center"><abbr title="Información">Info</abbr></th>
-            
+            <th style="text-align:left" *ngIf="conPrecios"><abbr title="Precio">Precio</abbr></th>
+            <!--th style="text-align:center"><abbr title="Información">Info</abbr></th-->
             </tr>
         </thead>
         <tbody>
@@ -88,7 +88,9 @@
                 </div>
               </td> 
               <td style="text-align:center;" class="is-hidden-mobile">
-                <span *ngFor="let grupo of item.generico.grupos">{{grupo.nombre}}<br></span>
+                <div *ngIf="item.generico">
+                  <span *ngFor="let grupo of item.generico.grupos">{{grupo.nombre}}<br></span>
+                </div>
               </td>
               <td style="text-align:center;">
                 <b>
@@ -97,10 +99,14 @@
                   <abbr *ngIf="item.tipo == 'AD'" title="Auxiliar de diagnóstico">AD</abbr>
                 </b>
               </td>
-              <td style="text-align:center">
-                <a (click)="mostrarFichaInformativa($event,item.clave)"><span class="icon"><i class="fa fa-info-circle"></i></span></a>
+              <td style="text-align:left;" *ngIf="conPrecios">
+                <b>
+                  <abbr>$ {{item.precio | number:'1.2-2'}}</abbr>
+                </b>
               </td>
-
+              <!--td style="text-align:center">
+                <a (click)="mostrarFichaInformativa($event,item.clave)"><span class="icon"><i class="fa fa-info-circle"></i></span></a>
+              </td-->
             </tr>  
             <tr *ngIf="insumos.length == 0 && searchBox.value != ''">
                 <td colspan="7" style="vertical-align: middle; color:#888;">No se encontraron resultados.</td>                    

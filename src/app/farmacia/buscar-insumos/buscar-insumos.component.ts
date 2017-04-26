@@ -35,6 +35,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
 
   //Harima: Para evitar agregar insumos que ya estan en la lista
   @Input() listaAgregados: Array<string>;
+  @Input() conPrecios: boolean = false;
 
   cargando: boolean = false;
 
@@ -206,7 +207,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
     console.log("Cargando insumos.");
    
     this.cargando = true;
-    this.buscarInsumosService.buscar(term, pagina, this.resultadosPorPagina).subscribe(
+    this.buscarInsumosService.buscar(term, pagina, this.resultadosPorPagina, this.conPrecios).subscribe(
         resultado => {
           this.cargando = false;
           this.insumos = resultado.data as InsumoMedico[];

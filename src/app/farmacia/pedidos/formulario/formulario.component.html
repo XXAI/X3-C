@@ -19,15 +19,23 @@
                   <span class="help is-danger" *ngIf="pedido.tieneError('descripcion','required')">Este campo es requerido.</span>
                 </p>
 
+                <label class="label">Fecha:</label>
+                <p class="control is-expanded  has-icon has-icon-right">
+                  <input type="text" class="input is-fullwidth" placeholder="aaaa-mm-dd" [ngClass]="{'is-danger': pedido.tieneError('fecha','required')}" formControlName="fecha"/>
+                  <span class="icon is-small" *ngIf="pedido.tieneError('fecha','required')">
+                    <i class="fa fa-warning"></i>
+                  </span>
+                  <span class="help is-danger" *ngIf="pedido.tieneError('fecha','required')">Este campo es requerido.</span>
+                </p>
+
                 <label class="label">Solicitar a:</label>
-                <p class="control">
+                <p class="control" *ngIf="pedido.tipo_pedido == 'PI'">
                   <span class="select is-fullwidth">
                     <select name="almacen_proveedor" formControlName="almacen_proveedor" [ngClass]="{'is-warning': almacenes?.length == 0 }">
                       <option *ngFor="let item of almacenes" value="{{item.id}}">{{ item.nombre }}</option>
                     </select>
                   </span>
                   <span class="help is-danger" *ngIf="pedido.tieneError('almacen_proveedor','required')">Debe elegir a quien solicitar.</span>
-                  <span class="help " *ngIf="almacenes?.length == 0"><b>La lista de roles está vacía.</b> <a (click)="cargarRoles()"><span class="icon is-small"><i class="fa fa-refresh"></i></span> <span>Actualizar</span></a></span>
                 </p>
                 
                 <div class="control">
@@ -59,7 +67,7 @@
         <div class="contenedor-pedido">
           
           <div class="top-bar" [ngClass]="{'is-primary':!pedido.filtro.activo,'is-dark': pedido.filtro.activo }">
-            <span *ngIf="!pedido.filtro.activo">Claves: {{ pedido.lista.length }} Insumos: {{pedido.totalInsumos}}</span>
+            <span *ngIf="!pedido.filtro.activo">Claves: {{ pedido.lista.length }} Insumos: {{pedido.totalInsumos}} Total: $ {{ pedido.totalMonto | number: '1.2-2' }}</span>
             <span *ngIf="pedido.filtro.activo"><span class="icon"><i class="fa fa-search"></i></span> Resultados: {{ pedido.filtro.lista.length }}</span>
             <a class="button is-primary  is-pulled-right" [ngClass]="{ 'is-inverted': pedido.filtro.activo }" style="margin-top:-0.25em;" title="Ctrl + espacio" (click)="toggleModalInsumos(); ">
               <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span>
@@ -90,6 +98,7 @@
                     </th>  
                     <th style="vertical-align: middle;" class="is-hidden-mobile is-hidden-tablet-only" >Descripcion</th>                  
                     <th style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Cantidad">Cant.</abbr></th>
+                    <th style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Monto">Monto</abbr></th>
                     <th  style="width:21px !important;"></th>
                   </tr>
               </thead>
@@ -141,12 +150,20 @@
                       </span>
                       
                     </div>
-                  </td> 
+                  </td>
+
                   <td style="width:78px !important;">
                       <p class="control is-expanded">
-                      <input class="input is-small has-text-centered"  type="text" placeholder="Cant" [(ngModel)]="item.cantidad">
+                      <input class="input is-small has-text-centered"  type="text" placeholder="Cant" (keyup)="modificarItem(item)" [(ngModel)]="item.cantidad">
                       </p>
-                  </td>                  
+                  </td>
+
+                  <td style="width:78px !important;">
+                      <b>
+                        <abbr>$ {{item.monto | number:'1.2-2'}}</abbr>
+                      </b>
+                  </td>
+
                   <td style="width:21px !important;"><a (click)="eliminarInsumo(item,i)"><span class="icon"><i class="fa fa-trash"></i></span></a></td>
                 </tr>      
               </tbody>
@@ -202,12 +219,16 @@
                       <p class="control is-expanded">
                       <input class="input is-small has-text-centered"  type="text" placeholder="Cant" [(ngModel)]="item.cantidad">
                       </p>
-                  </td>                  
+                  </td>
+
+                  <td style="width:78px !important;">
+                      <b>
+                        <abbr>$ {{item.monto | number:'1.2-2'}}</abbr>
+                      </b>
+                  </td> 
+
                   <td style="width:21px !important;"><a (click)="eliminarInsumo(item,i,true)"><span class="icon"><i class="fa fa-trash"></i></span></a></td>
-                </tr>   
-
-
-               
+                </tr>
               </tbody>              
           </table>
          
@@ -252,4 +273,4 @@
     <p style="text-align: center;"><small >Este mensaje desaparecerá en {{ mensajeExito.cuentaAtras }} segundos.</small></p>       
 </div>
 
-<buscar-insumos *ngIf="mostrarModalInsumos" (onCerrar)="mostrarModalInsumos = false" (onEnviar)="agregarItem($event)" [listaAgregados]="listaClaveAgregadas"></buscar-insumos>
+<buscar-insumos *ngIf="mostrarModalInsumos" (onCerrar)="mostrarModalInsumos = false" (onEnviar)="agregarItem($event)" [listaAgregados]="listaClaveAgregadas" [conPrecios]="true"></buscar-insumos>

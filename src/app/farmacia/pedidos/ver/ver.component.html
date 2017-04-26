@@ -14,9 +14,10 @@
                   <input type="text" class="input is-fullwidth" readonly="readonly" value="{{(pedido.datosImprimir)?pedido.datosImprimir.descripcion:''}}"/>
                 </p>
 
-                <label class="label">Solicitar a:</label>
-                <p class="control">
-                  <input type="text" class="input is-fullwidth" readonly="readonly" value="{{(pedido.datosImprimir)?pedido.datosImprimir.almacen_proveedor.nombre:''}}"/>
+                <label class="label">Solicitado a:</label>
+                <p class="control" *ngIf="pedido.datosImprimir">
+                  <input *ngIf="pedido.datosImprimir.almacen_proveedor" type="text" class="input is-fullwidth" readonly="readonly" value="{{pedido.datosImprimir.almacen_proveedor.nombre}}"/>
+                  <input *ngIf="pedido.datosImprimir.proveedor" type="text" class="input is-fullwidth" readonly="readonly" value="{{pedido.datosImprimir.proveedor.nombre}}"/>
                 </p>
                 
                 <div class="control">
@@ -40,7 +41,7 @@
         <div class="contenedor-pedido">
           
           <div class="top-bar" [ngClass]="{'is-primary':!pedido.filtro.activo,'is-dark': pedido.filtro.activo }">
-            <span *ngIf="!pedido.filtro.activo">Claves: {{ pedido.lista.length }} Insumos: {{pedido.totalInsumos}}</span>
+            <span *ngIf="!pedido.filtro.activo">Claves: {{ pedido.lista.length }} Insumos: {{pedido.totalInsumos}} Total: $ {{ pedido.totalMonto | number: '1.2-2' }}</span>
             <span *ngIf="pedido.filtro.activo"><span class="icon"><i class="fa fa-search"></i></span> Resultados: {{ pedido.filtro.lista.length }}</span>
           </div> 
           
@@ -68,6 +69,7 @@
                     </th>  
                     <th style="vertical-align: middle;" class="is-hidden-mobile is-hidden-tablet-only" >Descripcion</th>                  
                     <th style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Cantidad">Cant.</abbr></th>
+                    <th style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Monto">Monto</abbr></th>
                   </tr>
               </thead>
               <tbody *ngIf="!pedido.filtro.activo">
@@ -124,6 +126,9 @@
                         {{item.cantidad}}
                       </p>
                   </td>
+                  <td style="width:78px !important;">
+                      <b><abbr>$ {{item.monto | number:'1.2-2'}}</abbr></b>
+                  </td> 
                 </tr>      
               </tbody>
               <tbody *ngIf="pedido.filtro.activo">
@@ -178,6 +183,9 @@
                         {{item.cantidad}}
                       </p>
                   </td>
+                  <td style="width:78px !important;">
+                      <b><abbr>$ {{item.monto | number:'1.2-2'}}</abbr></b>
+                  </td> 
                 </tr>
               </tbody>              
           </table>
