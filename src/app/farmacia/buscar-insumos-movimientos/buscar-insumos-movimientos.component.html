@@ -137,8 +137,12 @@
           <!-- FORMULARIO del insumo-->
           <form (submit)="enviar($event)" >
             <div class="control is-grouped is-pulled-right " >
-            <p class="control is-expanded">
-                <input class="input is-medium" [disabled]="insumoSeleccionado == null" type="text" placeholder="Cantidad" #cantidadBox id="cantidad" (keyup)="comprobarCantidad(cantidadBox.value)" >
+            <p class="control is-expanded has-icon">
+                <input class="input is-medium" [disabled]="insumoSeleccionado == null" type="text" placeholder="Cantidad" #cantidadBox id="cantidad" (keyup)="comprobarCantidad(cantidadBox.value)" [ngClass]="{'is-danger': !cantidadAPI}">
+                <span class="icon is-small" *ngIf="!cantidadAPI">
+                <i class="fa fa-warning"></i>
+              </span>
+              <span class="help is-danger" *ngIf="!cantidadAPI">No hay esa cantidad en existencia.</span>
             </p>
             <!--<p class="control is-expanded ">
               <input class="input" autofocus type="text" [ngClass]="{'is-danger': insumoForm.controls('lote').hasError('required') && insumoForm.controls.lote.touched}"  placeholder="Folio de pedido" formControlName="folio_pedido">

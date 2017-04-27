@@ -15,7 +15,7 @@ import 'rxjs/add/operator/catch';
 import { Mensaje } from '../../mensaje';
 
 import { BuscarInsumosService } from './buscar-insumos-movimientos.service';
-//import { InsumoMedico } from '../insumo-medico';
+import { InsumoStock } from '../insumo-movimientos';
 import { InsumoMedico } from '../insumo-movimientos';
 
 
@@ -38,6 +38,8 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   @Output() onCerrar = new EventEmitter<void>();
   @Output() onEnviar = new EventEmitter<any>();
 
+  private cantidadAPI: boolean = true;
+
   //Harima: Para evitar agregar insumos que ya estan en la lista
   @Input() listaAgregados: Array<string>;
 
@@ -55,6 +57,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   private total = 0;
   private paginasTotales = 0;
   private indicePaginas:number[] = [];
+  public  insumo_stock: InsumoStock[] = [];
   // # FIN SECCION
 
   
@@ -176,7 +179,23 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
     }
     //this.codigoBarrasViewChildren.first.nativeElement.focus();
   }
+
   comprobarCantidad(value: any){
+    if(!this.salida){
+      this.cantidadAPI=true;
+    }else{
+      //enviar peticion a la API para comprobarCantidad
+      this.buscarInsumosService.comprobarStock("00021", this.insumoSeleccionado.clave).subscribe(resultado => {
+                        this.insumo_stock = resultado;
+                        console.log(this.insumo_stock);
+                     }
+      );
+          console.log(this.insumo_stock);
+
+      
+      this.cantidadAPI=false;
+    }
+
     if (value.replace(/ /g,'') == ""){
       this.cantidadValida = false;
       return false;

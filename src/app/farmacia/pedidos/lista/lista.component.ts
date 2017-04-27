@@ -155,7 +155,6 @@ export class ListaComponent implements OnInit {
       }
 
     );
-
   }
 
   obtenerDireccion(id:string, status:string): string{
