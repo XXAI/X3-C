@@ -105,7 +105,7 @@ export class FormInsumosComponent implements OnInit {
 
     // Inicialicemos el pedido
     this.pedidos.push(new Modelo(true) );
-    this.pedidos[0].nombre = "General";
+    //this.pedidos[0].nombre = "General";
     this.pedidos[0].observaciones = null;
     console.log(this.pedidos[0]);
 

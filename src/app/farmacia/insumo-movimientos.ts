@@ -55,3 +55,10 @@ export interface InsumoMedico {
     fecha_caducidad: Date;
     codigo_barras: string;
 }
+
+export interface InsumoStock {
+  almacen_id: string;
+  clave: string;
+  existencia: number;
+  existencia_unidosis: number;
+}

@@ -1,27 +1,3 @@
-
-export class Mov {
-    id: string;
-    servidor_id: string;
-    almacenes_id: string;
-    folio: string;
-    tipo_movimiento_id: number;
-    almacen_origen:string;
-    almacen_destino:string;
-    programas_id: string;
-    folio_pedido: string;
-    factura: string;
-    proveedores_id: string;
-    fecha_factura: Date;
-    referencia: string;
-    fecha_referencia: Date;
-    fecha_movimiento: Date;
-    observaciones: string;
-    cancelado: number;
-    observaciones_cancelacion: string;
-    su: boolean;
-    cargando:boolean = false;
-}
-
 export class Movimiento {
                   id: any;
 				  almacen_id: string;
