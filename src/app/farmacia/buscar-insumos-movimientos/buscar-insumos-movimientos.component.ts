@@ -57,7 +57,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   private total = 0;
   private paginasTotales = 0;
   private indicePaginas:number[] = [];
-  public  insumo_stock: InsumoStock[] = [];
+  insumo_stock: InsumoStock[] = [];
   // # FIN SECCION
 
   
@@ -180,22 +180,17 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
     //this.codigoBarrasViewChildren.first.nativeElement.focus();
   }
 
-  comprobarCantidad(value: any){
-    if(!this.salida){
-      this.cantidadAPI=true;
+  comprobarStock(existencia: number, cantidadBox:number){
+    if(cantidadBox>existencia){
+      console.log("false");
+      return false;
     }else{
-      //enviar peticion a la API para comprobarCantidad
-      this.buscarInsumosService.comprobarStock("00021", this.insumoSeleccionado.clave).subscribe(resultado => {
-                        this.insumo_stock = resultado;
-                        console.log(this.insumo_stock);
-                     }
-      );
-          console.log(this.insumo_stock);
-
-      
-      this.cantidadAPI=false;
+      console.log("true");
+      return true;
     }
+  }
 
+  comprobarCantidad(value: any){
     if (value.replace(/ /g,'') == ""){
       this.cantidadValida = false;
       return false;
@@ -211,6 +206,21 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       return false;
     }
     this.cantidadValida = true;
+    
+    if(!this.salida && this.cantidadValida){
+      this.cantidadAPI=true;
+    }else{
+      //enviar peticion a la API para comprobarCantidad
+      this.buscarInsumosService.comprobarStock("00021", this.insumoSeleccionado.clave).subscribe(resultado => {
+                        this.insumo_stock = resultado as InsumoStock[]
+                        let existencia = resultado.existencia;
+                        console.log(`Existencia ${existencia}`);
+                        console.log(`Cantidad Valida: ${+value}`);
+                        this.cantidadValida = this.comprobarStock(existencia, +value);
+                        this.cantidadAPI=this.cantidadValida;
+                        return this.cantidadValida;
+                     });
+    }
     return true;
 
   }
