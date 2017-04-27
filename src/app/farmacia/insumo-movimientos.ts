@@ -56,6 +56,13 @@ export interface InsumoMedico {
     codigo_barras: string;
 }
 
+export class InsumoStock {
+  almacen_id: string;
+  clave: string;
+  existencia: number;
+  existencia_unidosis: number;
+}
+
 export interface InsumoStock {
   almacen_id: string;
   clave: string;
