@@ -11,10 +11,10 @@
                 <tbody>
                     <tr>
                         <th>Presupuesto:</th>
-                        <th><span class="tag is-primary">Autorizado: $5,000,000.00</span></th>
-                        <th><span class="tag is-warning">Comprometido: $50,000.00</span></th>
-                        <th><span class="tag is-danger">Devengado: $25,000.00</span></th>
-                        <th><span class="tag is-success">Disponible: $4,925,000.00</span></th>
+                        <th><span class="tag is-primary">Autorizado: $ {{ presupuesto.autorizado | number:'1.2-2' }}</span></th>
+                        <th><span class="tag is-warning">Comprometido: $ {{ presupuesto.comprometido | number:'1.2-2' }}</span></th>
+                        <th><span class="tag is-danger">Devengado: $ {{ presupuesto.devengado | number:'1.2-2' }}</span></th>
+                        <th><span class="tag is-success">Disponible: $ {{ presupuesto.disponible | number:'1.2-2' }}</span></th>
                     </tr>
                 </tbody>
             </table>
