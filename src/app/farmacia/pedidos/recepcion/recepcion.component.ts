@@ -41,7 +41,7 @@ export class RecepcionComponent implements OnInit {
   ultimaPeticion: any;
   // # FIN SECCION  
 
-  private marcas = [{id:1,nombre:'Sin Marca'}];
+  private marcas = [{id:1,nombre:'Sin Especificar'}];
   private formStock: any = {};
   private pedido: Pedido; 
   private lotesSurtidos:any[] = [];

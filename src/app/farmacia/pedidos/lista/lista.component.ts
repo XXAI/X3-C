@@ -39,7 +39,7 @@ export class ListaComponent implements OnInit {
   titulo: string = "Pedidos";
   icono = "fa-file";
   pedidos: Pedido[] = [];
-  private presupuesto:any = {autorizado:0,comprometido:0,devengado:0,disponible:0};
+  private presupuesto:any = {};
   private paginaActual = 1;
   private resultadosPorPagina = 5;
   private total = 0;
@@ -90,10 +90,7 @@ export class ListaComponent implements OnInit {
     this.pedidosService.presupuesto().subscribe(
       response => {
         this.cargando = false;
-        this.presupuesto.autorizado = (+response.data.causes_modificado) + (+response.data.material_curacion_modificado) + (+response.data.no_causes_modificado);
-        this.presupuesto.comprometido = (+response.data.causes_comprometido) + (+response.data.material_curacion_comprometido) + (+response.data.no_causes_comprometido);
-        this.presupuesto.devengado = (+response.data.causes_devengado) + (+response.data.material_curacion_devengado) + (+response.data.no_causes_devengado);
-        this.presupuesto.disponible = (+response.data.causes_disponible) + (+response.data.material_curacion_disponible) + (+response.data.no_causes_disponible);
+        this.presupuesto = response.data;
       },
       error => {
         this.cargando = false;

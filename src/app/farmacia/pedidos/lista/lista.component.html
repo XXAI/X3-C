@@ -10,11 +10,61 @@
             <table class="table" style="margin-bottom:0px;background-color:whitesmoke;">
                 <tbody>
                     <tr>
-                        <th>Presupuesto:</th>
-                        <th><span class="tag is-primary">Autorizado: $ {{ presupuesto.autorizado | number:'1.2-2' }}</span></th>
-                        <th><span class="tag is-warning">Comprometido: $ {{ presupuesto.comprometido | number:'1.2-2' }}</span></th>
-                        <th><span class="tag is-danger">Devengado: $ {{ presupuesto.devengado | number:'1.2-2' }}</span></th>
-                        <th><span class="tag is-success">Disponible: $ {{ presupuesto.disponible | number:'1.2-2' }}</span></th>
+                        <th>Presupuesto Causes:</th>
+                        <th>
+                            <div class="columns">
+                                <div class="column">
+                                    <span class="tag is-primary">Autorizado: $ {{ presupuesto.causes_modificado | number:'1.2-2' }}</span>
+                                </div>
+                                <div class="column">
+                                    <span class="tag is-warning">Comprometido: $ {{ presupuesto.causes_comprometido | number:'1.2-2' }}</span>
+                                </div>
+                                <div class="column">
+                                    <span class="tag is-danger">Devengado: $ {{ presupuesto.causes_devengado | number:'1.2-2' }}</span>
+                                </div>
+                                <div class="column">
+                                    <span class="tag is-success">Disponible: $ {{ presupuesto.causes_disponible | number:'1.2-2' }}</span>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Presupuesto No Causes:</th>
+                        <th>
+                            <div class="columns">
+                                <div class="column">
+                                    <span class="tag is-primary">Autorizado: $ {{ presupuesto.no_causes_modificado | number:'1.2-2' }}</span>
+                                </div>
+                                <div class="column">
+                                    <span class="tag is-warning">Comprometido: $ {{ presupuesto.no_causes_comprometido | number:'1.2-2' }}</span>
+                                </div>
+                                <div class="column">
+                                    <span class="tag is-danger">Devengado: $ {{ presupuesto.no_causes_devengado | number:'1.2-2' }}</span>
+                                </div>
+                                <div class="column">
+                                    <span class="tag is-success">Disponible: $ {{ presupuesto.no_causes_disponible | number:'1.2-2' }}</span>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Presupuesto Material de Curación:</th>
+                        <th>
+                            <div class="columns">
+                                <div class="column">
+                                    <span class="tag is-primary">Autorizado: $ {{ presupuesto.material_curacion_modificado | number:'1.2-2' }}</span>
+                                </div>
+                                <div class="column">
+                                    <span class="tag is-warning">Comprometido: $ {{ presupuesto.material_curacion_comprometido | number:'1.2-2' }}</span>
+                                </div>
+                                <div class="column">
+                                    <span class="tag is-danger">Devengado: $ {{ presupuesto.material_curacion_devengado | number:'1.2-2' }}</span>
+                                </div>
+                                <div class="column">
+                                    <span class="tag is-success">Disponible: $ {{ presupuesto.material_curacion_disponible | number:'1.2-2' }}</span>
+                                </div>
+                            </div>
+                        </th>
                     </tr>
                 </tbody>
             </table>

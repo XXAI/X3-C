@@ -352,6 +352,8 @@ export class FormularioComponent implements OnInit {
       /*for(var i in guardar_pedidos){
         guardar_pedidos[i].datos.status = 'ES';
       }*/
+    }else{
+      guardar_pedido.datos.status = 'BR';
     }
 
     if(this.esEditar){
@@ -371,28 +373,40 @@ export class FormularioComponent implements OnInit {
           this.mensajeError = new Mensaje(true);
           this.mensajeError.texto = 'No especificado';
           this.mensajeError.mostrar = true;
+          console.log(this.pedido);
+          if(this.pedido.status == 'CONCLUIR'){
+            this.pedido.status = 'BR';
+            console.log('asdfsadfsadfsadfdsafsadfdsaf');
+          }
 
           try{
             let e = error.json();
-              if (error.status == 401 ){
-                this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
-              }
-              // Problema de validación
-              if (error.status == 409){
-                this.mensajeError.texto = "Por favor verfique los campos marcados en rojo.";
-                /*for (var input in e.error){
-                  // Iteramos todos los errores
-                  for (var i in e.error[input]){
+            console.log(e);
+            if (error.status == 401 ){
+              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }
+            // Problema de validación
+            if (error.status == 409){
+              this.mensajeError.texto = "Por favor verfique los campos marcados en rojo.";
+              /*for (var input in e.error){
+                // Iteramos todos los errores
+                for (var i in e.error[input]){
 
-                    if(input == 'id' && e.error[input][i] == 'unique'){
-                      this.usuarioRepetido = true;
-                    }
-                    if(input == 'id' && e.error[input][i] == 'email'){
-                      this.usuarioInvalido = true;
-                    }
-                  }                      
-                }*/
+                  if(input == 'id' && e.error[input][i] == 'unique'){
+                    this.usuarioRepetido = true;
+                  }
+                  if(input == 'id' && e.error[input][i] == 'email'){
+                    this.usuarioInvalido = true;
+                  }
+                }                      
+              }*/
+            }
+            
+            if(error.status == 500){
+              if(e.error){
+                this.mensajeError.texto = e.error;
               }
+            }
           }catch(e){
             if (error.status == 500 ){
               this.mensajeError.texto = "500 (Error interno del servidor)";
