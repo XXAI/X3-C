@@ -31,7 +31,10 @@ export class NuevoComponent implements OnInit {
 
   private cargando: boolean = false;
   private cargandoRoles: boolean = false;
+  private cargandoUnidadesMedicas: boolean = false;
+
   private roles: Rol[] = [];
+  private unidadesMedicas: any[] = [];
 
   
 
@@ -55,6 +58,7 @@ export class NuevoComponent implements OnInit {
     this.title.setTitle("Nuevo usuario / Panel de control");
     
     this.cargarRoles();
+    this.cargarUnidadesMedicas();
 
     this.usuario = this.fb.group({
       nombre: ['', [Validators.required]],
@@ -63,7 +67,9 @@ export class NuevoComponent implements OnInit {
       password: ['', [Validators.required]],
       confirmarPassword: ['', [Validators.required]],
       avatar: ['avatar-circled-user-male'],
-      roles: [[],[Validators.required]]
+      roles: [[],[Validators.required]],
+      unidadesMedicas: [[]],
+      almacenes: [[]]
       
 
     });
@@ -130,7 +136,19 @@ export class NuevoComponent implements OnInit {
         }
       );
   }
+  cargarUnidadesMedicas(){
+    this.cargandoUnidadesMedicas = true;
+    this.usuariosService.listaUnidadesMedicas().subscribe(
+      clues => {
+        this.unidadesMedicas = clues;
+        this.cargandoUnidadesMedicas = false;
+        console.log("Unidades Médicas cargadas")
+      }, error => {
+        this.cargandoUnidadesMedicas = false;
+      }
 
+    )
+  }
   cargarRoles() {
     this.cargandoRoles = true;
     this.rolesService.lista().subscribe(

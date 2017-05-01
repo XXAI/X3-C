@@ -52,4 +52,8 @@ export class UsuariosService {
     return this.jwtRequest.delete(UsuariosService.URL,id).map( (response: Response) => response.json().data) as Observable<Usuario>;
   }
 
+  listaUnidadesMedicas( ): Observable<any>{
+    return this.jwtRequest.get("unidades-medicas",null,null).map( (response: Response) => response.json().data);
+  }
+
 }

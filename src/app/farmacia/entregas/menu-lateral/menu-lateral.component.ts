@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { EntregasService } from '../entregas.service';
 
+import { Subscription }   from 'rxjs/Subscription';
+
+import { CambiarEntornoService } from '../../../perfil/cambiar-entorno.service';
+
 
 @Component({
   selector: 'menu-lateral',
@@ -9,16 +13,30 @@ import { EntregasService } from '../entregas.service';
   providers: [EntregasService]
 })
 export class MenuLateralComponent implements OnInit {
+  
   private cargando: boolean = false;
   private stats: any = { 
     por_surtir: 0,
     finalizados: 0
   };
 
-  constructor( private entregasService: EntregasService) { }
+
+  // # SECCION: Cambios de Entorno
+  private cambiarEntornoSuscription: Subscription;
+  // # FIN SECCION
+
+  constructor( private entregasService: EntregasService, private cambiarEntornoService:CambiarEntornoService) { }
 
   ngOnInit() {
     
+    
+    this.cargarStats();
+
+    this.cambiarEntornoSuscription = this.cambiarEntornoService.entornoCambiado$.subscribe(evento => {
+      this.cargarStats();
+    });
+  }
+  cargarStats(){
     this.cargando = true;
     this.entregasService.stats().subscribe(
       response => {
