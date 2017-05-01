@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 
 import { Rol }       from '../../roles/rol';
 
@@ -28,17 +28,45 @@ export class FormComponent implements OnInit {
   @Output() onToggleCambiarPassword = new EventEmitter<void>();
   @Output() onCargarRoles = new EventEmitter<void>();
 
+  // # Esto es solo para listar las unidades medicas que ya estan relacionadas
+  // al usuario, en el modulo de edicion
+  @Input() unidadesMedicasEdicion = null;
+
   private tab:number = 1;
   private unidadesMedicasAgregadas: any[] = [];
   private cluesAgregadas: string[] = [];
   private unidadMedicaSeleccionada = null;
 
-  private almacenesSeleccionados: any[] = [];
+  
+
   private idsAlmacenesSeleccionados: string[] = [];
 
   ngOnInit() {
-  }
+    var ums:FormArray = this.usuario.get('unidades_medicas') as FormArray;
+    var almacenes:FormArray = this.usuario.get('almacenes') as FormArray;
+    
 
+    this.cluesAgregadas = ums.value;
+    
+    this.idsAlmacenesSeleccionados = almacenes.value;
+    
+    if(this.unidadesMedicasEdicion != null){
+    
+      this.unidadesMedicasAgregadas = this.unidadesMedicasEdicion;
+
+      for(var i in this.unidadesMedicasAgregadas){
+        for(var j in this.unidadesMedicasAgregadas[i].almacenes){
+          for(var z in this.idsAlmacenesSeleccionados){
+            if(this.idsAlmacenesSeleccionados[z] == this.unidadesMedicasAgregadas[i].almacenes[j].id){
+              this.unidadesMedicasAgregadas[i].almacenes[j].seleccionado = true;
+              break;
+            }
+          }          
+        }
+      }
+    }
+  }
+ 
   enviar() {
     this.onEnviar.emit();
   }
@@ -61,7 +89,7 @@ export class FormComponent implements OnInit {
       if(this.unidadesMedicas[i].clues == clues){
         this.unidadesMedicasAgregadas.push(this.unidadesMedicas[i]);
         this.cluesAgregadas.push(clues);
-        this.usuario.controls['unidadesMedicas'].setValue(this.cluesAgregadas);
+        this.usuario.controls['unidades_medicas'].setValue(this.cluesAgregadas);
       }
     }
   }
@@ -73,23 +101,17 @@ export class FormComponent implements OnInit {
 
   toggleAlmacen(item){
     var bandera = false;
-    for(var i = 0; i < this.almacenesSeleccionados.length; i++){
-      if(this.almacenesSeleccionados[i].id == item.id){
-        console.log(i)
-        this.almacenesSeleccionados.splice(i,1);
-        console.log(this.almacenesSeleccionados);
+    for(var i = 0; i < this.idsAlmacenesSeleccionados.length; i++){
+      if(this.idsAlmacenesSeleccionados[i]== item.id){        
         this.idsAlmacenesSeleccionados.splice(i,1);
         item.seleccionado = false;
         bandera = true;
-        console.log("me desseleccione")
         break;
       }
     }
-    if(!bandera) {
-      this.almacenesSeleccionados.push(item)
+    if(!bandera) {      
       this.idsAlmacenesSeleccionados.push(item.id)
       item.seleccionado = true;
-      console.log("me seleccione")
     }
 
     this.usuario.controls['almacenes'].setValue(this.idsAlmacenesSeleccionados);

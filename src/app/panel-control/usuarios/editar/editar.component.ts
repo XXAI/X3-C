@@ -33,7 +33,11 @@ export class EditarComponent implements OnInit {
   private datosCargados: boolean;
   private cargando: boolean = false;
   private cargandoRoles: boolean = false;
+  private cargandoUnidadesMedicas: boolean = false;
+  
   private roles: Rol[] = [];
+  private unidadesMedicas: any[] = [];
+  private unidadesMedicasEdicion:any[]  = [];
 
    // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje()
@@ -62,7 +66,9 @@ export class EditarComponent implements OnInit {
       password: [{value: '', disabled: true}, [Validators.required]],
       confirmarPassword: [{value: '', disabled: true}, [Validators.required]],
       avatar: ['avatar-circled-user-male'],
-      roles: [[1],[Validators.required]]
+      roles: [[1],[Validators.required]],
+      unidades_medicas: [[]],
+      almacenes: [[]]
     });
 
     this.route.params.subscribe(params => {
@@ -71,6 +77,7 @@ export class EditarComponent implements OnInit {
     });
 
     this.cargarRoles();
+    this.cargarUnidadesMedicas();
     
   }
   
@@ -157,8 +164,9 @@ export class EditarComponent implements OnInit {
         usuario => {
           this.cargando = false;
           this.datosCargados = true;
+          
           this.usuario.patchValue(usuario);
-
+          this.unidadesMedicasEdicion = usuario.unidades_medicas_objs;
           console.log("Usuario cargado.");
         },
         error => {
@@ -187,7 +195,19 @@ export class EditarComponent implements OnInit {
         }
       );
   }
+cargarUnidadesMedicas(){
+    this.cargandoUnidadesMedicas = true;
+    this.usuariosService.listaUnidadesMedicas().subscribe(
+      clues => {
+        this.unidadesMedicas = clues;
+        this.cargandoUnidadesMedicas = false;
+        console.log("Unidades Médicas cargadas")
+      }, error => {
+        this.cargandoUnidadesMedicas = false;
+      }
 
+    )
+  }
   cargarRoles() {
     this.cargandoRoles = true;
     this.rolesService.lista().subscribe(

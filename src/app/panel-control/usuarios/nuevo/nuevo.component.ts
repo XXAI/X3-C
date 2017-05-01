@@ -68,7 +68,7 @@ export class NuevoComponent implements OnInit {
       confirmarPassword: ['', [Validators.required]],
       avatar: ['avatar-circled-user-male'],
       roles: [[],[Validators.required]],
-      unidadesMedicas: [[]],
+      unidades_medicas: [[]],
       almacenes: [[]]
       
 

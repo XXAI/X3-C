@@ -34,8 +34,22 @@ export class UsuariosService {
           roles.push(""+item.id)
         })
 
+        var unidades_medicas:string[] = []
+        jsonData.unidades_medicas.map(item => {
+          unidades_medicas.push(item.clues)
+        })
+
+        var almacenes:string[] = []
+        jsonData.almacenes.map(item => {
+          almacenes.push(item.id)
+        })
+
         var usuario = jsonData as Usuario;
         usuario.roles = roles;
+        usuario.unidades_medicas_objs = usuario.unidades_medicas;
+        usuario.unidades_medicas = unidades_medicas;
+        
+        usuario.almacenes = almacenes;
         return usuario;
       }) as Observable<Usuario>;
   }
