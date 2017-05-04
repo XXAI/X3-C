@@ -161,10 +161,10 @@
                 <input class="input is-medium" [disabled]="insumoSeleccionado == null" type="text" placeholder="Codigo de barras" #codigoBarrasBox id="codigo_barras" >
             </p>
             <p class="control">
-                <a class="button is-medium is-primary" (click)="agregar(cantidadBox.value)" [ngClass]="{'is-disabled': !cantidadValida}"><span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span></a>
-               <!-- <button (click)="agregar(cantidadBox.value)" [disabled]="!cantidadValida" class="button is-medium is-primary " >
+                <a *ngIf="salida" class="button is-medium is-primary" (click)="agregar(cantidadBox.value)" [ngClass]="{'is-disabled': !cantidadValida}"><span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span></a>
+                <button *ngIf="!salida" [disabled]="!cantidadValida" class="button is-medium is-primary " >
                   <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span>
-                </button> -->
+                </button>
             </p>
           </div>
           </form>

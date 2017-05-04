@@ -20,7 +20,7 @@
       <h1 class="title">{{ usuario.nombre }} {{ usuario.apellidos }}</h1>
       <h2 class="subtitle"><span class="icon"><i class="fa fa-user-circle"></i></span> {{usuario.id}}</h2>
       
-      <div class="field " *ngIf="usuario.unidades_medicas.length > 0">
+     <!-- <div class="field " *ngIf="usuario.unidades_medicas.length > 0">
         <p class="control is-expanded">
           <span class="select is-fullwidth">
             <select (change)="seleccionarClues($event.target.value)">
@@ -28,7 +28,7 @@
             </select>
           </span>
         </p>
-      </div>
+      </div> -->
       
       <div class="field" *ngIf="usuario.clues_activa && usuario.clues_activa.almacenes && usuario.clues_activa.almacenes.length > 0">
         <p class="control is-expanded">
