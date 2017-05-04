@@ -1,8 +1,10 @@
 import { Observable } from 'rxjs';
 export class Mensaje {
+    titulo: string="";
     texto: string= "";
     mostrar:boolean = false;
     cuentaAtras:number = 6;
+    clase: string="";
 
     constructor(autodestruccion:boolean = false, cuentaAtras: number = 6){
         if(autodestruccion){

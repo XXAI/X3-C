@@ -31,6 +31,8 @@ import { EntregasModule } from './farmacia/entregas/entregas.module';
 import { MovimientosEntradasModule    } from './farmacia/movimientos-entradas/movimientos-entradas.module';
 import { MovimientosSalidasModule    } from './farmacia/movimientos-salidas/movimientos-salidas.module';
 
+import { CrudModule } from './crud/crud.module';
+
 
 
 
@@ -59,6 +61,7 @@ import { MovimientosSalidasModule    } from './farmacia/movimientos-salidas/movi
     EntregasModule,
     MovimientosEntradasModule,
     MovimientosSalidasModule,
+    CrudModule,
     WildcardRoutingModule, // Este siempre debe ir al final para que no haga conflicto con otras rutas
     
   ],

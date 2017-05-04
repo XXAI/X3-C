@@ -205,27 +205,43 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       this.cantidadValida = false;
       return false;
     }
+
     this.cantidadValida = true;
     
-    if(!this.salida && this.cantidadValida){
+   /* if(!this.salida && this.cantidadValida){
       this.cantidadAPI=true;
     }else{
+      //this.agregar(value);
       //enviar peticion a la API para comprobarCantidad
-      this.buscarInsumosService.comprobarStock("00021", this.insumoSeleccionado.clave).subscribe(resultado => {
-                        this.insumo_stock = resultado as InsumoStock[]
-                        let existencia = resultado.existencia;
-                        console.log(`Existencia ${existencia}`);
-                        console.log(`Cantidad Valida: ${+value}`);
-                        this.cantidadValida = this.comprobarStock(existencia, +value);
-                        this.cantidadAPI=this.cantidadValida;
-                        return this.cantidadValida;
-                     });
-    }
+      
+    }*/
     return true;
 
   }
-  enviar(e){
-    e.preventDefault();
+
+  agregar(value: number){
+    console.log("BOTON AGREGAR");
+    this.buscarInsumosService.comprobarStock("00021", this.insumoSeleccionado.clave).subscribe(
+      resultado => {
+          this.insumo_stock = resultado as InsumoStock[]
+          console.log(resultado);
+          let existencia = resultado.existencia;
+          console.log(`Existencia ${existencia}`);
+          console.log(`Cantidad Valida: ${+value}`);
+          this.cantidadValida = this.comprobarStock(existencia, +value);
+          this.cantidadAPI=this.cantidadValida;
+          console.log(`agregar(value: number)${this.cantidadValida}`);
+          if(this.cantidadAPI){
+            this.enviar();
+          }
+          return this.cantidadValida;
+        });
+  }
+
+  enviar(){
+    //e.preventDefault();
+    //console.log(e);
+
     //Harima: Checamos si el insumo que seleccionamos no se encuentra agregado
     if(this.listaAgregados.indexOf(this.insumoSeleccionado.clave) < 0){
       this.mensajeAgregado = new Mensaje(true, 2);
