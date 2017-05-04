@@ -231,13 +231,16 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
           this.cantidadValida = this.comprobarStock(existencia, +value);
           this.cantidadAPI=this.cantidadValida;
           console.log(`agregar(value: number)${this.cantidadValida}`);
-          if(this.cantidadValida){}
+          if(this.cantidadAPI){
+            this.enviar();
+          }
           return this.cantidadValida;
         });
   }
 
-  enviar(e){
-    e.preventDefault();
+  enviar(){
+    //e.preventDefault();
+    //console.log(e);
 
     //Harima: Checamos si el insumo que seleccionamos no se encuentra agregado
     if(this.listaAgregados.indexOf(this.insumoSeleccionado.clave) < 0){
