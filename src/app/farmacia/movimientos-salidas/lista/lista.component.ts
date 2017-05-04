@@ -84,7 +84,7 @@ export class ListaComponent implements OnInit {
 
 
     // Inicializamos el objeto para los reportes con web Webworkers
-    this.pdfworker = new Worker("web-workers/farmacia/movimientos/imprimir.js")
+    this.pdfworker = new Worker("web-workers/farmacia/movimientos/imprimir-salida.js")
 
     
     // Este es un hack para poder usar variables del componente dentro de una funcion del worker
@@ -390,7 +390,7 @@ export class ListaComponent implements OnInit {
     
     console.log(item.id);
     console.log(item);
-
+/*
     this.movimientosSalidasService.ver(item.id).subscribe(
           movimientoActual => {
             this.cargando = false;
@@ -407,6 +407,49 @@ export class ListaComponent implements OnInit {
               this.cargandoPdf = false;
               console.log(e);
             }
+          },
+          error => {
+            this.cargando = false;
+
+            this.mensajeError = new Mensaje(true);
+            this.mensajeError = new Mensaje(true);
+            this.mensajeError.mostrar;
+
+            try {
+              let e = error.json();
+              if (error.status == 401 ){
+                this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+              }
+              
+            } catch(e){
+                          
+              if (error.status == 500 ){
+                this.mensajeError.texto = "500 (Error interno del servidor)";
+              } else {
+                this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+              }            
+            }
+          }
+    );*/
+
+
+    this.movimientosSalidasService.ver(item.id).subscribe(
+          movimientoActual => {
+            this.cargando = false;
+            item.datosImprimir = movimientoActual;
+            console.log(movimientoActual);
+            
+                try {
+                this.cargandoPdf = true;
+                var entradas_imprimir = {
+                  datos: item,
+                  lista: item.datosImprimir.movimiento_insumos
+                };
+                this.pdfworker.postMessage(JSON.stringify(entradas_imprimir));
+              } catch (e){
+                this.cargandoPdf = false;
+                console.log(e);
+              }
           },
           error => {
             this.cargando = false;

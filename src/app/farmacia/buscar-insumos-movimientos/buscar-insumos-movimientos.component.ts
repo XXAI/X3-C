@@ -205,22 +205,26 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       this.cantidadValida = false;
       return false;
     }
+
     this.cantidadValida = true;
     
-    if(!this.salida && this.cantidadValida){
+   /* if(!this.salida && this.cantidadValida){
       this.cantidadAPI=true;
     }else{
       //this.agregar(value);
       //enviar peticion a la API para comprobarCantidad
       
-    }
+    }*/
     return true;
 
   }
+
   agregar(value: number){
     console.log("BOTON AGREGAR");
-    this.buscarInsumosService.comprobarStock("00021", this.insumoSeleccionado.clave).subscribe(resultado => {
+    this.buscarInsumosService.comprobarStock("00021", this.insumoSeleccionado.clave).subscribe(
+      resultado => {
           this.insumo_stock = resultado as InsumoStock[]
+          console.log(resultado);
           let existencia = resultado.existencia;
           console.log(`Existencia ${existencia}`);
           console.log(`Cantidad Valida: ${+value}`);

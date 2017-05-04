@@ -29,11 +29,11 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
                             width: 500,
                             style: 'tableHeaderTop', colSpan: 5, alignment: 'center'
                         },{},{},{},{}],
-                        [{ text: 'ENTRADA MANUAL', style: 'tableHeaderTop', colSpan: 5, alignment: 'center' },{},{},{},{}],
+                        [{ text: 'SALIDA MANUAL', style: 'tableHeaderTop', colSpan: 5, alignment: 'center' },{},{},{},{}],
                         [{ text: "", style: 'tableHeaderTop', colSpan: 5, alignment: 'center' },{},{},{},{}],
 
                         [
-                            { text: 'ID DE ENTRADA MANUAL', style: 'tableHeader', colSpan: 2, alignment: 'right' },{},{ text: data.datos.id, style: 'tableHeader', alignment: 'left' },
+                            { text: 'ID DE SALIDA MANUAL', style: 'tableHeader', colSpan: 2, alignment: 'right' },{},{ text: data.datos.id, style: 'tableHeader', alignment: 'left' },
                             { text: 'ALMACÉN', style: 'tableHeader', alignment: 'right' },
                             { text: data.datos.datosImprimir.almacen.nombre, style: 'tableHeader', alignment: 'left' }
                         ],
@@ -177,19 +177,14 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
 
         dd.content[0].table.body.push(
             // Footer
-            [
-                { text: '', style: 'tableHeader', colSpan:3, alignment: 'center' },
-                '','',
-                { text: '', style: 'tableHeader',  alignment: 'right' },
-                { text: "", style: 'tableRow', alignment: 'center'}
-            ],
+            
             // Firmas
             [{ 
                 table: {
                     widths: [ '*', '*'],
                     body: [
                         [ 'RECIBE', { text: "Observaciones", style:'text'}],
-                        [{text:'\n\n\n\n'+'Responsable de entradas manuales',style:'tableRow'},{ text: '\n'+data.datos.observaciones,  rowSpan:2, alignment:'justify' }],
+                        [{text:'\n\n\n\n'+'Responsable de salidas manuales',style:'tableRow'},{ text: '\n'+data.datos.observaciones,  rowSpan:2, alignment:'justify' }],
                         ['RESPONSABLE ','']
                     ],
                 },
@@ -212,7 +207,7 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
         );
 
         pdfMake.createPdf( dd ).getBase64( function( base64 ) {
-            postMessage( { fileName: 'Entrada'+data.datos.id+'.pdf', base64: base64 } );
+            postMessage( { fileName: 'Salida'+data.datos.id+'.pdf', base64: base64 } );
         });
     }
 
