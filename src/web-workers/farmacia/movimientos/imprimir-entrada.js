@@ -33,7 +33,7 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
                         [{ text: "", style: 'tableHeaderTop', colSpan: 5, alignment: 'center' },{},{},{},{}],
 
                         [
-                            { text: 'ENTRADA MANUAL', style: 'tableHeader', colSpan: 2, alignment: 'left' },{},{ text: data.datos.id, style: 'tableHeader', alignment: 'left' },
+                            { text: 'ID DE ENTRADA MANUAL', style: 'tableHeader', colSpan: 2, alignment: 'left' },{},{ text: data.datos.id, style: 'tableHeader', alignment: 'left' },
                             { text: 'ALMACÉN', style: 'tableHeader', alignment: 'right' },{ text: data.datos.almacen_id, style: 'tableHeader', alignment: 'center' }
                         ],
                         [
@@ -138,21 +138,36 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
 
         var suma_total_insumos = 0;
         
-        for(var i in data.lista){
+/*        for(var i in data.lista){
             var insumo = data.lista[i];
+            console.log(insumo);
             var presentacion = 'PIEZA';
-            if(insumo.informacion){
+            /*if(insumo.informacion){
                 presentacion = insumo.informacion.presentacion_nombre;
-            }
-            dd.content[0].table.body.push([
-                { text: /*insumo.lote,*/"", style: 'tableRow',  alignment: 'center'},
-                { text: /*insumo.clave,*/"", style: 'tableRow', alignment: 'center'},
-                { text: /*insumo.descripcion,*/"", style: 'tableRow', alignment: 'left', colSpan:2},{},
+            }*/
+/*            dd.content[0].table.body.push([
+                { text: insumo.clues, style: 'tableRow',  alignment: 'center'},
+                { text: insumo.clave,"", style: 'tableRow', alignment: 'center'},
+                //{ text: insumo.descripcion, style: 'tableRow', alignment: 'left', colSpan:2},{},
                 //{ text: presentacion, style: 'tableRow', alignment: 'center'},
-                { text: /*insumo.cantidad,*/"", style: 'tableRow', alignment: 'center'}
-            ]);
+                //{ text: insumo.cantidad, style: 'tableRow', alignment: 'center'}
+         //   ]);
             /*suma_total_insumos += insumo.cantidad;*/
+   //     }
+
+        for (var i in data.lista){
+            console.log(" " + i);
+            var insumo = data.lista[i];
+            console.log(insumo);
+
+            dd.content[0].table.body.push([
+                { text: "", style: 'tableRow', alignment: 'center'}, '', '','',
+                { text: insumo.cantidad, style:'tableRow', alignment: 'center'}
+            ]);       
+            
         }
+
+
 
         dd.content[0].table.body.push(
             // Footer
@@ -165,8 +180,8 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
                 table: {
                     widths: [ '*', '*'],
                     body: [
-                        [ 'SOLICITA', { text: '',  rowSpan:3 }],
-                        [{text:'\n\n\n\n'+'Coordinacion de abasto',style:'tableRow'},''],
+                        [ 'RECIBE', { text: "Observaciones", style:'text'}],
+                        [{text:'\n\n\n\n'+'Coordinacion de abasto',style:'tableRow'},{ text: '\n'+data.datos.observaciones,  rowSpan:2, alignment:'justify' }],
                         ['COORDINADOR DE ABASTO ','']
                     ],
                 },
@@ -189,7 +204,7 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
         );
 
         pdfMake.createPdf( dd ).getBase64( function( base64 ) {
-            postMessage( { fileName: 'movimiento.pdf', base64: base64 } );
+            postMessage( { fileName: 'Entrada'+data.datos.id+'.pdf', base64: base64 } );
         });
     }
 

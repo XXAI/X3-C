@@ -397,6 +397,17 @@ export class ListaComponent implements OnInit {
             this.cargando = false;
             item.datosImprimir = movimientoActual;
             console.log(item.datosImprimir);
+             try {
+              this.cargandoPdf = true;
+              var movimientos_imprimir = {
+                datos: item,
+                lista: item.datosImprimir
+              };
+              this.pdfworker.postMessage(JSON.stringify(movimientos_imprimir));
+            } catch (e){
+              this.cargandoPdf = false;
+              console.log(e);
+            }
           },
           error => {
             this.cargando = false;
@@ -422,17 +433,7 @@ export class ListaComponent implements OnInit {
           }
         );
     console.log(item.datosImprimir);
-    try {
-      this.cargandoPdf = true;
-      var movimientos_imprimir = {
-        datos: item,
-        lista: item.datosImprimir
-      };
-      this.pdfworker.postMessage(JSON.stringify(movimientos_imprimir));
-    } catch (e){
-      this.cargandoPdf = false;
-      console.log(e);
-    }
+   
     
   }
 

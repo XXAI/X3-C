@@ -161,7 +161,7 @@
                 <input class="input is-medium" [disabled]="insumoSeleccionado == null" type="text" placeholder="Codigo de barras" #codigoBarrasBox id="codigo_barras" >
             </p>
             <p class="control">
-                <button [disabled]="!cantidadValida" class="button is-medium is-primary " >
+                <button (click)="agregar(cantidadBox.value)" [disabled]="!cantidadValida" class="button is-medium is-primary " >
                 <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span>
                 </button>
             </p>

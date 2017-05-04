@@ -189,7 +189,7 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
         );
 
         pdfMake.createPdf( dd ).getBase64( function( base64 ) {
-            postMessage( { fileName: 'movimiento.pdf', base64: base64 } );
+            postMessage( { fileName: 'salida.pdf', base64: base64 } );
         });
     }
 

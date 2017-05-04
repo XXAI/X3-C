@@ -210,22 +210,31 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
     if(!this.salida && this.cantidadValida){
       this.cantidadAPI=true;
     }else{
+      //this.agregar(value);
       //enviar peticion a la API para comprobarCantidad
-      this.buscarInsumosService.comprobarStock("00021", this.insumoSeleccionado.clave).subscribe(resultado => {
-                        this.insumo_stock = resultado as InsumoStock[]
-                        let existencia = resultado.existencia;
-                        console.log(`Existencia ${existencia}`);
-                        console.log(`Cantidad Valida: ${+value}`);
-                        this.cantidadValida = this.comprobarStock(existencia, +value);
-                        this.cantidadAPI=this.cantidadValida;
-                        return this.cantidadValida;
-                     });
+      
     }
     return true;
 
   }
+  agregar(value: number){
+    console.log("BOTON AGREGAR");
+    this.buscarInsumosService.comprobarStock("00021", this.insumoSeleccionado.clave).subscribe(resultado => {
+          this.insumo_stock = resultado as InsumoStock[]
+          let existencia = resultado.existencia;
+          console.log(`Existencia ${existencia}`);
+          console.log(`Cantidad Valida: ${+value}`);
+          this.cantidadValida = this.comprobarStock(existencia, +value);
+          this.cantidadAPI=this.cantidadValida;
+          console.log(`agregar(value: number)${this.cantidadValida}`);
+          if(this.cantidadValida){}
+          return this.cantidadValida;
+        });
+  }
+
   enviar(e){
     e.preventDefault();
+
     //Harima: Checamos si el insumo que seleccionamos no se encuentra agregado
     if(this.listaAgregados.indexOf(this.insumoSeleccionado.clave) < 0){
       this.mensajeAgregado = new Mensaje(true, 2);
