@@ -34,7 +34,8 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
 
                         [
                             { text: 'ID DE ENTRADA MANUAL', style: 'tableHeader', colSpan: 2, alignment: 'left' },{},{ text: data.datos.id, style: 'tableHeader', alignment: 'left' },
-                            { text: 'ALMACÉN', style: 'tableHeader', alignment: 'right' },{ text: data.datos.almacen_id, style: 'tableHeader', alignment: 'center' }
+                            { text: 'ALMACÉN', style: 'tableHeader', alignment: 'right' },
+                            { text: data.datos.datosImprimir.almacen.nombre, style: 'tableHeader', alignment: 'center' }
                         ],
                         [
                             { text: 'USUARIO', style: 'tableHeader', colSpan: 2, alignment: 'left' },{},{ text: data.datos.usuario_id, style: 'tableHeader', alignment: 'left' },
@@ -162,8 +163,9 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
 
             dd.content[0].table.body.push([
                 { text: insumo.stock.lote, style: 'tableRow', alignment: 'center'},
-                { text: insumo.stock.clave_insumo_medico, style: 'tableRow', alignment: 'center'}, 
-                '','',
+                { text: insumo.stock.clave_insumo_medico, style: 'tableRow', alignment: 'center'},
+                { text: insumo.stock.fecha_caducidad, style: 'tableRow', alignment: 'center'}, 
+                { text: insumo.stock.codigo_barras, style: 'tableRow', alignment: 'center'}, 
                 { text: insumo.cantidad, style:'tableRow', alignment: 'center'}
             ]);       
             
