@@ -161,7 +161,9 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
             console.log(insumo);
 
             dd.content[0].table.body.push([
-                { text: "", style: 'tableRow', alignment: 'center'}, '', '','',
+                { text: insumo.stock.lote, style: 'tableRow', alignment: 'center'},
+                { text: insumo.stock.clave_insumo_medico, style: 'tableRow', alignment: 'center'}, 
+                '','',
                 { text: insumo.cantidad, style:'tableRow', alignment: 'center'}
             ]);       
             

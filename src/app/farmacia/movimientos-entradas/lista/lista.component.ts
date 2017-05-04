@@ -423,7 +423,8 @@ export class ListaComponent implements OnInit {
           movimientoActual => {
             this.cargando = false;
             item.datosImprimir = movimientoActual;
-            console.log(item.datosImprimir.movimiento_insumos);
+            console.log(movimientoActual);
+            
                 try {
                 this.cargandoPdf = true;
                 var entradas_imprimir = {

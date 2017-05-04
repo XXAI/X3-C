@@ -137,22 +137,35 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
         };
 
         var suma_total_insumos = 0;
-        
+       /* 
         for(var i in data.lista){
             var insumo = data.lista[i];
             var presentacion = 'PIEZA';
-            if(insumo.informacion){
+            /*if(insumo.informacion){
                 presentacion = insumo.informacion.presentacion_nombre;
-            }
-            dd.content[0].table.body.push([
-                { text: /*insumo.lote,*/"", style: 'tableRow',  alignment: 'center'},
-                { text: /*insumo.clave,*/"", style: 'tableRow', alignment: 'center'},
-                { text: /*insumo.descripcion,*/"", style: 'tableRow', alignment: 'left', colSpan:2},{},
+            }*/
+           /* dd.content[0].table.body.push([
+                { text: insumo.lote, style: 'tableRow',  alignment: 'center'},
+                { text: /*insumo.clave, style: 'tableRow', alignment: 'center'},
+                { text: /*insumo.descripcion, style: 'tableRow', alignment: 'left', colSpan:2},{},
                 //{ text: presentacion, style: 'tableRow', alignment: 'center'},
-                { text: /*insumo.cantidad,*/"", style: 'tableRow', alignment: 'center'}
+                { text: /*insumo.cantidad, style: 'tableRow', alignment: 'center'}
             ]);
             /*suma_total_insumos += insumo.cantidad;*/
+    //  }
+
+         for (var i in data.lista){
+            console.log(" " + i);
+            var insumo = data.lista[i];
+            console.log(insumo);
+
+            dd.content[0].table.body.push([
+                { text: "", style: 'tableRow', alignment: 'center'}, '', '','',
+                { text: insumo.cantidad, style:'tableRow', alignment: 'center'}
+            ]);       
+            
         }
+
 
         dd.content[0].table.body.push(
             // Footer

@@ -389,8 +389,7 @@ export class ListaComponent implements OnInit {
   imprimir(item: Modelo, index) {
     
     console.log(item.id);
-
-    console.log(item.lista);
+    console.log(item);
 
     this.movimientosSalidasService.ver(item.id).subscribe(
           movimientoActual => {
@@ -432,9 +431,6 @@ export class ListaComponent implements OnInit {
             }
           }
         );
-    console.log(item.datosImprimir);
-   
-    
   }
 
   base64ToBlob( base64, type ) {
