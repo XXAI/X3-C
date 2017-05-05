@@ -40,6 +40,8 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
 
   private cantidadAPI: boolean = true;
   private lote: boolean = false;
+  private mostrarModalLote: boolean = false;
+  private lotes_insumo: any[] = [];
 
   //Harima: Para evitar agregar insumos que ya estan en la lista
   @Input() listaAgregados: Array<string>;
@@ -171,7 +173,19 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   seleccionar(item:InsumoMedico){
     if(this.lote){
       console.log("Elegir Lote");
-      /******************** */
+      console.log(item);
+
+      this.buscarInsumosService.comprobarStock("00021", item.clave).subscribe(
+      resultado => {
+          this.insumo_stock = resultado as InsumoStock[]
+          this.lotes_insumo = resultado.data;
+          for(let entry of this.lotes_insumo){
+            console.log(entry);
+          }
+          console.log(this.lotes_insumo);
+          this.toggleModalLote(item);
+        });
+
     }else{
       this.insumoSeleccionado = item;
       console.log(item);
@@ -200,6 +214,13 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   elegirLote(){
     this.lote = !this.lote;
     this.resetItemSeleccionado();
+  }
+
+  toggleModalLote(item: InsumoMedico){
+    this.mostrarModalLote = !this.mostrarModalLote
+    console.log(item);
+    //this.dato = item;
+    //this.index = index;
   }
 
   comprobarCantidad(value: any){

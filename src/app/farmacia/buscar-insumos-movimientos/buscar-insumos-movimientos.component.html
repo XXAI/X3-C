@@ -194,3 +194,46 @@
         </div>
       </div>
     </div>
+    <div class="modal is-active" *ngIf="mostrarModalLote">
+      <div class="modal-background" (click)="toggleModalLote(dato)"></div>
+      <div class="modal-content">
+          <div class="box is-expanded">
+
+      <!--      <div *ngFor="let item of lotes_insumo;  let i = index;">
+              <p class="control is-horizontal">
+                <label class="label">Lote {{item.lote}}</label>
+                <input class="input has-text-centered"  type="text" placeholder="Cantidad">
+              </p>
+            </div>
+            -->
+            <span> <b> item.clave</b> </span>
+            <table class="table is-narrow is-bordered" style="font-size: 1em; align-content: center" >
+              <thead>
+                <tr>
+                  <th><b>Lote</b></th>
+                  <th>Existencia</th>
+                  <th>Cantidad</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of lotes_insumo;  let i = index;">
+                  <td>{{item.lote}}</td>
+                  <td>{{item.existencia}}</td>
+                  <td><input class="input has-text-centered is-small"  type="text" placeholder="Cantidad"></td>
+                </tr>
+              </tbody>
+            </table>
+
+        <!-- Any other Bulma elements you want -->
+            <div class="control is-grouped">
+                <p class="control">
+                    <button class="button is-primary" (click)="guardar(dato); mostrarModalLote=false">Aceptar</button>
+                </p>
+                <p class="control">
+                    <button class="button is-link" (click)="toggleModalLote(dato)">Cancelar</button>
+                </p>
+            </div>
+          </div>
+      </div>
+      <button class="modal-close" (click)="toggleModalLote(dato)"></button>
+    </div>
