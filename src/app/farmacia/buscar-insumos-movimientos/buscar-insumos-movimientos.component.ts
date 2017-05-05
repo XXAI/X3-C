@@ -17,6 +17,7 @@ import { Mensaje } from '../../mensaje';
 import { BuscarInsumosService } from './buscar-insumos-movimientos.service';
 import { InsumoStock } from '../insumo-movimientos';
 import { InsumoMedico } from '../insumo-movimientos';
+import { Lote } from '../insumo-movimientos';
 
 
 @Component({
@@ -218,7 +219,8 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
 
   toggleModalLote(item: InsumoMedico){
     this.mostrarModalLote = !this.mostrarModalLote
-    console.log(item);
+    this.insumoSeleccionado = item;
+    //console.log(item.casas);
     //this.dato = item;
     //this.index = index;
   }
@@ -276,11 +278,10 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       this.mensajeAgregado = new Mensaje(true, 2);
       this.mensajeAgregado.mostrar = true;    
       this.insumoSeleccionado.cantidad = this.cantidadBoxViewChildren.first.nativeElement.value;
-      if(!this.salida){
-        this.insumoSeleccionado.codigo_barras = this.codigoBarrasViewChildren.first.nativeElement.value;
-        this.insumoSeleccionado.fecha_caducidad = this.fechaViewChildren.first.nativeElement.value;
-        this.insumoSeleccionado.lote = this.loteViewChildren.first.nativeElement.value;
-      }
+      //this.insumoSeleccionado.lote = null;
+      let i: number = 0;
+
+      this.insumoSeleccionado.lotes = this.lotes_insumo;
       this.onEnviar.emit(this.insumoSeleccionado);
       this.searchBoxViewChildren.first.nativeElement.focus();
       //Harima: Agregamos la clave al arreglo de items agregados
@@ -306,7 +307,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       if(!this.salida){
         this.insumoSeleccionado.codigo_barras = this.codigoBarrasViewChildren.first.nativeElement.value;
         this.insumoSeleccionado.fecha_caducidad = this.fechaViewChildren.first.nativeElement.value;
-        this.insumoSeleccionado.lote = this.loteViewChildren.first.nativeElement.value;
+        this.insumoSeleccionado.lotes = this.loteViewChildren.first.nativeElement.value;
       }
       this.onEnviar.emit(this.insumoSeleccionado);
       this.searchBoxViewChildren.first.nativeElement.focus();

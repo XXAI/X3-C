@@ -17,12 +17,21 @@ export class Insumo {
                      es_causes: boolean;
 			         cantidad: number;
 			         cantidad_x_envase: number;
+                     lotes: Lote[];
 			         lote: number;
 			         fecha_caducidad: Date;
 			         codigo_barras: string;
                      filtro: any[];
                      paginacion: any[];
                     }
+export class Lote {
+    id: string;
+    cantidad: number;
+}
+export interface Lote {
+    id: string;
+    cantidad: number;
+}                    
 export class Informacion {
                     id: string;
                     insumo_medico_clave: string;

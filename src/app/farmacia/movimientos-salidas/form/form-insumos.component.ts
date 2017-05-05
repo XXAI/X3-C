@@ -145,8 +145,11 @@ export class FormInsumosComponent implements OnInit {
     insumo.cantidad = item.cantidad;
     insumo.cantidad_x_envase = Number(item.informacion.cantidad_x_envase);
     insumo.codigo_barras = item.codigo_barras;
+    insumo.lotes = item.lotes;
+    console.log(item.lotes);
     insumo.lote = item.lote;
-    console.log(item.lote);
+
+    console.log(item.lotes);
     insumo.fecha_caducidad = item.fecha_caducidad;
     insumo.filtro = item.filtro;
     insumo.paginacion = item.paginacion;

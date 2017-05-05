@@ -196,21 +196,23 @@
     </div>
     <div class="modal is-active" *ngIf="mostrarModalLote">
       <div class="modal-background" (click)="toggleModalLote(dato)"></div>
-      <div class="modal-content">
-          <div class="box is-expanded">
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title"> <b>Nombre: </b> {{insumoSeleccionado.generico_nombre}}</p>
+          <br/>
+          <p class="modal-card-title"> <b>Clave: </b> {{insumoSeleccionado.clave}}</p>
+          <button class="delete" (click)="toggleModalLote(dato)"></button>
+        </header>
+          <section class="modal-card-body">
+                         <div class="margin-20">
+                        <div>myForm details:-</div>
+                        <pre>form value: <br>{{lotes_insumo | json}}</pre>
 
-      <!--      <div *ngFor="let item of lotes_insumo;  let i = index;">
-              <p class="control is-horizontal">
-                <label class="label">Lote {{item.lote}}</label>
-                <input class="input has-text-centered"  type="text" placeholder="Cantidad">
-              </p>
-            </div>
-            -->
-            <span> <b> item.clave</b> </span>
+                     </div> 
             <table class="table is-narrow is-bordered" style="font-size: 1em; align-content: center" >
               <thead>
                 <tr>
-                  <th><b>Lote</b></th>
+                  <th>Lote</th>
                   <th>Existencia</th>
                   <th>Cantidad</th>
                 </tr>
@@ -219,21 +221,21 @@
                 <tr *ngFor="let item of lotes_insumo;  let i = index;">
                   <td>{{item.lote}}</td>
                   <td>{{item.existencia}}</td>
-                  <td><input class="input has-text-centered is-small"  type="text" placeholder="Cantidad"></td>
+                  <td><input class="input has-text-centered is-small"  type="text" placeholder="Cantidad" [(ngModel)]="item.cantidad"></td>
                 </tr>
               </tbody>
             </table>
 
-        <!-- Any other Bulma elements you want -->
-            <div class="control is-grouped">
-                <p class="control">
-                    <button class="button is-primary" (click)="guardar(dato); mostrarModalLote=false">Aceptar</button>
+
+          </section>
+          <footer class="modal-card-foot">
+            <p class="control">
+                    <a class="button is-primary" (click)="enviarSalida(); mostrarModalLote=false">Aceptar</a>
                 </p>
                 <p class="control">
-                    <button class="button is-link" (click)="toggleModalLote(dato)">Cancelar</button>
+                    <a class="button is-link" (click)="toggleModalLote(dato)">Cancelar</a>
                 </p>
-            </div>
-          </div>
+          </footer>
       </div>
       <button class="modal-close" (click)="toggleModalLote(dato)"></button>
     </div>
