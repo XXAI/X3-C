@@ -39,6 +39,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   @Output() onEnviar = new EventEmitter<any>();
 
   private cantidadAPI: boolean = true;
+  private lote: boolean = false;
 
   //Harima: Para evitar agregar insumos que ya estan en la lista
   @Input() listaAgregados: Array<string>;
@@ -168,15 +169,21 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
     this.cantidadValida = false;
   }
   seleccionar(item:InsumoMedico){
-    this.insumoSeleccionado = item;
-    console.log(item);
-    this.cantidadBoxViewChildren.first.nativeElement.disabled = false;
-    this.cantidadBoxViewChildren.first.nativeElement.focus();
-    if(!this.salida){
-      this.codigoBarrasViewChildren.first.nativeElement.disabled = false;
-      this.fechaViewChildren.first.nativeElement.disabled = false;
-      this.loteViewChildren.first.nativeElement.disabled = false;
+    if(this.lote){
+      console.log("Elegir Lote");
+      /******************** */
+    }else{
+      this.insumoSeleccionado = item;
+      console.log(item);
+      this.cantidadBoxViewChildren.first.nativeElement.disabled = false;
+      this.cantidadBoxViewChildren.first.nativeElement.focus();
+      if(!this.salida){
+        this.codigoBarrasViewChildren.first.nativeElement.disabled = false;
+        this.fechaViewChildren.first.nativeElement.disabled = false;
+        this.loteViewChildren.first.nativeElement.disabled = false;
+      }
     }
+    
     //this.codigoBarrasViewChildren.first.nativeElement.focus();
   }
 
@@ -188,6 +195,11 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       console.log("true");
       return true;
     }
+  }
+
+  elegirLote(){
+    this.lote = !this.lote;
+    this.resetItemSeleccionado();
   }
 
   comprobarCantidad(value: any){
@@ -230,7 +242,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
           console.log(`Cantidad Valida: ${+value}`);
           this.cantidadValida = this.comprobarStock(existencia, +value);
           this.cantidadAPI=this.cantidadValida;
-          console.log(`agregar(value: number)${this.cantidadValida}`);
+          console.log(`this.cantidadValida ${this.cantidadValida}`);
           if(this.cantidadAPI){
             this.enviarSalida();
           }

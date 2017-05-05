@@ -10,6 +10,22 @@
               <h1 class="title" style="color:#FFF;">
                 <span class="icon is-medium"><i class="fa fa-search"></i></span> Insumos médicos 
               </h1>
+              
+              <!--<p class="control">
+                <a class="button is-medium is-primary" (click)="elegirLote()" [ngClass]="{'is-success': lote, 'is-danger': !lote}">
+                  <span>Elegir lote</span>
+                </a>
+              </p>-->
+
+              <div class="field">
+                <p class="control" *ngIf="salida">
+                  <label class="checkbox" style="color:#FFF;">
+                    <input type="checkbox" class="is-medium" (click)="elegirLote()"  >
+                      Elegir lote {{lote}}
+                  </label>
+                </p>
+              </div>
+                
               <p class="control is-expanded">
                   <input class="input "  type="text" placeholder="Buscar insumo" #searchBox id="search-box" (keyup)="buscar(searchBox.value)">
               </p>
