@@ -205,6 +205,12 @@ export class ListaComponent implements OnInit {
             if (error.status == 401 ){
               this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
             }
+            
+            if (error.status == 403 ){
+              this.mensajeError.texto = e.error;
+            } else {
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }
           } catch(e){
             console.log("No se puede interpretar el error");
             
@@ -254,10 +260,16 @@ export class ListaComponent implements OnInit {
           this.cargando = false;
           this.mensajeError.mostrar = true;
           this.ultimaPeticion = this.listar;
+          
           try {
             let e = error.json();
             if (error.status == 401 ){
               this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }
+            if (error.status == 403 ){
+              this.mensajeError.texto = e.error;
+            } else {
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
             }
           } catch(e){
             console.log("No se puede interpretar el error");

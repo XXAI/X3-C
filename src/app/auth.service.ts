@@ -21,27 +21,22 @@ export class AuthService {
       let json = response.json();
       if (json.token) {
         console.log("Token obtenido.")
-        console.log(json);
 
         // Obtenemos el perfil del usuario antes iniciar sesión, para saber que configuración tenía en caso de que sea el mismo usuario
 
         var usuarioAnterior = JSON.parse(localStorage.getItem("usuario"));
-        console.log(usuarioAnterior);
         localStorage.removeItem('token');
         localStorage.removeItem('usuario');
         localStorage.removeItem('server_info');
-        console.log(usuarioAnterior);
 
         // Tratamos de obtener la unidad medica seleccionada por default
         // y si habia bloqueado pantalla obtenemos la que tenia seleccionada
 
         json.usuario.clues_activa = null;
         json.usuario.almacen_activo = null;
-
-        console.log(json.usuario.id);
         
-       /* if(json.usuario.unidades_medicas.length > 0 ){          
-           console.log(json.usuario.id);
+        if(json.usuario.unidades_medicas.length > 0 ){          
+           
           if(usuarioAnterior && usuarioAnterior.id == json.usuario.id ){
             var bandera = false;
             
@@ -89,12 +84,11 @@ export class AuthService {
           json.usuario.almacen_activo = null;
         }
 
-        */
+        
 
 
-        localStorage.setItem('token', json.token);
+        localStorage.setItem('token', json.token)
         localStorage.setItem('usuario', JSON.stringify(json.usuario));
-        console.log(json.usuario);
         localStorage.setItem('server_info', JSON.stringify(json.server_info));
       }
     });
