@@ -27,7 +27,6 @@ import { Mensaje } from '../../../mensaje'
 })
 export class ListaComponent implements OnInit {
 
- 
 
   cargando: boolean = false;
 

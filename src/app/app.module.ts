@@ -10,6 +10,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
 
 
 import { AuthGuard } from './auth-guard.service';
+import { PermisosGuard } from './permisos.guard';
 import { AuthService } from './auth.service';
 import { JwtRequestService } from './jwt-request.service';
 import { JwtHelper } from 'angular2-jwt';
@@ -65,7 +66,7 @@ import { CrudModule } from './crud/crud.module';
     WildcardRoutingModule, // Este siempre debe ir al final para que no haga conflicto con otras rutas
     
   ],
-  providers: [ Title, AuthGuard, AuthService,JwtHelper, JwtRequestService],
+  providers: [ Title, AuthGuard, PermisosGuard, AuthService,JwtHelper, JwtRequestService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
