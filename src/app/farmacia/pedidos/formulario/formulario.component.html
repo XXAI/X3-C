@@ -80,17 +80,17 @@
                 <div class="columns">
                     <div class="column has-text-centered">
                         <span class="tag is-success">
-                          Disponible Causes:  $ {{ presupuesto.causes_disponible | number: '1.2-2' }}
+                          Disponible Causes:  $ {{ (presupuesto.causes_disponible - pedido.totalMontoCauses) | number: '1.2-2' }}
                         </span>
                     </div>
                     <div class="column has-text-centered">
                         <span class="tag is-danger">
-                          Disponible No Causes:  $ {{ presupuesto.no_causes_disponible | number: '1.2-2' }}
+                          Disponible No Causes:  $ {{ (presupuesto.no_causes_disponible - pedido.totalMontoNoCauses) | number: '1.2-2' }}
                         </span>
                     </div>
                     <div class="column has-text-centered">
                         <span class="tag is-warning">
-                          Disponible Material de Curación:  $ {{ presupuesto.material_curacion_disponible | number: '1.2-2' }}
+                          Disponible Material de Curación:  $ {{ (presupuesto.material_curacion_disponible - pedido.totalMontoMaterialCuracion) | number: '1.2-2' }}
                         </span>
                     </div>
                 </div>

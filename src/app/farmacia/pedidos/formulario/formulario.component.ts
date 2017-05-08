@@ -349,6 +349,15 @@ export class FormularioComponent implements OnInit {
     for(var i in this.pedidos){
       guardar_pedidos.push(this.pedidos[i].obtenerDatosGuardar());
     }*/
+
+    if((this.presupuesto.causes_disponible - this.pedido.totalMontoCauses) < 0 || (this.presupuesto.no_causes_disponible - this.pedido.totalMontoNoCauses) < 0 || (this.presupuesto.material_curacion_disponible - this.pedido.totalMontoMaterialCuracion) < 0){
+      this.cargando = false;
+      this.mensajeError = new Mensaje(true);
+      this.mensajeError.texto = 'Presupuesto insuficiente';
+      this.mensajeError.mostrar = true;
+      return false;
+    }
+
     guardar_pedido = this.pedido.obtenerDatosGuardar();
 
     if(finalizar){

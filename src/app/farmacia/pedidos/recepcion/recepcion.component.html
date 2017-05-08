@@ -213,7 +213,7 @@
               <thead>
                   <tr style="background: #00d1b2;">
                     <th style="color:#FFF !important;">Código</th>
-                    <th style="color:#FFF !important;">Marca</th>
+                    <!--th style="color:#FFF !important;">Marca</th-->
                     <th style="color:#FFF !important;">Lote</th>
                     <th style="color:#FFF !important;">Caducidad</th>
                     <th style="color:#FFF !important;"><abbr title="Cantidad">Cant.</abbr></th>  
@@ -232,7 +232,7 @@
                   <tr  class="is-unselectable" *ngFor="let item of itemSeleccionado.listaStockAsignado">
                                       
                     <td>{{ item.codigo_barras}}</td>
-                    <td>{{ item.marca.nombre }}</td>
+                    <!--td>{{ item.marca.nombre }}</td-->
                     <td>{{ item.lote }}</td>
                     <td>{{ item.fecha_caducidad | date:'dd/MM/y' }}</td>
                     <td style="width:78px !important;">

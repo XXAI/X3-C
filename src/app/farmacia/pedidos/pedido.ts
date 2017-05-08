@@ -15,6 +15,9 @@ export class Pedido {
   public lista:any[] = [];
   public totalInsumos:number = 0;
   public totalMonto:number = 0;
+  public totalMontoCauses:number = 0;
+  public totalMontoNoCauses:number = 0;
+  public totalMontoMaterialCuracion:number = 0;
   public paginacion:Paginacion = new Paginacion();
   public filtro: Pedido;
   //Harima: Para tener acceso al objeto que contiene la lista principal sin filtro
@@ -82,18 +85,30 @@ export class Pedido {
 
     pedido.totalInsumos = 0;
     pedido.totalMonto = 0;
+    pedido.totalMontoCauses = 0;
+    pedido.totalMontoNoCauses = 0;
+    pedido.totalMontoMaterialCuracion = 0;
+
     let para_iva = 0;
     let iva = 0;
     var contador = 1;
-    for(let i in this.lista){
+    for(let i in pedido.lista){
       if(conLote){
-        this.lista[i].lote = contador++;
+        pedido.lista[i].lote = contador++;
       }
-      pedido.totalInsumos += +this.lista[i].cantidad;
-      if(this.lista[i].monto){
-        pedido.totalMonto += this.lista[i].monto;
-        if(this.lista[i].tipo == 'MC'){
-          para_iva += this.lista[i].monto;
+      pedido.totalInsumos += +pedido.lista[i].cantidad;
+      if(pedido.lista[i].monto){
+        pedido.totalMonto += pedido.lista[i].monto;
+
+        if(pedido.lista[i].tipo == 'ME'){
+          if(pedido.lista[i].es_causes){
+            pedido.totalMontoCauses += pedido.lista[i].monto;
+          }else{
+            pedido.totalMontoNoCauses += pedido.lista[i].monto;
+          }
+        }else if(pedido.lista[i].tipo == 'MC'){
+          pedido.totalMontoMaterialCuracion += pedido.lista[i].monto;
+          para_iva += pedido.lista[i].monto;
         }
       }
     }
