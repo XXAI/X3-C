@@ -12,13 +12,10 @@ import { CambiarEntornoService }     from '../perfil/cambiar-entorno.service';
   styleUrls: ['./perfil.component.css']
 })
 export class PerfilComponent implements OnInit {
-  private mostrar: boolean = false;
-  private usuario: any = {};
-  private mostrarCambiarEntorno:boolean = false;
+  mostrar: boolean = false;
+  usuario: any = {};
+  mostrarCambiarEntorno:boolean = false;
   
-  
-  
-
   constructor(
     private router: Router,
     private authService:AuthService,

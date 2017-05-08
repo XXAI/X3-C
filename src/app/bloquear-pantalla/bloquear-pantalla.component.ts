@@ -12,17 +12,16 @@ import { BloquearPantallaService }     from './bloquear-pantalla.service';
 })
 export class BloquearPantallaComponent implements OnInit {
 
-  private usuario: any = {};
+  usuario: any = {};
 
-  private saludIdDisponible: boolean;
-  private credenciales: any = {};
-  private loading: boolean = false;
-  private mensaje: string = "";
-  private mostrarMensaje: boolean = false;
+  saludIdDisponible: boolean;
+  credenciales: any = {};
+  loading: boolean = false;
+  mensaje: string = "";
+  mostrarMensaje: boolean = false;
 
-  private mostrar:Boolean;
-
-
+  mostrar:Boolean;
+  
   private bloquearPantallaSuscription: Subscription;
   
 

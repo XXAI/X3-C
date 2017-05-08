@@ -28,15 +28,15 @@ export class NuevoComponent implements OnInit {
   //usuario: Usuario = new Usuario();
   usuario: FormGroup;
 
-  private usuarioRepetido:boolean = false;
-  private usuarioInvalido:boolean = false;
+  usuarioRepetido:boolean = false;
+  usuarioInvalido:boolean = false;
 
-  private cargando: boolean = false;
-  private cargandoRoles: boolean = false;
-  private cargandoUnidadesMedicas: boolean = false;
+  cargando: boolean = false;
+  cargandoRoles: boolean = false;
+  cargandoUnidadesMedicas: boolean = false;
 
-  private roles: Rol[] = [];
-  private unidadesMedicas: any[] = [];
+  roles: Rol[] = [];
+  unidadesMedicas: any[] = [];
 
   
 
