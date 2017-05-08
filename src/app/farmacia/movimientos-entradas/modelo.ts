@@ -4,11 +4,34 @@ class ModeloFiltro {
     public lista:any[];
     public paginacion:Paginacion;
 }
+
+export class Movimiento_insumo{
+        id: string;
+        incremento: number;
+        servidor_id: string;
+        movimiento_id: string;
+        stock_id: string;
+        cantidad: number;
+        precio_unitario: number;
+        iva: number;
+        precio_total: number;
+        usuario_id: string;  
+}
+
 export class Modelo {
   public id:String;
   public nombre:String;
+  public almacen_id:String;
   public observaciones:string;
+  public tipo_movimiento_id: string;
+  public fecha_movimiento: string;
+  public movimiento_insumos: Movimiento_insumo[] = [];
+  public almacen:any[] = [];
+  public datosImprimir?: any;
+  //public nombre:String;
+  //public observaciones:string;
   public lista:any[] = [];
+  public totalInsumos:number = 0;
   public paginacion:Paginacion = new Paginacion();
   public filtro: Modelo;
   //Harima: Para tener acceso al objeto que contiene la lista principal sin filtro

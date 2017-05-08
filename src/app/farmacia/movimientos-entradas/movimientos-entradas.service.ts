@@ -24,7 +24,7 @@ export class MovimientosEntradasService {
     return this.jwtRequest.get(MovimientosEntradasService.URL_STATS,null,null).map( (response: Response) => response.json());
   }
 
-  buscar(term: string, pagina:number = 1, resultados_por_pagina:number =5 ): Observable<any>{
+  buscar(term: string, pagina:number = 1, resultados_por_pagina:number =10 ): Observable<any>{
     return this.jwtRequest.get(MovimientosEntradasService.URL,null,{q: term, page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
   }
 

@@ -34,7 +34,8 @@ export class InsumoMedico {
     informacion: any; // Puede ser de un medicamento, material de curacion o auxiliares o lo que sea
     informacionAmpliada: any; // Puede ser de un medicamento, material de curacion o auxiliares o lo que sea
     cantidad: number;
-    lote: number;
+    lotes: Lote[];
+    //lote: any;
     fecha_caducidad: Date;
     codigo_barras: string;
     cargando:boolean = false;
@@ -51,7 +52,29 @@ export interface InsumoMedico {
     descripcion: string;
     medicamento?: {};
     cantidad: number;
-    lote: number;
+    lotes: Lote[];
+    //lote: any;
     fecha_caducidad: Date;
     codigo_barras: string;
+}
+export class Lote {
+    cantidad: number;
+    id: string;
+}
+export interface Lote {
+    cantidad: number;
+    id: string;
+}
+export class InsumoStock {
+  almacen_id: string;
+  clave: string;
+  existencia: number;
+  existencia_unidosis: number;
+}
+
+export interface InsumoStock {
+  almacen_id: string;
+  clave: string;
+  existencia: number;
+  existencia_unidosis: number;
 }

@@ -62,8 +62,20 @@ export class JwtRequestService {
 
     var serverInfo = JSON.parse(localStorage.getItem("server_info"));
     var token = this.jwtHelper.decodeToken(localStorage.getItem('token'));
+    var usuario = JSON.parse(localStorage.getItem("usuario"));
     
-    var headers = new Headers({'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('token') });
+
+    var headersJson = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('token') };
+    
+    if (usuario.clues_activa ) {      
+      headersJson['X-Clues'] = usuario.clues_activa.clues; 
+    }
+    if (usuario.almacen_activo ) {      
+      headersJson['X-Almacen-Id'] = usuario.almacen_activo.id; 
+    }
+    
+    
+    var headers = new Headers(headersJson);
    
  
     

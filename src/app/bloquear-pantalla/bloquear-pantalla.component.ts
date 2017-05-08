@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
-
 import { Subscription }   from 'rxjs/Subscription';
 
 import { AuthService } from 'app/auth.service';
@@ -35,9 +34,12 @@ export class BloquearPantallaComponent implements OnInit {
     this.bloquearPantallaSuscription = bloquearPantallaService.pantallaBloqueada$.subscribe(bloquear => {
       // Borramos el token porque de todos modos se va a sustituir
       // y así impedimos que intenten borrar elementos en el navegador para acceder
-      localStorage.removeItem('token');
-      this.cargarCredenciales();
-      this.mostrar = true 
+      if(bloquear){
+        localStorage.removeItem('token');
+        this.cargarCredenciales();
+        this.mostrar = true 
+      }
+      
     });
   }
 
@@ -69,7 +71,7 @@ export class BloquearPantallaComponent implements OnInit {
           this.loading = false;
           this.mostrar = false;
           this.credenciales.password = "";
-          localStorage.removeItem('bloquear_pantalla');
+          this.bloquearPantallaService.desbloquearPantalla(); 
         },
         error => {
           this.loading = false;

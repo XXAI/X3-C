@@ -11,11 +11,20 @@ export class PedidosService {
 
   static readonly URL: string = "pedidos";
   static readonly URL_STATS: string = "pedidos-stats";
+  static readonly URL_PRESUPUESTO: string = "pedidos-presupuesto";
   
   constructor(private http: Http,   private jwtRequest:JwtRequestService) { }
 
   stats(): Observable<any>{
     return this.jwtRequest.get(PedidosService.URL_STATS,null,null).map( (response: Response) => response.json());
+  }
+
+  presupuesto(mes:number = 0): Observable<any>{
+    let parametros:any = {};
+    if(mes){
+      parametros.mes = mes;
+    }
+    return this.jwtRequest.get(PedidosService.URL_PRESUPUESTO,null,parametros).map( (response: Response) => response.json());
   }
 
   buscar(status:string, term: string, pagina:number = 1, resultados_por_pagina:number =20 ): Observable<any>{
@@ -52,7 +61,5 @@ export class PedidosService {
   eliminar(id:any): Observable<Pedido> {
     return this.jwtRequest.delete(PedidosService.URL,id).map( (response: Response) => response.json().data) as Observable<Pedido>;
   }
-
   
-
 }

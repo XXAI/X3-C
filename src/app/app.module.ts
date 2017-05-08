@@ -10,6 +10,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
 
 
 import { AuthGuard } from './auth-guard.service';
+import { PermisosGuard } from './permisos.guard';
 import { AuthService } from './auth.service';
 import { JwtRequestService } from './jwt-request.service';
 import { JwtHelper } from 'angular2-jwt';
@@ -21,7 +22,10 @@ import { PerfilModule } from './perfil/perfil.module';
 import { BloquearPantallaModule } from './bloquear-pantalla/bloquear-pantalla.module';
 import { PipesModule }             from './pipes/pipes.module';
 
+// # Hub Panel de control
 import { UsuariosModule } from './panel-control/usuarios/usuarios.module';
+import { RolesModule } from './panel-control/roles/roles.module';
+import { SyncModule } from './panel-control/sync/sync.module';
 
 // # Hub Farmacia
 import { IndexFarmaciaModule } from './farmacia/index-farmacia/index-farmacia.module';
@@ -30,6 +34,8 @@ import { EntregasModule } from './farmacia/entregas/entregas.module';
 
 import { MovimientosEntradasModule    } from './farmacia/movimientos-entradas/movimientos-entradas.module';
 import { MovimientosSalidasModule    } from './farmacia/movimientos-salidas/movimientos-salidas.module';
+
+import { CrudModule } from './crud/crud.module';
 
 
 
@@ -53,16 +59,19 @@ import { MovimientosSalidasModule    } from './farmacia/movimientos-salidas/movi
     PerfilModule,
     BloquearPantallaModule,
     PipesModule,
+    SyncModule,
+    RolesModule,
     UsuariosModule,
     IndexFarmaciaModule,
     PedidosModule,
     EntregasModule,
     MovimientosEntradasModule,
     MovimientosSalidasModule,
+    CrudModule,
     WildcardRoutingModule, // Este siempre debe ir al final para que no haga conflicto con otras rutas
     
   ],
-  providers: [ Title, AuthGuard, AuthService,JwtHelper, JwtRequestService],
+  providers: [ Title, AuthGuard, PermisosGuard, AuthService,JwtHelper, JwtRequestService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

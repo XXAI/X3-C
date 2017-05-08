@@ -9,6 +9,8 @@ import { JwtRequestService } from '../../jwt-request.service';
 export class BuscarInsumosService {
 
   static readonly URL: string = "catalogo-insumos";
+  static readonly stockURL: string = "comprobar-stock";
+    
 
   constructor(private http: Http,   private jwtRequest:JwtRequestService) { }
 
@@ -20,4 +22,7 @@ export class BuscarInsumosService {
     return this.jwtRequest.get(BuscarInsumosService.URL,null,{q: term, page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
   }
 
+  comprobarStock(almacen: string = "00021",clave: string): Observable<any>{
+    return this.jwtRequest.get(BuscarInsumosService.stockURL,null,{almacen: almacen, clave: clave}).map( (response: Response) => response.json());
+  }
 }

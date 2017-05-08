@@ -105,7 +105,7 @@ export class FormInsumosComponent implements OnInit {
 
     // Inicialicemos el pedido
     this.pedidos.push(new Modelo(true) );
-    this.pedidos[0].nombre = "General";
+    //this.pedidos[0].nombre = "General";
     this.pedidos[0].observaciones = null;
     console.log(this.pedidos[0]);
 
@@ -145,8 +145,11 @@ export class FormInsumosComponent implements OnInit {
     insumo.cantidad = item.cantidad;
     insumo.cantidad_x_envase = Number(item.informacion.cantidad_x_envase);
     insumo.codigo_barras = item.codigo_barras;
+    insumo.lotes = item.lotes;
+    console.log(item.lotes);
     insumo.lote = item.lote;
-    console.log(item.lote);
+
+    console.log(item.lotes);
     insumo.fecha_caducidad = item.fecha_caducidad;
     insumo.filtro = item.filtro;
     insumo.paginacion = item.paginacion;

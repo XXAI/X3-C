@@ -10,6 +10,22 @@
               <h1 class="title" style="color:#FFF;">
                 <span class="icon is-medium"><i class="fa fa-search"></i></span> Insumos médicos 
               </h1>
+              
+              <!--<p class="control">
+                <a class="button is-medium is-primary" (click)="elegirLote()" [ngClass]="{'is-success': lote, 'is-danger': !lote}">
+                  <span>Elegir lote</span>
+                </a>
+              </p>-->
+
+              <div class="field">
+                <p class="control" *ngIf="salida">
+                  <label class="checkbox" style="color:#FFF;">
+                    <input type="checkbox" class="is-medium" (click)="elegirLote()"  >
+                      Elegir lote {{lote}}
+                  </label>
+                </p>
+              </div>
+                
               <p class="control is-expanded">
                   <input class="input "  type="text" placeholder="Buscar insumo" #searchBox id="search-box" (keyup)="buscar(searchBox.value)">
               </p>
@@ -137,8 +153,12 @@
           <!-- FORMULARIO del insumo-->
           <form (submit)="enviar($event)" >
             <div class="control is-grouped is-pulled-right " >
-            <p class="control is-expanded">
-                <input class="input is-medium" [disabled]="insumoSeleccionado == null" type="text" placeholder="Cantidad" #cantidadBox id="cantidad" (keyup)="comprobarCantidad(cantidadBox.value)" >
+            <p class="control is-expanded has-icon">
+                <input class="input is-medium" [disabled]="insumoSeleccionado == null" type="text" placeholder="Cantidad" #cantidadBox id="cantidad" (keyup)="comprobarCantidad(cantidadBox.value)" [ngClass]="{'is-danger': !cantidadAPI}">
+                <span class="icon is-small" *ngIf="!cantidadAPI">
+                <i class="fa fa-warning"></i>
+              </span>
+              <span class="help is-danger" *ngIf="!cantidadAPI">No hay esa cantidad en existencia.</span>
             </p>
             <!--<p class="control is-expanded ">
               <input class="input" autofocus type="text" [ngClass]="{'is-danger': insumoForm.controls('lote').hasError('required') && insumoForm.controls.lote.touched}"  placeholder="Folio de pedido" formControlName="folio_pedido">
@@ -157,8 +177,9 @@
                 <input class="input is-medium" [disabled]="insumoSeleccionado == null" type="text" placeholder="Codigo de barras" #codigoBarrasBox id="codigo_barras" >
             </p>
             <p class="control">
-                <button [disabled]="!cantidadValida" class="button is-medium is-primary " >
-                <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span>
+                <a *ngIf="salida" class="button is-medium is-primary" (click)="agregar(cantidadBox.value)" [ngClass]="{'is-disabled': !cantidadValida}"><span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span></a>
+                <button *ngIf="!salida" [disabled]="!cantidadValida" class="button is-medium is-primary " >
+                  <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span>
                 </button>
             </p>
           </div>
@@ -172,4 +193,49 @@
             <b>Error:</b> {{ mensajeError.texto }}
         </div>
       </div>
+    </div>
+    <div class="modal is-active" *ngIf="mostrarModalLote">
+      <div class="modal-background" (click)="toggleModalLote(dato)"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title"> <b>Nombre: </b> {{insumoSeleccionado.generico_nombre}}</p>
+          <br/>
+          <p class="modal-card-title"> <b>Clave: </b> {{insumoSeleccionado.clave}}</p>
+          <button class="delete" (click)="toggleModalLote(dato)"></button>
+        </header>
+          <section class="modal-card-body">
+                         <div class="margin-20">
+                        <div>myForm details:-</div>
+                        <pre>form value: <br>{{lotes_insumo | json}}</pre>
+
+                     </div> 
+            <table class="table is-narrow is-bordered" style="font-size: 1em; align-content: center" >
+              <thead>
+                <tr>
+                  <th>Lote</th>
+                  <th>Existencia</th>
+                  <th>Cantidad</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of lotes_insumo;  let i = index;">
+                  <td>{{item.lote}}</td>
+                  <td>{{item.existencia}}</td>
+                  <td><input class="input has-text-centered is-small"  type="text" placeholder="Cantidad" [(ngModel)]="item.cantidad"></td>
+                </tr>
+              </tbody>
+            </table>
+
+
+          </section>
+          <footer class="modal-card-foot">
+            <p class="control">
+                    <a class="button is-primary" (click)="enviarSalida(); mostrarModalLote=false">Aceptar</a>
+                </p>
+                <p class="control">
+                    <a class="button is-link" (click)="toggleModalLote(dato)">Cancelar</a>
+                </p>
+          </footer>
+      </div>
+      <button class="modal-close" (click)="toggleModalLote(dato)"></button>
     </div>

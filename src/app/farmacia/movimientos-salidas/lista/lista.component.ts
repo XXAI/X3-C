@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { Title} from  '@angular/platform-browser';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 
@@ -13,6 +13,8 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/catch';
+
+import  * as FileSaver    from 'file-saver'; 
 
 import { MovimientosSalidasService } from  '../movimientos-salidas.service';
 
@@ -34,10 +36,16 @@ export class ListaComponent implements OnInit {
 
   private mostrarModalCancelado = false;
 
+    // # SECCION: Reportes
+  private pdfworker:Worker;
+  private cargandoPdf:boolean = false;
+  // # FIN SECCION
+
   // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
   mensajeExito: Mensaje = new Mensaje();
   ultimaPeticion:any;
+  datos_imprimir: Modelo[] = [];
   // # FIN SECCION
 
   // # SECCION: Lista de Modelos, hay que CAMBIAR a movimientos
@@ -67,11 +75,33 @@ export class ListaComponent implements OnInit {
   constructor(
     private title: Title,
     private movimientosSalidasService: MovimientosSalidasService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private _ngZone: NgZone
   ) { }
 
   ngOnInit() {
     this.title.setTitle("Salidas / Farmacia");
+
+
+    // Inicializamos el objeto para los reportes con web Webworkers
+    this.pdfworker = new Worker("web-workers/farmacia/movimientos/imprimir-salida.js")
+
+    
+    // Este es un hack para poder usar variables del componente dentro de una funcion del worker
+    var self = this;    
+    var $ngZone = this._ngZone;
+    
+    this.pdfworker.onmessage = function( evt ) {       
+      // Esto es un hack porque estamos fuera de contexto dentro del worker
+      // Y se usa esto para actualizar alginas variables
+      $ngZone.run(() => {
+         self.cargandoPdf = false;
+      });
+
+      FileSaver.saveAs( self.base64ToBlob( evt.data.base64, 'application/pdf' ), evt.data.fileName );
+      //open( 'data:application/pdf;base64,' + evt.data.base64 ); // Popup PDF
+    };
+
 
     this.listar(1);
     this.mensajeError = new Mensaje();
@@ -353,5 +383,105 @@ export class ListaComponent implements OnInit {
     this.listarBusqueda(term,this.paginaActualBusqueda-1);
   }
   // Fin # SECCION: Paginación
+  
+  // # SECCION - Webworkers
+
+  imprimir(item: Modelo, index) {
+    
+    console.log(item.id);
+    console.log(item);
+/*
+    this.movimientosSalidasService.ver(item.id).subscribe(
+          movimientoActual => {
+            this.cargando = false;
+            item.datosImprimir = movimientoActual;
+            console.log(item.datosImprimir);
+             try {
+              this.cargandoPdf = true;
+              var movimientos_imprimir = {
+                datos: item,
+                lista: item.datosImprimir
+              };
+              this.pdfworker.postMessage(JSON.stringify(movimientos_imprimir));
+            } catch (e){
+              this.cargandoPdf = false;
+              console.log(e);
+            }
+          },
+          error => {
+            this.cargando = false;
+
+            this.mensajeError = new Mensaje(true);
+            this.mensajeError = new Mensaje(true);
+            this.mensajeError.mostrar;
+
+            try {
+              let e = error.json();
+              if (error.status == 401 ){
+                this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+              }
+              
+            } catch(e){
+                          
+              if (error.status == 500 ){
+                this.mensajeError.texto = "500 (Error interno del servidor)";
+              } else {
+                this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+              }            
+            }
+          }
+    );*/
+
+
+    this.movimientosSalidasService.ver(item.id).subscribe(
+          movimientoActual => {
+            this.cargando = false;
+            item.datosImprimir = movimientoActual;
+            console.log(movimientoActual);
+            
+                try {
+                this.cargandoPdf = true;
+                var entradas_imprimir = {
+                  datos: item,
+                  lista: item.datosImprimir.movimiento_insumos
+                };
+                this.pdfworker.postMessage(JSON.stringify(entradas_imprimir));
+              } catch (e){
+                this.cargandoPdf = false;
+                console.log(e);
+              }
+          },
+          error => {
+            this.cargando = false;
+
+            this.mensajeError = new Mensaje(true);
+            this.mensajeError = new Mensaje(true);
+            this.mensajeError.mostrar;
+
+            try {
+              let e = error.json();
+              if (error.status == 401 ){
+                this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+              }
+              
+            } catch(e){
+                          
+              if (error.status == 500 ){
+                this.mensajeError.texto = "500 (Error interno del servidor)";
+              } else {
+                this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+              }            
+            }
+          }
+        );
+  }
+
+  base64ToBlob( base64, type ) {
+      var bytes = atob( base64 ), len = bytes.length;
+      var buffer = new ArrayBuffer( len ), view = new Uint8Array( buffer );
+      for ( var i=0 ; i < len ; i++ )
+      view[i] = bytes.charCodeAt(i) & 0xff;
+      return new Blob( [ buffer ], { type: type } );
+  }
 
 }

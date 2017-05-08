@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 
 import { PerfilComponent } from './perfil.component';
+import { CambiarEntornoService } from './cambiar-entorno.service';
 
 
 @NgModule({
@@ -14,6 +15,7 @@ import { PerfilComponent } from './perfil.component';
   exports: [
       PerfilComponent
   ],
+  providers: [CambiarEntornoService],
   declarations: [PerfilComponent]
 
 })

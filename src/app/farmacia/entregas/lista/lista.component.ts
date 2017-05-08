@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import { Subscription }   from 'rxjs/Subscription';
 
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/throw';
@@ -14,6 +15,7 @@ import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/catch';
 
 import { EntregasService } from '../entregas.service';
+import { CambiarEntornoService } from '../../../perfil/cambiar-entorno.service';
 
 import { Pedido } from '../../pedidos/pedido';
 import { Mensaje } from '../../../mensaje';
@@ -58,7 +60,11 @@ export class ListaComponent implements OnInit {
   private indicePaginasBusqueda:number[] = []
   // # FIN SECCION
 
-  constructor(private title: Title, private route:ActivatedRoute, private entregasService: EntregasService) { }
+  // # SECCION: Cambios de Entorno
+  private cambiarEntornoSuscription: Subscription;
+  // # FIN SECCION
+
+  constructor(private title: Title, private route:ActivatedRoute, private entregasService: EntregasService, private cambiarEntornoService:CambiarEntornoService) { }
 
   ngOnInit() {
     
@@ -86,7 +92,15 @@ export class ListaComponent implements OnInit {
       default: this.status = "PS"; this.titulo = "Por surtir"; this.icono = "fa-inbox"; break;
     }
 
+    
     this.title.setTitle("Entregas / Farmacia");
+
+
+
+    this.cambiarEntornoSuscription = this.cambiarEntornoService.entornoCambiado$.subscribe(evento => {
+      this.listar(this.paginaActual);
+    });
+
     
 
     this.listar(1);
@@ -191,6 +205,12 @@ export class ListaComponent implements OnInit {
             if (error.status == 401 ){
               this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
             }
+            
+            if (error.status == 403 ){
+              this.mensajeError.texto = e.error;
+            } else {
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }
           } catch(e){
             console.log("No se puede interpretar el error");
             
@@ -240,10 +260,16 @@ export class ListaComponent implements OnInit {
           this.cargando = false;
           this.mensajeError.mostrar = true;
           this.ultimaPeticion = this.listar;
+          
           try {
             let e = error.json();
             if (error.status == 401 ){
               this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }
+            if (error.status == 403 ){
+              this.mensajeError.texto = e.error;
+            } else {
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
             }
           } catch(e){
             console.log("No se puede interpretar el error");

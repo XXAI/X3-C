@@ -55,12 +55,11 @@ export class FormularioComponent implements OnInit {
   // # FIN SECCION
 
   // # SECCION: Pedido
-
   private almacenes: Almacen[];
+  private presupuesto:any = {};
 
   // Harima: Se genera un unico pedido
   private pedido: Pedido;
-  
   // # FIN SECCION
 
 
@@ -93,6 +92,9 @@ export class FormularioComponent implements OnInit {
 
     //Harima:cargamos catalogos
     this.cargarAlmacenes();
+
+    //Harima: Cargar el presupuesto del mes actual
+    this.cargarPresupuesto();
 
     this.pdfworker.onmessage = function( evt ) {       
       // Esto es un hack porque estamos fuera de contexto dentro del worker
@@ -335,7 +337,9 @@ export class FormularioComponent implements OnInit {
   }
 
   finalizar(){
-    this.guardar(true);
+    if(confirm('Atención el pedido ya no podra editarse, Esta seguro de concluir el pedido?')){
+      this.guardar(true);
+    }
   }
 
   guardar(finalizar:boolean = false){
@@ -352,6 +356,8 @@ export class FormularioComponent implements OnInit {
       /*for(var i in guardar_pedidos){
         guardar_pedidos[i].datos.status = 'ES';
       }*/
+    }else{
+      guardar_pedido.datos.status = 'BR';
     }
 
     if(this.esEditar){
@@ -371,28 +377,40 @@ export class FormularioComponent implements OnInit {
           this.mensajeError = new Mensaje(true);
           this.mensajeError.texto = 'No especificado';
           this.mensajeError.mostrar = true;
+          console.log(this.pedido);
+          if(this.pedido.status == 'CONCLUIR'){
+            this.pedido.status = 'BR';
+            console.log('asdfsadfsadfsadfdsafsadfdsaf');
+          }
 
           try{
             let e = error.json();
-              if (error.status == 401 ){
-                this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
-              }
-              // Problema de validación
-              if (error.status == 409){
-                this.mensajeError.texto = "Por favor verfique los campos marcados en rojo.";
-                /*for (var input in e.error){
-                  // Iteramos todos los errores
-                  for (var i in e.error[input]){
+            console.log(e);
+            if (error.status == 401 ){
+              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }
+            // Problema de validación
+            if (error.status == 409){
+              this.mensajeError.texto = "Por favor verfique los campos marcados en rojo.";
+              /*for (var input in e.error){
+                // Iteramos todos los errores
+                for (var i in e.error[input]){
 
-                    if(input == 'id' && e.error[input][i] == 'unique'){
-                      this.usuarioRepetido = true;
-                    }
-                    if(input == 'id' && e.error[input][i] == 'email'){
-                      this.usuarioInvalido = true;
-                    }
-                  }                      
-                }*/
+                  if(input == 'id' && e.error[input][i] == 'unique'){
+                    this.usuarioRepetido = true;
+                  }
+                  if(input == 'id' && e.error[input][i] == 'email'){
+                    this.usuarioInvalido = true;
+                  }
+                }                      
+              }*/
+            }
+            
+            if(error.status == 500){
+              if(e.error){
+                this.mensajeError.texto = e.error;
               }
+            }
           }catch(e){
             if (error.status == 500 ){
               this.mensajeError.texto = "500 (Error interno del servidor)";
@@ -460,9 +478,14 @@ export class FormularioComponent implements OnInit {
           this.cargandoAlmacenes = false;
           this.almacenes = almacenes;
 
+          let datos_iniciales:any = {}
+          
           if(almacenes.length == 1 && !this.esEditar){
-            this.pedido.datos.setValue({almacen_proveedor:almacenes[0].id,descripcion:'',observaciones:'',fecha:''});
+            datos_iniciales.almacen_proveedor = almacenes[0].id;
+            //this.pedido.datos.setValue({almacen_proveedor:almacenes[0].id,descripcion:'',observaciones:''});
           }
+
+          this.pedido.inicializarDatos(datos_iniciales);
 
           console.log("Almacenes cargados.");
 
@@ -501,6 +524,23 @@ export class FormularioComponent implements OnInit {
 
         }
       );
+  }
+
+  cargarPresupuesto(mes:number = 0){
+    if(mes == 0){
+      let now = new Date();
+      mes = (now.getMonth() + 1);
+    }
+    this.pedidosService.presupuesto(mes).subscribe(
+      response => {
+        this.cargando = false;
+        this.presupuesto = response.data;
+      },
+      error => {
+        this.cargando = false;
+        console.log(error);
+      }
+    );
   }
 
   // # SECCION: Eventos del teclado

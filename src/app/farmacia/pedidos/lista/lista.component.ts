@@ -39,6 +39,7 @@ export class ListaComponent implements OnInit {
   titulo: string = "Pedidos";
   icono = "fa-file";
   pedidos: Pedido[] = [];
+  private presupuesto:any = {};
   private paginaActual = 1;
   private resultadosPorPagina = 5;
   private total = 0;
@@ -85,6 +86,17 @@ export class ListaComponent implements OnInit {
       break;
       default: this.titulo = "Pedidos"; this.icono = "fa-file"; break;
     }
+
+    this.pedidosService.presupuesto().subscribe(
+      response => {
+        this.cargando = false;
+        this.presupuesto = response.data;
+      },
+      error => {
+        this.cargando = false;
+        console.log(error);
+      }
+    );
 
     this.title.setTitle("Pedidos");
 
@@ -155,7 +167,6 @@ export class ListaComponent implements OnInit {
       }
 
     );
-
   }
 
   obtenerDireccion(id:string, status:string): string{
