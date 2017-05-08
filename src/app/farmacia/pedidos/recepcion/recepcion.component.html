@@ -43,6 +43,7 @@
                     
                     <th style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Cantidad">Cantidad</abbr></th>
                     <th style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Surtido">Lotes</abbr></th>
+                    <th  style="width:21px !important; text-align: center; vertical-align: middle;">Surtido</th>
                   </tr>
               </thead>
               <tbody *ngIf="!pedido.filtro.activo">
@@ -62,7 +63,7 @@
                       </div>
                     
                       <div  style="padding: 0.5em 0 0.5em 0; ">
-                        <span *ngIf="item.es_causes" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
+                        <span *ngIf="item.es_causes" class="tag is-success" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
                         <span *ngIf="!item.es_causes" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
                         <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
                         
@@ -76,6 +77,11 @@
                   </td> 
                   <td style="width:78px !important; text-align:center;">{{ item.totalStockAsignado || 0 }} / {{ item.cantidad }}</td>     
                   <th style="width:78px !important; text-align:center;">{{ (item.listaStockAsignado)?item.listaStockAsignado.length:0 }}</th>
+                  <td style="width:21px !important; text-align:center;">
+                    <span class="icon" style="color:gray;" *ngIf="item.totalStockAsignado == 0 || item.totalStockAsignado == null"><i class="fa fa-circle-thin"></i></span>
+                    <span class="icon" style="color:orange;" *ngIf="item.totalStockAsignado > 0 && item.totalStockAsignado < item.cantidad"><i class="fa fa-minus-circle"></i></span>
+                    <span class="icon" style="color:green;" *ngIf="item.totalStockAsignado == item.cantidad"><i class="fa fa-check-circle"></i></span>
+                  </td>
                 </tr>      
               </tbody>
               <tbody *ngIf="pedido.filtro.activo">
@@ -106,8 +112,13 @@
                       </div>
                     </div>
                   </td> 
-                  <td style="width:78px !important; text-align:center;">{{ item.cantidad }}</td>     
-                  <th style="width:78px !important; text-align:center;">0</th>                                  
+                  <td style="width:78px !important; text-align:center;">{{ item.totalStockAsignado || 0 }} / {{ item.cantidad }}</td>     
+                  <th style="width:78px !important; text-align:center;">{{ (item.listaStockAsignado)?item.listaStockAsignado.length:0 }}</th>
+                  <td style="width:21px !important; text-align:center;">
+                    <span class="icon" style="color:gray;" *ngIf="item.totalStockAsignado == 0 || item.totalStockAsignado == null"><i class="fa fa-circle-thin"></i></span>
+                    <span class="icon" style="color:orange;" *ngIf="item.totalStockAsignado > 0 && item.totalStockAsignado < item.cantidad"><i class="fa fa-minus-circle"></i></span>
+                    <span class="icon" style="color:green;" *ngIf="item.totalStockAsignado == item.cantidad"><i class="fa fa-check-circle"></i></span>
+                  </td>
                 </tr>   
               </tbody>              
             </table>
@@ -143,14 +154,14 @@
               <label class="label">Código de Barras</label>
               <input class="input" autofocus type="text" placeholder="Código de Barras" [(ngModel)]="formStock.codigo_barras">
             </p>
-            <p class="control has-icon has-icon-right">
+            <!--p class="control has-icon has-icon-right">
               <label class="label">Marca</label>
               <span class="select is-expanded">
                 <select [(ngModel)]="formStock.marca">
                   <option *ngFor="let item of marcas" [ngValue]="item">{{ item.nombre }}</option>
                 </select>
               </span>
-            </p>
+            </p-->
           </div>
 
           <div class="control is-grouped">

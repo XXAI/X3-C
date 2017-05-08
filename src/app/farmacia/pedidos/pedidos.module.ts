@@ -19,6 +19,7 @@ import { ListaComponent } from './lista/lista.component';
 import { PedidosService } from './pedidos.service';
 import { AlmacenesService } from '../../catalogos/almacenes/almacenes.service';
 import { StockService } from '../stock/stock.service';
+import { RecepcionService } from './recepcion/recepcion.service';
 
 import { VerComponent } from './ver/ver.component';
 import { FormularioComponent } from './formulario/formulario.component';
@@ -38,6 +39,6 @@ import { RecepcionComponent } from './recepcion/recepcion.component';
     IndexFarmaciaModule
   ],
   declarations: [PedidosComponent, MenuLateralComponent, ListaComponent, VerComponent, FormularioComponent, RecepcionComponent],
-  providers:[PedidosService,AlmacenesService,StockService]
+  providers:[PedidosService,AlmacenesService,StockService,RecepcionService]
 })
 export class PedidosModule { }

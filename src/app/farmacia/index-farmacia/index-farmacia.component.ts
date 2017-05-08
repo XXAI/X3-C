@@ -19,20 +19,24 @@ export class IndexFarmaciaComponent implements OnInit {
   private accesosDirectosAutorizados:any[] = [];
 
   constructor(private title: Title) { }
-
   
-
   ngOnInit() {
     this.title.setTitle("Farmacia");
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
 
-    
-
     this.modulos = [
       { permiso: 'hAeTBeuyxHcAi2OerU7NsVpTA5isktJ7', icono: 'assets/icono-entradas.svg', titulo:"Entrada manual", url:"/farmacia/movimientos/entradas" },
       { permiso: 'ZNrN0e8cQL8cIAcXHJfczGpFEC2Ap9QA', icono: 'assets/icono-salidas.svg', titulo:"Salida manual", url:"/farmacia/movimientos/salidas" },
-      { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-pagina-lista.svg', titulo:"Pedidos", url:"/farmacia/pedidos", badge:1 },
+      { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-pagina-lista.svg', titulo:"Pedidos", url:"/farmacia/pedidos" },
       { permiso: 'iSxK0TpoYpnzf8KIQTWOq9Web7WnSKhz', icono: 'assets/icono-pedidos-alt.svg', titulo:"Entregas de pedidos", url:"/farmacia/entregas" },
+      //{ permiso: '', icono: 'assets/icono-salidas.svg', titulo:"Salidas", url:"/farmacia/salidas" },
+      //{ permiso: '', icono: 'assets/hub-almacen.svg', titulo:"Inventario", url:"/farmacia/inventario" },
+      //{ permiso: '', icono: 'assets/icono-ajustes-inventario.svg', titulo:"Ajustes de inventario", url:"/farmacia/inventario/ajustes" },
+      //{ permiso: '', icono: 'assets/icono-recetas.svg', titulo:"Recetas", url:"/farmacia/recetas" },
+      //{ permiso: '', icono: 'assets/icono-colectivo.svg', titulo:"Colectivos", url:"/farmacia/colectivos" },
+      //{ permiso: '', icono: 'assets/icono-camion.svg', titulo:"Reabastecimiento", url:"/farmacia/pedidos-reabastecimiento" },
+      //{ permiso: '', icono: 'assets/icono-pagina-lista.svg', titulo:"Actas por desabasto", url:"/farmacia/actas" },
+      //{ permiso: '', icono: 'assets/icono-pagina-lista.svg', titulo:"Actas colectivas por desabasto", url:"/farmacia/actas-colectivas" },
     ]
     this.accesosDirectos = [    
       { permiso: '2nC6GUf6E737QwZSxuLORT6rZUDy5YUO', icono: 'assets/icono-pagina-lista.svg', titulo:"Nuevo pedido", url:"/farmacia/pedidos/nuevo" },
