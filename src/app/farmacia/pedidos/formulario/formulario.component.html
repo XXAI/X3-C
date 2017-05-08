@@ -19,7 +19,7 @@
                   <span class="help is-danger" *ngIf="pedido.tieneError('descripcion','required')">Este campo es requerido.</span>
                 </p>
 
-                <label class="label">Fecha:</label>
+                <label class="label">Fecha (aaaa-mm-dd):</label>
                 <p class="control is-expanded  has-icon has-icon-right">
                   <input type="text" class="input is-fullwidth" placeholder="aaaa-mm-dd" [ngClass]="{'is-danger': pedido.tieneError('fecha','required')}" formControlName="fecha"/>
                   <span class="icon is-small" *ngIf="pedido.tieneError('fecha','required')">
@@ -28,7 +28,7 @@
                   <span class="help is-danger" *ngIf="pedido.tieneError('fecha','required')">Este campo es requerido.</span>
                 </p>
 
-                <label class="label">Solicitar a:</label>
+                <label class="label" *ngIf="pedido.tipo_pedido == 'PI'">Solicitar a:</label>
                 <p class="control" *ngIf="pedido.tipo_pedido == 'PI'">
                   <span class="select is-fullwidth">
                     <select name="almacen_proveedor" formControlName="almacen_proveedor" [ngClass]="{'is-warning': almacenes?.length == 0 }">
@@ -51,11 +51,11 @@
                   <a class="button is-danger " (click)="finalizar()" [ngClass]="{'is-loading': cargando}" ><span class="icon"><i class="fa fa-check"></i></span><span>Concluir</span></a>
                 </p>
               
-                <p class="control">
+                <!--p class="control" *ngIf="esEditar">
                   <a class="button is-primary " [ngClass]="{ 'is-loading': cargandoPdf, 'is-inverted': !cargandoPdf }" (click)="imprimir()" ><span class="icon"><i class="fa fa-print"></i></span></a>
-                </p>
+                </p-->
                 <p class="control">
-                  <a class="button is-white" routerLink="{{obtenerDireccion()}}" >Ir a la lista</a>
+                  <a class="button is-white" routerLink="{{obtenerDireccion()}}" >Ir a la lista de pedidos</a>
                 </p>                
               </div>
             </div>
@@ -184,7 +184,7 @@
                       <small>{{ item.descripcion }}</small>
                     </div>
                     <div class="is-hidden-desktop" style="padding: 0.5em 0 0.5em 0; ">
-                      <span *ngIf="item.es_causes" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
+                      <span *ngIf="item.es_causes" class="tag is-success" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
                       <span *ngIf="!item.es_causes" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
                       <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
                       
@@ -205,7 +205,7 @@
                       <small>{{ item.descripcion }}</small>
                     </div>
                     <div style="padding: 0.5em 0 0.5em 0; ">
-                      <span *ngIf="item.es_causes" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
+                      <span *ngIf="item.es_causes" class="tag is-success" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
                       <span *ngIf="!item.es_causes" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
                       <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
                       <span *ngIf="(item.tipo == 'ME' && item.informacion)">
@@ -217,7 +217,7 @@
                   </td> 
                   <td style="width:78px !important;">
                       <p class="control is-expanded">
-                      <input class="input is-small has-text-centered"  type="text" placeholder="Cant" [(ngModel)]="item.cantidad">
+                      <input class="input is-small has-text-centered"  type="text" placeholder="Cant" (keyup)="modificarItem(item)" [(ngModel)]="item.cantidad">
                       </p>
                   </td>
 

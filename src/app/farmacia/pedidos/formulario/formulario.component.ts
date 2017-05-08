@@ -335,7 +335,9 @@ export class FormularioComponent implements OnInit {
   }
 
   finalizar(){
-    this.guardar(true);
+    if(confirm('Atención el pedido ya no podra editarse, Esta seguro de concluir el pedido?')){
+      this.guardar(true);
+    }
   }
 
   guardar(finalizar:boolean = false){
@@ -474,9 +476,14 @@ export class FormularioComponent implements OnInit {
           this.cargandoAlmacenes = false;
           this.almacenes = almacenes;
 
+          let datos_iniciales:any = {}
+          
           if(almacenes.length == 1 && !this.esEditar){
-            this.pedido.datos.setValue({almacen_proveedor:almacenes[0].id,descripcion:'',observaciones:'',fecha:''});
+            datos_iniciales.almacen_proveedor = almacenes[0].id;
+            //this.pedido.datos.setValue({almacen_proveedor:almacenes[0].id,descripcion:'',observaciones:''});
           }
+
+          this.pedido.inicializarDatos(datos_iniciales);
 
           console.log("Almacenes cargados.");
 

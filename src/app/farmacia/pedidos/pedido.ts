@@ -23,13 +23,12 @@ export class Pedido {
   public cargando:boolean = false;
   private fb:FormBuilder;
 
-  
-
   constructor(conFiltro:boolean = false){
     if (conFiltro){
         this.filtro = new Pedido();
         //Harima: se asigna el pedido actual como padre del filtro
         this.filtro.padre = this;
+
         //Harima: se crea el formulario para las validaciones
         this.fb  = new FormBuilder();
         this.datos = this.fb.group({
@@ -38,6 +37,7 @@ export class Pedido {
           almacen_proveedor: ['',[Validators.required]],
           observaciones: ''
         });
+        //Harima: Al crear el objeto, se crea como borrador
         this.status = 'BR';
         this.paginacion.resultadosPorPagina = 10;
     }
@@ -45,6 +45,20 @@ export class Pedido {
 
   public tieneError = function(atributo:string, error:string){
     return (this.datos.get(atributo).hasError(error) && this.datos.get(atributo).touched);
+  }
+
+  public inicializarDatos = function(datos:any={}){
+    let today = datos.fecha;
+
+    if(!datos.fecha){
+      //Harima:obtenemos la fecha actual
+      let now = new Date();
+      let day = ("0" + now.getDate()).slice(-2);
+      let month = ("0" + (now.getMonth() + 1)).slice(-2);
+      today = now.getFullYear() + "-" + (month) + "-" + (day);
+    }
+
+    this.datos.setValue({almacen_proveedor:'',descripcion:'',observaciones:'',fecha:today});
   }
 
   //Harima: es necesario para evitar un error al enviar los datos al servidor
@@ -56,29 +70,42 @@ export class Pedido {
     return datos;
   }
 
-  public actualizarTotales = function(){
-    this.totalInsumos = 0;
-    this.totalMonto = 0;
+  public actualizarTotales = function(conLote: boolean = false ){
+    let pedido;
+    
+    //Harima: Si se llama la funcion desde el filtro, hay que actualizar los valores del padre
+    if(this.padre){
+      pedido = this.padre;
+    }else{
+      pedido = this;
+    }
+
+    pedido.totalInsumos = 0;
+    pedido.totalMonto = 0;
+    let para_iva = 0;
+    let iva = 0;
+    var contador = 1;
     for(let i in this.lista){
-        this.totalInsumos += +this.lista[i].cantidad;
-        if(this.lista[i].monto){
-          this.totalMonto += this.lista[i].monto;
+      if(conLote){
+        this.lista[i].lote = contador++;
+      }
+      pedido.totalInsumos += +this.lista[i].cantidad;
+      if(this.lista[i].monto){
+        pedido.totalMonto += this.lista[i].monto;
+        if(this.lista[i].tipo == 'MC'){
+          para_iva += this.lista[i].monto;
         }
+      }
+    }
+    if(para_iva > 0){
+      iva = para_iva*16/100;
+      pedido.totalMonto += iva;
     }
   }
 
   public indexar = function(conLote: boolean = true ){
     if(conLote){
-      this.totalInsumos = 0;
-      this.totalMonto = 0;
-      var contador = 1;
-      for(let i in this.lista){
-          this.lista[i].lote = contador++;
-          this.totalInsumos += +this.lista[i].cantidad;
-          if(this.lista[i].monto){
-            this.totalMonto += this.lista[i].monto;
-          }
-      }
+      this.actualizarTotales(conLote);
     }
     
     this.paginacion.totalPaginas = Math.ceil(this.lista.length / this.paginacion.resultadosPorPagina);

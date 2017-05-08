@@ -57,7 +57,5 @@ export class PedidosService {
   eliminar(id:any): Observable<Pedido> {
     return this.jwtRequest.delete(PedidosService.URL,id).map( (response: Response) => response.json().data) as Observable<Pedido>;
   }
-
   
-
 }

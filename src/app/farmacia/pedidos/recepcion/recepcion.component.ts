@@ -17,6 +17,7 @@ import 'rxjs/add/operator/catch';
 import  * as FileSaver    from 'file-saver'; 
 
 import { PedidosService } from '../../pedidos/pedidos.service';
+import { RecepcionService } from './recepcion.service';
 import { StockService } from '../../stock/stock.service';
 
 import { Pedido } from '../../pedidos/pedido';
@@ -31,7 +32,6 @@ export class RecepcionComponent implements OnInit {
   id:string ;
   cargando: boolean = false;
   cargandoStock: boolean = false;
-
   capturarStock: boolean = false;
 
    // # SECCION: Esta sección es para mostrar mensajes
@@ -41,7 +41,7 @@ export class RecepcionComponent implements OnInit {
   ultimaPeticion: any;
   // # FIN SECCION  
 
-  private marcas = [{id:1,nombre:'Sin Especificar'}];
+  //private marcas = [{id:1,nombre:'Sin Especificar'}];
   private formStock: any = {};
   private pedido: Pedido; 
   private lotesSurtidos:any[] = [];
@@ -50,14 +50,14 @@ export class RecepcionComponent implements OnInit {
   private claveNoSolicitada:boolean = false;
   private itemSeleccionado: any = null;
   
-  constructor(private title: Title, private route:ActivatedRoute, private pedidosService:PedidosService, private stockService:StockService) { }
+  constructor(private title: Title, private route:ActivatedRoute, private pedidosService:PedidosService, private recepcionService:RecepcionService, private stockService:StockService) { }
 
   ngOnInit() {
     this.title.setTitle('Surtir pedido / Farmacia');
 
-    if(this.marcas.length == 1){
+    /*if(this.marcas.length == 1){
       this.formStock.marca = this.marcas[0];
-    }
+    }*/
 
     this.route.params.subscribe(params => {
       this.id = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number
@@ -68,27 +68,61 @@ export class RecepcionComponent implements OnInit {
       this.id = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number      
     });
     this.cargando = true;
-    this.pedidosService.ver(this.id).subscribe(
+    //this.pedidosService.ver(this.id).subscribe(
+    this.recepcionService.verRecepcionPedido(this.id).subscribe(
           pedido => {
             this.cargando = false;
             this.pedido = new Pedido(true);
             this.pedido.paginacion.resultadosPorPagina = 10;
             this.pedido.filtro.paginacion.resultadosPorPagina = 10;
+
+            let recepcion_insumos = {};
+
+            if(pedido.recepciones.length == 1){
+              let recepcion_insumos_guardados = pedido.recepciones[0].entrada_abierta.insumos;
+              for(var i in recepcion_insumos_guardados){
+                let insumo = recepcion_insumos_guardados[i];
+                if(!recepcion_insumos[insumo.stock.clave_insumo_medico]){
+                  recepcion_insumos[insumo.stock.clave_insumo_medico] = {
+                    cantidad:0,
+                    stock:[]
+                  };
+                }
+                recepcion_insumos[insumo.stock.clave_insumo_medico].cantidad += +insumo.cantidad;
+                insumo.stock.cantidad = insumo.cantidad;
+                recepcion_insumos[insumo.stock.clave_insumo_medico].stock.push(insumo.stock);
+              }
+            }
+
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];
               let insumo = dato.insumos_con_descripcion;
              
-              if (insumo != null){
-                insumo.cantidad = +dato.cantidad_solicitada;              
-                this.pedido.lista.push(insumo);
-              } else {
-                // OJO:
-                //¿Qué hacemos con las claves que no existan? y porque puedo agregar claves que no existen a un pedido
-                // No hay llave Foránea??
+              insumo.cantidad = +dato.cantidad_solicitada;
+              insumo.monto = +dato.monto_solicitado;
+              insumo.precio = +dato.precio_unitario;
+
+              if(recepcion_insumos[insumo.clave]){
+                insumo.listaStockAsignado = [];
+                insumo.totalStockAsignado = recepcion_insumos[insumo.clave].cantidad;
+                for(let j in recepcion_insumos[insumo.clave].stock){
+                  let stock = recepcion_insumos[insumo.clave].stock[j];
+                  insumo.listaStockAsignado.push({
+                    codigo_barras: stock.codigo_barras,
+                    //marca: stock.marca,
+                    lote: stock.lote,
+                    fecha_caducidad: stock.fecha_caducidad,
+                    cantidad: stock.cantidad,
+                  });
+                }
               }
-             
+
+              this.pedido.lista.push(insumo);
             }
+
             pedido.insumos = undefined;
+
+            this.pedido.datosImprimir = pedido;
             this.pedido.indexar();
             this.pedido.listar(1);
           },
@@ -120,6 +154,10 @@ export class RecepcionComponent implements OnInit {
   seleccionarItem(item){  
     this.itemSeleccionado = item; 
     this.capturarStock = true;
+    this.formStock = {};
+    /*if(this.marcas.length == 1){
+      this.formStock.marca = this.marcas[0];
+    }*/
     //this.buscarStockApi(null,item.clave)
   }
 
@@ -287,8 +325,80 @@ export class RecepcionComponent implements OnInit {
   }
 
   guardar(finalizar:boolean = false){
-    console.log(this.pedido);
-    alert("Preguntar quién recibe, observaciones, etc. Y si quiere imprimir de una vez.")
+    //console.log(this.pedido);
+    alert("Preguntar quién recibe, observaciones, etc. Y si quiere imprimir de una vez.");
+    let guardar_recepcion = {status:'BR', observaciones:'',stock:[]};
+
+    if(finalizar){
+      guardar_recepcion.status = 'FI';
+    }
+
+    for(var i in this.pedido.lista){
+      let item = this.pedido.lista[i];
+      if(item.totalStockAsignado > 0){
+        for(var j in item.listaStockAsignado){
+          var stock = {
+            clave_insumo_medico: item.clave,
+            lote: item.listaStockAsignado[j].lote,
+            fecha_caducidad: item.listaStockAsignado[j].fecha_caducidad,
+            cantidad: item.listaStockAsignado[j].cantidad,
+            existencia: item.listaStockAsignado[j].cantidad,
+            codigo_barras: item.listaStockAsignado[j].codigo_barras,
+            precio_unitario: 0,
+            precio_total: 0
+          };
+          guardar_recepcion.stock.push(stock);
+        }
+      }
+    }
+
+    this.recepcionService.guardarRecepcionPedido(this.pedido.datosImprimir.id,guardar_recepcion).subscribe(
+      pedido => {
+        this.cargando = false;
+        console.log('Recepción guardada');
+        //console.log(pedido);
+        //this.router.navigate(['/farmacia/pedidos/editar/'+pedido.id]);
+        //hacer cosas para dejar editar
+      },
+      error => {
+        this.cargando = false;
+        console.log(error);
+        this.mensajeError = new Mensaje(true);
+        this.mensajeError.texto = 'No especificado';
+        this.mensajeError.mostrar = true;
+
+        try{
+          let e = error.json();
+            if (error.status == 401 ){
+              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }
+            // Problema de validación
+            if (error.status == 409){
+              this.mensajeError.texto = "Por favor verfique los campos marcados en rojo.";
+              /*for (var input in e.error){
+                // Iteramos todos los errores
+                for (var i in e.error[input]){
+
+                  if(input == 'id' && e.error[input][i] == 'unique'){
+                    this.usuarioRepetido = true;
+                  }
+                  if(input == 'id' && e.error[input][i] == 'email'){
+                    this.usuarioInvalido = true;
+                  }
+                }                      
+              }*/
+            }
+        }catch(e){
+          if (error.status == 500 ){
+            this.mensajeError.texto = "500 (Error interno del servidor)";
+          } else {
+            console.log(e);
+            this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+          }
+        }
+      }
+    );
+    console.log(guardar_recepcion);
   }
 
   buscarStock(e: KeyboardEvent, input:HTMLInputElement, term:string){
@@ -358,9 +468,9 @@ export class RecepcionComponent implements OnInit {
       this.formStock.fecha_caducidad = undefined;
       this.formStock.cantidad = undefined;
     }
-    if(this.marcas.length == 1){
+    /*if(this.marcas.length == 1){
       this.formStock.marca = this.marcas[0];
-    }
+    }*/
   }
 
 
