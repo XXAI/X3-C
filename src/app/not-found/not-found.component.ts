@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NotFoundComponent implements OnInit {
 
-  private usuario: any = {};
+  usuario: any = {};
   constructor() { }
 
   ngOnInit() {

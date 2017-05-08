@@ -41,8 +41,8 @@ export class ListaComponent implements OnInit {
   // # SECCION: Lista de usuarios
   usuarios: Usuario[] = [];
   private paginaActual = 1;
-  private resultadosPorPagina = 25;
-  private total = 0;
+  resultadosPorPagina = 25;
+  total = 0;
   private paginasTotales = 0;
   private indicePaginas:number[] = []
   // # FIN SECCION
@@ -51,10 +51,10 @@ export class ListaComponent implements OnInit {
   private ultimoTerminoBuscado = "";
   private terminosBusqueda = new Subject<string>();
   private resultadosBusqueda: Usuario[] = [];
-  private busquedaActivada:boolean = false;
+  busquedaActivada:boolean = false;
   private paginaActualBusqueda = 1;
-  private resultadosPorPaginaBusqueda = 25;
-  private totalBusqueda = 0;
+  resultadosPorPaginaBusqueda = 25;
+  totalBusqueda = 0;
   private paginasTotalesBusqueda = 0;
   private indicePaginasBusqueda:number[] = []
   // # FIN SECCION

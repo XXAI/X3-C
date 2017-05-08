@@ -15,12 +15,12 @@ import { ESTA_SALUD_ID_DISPONIBLE } from 'app/config';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  private saludIdDisponible: boolean;
-  private credenciales: any = {};
-  private loading: boolean = false;
+  saludIdDisponible: boolean;
+  credenciales: any = {};
+  loading: boolean = false;
   private returnUrl: string;
-  private mensaje: string = "";
-  private mostrarMensaje: boolean = false;
+  mensaje: string = "";
+  mostrarMensaje: boolean = false;
   private bloquearPantallaSuscription: Subscription;
 
   constructor(

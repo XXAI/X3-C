@@ -8,9 +8,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./menu-aside.component.css']
 })
 export class MenuAsideComponent implements OnInit {
-  private usuario: any = {}
-  private menu:any[] = [];
-  private menuAutorizado: any[] = [];
+  usuario: any = {}
+  menu:any[] = [];
+  menuAutorizado: any[] = [];
   constructor() { }
 
   ngOnInit() {

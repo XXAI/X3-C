@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HubComponent implements OnInit {
 
-  private mostrar: boolean = false;
+  mostrar: boolean = false;
   
   // Se debe indicar los permisos para que el usuario tenga al menos uno para mostrar el item
 
@@ -30,7 +30,8 @@ export class HubComponent implements OnInit {
       ] 
     }
   ]
-  private hubAutorizado = [ { title:'Dashboard', routerLink:'/dashboard', icono:'assets/hub-dashboard.svg' } ]
+  
+  hubAutorizado = [ { title:'Dashboard', routerLink:'/dashboard', icono:'assets/hub-dashboard.svg' } ]
 
   constructor() { }
 

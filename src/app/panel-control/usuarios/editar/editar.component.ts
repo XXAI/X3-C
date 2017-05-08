@@ -30,8 +30,8 @@ export class EditarComponent implements OnInit {
   private usuarioInvalido:boolean = false;
   private cambiarPassword:boolean = false;
 
-  private datosCargados: boolean;
-  private cargando: boolean = false;
+  datosCargados: boolean;
+  cargando: boolean = false;
   private cargandoRoles: boolean = false;
   private cargandoUnidadesMedicas: boolean = false;
   
