@@ -14,36 +14,59 @@ export class IndexFarmaciaComponent implements OnInit {
   private busqueda: string = "";
 
   private modulos:any[] = [];
+  private modulosAutorizados:any[] = [];
   private accesosDirectos:any[] = [];
+  private accesosDirectosAutorizados:any[] = [];
 
   constructor(private title: Title) { }
+
+  
 
   ngOnInit() {
     this.title.setTitle("Farmacia");
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
 
+    
+
     this.modulos = [
-      { permiso: '', icono: 'assets/icono-entradas.svg', titulo:"Entrada manual", url:"/farmacia/movimientos/entradas" },
-      { permiso: '', icono: 'assets/icono-salidas.svg', titulo:"Salida manual", url:"/farmacia/movimientos/salidas" },
-      //{ permiso: '', icono: 'assets/icono-salidas.svg', titulo:"Salidas", url:"/farmacia/salidas" },
-      //{ permiso: '', icono: 'assets/hub-almacen.svg', titulo:"Inventario", url:"/farmacia/inventario" },
-      //{ permiso: '', icono: 'assets/icono-ajustes-inventario.svg', titulo:"Ajustes de inventario", url:"/farmacia/inventario/ajustes" },
-      //{ permiso: '', icono: 'assets/icono-recetas.svg', titulo:"Recetas", url:"/farmacia/recetas" },
-      //{ permiso: '', icono: 'assets/icono-colectivo.svg', titulo:"Colectivos", url:"/farmacia/colectivos" },
-      { permiso: '', icono: 'assets/icono-pagina-lista.svg', titulo:"Pedidos", url:"/farmacia/pedidos", badge:1 },
-      { permiso: '', icono: 'assets/icono-pedidos-alt.svg', titulo:"Entregas de pedidos", url:"/farmacia/entregas" },
-      //{ permiso: '', icono: 'assets/icono-camion.svg', titulo:"Reabastecimiento", url:"/farmacia/pedidos-reabastecimiento" },
-      //{ permiso: '', icono: 'assets/icono-pagina-lista.svg', titulo:"Actas por desabasto", url:"/farmacia/actas" },
-      //{ permiso: '', icono: 'assets/icono-pagina-lista.svg', titulo:"Actas colectivas por desabasto", url:"/farmacia/actas-colectivas" },
+      { permiso: 'hAeTBeuyxHcAi2OerU7NsVpTA5isktJ7', icono: 'assets/icono-entradas.svg', titulo:"Entrada manual", url:"/farmacia/movimientos/entradas" },
+      { permiso: 'ZNrN0e8cQL8cIAcXHJfczGpFEC2Ap9QA', icono: 'assets/icono-salidas.svg', titulo:"Salida manual", url:"/farmacia/movimientos/salidas" },
+      { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-pagina-lista.svg', titulo:"Pedidos", url:"/farmacia/pedidos", badge:1 },
+      { permiso: 'iSxK0TpoYpnzf8KIQTWOq9Web7WnSKhz', icono: 'assets/icono-pedidos-alt.svg', titulo:"Entregas de pedidos", url:"/farmacia/entregas" },
     ]
-    this.accesosDirectos = [
-      //{ permiso: '', icono: 'assets/icono-receta.svg', titulo:"Dispensación por Receta", url:"/farmacia/recetas/nueva" },
-      //{ permiso: '', icono: 'assets/icono-colectivo.svg', titulo:"Nuevo colectivo", url:"/farmacia/colectivos/nuevo" },      
-      { permiso: '', icono: 'assets/icono-pagina-lista.svg', titulo:"Nuevo pedido", url:"/farmacia/pedidos/nuevo" },
-      { permiso: '', icono: 'assets/icono-pedidos-alt.svg', titulo:"Recibir pedido", url:"/farmacia/pedidos/por-surtir" },
-      //{ permiso: '', icono: 'assets/icono-entradas.svg', titulo:"Nueva entrada", url:"/farmacia/entradas/nueva" },
-      //{ permiso: '', icono: 'assets/icono-salidas.svg', titulo:"Nueva salida", url:"/farmacia/salida/nueva" },
+    this.accesosDirectos = [    
+      { permiso: '2nC6GUf6E737QwZSxuLORT6rZUDy5YUO', icono: 'assets/icono-pagina-lista.svg', titulo:"Nuevo pedido", url:"/farmacia/pedidos/nuevo" },
+      { permiso: 'q9ppCvhWdeCJI85YtCrKvtHLaoPipeaT', icono: 'assets/icono-pedidos-alt.svg', titulo:"Recibir pedido", url:"/farmacia/pedidos/por-surtir" },
     ]
+
+    let usuario = JSON.parse(localStorage.getItem("usuario"));
+    var permisos =  usuario.permisos.split("|")
+
+    if(permisos.length > 0){      
+        
+      for(var i in this.modulos){
+        siguienteItemProtegido:             
+        for(var j in permisos){
+          
+          if(permisos[j] == this.modulos[i].permiso){
+            
+            this.modulosAutorizados.push(this.modulos[i]);              
+            break siguienteItemProtegido;
+          }           
+        }
+      }
+
+      for(var i in this.accesosDirectos){
+        siguienteItemProtegido:             
+        for(var j in permisos){
+          if(permisos[j] == this.accesosDirectos[i].permiso){
+            this.accesosDirectosAutorizados.push(this.accesosDirectos[i]);              
+            break siguienteItemProtegido;
+          }           
+        }        
+      }
+      
+    }
 
   }
 

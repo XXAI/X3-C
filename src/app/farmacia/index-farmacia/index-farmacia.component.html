@@ -16,7 +16,7 @@
 </section>
 <section style="padding: 1em;">
     <section class="contenedor columns is-multiline is-mobile">
-        <div class="column is-1-desktop is-2-tablet is-3-mobile" *ngFor="let item of accesosDirectos | buscarModulo: busqueda">
+        <div class="column is-1-desktop is-2-tablet is-3-mobile" *ngFor="let item of accesosDirectosAutorizados | buscarModulo: busqueda">
             <a href="#" title="{{ item.titulo}}" class="item" routerLink="{{item.url}}"  routerLinkActive="active">
                 <figure class="image " style="height: auto; width: 100%; ">
                     <img src="{{ item.icono }}" alt="{{item.titulo}}">                            
@@ -28,7 +28,7 @@
     </section>
     <hr>
     <section class="contenedor columns is-multiline is-mobile">
-        <div class="column is-1-desktop is-2-tablet is-3-mobile" *ngFor="let item of modulos | buscarModulo: busqueda">
+        <div class="column is-1-desktop is-2-tablet is-3-mobile" *ngFor="let item of modulosAutorizados | buscarModulo: busqueda">
             <a href="#" title="{{ item.titulo}}" style="position: relative;" class="item" routerLink="{{item.url}}" routerLinkActive="active">
                 
                 <figure class="image " style="height: auto; width: 100%; ">

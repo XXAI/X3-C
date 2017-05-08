@@ -67,12 +67,10 @@ export class JwtRequestService {
 
     var headersJson = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('token') };
     
-    if (usuario.clues_activa ) {
-      console.log(usuario.clues_activa.clues)
+    if (usuario.clues_activa ) {      
       headersJson['X-Clues'] = usuario.clues_activa.clues; 
     }
-    if (usuario.almacen_activo ) {
-      console.log(usuario.almacen_activo.id);
+    if (usuario.almacen_activo ) {      
       headersJson['X-Almacen-Id'] = usuario.almacen_activo.id; 
     }
     

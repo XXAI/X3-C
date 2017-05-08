@@ -22,7 +22,10 @@ import { PerfilModule } from './perfil/perfil.module';
 import { BloquearPantallaModule } from './bloquear-pantalla/bloquear-pantalla.module';
 import { PipesModule }             from './pipes/pipes.module';
 
+// # Hub Panel de control
 import { UsuariosModule } from './panel-control/usuarios/usuarios.module';
+import { RolesModule } from './panel-control/roles/roles.module';
+import { SyncModule } from './panel-control/sync/sync.module';
 
 // # Hub Farmacia
 import { IndexFarmaciaModule } from './farmacia/index-farmacia/index-farmacia.module';
@@ -56,6 +59,8 @@ import { CrudModule } from './crud/crud.module';
     PerfilModule,
     BloquearPantallaModule,
     PipesModule,
+    SyncModule,
+    RolesModule,
     UsuariosModule,
     IndexFarmaciaModule,
     PedidosModule,

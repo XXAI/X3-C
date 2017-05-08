@@ -28,8 +28,6 @@ export class PerfilComponent implements OnInit {
 
   ngOnInit() {
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
-    
-    console.log("cuantas veces me ejecuto")
   }
 
   toggle() {
