@@ -55,12 +55,11 @@ export class FormularioComponent implements OnInit {
   // # FIN SECCION
 
   // # SECCION: Pedido
-
   private almacenes: Almacen[];
+  private presupuesto:any = {};
 
   // Harima: Se genera un unico pedido
   private pedido: Pedido;
-  
   // # FIN SECCION
 
 
@@ -93,6 +92,9 @@ export class FormularioComponent implements OnInit {
 
     //Harima:cargamos catalogos
     this.cargarAlmacenes();
+
+    //Harima: Cargar el presupuesto del mes actual
+    this.cargarPresupuesto();
 
     this.pdfworker.onmessage = function( evt ) {       
       // Esto es un hack porque estamos fuera de contexto dentro del worker
@@ -522,6 +524,23 @@ export class FormularioComponent implements OnInit {
 
         }
       );
+  }
+
+  cargarPresupuesto(mes:number = 0){
+    if(mes == 0){
+      let now = new Date();
+      mes = (now.getMonth() + 1);
+    }
+    this.pedidosService.presupuesto(mes).subscribe(
+      response => {
+        this.cargando = false;
+        this.presupuesto = response.data;
+      },
+      error => {
+        this.cargando = false;
+        console.log(error);
+      }
+    );
   }
 
   // # SECCION: Eventos del teclado

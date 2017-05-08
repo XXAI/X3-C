@@ -73,6 +73,30 @@
               <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span>
             </a>
           </div> 
+
+          <table class="table is-unselectable" *ngIf="!cargando">
+            <tr>
+              <td>
+                <div class="columns">
+                    <div class="column has-text-centered">
+                        <span class="tag is-success">
+                          Disponible Causes:  $ {{ presupuesto.causes_disponible | number: '1.2-2' }}
+                        </span>
+                    </div>
+                    <div class="column has-text-centered">
+                        <span class="tag is-danger">
+                          Disponible No Causes:  $ {{ presupuesto.no_causes_disponible | number: '1.2-2' }}
+                        </span>
+                    </div>
+                    <div class="column has-text-centered">
+                        <span class="tag is-warning">
+                          Disponible Material de Curación:  $ {{ presupuesto.material_curacion_disponible | number: '1.2-2' }}
+                        </span>
+                    </div>
+                </div>
+              </td>
+            </tr>
+          </table>
           
           <table class="table is-unselectable" *ngIf="!cargando" style="font-size: 0.8em;">
               <thead>
