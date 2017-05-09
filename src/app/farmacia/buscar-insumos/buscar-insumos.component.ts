@@ -44,8 +44,8 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   private ultimoTerminoBuscado = "";
   private terminosBusqueda = new Subject<string>();
   private paginaActual = 1;
-  private resultadosPorPagina = 25;
-  private total = 0;
+  resultadosPorPagina = 25;
+  total = 0;
   private paginasTotales = 0;
   private indicePaginas:number[] = [];
   // # FIN SECCION
@@ -58,8 +58,8 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   ultimaPeticion:any;
   // # FIN SECCION
 
-  private cantidadValida: boolean = false;
-  private insumoSeleccionado:InsumoMedico;
+  cantidadValida: boolean = false;
+  insumoSeleccionado:InsumoMedico;
 
   constructor(private buscarInsumosService: BuscarInsumosService) { }
 

@@ -34,7 +34,7 @@ export class ListaComponent implements OnInit {
   cargando: boolean = false;
   public movimiento: FormGroup;
 
-  private mostrarModalCancelado = false;
+  mostrarModalCancelado = false;
 
   // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
@@ -57,8 +57,8 @@ export class ListaComponent implements OnInit {
   public dato: Movimiento;
   public index: any;
   private paginaActual = 1;
-  private resultadosPorPagina = 5;
-  private total = 0;
+  resultadosPorPagina = 5;
+  total = 0;
   private paginasTotales = 0;
   private indicePaginas:number[] = []
   // # FIN SECCION
@@ -67,10 +67,10 @@ export class ListaComponent implements OnInit {
   private ultimoTerminoBuscado = "";
   private terminosBusqueda = new Subject<string>();
   private resultadosBusqueda: Modelo[] = [];
-  private busquedaActivada:boolean = false;
+  busquedaActivada:boolean = false;
   private paginaActualBusqueda = 1;
-  private resultadosPorPaginaBusqueda = 5;
-  private totalBusqueda = 0;
+  resultadosPorPaginaBusqueda = 5;
+  totalBusqueda = 0;
   private paginasTotalesBusqueda = 0;
   private indicePaginasBusqueda:number[] = []
   // # FIN SECCION

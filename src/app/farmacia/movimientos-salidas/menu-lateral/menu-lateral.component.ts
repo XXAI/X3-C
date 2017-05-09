@@ -7,8 +7,8 @@ import { MovimientosSalidasService } from '../movimientos-salidas.service';
   styleUrls: ['./menu-lateral.component.css']
 })
 export class MenuLateralComponent implements OnInit {
-  private cargando: boolean = false;
-  private stats: any = {
+  cargando: boolean = false;
+  stats: any = {
     manual: 0
   };
 

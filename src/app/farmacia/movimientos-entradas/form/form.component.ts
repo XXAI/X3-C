@@ -37,7 +37,7 @@ export class FormComponent implements OnInit {
   }
 
 
-  enviar(insumosAgregadosForm: any[]) {
+  enviar() {
     this.onEnviar.emit(this.insumosAgregadosEntrada);
     console.log(this.insumosAgregadosEntrada);
     console

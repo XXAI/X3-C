@@ -43,7 +43,7 @@ export class RecepcionComponent implements OnInit {
 
   //private marcas = [{id:1,nombre:'Sin Especificar'}];
   private formStock: any = {};
-  private pedido: Pedido; 
+  pedido: Pedido; 
   private lotesSurtidos:any[] = [];
   private listaStock: any[] = [];  
   private claveInsumoSeleccionado:string = null;

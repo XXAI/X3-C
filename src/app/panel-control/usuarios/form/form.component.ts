@@ -32,10 +32,10 @@ export class FormComponent implements OnInit {
   // al usuario, en el modulo de edicion
   @Input() unidadesMedicasEdicion = null;
 
-  private tab:number = 1;
-  private unidadesMedicasAgregadas: any[] = [];
+  tab:number = 1;
+  unidadesMedicasAgregadas: any[] = [];
   private cluesAgregadas: string[] = [];
-  private unidadMedicaSeleccionada = null;
+  unidadMedicaSeleccionada = null;
 
   
 

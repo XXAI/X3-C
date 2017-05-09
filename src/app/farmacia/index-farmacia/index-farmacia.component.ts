@@ -10,13 +10,13 @@ import { BuscarModuloPipe } from '../../pipes/buscar-modulo.pipe';
 })
 export class IndexFarmaciaComponent implements OnInit {
 
-  private usuario: any = {}
-  private busqueda: string = "";
+  usuario: any = {}
+  busqueda: string = "";
 
   private modulos:any[] = [];
-  private modulosAutorizados:any[] = [];
+  modulosAutorizados:any[] = [];
   private accesosDirectos:any[] = [];
-  private accesosDirectosAutorizados:any[] = [];
+  accesosDirectosAutorizados:any[] = [];
 
   constructor(private title: Title) { }
   

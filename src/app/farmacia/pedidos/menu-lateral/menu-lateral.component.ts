@@ -7,8 +7,8 @@ import { PedidosService } from '../pedidos.service';
   styleUrls: ['./menu-lateral.component.css']
 })
 export class MenuLateralComponent implements OnInit {
-  private cargando: boolean = false;
-  private stats: any = {
+  cargando: boolean = false;
+  stats: any = {
     todos: 0, 
     borradores: 0,
     en_transito: 0,

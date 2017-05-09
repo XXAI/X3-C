@@ -7,8 +7,8 @@ import { ActasService } from '../actas.service';
   styleUrls: ['./menu-lateral.component.css']
 })
 export class MenuLateralComponent implements OnInit {
-  private cargando: boolean = false;
-  private stats: any = { 
+  cargando: boolean = false;
+  stats: any = { 
     abiertos: 0,
     en_espera: 0,
     pendientes: 0,

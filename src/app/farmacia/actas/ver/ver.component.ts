@@ -59,16 +59,16 @@ export class VerComponent implements OnInit {
   private almacenes: Almacen[];
 
   // Los pedidos tienen que ser en un array por si se va a generar mas de un pedido de golpe
-  private pedidos: Pedido[] = []; 
+  pedidos: Pedido[] = []; 
   // esta variable es para saber el pedido seleccionado (por si hay mas)
-  private pedidoActivo:number = 0; 
+  pedidoActivo:number = 0; 
   
   // # FIN SECCION
 
 
   // # SECCION: Reportes
   private pdfworker:Worker;
-  private cargandoPdf:boolean = false;
+  cargandoPdf:boolean = false;
   // # FIN SECCION
 
 

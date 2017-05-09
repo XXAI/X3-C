@@ -57,14 +57,14 @@ export class VerComponent implements OnInit {
   // # SECCION: Pedido
 
   private almacenes: Almacen[];
-  private pedido: Pedido;
+  pedido: Pedido;
   
   // # FIN SECCION
 
 
   // # SECCION: Reportes
   private pdfworker:Worker;
-  private cargandoPdf:boolean = false;
+  cargandoPdf:boolean = false;
   // # FIN SECCION
 
 

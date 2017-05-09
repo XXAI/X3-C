@@ -46,10 +46,10 @@ export class FormularioComponent implements OnInit {
 
   //Harima: para ver si el formulaior es para crear o para editar
   formularioTitulo:string = 'Nuevo';
-  private esEditar:boolean = false;
+  esEditar:boolean = false;
   
   // # SECCION: Modal Insumos
-  private mostrarModalInsumos = false;
+  mostrarModalInsumos = false;
   //Harima: Lista de claves agregadas al pedido, para checar duplicidad
   listaClaveAgregadas: Array<string> = [];
   // # FIN SECCION
@@ -59,7 +59,7 @@ export class FormularioComponent implements OnInit {
   private presupuesto:any = {};
 
   // Harima: Se genera un unico pedido
-  private pedido: Pedido;
+  pedido: Pedido;
   // # FIN SECCION
 
 
