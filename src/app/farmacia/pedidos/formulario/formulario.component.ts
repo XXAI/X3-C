@@ -37,12 +37,16 @@ export class FormularioComponent implements OnInit {
   cargando: boolean = false;
   cargandoAlmacenes: boolean = false;
   cargandoInsumos: boolean = false;
+  cargandoPresupuestos: boolean = false;
+
   // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
   mensajeAdvertencia: Mensaje = new Mensaje()
   mensajeExito: Mensaje = new Mensaje();
   ultimaPeticion: any;
   // # FIN SECCION  
+
+  meses:any = {0:'Sin seleccionar' ,1:'Enero', 2:'Febrero', 3:'Marzo', 4:'Abril', 5:'Mayo', 6:'Junio', 7:'Julio', 8:'Agosto', 9:'Septiembre', 10:'Octubre', 11:'Noviembre', 12:'Diciembre'};
 
   //Harima: para ver si el formulaior es para crear o para editar
   formularioTitulo:string = 'Nuevo';
@@ -57,6 +61,7 @@ export class FormularioComponent implements OnInit {
   // # SECCION: Pedido
   private almacenes: Almacen[];
   private presupuesto:any = {};
+  private mes:number = 0;
 
   // Harima: Se genera un unico pedido
   pedido: Pedido;
@@ -94,7 +99,7 @@ export class FormularioComponent implements OnInit {
     this.cargarAlmacenes();
 
     //Harima: Cargar el presupuesto del mes actual
-    this.cargarPresupuesto();
+    //this.cargarPresupuesto();
 
     this.pdfworker.onmessage = function( evt ) {       
       // Esto es un hack porque estamos fuera de contexto dentro del worker
@@ -132,6 +137,10 @@ export class FormularioComponent implements OnInit {
             //this.datosCargados = true;
             this.pedido.datos.patchValue(pedido);
             this.pedido.status = pedido.status;
+
+            let fecha = pedido.fecha.split('-');
+            let mes = parseInt(fecha[1]);
+            this.cargarPresupuesto(mes);
 
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];
@@ -172,6 +181,7 @@ export class FormularioComponent implements OnInit {
         console.log('editar pedido');
       }else{
         console.log('nuevo pedido');
+        this.cargarPresupuesto();
       }
       //this.cargarDatos();
     });
@@ -535,18 +545,41 @@ export class FormularioComponent implements OnInit {
       );
   }
 
+  recargarPresupuesto(fecha:string){
+    let fecha_valida = fecha.split('-');
+    if(fecha_valida.length == 3){
+      let mes:any = fecha_valida[1];
+      if(mes.length == 2){
+        mes = parseInt(mes);
+        if(mes != this.mes && (mes > 0 && mes < 13)){
+          this.cargarPresupuesto(mes);
+        }
+      }
+    }
+  }
+
   cargarPresupuesto(mes:number = 0){
+    this.cargandoPresupuestos = true;
     if(mes == 0){
       let now = new Date();
       mes = (now.getMonth() + 1);
     }
+    this.mes = mes;
     this.pedidosService.presupuesto(mes).subscribe(
       response => {
         this.cargando = false;
-        this.presupuesto = response.data;
+        if(response.data){
+          this.presupuesto = response.data;
+        }else{
+          this.presupuesto.causes_disponible = 0;
+          this.presupuesto.no_causes_disponible = 0;
+          this.presupuesto.material_curacion_disponible = 0;
+        }
+        this.cargandoPresupuestos = false;
       },
       error => {
         this.cargando = false;
+        this.cargandoPresupuestos = false;
         console.log(error);
       }
     );

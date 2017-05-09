@@ -16,7 +16,7 @@
           <div class="column" >
             <div style="padding:1em;">Pedido no. <strong style="color:#FFF;">{{ id }}</strong>  <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Lotes: {{ lotesSurtidos.length  }} / {{ pedido.lista.length }}--></div>
           </div>
-          <div class="column is-4" style="text-align:center; ">
+          <div class="column is-4" style="text-align:center; " *ngIf="statusRecepcion != 'FI'">
             <div style="margin:1em;">
             <a  class="button is-primary" style="width:45%; margin-right:5%;" (click)="guardar(true)"> <span class="icon"><i class="fa fa-check"></i></span> <span>Finalizar</span></a>
             <a  class="button is-white"  style="width:45%"   (click)="guardar()"> <span class="icon"><i class="fa fa-save"></i></span> <span>Guardar</span></a>
@@ -148,7 +148,7 @@
         </div>
       </div>
       <div class="tile is-parent is-vertical ">
-        <div *ngIf="capturarStock" class="tile is-child notification">
+        <div *ngIf="(capturarStock && (itemSeleccionado.cantidad_recibida < itemSeleccionado.cantidad))" class="tile is-child notification">
           <div class="control is-grouped">
             <p class="control is-expanded  has-icon has-icon-right">
               <label class="label">Código de Barras</label>

@@ -21,7 +21,7 @@
 
                 <label class="label">Fecha (aaaa-mm-dd):</label>
                 <p class="control is-expanded  has-icon has-icon-right">
-                  <input type="text" class="input is-fullwidth" placeholder="aaaa-mm-dd" [ngClass]="{'is-danger': pedido.tieneError('fecha','required')}" formControlName="fecha"/>
+                  <input type="text" class="input is-fullwidth" placeholder="aaaa-mm-dd" [ngClass]="{'is-danger': pedido.tieneError('fecha','required')}" formControlName="fecha" #fecha id="fecha" (keyup)="recargarPresupuesto(fecha.value)"/>
                   <span class="icon is-small" *ngIf="pedido.tieneError('fecha','required')">
                     <i class="fa fa-warning"></i>
                   </span>
@@ -67,7 +67,7 @@
         <div class="contenedor-pedido">
           
           <div class="top-bar" [ngClass]="{'is-primary':!pedido.filtro.activo,'is-dark': pedido.filtro.activo }">
-            <span *ngIf="!pedido.filtro.activo">Claves: {{ pedido.lista.length }} Insumos: {{pedido.totalInsumos}} Total: $ {{ pedido.totalMonto | number: '1.2-2' }}</span>
+            <span *ngIf="!pedido.filtro.activo"><b>Mes:</b> {{ meses[mes] }} <b>Claves:</b> {{ pedido.lista.length }} <b>Insumos:</b> {{pedido.totalInsumos}} <b>Total:</b> $ {{ pedido.totalMonto | number: '1.2-2' }}</span>
             <span *ngIf="pedido.filtro.activo"><span class="icon"><i class="fa fa-search"></i></span> Resultados: {{ pedido.filtro.lista.length }}</span>
             <a class="button is-primary  is-pulled-right" [ngClass]="{ 'is-inverted': pedido.filtro.activo }" style="margin-top:-0.25em;" title="Ctrl + espacio" (click)="toggleModalInsumos(); ">
               <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span>
@@ -77,7 +77,13 @@
           <table class="table is-unselectable" *ngIf="!cargando">
             <tr>
               <td>
-                <div class="columns">
+                <div class="is-fullwidth has-text-centered" *ngIf="cargandoPresupuestos">
+                    <br>
+                    <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando presupuesto...</span></span>
+                    <br>
+                    <br>
+                </div>
+                <div class="columns" *ngIf="!cargandoPresupuestos">
                     <div class="column has-text-centered">
                         <span class="tag is-success">
                           Disponible Causes:  $ {{ (presupuesto.causes_disponible - pedido.totalMontoCauses) | number: '1.2-2' }}
