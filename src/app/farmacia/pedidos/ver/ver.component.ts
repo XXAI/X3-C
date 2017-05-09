@@ -79,7 +79,7 @@ export class VerComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.title.setTitle('Nuevo pedido / Farmacia');
+    this.title.setTitle('Nuevo pedido / Almacén');
 
     // Inicializamos el objeto para los reportes con web Webworkers
     //this.pdfworker = new Worker("web-workers/farmacia/pedidos/imprimir.js")
@@ -174,11 +174,11 @@ export class VerComponent implements OnInit {
   obtenerDireccion(): string{
     if(this.pedido.datosImprimir){
       if(this.pedido.datosImprimir.status == 'PS'){
-        return '/farmacia/pedidos/por-surtir';
+        return '/almacen/pedidos/por-surtir';
       }else if(this.pedido.datosImprimir.status == 'ET'){
-        return '/farmacia/pedidos/en-transito';
+        return '/almacen/pedidos/en-transito';
       }else if(this.pedido.datosImprimir.status == 'FI'){
-        return '/farmacia/pedidos/finalizados';
+        return '/almacen/pedidos/finalizados';
       }
     }
   }

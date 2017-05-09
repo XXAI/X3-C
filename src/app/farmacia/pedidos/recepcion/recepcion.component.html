@@ -1,4 +1,4 @@
-<menu-farmacia [modulo]="'Pedidos'" [icono]="'assets/icono-pedidos.svg'" [url]="'/farmacia/pedidos'"></menu-farmacia>
+<menu-farmacia [modulo]="'Pedidos'" [icono]="'assets/icono-pedidos.svg'" [url]="'/almacen/pedidos/por-surtir'"></menu-farmacia>
 
 <div class="is-fullwidth has-text-centered" style="padding-top:70px;" *ngIf="cargando">
   <br>
@@ -14,7 +14,7 @@
         
         <div class="columns">
           <div class="column" >
-            <div style="padding:1em;">Pedido no. <strong style="color:#FFF;">{{ id }}</strong>  <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Lotes: {{ lotesSurtidos.length  }} / {{ pedido.lista.length }}--></div>
+            <div style="padding:1em;">Folio: <strong style="color:#FFF;">{{ folio }}</strong>  <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Lotes: {{ lotesSurtidos.length  }} / {{ pedido.lista.length }}--></div>
           </div>
           <div class="column is-4" style="text-align:center; " *ngIf="statusRecepcion != 'FI'">
             <div style="margin:1em;">
@@ -28,8 +28,8 @@
     <div class="tile">
       <div class="tile is-parent ">
         <div class="tile is-child notification is-white" >
-          <div class="contenedor-tabla" >
-                      
+          <div class="contenedor-tabla" >          
+            
             <table class="table is-unselectable" *ngIf="!cargando" style="font-size: 0.8em; ">
               <thead>
                   <tr  [ngClass]="{ 'filtro': pedido.filtro.activo}">
@@ -144,7 +144,6 @@
                 (onListar)="pedido.filtro.listar($event); limpiarStock();" 
                 *ngIf="pedido.filtro.lista.length > 0 && pedido.filtro.lista.length > pedido.filtro.paginacion.resultadosPorPagina && pedido.filtro.activo"></paginacion>
           </div>
-
         </div>
       </div>
       <div class="tile is-parent is-vertical ">

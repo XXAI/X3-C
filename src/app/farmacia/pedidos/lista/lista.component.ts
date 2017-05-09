@@ -19,7 +19,7 @@ import { Pedido } from '../pedido';
 import { Mensaje } from '../../../mensaje';
 
 @Component({
-  selector: 'farmacia-pedidos-lista',
+  selector: 'almacen-pedidos-lista',
   templateUrl: './lista.component.html',
   styleUrls: ['./lista.component.css'],
   providers: [PedidosService]
@@ -71,9 +71,9 @@ export class ListaComponent implements OnInit {
           this.status = "FI";
           this.icono = "fa-check-circle";
           if (this.route.snapshot.url.length > 1){
-            if(this.route.snapshot.url[1].path == "completas"){
+            if(this.route.snapshot.url[1].path == "completos"){
               this.titulo = "Finalizados (completos)";
-            } else if(this.route.snapshot.url[1].path == "incompletas"){
+            } else if(this.route.snapshot.url[1].path == "incompletos"){
               this.titulo = "Finalizados (incompletos)";
             } else if(this.route.snapshot.url[1].path == "cancelados"){
               this.titulo = "Finalizados (cancelados)";
@@ -171,9 +171,9 @@ export class ListaComponent implements OnInit {
 
   obtenerDireccion(id:string, status:string): string{
     if(status == 'BR'){
-      return '/farmacia/pedidos/editar/'+id;
+      return '/almacen/pedidos/editar/'+id;
     }else{
-      return '/farmacia/pedidos/ver/'+id;
+      return '/almacen/pedidos/ver/'+id;
     }
   }
   

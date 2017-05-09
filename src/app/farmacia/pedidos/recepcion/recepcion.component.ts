@@ -29,7 +29,8 @@ import { Mensaje } from '../../../mensaje';
   styleUrls: ['./recepcion.component.css']
 })
 export class RecepcionComponent implements OnInit {
-  id:string ;
+  id: string;
+  folio: string;
   cargando: boolean = false;
   cargandoStock: boolean = false;
   capturarStock: boolean = false;
@@ -55,7 +56,7 @@ export class RecepcionComponent implements OnInit {
   constructor(private title: Title, private route:ActivatedRoute, private pedidosService:PedidosService, private recepcionService:RecepcionService, private stockService:StockService) { }
 
   ngOnInit() {
-    this.title.setTitle('Surtir pedido / Farmacia');
+    this.title.setTitle('Surtir pedido / Almacén');
 
     /*if(this.marcas.length == 1){
       this.formStock.marca = this.marcas[0];
@@ -66,9 +67,6 @@ export class RecepcionComponent implements OnInit {
       //this.cargarDatos();
     });
 
-    this.route.params.subscribe(params => {
-      this.id = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number      
-    });
     this.cargando = true;
     //this.pedidosService.ver(this.id).subscribe(
     this.recepcionService.verRecepcionPedido(this.id).subscribe(
@@ -77,6 +75,7 @@ export class RecepcionComponent implements OnInit {
             this.pedido = new Pedido(true);
             this.pedido.paginacion.resultadosPorPagina = 10;
             this.pedido.filtro.paginacion.resultadosPorPagina = 10;
+            this.folio = pedido.folio;
 
             let recepcion_insumos = {};
 
