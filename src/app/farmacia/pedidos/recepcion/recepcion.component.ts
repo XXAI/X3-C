@@ -34,6 +34,8 @@ export class RecepcionComponent implements OnInit {
   cargandoStock: boolean = false;
   capturarStock: boolean = false;
 
+  statusRecepcion: string = 'BR';
+
    // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
   mensajeAdvertencia: Mensaje = new Mensaje()
@@ -78,6 +80,10 @@ export class RecepcionComponent implements OnInit {
 
             let recepcion_insumos = {};
 
+            if(pedido.status == 'FI'){
+              this.statusRecepcion = 'FI';
+            }            
+
             if(pedido.recepciones.length == 1){
               let recepcion_insumos_guardados = pedido.recepciones[0].entrada_abierta.insumos;
               for(var i in recepcion_insumos_guardados){
@@ -99,12 +105,14 @@ export class RecepcionComponent implements OnInit {
               let insumo = dato.insumos_con_descripcion;
              
               insumo.cantidad = +dato.cantidad_solicitada;
+              insumo.cantidad_recibida = +dato.cantidad_recibida;
               insumo.monto = +dato.monto_solicitado;
               insumo.precio = +dato.precio_unitario;
+              insumo.totalStockAsignado = +dato.cantidad_recibida;
 
               if(recepcion_insumos[insumo.clave]){
                 insumo.listaStockAsignado = [];
-                insumo.totalStockAsignado = recepcion_insumos[insumo.clave].cantidad;
+                insumo.totalStockAsignado += recepcion_insumos[insumo.clave].cantidad;
                 for(let j in recepcion_insumos[insumo.clave].stock){
                   let stock = recepcion_insumos[insumo.clave].stock[j];
                   insumo.listaStockAsignado.push({
@@ -326,10 +334,10 @@ export class RecepcionComponent implements OnInit {
 
   guardar(finalizar:boolean = false){
     //console.log(this.pedido);
-    alert("Preguntar quién recibe, observaciones, etc. Y si quiere imprimir de una vez.");
     let guardar_recepcion = {status:'BR', observaciones:'',stock:[]};
 
     if(finalizar){
+      alert("Preguntar quién recibe, observaciones, etc. Y si quiere imprimir de una vez.");
       guardar_recepcion.status = 'FI';
     }
 
@@ -355,6 +363,9 @@ export class RecepcionComponent implements OnInit {
     this.recepcionService.guardarRecepcionPedido(this.pedido.datosImprimir.id,guardar_recepcion).subscribe(
       pedido => {
         this.cargando = false;
+        if(guardar_recepcion.status == 'FI'){
+          this.statusRecepcion = 'FI';
+        }
         console.log('Recepción guardada');
         //console.log(pedido);
         //this.router.navigate(['/farmacia/pedidos/editar/'+pedido.id]);
@@ -434,7 +445,7 @@ export class RecepcionComponent implements OnInit {
     if( this.itemSeleccionado.listaStockAsignado == null ){
       this.itemSeleccionado.listaStockAsignado = [];
     }
-    var acumulado = 0;
+    var acumulado = this.itemSeleccionado.cantidad_recibida;
     for(var i in this.itemSeleccionado.listaStockAsignado) {
       acumulado += this.itemSeleccionado.listaStockAsignado[i].cantidad;
     }
@@ -555,7 +566,7 @@ export class RecepcionComponent implements OnInit {
   }
 
   calcularTotalStockItem(){  
-    var acumulado = 0;
+    var acumulado = this.itemSeleccionado.cantidad_recibida;
     for(var i in this.itemSeleccionado.listaStockAsignado) {
       acumulado += this.itemSeleccionado.listaStockAsignado[i].cantidad;
     }
