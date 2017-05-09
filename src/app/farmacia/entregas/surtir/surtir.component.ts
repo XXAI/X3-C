@@ -50,7 +50,7 @@ export class SurtirComponent implements OnInit {
   ultimaPeticion: any;
   // # FIN SECCION  
 
-  private pedido: Pedido; 
+  pedido: Pedido; 
   private lotesSurtidos:any[] = [];
   private listaStock: any[] = [];  
   private claveInsumoSeleccionado:string = null;

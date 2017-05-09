@@ -8,6 +8,7 @@ class PedidoFiltro {
 export class Pedido {
   public id:String;
   public status: string;
+  public tipo_pedido: string;
   public datos: FormGroup; //Harima: Agregamos los datos para el formulario y la validación
   public datosImprimir?: any;
   //public nombre:String;

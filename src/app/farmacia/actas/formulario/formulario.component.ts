@@ -46,29 +46,29 @@ export class FormularioComponent implements OnInit {
 
   //Harima: para ver si el formulaior es para crear o para editar
   formularioTitulo:string = 'Nuevo';
-  private esEditar:boolean = false;
+  esEditar:boolean = false;
   
   // # SECCION: Modal Insumos
-  private mostrarModalInsumos = false;
+  mostrarModalInsumos = false;
   //Harima: Lista de claves agregadas al pedido, para checar duplicidad
   listaClaveAgregadas: Array<string> = [];
   // # FIN SECCION
 
   // # SECCION: Pedido
 
-  private almacenes: Almacen[];
+  almacenes: Almacen[];
 
   // Los pedidos tienen que ser en un array por si se va a generar mas de un pedido de golpe
-  private pedidos: Pedido[] = []; 
+  pedidos: Pedido[] = []; 
   // esta variable es para saber el pedido seleccionado (por si hay mas)
-  private pedidoActivo:number = 0; 
+  pedidoActivo:number = 0; 
   
   // # FIN SECCION
 
 
   // # SECCION: Reportes
   private pdfworker:Worker;
-  private cargandoPdf:boolean = false;
+  cargandoPdf:boolean = false;
   // # FIN SECCION
 
 

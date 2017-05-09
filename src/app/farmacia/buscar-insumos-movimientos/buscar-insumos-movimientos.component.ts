@@ -39,9 +39,9 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   @Output() onCerrar = new EventEmitter<void>();
   @Output() onEnviar = new EventEmitter<any>();
 
-  private cantidadAPI: boolean = true;
+  cantidadAPI: boolean = true;
   private lote: boolean = false;
-  private mostrarModalLote: boolean = false;
+  mostrarModalLote: boolean = false;
   private lotes_insumo: any[] = [];
 
   //Harima: Para evitar agregar insumos que ya estan en la lista
@@ -57,8 +57,8 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   private ultimoTerminoBuscado = "";
   private terminosBusqueda = new Subject<string>();
   private paginaActual = 1;
-  private resultadosPorPagina = 25;
-  private total = 0;
+  resultadosPorPagina = 25;
+  total = 0;
   private paginasTotales = 0;
   private indicePaginas:number[] = [];
   insumo_stock: InsumoStock[] = [];
@@ -73,7 +73,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   // # FIN SECCION
 
   private cantidadValida: boolean = false;
-  private insumoSeleccionado:InsumoMedico;
+  insumoSeleccionado:InsumoMedico;
 
   constructor(private buscarInsumosService: BuscarInsumosService) { }
 

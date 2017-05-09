@@ -25,7 +25,7 @@ export class NuevoComponent implements OnInit {
   private movimientoRepetido:boolean = false;
   private movimientoInvalido:boolean = false;
 
-  private cargando: boolean = false;
+  cargando: boolean = false;
   private cargandoDatos: boolean = false;  
   private almacenes: any = {};
   private usuario: any ={};

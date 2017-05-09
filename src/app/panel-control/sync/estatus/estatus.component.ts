@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./estatus.component.css']
 })
 export class EstatusComponent implements OnInit {
-
+  cargando: boolean = false;
   constructor() { }
 
   ngOnInit() {

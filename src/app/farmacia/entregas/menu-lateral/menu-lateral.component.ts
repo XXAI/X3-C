@@ -14,8 +14,8 @@ import { CambiarEntornoService } from '../../../perfil/cambiar-entorno.service';
 })
 export class MenuLateralComponent implements OnInit {
   
-  private cargando: boolean = false;
-  private stats: any = { 
+  cargando: boolean = false;
+  stats: any = { 
     por_surtir: 0,
     finalizados: 0
   };

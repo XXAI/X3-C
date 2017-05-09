@@ -14,6 +14,7 @@ import { Mensaje } from '../../../mensaje';
 export class NuevoComponent implements OnInit {
 
   enviando: boolean = false;
+  cargando: boolean = false;
   cargandoPermisos: boolean = false;
 
   // # SECCION: Esta sección es para mostrar mensajes
@@ -22,16 +23,16 @@ export class NuevoComponent implements OnInit {
   ultimaPeticion:any;
   // # FIN SECCION
 
-  private errores = {
+  errores = {
     nombre: null,
     permisos: null,
   }
 
 
-  private permisos:any[] = [];
-  private todosSeleccionados: boolean = false;
+  permisos:any[] = [];
+  todosSeleccionados: boolean = false;
 
-  private rol: any = { nombre: '', permisos: [] }
+  rol: any = { nombre: '', permisos: [] }
 
 
 

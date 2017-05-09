@@ -49,7 +49,7 @@ export class FormInsumosComponent implements OnInit {
   // # FIN SECCION  
 
   // # SECCION: Modal Insumos
-  private mostrarModalInsumos = false;
+  mostrarModalInsumos = false;
   //Harima: Lista de claves agregadas al pedido, para checar duplicidad
   listaClaveAgregadas: Array<string> = [];
   // # FIN SECCION
@@ -57,7 +57,7 @@ export class FormInsumosComponent implements OnInit {
   // # SECCION: Modelo
   
   // Los pedidos tienen que ser en un array por si se va a generar mas de un pedido de golpe
-  private pedidos: Modelo[] = []; 
+  pedidos: Modelo[] = []; 
   // esta variable es para saber el pedido seleccionado (por si hay mas)
   private pedidoActivo:number = 0; 
   
