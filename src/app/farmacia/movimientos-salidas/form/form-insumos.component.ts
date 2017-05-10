@@ -133,28 +133,72 @@ export class FormInsumosComponent implements OnInit {
     let auxPaginasTotales = this.pedidos[this.pedidoActivo].paginacion.totalPaginas;
    
     this.pedidos[this.pedidoActivo].lista.push(item);
+    var existe= false;
+    var posicion = 0;
+    var i = 0;
+    for(let insumo of this.insumosAgregados){
+      if(insumo.clave == item.clave){
+        existe = true;
+        posicion = i;
+      }
+      i++;
+    }
+    item.cantidad = 0; 
+    i = 0;
 
+    for(let val of item.lotes){
+      if(val.cantidad>0){
+        item.cantidad = item.cantidad + val.cantidad;
+      }else{
+        item.lotes.splice(i, 1);
+      }i++;
+    }
+    if(!existe){
     let insumo = new Insumo();
     //insumo = item;
+
     insumo.descripcion = item.descripcion;
     insumo.informacion = item.informacion;
     insumo.tipo = item.tipo;
     insumo.es_causes = item.es_causes;
-    console.log(insumo.informacion);
     insumo.clave = item.clave;
     insumo.cantidad = item.cantidad;
     insumo.cantidad_x_envase = Number(item.informacion.cantidad_x_envase);
     insumo.codigo_barras = item.codigo_barras;
     insumo.lotes = item.lotes;
-    console.log(item.lotes);
     insumo.lote = item.lote;
 
-    console.log(item.lotes);
     insumo.fecha_caducidad = item.fecha_caducidad;
     insumo.filtro = item.filtro;
     insumo.paginacion = item.paginacion;
 
     this.insumosAgregados.push(insumo);
+  }else{
+    
+      for(let valueItem of item.lotes){
+        var encontrado = false;
+        for(let insumo of this.insumosAgregados[posicion].lotes){
+          if(valueItem.id == insumo.id){
+            encontrado = true;
+            insumo.cantidad= insumo.cantidad + valueItem.cantidad;
+             this.insumosAgregados[posicion].cantidad = this.insumosAgregados[posicion].cantidad + insumo.cantidad;
+          }
+        }
+        if(!encontrado){
+            this.insumosAgregados[posicion].cantidad = this.insumosAgregados[posicion].cantidad + valueItem.cantidad;
+            this.insumosAgregados[posicion].lotes.push(valueItem);
+            
+        }
+      }
+    }
+    for(let val of this.insumosAgregados){
+      val.cantidad = 0;
+      for(let item of val.lotes){
+               if(item.cantidad>0){
+                val.cantidad = val.cantidad + item.cantidad;
+              }
+      }
+    }
 
 /*
 

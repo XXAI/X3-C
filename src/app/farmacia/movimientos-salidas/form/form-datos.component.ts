@@ -21,6 +21,7 @@ export class FormDatosComponent implements OnInit {
   itemsDatos: any[];
   listaMovimientos: any[];
   private usuario: any = {}
+  fecha_actual;
   
   @Input() insumo: Insumo[];
   @Input() movimiento:FormGroup;
@@ -40,27 +41,12 @@ export class FormDatosComponent implements OnInit {
 
   ngOnInit() {
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
-    console.log(this.usuario);
-    console.log("*****************");/*
-    this.movimientosEntradasService.listaDatos("almacenes").subscribe(
-       datos => {
-         this.datos = datos;
-         for (let data of this.datos) {
-           if(data.usuario_id == this.usuario.id){
-              for (let almacen_tipo_movimiento of data.almacen_tipos_movimientos) {
-                  //console.log("almacen_tipos_movimientos");
-                  this.listaMovimientos = almacen_tipo_movimiento.tipo_movimiento;
-                  //console.log(this.listaMovimientos);
-                  //console.log(almacen_tipo_movimiento.tipo_movimiento.nombre);                  
-              }
-           }
-          }
-         console.log(this.datos);
-        }, //Bind to view
-       err => {
-              // Log errors if any
-              console.log(err);
-          });*/
+    var date= new Date();
+    this.fecha_actual = date.getFullYear()+"-"+date.getMonth()+"-"+date.getDate();
+    this.movimiento.get("fecha_movimiento").patchValue(this.fecha_actual);
+    console.log(this.fecha_actual);
+    
+    //this.movimiento.patchValue({almacen_id: this.servidorId});
   }
 
   listarDatos(){
