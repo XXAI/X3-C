@@ -170,26 +170,26 @@
             <p class="control is-expanded  has-icon has-icon-right">
               <label class="label">Lote</label>
               <input class="input" autofocus type="text" placeholder="Lote" [(ngModel)]="formStock.lote">
-              <!--span class="icon is-small">
+              <span *ngIf="erroresFormularioStock.lote.error" class="icon is-small" >
                 <i class="fa fa-warning"></i>
               </span>
-              <span class="help is-danger">Este campo es requerido.</span-->
+              <span *ngIf="erroresFormularioStock.lote.error" class="help is-danger">{{erroresFormularioStock.lote.texto}}</span>
             </p>
             <p class="control is-expanded has-icon has-icon-right">
               <label class="label">Fecha de Caducidad</label>
               <input class="input" type="text" placeholder="aaaa-mm-dd" [(ngModel)]="formStock.fecha_caducidad">
-              <!--span class="icon is-small" >
+              <span *ngIf="erroresFormularioStock.fecha_caducidad.error" class="icon is-small" >
                 <i class="fa fa-warning"></i>
               </span>
-              <span class="help is-danger">Este campo es requerido.</span-->
+              <span *ngIf="erroresFormularioStock.fecha_caducidad.error" class="help is-danger">{{erroresFormularioStock.fecha_caducidad.texto}}</span>
             </p>
             <p class="control is-expanded has-icon has-icon-right">
               <label class="label">Cantidad</label>
               <input class="input" type="number" placeholder="Cantidad" [(ngModel)]="formStock.cantidad">
-              <!--span class="icon is-small" >
+              <span *ngIf="erroresFormularioStock.cantidad.error" class="icon is-small" >
                 <i class="fa fa-warning"></i>
               </span>
-              <span class="help is-danger">Este campo es requerido.</span-->
+              <span *ngIf="erroresFormularioStock.cantidad.error" class="help is-danger">{{erroresFormularioStock.cantidad.texto}}</span>
             </p>
           </div>
 

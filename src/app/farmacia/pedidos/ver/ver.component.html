@@ -33,6 +33,9 @@
                 <p class="control">
                   <a class="button is-primary " [ngClass]="{ 'is-loading': cargandoPdf, 'is-inverted': !cargandoPdf }" (click)="imprimir()" ><span class="icon"><i class="fa fa-print"></i></span></a>
                 </p>
+                <p class="control" *ngIf="pedido.status != 'FI'">
+                  <a class="button is-primary" routerLink="/almacen/pedidos/recepcion/{{pedido.id}}"> <span class="icon"><i class="fa fa-truck"></i></span> <span>Recibir Pedido</span></a>
+                </p>
                 <p class="control">
                   <a class="button is-white" routerLink="{{obtenerDireccion()}}" >Ir a la lista de pedidos</a>
                 </p>                

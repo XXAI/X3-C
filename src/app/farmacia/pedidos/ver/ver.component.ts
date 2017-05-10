@@ -114,6 +114,7 @@ export class VerComponent implements OnInit {
       //this.id = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number
       if(params['id']){
         this.pedido.id = params['id'];
+        this.pedido.status = 'PS';
         //cargar datos del pedido
         this.esEditar = true;
         this.formularioTitulo = 'Editar';
@@ -124,6 +125,7 @@ export class VerComponent implements OnInit {
             //this.datosCargados = true;
             //this.pedidos[0].datos.patchValue(pedido);
             this.pedido.datosImprimir = pedido;
+            this.pedido.status = pedido.status;
 
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];

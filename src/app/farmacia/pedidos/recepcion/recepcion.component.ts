@@ -37,6 +37,8 @@ export class RecepcionComponent implements OnInit {
 
   mostrarDialogo: boolean = false;
 
+  erroresFormularioStock:any = {cantidad:{error:false}, lote:{error:false}, fecha_caducidad:{error:false}};
+
   public formularioRecepcion: FormGroup;
   private fb:FormBuilder;
 
@@ -50,7 +52,7 @@ export class RecepcionComponent implements OnInit {
   // # FIN SECCION  
 
   //private marcas = [{id:1,nombre:'Sin Especificar'}];
-  private formStock: any = {};
+  formStock: any = {};
   pedido: Pedido; 
   private lotesSurtidos:any[] = [];
   private listaStock: any[] = [];  
@@ -187,6 +189,7 @@ export class RecepcionComponent implements OnInit {
     this.itemSeleccionado = item; 
     this.capturarStock = true;
     this.formStock = {};
+    this.erroresFormularioStock = {cantidad:{error:false}, lote:{error:false}, fecha_caducidad:{error:false}};
     /*if(this.marcas.length == 1){
       this.formStock.marca = this.marcas[0];
     }*/
@@ -502,6 +505,61 @@ export class RecepcionComponent implements OnInit {
   }
 
   asignarStock(){
+    this.erroresFormularioStock = {cantidad:{error:false}, lote:{error:false}, fecha_caducidad:{error:false}};
+    let errores = 0;
+
+    if(!this.formStock.cantidad){
+      this.erroresFormularioStock.cantidad = {error:true, texto:'Este campo es requerido.'};
+      errores++;
+    }else if(this.formStock.cantidad <= 0){
+      this.erroresFormularioStock.cantidad = {error:true, texto:'La cantidad recibida debe ser mayor a 0.'};
+      errores++;
+    }
+
+    if(this.itemSeleccionado.tiene_fecha_caducidad && !this.formStock.fecha_caducidad){
+      this.erroresFormularioStock.fecha_caducidad = {error:true, texto:'Este campo es requerido.'};
+      errores++;
+    }else if(this.itemSeleccionado.tiene_fecha_caducidad){
+      let fecha = this.formStock.fecha_caducidad.split('-');
+      let fecha_invalida = false;
+      if(fecha.length != 3){
+        fecha_invalida = true;
+      }else if(fecha[0].length != 4 || fecha[1].length != 2 || fecha[2].length != 2){
+        fecha_invalida = true;
+      }else if(parseInt(fecha[1]) < 1 || parseInt(fecha[1]) > 12 ){
+        fecha_invalida = true;
+      }else if(parseInt(fecha[2]) < 1 || parseInt(fecha[2]) > 31 ){
+        fecha_invalida = true;
+      }
+
+      if(fecha_invalida){
+        this.erroresFormularioStock.fecha_caducidad = {error:true, texto:'El formato de fecha no es correcto.'};
+        errores++;
+      }else{
+        let d1 = new Date();
+        let d2 = new Date(fecha[0],(parseInt(fecha[1])-1),parseInt(fecha[2]));
+        let meses;
+        meses = (d2.getFullYear() - d1.getFullYear()) * 12;
+        meses -= d1.getMonth();
+        meses += d2.getMonth();
+
+        if(meses < 6){
+          this.erroresFormularioStock.fecha_caducidad = {error:true, texto:'La fecha de caducidad no puede ser menor a 6 meses.'};
+          errores++;
+        }
+        console.log(meses);
+      }
+    }
+
+    if(!this.formStock.lote){
+      this.erroresFormularioStock.lote = {error:true, texto:'Este campo es requerido.'};
+      errores++;
+    }
+
+    if(errores){
+      return false;
+    }
+
     if( this.itemSeleccionado.listaStockAsignado == null ){
       this.itemSeleccionado.listaStockAsignado = [];
     }
@@ -515,7 +573,7 @@ export class RecepcionComponent implements OnInit {
       this.itemSeleccionado.totalStockAsignado = acumulado;
       this.itemSeleccionado.listaStockAsignado.push({
         codigo_barras: this.formStock.codigo_barras,
-        marca: this.formStock.marca,
+        //marca: this.formStock.marca,
         lote: this.formStock.lote,
         fecha_caducidad: this.formStock.fecha_caducidad,
         cantidad: this.formStock.cantidad,
@@ -523,6 +581,7 @@ export class RecepcionComponent implements OnInit {
       this.resetearFormStock();
       this.calcularTotalStockItem()
     } else {
+      this.erroresFormularioStock.cantidad = {error:true, texto:'La cantidad recibida supera la cantidad solicitada.'};
       //Ya no se puede asignar mas
     }
   }

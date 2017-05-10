@@ -132,7 +132,7 @@
                         <td style="vertical-align: middle;" class="has-text-centered">
                             <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
                             <a *ngIf="!item.cargando && item.status == 'BR'" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
-                            <a *ngIf="!item.cargando && item.status == 'PS'" routerLink="/almacen/pedidos/recepcion/{{item.id}}"><span class="icon"><i class="fa fa-cubes"></i></span></a>
+                            <a *ngIf="!item.cargando && item.status == 'PS'" routerLink="/almacen/pedidos/recepcion/{{item.id}}" title="Recibir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
                         </td>
                         
                     </tr>
@@ -151,7 +151,7 @@
                         <td style="vertical-align: middle;" class="has-text-centered">
                             <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
                             <a *ngIf="!item.cargando && item.status == 'BR'" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
-                            <a *ngIf="!item.cargando && item.status == 'PS'" routerLink="/almacen/pedidos/recepcion/{{item.id}}"><span class="icon"><i class="fa fa-cubes"></i></span></a>
+                            <a *ngIf="!item.cargando && item.status == 'PS'" routerLink="/almacen/pedidos/recepcion/{{item.id}}" title="Recibir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
                         </td>
                     </tr>
 
