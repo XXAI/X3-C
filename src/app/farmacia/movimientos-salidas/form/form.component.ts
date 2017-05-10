@@ -26,20 +26,21 @@ export class FormComponent implements OnInit {
 
   insumosAgregadosEntrada: Insumo[]= [];
   servidor_id: string;
+  listaStatus: any [] = [];
 
   @Output() onEnviar : EventEmitter<any[]> = new EventEmitter();
   @Output() onRegresar = new EventEmitter<void>();
   @Output() onCargarDatos = new EventEmitter<void>();
 
   ngOnInit() {
-    console.log(this.insumosAgregadosEntrada);
+    this.listaStatus=[{id:"FI", nombre:"Finalizado"}, {id:"BR", nombre:"Borrador"}];
   }
 
 
   enviar(insumosAgregadosForm: any[]) {
     this.onEnviar.emit(this.insumosAgregadosEntrada);
     console.log(this.insumosAgregadosEntrada);
-    console
+   
   }
 
   regresar() {

@@ -93,6 +93,7 @@ export class NuevoComponent implements OnInit {
 
       this.movimiento = this.fb.group({
         almacen_id: ['', [Validators.required]],
+        status: ['', [Validators.required]],
         tipo_movimiento_id: ['', [Validators.required]],
         fecha_movimiento: ['', [Validators.required]],
         observaciones: ['', [Validators.required]],
