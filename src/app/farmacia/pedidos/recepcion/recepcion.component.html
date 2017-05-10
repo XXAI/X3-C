@@ -11,14 +11,17 @@
   <div class="tile is-ancestor is-vertical" style="height:100% !important; max-height:100% !important;">
     <div class="tile is-parent is-12 ">
       <div class="tile is-child notification is-dark">
-        
         <div class="columns">
           <div class="column" >
-            <div style="padding:1em;">Folio: <strong style="color:#FFF;">{{ folio }}</strong>  <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Lotes: {{ lotesSurtidos.length  }} / {{ pedido.lista.length }}--></div>
+            <div style="padding:1em;">
+              Folio: <strong style="color:#FFF;">{{ folio }}</strong>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Claves Recibidas: {{ lotesSurtidos.length  }}<!-- / {{ pedido.lista.length }}-->
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span *ngIf="statusRecepcion == 'BR'"><strong style="color:#FFF;">Recepción inciada</strong></span>
+               <span *ngIf="statusRecepcion == 'FI'"><strong style="color:#FFF;">Recepción concluida</strong></span>
+            </div>
           </div>
           <div class="column is-4" style="text-align:center; " *ngIf="statusRecepcion != 'FI'">
             <div style="margin:1em;">
-            <a  class="button is-primary" style="width:45%; margin-right:5%;" (click)="guardar(true)"> <span class="icon"><i class="fa fa-check"></i></span> <span>Finalizar</span></a>
+            <a  class="button is-primary" style="width:45%; margin-right:5%;" (click)="finalizar()"> <span class="icon"><i class="fa fa-check"></i></span> <span>Concluir</span></a>
             <a  class="button is-white"  style="width:45%"   (click)="guardar()"> <span class="icon"><i class="fa fa-save"></i></span> <span>Guardar</span></a>
             </div>
           </div>
@@ -229,20 +232,17 @@
               </tfoot>
               <tbody>
                   <tr  class="is-unselectable" *ngFor="let item of itemSeleccionado.listaStockAsignado">
-                                      
                     <td>{{ item.codigo_barras}}</td>
                     <!--td>{{ item.marca.nombre }}</td-->
                     <td>{{ item.lote }}</td>
                     <td>{{ item.fecha_caducidad | date:'dd/MM/y' }}</td>
-                    <td style="width:78px !important;">
+                    <td style="width:150px !important;">
                         <p class="control is-expanded">
                         <input class="input is-small has-text-centered"  type="number" min="1" max="{{item.existencia}}" placeholder="Cant" [(ngModel)]="item.cantidad" (change)="validarItemStock(item, true)" (keyup)="validarItemStock(item)">
                         </p>
                     </td> 
-                    <td style="vertical-align: middle;" class="has-text-centered"><a  class="is-danger" (click)="eliminarStock(i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>                    
+                    <td style="vertical-align: middle;" class="has-text-centered"><a  class="is-danger" (click)="eliminarStock(item)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>                    
                   </tr>
-                  
-                      
               </tbody>  
             </table>
           </div>
@@ -269,4 +269,63 @@
 </div>
 
 
+<div class="modal is-active" [ngClass]="{'is-active': mostrarDialogo}">
+  <div class="modal-background" (click)="cerrarDialogo()"></div>
+  <div class="modal-card" style="width:60%; height: 90%;">
+    <header class="modal-card-head" style="background: #00d1b2;">
+      <div class="container is-fluid"  style="width:100%;">
+          <h1 class="title" style="color:#FFF;">
+            <span class="icon is-medium"><i class="fa fa-check"></i></span> Finalizar Recepción 
+          </h1>
+      </div>            
+      <a class="button  is-primary" style="position:absolute; top:1em; right:1em;" (click)="cerrarDialogo()"><span class="icon "><i class="fa fa-close"></i></span></a>
+    </header>
+    <section class="modal-card-body" style="padding:0px;" >
+      <div style="padding: 1em;">
+        <form name="form" novalidate [formGroup]="formularioRecepcion">
+          <label class="label">Nombre de quien entrega:</label>
+          <p class="control is-expanded  has-icon has-icon-right">
+            <input type="text" class="input is-fullwidth" [ngClass]="{'is-danger': formularioTieneError('entrega','required')}" formControlName="entrega"/>
+            <span class="icon is-small" *ngIf="formularioTieneError('entrega','required')">
+              <i class="fa fa-warning"></i>
+            </span>
+            <span class="help is-danger" *ngIf="formularioTieneError('entrega','required')">Este campo es requerido.</span>
+          </p>
+
+          <label class="label">Nombre de quien recibe:</label>
+          <p class="control is-expanded  has-icon has-icon-right">
+            <input type="text" class="input is-fullwidth" [ngClass]="{'is-danger': formularioTieneError('recibe','required')}" formControlName="recibe"/>
+            <span class="icon is-small" *ngIf="formularioTieneError('recibe','required')">
+              <i class="fa fa-warning"></i>
+            </span>
+            <span class="help is-danger" *ngIf="formularioTieneError('recibe','required')">Este campo es requerido.</span>
+          </p>
+
+          <label class="label">Fecha (aaaa-mm-dd):</label>
+          <p class="control is-expanded  has-icon has-icon-right">
+            <input type="text" class="input is-fullwidth" placeholder="aaaa-mm-dd" [ngClass]="{'is-danger': formularioTieneError('fecha_movimiento','required')}" formControlName="fecha_movimiento" />
+            <span class="icon is-small" *ngIf="formularioTieneError('fecha_movimiento','required')">
+              <i class="fa fa-warning"></i>
+            </span>
+            <span class="help is-danger" *ngIf="formularioTieneError('fecha_movimiento','required')">Este campo es requerido.</span>
+          </p>
+          
+          <div class="control">
+            <textarea name="observaciones" class="textarea" placeholder="Observaciones"  formControlName="observaciones"></textarea>
+          </div>
+        </form>
+      </div>
+    </section>
+    <footer class="" style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em " >
+      <div class="columns">
+          <div class="column" ></div>
+          <div class="column is-4" style="text-align:right; " *ngIf="statusRecepcion != 'FI'">
+            <div style="margin:1em;">
+            <a  class="button is-primary" style="width:45%; margin-right:5%;" (click)="guardar(true)"> <span class="icon"><i class="fa fa-check"></i></span> <span>Concluir</span></a>
+            </div>
+          </div>
+        </div> 
+    </footer>
+  </div>
+</div>
 

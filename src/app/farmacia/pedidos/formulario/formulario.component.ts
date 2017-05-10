@@ -399,7 +399,6 @@ export class FormularioComponent implements OnInit {
           console.log(this.pedido);
           if(this.pedido.status == 'CONCLUIR'){
             this.pedido.status = 'BR';
-            console.log('asdfsadfsadfsadfdsafsadfdsaf');
           }
 
           try{

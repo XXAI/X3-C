@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChildren } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Params }   from '@angular/router'
 
 import { Observable } from 'rxjs/Observable';
@@ -35,7 +35,12 @@ export class RecepcionComponent implements OnInit {
   cargandoStock: boolean = false;
   capturarStock: boolean = false;
 
-  statusRecepcion: string = 'BR';
+  mostrarDialogo: boolean = false;
+
+  public formularioRecepcion: FormGroup;
+  private fb:FormBuilder;
+
+  statusRecepcion: string = 'NV';
 
    // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
@@ -53,7 +58,19 @@ export class RecepcionComponent implements OnInit {
   private claveNoSolicitada:boolean = false;
   private itemSeleccionado: any = null;
   
-  constructor(private title: Title, private route:ActivatedRoute, private pedidosService:PedidosService, private recepcionService:RecepcionService, private stockService:StockService) { }
+  constructor(private title: Title, private route:ActivatedRoute, private pedidosService:PedidosService, private recepcionService:RecepcionService, private stockService:StockService) {
+    this.fb  = new FormBuilder();
+    let now = new Date();
+    let day = ("0" + now.getDate()).slice(-2);
+    let month = ("0" + (now.getMonth() + 1)).slice(-2);
+    let today = now.getFullYear() + "-" + (month) + "-" + (day);
+    this.formularioRecepcion = this.fb.group({
+      entrega: ['', [Validators.required]],
+      recibe: ['', [Validators.required]],
+      fecha_movimiento: [today,[Validators.required]],
+      observaciones: ''
+    });
+  }
 
   ngOnInit() {
     this.title.setTitle('Surtir pedido / Almacén');
@@ -79,10 +96,6 @@ export class RecepcionComponent implements OnInit {
 
             let recepcion_insumos = {};
 
-            if(pedido.status == 'FI'){
-              this.statusRecepcion = 'FI';
-            }            
-
             if(pedido.recepciones.length == 1){
               let recepcion_insumos_guardados = pedido.recepciones[0].entrada_abierta.insumos;
               for(var i in recepcion_insumos_guardados){
@@ -94,10 +107,18 @@ export class RecepcionComponent implements OnInit {
                   };
                 }
                 recepcion_insumos[insumo.stock.clave_insumo_medico].cantidad += +insumo.cantidad;
-                insumo.stock.cantidad = insumo.cantidad;
+                insumo.stock.cantidad = +insumo.cantidad;
                 recepcion_insumos[insumo.stock.clave_insumo_medico].stock.push(insumo.stock);
               }
+              for(var clave in recepcion_insumos){
+                this.lotesSurtidos.push({ clave: clave, cantidad: recepcion_insumos[clave].cantidad});
+              }
+              this.statusRecepcion = 'BR';              
             }
+
+            if(pedido.status == 'FI'){
+              this.statusRecepcion = 'FI';
+            }   
 
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];
@@ -156,6 +177,10 @@ export class RecepcionComponent implements OnInit {
             }
           }
     );
+  }
+
+  formularioTieneError = function(atributo:string, error:string){
+    return (this.formularioRecepcion.get(atributo).hasError(error) && this.formularioRecepcion.get(atributo).touched);
   }
 
   seleccionarItem(item){  
@@ -277,7 +302,6 @@ export class RecepcionComponent implements OnInit {
           if(resultado.length>0){
             this.claveInsumoSeleccionado = resultado[0].clave_insumo_medico;
 
-
             var existeClaveEnPedido = false;
 
             for(var  i = 0; i < this.pedido.lista.length ; i++){
@@ -302,11 +326,7 @@ export class RecepcionComponent implements OnInit {
           } else {
             //
           }
-
-          
-          
           console.log("Stock cargado.");
-          
         },
         error => {
           this.cargandoStock = false;
@@ -331,13 +351,37 @@ export class RecepcionComponent implements OnInit {
       );
   }
 
+  finalizar(){
+    this.mostrarDialogo = true;
+  }
+
+  cerrarDialogo(){
+    this.mostrarDialogo = false;
+  }
+
   guardar(finalizar:boolean = false){
+
     //console.log(this.pedido);
-    let guardar_recepcion = {status:'BR', observaciones:'',stock:[]};
+    let guardar_recepcion:any;
 
     if(finalizar){
-      alert("Preguntar quién recibe, observaciones, etc. Y si quiere imprimir de una vez.");
-      guardar_recepcion.status = 'FI';
+      this.formularioRecepcion.get('entrega').markAsTouched();
+      this.formularioRecepcion.get('recibe').markAsTouched();
+      this.formularioRecepcion.get('fecha_movimiento').markAsTouched();
+
+      if(!this.formularioRecepcion.valid){
+        return false;
+      }
+
+      if(confirm('Atención la recepción ya no podra editarse, Esta seguro que desea concluir el movimiento?')){
+        guardar_recepcion = this.formularioRecepcion.value;
+        guardar_recepcion.status = 'FI';
+        guardar_recepcion.stock = [];
+      }else{
+        return false;
+      }
+    }else{
+      guardar_recepcion = {status:'BR', observaciones:'',stock:[]};
     }
 
     for(var i in this.pedido.lista){
@@ -361,10 +405,18 @@ export class RecepcionComponent implements OnInit {
 
     this.recepcionService.guardarRecepcionPedido(this.pedido.datosImprimir.id,guardar_recepcion).subscribe(
       pedido => {
+        this.mostrarDialogo = false;
         this.cargando = false;
+        this.mensajeExito = new Mensaje(true);
+
         if(guardar_recepcion.status == 'FI'){
           this.statusRecepcion = 'FI';
+          this.mensajeExito.texto = 'Recepción Finalizada';
+        }else{
+          this.statusRecepcion = 'BR';
+          this.mensajeExito.texto = 'Datos Guardados';
         }
+        this.mensajeExito.mostrar = true;
         console.log('Recepción guardada');
         //console.log(pedido);
         //this.router.navigate(['/farmacia/pedidos/editar/'+pedido.id]);
@@ -372,6 +424,7 @@ export class RecepcionComponent implements OnInit {
       },
       error => {
         this.cargando = false;
+        this.mostrarDialogo = false;
         console.log(error);
         this.mensajeError = new Mensaje(true);
         this.mensajeError.texto = 'No especificado';
@@ -379,6 +432,7 @@ export class RecepcionComponent implements OnInit {
 
         try{
           let e = error.json();
+          console.log(e);
             if (error.status == 401 ){
               this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
             }
@@ -397,6 +451,12 @@ export class RecepcionComponent implements OnInit {
                   }
                 }                      
               }*/
+            }
+
+            if(error.status == 500){
+              if(e.error){
+                this.mensajeError.texto = e.error;
+              }
             }
         }catch(e){
           if (error.status == 500 ){
@@ -431,7 +491,8 @@ export class RecepcionComponent implements OnInit {
     this.itemSeleccionado = null;
   }
 
-  eliminarStock(index): void {
+  eliminarStock(item): void {
+    let index = this.itemSeleccionado.listaStockAsignado.indexOf(item);
     
     this.itemSeleccionado.listaStockAsignado.splice(index, 1);  
      
@@ -588,7 +649,6 @@ export class RecepcionComponent implements OnInit {
         }
       }
       if(!bandera){
-        
         this.lotesSurtidos.push({ clave: this.itemSeleccionado.clave, cantidad:  acumulado});
       }
     }

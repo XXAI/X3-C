@@ -67,7 +67,7 @@
         <div class="contenedor-pedido">
           
           <div class="top-bar" [ngClass]="{'is-primary':!pedido.filtro.activo,'is-dark': pedido.filtro.activo }">
-            <span *ngIf="!pedido.filtro.activo"><b>Mes:</b> {{ meses[mes] }} <b>Claves:</b> {{ pedido.lista.length }} <b>Insumos:</b> {{pedido.totalInsumos}} <b>Total:</b> $ {{ pedido.totalMonto | number: '1.2-2' }}</span>
+            <span *ngIf="!pedido.filtro.activo"><b>Mes:</b> {{ meses[mes] }} <b>Claves:</b> {{ pedido.lista.length | number }} <b>Insumos:</b> {{pedido.totalInsumos | number}} <b>Total:</b> $ {{ pedido.totalMonto | number: '1.2-2' }}</span>
             <span *ngIf="pedido.filtro.activo"><span class="icon"><i class="fa fa-search"></i></span> Resultados: {{ pedido.filtro.lista.length }}</span>
             <a class="button is-primary  is-pulled-right" [ngClass]="{ 'is-inverted': pedido.filtro.activo }" style="margin-top:-0.25em;" title="Ctrl + espacio" (click)="toggleModalInsumos(); ">
               <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span>
