@@ -115,6 +115,7 @@ export class Pedido {
     }
     if(para_iva > 0){
       iva = para_iva*16/100;
+      pedido.totalMontoMaterialCuracion += iva;
       pedido.totalMonto += iva;
     }
   }

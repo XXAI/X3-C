@@ -10,9 +10,9 @@ import { RecepcionComponent } from './recepcion/recepcion.component';
 import { AuthGuard } from '../../auth-guard.service';
 
 const routes: Routes = [
-  { path: 'farmacia/pedidos', redirectTo: '/farmacia/pedidos/todos', pathMatch: 'full' },
+  { path: 'almacen/pedidos', redirectTo: '/almacen/pedidos/todos', pathMatch: 'full' },
   {
-    path: 'farmacia/pedidos',
+    path: 'almacen/pedidos',
     children: [
        { path: 'todos', component: ListaComponent},
        { path: 'borradores', component: ListaComponent},
@@ -29,8 +29,6 @@ const routes: Routes = [
     ],
     canActivate: [AuthGuard]
   }
- 
-  
 ];
 
 @NgModule({

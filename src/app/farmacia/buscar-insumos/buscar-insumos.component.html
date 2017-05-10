@@ -140,15 +140,17 @@
   
       <form (submit)="enviar($event)" >
         <div class="control is-grouped is-pulled-right " >
-        <p class="control is-expanded">
-            <input class="input is-medium" [disabled]="insumoSeleccionado == null" type="text" placeholder="Cantidad" #cantidadBox id="cantidad" (keyup)="comprobarCantidad(cantidadBox.value)" >
-        </p>
-        <p class="control">
-            <button [disabled]="!cantidadValida" class="button is-medium is-primary " >
-            <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span>
-            </button>
-        </p>
-      </div>
+          <p class="control is-expanded">
+              <label>Consumo promedio mensual: 0</label>
+              <input class="input is-medium" [disabled]="insumoSeleccionado == null" type="text" placeholder="Cantidad" #cantidadBox id="cantidad" (keyup)="comprobarCantidad(cantidadBox.value)" >
+          </p>
+          <p class="control">
+              <label>&nbsp;</label>
+              <button [disabled]="!cantidadValida" class="button is-medium is-primary " >
+              <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span>
+              </button>
+          </p>
+        </div>
       </form>
       
 

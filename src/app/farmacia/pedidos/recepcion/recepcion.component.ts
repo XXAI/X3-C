@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChildren } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Params }   from '@angular/router'
 
 import { Observable } from 'rxjs/Observable';
@@ -29,12 +29,20 @@ import { Mensaje } from '../../../mensaje';
   styleUrls: ['./recepcion.component.css']
 })
 export class RecepcionComponent implements OnInit {
-  id:string ;
+  id: string;
+  folio: string;
   cargando: boolean = false;
   cargandoStock: boolean = false;
   capturarStock: boolean = false;
 
-  statusRecepcion: string = 'BR';
+  mostrarDialogo: boolean = false;
+
+  erroresFormularioStock:any = {cantidad:{error:false}, lote:{error:false}, fecha_caducidad:{error:false}};
+
+  public formularioRecepcion: FormGroup;
+  private fb:FormBuilder;
+
+  statusRecepcion: string = 'NV';
 
    // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
@@ -44,7 +52,7 @@ export class RecepcionComponent implements OnInit {
   // # FIN SECCION  
 
   //private marcas = [{id:1,nombre:'Sin Especificar'}];
-  private formStock: any = {};
+  formStock: any = {};
   pedido: Pedido; 
   private lotesSurtidos:any[] = [];
   private listaStock: any[] = [];  
@@ -52,10 +60,22 @@ export class RecepcionComponent implements OnInit {
   private claveNoSolicitada:boolean = false;
   private itemSeleccionado: any = null;
   
-  constructor(private title: Title, private route:ActivatedRoute, private pedidosService:PedidosService, private recepcionService:RecepcionService, private stockService:StockService) { }
+  constructor(private title: Title, private route:ActivatedRoute, private pedidosService:PedidosService, private recepcionService:RecepcionService, private stockService:StockService) {
+    this.fb  = new FormBuilder();
+    let now = new Date();
+    let day = ("0" + now.getDate()).slice(-2);
+    let month = ("0" + (now.getMonth() + 1)).slice(-2);
+    let today = now.getFullYear() + "-" + (month) + "-" + (day);
+    this.formularioRecepcion = this.fb.group({
+      entrega: ['', [Validators.required]],
+      recibe: ['', [Validators.required]],
+      fecha_movimiento: [today,[Validators.required]],
+      observaciones: ''
+    });
+  }
 
   ngOnInit() {
-    this.title.setTitle('Surtir pedido / Farmacia');
+    this.title.setTitle('Surtir pedido / Almacén');
 
     /*if(this.marcas.length == 1){
       this.formStock.marca = this.marcas[0];
@@ -66,9 +86,6 @@ export class RecepcionComponent implements OnInit {
       //this.cargarDatos();
     });
 
-    this.route.params.subscribe(params => {
-      this.id = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number      
-    });
     this.cargando = true;
     //this.pedidosService.ver(this.id).subscribe(
     this.recepcionService.verRecepcionPedido(this.id).subscribe(
@@ -77,12 +94,9 @@ export class RecepcionComponent implements OnInit {
             this.pedido = new Pedido(true);
             this.pedido.paginacion.resultadosPorPagina = 10;
             this.pedido.filtro.paginacion.resultadosPorPagina = 10;
+            this.folio = pedido.folio;
 
             let recepcion_insumos = {};
-
-            if(pedido.status == 'FI'){
-              this.statusRecepcion = 'FI';
-            }            
 
             if(pedido.recepciones.length == 1){
               let recepcion_insumos_guardados = pedido.recepciones[0].entrada_abierta.insumos;
@@ -95,10 +109,18 @@ export class RecepcionComponent implements OnInit {
                   };
                 }
                 recepcion_insumos[insumo.stock.clave_insumo_medico].cantidad += +insumo.cantidad;
-                insumo.stock.cantidad = insumo.cantidad;
+                insumo.stock.cantidad = +insumo.cantidad;
                 recepcion_insumos[insumo.stock.clave_insumo_medico].stock.push(insumo.stock);
               }
+              for(var clave in recepcion_insumos){
+                this.lotesSurtidos.push({ clave: clave, cantidad: recepcion_insumos[clave].cantidad});
+              }
+              this.statusRecepcion = 'BR';              
             }
+
+            if(pedido.status == 'FI'){
+              this.statusRecepcion = 'FI';
+            }   
 
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];
@@ -159,10 +181,15 @@ export class RecepcionComponent implements OnInit {
     );
   }
 
+  formularioTieneError = function(atributo:string, error:string){
+    return (this.formularioRecepcion.get(atributo).hasError(error) && this.formularioRecepcion.get(atributo).touched);
+  }
+
   seleccionarItem(item){  
     this.itemSeleccionado = item; 
     this.capturarStock = true;
     this.formStock = {};
+    this.erroresFormularioStock = {cantidad:{error:false}, lote:{error:false}, fecha_caducidad:{error:false}};
     /*if(this.marcas.length == 1){
       this.formStock.marca = this.marcas[0];
     }*/
@@ -278,7 +305,6 @@ export class RecepcionComponent implements OnInit {
           if(resultado.length>0){
             this.claveInsumoSeleccionado = resultado[0].clave_insumo_medico;
 
-
             var existeClaveEnPedido = false;
 
             for(var  i = 0; i < this.pedido.lista.length ; i++){
@@ -303,11 +329,7 @@ export class RecepcionComponent implements OnInit {
           } else {
             //
           }
-
-          
-          
           console.log("Stock cargado.");
-          
         },
         error => {
           this.cargandoStock = false;
@@ -332,13 +354,37 @@ export class RecepcionComponent implements OnInit {
       );
   }
 
+  finalizar(){
+    this.mostrarDialogo = true;
+  }
+
+  cerrarDialogo(){
+    this.mostrarDialogo = false;
+  }
+
   guardar(finalizar:boolean = false){
+
     //console.log(this.pedido);
-    let guardar_recepcion = {status:'BR', observaciones:'',stock:[]};
+    let guardar_recepcion:any;
 
     if(finalizar){
-      alert("Preguntar quién recibe, observaciones, etc. Y si quiere imprimir de una vez.");
-      guardar_recepcion.status = 'FI';
+      this.formularioRecepcion.get('entrega').markAsTouched();
+      this.formularioRecepcion.get('recibe').markAsTouched();
+      this.formularioRecepcion.get('fecha_movimiento').markAsTouched();
+
+      if(!this.formularioRecepcion.valid){
+        return false;
+      }
+
+      if(confirm('Atención la recepción ya no podra editarse, Esta seguro que desea concluir el movimiento?')){
+        guardar_recepcion = this.formularioRecepcion.value;
+        guardar_recepcion.status = 'FI';
+        guardar_recepcion.stock = [];
+      }else{
+        return false;
+      }
+    }else{
+      guardar_recepcion = {status:'BR', observaciones:'',stock:[]};
     }
 
     for(var i in this.pedido.lista){
@@ -362,10 +408,18 @@ export class RecepcionComponent implements OnInit {
 
     this.recepcionService.guardarRecepcionPedido(this.pedido.datosImprimir.id,guardar_recepcion).subscribe(
       pedido => {
+        this.mostrarDialogo = false;
         this.cargando = false;
+        this.mensajeExito = new Mensaje(true);
+
         if(guardar_recepcion.status == 'FI'){
           this.statusRecepcion = 'FI';
+          this.mensajeExito.texto = 'Recepción Finalizada';
+        }else{
+          this.statusRecepcion = 'BR';
+          this.mensajeExito.texto = 'Datos Guardados';
         }
+        this.mensajeExito.mostrar = true;
         console.log('Recepción guardada');
         //console.log(pedido);
         //this.router.navigate(['/farmacia/pedidos/editar/'+pedido.id]);
@@ -373,6 +427,7 @@ export class RecepcionComponent implements OnInit {
       },
       error => {
         this.cargando = false;
+        this.mostrarDialogo = false;
         console.log(error);
         this.mensajeError = new Mensaje(true);
         this.mensajeError.texto = 'No especificado';
@@ -380,6 +435,7 @@ export class RecepcionComponent implements OnInit {
 
         try{
           let e = error.json();
+          console.log(e);
             if (error.status == 401 ){
               this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
             }
@@ -398,6 +454,12 @@ export class RecepcionComponent implements OnInit {
                   }
                 }                      
               }*/
+            }
+
+            if(error.status == 500){
+              if(e.error){
+                this.mensajeError.texto = e.error;
+              }
             }
         }catch(e){
           if (error.status == 500 ){
@@ -432,7 +494,8 @@ export class RecepcionComponent implements OnInit {
     this.itemSeleccionado = null;
   }
 
-  eliminarStock(index): void {
+  eliminarStock(item): void {
+    let index = this.itemSeleccionado.listaStockAsignado.indexOf(item);
     
     this.itemSeleccionado.listaStockAsignado.splice(index, 1);  
      
@@ -442,6 +505,61 @@ export class RecepcionComponent implements OnInit {
   }
 
   asignarStock(){
+    this.erroresFormularioStock = {cantidad:{error:false}, lote:{error:false}, fecha_caducidad:{error:false}};
+    let errores = 0;
+
+    if(!this.formStock.cantidad){
+      this.erroresFormularioStock.cantidad = {error:true, texto:'Este campo es requerido.'};
+      errores++;
+    }else if(this.formStock.cantidad <= 0){
+      this.erroresFormularioStock.cantidad = {error:true, texto:'La cantidad recibida debe ser mayor a 0.'};
+      errores++;
+    }
+
+    if(this.itemSeleccionado.tiene_fecha_caducidad && !this.formStock.fecha_caducidad){
+      this.erroresFormularioStock.fecha_caducidad = {error:true, texto:'Este campo es requerido.'};
+      errores++;
+    }else if(this.itemSeleccionado.tiene_fecha_caducidad){
+      let fecha = this.formStock.fecha_caducidad.split('-');
+      let fecha_invalida = false;
+      if(fecha.length != 3){
+        fecha_invalida = true;
+      }else if(fecha[0].length != 4 || fecha[1].length != 2 || fecha[2].length != 2){
+        fecha_invalida = true;
+      }else if(parseInt(fecha[1]) < 1 || parseInt(fecha[1]) > 12 ){
+        fecha_invalida = true;
+      }else if(parseInt(fecha[2]) < 1 || parseInt(fecha[2]) > 31 ){
+        fecha_invalida = true;
+      }
+
+      if(fecha_invalida){
+        this.erroresFormularioStock.fecha_caducidad = {error:true, texto:'El formato de fecha no es correcto.'};
+        errores++;
+      }else{
+        let d1 = new Date();
+        let d2 = new Date(fecha[0],(parseInt(fecha[1])-1),parseInt(fecha[2]));
+        let meses;
+        meses = (d2.getFullYear() - d1.getFullYear()) * 12;
+        meses -= d1.getMonth();
+        meses += d2.getMonth();
+
+        if(meses < 6){
+          this.erroresFormularioStock.fecha_caducidad = {error:true, texto:'La fecha de caducidad no puede ser menor a 6 meses.'};
+          errores++;
+        }
+        console.log(meses);
+      }
+    }
+
+    if(!this.formStock.lote){
+      this.erroresFormularioStock.lote = {error:true, texto:'Este campo es requerido.'};
+      errores++;
+    }
+
+    if(errores){
+      return false;
+    }
+
     if( this.itemSeleccionado.listaStockAsignado == null ){
       this.itemSeleccionado.listaStockAsignado = [];
     }
@@ -455,7 +573,7 @@ export class RecepcionComponent implements OnInit {
       this.itemSeleccionado.totalStockAsignado = acumulado;
       this.itemSeleccionado.listaStockAsignado.push({
         codigo_barras: this.formStock.codigo_barras,
-        marca: this.formStock.marca,
+        //marca: this.formStock.marca,
         lote: this.formStock.lote,
         fecha_caducidad: this.formStock.fecha_caducidad,
         cantidad: this.formStock.cantidad,
@@ -463,6 +581,7 @@ export class RecepcionComponent implements OnInit {
       this.resetearFormStock();
       this.calcularTotalStockItem()
     } else {
+      this.erroresFormularioStock.cantidad = {error:true, texto:'La cantidad recibida supera la cantidad solicitada.'};
       //Ya no se puede asignar mas
     }
   }
@@ -589,7 +708,6 @@ export class RecepcionComponent implements OnInit {
         }
       }
       if(!bandera){
-        
         this.lotesSurtidos.push({ clave: this.itemSeleccionado.clave, cantidad:  acumulado});
       }
     }

@@ -14,7 +14,7 @@ export class HubComponent implements OnInit {
   private itemsProtegidos = [
     
     { 
-      title:'Almacén', routerLink:'/farmacia', icono:'assets/hub-farmacia.svg',
+      title:'Almacén', routerLink:'/almacen', icono:'assets/hub-farmacia.svg',
       permisos: [
         'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
         'iSxK0TpoYpnzf8KIQTWOq9Web7WnSKhz' // Ver entregas

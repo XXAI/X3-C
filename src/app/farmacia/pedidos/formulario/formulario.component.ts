@@ -192,9 +192,9 @@ export class FormularioComponent implements OnInit {
   obtenerDireccion(): string{
     //if(this.pedidos[this.pedidoActivo].status == 'AB'){
     if(this.pedido.status == 'BR'){
-      return '/farmacia/pedidos/borradores';
+      return '/almacen/pedidos/borradores';
     }else{
-      return '/farmacia/pedidos/todos';
+      return '/almacen/pedidos/todos';
     }
   }
 
@@ -386,7 +386,7 @@ export class FormularioComponent implements OnInit {
           this.cargando = false;
           //console.log('Pedido editado');
           if(pedido.status != 'BR'){
-            this.router.navigate(['/farmacia/pedidos/ver/'+pedido.id]);
+            this.router.navigate(['/almacen/pedidos/ver/'+pedido.id]);
           }
           //hacer cosas para dejar editar
         },
@@ -399,7 +399,6 @@ export class FormularioComponent implements OnInit {
           console.log(this.pedido);
           if(this.pedido.status == 'CONCLUIR'){
             this.pedido.status = 'BR';
-            console.log('asdfsadfsadfsadfdsafsadfdsaf');
           }
 
           try{
@@ -446,7 +445,7 @@ export class FormularioComponent implements OnInit {
           this.cargando = false;
           //console.log('Pedido creado');
           //console.log(pedido);
-          this.router.navigate(['/farmacia/pedidos/editar/'+pedido.id]);
+          this.router.navigate(['/almacen/pedidos/editar/'+pedido.id]);
           //hacer cosas para dejar editar
         },
         error => {

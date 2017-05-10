@@ -79,7 +79,7 @@ export class VerComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.title.setTitle('Nuevo pedido / Farmacia');
+    this.title.setTitle('Nuevo pedido / Almacén');
 
     // Inicializamos el objeto para los reportes con web Webworkers
     //this.pdfworker = new Worker("web-workers/farmacia/pedidos/imprimir.js")
@@ -114,6 +114,7 @@ export class VerComponent implements OnInit {
       //this.id = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number
       if(params['id']){
         this.pedido.id = params['id'];
+        this.pedido.status = 'PS';
         //cargar datos del pedido
         this.esEditar = true;
         this.formularioTitulo = 'Editar';
@@ -124,6 +125,7 @@ export class VerComponent implements OnInit {
             //this.datosCargados = true;
             //this.pedidos[0].datos.patchValue(pedido);
             this.pedido.datosImprimir = pedido;
+            this.pedido.status = pedido.status;
 
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];
@@ -174,11 +176,11 @@ export class VerComponent implements OnInit {
   obtenerDireccion(): string{
     if(this.pedido.datosImprimir){
       if(this.pedido.datosImprimir.status == 'PS'){
-        return '/farmacia/pedidos/por-surtir';
+        return '/almacen/pedidos/por-surtir';
       }else if(this.pedido.datosImprimir.status == 'ET'){
-        return '/farmacia/pedidos/en-transito';
+        return '/almacen/pedidos/en-transito';
       }else if(this.pedido.datosImprimir.status == 'FI'){
-        return '/farmacia/pedidos/finalizados';
+        return '/almacen/pedidos/finalizados';
       }
     }
   }
