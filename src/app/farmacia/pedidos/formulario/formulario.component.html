@@ -43,7 +43,7 @@
                 </div>
               </form>
 
-              <div class="control is-grouped" style="padding-top:10px;">
+              <div class="control is-grouped" style="padding-top:10px;" *ngIf="!cargando">
                 <p class="control">
                   <a class="button is-primary " (click)="guardar()" [ngClass]="{'is-loading': cargando}" >Guardar</a>
                 </p>

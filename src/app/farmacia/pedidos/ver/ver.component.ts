@@ -113,6 +113,7 @@ export class VerComponent implements OnInit {
     this.route.params.subscribe(params => {
       //this.id = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number
       if(params['id']){
+        this.cargando = true;
         this.pedido.id = params['id'];
         this.pedido.status = 'PS';
         //cargar datos del pedido
@@ -121,7 +122,6 @@ export class VerComponent implements OnInit {
 
         this.pedidosService.ver(params['id']).subscribe(
           pedido => {
-            this.cargando = false;
             //this.datosCargados = true;
             //this.pedidos[0].datos.patchValue(pedido);
             this.pedido.datosImprimir = pedido;
@@ -139,6 +139,8 @@ export class VerComponent implements OnInit {
             pedido.insumos = undefined;
             this.pedido.indexar();
             this.pedido.listar(1);
+
+            this.cargando = false;
           },
           error => {
             this.cargando = false;

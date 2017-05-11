@@ -29,7 +29,7 @@
                   <textarea name="observaciones" class="textarea" placeholder="Observaciones"  readonly="readonly">{{(pedido.datosImprimir)?pedido.datosImprimir.observaciones:''}}</textarea>
                 </div>
 
-              <div class="control is-grouped" style="padding-top:10px;">
+              <div class="control is-grouped" style="padding-top:10px;" *ngIf="!cargando">
                 <p class="control">
                   <a class="button is-primary " [ngClass]="{ 'is-loading': cargandoPdf, 'is-inverted': !cargandoPdf }" (click)="imprimir()" title="Imprimir PDF" ><span class="icon"><i class="fa fa-print"></i></span></a>
                 </p>
