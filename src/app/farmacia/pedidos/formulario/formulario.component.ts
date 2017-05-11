@@ -67,6 +67,7 @@ export class FormularioComponent implements OnInit {
 
   // Harima: Se genera un unico pedido
   pedido: Pedido;
+  proveedor: any = {};
   // # FIN SECCION
 
 
@@ -136,6 +137,8 @@ export class FormularioComponent implements OnInit {
             //this.datosCargados = true;
             this.pedido.datos.patchValue(pedido);
             this.pedido.status = pedido.status;
+
+            this.proveedor = pedido.proveedor;
 
             let fecha = pedido.fecha.split('-');
             let mes = parseInt(fecha[1]);

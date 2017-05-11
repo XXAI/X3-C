@@ -262,6 +262,12 @@
                 *ngIf="pedido.filtro.lista.length > 0 && pedido.filtro.lista.length > pedido.filtro.paginacion.resultadosPorPagina && pedido.filtro.activo"></paginacion>
           
           <br>
+
+          <div *ngIf="!cargando">
+            <strong>Información del proveedor:</strong><br>
+            {{pedido.datosImprimir.proveedor.nombre}} - {{pedido.datosImprimir.proveedor.contacto}} - email: {{pedido.datosImprimir.proveedor.email}} - cel: {{pedido.datosImprimir.proveedor.celular}}
+            <br><br>
+          </div>
         </div>
         
     </div>
