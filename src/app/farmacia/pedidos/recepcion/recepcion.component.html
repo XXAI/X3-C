@@ -96,13 +96,17 @@
                   <td class="has-text-centered">{{ item.lote }}</td>
                   <td >
                     <small >{{ item.clave }} <br></small>
-                    <b>{{ item.generico_nombre }}</b> <small *ngIf="(item.tipo == 'ME' && item.informacion)"><b>{{ item.informacion.concentracion }}</b></small><br>
+                    <!--b>{{ item.generico_nombre }}</b> <small *ngIf="(item.tipo == 'ME' && item.informacion)"><b>{{ item.informacion.concentracion }}</b></small><br-->
                     <div class="item-detalle">
-                      <div   *ngIf="(item.tipo == 'ME' && item.informacion)" style="line-height:1em;">
+                      <!--div   *ngIf="(item.tipo == 'ME' && item.informacion)" style="line-height:1em;">
                         <small><i>{{ item.informacion.presentacion_nombre }}</i></small><br>
                         <small><i>{{ item.informacion.contenido }} </i></small>
                       </div>
                       <div   *ngIf="item.tipo != 'ME'" style="line-height:1em;">
+                        <small>{{ item.descripcion }}</small>
+                      </div-->
+
+                      <div style="line-height:1em;">
                         <small>{{ item.descripcion }}</small>
                       </div>
                     
