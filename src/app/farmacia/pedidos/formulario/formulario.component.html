@@ -44,6 +44,10 @@
               </form>
 
               <div class="control is-grouped" style="padding-top:10px;" *ngIf="!cargando">
+                <p class="control" *ngIf="esEditar">
+                  <a class="button is-success " [ngClass]="{ 'is-loading': cargando, 'is-inverted': !cargando }" (click)="imprimirExcel()" title="Imprimir Excel" ><span class="icon"><i class="fa fa-file-excel-o"></i></span></a>
+                </p>
+
                 <p class="control">
                   <a class="button is-primary " (click)="guardar()" [ngClass]="{'is-loading': cargando}" >Guardar</a>
                 </p>

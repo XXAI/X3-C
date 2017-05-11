@@ -17,6 +17,8 @@ import 'rxjs/add/operator/catch';
 
 import  * as FileSaver    from 'file-saver'; 
 
+import { environment } from '../../../../environments/environment';
+
 import { Mensaje } from '../../../mensaje';
 
 import { AlmacenesService } from '../../../catalogos/almacenes/almacenes.service';
@@ -335,8 +337,7 @@ export class VerComponent implements OnInit {
   // # SECCION - Webworkers
   
   imprimirExcel(){
-    window.open("http://localhost/ssa/sial-api/public/generar-excel-pedido/"+this.pedido.id, "_blank");
-    //window.open('http://localhost/ssa/sial/public/generar-excel-pedido?token='+$localStorage.control_desabasto.access_token);
+    window.open(environment.API_URL+"/generar-excel-pedido/"+this.pedido.id, "_blank");
   }
 
   imprimir() {

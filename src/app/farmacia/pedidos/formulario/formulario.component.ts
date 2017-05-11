@@ -17,6 +17,8 @@ import 'rxjs/add/operator/catch';
 
 import  * as FileSaver    from 'file-saver'; 
 
+import { environment } from '../../../../environments/environment';
+
 import { Mensaje } from '../../../mensaje';
 
 import { AlmacenesService } from '../../../catalogos/almacenes/almacenes.service';
@@ -641,6 +643,10 @@ export class FormularioComponent implements OnInit {
   }
 
   // # SECCION - Webworkers
+
+  imprimirExcel(){
+    window.open(environment.API_URL+"/generar-excel-pedido/"+this.pedido.id, "_blank");
+  }
 
   imprimir() {
     try {
