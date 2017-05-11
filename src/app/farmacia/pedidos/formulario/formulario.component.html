@@ -117,12 +117,12 @@
                         <input class="input is-small" type="text" placeholder="Clave" #searchBoxClave id="search-box-clave-{{indexPedido}}" (keyup)="buscar($event,searchBoxClave, searchBoxClavePrevia,[{ input: searchBoxDescripcion, campos: ['generico','informacion.concentracion','informacion.presentacion']}, { input: searchBoxClave, campos: ['clave']}])">
                       </p>
                     </th>
-                    <th class="is-hidden-mobile">
+                    <!--th class="is-hidden-mobile">
                       <p class="control is-expanded">
                         <input type="hidden" #searchBoxDescripcionPrevia >
                         <input class="input is-small" type="text" placeholder="Genérico" #searchBoxDescripcion id="search-box-descripcion-{{indexPedido}}" (keyup)="buscar($event,searchBoxDescripcion,searchBoxDescripcionPrevia,[{ input: searchBoxDescripcion, campos: ['generico_nombre','informacion.concentracion','informacion.presentacion']}, { input: searchBoxClave, campos: ['clave']}])">
                       </p>
-                    </th> 
+                    </th--> 
                     <th class="is-hidden-tablet">
                       <p class="control is-expanded">
                         <input type="hidden" #searchBoxDescripcionClavePrevia >
@@ -141,7 +141,25 @@
                   <td class="has-text-centered">{{ item.lote }}</td>
                   <td class="has-text-centered is-hidden-mobile"><a (click)="mostrarFichaInformativa($event, item.clave)" style="cursor:help;">{{ item.clave }}</a></td>            
                   
-                  <td >
+                  <td>
+                    <small class="is-hidden-tablet">{{ item.clave }} <br></small>
+                    <!--div *ngIf="item.tipo != 'ME'" style="line-height:1em;"-->
+                    <div style="line-height:1em;">
+                      <small>{{ item.descripcion }}</small>
+                    </div>
+                    <div style="padding: 0.5em 0 0.5em 0; ">
+                      <span *ngIf="(item.es_causes && item.tipo == 'ME')" class="tag is-success" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
+                      <span *ngIf="(!item.es_causes && item.tipo == 'ME')" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
+                      <span *ngIf="item.tipo == 'MC'" class="tag is-warning" style="font-size: 0.7em !important;">MATERIAL CURACIÓN</span>
+                      <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
+                      <span *ngIf="(item.tipo == 'ME' && item.informacion)">
+                        <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
+                        <span *ngIf="item.informacion.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>  
+                      </span>
+                    </div>
+                  </td>
+
+                  <!--td >
                     <small class="is-hidden-tablet">{{ item.clave }} <br></small>
                     <b>{{ item.generico_nombre }}</b> <br  class="is-hidden-mobile"><small *ngIf="(item.tipo == 'ME' && item.informacion)"><b>{{ item.informacion.concentracion }}</b></small><br>
                     
@@ -187,7 +205,7 @@
                       </span>
                       
                     </div>
-                  </td>
+                  </td-->
 
                   <td style="width:100px !important;">
                       <p class="control is-expanded">
@@ -209,7 +227,25 @@
                   <td class="has-text-centered">{{ item.lote }}</td>
                   <td class="has-text-centered is-hidden-mobile"><a (click)="mostrarFichaInformativa($event, item.clave)" style="cursor:help;">{{ item.clave }}</a></td>            
                   
-                  <td >
+                  <td>
+                    <small class="is-hidden-tablet">{{ item.clave }} <br></small>
+                    <!--div *ngIf="item.tipo != 'ME'" style="line-height:1em;"-->
+                    <div style="line-height:1em;">
+                      <small>{{ item.descripcion }}</small>
+                    </div>
+                    <div style="padding: 0.5em 0 0.5em 0; ">
+                      <span *ngIf="(item.es_causes && item.tipo == 'ME')" class="tag is-success" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
+                      <span *ngIf="(!item.es_causes && item.tipo == 'ME')" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
+                      <span *ngIf="item.tipo == 'MC'" class="tag is-warning" style="font-size: 0.7em !important;">MATERIAL CURACIÓN</span>
+                      <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
+                      <span *ngIf="(item.tipo == 'ME' && item.informacion)">
+                        <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
+                        <span *ngIf="item.informacion.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>  
+                      </span>
+                    </div>
+                  </td>
+
+                  <!--td >
                     <small class="is-hidden-tablet">{{ item.clave }} <br></small>
                     <b>{{ item.generico_nombre }}</b> <br  class="is-hidden-mobile"><small *ngIf="(item.tipo == 'ME' && item.informacion)"><b>{{ item.informacion.concentracion }}</b></small><br>
                     
@@ -253,7 +289,8 @@
                       </span>
                       
                     </div>
-                  </td> 
+                  </td--> 
+
                   <td style="width:100px !important;">
                       <p class="control is-expanded">
                       <input class="input is-small has-text-centered"  type="number" placeholder="Cant" (keyup)="modificarItem(item)" [(ngModel)]="item.cantidad">
@@ -302,7 +339,7 @@
 <div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeError.mostrar">
     <button class="delete" (click)="mensajeError.mostrar = false"></button>        
     <b>Error:</b> {{ mensajeError.texto }}<br><br>
-    <p style="text-align:center" ><a  class="button is-danger is-inverted" (click)="ultimaPeticion(); mensajeError.mostrar = false"> <span class="icon"><i class="fa fa-refresh"></i></span> <span>Volver a intentar</span></a></p>        
+    <!--p style="text-align:center" ><a  class="button is-danger is-inverted" (click)="ultimaPeticion(); mensajeError.mostrar = false"> <span class="icon"><i class="fa fa-refresh"></i></span> <span>Volver a intentar</span></a></p-->        
 </div>
 
 <div class="notification is-success" style="position:fixed; left:1em;  bottom:1em; width: auto" *ngIf="mensajeExito.mostrar">       

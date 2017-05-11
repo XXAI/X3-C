@@ -459,6 +459,7 @@ export class RecepcionComponent implements OnInit {
             if(error.status == 500){
               if(e.error){
                 this.mensajeError.texto = e.error;
+                this.mensajeError.cuentaAtras = 1000;
               }
             }
         }catch(e){

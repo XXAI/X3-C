@@ -200,10 +200,10 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
                     text: 'Facturar 2017 a nombre del Instituto de Salud. Unidad Administrativa Edif. C, Maya Tuxtla Gutiérrez, Chiapas, 29010 R.F.C. ISA-961203- QN5', 
                     style: 'tableHeader', alignment: 'justify', colSpan:3, rowSpan:3
                 },'','',
-                { text: 'SUBTOTAL', style: 'tableHeaderVerde',  alignment: 'center'},{ text: '$ '+(+pedido.datos.total_monto_solicitado).format(2), style: 'tableHeader', alignment: 'center'}
+                { text: 'SUBTOTAL', style: 'tableHeaderVerde',  alignment: 'center'},{ text: '$ '+(+pedido.datos.total_monto_solicitado - iva).format(2), style: 'tableHeader', alignment: 'center'}
             ],
             ['','','','','',{ text: 'IVA', style: 'tableHeaderVerde',  alignment: 'center'},{ text: '$ '+(iva.format(2)), style: 'tableHeader', alignment: 'center'}],
-            ['','','','','',{ text: 'TOTAL', style: 'tableHeaderVerde',  alignment: 'center'},{ text: '$ '+((+pedido.datos.total_monto_solicitado + iva).format(2)), style: 'tableHeader', alignment: 'center'}],
+            ['','','','','',{ text: 'TOTAL', style: 'tableHeaderVerde',  alignment: 'center'},{ text: '$ '+((+pedido.datos.total_monto_solicitado).format(2)), style: 'tableHeader', alignment: 'center'}],
             //[{ text: 'IMPORTE TOTAL: ('+'pedido.total_letra'+' M.N.)', style: 'tableHeaderVerde',  alignment: 'justify', colSpan:7},'','','','','',''],
             //[{ text: 'FUENTE DE FINANCIAMIENTO: '+'pedido.fuente_financiamiento', style: 'tableHeaderVerde',  alignment: 'justify', colSpan:7},'','','','','',''],
             [{ text: 'TIEMPO DE ENTREGA: Deberá surtir los insumos en un periodo no mayor a 20 dias.', style: 'tableHeaderVerde',  alignment: 'justify', colSpan:7},'','','','','',''],

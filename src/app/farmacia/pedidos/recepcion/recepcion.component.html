@@ -55,16 +55,19 @@
                   <td class="has-text-centered">{{ item.lote }}</td>
                   <td >
                     <small >{{ item.clave }} <br></small>
-                    <b>{{ item.generico_nombre }}</b> <small *ngIf="(item.tipo == 'ME' && item.informacion)"><b>{{ item.informacion.concentracion }}</b></small><br>
+                    <!--b>{{ item.generico_nombre }}</b> <small *ngIf="(item.tipo == 'ME' && item.informacion)"><b>{{ item.informacion.concentracion }}</b></small><br-->
                     <div class="item-detalle">
-                      <div   *ngIf="(item.tipo == 'ME' && item.informacion)" style="line-height:1em;">
+                      <!--div   *ngIf="(item.tipo == 'ME' && item.informacion)" style="line-height:1em;">
                         <small><i>{{ item.informacion.presentacion_nombre }}</i></small><br>
                         <small><i>{{ item.informacion.contenido }} </i></small>
                       </div>
-                      <div   *ngIf="item.tipo != 'ME'" style="line-height:1em;">
+                      <div *ngIf="item.tipo != 'ME'" style="line-height:1em;">
+                        <small>{{ item.descripcion }}</small>
+                      </div-->
+                      <div style="line-height:1em;">
                         <small>{{ item.descripcion }}</small>
                       </div>
-                    
+
                       <div  style="padding: 0.5em 0 0.5em 0; ">
                         <span *ngIf="(item.es_causes && item.tipo == 'ME')" class="tag is-success" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
                         <span *ngIf="(!item.es_causes && item.tipo == 'ME')" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
@@ -260,7 +263,7 @@
 <div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeError.mostrar">
     <button class="delete" (click)="mensajeError.mostrar = false"></button>        
     <b>Error:</b> {{ mensajeError.texto }}<br><br>
-    <p style="text-align:center" ><a  class="button is-danger is-inverted" (click)="ultimaPeticion(); mensajeError.mostrar = false"> <span class="icon"><i class="fa fa-refresh"></i></span> <span>Volver a intentar</span></a></p>        
+    <!--p style="text-align:center" ><a  class="button is-danger is-inverted" (click)="ultimaPeticion(); mensajeError.mostrar = false"> <span class="icon"><i class="fa fa-refresh"></i></span> <span>Volver a intentar</span></a></p-->
 </div>
 
 <div class="notification is-success" style="position:fixed; left:1em;  bottom:1em; width: auto" *ngIf="mensajeExito.mostrar">       
