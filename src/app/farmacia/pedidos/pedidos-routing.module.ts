@@ -22,6 +22,7 @@ const routes: Routes = [
        { path: 'finalizados/completos', component: ListaComponent},
        { path: 'finalizados/incompletos', component: ListaComponent},
        { path: 'finalizados/cancelados', component: ListaComponent},
+       { path: 'expirados', component: ListaComponent},
        { path: 'nuevo', component: FormularioComponent},
        { path: 'editar/:id', component: FormularioComponent},
        { path: 'ver/:id', component: VerComponent},

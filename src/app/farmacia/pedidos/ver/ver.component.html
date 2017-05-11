@@ -31,8 +31,11 @@
 
               <div class="control is-grouped" style="padding-top:10px;">
                 <p class="control">
-                  <a class="button is-primary " [ngClass]="{ 'is-loading': cargandoPdf, 'is-inverted': !cargandoPdf }" (click)="imprimir()" ><span class="icon"><i class="fa fa-print"></i></span></a>
+                  <a class="button is-primary " [ngClass]="{ 'is-loading': cargandoPdf, 'is-inverted': !cargandoPdf }" (click)="imprimir()" title="Imprimir PDF" ><span class="icon"><i class="fa fa-print"></i></span></a>
                 </p>
+                <!--p class="control">
+                  <a class="button is-success " [ngClass]="{ 'is-loading': cargando, 'is-inverted': !cargando }" (click)="imprimirExcel()" title="Imprimir Excel" ><span class="icon"><i class="fa fa-file-excel-o"></i></span></a>
+                </p-->
                 <p class="control" *ngIf="pedido.status != 'FI'">
                   <a class="button is-primary" routerLink="/almacen/pedidos/recepcion/{{pedido.id}}"> <span class="icon"><i class="fa fa-truck"></i></span> <span>Recibir Pedido</span></a>
                 </p>

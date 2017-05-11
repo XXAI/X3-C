@@ -79,24 +79,27 @@
               <td>
                 <div class="is-fullwidth has-text-centered" *ngIf="cargandoPresupuestos">
                     <br>
-                    <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando presupuesto...</span></span>
+                    <span class="tag is-primary is-medium "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando presupuesto...</span></span>
                     <br>
                     <br>
                 </div>
                 <div class="columns" *ngIf="!cargandoPresupuestos">
                     <div class="column has-text-centered">
-                        <span class="tag is-success">
-                          Disponible Causes:  $ {{ (presupuesto.causes_disponible - pedido.totalMontoCauses) | number: '1.2-2' }}
+                        <span class="tag is-medium is-success">
+                          <span *ngIf="(presupuesto.causes_disponible - pedido.totalMontoCauses) <= 0" class="icon is-small"><i class="fa fa-warning"></i></span>&nbsp;
+                          Disponible Causes:  $ {{ (presupuesto.causes_disponible - pedido.totalMontoCauses) | number: '1.2-2' }}&nbsp;
                         </span>
                     </div>
                     <div class="column has-text-centered">
-                        <span class="tag is-danger">
-                          Disponible No Causes:  $ {{ (presupuesto.no_causes_disponible - pedido.totalMontoNoCauses) | number: '1.2-2' }}
+                        <span class="tag is-medium is-danger">
+                          <span *ngIf="(presupuesto.no_causes_disponible - pedido.totalMontoNoCauses) <= 0" class="icon is-small"><i class="fa fa-warning"></i></span>&nbsp;
+                          Disponible No Causes:  $ {{ (presupuesto.no_causes_disponible - pedido.totalMontoNoCauses) | number: '1.2-2' }}&nbsp;
                         </span>
                     </div>
                     <div class="column has-text-centered">
-                        <span class="tag is-warning">
-                          Disponible Material de Curación:  $ {{ (presupuesto.material_curacion_disponible - pedido.totalMontoMaterialCuracion) | number: '1.2-2' }}
+                        <span class="tag is-medium is-warning">
+                          <span *ngIf="(presupuesto.material_curacion_disponible - pedido.totalMontoMaterialCuracion) <= 0" class="icon is-small"><i class="fa fa-warning"></i></span>&nbsp;
+                          Disponible Material de Curación:  $ {{ (presupuesto.material_curacion_disponible - pedido.totalMontoMaterialCuracion) | number: '1.2-2' }}&nbsp;
                         </span>
                     </div>
                 </div>
@@ -150,8 +153,10 @@
                       <small>{{ item.descripcion }}</small>
                     </div>
                     <div class="is-hidden-desktop" style="padding: 0.5em 0 0.5em 0; ">
-                      <span *ngIf="item.es_causes" class="tag is-success" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
-                      <span *ngIf="!item.es_causes" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
+                      <span *ngIf="(item.es_causes && item.tipo == 'ME')" class="tag is-success" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
+                      <span *ngIf="(!item.es_causes && item.tipo == 'ME')" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
+                      <span *ngIf="item.tipo == 'MC'" class="tag is-warning" style="font-size: 0.7em !important;">MATERIAL CURACIÓN</span>
+
                       <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
                       
                       <span *ngIf="(item.tipo == 'ME' && item.informacion)">
@@ -171,8 +176,10 @@
                       <small>{{ item.descripcion }}</small>
                     </div>
                     <div style="padding: 0.5em 0 0.5em 0; ">
-                      <span *ngIf="item.es_causes" class="tag is-success" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
-                      <span *ngIf="!item.es_causes" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
+                      <span *ngIf="(item.es_causes && item.tipo == 'ME')" class="tag is-success" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
+                      <span *ngIf="(!item.es_causes && item.tipo == 'ME')" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
+                      <span *ngIf="item.tipo == 'MC'" class="tag is-warning" style="font-size: 0.7em !important;">MATERIAL CURACIÓN</span>
+
                       <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
                       <span *ngIf="(item.tipo == 'ME' && item.informacion)">
                         <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
@@ -182,9 +189,9 @@
                     </div>
                   </td>
 
-                  <td style="width:78px !important;">
+                  <td style="width:100px !important;">
                       <p class="control is-expanded">
-                      <input class="input is-small has-text-centered"  type="text" placeholder="Cant" (keyup)="modificarItem(item)" [(ngModel)]="item.cantidad">
+                      <input class="input is-small has-text-centered"  type="number" placeholder="Cant" (keyup)="modificarItem(item)" [(ngModel)]="item.cantidad">
                       </p>
                   </td>
 
@@ -214,8 +221,9 @@
                       <small>{{ item.descripcion }}</small>
                     </div>
                     <div class="is-hidden-desktop" style="padding: 0.5em 0 0.5em 0; ">
-                      <span *ngIf="item.es_causes" class="tag is-success" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
-                      <span *ngIf="!item.es_causes" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
+                      <span *ngIf="(item.es_causes && item.tipo == 'ME')" class="tag is-success" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
+                      <span *ngIf="(!item.es_causes && item.tipo == 'ME')" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
+                      <span *ngIf="item.tipo == 'MC'" class="tag is-warning" style="font-size: 0.7em !important;">MATERIAL CURACIÓN</span>
                       <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
                       
                       <span *ngIf="(item.tipo == 'ME' && item.informacion)">
@@ -235,8 +243,9 @@
                       <small>{{ item.descripcion }}</small>
                     </div>
                     <div style="padding: 0.5em 0 0.5em 0; ">
-                      <span *ngIf="item.es_causes" class="tag is-success" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
-                      <span *ngIf="!item.es_causes" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
+                      <span *ngIf="(item.es_causes && item.tipo == 'ME')" class="tag is-success" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
+                      <span *ngIf="(!item.es_causes && item.tipo == 'ME')" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
+                      <span *ngIf="item.tipo == 'MC'" class="tag is-warning" style="font-size: 0.7em !important;">MATERIAL CURACIÓN</span>
                       <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
                       <span *ngIf="(item.tipo == 'ME' && item.informacion)">
                         <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
@@ -245,9 +254,9 @@
                       
                     </div>
                   </td> 
-                  <td style="width:78px !important;">
+                  <td style="width:100px !important;">
                       <p class="control is-expanded">
-                      <input class="input is-small has-text-centered"  type="text" placeholder="Cant" (keyup)="modificarItem(item)" [(ngModel)]="item.cantidad">
+                      <input class="input is-small has-text-centered"  type="number" placeholder="Cant" (keyup)="modificarItem(item)" [(ngModel)]="item.cantidad">
                       </p>
                   </td>
 

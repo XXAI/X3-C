@@ -41,7 +41,7 @@ export class ListaComponent implements OnInit {
   pedidos: Pedido[] = [];
   presupuesto:any = {};
   private paginaActual = 1;
-  resultadosPorPagina = 5;
+  resultadosPorPagina = 10;
   total = 0;
   private paginasTotales = 0;
   private indicePaginas:number[] = []
@@ -53,7 +53,7 @@ export class ListaComponent implements OnInit {
   private resultadosBusqueda: Pedido[] = [];
   busquedaActivada:boolean = false;
   private paginaActualBusqueda = 1;
-  resultadosPorPaginaBusqueda = 5;
+  resultadosPorPaginaBusqueda = 10;
   totalBusqueda = 0;
   private paginasTotalesBusqueda = 0;
   private indicePaginasBusqueda:number[] = []
@@ -67,6 +67,7 @@ export class ListaComponent implements OnInit {
       case 'borradores': this.status = "BR"; this.titulo = "Borradores"; this.icono = "fa-pencil-square-o"; break;
       case 'en-transito': this.status = "ET"; this.titulo = "En transito"; this.icono = "fa-clock-o"; break;
       case 'por-surtir': this.status = "PS"; this.titulo = "Por surtir"; this.icono = "fa-truck"; break;
+      case 'expirados': this.status = "EX"; this.titulo = "Expirados"; this.icono = "fa-exclamation-circle"; break;
       case 'finalizados': 
           this.status = "FI";
           this.icono = "fa-check-circle";
