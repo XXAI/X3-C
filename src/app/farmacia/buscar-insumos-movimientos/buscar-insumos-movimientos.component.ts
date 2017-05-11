@@ -42,7 +42,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
 
   private cantidadAPI: boolean = true;
   private lote: boolean = true;
-  private mostrarModalLote: boolean = false;
+  mostrarModalLote: boolean = false;
 
   private lotes_insumo: any[] = [];
 
