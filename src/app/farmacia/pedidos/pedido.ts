@@ -38,7 +38,8 @@ export class Pedido {
         this.datos = this.fb.group({
           descripcion: ['', [Validators.required]],
           fecha: ['',[Validators.required]],
-          almacen_proveedor: ['',[Validators.required]],
+          //almacen_proveedor: ['',[Validators.required]],
+          almacen_proveedor: '',
           observaciones: ''
         });
         //Harima: Al crear el objeto, se crea como borrador
