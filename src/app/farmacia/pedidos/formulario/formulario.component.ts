@@ -95,9 +95,6 @@ export class FormularioComponent implements OnInit {
     var self = this;    
     var $ngZone = this._ngZone;
 
-    //Harima:cargamos catalogos
-    this.cargarAlmacenes();
-
     //Harima: Cargar el presupuesto del mes actual
     //this.cargarPresupuesto();
 
@@ -183,6 +180,9 @@ export class FormularioComponent implements OnInit {
         console.log('nuevo pedido');
         this.cargarPresupuesto();
       }
+      //Harima:cargamos catalogos
+      this.cargarAlmacenes();
+
       //this.cargarDatos();
     });
     //this.pedidos[0].nombre = "General";
@@ -360,11 +360,10 @@ export class FormularioComponent implements OnInit {
       guardar_pedidos.push(this.pedidos[i].obtenerDatosGuardar());
     }*/
 
-    if((this.presupuesto.causes_disponible - this.pedido.totalMontoCauses) < 0 || (this.presupuesto.no_causes_disponible - this.pedido.totalMontoNoCauses) < 0 || (this.presupuesto.material_curacion_disponible - this.pedido.totalMontoMaterialCuracion) < 0){
+    if(this.pedido.datos.invalid){
+      this.pedido.datos.get('descripcion').markAsTouched();
+      this.pedido.datos.get('fecha').markAsTouched();
       this.cargando = false;
-      this.mensajeError = new Mensaje(true);
-      this.mensajeError.texto = 'Presupuesto insuficiente';
-      this.mensajeError.mostrar = true;
       return false;
     }
 
@@ -372,6 +371,14 @@ export class FormularioComponent implements OnInit {
 
     if(finalizar){
       guardar_pedido.datos.status = 'CONCLUIR';
+
+      if((this.presupuesto.causes_disponible - this.pedido.totalMontoCauses) < 0 || (this.presupuesto.no_causes_disponible - this.pedido.totalMontoNoCauses) < 0 || (this.presupuesto.material_curacion_disponible - this.pedido.totalMontoMaterialCuracion) < 0){
+        this.cargando = false;
+        this.mensajeError = new Mensaje(true);
+        this.mensajeError.texto = 'Presupuesto insuficiente';
+        this.mensajeError.mostrar = true;
+        return false;
+      }
       /*for(var i in guardar_pedidos){
         guardar_pedidos[i].datos.status = 'ES';
       }*/
@@ -427,6 +434,7 @@ export class FormularioComponent implements OnInit {
             if(error.status == 500){
               if(e.error){
                 this.mensajeError.texto = e.error;
+                this.mensajeError.cuentaAtras = 1000;
               }
             }
           }catch(e){
@@ -476,6 +484,12 @@ export class FormularioComponent implements OnInit {
                   }                      
                 }*/
               }
+              if(error.status == 500){
+                if(e.error){
+                  this.mensajeError.texto = e.error;
+                  this.mensajeError.cuentaAtras = 1000;
+                }
+              }
           }catch(e){
             if (error.status == 500 ){
               this.mensajeError.texto = "500 (Error interno del servidor)";
@@ -496,15 +510,18 @@ export class FormularioComponent implements OnInit {
           this.cargandoAlmacenes = false;
           this.almacenes = almacenes;
 
-          let datos_iniciales:any = {}
+          //Harima:Si no es editar, inicializamos el formulario
+          if(!this.esEditar){
+            let datos_iniciales:any = {}
           
-          if(almacenes.length == 1 && !this.esEditar){
-            datos_iniciales.almacen_proveedor = almacenes[0].id;
-            //this.pedido.datos.setValue({almacen_proveedor:almacenes[0].id,descripcion:'',observaciones:''});
+            if(almacenes.length == 1){
+              datos_iniciales.almacen_proveedor = almacenes[0].id;
+              //this.pedido.datos.setValue({almacen_proveedor:almacenes[0].id,descripcion:'',observaciones:''});
+            }
+
+            this.pedido.inicializarDatos(datos_iniciales);
           }
-
-          this.pedido.inicializarDatos(datos_iniciales);
-
+          
           console.log("Almacenes cargados.");
 
           if (this.almacenes.length == 0){

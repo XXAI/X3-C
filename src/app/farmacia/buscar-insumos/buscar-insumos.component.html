@@ -33,7 +33,7 @@
             <th class="is-hidden-mobile">Descripción</th>
             <th style="text-align:center" class="is-hidden-mobile">Grupo(s)</th>
             <th style="text-align:center"><abbr title="Tipo de insumo">Tipo</abbr></th>
-            <th style="text-align:left" *ngIf="conPrecios"><abbr title="Precio">Precio</abbr></th>
+            <th style="text-align:left" *ngIf="conPrecios">Precio</th>
             <!--th style="text-align:center"><abbr title="Información">Info</abbr></th-->
             </tr>
         </thead>
@@ -56,8 +56,9 @@
                   <small>{{ item.descripcion }}</small>
                 </div>
                 <div class="is-hidden-tablet" style="padding: 0.5em 0 0.5em 0; ">
-                  <span *ngIf="item.es_causes" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
-                  <span *ngIf="!item.es_causes" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
+                  <span *ngIf="(item.es_causes && item.tipo == 'ME')" class="tag is-success" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
+                  <span *ngIf="(!item.es_causes && item.tipo == 'ME')" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
+                  <span *ngIf="item.tipo == 'MC'" class="tag is-warning" style="font-size: 0.7em !important;">MATERIAL CURACIÓN</span>
                   <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
                   
                   <span *ngIf="(item.tipo == 'ME' && item.informacion)">
@@ -77,8 +78,9 @@
                   <small>{{ item.descripcion }}</small>
                 </div>
                 <div style="padding: 0.5em 0 0.5em 0; ">
-                  <span *ngIf="item.es_causes" class="tag is-success" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
-                  <span *ngIf="!item.es_causes" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
+                  <span *ngIf="(item.es_causes && item.tipo == 'ME')" class="tag is-success" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
+                  <span *ngIf="(!item.es_causes && item.tipo == 'ME')" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
+                  <span *ngIf="item.tipo == 'MC'" class="tag is-warning" style="font-size: 0.7em !important;">MATERIAL CURACIÓN</span>
                   <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
                   <span *ngIf="(item.tipo == 'ME' && item.informacion)">
                     <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>

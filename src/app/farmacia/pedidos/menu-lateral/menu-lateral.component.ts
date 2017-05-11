@@ -13,7 +13,8 @@ export class MenuLateralComponent implements OnInit {
     borradores: 0,
     en_transito: 0,
     por_surtir: 0,
-    finalizados: 0
+    finalizados: 0,
+    expirados: 0
   };
 
   constructor(private pedidosService:PedidosService) { }
