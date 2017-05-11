@@ -177,15 +177,17 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
     this.cantidadValida = false;
   }
   seleccionar(item:InsumoMedico){
+    if(!this.salida){
+      this.lote = false;
+    }
     if(this.lote){
-      this.buscarInsumosService.comprobarStock("00021", item.clave).subscribe(
+      console.log(this.usuario.almacen_activo.id);
+      this.buscarInsumosService.comprobarStock(this.usuario.almacen_activo.id, item.clave).subscribe(
       resultado => {
           this.insumo_stock = resultado as InsumoStock[]
           this.lotes_insumo = resultado.data;
-          
           this.toggleModalLote(item);
         });
-
     }else{
       this.insumoSeleccionado = item;
       if(!this.salida){
@@ -258,7 +260,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
 
   agregar(value: number){
     console.log("BOTON AGREGAR");
-    this.buscarInsumosService.comprobarStock("00021", this.insumoSeleccionado.clave).subscribe(
+    this.buscarInsumosService.comprobarStock(this.usuario.almacen_activo.id, this.insumoSeleccionado.clave).subscribe(
       resultado => {
           this.insumo_stock = resultado as InsumoStock[]
           let existencia = resultado.existencia;
@@ -284,28 +286,17 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   enviar(e){
     //e.preventDefault();
     //console.log(e);
-
-    //Harima: Checamos si el insumo que seleccionamos no se encuentra agregado
-   // if(this.listaAgregados.indexOf(this.insumoSeleccionado.clave) < 0){
-      //this.mensajeAgregado = new Mensaje(true, 2);
-      //this.mensajeAgregado.mostrar = true;    
-      if(!this.salida){
+      this.mensajeAgregado = new Mensaje(true, 2);
+      this.mensajeAgregado.mostrar = true;    
       this.insumoSeleccionado.cantidad = this.cantidadBoxViewChildren.first.nativeElement.value;
-        this.insumoSeleccionado.codigo_barras = this.codigoBarrasViewChildren.first.nativeElement.value;
-        this.insumoSeleccionado.fecha_caducidad = this.fechaViewChildren.first.nativeElement.value;
-        this.insumoSeleccionado.lotes = this.loteViewChildren.first.nativeElement.value;
-      }
+      this.insumoSeleccionado.codigo_barras = this.codigoBarrasViewChildren.first.nativeElement.value;
+      this.insumoSeleccionado.fecha_caducidad = this.fechaViewChildren.first.nativeElement.value;
+      this.insumoSeleccionado.lote_entrada = this.loteViewChildren.first.nativeElement.value;
       this.onEnviar.emit(this.insumoSeleccionado);
       this.searchBoxViewChildren.first.nativeElement.focus();
       //Harima: Agregamos la clave al arreglo de items agregados
       this.listaAgregados.push(this.insumoSeleccionado.clave);
       this.resetItemSeleccionado();
-    /*}else{
-      //Harima: Mostramos un mensaje de error al intentar agregar un insumo ya presente en la lista
-      this.mensajeError = new Mensaje(true,2);
-      this.mensajeError.texto = "El insumo seleccionado ya se encuentra en la lista";
-      this.mensajeError.mostrar = true;
-    }*/
   }
   
   buscar(term: string): void {

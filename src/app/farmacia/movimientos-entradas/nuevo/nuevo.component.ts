@@ -55,39 +55,8 @@ export class NuevoComponent implements OnInit {
   ngOnInit() {
     this.title.setTitle("Nuevo movimiento / Farmacia");
     
-    
-    /**/
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
-    //console.log(this.usuario);
-    //console.log("*****************");
-    this.movimientosEntradasService.listaDatos("almacenes").subscribe(
-       datos => {
-         this.datos = datos;
-         for (let data of this.datos) {
-           for(let usuario of data.usuarios){
-             if(usuario.usuario_id==this.usuario.id){
-              this.movimiento.value.almacen_id= usuario.almacen_id;
-              this.almacenId = usuario.almacen_id;
-              console.log(this.almacenId);
-              this.movimiento.patchValue({almacen_id: this.almacenId});
-              this.movimiento.patchValue({cancelado: false});
-              this.movimiento.patchValue({tipo_movimiento_id: 1});
-             }
-           }
-          }
-         console.log(this.datos);
-        }, //Bind to view
-       err => {
-              // Log errors if any
-              console.log(err);
-          });
-
-
-
-
-    /**************************** */
-
-
+    
       this.movimiento = this.fb.group({
         almacen_id: ['', [Validators.required]],
         tipo_movimiento_id: ['', [Validators.required]],
@@ -100,8 +69,10 @@ export class NuevoComponent implements OnInit {
         ])
       });
     
-
-          }
+    this.movimiento.patchValue({almacen_id: this.usuario.almacen_activo.id});
+    this.movimiento.patchValue({cancelado: false});
+    this.movimiento.patchValue({tipo_movimiento_id: 1});
+  }
 
   initInsumo() {
         return this.fb.group({
@@ -114,12 +85,11 @@ export class NuevoComponent implements OnInit {
         });
     }
 
+
     enviar(insumosAgregadosForm: any[]) {
     
-
-    
     this.cargando = true;  
-    console.log("insumos" + insumosAgregadosForm);
+    console.log(`Insumos ${insumosAgregadosForm}`);
     this.movimiento.value.insumos = insumosAgregadosForm;
     console.log(this.movimiento.value);
     this.movimientosEntradasService.crear(this.movimiento.value).subscribe(
@@ -174,7 +144,6 @@ export class NuevoComponent implements OnInit {
   }
 
   regresar(){
-    
     this.location.back();
   }
 

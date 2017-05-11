@@ -44,13 +44,13 @@ export class FormDatosComponent implements OnInit {
     var date= new Date();
     this.fecha_actual = date.getFullYear()+"-"+date.getMonth()+"-"+date.getDate();
     this.movimiento.get("fecha_movimiento").patchValue(this.fecha_actual);
-    console.log(this.fecha_actual);
+    console.log(this.movimiento.get("tipo_movimiento_id").value);
     
     //this.movimiento.patchValue({almacen_id: this.servidorId});
   }
 
-  listarDatos(){
-     
+  asignarTipo(tipo: number){
+         this.movimiento.get("tipo_movimiento_id").patchValue(tipo);
   }
 
   enviar() {

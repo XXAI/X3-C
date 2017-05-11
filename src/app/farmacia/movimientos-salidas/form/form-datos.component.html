@@ -4,8 +4,12 @@
         <p class="control">
             <label>Tipo de movimiento</label>
         </p>
-        <p class="box">
-            <label> <strong> Salida manual </strong></label>
+        <p class="control">
+            <a class="button" (click)="asignarTipo(2);" [ngClass]="{'is-success': movimiento.get('tipo_movimiento_id').value==2}" style="height: 60px"><label> <strong> Salida estándar </strong></label></a>
+        </p>
+        <span style="width: auto;"> &nbsp; &nbsp; </span>
+        <p class="control">
+            <a class="button" (click)="asignarTipo(6);" [ngClass]="{'is-success': movimiento.get('tipo_movimiento_id').value==6}" style="height: 60px"><label> <strong> Salida receta </strong></label></a>
         </p>
     </div>
 

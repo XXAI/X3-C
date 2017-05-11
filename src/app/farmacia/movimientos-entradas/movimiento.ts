@@ -42,6 +42,7 @@ export class Insumo {
 			         cantidad: number;
 			         cantidad_x_envase: number;
 			         lote: number;
+                     //lote_entrada: string;
 			         fecha_caducidad: Date;
 			         codigo_barras: string;
                      filtro: any[];

@@ -1,37 +1,40 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Location}           from '@angular/common';
+import { ActivatedRoute, Params }   from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../../../auth.service';
-import { MovimientosSalidasService }       from '../movimientos-salidas.service';
+import { MovimientosEntradasService }       from '../movimientos-entradas.service';
 
 import { Mov }       from '../movimiento';
 import { Insumo  } from '../movimiento';
 import { Mensaje } from '../../../mensaje';
 
 @Component({
-  selector: 'app-nuevo',
-  templateUrl: './nuevo.component.html',
-  styleUrls: ['./nuevo.component.css'],
-  providers: [MovimientosSalidasService]
+  selector: 'entrada-editar',
+  templateUrl: './editar.component.html',
+  styleUrls: ['./editar.component.css'],
+  providers: [MovimientosEntradasService]
 })
-export class NuevoComponent implements OnInit {
+export class EditarComponent implements OnInit {
 
   public movimiento: FormGroup;
 
+  private id:string;
   private movimientoRepetido:boolean = false;
   private movimientoInvalido:boolean = false;
-
+ 
+  datosCargados: boolean;
   cargando: boolean = false;
   private cargandoDatos: boolean = false;  
   private almacenes: any = {};
   private usuario: any ={};
   datos : any[];
 
-  private servidorId: string;
+  private almacenId: string;
  
 
   // # SECCION: Esta sección es para mostrar mensajes
@@ -46,52 +49,20 @@ export class NuevoComponent implements OnInit {
     private router: Router,
     private title: Title, 
     private authService:AuthService,
+    private route: ActivatedRoute,
     private location: Location,
-    private movimientosSalidasService: MovimientosSalidasService,
+    private movimientosEntradasService: MovimientosEntradasService,
     private fb: FormBuilder
 
   ) { }
 
   ngOnInit() {
-    this.title.setTitle("Nuevo movimiento / Almacen");
+    this.title.setTitle("Editar movimiento / Farmacia");
     
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
-    //console.log(this.usuario);
-    //console.log("*****************");
-    /*
-    this.movimientosSalidasService.listaDatos("almacenes").subscribe(
-       datos => {
-         this.datos = datos;
-         for (let data of this.datos) {
-           //console.log(data.almacen_usuarios.length); 
-           for(let usuario of data.usuarios){
-             if(usuario.usuario_id==this.usuario.id){
-              //console.log("NUEVO  nuevo.component.ts"); 
-              //console.log(almacen_usuario.usuario_id);
-              //console.log(almacen_usuario.servidor_id);
-              this.movimiento.value.almacen_id= usuario.servidor_id;
-              this.servidorId = usuario.almacen_id;
-              //console.log("SERVIDOR ID-------------------------------------");
-              //console.log(this.servidorId);
-              this.movimiento.patchValue({almacen_id: this.servidorId});
-              this.movimiento.patchValue({cancelado: false});
-              this.movimiento.patchValue({tipo_movimiento_id: 2});
-             }
-           }
-          }
-         console.log(this.datos);
-        }, //Bind to view
-       err => {
-              // Log errors if any
-              console.log(err);
-          });
-
-    /**************************** */
-
-
+    
       this.movimiento = this.fb.group({
         almacen_id: ['', [Validators.required]],
-        status: ['', [Validators.required]],
         tipo_movimiento_id: ['', [Validators.required]],
         fecha_movimiento: ['', [Validators.required]],
         observaciones: ['', [Validators.required]],
@@ -101,11 +72,17 @@ export class NuevoComponent implements OnInit {
           this.initInsumo(),
         ])
       });
-    
+    /*
     this.movimiento.patchValue({almacen_id: this.usuario.almacen_activo.id});
-    this.movimiento.patchValue({tipo_movimiento_id: 2});
+    this.movimiento.patchValue({cancelado: false});
+    this.movimiento.patchValue({tipo_movimiento_id: 1});*/
 
-          }
+    this.route.params.subscribe(params => {
+      this.id = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number
+      console.log(this.id);
+      this.cargarDatos();
+    });
+  }
 
   initInsumo() {
         return this.fb.group({
@@ -118,18 +95,23 @@ export class NuevoComponent implements OnInit {
         });
     }
 
-    enviar(insumosAgregadosForm: any[]) {    
+
+    enviar() {
+    
     this.cargando = true;  
-    console.log("insumos" + insumosAgregadosForm);
-    this.movimiento.value.insumos = insumosAgregadosForm;
+    
+    let movimiento = this.movimiento.value;
     console.log(this.movimiento.value);
-    this.movimientosSalidasService.crear(this.movimiento.value).subscribe(
-        movimiento => {
-          this.cargando = false;
-          console.log("movimiento creado.");
-          this.location.back();
-        },
-        error => {
+    this.movimientosEntradasService.editar(this.id, this.movimiento.value).subscribe(
+      movimiento => {
+        this.cargando = false;
+        console.log("Usuario editado.");
+
+        this.mensajeExito = new Mensaje(true);
+          this.mensajeExito.texto = "Se han guardado los cambios.";
+          this.mensajeExito.mostrar = true;
+      },
+       error => {
           this.cargando = false;
           
           this.mensajeError = new Mensaje(true);
@@ -144,38 +126,74 @@ export class NuevoComponent implements OnInit {
             // Problema de validación
             if (error.status == 409){
               this.mensajeError.texto = "Por favor verfique los campos marcados en rojo.";
-              this.movimientoRepetido = false;
-              this.movimientoInvalido = false;
+              //this.usuarioRepetido = false;
+              //this.usuarioInvalido = false;
               for (var input in e.error){
                 // Iteramos todos los errores
                 for (var i in e.error[input]){
 
                   if(input == 'id' && e.error[input][i] == 'unique'){
-                    this.movimientoRepetido = true;
+                    //this.usuarioRepetido = true;
                   }
                   if(input == 'id' && e.error[input][i] == 'email'){
-                    this.movimientoInvalido = true;
+                    //this.usuarioInvalido = true;
                   }
                 }                      
               }
             }
-          } catch(e){   
-
+          } catch(e){
+                        
             if (error.status == 500 ){
               this.mensajeError.texto = "500 (Error interno del servidor)";
             } else {
               this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
-            }   
-                      
+            }            
           }
-          
 
         }
       );
   }
 
+  cargarDatos(){
+    this.cargando = true;
+    console.log("Cargando movimiento.");
+    this.movimientosEntradasService.ver(this.id).subscribe(
+      movimiento =>{
+        this.cargando = false;
+        this.datosCargados = true;
+
+        this.movimiento.patchValue(movimiento);
+        console.log("Movimiento cargado.");
+        console.log(this.movimiento);
+      },
+        error => {
+          this.cargando = false;
+
+          this.mensajeError = new Mensaje(true);
+          this.mensajeError = new Mensaje(true);
+          this.mensajeError.mostrar;
+
+          try {
+            let e = error.json();
+            if (error.status == 401 ){
+              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }
+            
+          } catch(e){
+                        
+            if (error.status == 500 ){
+              this.mensajeError.texto = "500 (Error interno del servidor)";
+            } else {
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }            
+          }
+          
+
+        }
+    );
+  }
+
   regresar(){
-    
     this.location.back();
   }
 
