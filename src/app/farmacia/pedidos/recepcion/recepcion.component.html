@@ -19,10 +19,10 @@
                <span *ngIf="statusRecepcion == 'FI'"><strong style="color:#FFF;">Recepción concluida</strong></span>
             </div>
           </div>
-          <div class="column is-4" style="text-align:center; " *ngIf="statusRecepcion != 'FI'">
+          <div class="column is-4" style="text-align:right; " *ngIf="statusRecepcion != 'FI'">
             <div style="margin:1em;">
-            <a  class="button is-primary" style="width:45%; margin-right:5%;" (click)="finalizar()"> <span class="icon"><i class="fa fa-check"></i></span> <span>Concluir</span></a>
-            <a  class="button is-white"  style="width:45%"   (click)="guardar()"> <span class="icon"><i class="fa fa-save"></i></span> <span>Guardar</span></a>
+            <a *ngIf="!guardando && statusRecepcion == 'BR'" class="button is-primary" style="width:45%; margin-right:5%;" (click)="finalizar()"> <span class="icon"><i class="fa fa-check"></i></span> <span>Concluir</span></a>
+            <a  class="button is-white"  style="width:45%"  [ngClass]="{ 'is-loading': guardando }"  (click)="guardar()"> <span class="icon"><i class="fa fa-save"></i></span> <span>Guardar</span></a>
             </div>
           </div>
         </div>       
@@ -181,7 +181,7 @@
               <span *ngIf="erroresFormularioStock.lote.error" class="help is-danger">{{erroresFormularioStock.lote.texto}}</span>
             </p>
             <p class="control is-expanded has-icon has-icon-right">
-              <label class="label">Fecha de Caducidad</label>
+              <label class="label">Caducidad (aaaa-mm-dd)</label>
               <input class="input" type="text" placeholder="aaaa-mm-dd" [(ngModel)]="formStock.fecha_caducidad">
               <span *ngIf="erroresFormularioStock.fecha_caducidad.error" class="icon is-small" >
                 <i class="fa fa-warning"></i>

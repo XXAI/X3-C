@@ -21,6 +21,7 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
         for(var i in pedido.lista){
             var insumo = pedido.lista[i];
             insumos.push({
+                tipo: insumo.tipo,
                 lote: insumo.lote.toString(),
                 clave: insumo.clave,
                 descripcion: insumo.generico_nombre + ' ' + ((insumo.descripcion)?insumo.descripcion:''),
@@ -75,10 +76,12 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
                     paddingLeft: function(i, node) { return 0; },
                     paddingRight: function(i, node) { return 0; },
                     hLineWidth: function(i, node){
-                        if (i<2 ){ return 0;} else {
+                        if (i<2 ){ 
+                            return 0;
+                        } else {
                             return 0.25
                         }
-                        return (i === 0 || i === node.table.body.length) ? 0.5: 0.5;
+                        //return (i === 0 || i === node.table.body.length) ? 0.5: 0.5;
                     },
                     vLineWidth: function(i, node) {
                         /* Hack para las lineas verticales de la cabecera */
