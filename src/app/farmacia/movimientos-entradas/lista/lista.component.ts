@@ -49,7 +49,7 @@ export class ListaComponent implements OnInit {
   
   datos : any[];
   private almacenId: string;
-  private usuario: any ={};
+  private usuario;
 
   // # SECCION: Lista de Modelos, hay que CAMBIAR a movimientos
   items: Modelo[] = [];
@@ -85,6 +85,8 @@ export class ListaComponent implements OnInit {
   ngOnInit() {
     this.title.setTitle("Entradas / Farmacia");
 
+    this.usuario = JSON.parse(localStorage.getItem("usuario"));
+
     // Inicializamos el objeto para los reportes con web Webworkers
     this.pdfworker = new Worker("web-workers/farmacia/movimientos/imprimir-entrada.js")
 
@@ -105,7 +107,6 @@ export class ListaComponent implements OnInit {
     };
 
 
-    this.obtenerAlmacenId();
     this.listar(1);
     this.mensajeError = new Mensaje();
     this.mensajeExito = new Mensaje();
@@ -179,31 +180,6 @@ export class ListaComponent implements OnInit {
 
   } //Fin ngOnInit
 
-  obtenerAlmacenId(){
-
-      this.usuario = JSON.parse(localStorage.getItem("usuario"));
-      
-      this.movimientosEntradasService.listaDatos("almacenes").subscribe(
-       datos => {
-         this.datos = datos;
-         for (let data of this.datos) {
-           for(let usuario of data.usuarios){
-             console.log("usuario");
-             console.log(usuario);
-             if(usuario.usuario_id==this.usuario.id){
-              this.movimiento.value.almacen_id= usuario.almacen_id;
-              this.almacenId = usuario.almacen_id;
-              console.log(this.almacenId);
-             }
-           }
-          }
-         console.log(this.datos);
-        }, //Bind to view
-       err => {
-              // Log errors if any
-              console.log(err);
-          });
-  }
   initInsumo() {
         return this.fb.group({
             clave: ['', Validators.required],
@@ -216,7 +192,7 @@ export class ListaComponent implements OnInit {
     }
 
   toggleModalCancelado(item: Movimiento, index){
-    this.mostrarModalCancelado = !this.mostrarModalCancelado
+    this.mostrarModalCancelado = !this.mostrarModalCancelado;
     this.dato = item;
     this.index = index;
 
@@ -315,13 +291,14 @@ export class ListaComponent implements OnInit {
    
     this.cargando = true;
     //Peticion a la API
-    this.movimientosEntradasService.lista(pagina,this.resultadosPorPagina).subscribe(
+    this.movimientosEntradasService.lista(pagina,this.resultadosPorPagina, this.usuario.almacen_activo.id).subscribe(
         resultado => {
           this.cargando = false;
-          console.log(resultado);
-          this.items = resultado.data as Modelo[];
-
-          console.log(this.items);
+          if(resultado.data){
+            this.items = resultado.data.data as Modelo[];
+          }else{
+            this.items=[];
+          }
 
           this.total = resultado.total | 0;
           this.paginasTotales = Math.ceil(this.total / this.resultadosPorPagina);

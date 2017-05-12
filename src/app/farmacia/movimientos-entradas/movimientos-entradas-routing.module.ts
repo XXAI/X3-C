@@ -3,16 +3,18 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { ListaComponent  }  from  './lista/lista.component';
 import { NuevoComponent  }  from './nuevo/nuevo.component';
+import { EditarComponent }  from  './editar/editar.component';
 
 import {  AuthGuard } from '../../auth-guard.service';
 
 const routes: Routes = [
-  {path: 'farmacia/movimientos', redirectTo: 'farmacia/movimientos/entradas', pathMatch: 'full'},
+  {path: 'almacen/movimientos', redirectTo: 'almacen/movimientos/entradas', pathMatch: 'full'},
   {
-    path:'farmacia/movimientos',
+    path:'almacen/movimientos',
     children:[
       {path: 'entradas', component: ListaComponent},
-      {path: 'entradas/nuevo', component: NuevoComponent}
+      {path: 'entradas/nuevo', component: NuevoComponent},
+      { path: 'entradas/editar/:id', component: EditarComponent}
     ],
     canActivate: [AuthGuard]
   }

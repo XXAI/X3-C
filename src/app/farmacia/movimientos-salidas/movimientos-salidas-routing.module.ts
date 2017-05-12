@@ -7,9 +7,9 @@ import { NuevoComponent  }  from './nuevo/nuevo.component';
 import {  AuthGuard } from '../../auth-guard.service';
 
 const routes: Routes = [
-  {path: 'farmacia/movimientos', redirectTo: 'farmacia/movimientos/salidas', pathMatch: 'full'},
+  {path: 'almacen/movimientos', redirectTo: 'almacen/movimientos/salidas', pathMatch: 'full'},
   {
-    path:'farmacia/movimientos',
+    path:'almacen/movimientos',
     children:[
       {path: 'salidas', component: ListaComponent},
       {path: 'salidas/nuevo', component: NuevoComponent}

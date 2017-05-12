@@ -35,6 +35,7 @@ export class ListaComponent implements OnInit {
   public movimiento: FormGroup;
 
   mostrarModalCancelado = false;
+  private usuario;
 
     // # SECCION: Reportes
   private pdfworker:Worker;
@@ -82,7 +83,8 @@ export class ListaComponent implements OnInit {
   ngOnInit() {
     this.title.setTitle("Salidas / Farmacia");
 
-
+    this.usuario = JSON.parse(localStorage.getItem("usuario"));
+    
     // Inicializamos el objeto para los reportes con web Webworkers
     this.pdfworker = new Worker("web-workers/farmacia/movimientos/imprimir-salida.js")
 
@@ -286,14 +288,14 @@ export class ListaComponent implements OnInit {
    
     this.cargando = true;
     //Peticion a la API
-    this.movimientosSalidasService.lista(pagina, this.resultadosPorPagina).subscribe(
+    this.movimientosSalidasService.lista(pagina, this.resultadosPorPagina, this.usuario.almacen_activo.id ).subscribe(
         resultado => {
           this.cargando = false;
-          console.log(resultado);
-          this.items = resultado.data as Modelo[];
-          
-
-          console.log(this.items);
+          if(resultado.data){
+            this.items = resultado.data.data as Modelo[];
+          }else{
+            this.items=[];
+          }
 
           this.total = resultado.total | 0;
           this.paginasTotales = Math.ceil(this.total / this.resultadosPorPagina);

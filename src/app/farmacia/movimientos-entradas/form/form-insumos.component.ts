@@ -76,7 +76,7 @@ export class FormInsumosComponent implements OnInit {
     this.title.setTitle('Nueva entrada / Farmacia');
 
     // Inicializamos el objeto para los reportes con web Webworkers
-    this.pdfworker = new Worker("web-workers/farmacia/pedidos/imprimir.js")
+    this.pdfworker = new Worker("web-workers/farmacia/movimientos/imprimir-entrada.js")
     
     // Este es un hack para poder usar variables del componente dentro de una funcion del worker
     var self = this;    
@@ -110,7 +110,7 @@ export class FormInsumosComponent implements OnInit {
     console.log(this.pedidos[0]);
 
    // this.insumosAgregados.push(new Insumo());
-    console.log(this.insumosAgregados);
+   // console.log(this.insumosAgregados);
     
   }
   
@@ -145,7 +145,7 @@ export class FormInsumosComponent implements OnInit {
     insumo.cantidad = item.cantidad;
     insumo.cantidad_x_envase = Number(item.informacion.cantidad_x_envase);
     insumo.codigo_barras = item.codigo_barras;
-    insumo.lote = item.lote;
+    insumo.lote = item.lote_entrada;
     console.log(item.lote);
     insumo.fecha_caducidad = item.fecha_caducidad;
     insumo.filtro = item.filtro;

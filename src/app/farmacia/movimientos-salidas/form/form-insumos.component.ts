@@ -166,7 +166,7 @@ export class FormInsumosComponent implements OnInit {
     insumo.cantidad_x_envase = Number(item.informacion.cantidad_x_envase);
     insumo.codigo_barras = item.codigo_barras;
     insumo.lotes = item.lotes;
-    insumo.lote = item.lote;
+    //insumo.lote = item.lote;
 
     insumo.fecha_caducidad = item.fecha_caducidad;
     insumo.filtro = item.filtro;
@@ -325,6 +325,10 @@ export class FormInsumosComponent implements OnInit {
 
   }
 
+  eliminarInsumo(item: any[], index: number){
+    this.insumosAgregados.splice(index, 1);
+  }
+/*
   //Harima: necesitamos eliminar también de la lista de claves agregadas
   eliminarInsumo(item,index,filtro:boolean = false){
     //Harima: eliminar el elemento en la lista de claves agregadas, para poder agregarla de nuevo si se desea
@@ -337,7 +341,7 @@ export class FormInsumosComponent implements OnInit {
     }else{
       this.pedidos[this.pedidoActivo].filtro.eliminarItem(item,index);
     }
-  }
+  }*/
 
   mostrarFichaInformativa(e, clave: string){
     e.preventDefault();

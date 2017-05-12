@@ -20,7 +20,8 @@ export class FormDatosComponent implements OnInit {
   datos: any[];
   itemsDatos: any[];
   listaMovimientos: any[];
-  private usuario: any = {}
+  private usuario: any = {};
+  fecha_actual;
   
   @Input() insumo: Insumo[];
   @Input() movimiento:FormGroup;
@@ -36,34 +37,17 @@ export class FormDatosComponent implements OnInit {
   @Output() onEnviar = new EventEmitter<void>();
   @Output() onRegresar = new EventEmitter<void>();
   @Output() onCargarDatos = new EventEmitter<void>();
-  
 
   ngOnInit() {
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
     console.log(this.usuario);
-    console.log("*****************");
-    this.movimientosEntradasService.listaDatos("almacenes").subscribe(
-       datos => {
-         this.datos = datos;
-         console.log(this.datos);
-         for (let data of this.datos) {
-           if(data.usuario_id == this.usuario.id){
-           console.log(data.usuario_id);
-           console.log(this.usuario.id);
-              for (let tipo_movimiento of data.tipos_movimientos) {
-                  //console.log("almacen_tipos_movimientos");
-                  this.listaMovimientos = tipo_movimiento.tipo_movimiento;
-                  //console.log(this.listaMovimientos);
-                  //console.log(almacen_tipo_movimiento.tipo_movimiento.nombre);                  
-              }
-           }
-          }
-         console.log(this.datos);
-        }, //Bind to view
-       err => {
-              // Log errors if any
-              console.log(err);
-          });
+    var date= new Date();
+    if(!this.movimiento.get("fecha_movimiento").value){
+      this.fecha_actual = date.getFullYear()+"-"+date.getMonth()+"-"+date.getDate();
+      this.movimiento.get("fecha_movimiento").patchValue(this.fecha_actual);
+    }else{
+      this.fecha_actual = this.movimiento.get("fecha_movimiento").value;
+    }
   }
 
   listarDatos(){

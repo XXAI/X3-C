@@ -13,7 +13,7 @@
         </a>
     </div>
 
-    <table class="table is-unselectable" *ngIf="!cargando" style="font-size: 0.8em;">
+    <table class="table is-unselectable is-striped" *ngIf="!cargando" style="font-size: 0.8em;">
         <thead>
             <tr>
                 <th style="width:41px;vertical-align: middle;" class="has-text-centered"><abbr title="Numero progresivo">NP</abbr></th>
@@ -37,7 +37,7 @@
                     </p>
                 </th>
                 <th style="vertical-align: middle;" class="is-hidden-mobile is-hidden-tablet-only">Descripcion</th>
-                <th style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Cantidad">Cantidad</abbr></th>
+                <th style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title=""></abbr></th>
                 <th style="width:21px !important;"></th>
             </tr>
         </thead>
@@ -98,7 +98,7 @@
 
                 <!-- CANTIDAD -->
                 <td style="width:auto !important;">
-                    <span class="tag is-success"> Cantidad total: {{item.cantidad}} </span>
+                    <span class="tag is-success" style="line-height:0.9em;"> Cantidad total: &nbsp;<strong>{{item.cantidad}} </strong> </span>
                     <table class="table" style="line-height:0.8em; text-align-last: left;">
                         <tbody>
                             <tr *ngFor="let lote of item.lotes">

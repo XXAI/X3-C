@@ -13,20 +13,21 @@
                     </div>
 
                     <div class="control is-grouped">
+                        <!--
                         <div class="control">
 
                             <select name="status" formControlName="status" class="select">
-                            <option *ngFor="let item of listaStatus" value="{{item.id}}" [attr.selected]="movimiento.get('status').value == item.id ? true:false">{{ item.nombre }}</option>
-                        </select>
+                                <option *ngFor="let item of listaStatus" value="{{item.id}}" [attr.selected]="movimiento.get('status').value == item.id ? true:false">{{ item.nombre }}</option>
+                            </select>
                             <span class="help is-danger" *ngIf="movimiento.get('status').hasError('required') && movimiento.get('status').touched">Debe elegir un status.</span>
 
                         </div>
-
+                        -->
                         <p class="control">
                             <a class="button is-primary " type="submit" (click)="enviar()" [ngClass]="{'is-loading': cargando}">Guardar</a>
                         </p>
                         <p class="control">
-                            <a class="button is-white" routerLink="/farmacia/movimientos/entradas/">Ir a la lista</a>
+                            <a class="button is-white" routerLink="/almacen/movimientos/entradas/">Ir a la lista</a>
                         </p>
                     </div>
                 </div>
