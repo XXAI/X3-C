@@ -180,8 +180,11 @@ export class FormInsumosComponent implements OnInit {
         for(let insumo of this.insumosAgregados[posicion].lotes){
           if(valueItem.id == insumo.id){
             encontrado = true;
-            insumo.cantidad= insumo.cantidad + valueItem.cantidad;
-             this.insumosAgregados[posicion].cantidad = this.insumosAgregados[posicion].cantidad + insumo.cantidad;
+            console.log(valueItem.cantidad);
+            if(valueItem.cantidad){
+              insumo.cantidad= insumo.cantidad + valueItem.cantidad;
+              this.insumosAgregados[posicion].cantidad = this.insumosAgregados[posicion].cantidad + insumo.cantidad;
+            }
           }
         }
         if(!encontrado){

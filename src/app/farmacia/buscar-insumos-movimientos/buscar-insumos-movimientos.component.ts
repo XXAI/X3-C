@@ -288,7 +288,8 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
 
       let i: number = 0;
       this.insumoSeleccionado.lotes = this.lotes_insumo;
-      this.mensajeAgregado = new Mensaje(true, 2)
+      console.log(this.insumoSeleccionado.lotes);
+      this.mensajeAgregado = new Mensaje(true, 2);
       this.onEnviar.emit(this.insumoSeleccionado);
       this.searchBoxViewChildren.first.nativeElement.focus();
       //Harima: Agregamos la clave al arreglo de items agregados
