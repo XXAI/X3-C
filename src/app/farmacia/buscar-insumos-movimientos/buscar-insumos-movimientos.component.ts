@@ -45,6 +45,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   private mostrarModalLote: boolean = false;
 
   private lotes_insumo: any[] = [];
+  private existencia: boolean = false;
 
   //Harima: Para evitar agregar insumos que ya estan en la lista
   @Input() listaAgregados: Array<string>;
@@ -229,6 +230,10 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
     this.lotes_insumo.push({id:""+ Math.floor(Math.random() * (999)) + 1, clave_insumo_medico:this.insumoSeleccionado.clave, codigo_barras:"", lote: "", fecha_caducidad: "", existencia: 0, cantidad:1, nuevo: 1});
   }
 
+  eliminarLote(index: number){
+    this.lotes_insumo.splice(index, 1);
+  }
+
   comprobarCantidad(value: any){
     if (value.replace(/ /g,'') == ""){
       this.cantidadValida = false;
@@ -247,15 +252,24 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
 
     this.cantidadValida = true;
     
-   /* if(!this.salida && this.cantidadValida){
-      this.cantidadAPI=true;
-    }else{
-      //this.agregar(value);
-      //enviar peticion a la API para comprobarCantidad
-      
-    }*/
+    /*if(this.salida && this.cantidadValida){
+      this.comprobarExistencia()
+    }
+    */
     return true;
+  }
+  comprobarExistencia(cantidad:any, existencia: number){
+    console.log(existencia);
+    if(+cantidad<=existencia){
+      console.log(cantidad);
 
+      this.existencia = true;
+      return true;
+    }
+    else{
+      this.existencia = true;
+      return false;
+    }
   }
 
   agregar(value: number){
