@@ -219,7 +219,7 @@
                         <td *ngIf="!item.nuevo">{{item.existencia}}</td>
                         <td *ngIf="item.nuevo"><input class="input has-text-centered is-small" type="number" placeholder="Existencia" [(ngModel)]="item.existencia"></td>
                         <td>
-                            <input class="input has-text-centered is-small" type="number" placeholder="Cantidad" [(ngModel)]="item.cantidad" (keyup)="comprobarExistencia(item.cantidad, item.existencia)" [ngClass]="{'is-danger': existencia}">
+                            <input class="input has-text-centered is-small" type="number" placeholder="Cantidad" [(ngModel)]="item.cantidad" (keyup)="comprobarExistencia(item.cantidad, item.existencia)" [ngClass]="{'is-danger': !existencia}">
                         </td>
                         <td *ngIf="item.nuevo">
                             <a class="delete" (click)=eliminarLote(i)></a>
@@ -241,7 +241,7 @@
         </section>
         <footer class="modal-card-foot">
             <p class="control">
-                <a class="button is-primary" (click)="enviarSalida(); mostrarModalLote=false">Aceptar</a>
+                <a class="button is-primary" [ngClass]="{'is-disabled': !existencia}" (click)="enviarSalida(); mostrarModalLote=false">Aceptar</a>
             </p>
             <p class="control">
                 <a class="button is-link" (click)="toggleModalLote(dato)">Cancelar</a>

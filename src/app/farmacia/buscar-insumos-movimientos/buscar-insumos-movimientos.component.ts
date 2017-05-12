@@ -45,7 +45,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   private mostrarModalLote: boolean = false;
 
   private lotes_insumo: any[] = [];
-  private existencia: boolean = false;
+  private existencia: boolean = true;
 
   //Harima: Para evitar agregar insumos que ya estan en la lista
   @Input() listaAgregados: Array<string>;
@@ -259,16 +259,13 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
     return true;
   }
   comprobarExistencia(cantidad:any, existencia: number){
-    console.log(existencia);
-    if(+cantidad<=existencia){
-      console.log(cantidad);
-
+    let cant = +cantidad;
+    if(cantidad<=existencia){
+      console.log(`Cantidad ${cantidad} Existencia ${existencia}`);
       this.existencia = true;
-      return true;
     }
     else{
-      this.existencia = true;
-      return false;
+      this.existencia = false;
     }
   }
 
