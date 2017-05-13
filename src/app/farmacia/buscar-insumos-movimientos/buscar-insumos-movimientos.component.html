@@ -116,7 +116,8 @@
                     </b>
                         </td>
                         <td style="text-align:center">
-                            <a (click)="mostrarFichaInformativa($event,item.clave)"><span class="icon"><i class="fa fa-info-circle"></i></span></a>
+                            <!-- (click)="mostrarFichaInformativa($event,item.clave)" -->
+                            <a><span class="icon"><i class="fa fa-info-circle"></i></span></a>
                         </td>
 
                     </tr>
@@ -220,6 +221,7 @@
                         <td *ngIf="item.nuevo"><input class="input has-text-centered is-small" type="number" placeholder="Existencia" [(ngModel)]="item.existencia"></td>
                         <td>
                             <input class="input has-text-centered is-small" type="number" placeholder="Cantidad" [(ngModel)]="item.cantidad" (keyup)="comprobarExistencia(item.cantidad, item.existencia)" [ngClass]="{'is-danger': !existencia}">
+                            <span>{{i}}</span>
                         </td>
                         <td *ngIf="item.nuevo">
                             <a class="delete" (click)=eliminarLote(i)></a>

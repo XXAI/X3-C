@@ -4,9 +4,31 @@
 <div style="height:50px;"></div>
 <div class="contenedor columns " style="height:100%; ">
     <div class="column is-one-quarter is-hidden-mobile">
-        <menu-lateral></menu-lateral>
+        <!-- <menu-lateral (onEnviarTipo)=enviarTipo($event);></menu-lateral>  -->
+        <aside class="menu" style="padding: 1em;">
+            <a routerLink="/almacen/movimientos/salidas/nuevo" routerLinkActive="is-active" class="button is-primary is-inverted is-medium is-fullwidth"><span class="icon"  ><i class="fa fa-plus"></i></span> <span>Nueva Salida</span></a>
+            <br>
+            <ul class="menu-list">
+                <li>
+                    <a routerLink="/almacen/movimientos/estandar" #estandar routerLinkActive="is-active">
+                        <span class="icon"><i class="fa fa-file"></i></span> Salida estandar
+                        <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                        <!-- <span class="tag is-pulled-right" [ngClass]="{ 'is-white': estandar.className == 'is-active', 'is-primary': estandar.className != 'is-active' }"></span> -->
+                    </a>
+                </li>
+                <li>
+                    <a routerLink="/almacen/movimientos/receta" #receta routerLinkActive="is-active">
+                        <span class="icon"><i class="fa fa-pencil-square-o"></i></span> Salida por receta
+                        <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                        <!-- <span class="tag is-pulled-right" [ngClass]="{ 'is-white': receta.className == 'is-active', 'is-primary': receta.className != 'is-active' }"></span> -->
+                    </a>
+                </li>
+            </ul>
+
+        </aside>
     </div>
-    <!-- -->
+
+
     <!-- Columna de la lista de salidas -->
     <div class="column" style="padding:2em;">
         <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
@@ -57,13 +79,13 @@
                     <tr *ngFor="let item of items; let i=index">
                         <th style="vertical-align: middle;"><a routerLink="/almacen/movimientos/salidas/ver/{{item.id}}">{{ item.id }}</a></th>
                         <th style="vertical-align: middle;"><a routerLink="/almacen/movimientos/salidas/ver/{{item.id}}">{{ item.usuario_id }}</a></th>
-                        <td style="vertical-align: middle;"><a routerLink="/almacen/movimientos/salidas/ver/{{item.id}}">Salida manual </a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/almacen/movimientos/salidas/ver/{{item.id}}">{{titulo}}</a></td>
                         <td style="vertical-align: middle;"><a routerLink="/almacen/movimientos/salidas/ver/{{item.id}}">{{ item.created_at | date:'dd/MM/y' }}</a></td>
                         <td style="vertical-align: middle;"><a routerLink="/almacen/movimientos/salidas/ver/{{item.id}}">{{ item.created_at | date: 'HH:mm'}}</a></td>
                         <td style="vertical-align: middle;" class="has-text-centered">
                             <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-print"></i></span><a class="is is-danger" (click)="imprimir(item, i)"><span class="icon"><i class="fa fa-print"></i></span></a>
                             <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando && item.cancelado == 0" class="is-danger" (click)="toggleModalCancelado(item, i)"><span class="icon"><i class="fa fa-times"></i></span></a>
-                            <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
+                            <!-- <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a> -->
                         </td>
                     </tr>
                     <tr *ngIf="items.length == 0">

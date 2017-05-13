@@ -1,5 +1,6 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { Title} from  '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 
 
@@ -36,6 +37,10 @@ export class ListaComponent implements OnInit {
 
   mostrarModalCancelado = false;
   private usuario;
+  private tipo: number = 2;
+
+  tipo_salida: number;
+  titulo: string;
 
     // # SECCION: Reportes
   private pdfworker:Worker;
@@ -55,7 +60,7 @@ export class ListaComponent implements OnInit {
   public dato: Movimiento;
   public index: any;
   private paginaActual = 1;
-  resultadosPorPagina = 5;
+  resultadosPorPagina = 10;
   total = 0;
   private paginasTotales = 0;
   private indicePaginas:number[] = []
@@ -74,41 +79,33 @@ export class ListaComponent implements OnInit {
   // # FIN SECCION
 
   constructor(
-    private title: Title,
+    private title: Title, 
+    private route: ActivatedRoute,
     private movimientosSalidasService: MovimientosSalidasService,
     private fb: FormBuilder,
     private _ngZone: NgZone
   ) { }
 
   ngOnInit() {
-    this.title.setTitle("Salidas / Farmacia");
+
+
+    switch(this.route.snapshot.url[0].path){
+      case 'estandar': 
+        this.tipo_salida = 2;
+        this.titulo = "Estandar";
+        console.log(this.tipo_salida); break;
+      case 'receta': 
+        this.tipo_salida = 5;
+        this.titulo = "Por receta";
+        console.log(this.tipo_salida); break;
+      default: this.tipo_salida = 2; this.titulo = "Estandar"; break;
+    }
+
+    this.title.setTitle("Salidas / Almacen");
 
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
+    this.listar(1, this.tipo_salida);
     
-    // Inicializamos el objeto para los reportes con web Webworkers
-    this.pdfworker = new Worker("web-workers/farmacia/movimientos/imprimir-salida.js")
-
-    
-    // Este es un hack para poder usar variables del componente dentro de una funcion del worker
-    var self = this;    
-    var $ngZone = this._ngZone;
-    
-    this.pdfworker.onmessage = function( evt ) {       
-      // Esto es un hack porque estamos fuera de contexto dentro del worker
-      // Y se usa esto para actualizar alginas variables
-      $ngZone.run(() => {
-         self.cargandoPdf = false;
-      });
-
-      FileSaver.saveAs( self.base64ToBlob( evt.data.base64, 'application/pdf' ), evt.data.fileName );
-      //open( 'data:application/pdf;base64,' + evt.data.base64 ); // Popup PDF
-    };
-
-
-    this.listar(1);
-    this.mensajeError = new Mensaje();
-    this.mensajeExito = new Mensaje();
-
     var self = this;
 
     var busquedaSubject = this.terminosBusqueda
@@ -121,7 +118,7 @@ export class ListaComponent implements OnInit {
       this.ultimoTerminoBuscado = term;
       this.paginaActualBusqueda = 1;
       this.cargando = true;
-      return term  ? this.movimientosSalidasService.buscar(term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]}) 
+      return term  ? this.movimientosSalidasService.buscar(this.tipo_salida, term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda, this.usuario.almacen_activo.id) : Observable.of<any>({data:[]}) 
     }    
     ).catch( function handleError(error){ 
      
@@ -163,6 +160,28 @@ export class ListaComponent implements OnInit {
       }
 
     );
+
+        // Inicializamos el objeto para los reportes con web Webworkers
+    this.pdfworker = new Worker("web-workers/farmacia/movimientos/imprimir-salida.js")
+
+    // Este es un hack para poder usar variables del componente dentro de una funcion del worker
+    var self = this;    
+    var $ngZone = this._ngZone;
+    
+    this.pdfworker.onmessage = function( evt ) {       
+      // Esto es un hack porque estamos fuera de contexto dentro del worker
+      // Y se usa esto para actualizar alginas variables
+      $ngZone.run(() => {
+         self.cargandoPdf = false;
+      });
+
+      FileSaver.saveAs( self.base64ToBlob( evt.data.base64, 'application/pdf' ), evt.data.fileName );
+      //open( 'data:application/pdf;base64,' + evt.data.base64 ); // Popup PDF
+    };
+
+
+    this.mensajeError = new Mensaje();
+    this.mensajeExito = new Mensaje();
 
     this.movimiento = this.fb.group({
         almacen_id: ['', [Validators.required]],
@@ -242,7 +261,7 @@ export class ListaComponent implements OnInit {
     console.log("Cargando búsqueda.");
    
     this.cargando = true;
-    this.movimientosSalidasService.buscar(term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
+    this.movimientosSalidasService.buscar(this.tipo_salida, term, pagina, this.resultadosPorPaginaBusqueda, this.usuario.almacen_activo.id).subscribe(
         resultado => {
           this.cargando = false;
 
@@ -282,13 +301,18 @@ export class ListaComponent implements OnInit {
       );
   }  //Fin listarBusqueda
 
-  listar(pagina:number): void {
+  enviarTipo(tipo: number){
+    this.tipo = tipo; 
+    //this.listar(1);
+  }
+
+  listar(pagina:number, tipo: number): void {
     this.paginaActual = pagina;
-    console.log("Cargando usuarios.");
+    //console.log("Cargando usuarios.");
    
     this.cargando = true;
     //Peticion a la API
-    this.movimientosSalidasService.lista(pagina, this.resultadosPorPagina, this.usuario.almacen_activo.id ).subscribe(
+    this.movimientosSalidasService.lista(pagina, this.resultadosPorPagina, this.usuario.almacen_activo.id, tipo).subscribe(
         resultado => {
           this.cargando = false;
           if(resultado.data){
@@ -305,7 +329,7 @@ export class ListaComponent implements OnInit {
             this.indicePaginas.push(i+1);
           }
 
-          console.log("Items cargados.");
+          //console.log("Items cargados.");
           
         },
         error => {
@@ -372,10 +396,10 @@ export class ListaComponent implements OnInit {
 
   // # SECCION: Paginación
   paginaSiguiente():void {
-    this.listar(this.paginaActual+1);
+    this.listar(this.paginaActual+1, this.tipo_salida);
   }
   paginaAnterior():void {
-    this.listar(this.paginaActual-1);
+    this.listar(this.paginaActual-1, this.tipo_salida);
   }
 
   paginaSiguienteBusqueda(term:string):void {

@@ -35,7 +35,7 @@ export class FormComponent implements OnInit {
   ngOnInit() {
     this.listaStatus=[{id:"FI", nombre:"Finalizado"}, {id:"BR", nombre:"Borrador"}];
     this.movimiento.patchValue({status: "FI"});
-    console.log(this.movimiento.value);
+    //console.log(this.movimiento.value);
   }
 
 

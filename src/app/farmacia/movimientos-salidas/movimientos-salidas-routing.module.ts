@@ -12,7 +12,9 @@ const routes: Routes = [
     path:'almacen/movimientos',
     children:[
       {path: 'salidas', component: ListaComponent},
-      {path: 'salidas/nuevo', component: NuevoComponent}
+       { path: 'estandar', component: ListaComponent},
+       { path: 'receta', component: ListaComponent},
+       { path: 'salidas/nuevo', component: NuevoComponent}
     ],
     canActivate: [AuthGuard]
   }

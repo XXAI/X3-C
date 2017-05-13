@@ -56,38 +56,6 @@ export class NuevoComponent implements OnInit {
     this.title.setTitle("Nuevo movimiento / Almacen");
     
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
-    //console.log(this.usuario);
-    //console.log("*****************");
-    /*
-    this.movimientosSalidasService.listaDatos("almacenes").subscribe(
-       datos => {
-         this.datos = datos;
-         for (let data of this.datos) {
-           //console.log(data.almacen_usuarios.length); 
-           for(let usuario of data.usuarios){
-             if(usuario.usuario_id==this.usuario.id){
-              //console.log("NUEVO  nuevo.component.ts"); 
-              //console.log(almacen_usuario.usuario_id);
-              //console.log(almacen_usuario.servidor_id);
-              this.movimiento.value.almacen_id= usuario.servidor_id;
-              this.servidorId = usuario.almacen_id;
-              //console.log("SERVIDOR ID-------------------------------------");
-              //console.log(this.servidorId);
-              this.movimiento.patchValue({almacen_id: this.servidorId});
-              this.movimiento.patchValue({cancelado: false});
-              this.movimiento.patchValue({tipo_movimiento_id: 2});
-             }
-           }
-          }
-         console.log(this.datos);
-        }, //Bind to view
-       err => {
-              // Log errors if any
-              console.log(err);
-          });
-
-    /**************************** */
-
 
       this.movimiento = this.fb.group({
         almacen_id: ['', [Validators.required]],
@@ -120,13 +88,13 @@ export class NuevoComponent implements OnInit {
 
     enviar(insumosAgregadosForm: any[]) {    
     this.cargando = true;  
-    console.log("insumos" + insumosAgregadosForm);
+    console.log(`Insumos ${insumosAgregadosForm}`);
     this.movimiento.value.insumos = insumosAgregadosForm;
     console.log(this.movimiento.value);
     this.movimientosSalidasService.crear(this.movimiento.value).subscribe(
         movimiento => {
           this.cargando = false;
-          console.log("movimiento creado.");
+          console.log("Movimiento creado.");
           this.location.back();
         },
         error => {

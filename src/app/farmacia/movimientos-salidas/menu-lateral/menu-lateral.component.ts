@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { MovimientosSalidasService } from '../movimientos-salidas.service';
 
 @Component({
@@ -7,6 +7,9 @@ import { MovimientosSalidasService } from '../movimientos-salidas.service';
   styleUrls: ['./menu-lateral.component.css']
 })
 export class MenuLateralComponent implements OnInit {
+
+  @Output() onEnviarTipo : EventEmitter <number> = new EventEmitter();
+
   cargando: boolean = false;
   stats: any = {
     manual: 0
@@ -27,6 +30,11 @@ export class MenuLateralComponent implements OnInit {
         console.log(error);
       }
     );
+  }
+
+  enviarTipo(tipo: number){
+    console.log(tipo);
+    this.onEnviarTipo.emit(tipo);
   }
 
 }
