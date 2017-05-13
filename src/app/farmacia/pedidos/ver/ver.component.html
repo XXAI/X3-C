@@ -9,7 +9,7 @@
             </section>
 
             <div style="padding: 1em;">
-                <label class="label">Descripción:</label>
+                <label class="label">Nombre del Pedido:</label>
                 <p class="control">
                   <input type="text" class="input is-fullwidth" readonly="readonly" value="{{(pedido.datosImprimir)?pedido.datosImprimir.descripcion:''}}"/>
                 </p>
@@ -19,15 +19,34 @@
                   <input type="text" class="input is-fullwidth" readonly="readonly" value="{{(pedido.datosImprimir)?pedido.datosImprimir.fecha:''}}"/>
                 </p>
 
-                <label class="label">Solicitado a:</label>
-                <p class="control" *ngIf="pedido.datosImprimir">
-                  <input *ngIf="pedido.datosImprimir.almacen_proveedor" type="text" class="input is-fullwidth" readonly="readonly" value="{{pedido.datosImprimir.almacen_proveedor.nombre}}"/>
-                  <input *ngIf="pedido.datosImprimir.proveedor" type="text" class="input is-fullwidth" readonly="readonly" value="{{pedido.datosImprimir.proveedor.nombre}}"/>
-                </p>
-                
                 <div class="control">
                   <textarea name="observaciones" class="textarea" placeholder="Observaciones"  readonly="readonly">{{(pedido.datosImprimir)?pedido.datosImprimir.observaciones:''}}</textarea>
                 </div>
+
+                <label class="label">Datos del Proveedor:</label>
+                <div *ngIf="pedido.datosImprimir" class="level-item">
+                  <input *ngIf="pedido.datosImprimir.almacen_proveedor" type="text" class="input is-fullwidth" readonly="readonly" value="{{pedido.datosImprimir.almacen_proveedor.nombre}}"/>
+                  <div *ngIf="pedido.datosImprimir.proveedor" >
+                    <p class="subtitle is-5">
+                      {{pedido.datosImprimir.proveedor.nombre}}<br>
+                      <small>
+                      {{pedido.datosImprimir.proveedor.contacto}}<br>
+                      {{pedido.datosImprimir.proveedor.email}}<br>
+                      Cel: {{pedido.datosImprimir.proveedor.celular}}
+                      </small>
+                    </p>
+                  </div>
+                </div>
+                <hr>
+                <!--p class="control" *ngIf="pedido.datosImprimir">
+                  <input *ngIf="pedido.datosImprimir.almacen_proveedor" type="text" class="input is-fullwidth" readonly="readonly" value="{{pedido.datosImprimir.almacen_proveedor.nombre}}"/>
+                  <textarea class="textarea" readonly="readonly">{{pedido.datosImprimir.proveedor.nombre}}
+                    {{pedido.datosImprimir.proveedor.contacto}} 
+                    email: {{pedido.datosImprimir.proveedor.email}}
+                    cel: {{pedido.datosImprimir.proveedor.celular}}
+                  </textarea>
+                  <input *ngIf="pedido.datosImprimir.proveedor" type="text" class="input is-fullwidth" readonly="readonly" value="{{pedido.datosImprimir.proveedor.nombre}}"/>
+                </p-->
 
               <div class="control is-grouped" style="padding-top:10px;" *ngIf="!cargando">
                 <p class="control">
@@ -260,16 +279,8 @@
                 (onAnterior)="pedido.filtro.paginaAnterior()" 
                 (onListar)="pedido.filtro.listar($event)" 
                 *ngIf="pedido.filtro.lista.length > 0 && pedido.filtro.lista.length > pedido.filtro.paginacion.resultadosPorPagina && pedido.filtro.activo"></paginacion>
-          
           <br>
-
-          <div *ngIf="!cargando">
-            <strong>Información del proveedor:</strong><br>
-            {{pedido.datosImprimir.proveedor.nombre}} - {{pedido.datosImprimir.proveedor.contacto}} - email: {{pedido.datosImprimir.proveedor.email}} - cel: {{pedido.datosImprimir.proveedor.celular}}
-            <br><br>
-          </div>
         </div>
-        
     </div>
 </div>
 

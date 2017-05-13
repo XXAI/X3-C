@@ -10,9 +10,9 @@
 
             <div style="padding: 1em;">
               <form name="form" novalidate [formGroup]="pedido.datos">
-                <label class="label">Descripción:</label>
+                <label class="label">Nombre del Pedido:</label>
                 <p class="control is-expanded  has-icon has-icon-right">
-                  <input type="text" class="input is-fullwidth" [ngClass]="{'is-danger': pedido.tieneError('descripcion','required')}" formControlName="descripcion"/>
+                  <input type="text" class="input is-fullwidth" placeholder="Ej. Pedido del mes de Mayo" [ngClass]="{'is-danger': pedido.tieneError('descripcion','required')}" formControlName="descripcion"/>
                   <span class="icon is-small" *ngIf="pedido.tieneError('descripcion','required')">
                     <i class="fa fa-warning"></i>
                   </span>
@@ -28,6 +28,10 @@
                   <span class="help is-danger" *ngIf="pedido.tieneError('fecha','required')">Este campo es requerido.</span>
                 </p>
 
+                <div class="control">
+                  <textarea name="observaciones" class="textarea" placeholder="Observaciones"  formControlName="observaciones"></textarea>
+                </div>
+
                 <label class="label" *ngIf="pedido.tipo_pedido == 'PI'">Solicitar a:</label>
                 <p class="control" *ngIf="pedido.tipo_pedido == 'PI'">
                   <span class="select is-fullwidth">
@@ -37,11 +41,22 @@
                   </span>
                   <span class="help is-danger" *ngIf="pedido.tieneError('almacen_proveedor','required')">Debe elegir a quien solicitar.</span>
                 </p>
-                
-                <div class="control">
-                  <textarea name="observaciones" class="textarea" placeholder="Observaciones"  formControlName="observaciones"></textarea>
-                </div>
               </form>
+
+              <label *ngIf="pedido.tipo_pedido != 'PI' && esEditar" class="label">Datos del Proveedor:</label>
+              <div *ngIf="pedido.tipo_pedido != 'PI' && esEditar" class="level-item">
+                <div *ngIf="esEditar && !cargando" >
+                  <p class="subtitle is-5">
+                    {{proveedor.nombre}}<br>
+                    <small>
+                    {{proveedor.contacto}}<br>
+                    {{proveedor.email}}<br>
+                    Cel: {{proveedor.celular}}
+                    </small>
+                  </p>
+                </div>
+              </div>
+              <hr>
 
               <div class="control is-grouped" style="padding-top:10px;" *ngIf="!cargando">
                 <p class="control" *ngIf="esEditar">
@@ -335,11 +350,6 @@
                 *ngIf="pedido.filtro.lista.length > 0 && pedido.filtro.lista.length > pedido.filtro.paginacion.resultadosPorPagina && pedido.filtro.activo"></paginacion>
           
           <br>
-          <div *ngIf="esEditar && !cargando">
-            <strong>Información del proveedor:</strong><br>
-            {{proveedor.nombre}} - {{proveedor.contacto}} - email: {{proveedor.email}} - cel: {{proveedor.celular}}
-            <br><br>
-          </div>
         </div>
     </div>
 </div>
