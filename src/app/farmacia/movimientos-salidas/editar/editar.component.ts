@@ -11,6 +11,7 @@ import { MovimientosSalidasService }       from '../movimientos-salidas.service'
 
 import { Mov }       from '../movimiento';
 import { Insumo  } from '../movimiento';
+import { Salida  } from '../salida';
 import { Mensaje } from '../../../mensaje';
 
 @Component({
@@ -33,6 +34,7 @@ export class EditarComponent implements OnInit {
   private almacenes: any = {};
   private usuario: any ={};
   datos : any[];
+  salidaMovimiento : Salida[];
 
   private almacenId: string;
  
@@ -158,11 +160,14 @@ export class EditarComponent implements OnInit {
     this.cargando = true;
     console.log("Cargando movimiento.");
     this.movimientosSalidasService.ver(this.id).subscribe(
-      movimiento =>{
+      resultado =>{
         this.cargando = false;
         this.datosCargados = true;
-        this.movimiento.patchValue(movimiento);
-        console.log(movimiento);
+        this.movimiento.patchValue(resultado);
+        console.log(resultado);
+        this.salidaMovimiento = resultado as Salida[];
+          console.log(this.salidaMovimiento);
+          console.log(this.salidaMovimiento);          
         console.log("Movimiento cargado.");
         console.log(this.movimiento);
       },
