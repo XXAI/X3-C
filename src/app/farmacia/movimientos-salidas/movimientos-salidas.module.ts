@@ -15,6 +15,7 @@ import { MovimientosSalidasRoutingModule } from './movimientos-salidas-routing.m
 
 import { ListaComponent } from './lista/lista.component';
 import { NuevoComponent } from './nuevo/nuevo.component';
+import { EditarComponent }  from  './editar/editar.component';
 import { FormComponent  } from './form/form.component';
 import { FormDatosComponent   }  from  './form/form-datos.component';
 import { FormInsumosComponent }  from  './form/form-insumos.component';
@@ -33,6 +34,7 @@ import { MenuLateralComponent }  from './menu-lateral/menu-lateral.component';
   declarations: [
     ListaComponent,
     NuevoComponent,
+    EditarComponent,
     FormComponent,
     FormDatosComponent,
     MenuLateralComponent,
