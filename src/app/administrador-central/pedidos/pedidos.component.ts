@@ -7,9 +7,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PedidosComponent implements OnInit {
 
+  busquedaActivada:boolean = true;
+  cargando:boolean = false;
+
   constructor() { }
 
   ngOnInit() {
+  }
+
+  buscar(value:string){
+    //
   }
 
 }
