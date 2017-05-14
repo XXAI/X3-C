@@ -46,6 +46,10 @@ export class VerComponent implements OnInit {
   ultimaPeticion: any;
   // # FIN SECCION  
 
+  mostrarImprimirDialogo:boolean = false;
+  tiposSubPedidos:string[] = [];
+  subPedidos:any = {};
+
   //Harima: para ver si el formulaior es para crear o para editar
   formularioTitulo:string = 'Nuevo';
   private esEditar:boolean = false;
@@ -128,7 +132,7 @@ export class VerComponent implements OnInit {
             //this.pedidos[0].datos.patchValue(pedido);
             this.pedido.datosImprimir = pedido;
             this.pedido.status = pedido.status;
-
+            
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];
               let insumo = dato.insumos_con_descripcion;
@@ -137,6 +141,32 @@ export class VerComponent implements OnInit {
               insumo.precio = +dato.precio_unitario;
               this.pedido.lista.push(insumo);
               //this.listaClaveAgregadas.push(insumo.clave);
+              let tipo_insumo = 'ST';
+              let tiene_iva = false;
+              if(insumo.tipo == 'ME' && insumo.es_causes){
+                tipo_insumo = 'MEDICAMENTOS CAUSES';
+              }else if(insumo.tipo == 'ME' && !insumo.es_causes){
+                tipo_insumo = 'MEDICAMENTOS NO CAUSES';
+              }else if(insumo.tipo == 'MC'){
+                tipo_insumo = 'MATERIAL CURACIÓN';
+                tiene_iva = true;
+              }
+              if(!this.subPedidos[tipo_insumo]){
+                this.tiposSubPedidos.push(tipo_insumo);
+                this.subPedidos[tipo_insumo] = {
+                  'titulo':tipo_insumo,
+                  'claves':0,
+                  'cantidad':0,
+                  'monto':0,
+                  'iva':0,
+                  'tiene_iva':tiene_iva,
+                  'lista':[]
+                }
+              }
+              this.subPedidos[tipo_insumo].claves++;
+              this.subPedidos[tipo_insumo].cantidad += insumo.cantidad;
+              this.subPedidos[tipo_insumo].monto += insumo.monto;
+              this.subPedidos[tipo_insumo].lista.push(insumo);
             }
             pedido.insumos = undefined;
             this.pedido.indexar();
@@ -340,31 +370,26 @@ export class VerComponent implements OnInit {
     window.open(environment.API_URL+"/generar-excel-pedido/"+this.pedido.id, "_blank");
   }
 
-  imprimir() {
+  imprimir(tipo:string = '') {
     try {
       this.cargandoPdf = true;
       var pedidos_imprimir = {
         datos: this.pedido.datosImprimir,
-        lista: this.pedido.lista
+        insumos: this.subPedidos[tipo]
       };
       this.pdfworker.postMessage(JSON.stringify(pedidos_imprimir));
     } catch (e){
       this.cargandoPdf = false;
       console.log(e);
     }
-    /*
-    try {
-      this.cargandoPdf = true;
-      var pedidos_imprimir = {
-        datos: this.pedido.datosImprimir,
-        lista: this.pedido.lista
-      };
-      this.pdfworker.postMessage(JSON.stringify(pedidos_imprimir));
-    } catch (e){
-      this.cargandoPdf = false;
-      console.log(e);
-    }
-    */
+  }
+
+  mostrarDialogo(){
+    this.mostrarImprimirDialogo = true;
+  }
+
+  cerrarDialogo(){
+    this.mostrarImprimirDialogo = false;
   }
 
   base64ToBlob( base64, type ) {

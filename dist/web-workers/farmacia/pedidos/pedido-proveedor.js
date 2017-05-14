@@ -17,14 +17,15 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
         var contadorLineasHorizontalesV = 0;
         var COLOR_CELDA = '#eaf1dd';
         
+        var lista_insumos = pedido.insumos.lista;
         var insumos = [];
-        for(var i in pedido.lista){
-            var insumo = pedido.lista[i];
+        for(var i in lista_insumos){
+            var insumo = lista_insumos[i];
             insumos.push({
                 tipo: insumo.tipo,
                 lote: insumo.lote.toString(),
                 clave: insumo.clave,
-                descripcion: insumo.generico_nombre + ' ' + ((insumo.descripcion)?insumo.descripcion:''),
+                descripcion: insumo.descripcion,
                 unidad: 'PIEZA',
                 cantidad:insumo.cantidad,
                 precio: insumo.precio,
@@ -45,7 +46,7 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
                             width: 500,
                             style: 'tableHeaderTop', colSpan: 7, alignment: 'center' 
                         },{},{},{},{},{},{}],
-                        [{ text: 'SECRETARIA DE SALUD\nINSTITUTO DE SALUD\n'+pedido.datos.almacen_solicitante.unidad_medica.nombre, style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },{},{},{},{},{}],
+                        [{ text: 'SECRETARIA DE SALUD\nINSTITUTO DE SALUD\n'+pedido.datos.almacen_solicitante.unidad_medica.nombre+'\nPEDIDO PARA '+pedido.insumos.titulo, style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },{},{},{},{},{}],
                         [
                             { text: 'PEDIDO DE ABASTOS A UNIDADES MEDICAS EN RELACION AL CONTRATO ABIERTO DE PRESTACION DE SERVICIO.', style: 'tableHeaderVerde', colSpan: 4, alignment: 'center' },{},{},{},
                             { text: 'FOLIO', style: 'tableHeaderVerde',  alignment: 'center'},
@@ -59,7 +60,7 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
                             { text: insumos.length.toString(), style: 'tableHeader', alignment: 'center'}
                         ],
                         [
-                            { text: 'NO. DE LOTE', style: 'tableHeaderVerde', alignment: 'center'},
+                            { text: 'NO.', style: 'tableHeaderVerde', alignment: 'center'},
                             { text: 'CLAVE', style: 'tableHeaderVerde', alignment: 'center'},
                             { text: 'DESCRIPCIÓN DE LOS INSUMOS', style: 'tableHeaderVerde', alignment: 'center'},
                             { text: 'CANTIDAD', style: 'tableHeaderVerde', alignment: 'center'},
@@ -168,12 +169,12 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
             }
         }
 
-        var para_iva = 0;
+        //var para_iva = 0;
         
         for(var i in insumos){
             var insumo = insumos[i];
             dd.content[0].table.body.push([
-                { text: insumo.lote, style: 'tableRow',  alignment: 'center'},
+                { text: (parseInt(i)+1), style: 'tableRow',  alignment: 'center'},
                 { text: insumo.clave, style: 'tableRow', alignment: 'center'},
                 { text: insumo.descripcion, style: 'tableRow',  alignment: 'left'},
                 { text: insumo.cantidad.format(0), style: 'tableRow', alignment: 'center'},
@@ -181,14 +182,14 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
                 { text: '$ '+insumo.precio.format(2), style: 'tableRow', alignment: 'center'},
                 { text: '$ '+insumo.total.format(2), style: 'tableRow', alignment: 'center'}
             ]);
-            if(insumo.tipo == 'MC'){
+            /*if(insumo.tipo == 'MC'){
                 para_iva += insumo.total;
-            }
+            }*/
         }
 
         var iva = 0;
-        if(para_iva > 0){
-            iva = para_iva*16/100;
+        if(pedido.insumos.tiene_iva){
+            iva = (+pedido.insumos.monto)*16/100;
         }
         
         dd.content[0].table.body.push(
@@ -203,10 +204,10 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
                     text: 'Facturar 2017 a nombre del Instituto de Salud. Unidad Administrativa Edif. C, Maya Tuxtla Gutiérrez, Chiapas, 29010 R.F.C. ISA-961203- QN5', 
                     style: 'tableHeader', alignment: 'justify', colSpan:3, rowSpan:3
                 },'','',
-                { text: 'SUBTOTAL', style: 'tableHeaderVerde',  alignment: 'center'},{ text: '$ '+(+pedido.datos.total_monto_solicitado - iva).format(2), style: 'tableHeader', alignment: 'center'}
+                { text: 'SUBTOTAL', style: 'tableHeaderVerde',  alignment: 'center'},{ text: '$ '+(+pedido.insumos.monto).format(2), style: 'tableHeader', alignment: 'center'}
             ],
             ['','','','','',{ text: 'IVA', style: 'tableHeaderVerde',  alignment: 'center'},{ text: '$ '+(iva.format(2)), style: 'tableHeader', alignment: 'center'}],
-            ['','','','','',{ text: 'TOTAL', style: 'tableHeaderVerde',  alignment: 'center'},{ text: '$ '+((+pedido.datos.total_monto_solicitado).format(2)), style: 'tableHeader', alignment: 'center'}],
+            ['','','','','',{ text: 'TOTAL', style: 'tableHeaderVerde',  alignment: 'center'},{ text: '$ '+((+pedido.insumos.monto + iva).format(2)), style: 'tableHeader', alignment: 'center'}],
             //[{ text: 'IMPORTE TOTAL: ('+'pedido.total_letra'+' M.N.)', style: 'tableHeaderVerde',  alignment: 'justify', colSpan:7},'','','','','',''],
             //[{ text: 'FUENTE DE FINANCIAMIENTO: '+'pedido.fuente_financiamiento', style: 'tableHeaderVerde',  alignment: 'justify', colSpan:7},'','','','','',''],
             [{ text: 'TIEMPO DE ENTREGA: Deberá surtir los insumos en un periodo no mayor a 20 dias.', style: 'tableHeaderVerde',  alignment: 'justify', colSpan:7},'','','','','',''],
