@@ -3,14 +3,14 @@
     <br>
     <ul class="menu-list">
         <li>
-            <a class="button" (click)="enviarTipo()" routerLink="/almacen/movimientos/estandar" #estandar routerLinkActive="is-active">
+            <a class="button" (click)="enviarTipo(1)" routerLink="/almacen/movimientos/estandar" #estandar routerLinkActive="is-active">
                 <span class="icon"><i class="fa fa-file"></i></span> Salida estandar
                 <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
                 <!-- <span class="tag is-pulled-right" [ngClass]="{ 'is-white': estandar.className == 'is-active', 'is-primary': estandar.className != 'is-active' }"></span> -->
             </a>
         </li>
         <li>
-            <a class="button" (click)="enviarTipo()" routerLink="/almacen/movimientos/receta" #receta routerLinkActive="is-active">
+            <a class="button" (click)="enviarTipo(1)" routerLink="/almacen/movimientos/receta" #receta routerLinkActive="is-active">
                 <span class="icon"><i class="fa fa-pencil-square-o"></i></span> Salida por receta
                 <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
                 <!-- <span class="tag is-pulled-right" [ngClass]="{ 'is-white': receta.className == 'is-active', 'is-primary': receta.className != 'is-active' }"></span> -->

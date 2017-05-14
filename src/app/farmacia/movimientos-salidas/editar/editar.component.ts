@@ -36,6 +36,8 @@ export class EditarComponent implements OnInit {
   datos : any[];
   salidaMovimiento : Salida[];
 
+  fecha_actual:any;
+  mostrarCancelado: boolean = false;
   private almacenId: string;
  
 
@@ -84,6 +86,10 @@ export class EditarComponent implements OnInit {
       //console.log(this.id);
       this.cargarDatos();
     });
+  }
+
+  asignarTipo(algo:number){
+    console.log('asfsadfsadfasdfsadf');
   }
 
   initInsumo() {

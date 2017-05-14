@@ -26,7 +26,7 @@ export class FormComponent implements OnInit {
 
   insumosAgregadosEntrada: Insumo[]= [];
   servidor_id: string;
-  private formularioTitulo: string;  
+  formularioTitulo: string;  
 
   @Output() onEnviar : EventEmitter<any[]> = new EventEmitter();
   @Output() onRegresar = new EventEmitter<void>();
