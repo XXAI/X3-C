@@ -9,9 +9,9 @@ import { SurtirComponent } from './surtir/surtir.component';
 import { VerComponent } from './ver/ver.component';
 
 const routes: Routes = [
-  { path: 'farmacia/entregas', redirectTo: '/farmacia/entregas/por-surtir', pathMatch: 'full' },
+  { path: 'almacen/entregas', redirectTo: '/almacen/entregas/por-surtir', pathMatch: 'full' },
   {
-    path: 'farmacia/entregas',
+    path: 'almacen/entregas',
     children: [
        { path: 'por-surtir', component: ListaComponent},
        { path: 'finalizadas', component: ListaComponent},

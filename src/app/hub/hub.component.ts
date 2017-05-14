@@ -21,6 +21,14 @@ export class HubComponent implements OnInit {
       ] 
     },
     { 
+      title:'Administrador central', routerLink:'/administrador-central', icono:'assets/hub-administrador-central.svg',
+      permisos: [
+        'bsIbPL3qv6XevcAyrRm1GxJufDbzLOax', // Ver pedidos
+        'bwWWUufmEBRFpw9HbUJQUP8EFnagynQv', // Ver abasto
+        's8kSv2Gj9DZwRvClVRmZohp92Rtvi26i' // Transferencia de recursos
+      ] 
+    },
+    { 
       title:'Panel de control', routerLink:'/panel-control', icono:'assets/hub-panel-control.svg', 
       permisos: [
         'mGKikN0aJaeF2XrHwwYK3XNw0f9CSZDe', // Ver usuarios
