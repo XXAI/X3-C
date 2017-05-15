@@ -22,6 +22,9 @@ import { PerfilModule } from './perfil/perfil.module';
 import { BloquearPantallaModule } from './bloquear-pantalla/bloquear-pantalla.module';
 import { PipesModule }             from './pipes/pipes.module';
 
+// # Administrador central
+import { AdministradorCentralModule } from './administrador-central/administrador-central.module';
+
 // # Hub Panel de control
 import { UsuariosModule } from './panel-control/usuarios/usuarios.module';
 import { RolesModule } from './panel-control/roles/roles.module';
@@ -62,6 +65,7 @@ import { CrudModule } from './crud/crud.module';
     SyncModule,
     RolesModule,
     UsuariosModule,
+    AdministradorCentralModule,
     IndexFarmaciaModule,
     PedidosModule,
     EntregasModule,

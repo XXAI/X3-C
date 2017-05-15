@@ -1,10 +1,4 @@
-<menu-farmacia [modulo]="'Entradas'" [icono]="'assets/icono-entradas.svg'" [url]="'/farmacia/movimientos/entradas'"></menu-farmacia>
+<menu-farmacia [modulo]="'Entradas'" [icono]="'assets/icono-entradas.svg'" [url]="'/almacen/movimientos/entradas'"></menu-farmacia>
 
 <div style="height:50px;"></div>
-<entradas-form
-    [movimiento]="movimiento"
-    [insumosForm]="insumosNuevo"
-    [cargando]="cargando"
-    (onEnviar)="enviar($event)"
-></entradas-form>
-
+<entradas-form [movimiento]="movimiento" [insumosForm]="insumosNuevo" [cargando]="cargando" (onEnviar)="enviar($event)"></entradas-form>

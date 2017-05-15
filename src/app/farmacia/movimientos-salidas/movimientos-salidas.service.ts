@@ -24,22 +24,16 @@ export class MovimientosSalidasService {
     return this.jwtRequest.get(MovimientosSalidasService.URL,null,null).map( (response: Response) => response.json());
   }
 
-  buscar(term: string, pagina:number = 1, resultados_por_pagina:number =10 ): Observable<any>{
-    return this.jwtRequest.get(MovimientosSalidasService.URL,null,{q: term, page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
+  buscar(tipo_salida:number, term: string, pagina:number = 1, resultados_por_pagina:number =20, almacen: string ): Observable<any>{
+    return this.jwtRequest.get(`${MovimientosSalidasService.URL}?almacen=${almacen}&tipo=${tipo_salida}`,null,{q: term, page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
+    //return this.jwtRequest.get(`${MovimientosSalidasService.URL}?almacen=${almacen}`,null,{q: term, page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
   }
 
- /* lista(pagina:number = 1, resultados_por_pagina:number =5 ): Observable<any>{
-    let almacen : string = "00021";
-    return this.jwtRequest.get(`${MovimientosSalidasService.URL}?almacen=${almacen}&tipo=2`,null,{page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
-    //return this.jwtRequest.get(`${MovimientosEntradasService.URL}?almacen=${almacen}&tipo=1`).map( (response: Response) => response.json().data);
-    //return this.jwtRequest.get(`${MovimientosSalidasService.URL}?tipo=2`,null,{page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
-  }*/
-
-  lista(pagina:number = 1, resultados_por_pagina:number =5 ): Observable<any>{
-    let almacen : string = "00021";
-    return this.jwtRequest.get(`${MovimientosSalidasService.URL}?almacen=${almacen}&tipo=2`,null,{page: pagina, per_page: resultados_por_pagina})
-      .map( (response: Response) => response.json().data);
-    //return this.jwtRequest.get(`${MovimientosEntradasService.URL}?almacen=${almacen}&tipo=1`).map( (response: Response) => response.json().data);
+  lista(pagina:number = 1, resultados_por_pagina:number =5, almacen: string, tipo: number): Observable<any>{
+    //console.log(tipo);
+    //&tipo=${tipo}
+    return this.jwtRequest.get(`${MovimientosSalidasService.URL}?almacen=${almacen}&tipo=${tipo}`,null,{page: pagina, per_page: resultados_por_pagina})
+      .map( (response: Response) => response.json());
   }
 
   //Para listar datos de manera general

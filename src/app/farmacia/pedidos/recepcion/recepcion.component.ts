@@ -32,6 +32,7 @@ export class RecepcionComponent implements OnInit {
   id: string;
   folio: string;
   cargando: boolean = false;
+  guardando: boolean = false;
   cargandoStock: boolean = false;
   capturarStock: boolean = false;
 
@@ -363,7 +364,7 @@ export class RecepcionComponent implements OnInit {
   }
 
   guardar(finalizar:boolean = false){
-
+    this.guardando = true;
     //console.log(this.pedido);
     let guardar_recepcion:any;
 
@@ -409,7 +410,7 @@ export class RecepcionComponent implements OnInit {
     this.recepcionService.guardarRecepcionPedido(this.pedido.datosImprimir.id,guardar_recepcion).subscribe(
       pedido => {
         this.mostrarDialogo = false;
-        this.cargando = false;
+        this.guardando = false;
         this.mensajeExito = new Mensaje(true);
 
         if(guardar_recepcion.status == 'FI'){
@@ -426,7 +427,7 @@ export class RecepcionComponent implements OnInit {
         //hacer cosas para dejar editar
       },
       error => {
-        this.cargando = false;
+        this.guardando = false;
         this.mostrarDialogo = false;
         console.log(error);
         this.mensajeError = new Mensaje(true);
@@ -459,6 +460,7 @@ export class RecepcionComponent implements OnInit {
             if(error.status == 500){
               if(e.error){
                 this.mensajeError.texto = e.error;
+                this.mensajeError.cuentaAtras = 1000;
               }
             }
         }catch(e){
@@ -519,7 +521,8 @@ export class RecepcionComponent implements OnInit {
     if(this.itemSeleccionado.tiene_fecha_caducidad && !this.formStock.fecha_caducidad){
       this.erroresFormularioStock.fecha_caducidad = {error:true, texto:'Este campo es requerido.'};
       errores++;
-    }else if(this.itemSeleccionado.tiene_fecha_caducidad){
+    //}else if(this.itemSeleccionado.tiene_fecha_caducidad){
+    }else if(this.formStock.fecha_caducidad){
       let fecha = this.formStock.fecha_caducidad.split('-');
       let fecha_invalida = false;
       if(fecha.length != 3){

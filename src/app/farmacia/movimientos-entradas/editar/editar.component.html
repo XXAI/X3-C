@@ -1,0 +1,4 @@
+<menu-farmacia [modulo]="'Entradas'" [icono]="'assets/icono-entradas.svg'" [url]="'/almacen/movimientos/entradas'"></menu-farmacia>
+
+<div style="height:50px;"></div>
+<entradas-form *ngIf="datosCargados" [movimiento]="movimiento" [insumosForm]="insumosNuevo" [cargando]="cargando" (onEnviar)="enviar($event)"></entradas-form>

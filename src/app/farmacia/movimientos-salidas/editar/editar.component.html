@@ -1,0 +1,147 @@
+<menu-farmacia [modulo]="'Salidas'" [icono]="'assets/icono-salidas.svg'" [url]="'/almacen/movimientos/salidas'"></menu-farmacia>
+
+<div style="height:50px;"></div>
+<!--
+<entradas-form *ngIf="datosCargados" [movimiento]="movimiento" [insumosForm]="insumosNuevo" [cargando]="cargando" (onEnviar)="enviar($event)"></entradas-form>
+-->
+
+
+
+<div class="contenedor columns " style="height:100%; padding:1em;">
+    <div class="column is-one-third">
+        <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
+            <section class="hero is-primary">
+                <h1 class="title" style="margin:0.5em; "><span class="icon is-medium"><i class="fa fa-file-text"></i></span> Editar </h1>
+            </section>
+            <div style="padding: 1em;">
+                <div [formGroup]="movimiento">
+
+                    <div class="control is-grouped">
+                        <p class="control">
+                            <label>Tipo de movimiento</label>
+                        </p>
+                        <p class="control">
+                            <a class="button" (click)="asignarTipo(2);" [ngClass]="{'is-success': movimiento.get('tipo_movimiento_id').value==2}" style="height: 60px"><label> <strong> Salida estándar </strong></label></a>
+                        </p>
+                        <span style="width: auto;"> &nbsp; &nbsp; </span>
+                        <p class="control">
+                            <a class="button" (click)="asignarTipo(5);" [ngClass]="{'is-success': movimiento.get('tipo_movimiento_id').value==5}" style="height: 60px"><label> <strong> Salida receta </strong></label></a>
+                        </p>
+                    </div>
+
+                    <div class="control is-grouped">
+                        <p class="control">
+                            <label>Fecha de movimiento</label>
+                        </p>
+                        <p class="control is-expanded  has-icon has-icon-right">
+                            <input class="input" placeholder="Fecha de movimiento" [value]="fecha_actual | date:'yyyy-MM-dd'" formControlName="fecha_movimiento" autofocus type="date" [ngClass]="{'is-danger': movimiento.get('fecha_movimiento').hasError('required') && movimiento.get('fecha_movimiento').touched}">
+                            <span class="icon is-small" *ngIf="movimiento.get('fecha_movimiento').hasError('required') && movimiento.get('fecha_movimiento').touched">
+                <i class="fa fa-warning"></i>
+              </span>
+                            <span class="help is-danger" *ngIf="movimiento.get('fecha_movimiento').hasError('required') && movimiento.get('fecha_movimiento').touched">Este campo es requerido.</span>
+                        </p>
+                    </div>
+
+
+                    <div class="control">
+                        <p class="control is-expanded  has-icon has-icon-right">
+                            <textarea class="textarea" autofocus type="text" [ngClass]="{'is-danger': movimiento.get('observaciones').hasError('required') && movimiento.get('observaciones').touched}" placeholder="Observaciones" formControlName="observaciones"></textarea>
+                            <span class="icon is-small" *ngIf="movimiento.get('observaciones').hasError('required') && movimiento.get('observaciones').touched">
+                <i class="fa fa-warning"></i>
+              </span>
+                            <span class="help is-danger" *ngIf="movimiento.get('observaciones').hasError('required') && movimiento.get('observaciones').touched">Este campo es requerido.</span>
+                        </p>
+                    </div>
+                    <div class="control" *ngIf="mostrarCancelado">
+                        <!-- *ngIf -->
+                        <p class="control">
+                            <label class="checkbox">
+                <input type="checkbox" formControlName="cancelado">
+                Cancelado
+              </label>
+                        </p>
+                        <p class="control is-expanded  has-icon has-icon-right">
+                            <textarea class="textarea" autofocus type="text" [ngClass]="{'is-danger': movimiento.get('observaciones_cancelacion').hasError('required') && movimiento.get('observaciones_cancelacion').touched}" placeholder="Observaciones de cancelacion" formControlName="observaciones_cancelacion"></textarea>
+                            <span class="icon is-small" *ngIf="movimiento.get('observaciones_cancelacion').hasError('required') && movimiento.get('observaciones_cancelacion').touched">
+                <i class="fa fa-warning"></i>
+              </span>
+                            <span class="help is-danger" *ngIf="movimiento.get('observaciones_cancelacion').hasError('required') && movimiento.get('observaciones_cancelacion').touched">Este campo es requerido.</span>
+                        </p>
+                    </div>
+
+                </div>
+                <div class="control is-grouped">
+                </div>
+
+                <div class="control is-grouped">
+                    <!--
+                        <div class="control">
+
+                            <select name="status" formControlName="status" class="select">
+                                <option *ngFor="let item of listaStatus" value="{{item.id}}" [attr.selected]="movimiento.get('status').value == item.id ? true:false">{{ item.nombre }}</option>
+                            </select>
+                            <span class="help is-danger" *ngIf="movimiento.get('status').hasError('required') && movimiento.get('status').touched">Debe elegir un status.</span>
+
+                        </div>
+                        -->
+                    <p class="control">
+                        <a class="button is-primary " routerLink="/almacen/movimientos/salidas/" type="submit" [ngClass]="{'is-loading': cargando}">Finalizar</a>
+                    </p>
+                    <p class="control">
+                        <a class="button is-white" routerLink="/almacen/movimientos/salidas/">Ir a la lista</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="column">
+        <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
+            <section class="hero is-primary">
+                <h1 class="title" style="margin:0.5em; "><span class="icon is-medium"><i class="fa fa-file-text"></i></span> Insumos</h1>
+            </section>
+
+            <div style="padding: 1em;">
+                <!-- TABLA de la lista de elementos -->
+                <table class="table" *ngIf="!cargando">
+                    <thead>
+                        <tr>
+                            <th><abbr title="Folio de la salida">Clave</abbr></th>
+                            <th>Lote</th>
+                            <th>Cantidad</th>
+                            <th>Existencia</th>
+                            <th><abbr title="Codigo de barras">Cod. barras</abbr></th>
+                            <th><abbr title="Fecha de caducidad">Caducidad</abbr></th>
+                            <th><abbr title="Fecha de movimiento">Id stock</abbr></th>
+                            <th>Usuario</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="!busquedaActivada">
+                        <tr *ngFor="let item of salidaMovimiento.insumos; let i=index">
+                            <th style="vertical-align: middle;"><a>{{ item.stock.clave_insumo_medico }}</a></th>
+                            <td style="vertical-align: middle;">
+                                <a>{{ item.stock.lote }}</a>
+                            </td>
+                            <td style="vertical-align: middle;"><a>{{ item.cantidad }}</a></td>
+                            <td style="vertical-align: middle;"><a>{{ item.stock.existencia }}</a></td>
+                            <td style="vertical-align: middle;"><a>{{ item.stock.codigo_barras }}</a></td>
+                            <td style="vertical-align: middle;"><a>{{ item.stock.fecha_caducidad  | date }}</a></td>
+                            <td style="vertical-align: middle;"><a>{{ item.stock_id}}</a></td>
+                            <td style="vertical-align: middle;"><a>{{ item.usuario_id}}</a></td>
+                            <!-- <td style="vertical-align: middle;" class="has-text-centered">
+                        <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-print"></i></span><a class="is is-danger" (click)="imprimir(item, i)"><span class="icon"><i class="fa fa-print"></i></span></a>
+                        <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando && item.cancelado == 0" class="is-danger" (click)="toggleModalCancelado(item, i)"><span class="icon"><i class="fa fa-times"></i></span></a>
+                        <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a> 
+                    </td> -->
+                        </tr>
+                        <tr *ngIf="salidaMovimiento.insumos.length == 0">
+                            <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+</div>

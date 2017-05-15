@@ -35,7 +35,7 @@ export class InsumoMedico {
     informacionAmpliada: any; // Puede ser de un medicamento, material de curacion o auxiliares o lo que sea
     cantidad: number;
     lotes: Lote[];
-    //lote: any;
+    lote_entrada: string;
     fecha_caducidad: Date;
     codigo_barras: string;
     cargando:boolean = false;
@@ -53,7 +53,7 @@ export interface InsumoMedico {
     medicamento?: {};
     cantidad: number;
     lotes: Lote[];
-    //lote: any;
+    lote_entrada: string;
     fecha_caducidad: Date;
     codigo_barras: string;
 }

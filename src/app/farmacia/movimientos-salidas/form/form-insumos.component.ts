@@ -107,7 +107,7 @@ export class FormInsumosComponent implements OnInit {
     this.pedidos.push(new Modelo(true) );
     //this.pedidos[0].nombre = "General";
     this.pedidos[0].observaciones = null;
-    console.log(this.pedidos[0]);
+    //console.log(this.pedidos[0]);
 
    // this.insumosAgregados.push(new Insumo());
     console.log(this.insumosAgregados);
@@ -166,7 +166,7 @@ export class FormInsumosComponent implements OnInit {
     insumo.cantidad_x_envase = Number(item.informacion.cantidad_x_envase);
     insumo.codigo_barras = item.codigo_barras;
     insumo.lotes = item.lotes;
-    insumo.lote = item.lote;
+    //insumo.lote = item.lote;
 
     insumo.fecha_caducidad = item.fecha_caducidad;
     insumo.filtro = item.filtro;
@@ -180,8 +180,11 @@ export class FormInsumosComponent implements OnInit {
         for(let insumo of this.insumosAgregados[posicion].lotes){
           if(valueItem.id == insumo.id){
             encontrado = true;
-            insumo.cantidad= insumo.cantidad + valueItem.cantidad;
-             this.insumosAgregados[posicion].cantidad = this.insumosAgregados[posicion].cantidad + insumo.cantidad;
+            console.log(valueItem.cantidad);
+            if(valueItem.cantidad){
+              insumo.cantidad= insumo.cantidad + valueItem.cantidad;
+              this.insumosAgregados[posicion].cantidad = this.insumosAgregados[posicion].cantidad + insumo.cantidad;
+            }
           }
         }
         if(!encontrado){
@@ -325,6 +328,10 @@ export class FormInsumosComponent implements OnInit {
 
   }
 
+  eliminarInsumo(item: any[], index: number){
+    this.insumosAgregados.splice(index, 1);
+  }
+/*
   //Harima: necesitamos eliminar también de la lista de claves agregadas
   eliminarInsumo(item,index,filtro:boolean = false){
     //Harima: eliminar el elemento en la lista de claves agregadas, para poder agregarla de nuevo si se desea
@@ -337,7 +344,7 @@ export class FormInsumosComponent implements OnInit {
     }else{
       this.pedidos[this.pedidoActivo].filtro.eliminarItem(item,index);
     }
-  }
+  }*/
 
   mostrarFichaInformativa(e, clave: string){
     e.preventDefault();

@@ -29,8 +29,9 @@
             <tr>
             <th></th>
             <th class="is-hidden-mobile">Clave</th>
-            <th>Generico</th>
-            <th class="is-hidden-mobile">Descripción</th>
+            <!--th>Generico</th-->
+            <!--th class="is-hidden-mobile">Descripción</th-->
+            <th>Descripción</th>
             <th style="text-align:center" class="is-hidden-mobile">Grupo(s)</th>
             <th style="text-align:center"><abbr title="Tipo de insumo">Tipo</abbr></th>
             <th style="text-align:left" *ngIf="conPrecios">Precio</th>
@@ -44,7 +45,26 @@
                 <span *ngIf="item == insumoSeleccionado" class="icon is-small" style="color:#00d1b2"><i class="fa fa-check-circle"></i></span>
               </td>                      
               <td class="is-hidden-mobile">{{ item.clave }}</td>
-              <td >
+
+              <td>
+                <small class="is-hidden-tablet">{{ item.clave }} <br></small>
+                <!--div *ngIf="item.tipo != 'ME'" style="line-height:1em;"-->
+                <div style="line-height:1em;">
+                  <small>{{ item.descripcion }}</small>
+                </div>
+                <div style="padding: 0.5em 0 0.5em 0; ">
+                  <span *ngIf="(item.es_causes && item.tipo == 'ME')" class="tag is-success" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
+                  <span *ngIf="(!item.es_causes && item.tipo == 'ME')" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
+                  <span *ngIf="item.tipo == 'MC'" class="tag is-warning" style="font-size: 0.7em !important;">MATERIAL CURACIÓN</span>
+                  <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
+                  <span *ngIf="(item.tipo == 'ME' && item.informacion)">
+                    <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
+                    <span *ngIf="item.informacion.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>  
+                  </span>
+                </div>
+              </td>
+
+              <!--td >
                 <small class="is-hidden-tablet">{{ item.clave }} <br></small>
                 <b>{{ item.generico_nombre }}</b> <br  class="is-hidden-mobile"><small *ngIf="(item.tipo == 'ME' && item.informacion)"><b>{{ item.informacion.concentracion }}</b></small><br>
                 
@@ -74,7 +94,7 @@
                   <small><i>{{ item.informacion.presentacion_nombre }}</i></small><br>
                   <small><i>{{ item.informacion.contenido }} </i></small>
                 </div>
-                <div  *ngIf="item.tipo != 'ME'" style="line-height:1em;">
+                <div *ngIf="item.tipo != 'ME'" style="line-height:1em;">
                   <small>{{ item.descripcion }}</small>
                 </div>
                 <div style="padding: 0.5em 0 0.5em 0; ">
@@ -86,9 +106,9 @@
                     <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
                     <span *ngIf="item.informacion.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>  
                   </span>
-                  
                 </div>
-              </td> 
+              </td-->
+
               <td style="text-align:center;" class="is-hidden-mobile">
                 <div *ngIf="item.generico">
                   <span *ngFor="let grupo of item.generico.grupos">{{grupo.nombre}}<br></span>

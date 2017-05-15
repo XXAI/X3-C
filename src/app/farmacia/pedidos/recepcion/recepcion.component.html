@@ -19,10 +19,10 @@
                <span *ngIf="statusRecepcion == 'FI'"><strong style="color:#FFF;">Recepción concluida</strong></span>
             </div>
           </div>
-          <div class="column is-4" style="text-align:center; " *ngIf="statusRecepcion != 'FI'">
+          <div class="column is-4" style="text-align:right; " *ngIf="statusRecepcion != 'FI'">
             <div style="margin:1em;">
-            <a  class="button is-primary" style="width:45%; margin-right:5%;" (click)="finalizar()"> <span class="icon"><i class="fa fa-check"></i></span> <span>Concluir</span></a>
-            <a  class="button is-white"  style="width:45%"   (click)="guardar()"> <span class="icon"><i class="fa fa-save"></i></span> <span>Guardar</span></a>
+            <a *ngIf="!guardando && statusRecepcion == 'BR'" class="button is-primary" style="width:45%; margin-right:5%;" (click)="finalizar()"> <span class="icon"><i class="fa fa-check"></i></span> <span>Concluir</span></a>
+            <a  class="button is-white"  style="width:45%"  [ngClass]="{ 'is-loading': guardando }"  (click)="guardar()"> <span class="icon"><i class="fa fa-save"></i></span> <span>Guardar</span></a>
             </div>
           </div>
         </div>       
@@ -55,16 +55,19 @@
                   <td class="has-text-centered">{{ item.lote }}</td>
                   <td >
                     <small >{{ item.clave }} <br></small>
-                    <b>{{ item.generico_nombre }}</b> <small *ngIf="(item.tipo == 'ME' && item.informacion)"><b>{{ item.informacion.concentracion }}</b></small><br>
+                    <!--b>{{ item.generico_nombre }}</b> <small *ngIf="(item.tipo == 'ME' && item.informacion)"><b>{{ item.informacion.concentracion }}</b></small><br-->
                     <div class="item-detalle">
-                      <div   *ngIf="(item.tipo == 'ME' && item.informacion)" style="line-height:1em;">
+                      <!--div   *ngIf="(item.tipo == 'ME' && item.informacion)" style="line-height:1em;">
                         <small><i>{{ item.informacion.presentacion_nombre }}</i></small><br>
                         <small><i>{{ item.informacion.contenido }} </i></small>
                       </div>
-                      <div   *ngIf="item.tipo != 'ME'" style="line-height:1em;">
+                      <div *ngIf="item.tipo != 'ME'" style="line-height:1em;">
+                        <small>{{ item.descripcion }}</small>
+                      </div-->
+                      <div style="line-height:1em;">
                         <small>{{ item.descripcion }}</small>
                       </div>
-                    
+
                       <div  style="padding: 0.5em 0 0.5em 0; ">
                         <span *ngIf="(item.es_causes && item.tipo == 'ME')" class="tag is-success" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
                         <span *ngIf="(!item.es_causes && item.tipo == 'ME')" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
@@ -93,13 +96,17 @@
                   <td class="has-text-centered">{{ item.lote }}</td>
                   <td >
                     <small >{{ item.clave }} <br></small>
-                    <b>{{ item.generico_nombre }}</b> <small *ngIf="(item.tipo == 'ME' && item.informacion)"><b>{{ item.informacion.concentracion }}</b></small><br>
+                    <!--b>{{ item.generico_nombre }}</b> <small *ngIf="(item.tipo == 'ME' && item.informacion)"><b>{{ item.informacion.concentracion }}</b></small><br-->
                     <div class="item-detalle">
-                      <div   *ngIf="(item.tipo == 'ME' && item.informacion)" style="line-height:1em;">
+                      <!--div   *ngIf="(item.tipo == 'ME' && item.informacion)" style="line-height:1em;">
                         <small><i>{{ item.informacion.presentacion_nombre }}</i></small><br>
                         <small><i>{{ item.informacion.contenido }} </i></small>
                       </div>
                       <div   *ngIf="item.tipo != 'ME'" style="line-height:1em;">
+                        <small>{{ item.descripcion }}</small>
+                      </div-->
+
+                      <div style="line-height:1em;">
                         <small>{{ item.descripcion }}</small>
                       </div>
                     
@@ -178,7 +185,7 @@
               <span *ngIf="erroresFormularioStock.lote.error" class="help is-danger">{{erroresFormularioStock.lote.texto}}</span>
             </p>
             <p class="control is-expanded has-icon has-icon-right">
-              <label class="label">Fecha de Caducidad</label>
+              <label class="label">Caducidad (aaaa-mm-dd)</label>
               <input class="input" type="text" placeholder="aaaa-mm-dd" [(ngModel)]="formStock.fecha_caducidad">
               <span *ngIf="erroresFormularioStock.fecha_caducidad.error" class="icon is-small" >
                 <i class="fa fa-warning"></i>
@@ -260,7 +267,7 @@
 <div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeError.mostrar">
     <button class="delete" (click)="mensajeError.mostrar = false"></button>        
     <b>Error:</b> {{ mensajeError.texto }}<br><br>
-    <p style="text-align:center" ><a  class="button is-danger is-inverted" (click)="ultimaPeticion(); mensajeError.mostrar = false"> <span class="icon"><i class="fa fa-refresh"></i></span> <span>Volver a intentar</span></a></p>        
+    <!--p style="text-align:center" ><a  class="button is-danger is-inverted" (click)="ultimaPeticion(); mensajeError.mostrar = false"> <span class="icon"><i class="fa fa-refresh"></i></span> <span>Volver a intentar</span></a></p-->
 </div>
 
 <div class="notification is-success" style="position:fixed; left:1em;  bottom:1em; width: auto" *ngIf="mensajeExito.mostrar">       

@@ -17,6 +17,8 @@ import 'rxjs/add/operator/catch';
 
 import  * as FileSaver    from 'file-saver'; 
 
+import { environment } from '../../../../environments/environment';
+
 import { Mensaje } from '../../../mensaje';
 
 import { AlmacenesService } from '../../../catalogos/almacenes/almacenes.service';
@@ -65,6 +67,7 @@ export class FormularioComponent implements OnInit {
 
   // Harima: Se genera un unico pedido
   pedido: Pedido;
+  proveedor: any = {};
   // # FIN SECCION
 
 
@@ -122,6 +125,7 @@ export class FormularioComponent implements OnInit {
     this.route.params.subscribe(params => {
       //this.id = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number
       if(params['id']){
+        this.cargando = true;
         this.pedido.id = params['id'];
 
         //cargar datos del pedido
@@ -130,10 +134,11 @@ export class FormularioComponent implements OnInit {
 
         this.pedidosService.ver(params['id']).subscribe(
           pedido => {
-            this.cargando = false;
             //this.datosCargados = true;
             this.pedido.datos.patchValue(pedido);
             this.pedido.status = pedido.status;
+
+            this.proveedor = pedido.proveedor;
 
             let fecha = pedido.fecha.split('-');
             let mes = parseInt(fecha[1]);
@@ -151,6 +156,7 @@ export class FormularioComponent implements OnInit {
             }
             this.pedido.indexar();
             this.pedido.listar(1);
+            this.cargando = false;
           },
           error => {
             this.cargando = false;
@@ -640,6 +646,10 @@ export class FormularioComponent implements OnInit {
   }
 
   // # SECCION - Webworkers
+
+  imprimirExcel(){
+    window.open(environment.API_URL+"/generar-excel-pedido/"+this.pedido.id, "_blank");
+  }
 
   imprimir() {
     try {

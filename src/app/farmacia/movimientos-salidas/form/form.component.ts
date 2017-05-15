@@ -27,6 +27,7 @@ export class FormComponent implements OnInit {
   insumosAgregadosEntrada: Insumo[]= [];
   servidor_id: string;
   listaStatus: any [] = [];
+  formularioTitulo: string;
 
   @Output() onEnviar : EventEmitter<any[]> = new EventEmitter();
   @Output() onRegresar = new EventEmitter<void>();
@@ -34,6 +35,13 @@ export class FormComponent implements OnInit {
 
   ngOnInit() {
     this.listaStatus=[{id:"FI", nombre:"Finalizado"}, {id:"BR", nombre:"Borrador"}];
+    this.movimiento.patchValue({status: "FI"});
+
+    if(this.movimiento.get("fecha_movimiento").value){
+      this.formularioTitulo = 'Editar';
+    }else{
+      this.formularioTitulo = 'Nuevo'; 
+    }
   }
 
 
