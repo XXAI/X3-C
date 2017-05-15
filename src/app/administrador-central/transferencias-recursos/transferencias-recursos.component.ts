@@ -19,7 +19,7 @@ export class TransferenciasRecursosComponent implements OnInit {
   clues_destino:string = '';
   fecha_desde:Date  = null;
   fecha_hasta:Date = null;
-
+  monto_transferir:any = null;
   mostrarVentanaNuevaTransferencia:boolean = false;
 
   // # SECCION: Esta sección es para mostrar mensajes
