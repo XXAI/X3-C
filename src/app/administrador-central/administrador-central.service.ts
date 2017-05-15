@@ -19,4 +19,12 @@ export class AdministradorCentralService {
   abasto(parametros:any = {}): Observable<any>{
     return this.jwtRequest.get("abasto",null,parametros).map( (response: Response) => response.json().data) as Observable<any[]>;
   }
+
+  pedidos(parametros:any = {}): Observable<any>{
+    return this.jwtRequest.get("pedidos-administrador-central",null,parametros).map( (response: Response) => response.json().data) as Observable<any[]>;
+  }
+
+  presupuesto(parametros): Observable<any>{    
+    return this.jwtRequest.get("presupuesto-pedidos-administrador-central",null,parametros).map( (response: Response) => response.json());
+  }
 }
