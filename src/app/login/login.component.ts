@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
       // Borramos el token porque de todos modos se va a sustituir
       // y así impedimos que intenten borrar elementos en el navegador para acceder
       if(!bloquear){
-        console.log("Redirigindo desde login por desbloqueo de pantalla")
+        console.log("Redirigiendo desde login por desbloqueo de pantalla")
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
         this.router.navigate([this.returnUrl]);
       }
@@ -52,11 +52,14 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(this.credenciales.id, this.credenciales.password)
       .subscribe(
-       
-
         data => {
+          let usuario = JSON.parse(localStorage.getItem("usuario"));
           this.loading = false;
-          this.router.navigate([this.returnUrl]);
+          if(usuario.modulo_inicio){
+            this.router.navigate([usuario.modulo_inicio]);
+          }else{
+            this.router.navigate([this.returnUrl]);
+          }
           localStorage.removeItem('bloquear_pantalla');
         },
         error => {

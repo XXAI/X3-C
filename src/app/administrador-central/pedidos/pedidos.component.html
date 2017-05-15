@@ -40,6 +40,13 @@
                         <td style="text-align:center"><span class="tag is-danger">$ {{ presupuesto.material_curacion_devengado | number:'1.2-2' }}</span></td>
                         <td style="text-align:center"><span class="tag is-success">$ {{ presupuesto.material_curacion_disponible | number:'1.2-2' }}</span></td>
                     </tr>
+                    <tr>
+                        <th>Total</th>
+                        <td style="text-align:center"><span class="tag is-primary">$ {{ presupuesto.total_modificado | number:'1.2-2' }}</span></td>
+                        <td style="text-align:center"><span class="tag is-warning"> $ {{ presupuesto.total_comprometido | number:'1.2-2' }}</span></td>
+                        <td style="text-align:center"><span class="tag is-danger">$ {{ presupuesto.total_devengado | number:'1.2-2' }}</span></td>
+                        <td style="text-align:center"><span class="tag is-success">$ {{ presupuesto.total_disponible | number:'1.2-2' }}</span></td>
+                    </tr>
                 </tbody>
             </table>
          </div>

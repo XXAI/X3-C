@@ -143,18 +143,23 @@ export class VerComponent implements OnInit {
               //this.listaClaveAgregadas.push(insumo.clave);
               let tipo_insumo = 'ST';
               let tiene_iva = false;
+              let clave_tipo_insumo = 'SC';
               if(insumo.tipo == 'ME' && insumo.es_causes){
                 tipo_insumo = 'MEDICAMENTOS CAUSES';
+                clave_tipo_insumo = 'C'
               }else if(insumo.tipo == 'ME' && !insumo.es_causes){
                 tipo_insumo = 'MEDICAMENTOS NO CAUSES';
+                clave_tipo_insumo = 'NC'
               }else if(insumo.tipo == 'MC'){
-                tipo_insumo = 'MATERIAL CURACIÓN';
+                tipo_insumo = 'MATERIAL DE CURACIÓN';
+                clave_tipo_insumo = 'MC'
                 tiene_iva = true;
               }
-              if(!this.subPedidos[tipo_insumo]){
-                this.tiposSubPedidos.push(tipo_insumo);
-                this.subPedidos[tipo_insumo] = {
+              if(!this.subPedidos[clave_tipo_insumo]){
+                this.tiposSubPedidos.push(clave_tipo_insumo);
+                this.subPedidos[clave_tipo_insumo] = {
                   'titulo':tipo_insumo,
+                  'clave_folio':clave_tipo_insumo,
                   'claves':0,
                   'cantidad':0,
                   'monto':0,
@@ -163,10 +168,10 @@ export class VerComponent implements OnInit {
                   'lista':[]
                 }
               }
-              this.subPedidos[tipo_insumo].claves++;
-              this.subPedidos[tipo_insumo].cantidad += insumo.cantidad;
-              this.subPedidos[tipo_insumo].monto += insumo.monto;
-              this.subPedidos[tipo_insumo].lista.push(insumo);
+              this.subPedidos[clave_tipo_insumo].claves++;
+              this.subPedidos[clave_tipo_insumo].cantidad += insumo.cantidad;
+              this.subPedidos[clave_tipo_insumo].monto += insumo.monto;
+              this.subPedidos[clave_tipo_insumo].lista.push(insumo);
             }
             pedido.insumos = undefined;
             this.pedido.indexar();
