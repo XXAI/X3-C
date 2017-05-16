@@ -280,7 +280,8 @@ export class ListaComponent implements OnInit {
 
   eliminar(pedido: Pedido, index): void {
     pedido.cargando = true;
-    this.pedidosService.eliminar(pedido.id).subscribe(
+    if(confirm('Desea eliminar el pedido?')){
+      this.pedidosService.eliminar(pedido.id).subscribe(
         data => {
           pedido.cargando = false;
           this.pedidos.splice(index, 1);  
@@ -288,7 +289,8 @@ export class ListaComponent implements OnInit {
 
           this.mensajeExito = new Mensaje(true)
           this.mensajeExito.mostrar = true;
-          this.mensajeExito.texto = "Usuario eliminado";
+          this.mensajeExito.texto = "Pedido eliminado";
+          
         },
         error => {
           pedido.cargando = false;
@@ -297,11 +299,12 @@ export class ListaComponent implements OnInit {
             this.eliminar(pedido, index);
           }
         
-          
           try {
             let e = error.json();
             if (error.status == 401 ){
               this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }else{
+              this.mensajeError.texto = e.error;
             }
           } catch(e){
             console.log("No se puede interpretar el error");
@@ -310,11 +313,14 @@ export class ListaComponent implements OnInit {
               this.mensajeError.texto = "500 (Error interno del servidor)";
             } else {
               this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
-            }            
+            }
           }
           
         }
       );
+    }else{
+      pedido.cargando = false;
+    }
   }
 
   // # SECCION: Paginación

@@ -232,9 +232,6 @@ export class PedidosComponent implements OnInit {
     this.cargando = true;
     this.paginaActual = pagina;
 
-
-    
-
     var proveedoresIds = [];
     for(var i in this.proveedoresSeleccionados){
       proveedoresIds.push(this.proveedoresSeleccionados[i].id);
@@ -281,7 +278,7 @@ export class PedidosComponent implements OnInit {
         console.log(error);
       }
     );
-
+    
     this.apiService.pedidos(parametros).subscribe(
       respuesta => {
           this.cargando = false;
@@ -316,6 +313,7 @@ export class PedidosComponent implements OnInit {
       }
     )
   }
+  
   exportar(){
 
     var query = "token="+localStorage.getItem('token')+"&ordenar_causes="+this.ordenarCauses+"&ordenar_no_causes="+this.ordenarNoCauses+"&ordenar_material_curacion="+this.ordenarMaterialCuracion;

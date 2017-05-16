@@ -89,7 +89,7 @@ export class FormularioComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.title.setTitle('Nuevo pedido');
+    this.title.setTitle('Formulario pedido');
 
     // Inicializamos el objeto para los reportes con web Webworkers
     this.pdfworker = new Worker("web-workers/farmacia/pedidos/imprimir.js")
@@ -131,6 +131,7 @@ export class FormularioComponent implements OnInit {
         //cargar datos del pedido
         this.esEditar = true;
         this.formularioTitulo = 'Editar';
+        this.title.setTitle('Editar pedido');
 
         this.pedidosService.ver(params['id']).subscribe(
           pedido => {
@@ -181,9 +182,8 @@ export class FormularioComponent implements OnInit {
             }
           }
         );
-        console.log('editar pedido');
       }else{
-        console.log('nuevo pedido');
+        this.title.setTitle('Nuevo pedido');
         this.cargarPresupuesto();
       }
       //Harima:cargamos catalogos
