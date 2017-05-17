@@ -330,7 +330,7 @@
                 <div class="content">
                   <strong>Total claves</strong>: {{subPedidos[tipo].claves | number}} <br>
                   <strong>Total unidades</strong>: {{subPedidos[tipo].cantidad | number}} <br>
-                  <strong>Total monto</strong>: $ {{subPedidos[tipo].monto | number:'1.2-2'}}
+                  <strong>Total monto</strong>: $ {{subPedidos[tipo].monto + ((subPedidos[tipo].tiene_iva)?+subPedidos[tipo].monto*16/100:0) | number:'1.2-2'}}
                 </div>
               </div>
               <footer class="card-footer">

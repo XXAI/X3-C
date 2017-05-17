@@ -121,6 +121,12 @@
                                 <input class="input " type="date"  [(ngModel)] = "fecha_hasta" >
                             </p>
                         </div>
+                        <!--div class="column">
+                            <label>Sin Pedidos</label>
+                            <div class="control">
+                                <button class="button is-primary" (click)="sin_pedidos = !sin_pedidos"><span class="icon"><i class="fa" [ngClass]="{'fa-check-square-o': sin_pedidos, 'fa-square-o':!sin_pedidos }"></i></span></button>
+                            </div>
+                        </div-->
                     </div>
 
                     <div *ngIf="jurisdiccionesSeleccionadas.length>0 || proveedoresSeleccionados.length>0 || statusSeleccionados.length>0">

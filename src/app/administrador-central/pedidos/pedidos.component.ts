@@ -32,8 +32,9 @@ export class PedidosComponent implements OnInit {
   jurisdiccionesSeleccionadas:any[] = [];
   proveedoresSeleccionados:any[] = [];
 
-  fecha_desde:Date  = null;
+  fecha_desde:Date = null;
   fecha_hasta:Date = null;
+  sin_pedidos:boolean = false;
 
   ordenarCauses:string = '';
   ordenarNoCauses:string = '';

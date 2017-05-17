@@ -247,7 +247,7 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
         );
         
         pdfMake.createPdf( dd ).getBase64( function( base64 ) {
-            postMessage( { fileName: pedido.datos.folio, base64: base64 } );
+            postMessage( { fileName: pedido.datos.folio+'-'+pedido.insumos.clave_folio, base64: base64 } );
         });
     }
 
