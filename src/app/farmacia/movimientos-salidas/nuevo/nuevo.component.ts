@@ -58,8 +58,10 @@ export class NuevoComponent implements OnInit {
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
 
       this.movimiento = this.fb.group({
+        id:[''],
         almacen_id: ['', [Validators.required]],
         status: ['', [Validators.required]],
+        responsable: ['', [Validators.required]],
         tipo_movimiento_id: ['', [Validators.required]],
         fecha_movimiento: ['', [Validators.required]],
         observaciones: ['', [Validators.required]],
@@ -88,7 +90,7 @@ export class NuevoComponent implements OnInit {
 
     enviar(insumosAgregadosForm: any[]) {    
     this.cargando = true;  
-    console.log(`Insumos ${insumosAgregadosForm}`);
+    //console.log(`Insumos ${insumosAgregadosForm}`);
     this.movimiento.value.insumos = insumosAgregadosForm;
     console.log(this.movimiento.value);
     this.movimientosSalidasService.crear(this.movimiento.value).subscribe(
@@ -111,15 +113,21 @@ export class NuevoComponent implements OnInit {
             }
             // Problema de validación
             if (error.status == 409){
-              this.mensajeError.texto = "Por favor verfique los campos marcados en rojo.";
+              this.mensajeError.texto = "Por favor verfique los campos vacíos.";
               this.movimientoRepetido = false;
               this.movimientoInvalido = false;
               for (var input in e.error){
+                    console.log(e.error[input]);
                 // Iteramos todos los errores
                 for (var i in e.error[input]){
+                    console.log(e.error[input[i]]);
+                    for (var j in e.error[input[i]]){
+                    console.log(e.error[input[i[j]]]);
 
-                  if(input == 'id' && e.error[input][i] == 'unique'){
-                    this.movimientoRepetido = true;
+                    }
+
+                  if(e.error[input] == 'insumos'){
+                    console.log("No hay insumos");
                   }
                   if(input == 'id' && e.error[input][i] == 'email'){
                     this.movimientoInvalido = true;

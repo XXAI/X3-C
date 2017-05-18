@@ -59,6 +59,7 @@ export class NuevoComponent implements OnInit {
     
       this.movimiento = this.fb.group({
         almacen_id: ['', [Validators.required]],
+        status: ['', [Validators.required]],
         tipo_movimiento_id: ['', [Validators.required]],
         fecha_movimiento: ['', [Validators.required]],
         observaciones: ['', [Validators.required]],
@@ -71,6 +72,7 @@ export class NuevoComponent implements OnInit {
     
     this.movimiento.patchValue({almacen_id: this.usuario.almacen_activo.id});
     this.movimiento.patchValue({cancelado: false});
+    this.movimiento.patchValue({status: "FI"});
     this.movimiento.patchValue({tipo_movimiento_id: 1});
   }
 

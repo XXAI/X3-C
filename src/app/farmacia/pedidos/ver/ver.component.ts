@@ -128,6 +128,7 @@ export class VerComponent implements OnInit {
             //this.pedidos[0].datos.patchValue(pedido);
             this.pedido.datosImprimir = pedido;
             this.pedido.status = pedido.status;
+            console.log(pedido);
 
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];

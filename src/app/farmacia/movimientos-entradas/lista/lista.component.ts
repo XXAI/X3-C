@@ -394,7 +394,6 @@ export class ListaComponent implements OnInit {
   imprimir(item: Modelo, index) {
     
     console.log(item.id);
-    console.log(item);
 
     this.movimientosEntradasService.ver(item.id).subscribe(
           movimientoActual => {
@@ -406,7 +405,7 @@ export class ListaComponent implements OnInit {
                 this.cargandoPdf = true;
                 var entradas_imprimir = {
                   datos: item,
-                  lista: item.datosImprimir.movimiento_insumos
+                  lista: item.datosImprimir.insumos
                 };
                 this.pdfworker.postMessage(JSON.stringify(entradas_imprimir));
               } catch (e){

@@ -163,11 +163,10 @@ export class EditarComponent implements OnInit {
       resultado =>{
         this.cargando = false;
         this.datosCargados = true;
-        this.movimiento.patchValue(resultado);
         console.log(resultado);
+        this.movimiento.patchValue(resultado);
         this.salidaMovimiento = resultado as Salida[];
-          console.log(this.salidaMovimiento);
-          console.log(this.salidaMovimiento);          
+          console.log(this.salidaMovimiento);        
         console.log("Movimiento cargado.");
         console.log(this.movimiento);
       },

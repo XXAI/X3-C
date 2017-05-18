@@ -258,14 +258,30 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
     */
     return true;
   }
-  comprobarExistencia(cantidad:any, existencia: number){
-    let cant = +cantidad;
-    if(cantidad<=existencia){
-      console.log(`Cantidad ${cantidad} Existencia ${existencia}`);
-      this.existencia = true;
+  comprobarExistencia(cantidad:any, existencia: number, nuevo ?){
+    //let cant = +cantidad;
+    
+    var disabledCant=0;
+    for(let lote of this.lotes_insumo){
+      if(lote.nuevo){
+      console.log(nuevo);
+      lote.existencia = lote.cantidad;
+    }
+      console.log(`Cantidad ${lote.cantidad} Existencia ${lote.existencia}`);
+      if(!lote.cantidad || lote.cantidad<0){
+        lote.cantidad=0;
+      }
+      if(lote.cantidad<=lote.existencia){
+        console.log(disabledCant);
+      }else{
+        disabledCant++;
+      }
+    }
+    if(disabledCant>0){
+      this.existencia = false;
     }
     else{
-      this.existencia = false;
+      this.existencia = true;
     }
   }
 
@@ -284,11 +300,47 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
         });
   }
 
+  toItemIndexes<T>(a: T[]) {
+    return a.map((lote, i) => ({ lote, i }));
+  }
+
   enviarSalida(){
 
       let i: number = 0;
-      this.insumoSeleccionado.lotes = this.lotes_insumo;
-      console.log(this.insumoSeleccionado.lotes);
+
+      //var tem: Array<any>;
+      var lotesNOvalidos: any[] = [];
+      var lotesValidos: any[] = [];
+     for(let lote of this.lotes_insumo)
+      {        
+        if(lote.nuevo)
+        {  
+            if(lote.lote=='')
+            {
+              lotesNOvalidos.push(lote);
+            }else{
+              lotesValidos.push(lote);
+            }
+        }else{
+                if(!lote.cantidad)
+                {
+                   lotesNOvalidos.push(lote);
+                }else{
+                        if(lote.cantidad <= 0 || lote.cantidad == '')
+                        {
+                           lotesNOvalidos.push(lote);
+                        }else{
+                          lotesValidos.push(lote);
+                        }
+                     }
+              }
+      }
+      console.log(lotesNOvalidos);
+      console.log(lotesValidos);
+      console.log(`LOTES_INSUMO ${this.lotes_insumo}`);
+
+
+      this.insumoSeleccionado.lotes = lotesValidos;
       this.mensajeAgregado = new Mensaje(true, 2);
       this.onEnviar.emit(this.insumoSeleccionado);
       this.searchBoxViewChildren.first.nativeElement.focus();
@@ -304,6 +356,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       this.insumoSeleccionado.codigo_barras = this.codigoBarrasViewChildren.first.nativeElement.value;
       this.insumoSeleccionado.fecha_caducidad = this.fechaViewChildren.first.nativeElement.value;
       this.insumoSeleccionado.lote_entrada = this.loteViewChildren.first.nativeElement.value;
+      console.log(this.insumoSeleccionado);
       this.onEnviar.emit(this.insumoSeleccionado);
       this.searchBoxViewChildren.first.nativeElement.focus();
       //Harima: Agregamos la clave al arreglo de items agregados
