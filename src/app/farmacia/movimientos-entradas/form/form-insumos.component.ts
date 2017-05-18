@@ -138,9 +138,11 @@ export class FormInsumosComponent implements OnInit {
     //insumo = item;
     insumo.descripcion = item.descripcion;
     insumo.informacion = item.informacion;
+    insumo.generico_nombre = item.generico_nombre;
     insumo.tipo = item.tipo;
     insumo.es_causes = item.es_causes;
-    console.log(insumo.informacion);
+    console.log(insumo.generico_nombre);
+    console.log(insumo.descripcion);
     insumo.clave = item.clave;
     insumo.cantidad = item.cantidad;
     insumo.cantidad_x_envase = Number(item.informacion.cantidad_x_envase);

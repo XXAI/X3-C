@@ -2,3 +2,25 @@
 
 <div style="height:50px;"></div>
 <entradas-form [movimiento]="movimiento" [insumosForm]="insumosNuevo" [cargando]="cargando" (onEnviar)="enviar($event)"></entradas-form>
+
+
+<div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeError.mostrar">
+    <button class="delete" (click)="mensajeError.mostrar = false"></button>
+    <p><b>Error:</b> {{ mensajeError.texto }}<br></p>
+    <p style="text-align: center;"><small>Este mensaje desaparecerá en {{ mensajeError.cuentaAtras }} segundos.</small></p>
+</div>
+
+<div class="notification is-warning" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeAdvertencia.mostrar">
+    <button class="delete" (click)="mensajeAdvertencia.mostrar = false"></button>
+    <p><span class="icon" style="margin-right: 0.5em;"><i class="fa fa-warning"></i></span> <span>{{ mensajeAdvertencia.texto }}</span></p>
+
+    <br>
+    <p style="text-align: center;"><small>Este mensaje desaparecerá en {{ mensajeAdvertencia.cuentaAtras }} segundos.</small></p>
+</div>
+
+<div class="notification is-success" style="position:fixed; left:1em;  bottom:1em; width: auto" *ngIf="mensajeExito.mostrar">
+    <button class="delete" (click)="mensajeExito.mostrar = false"></button>
+    <p><span class="icon" style="margin-right: 0.5em;"><i class="fa fa-check-circle"></i></span> <span>{{ mensajeExito.texto }}</span></p>
+    <br>
+    <p style="text-align: center;"><small>Este mensaje desaparecerá en {{ mensajeExito.cuentaAtras }} segundos.</small></p>
+</div>

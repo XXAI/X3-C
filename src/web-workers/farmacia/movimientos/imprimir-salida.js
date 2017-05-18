@@ -1,12 +1,12 @@
-var document = { 'createElementNS': function(){ return {} } };
+var document = { 'createElementNS': function() { return {} } };
 var window = this;
-importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js');
+importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js');
 
-(function() { 
+(function() {
     'use strict';
 
 
-    onmessage = function( evt ) {
+    onmessage = function(evt) {
         let data = JSON.parse(evt.data)
         console.log(data);
         pdf(data);
@@ -15,39 +15,53 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
     function pdf(data) {
         console.log(data);
         var contadorLineasHorizontalesV = 0;
+        var COLOR_CELDA = '#eaf1dd';
         var dd = {
             content: [{
                 style: 'Movimiento',
                 table: {
-                    headerRows: 4,
+                    headerRows: 5,
                     dontBreakRows: true,
                     //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
-                    widths: [ 80, 70, 'auto', 'auto', 'auto'],
+                    widths: [80, 70, 'auto', 'auto', 'auto', 'auto'],
                     body: [
                         [{
                             image: 'header',
                             width: 500,
-                            style: 'tableHeaderTop', colSpan: 5, alignment: 'center'
-                        },{},{},{},{}],
-                        [{ text: 'SALIDA MANUAL', style: 'tableHeaderTop', colSpan: 5, alignment: 'center' },{},{},{},{}],
-                        [{ text: "", style: 'tableHeaderTop', colSpan: 5, alignment: 'center' },{},{},{},{}],
-
+                            style: 'tableHeaderTop',
+                            colSpan: 6,
+                            alignment: 'center'
+                        }, {}, {}, {}, {}, {}],
+                        [{ text: 'SIAL', style: 'titulo', colSpan: 6, alignment: 'center' },
+                            {}, {}, {}, {}, {}
+                        ],
+                        [{ text: 'SALIDA', style: 'tableHeaderTop', colSpan: 6, alignment: 'center' },
+                            {}, {}, {}, {}, {}
+                        ],
                         [
-                            { text: 'ID DE SALIDA MANUAL', style: 'tableHeader', colSpan: 2, alignment: 'right' },{},{ text: data.datos.id, style: 'tableHeader', alignment: 'left' },
-                            { text: 'ALMACÉN', style: 'tableHeader', alignment: 'right' },
+                            { text: 'FOLIO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
+                            {},
+                            { text: data.datos.id, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
+                            { text: 'ALMACÉN', style: 'tableHeaderVerde', alignment: 'right' },
                             { text: data.datos.datosImprimir.almacen.nombre, style: 'tableHeader', alignment: 'left' }
                         ],
                         [
-                            { text: 'USUARIO', style: 'tableHeader', colSpan: 2, alignment: 'right' },{},{ text: data.datos.usuario_id, style: 'tableHeader', alignment: 'left' },
-                            { text: 'FECHA DE CREACION', style: 'tableHeader', alignment: 'right' },{ text: data.datos.fecha_movimiento, style: 'tableHeader', alignment: 'left' }
+                            { text: 'USUARIO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
+                            {},
+                            { text: data.datos.usuario_id, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
+                            { text: 'FECHA DE CREACION', style: 'tableHeaderVerde', alignment: 'right' },
+                            { text: data.datos.fecha_movimiento, style: 'tableHeader', alignment: 'left' }
+                        ],
+                        [{ text: ' ', style: 'celdaEspacio', colSpan: 6, alignment: 'center' },
+                            {}, {}, {}, {}, {}
                         ],
                         [
-                            { text: 'CLAVE', style: 'tableHeader', alignment: 'center'},
-                            { text: 'NO. DE LOTE', style: 'tableHeader', alignment: 'center'},
-                            { text: 'FECHA DE CADUCIDAD', style: 'tableHeader', alignment: 'center'},
-                            { text: 'CODIGO DE BARRAS', style: 'tableHeader', alignment: 'center'},
-                            //{ text: 'PRESENTACIÓN', style: 'tableHeader', alignment: 'center'},
-                            { text: 'CANTIDAD', style: 'tableHeader', alignment: 'center'},
+                            { text: 'CLAVE', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'NOMBRE', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'NO. DE LOTE', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'FECHA DE CADUCIDAD', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'CODIGO DE BARRAS', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'CANTIDAD', style: 'tableHeaderVerde', alignment: 'center' },
                         ]
                         //Body -> insumos
                     ]
@@ -57,23 +71,23 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
                     paddingBottom: function(i, node) { return 0; },
                     paddingLeft: function(i, node) { return 0; },
                     paddingRight: function(i, node) { return 0; },
-                    hLineWidth: function(i, node){
-                        if (i<3 ){ return 0;} else {
+                    hLineWidth: function(i, node) {
+                        if (i < 3) { return 0; } else {
                             return 0.25
                         }
                         return (i === 0 || i === node.table.body.length) ? 0.5 : 0.5;
                     },
-                    vLineWidth: function(i, node){
+                    vLineWidth: function(i, node) {
                         /* Hack para las lineas verticales de la cabecera */
-                        if (i == 0){
+                        if (i == 0) {
                             contadorLineasHorizontalesV += 1
-                        } 
+                        }
                         /*
                             El numero 4 es el que funciono, deberian ser 2 por ser 2 filas,
                             Si se agregan mas filas solo debemos aumentar este numero a modo de cuadrar
                             el encabezado
                         */
-                        if (contadorLineasHorizontalesV > 5){
+                        if (contadorLineasHorizontalesV > 5) {
                             return 0.5
                         } else {
                             return 0
@@ -82,52 +96,71 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
                 }
             }],
             pageSize: 'LETTER',
-            compress: true,					
+            compress: true,
             pageOrientation: 'portrait',
-            footer: function(currentPage, pageCount) { 
-                return { style: 'piePagina', text: 'Página '+currentPage.toString() +' de '+ pageCount, alignment:'center'};
+            footer: function(currentPage, pageCount) {
+                return { style: 'piePagina', text: 'Página ' + currentPage.toString() + ' de ' + pageCount, alignment: 'center' };
             },
             styles: {
+                titulo: {
+                    fontSize: 12,
+                    bold: true,
+                    color: 'black'
+                },
+                celdaEspacio: {
+                    bold: true,
+                    fontSize: 8,
+                    //layout: 'noBorders',
+                    fillColor: 'white'
+                },
                 tableHeaderTop: {
                     bold: true,
                     fontSize: 8,
                     color: 'black',
-                    margin: [3,3,3,3]
+                    margin: [3, 3, 3, 3]
                 },
                 tableHeaderLeyenda: {
                     bold: false,
-                    italics:true,
+                    italics: true,
                     fontSize: 8,
                     color: 'black',
-                    margin: [1,1,1,1]
+                    margin: [1, 1, 1, 1]
                 },
                 tableHeader: {
                     bold: true,
                     fontSize: 6,
                     color: 'black',
-                    margin: [3,3,3,3]
+                    margin: [3, 3, 3, 3]
+                },
+                tableHeaderVerde: {
+                    bold: true,
+                    fontSize: 6,
+                    color: 'black',
+                    fillColor: COLOR_CELDA,
+                    margin: [3, 3, 3, 3]
+
                 },
                 tableHeaderData: {
                     bold: false,
                     fontSize: 6,
                     color: 'black',
-                    margin: [3,3,3,3]
+                    margin: [3, 3, 3, 3]
                 },
                 tableRow: {
-                    bold:false,
+                    bold: false,
                     fontSize: 6,
                     color: 'black',
-                    margin: [3,3,3,3]
+                    margin: [3, 3, 3, 3]
                 },
                 tableFooter: {
-                    bold:true,
+                    bold: true,
                     fontSize: 6,
                     color: 'black',
-                    margin: [3,3,3,3]
+                    margin: [3, 3, 3, 3]
                 },
                 piePagina: {
                     fontSize: 6,
-                    italics:true,
+                    italics: true,
                     bold: false
                 }
             },
@@ -139,75 +172,70 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
         };
 
         var suma_total_insumos = 0;
-        
-/*        for(var i in data.lista){
-            var insumo = data.lista[i];
-            console.log(insumo);
-            var presentacion = 'PIEZA';
-            /*if(insumo.informacion){
-                presentacion = insumo.informacion.presentacion_nombre;
-            }*/
-/*            dd.content[0].table.body.push([
-                { text: insumo.clues, style: 'tableRow',  alignment: 'center'},
-                { text: insumo.clave,"", style: 'tableRow', alignment: 'center'},
-                //{ text: insumo.descripcion, style: 'tableRow', alignment: 'left', colSpan:2},{},
-                //{ text: presentacion, style: 'tableRow', alignment: 'center'},
-                //{ text: insumo.cantidad, style: 'tableRow', alignment: 'center'}
-         //   ]);
-            /*suma_total_insumos += insumo.cantidad;*/
-   //     }
 
-        for (var i in data.lista){
+
+        for (var i in data.lista) {
             console.log(" " + i);
             var insumo = data.lista[i];
             console.log(insumo);
 
-            dd.content[0].table.body.push([
-                { text: insumo.stock.clave_insumo_medico, style: 'tableRow', alignment: 'center'},
-                { text: insumo.stock.lote, style: 'tableRow', alignment: 'center'},
-                //{ text: insumo.stock.fecha_caducidad, style: 'tableRow', alignment: 'center'}, 
-                { text: insumo.stock.fecha_caducidad, style: 'tableRow', alignment: 'center'}, 
-                { text: insumo.stock.codigo_barras, style: 'tableRow', alignment: 'center'}, 
-                { text: insumo.cantidad, style:'tableRow', alignment: 'center'}
-            ]);       
-            
-        }
+            for (var j in insumo.lotes) {
+                console.log(" " + j);
+                var lote = insumo.lotes[j];
+                console.log(lote);
+                dd.content[0].table.body.push([
+                    { text: lote.clave_insumo_medico, style: 'tableRow', alignment: 'center' },
+                    { text: insumo.detalles.generico_nombre, style: 'tableRow', alignment: 'center' },
+                    { text: lote.lote, style: 'tableRow', alignment: 'center' },
+                    { text: lote.fecha_caducidad, style: 'tableRow', alignment: 'center' },
+                    { text: lote.codigo_barras, style: 'tableRow', alignment: 'center' },
+                    { text: lote.cantidad, style: 'tableRow', alignment: 'center' }
+                ]);
+            }
 
+        }
 
 
         dd.content[0].table.body.push(
             // Footer
-            
+            [
+                { text: "", style: 'tableHeader', colSpan: 6, alignment: 'center' },
+                '', '', '', '', ''
+            ],
+
             // Firmas
-            [{ 
+            [{
                 table: {
-                    widths: [ '*', '*'],
+                    widths: ['*', '*'],
                     body: [
-                        [ 'RECIBE', { text: "Observaciones", style:'text'}],
-                        [{text:'\n\n\n\n'+'Responsable de salidas manuales',style:'tableRow'},{ text: '\n'+data.datos.observaciones,  rowSpan:2, alignment:'justify' }],
-                        ['RESPONSABLE ','']
+                        ['RECIBE', { text: "Observaciones", style: 'text' }],
+                        [{ text: '\n\n\n\n' + 'Responsable de salidas', style: 'tableRow' }, { text: '\n' + data.datos.observaciones, rowSpan: 2, alignment: 'justify' }],
+                        ['RESPONSABLE ', '']
                     ],
                 },
                 layout: {
-                    hLineWidth: function(i, node){
-                        if (i == 0 || i == 3){
+                    hLineWidth: function(i, node) {
+                        if (i == 0 || i == 3) {
                             return 0;
                         }
                         return 0.5;
                     },
-                    vLineWidth: function(i, node){
-                        if (i == 0 || i == 3){
+                    vLineWidth: function(i, node) {
+                        if (i == 0 || i == 3) {
                             return 0;
                         }
                         return 0.5;
                     },
                 },
-                style: 'tableHeader', 	margin: [0, 0, 0, 0],colSpan: 5, alignment: 'center' ,
-            },{},{},{},{}]
+                style: 'tableHeader',
+                margin: [0, 0, 0, 0],
+                colSpan: 6,
+                alignment: 'center',
+            }, {}, {}, {}, {}, {}]
         );
 
-        pdfMake.createPdf( dd ).getBase64( function( base64 ) {
-            postMessage( { fileName: 'Salida'+data.datos.id+'.pdf', base64: base64 } );
+        pdfMake.createPdf(dd).getBase64(function(base64) {
+            postMessage({ fileName: 'Salida' + data.datos.id + '.pdf', base64: base64 });
         });
     }
 

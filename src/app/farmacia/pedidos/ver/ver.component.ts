@@ -133,6 +133,7 @@ export class VerComponent implements OnInit {
             this.pedido.datosImprimir = pedido;
             this.pedido.status = pedido.status;
             
+
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];
               let insumo = dato.insumos_con_descripcion;

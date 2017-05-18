@@ -6,6 +6,7 @@ export class Movimiento {
 				  observaciones: string;
 				  cancelado: number;
 				  observaciones_cancelacion: string;
+                  responsable: string;
                   insumos: Insumo[];
 }
 
@@ -13,6 +14,7 @@ export class Insumo {
 			         clave: string;
                      descripcion: string;
                      informacion: any[];
+                     generico_nombre: string;
                      tipo: string;
                      es_causes: boolean;
 			         cantidad: number;

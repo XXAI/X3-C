@@ -48,6 +48,7 @@
                         <th class="is-hidden-mobile">Clave</th>
                         <th>Generico</th>
                         <th class="is-hidden-mobile">Descripción</th>
+                        <th style="text-align:center" class="is-hidden-mobile">Existencia</th>
                         <th style="text-align:center" class="is-hidden-mobile">Grupo(s)</th>
                         <th style="text-align:center"><abbr title="Tipo de insumo">Tipo</abbr></th>
                         <th style="text-align:center"><abbr title="Información">Info</abbr></th>
@@ -106,6 +107,11 @@
                             </div>
                         </td>
                         <td style="text-align:center;" class="is-hidden-mobile">
+                            <div style="line-height:1em;">
+                                <small>{{ item.stockExistencia.existencia }}</small>
+                            </div>
+                        </td>
+                        <td style="text-align:center;" class="is-hidden-mobile">
                             <span *ngFor="let grupo of item.generico.grupos">{{grupo.nombre}}<br></span>
                         </td>
                         <td style="text-align:center;">
@@ -147,7 +153,7 @@
             <form *ngIf="!salida" (submit)="enviar($event)">
                 <div class="control is-grouped is-pulled-right ">
                     <p class="control is-expanded has-icon">
-                        <input class="input is-medium" [disabled]="insumoSeleccionado == null" type="text" placeholder="Cantidad" #cantidadBox id="cantidad" (keyup)="comprobarCantidad(cantidadBox.value)" [ngClass]="{'is-danger': !cantidadAPI}">
+                        <input class="input is-medium" [disabled]="insumoSeleccionado == null" type="number" placeholder="Cantidad" #cantidadBox id="cantidad" (keyup)="comprobarCantidad(cantidadBox.value)" [ngClass]="{'is-danger': !cantidadAPI}">
                         <span class="icon is-small" *ngIf="!cantidadAPI">
                           <i class="fa fa-warning"></i>
                         </span>
@@ -162,13 +168,14 @@
               <span class="help is-danger" *ngIf="insumoForm.controls.lote.hasError('required') && insumoForm.controls.lote.touched">Este campo es requerido.</span>
             </p> -->
                     <p class="control is-expanded" *ngIf="!salida">
-                        <input class="input is-medium" [disabled]="insumoSeleccionado == null" type="text" placeholder="Lote" #loteBox id="lote">
+                        <input class="input is-medium" [disabled]="insumoSeleccionado == null" type="text" placeholder="Lote" #loteBox id="lote" name="lote">
                     </p>
                     <p class="control is-expanded" *ngIf="!salida">
-                        <input class="input is-medium" [disabled]="insumoSeleccionado == null" type="date" placeholder="Fecha de caducidad" #fechaBox id="fecha_caducidad">
+                        <input class="input is-medium" [disabled]="insumoSeleccionado == null" type="date" placeholder="Fecha de caducidad" #fechaBox id="fecha_caducidad" name="fecha_caducidad">
                     </p>
                     <p class="control is-expanded" *ngIf="!salida">
-                        <input class="input is-medium" [disabled]="insumoSeleccionado == null" type="text" placeholder="Codigo de barras" #codigoBarrasBox id="codigo_barras">
+                        <input class="input is-medium" required [disabled]="insumoSeleccionado == null" type="text" placeholder="Codigo de barras" #codigoBarrasBox id="codigo_barras" name="codigo_barras">
+
                     </p>
                     <p *ngIf="!salida" class="control">
                         <a *ngIf="salida" class="button is-medium is-primary" (click)="agregar(cantidadBox.value)" [ngClass]="{'is-disabled': !cantidadValida}"><span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span></a>
@@ -218,10 +225,11 @@
                         <td *ngIf="!item.nuevo">{{item.codigo_barras}}</td>
                         <td *ngIf="item.nuevo"><input class="input has-text-centered is-small" type="text" placeholder="Codigo de barras" [(ngModel)]="item.codigo_barras"></td>
                         <td *ngIf="!item.nuevo">{{item.existencia}}</td>
-                        <td *ngIf="item.nuevo"><input class="input has-text-centered is-small" type="number" placeholder="Existencia" [(ngModel)]="item.existencia"></td>
+                        <td *ngIf="item.nuevo">
+                            <!-- <input [ngClass]="{'is-show': !item.nuevo}" class="input has-text-centered is-small" type="number" placeholder="Existencia" [(ngModel)]="item.existencia"> -->
+                        </td>
                         <td>
-                            <input class="input has-text-centered is-small" type="number" placeholder="Cantidad" [(ngModel)]="item.cantidad" (keyup)="comprobarExistencia(item.cantidad, item.existencia)" [ngClass]="{'is-danger': !existencia}">
-                            <span>{{i}}</span>
+                            <input class="input has-text-centered is-small" type="number" placeholder="Cantidad" [(ngModel)]="item.cantidad" (keyup)="comprobarExistencia(item.cantidad, item.existencia, item.nuevo)" [ngClass]="{'is-danger': !existencia}">
                         </td>
                         <td *ngIf="item.nuevo">
                             <a class="delete" (click)=eliminarLote(i)></a>
