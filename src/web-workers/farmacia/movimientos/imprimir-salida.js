@@ -52,6 +52,13 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                             { text: 'FECHA DE CREACION', style: 'tableHeaderVerde', alignment: 'right' },
                             { text: data.datos.fecha_movimiento, style: 'tableHeader', alignment: 'left' }
                         ],
+                        [
+                            { text: 'CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
+                            {},
+                            { text: data.usuario.clues_activa.clues, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
+                            { text: 'NOMBRE DE CLUES', style: 'tableHeaderVerde', alignment: 'right' },
+                            { text: data.usuario.clues_activa.nombre, style: 'tableHeader', alignment: 'left' }
+                        ],
                         [{ text: ' ', style: 'celdaEspacio', colSpan: 6, alignment: 'center' },
                             {}, {}, {}, {}, {}
                         ],
@@ -180,9 +187,9 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
             console.log(insumo);
 
             for (var j in insumo.lotes) {
-                console.log(" " + j);
+                //console.log(" " + j);
                 var lote = insumo.lotes[j];
-                console.log(lote);
+                //console.log(lote);
                 dd.content[0].table.body.push([
                     { text: lote.clave_insumo_medico, style: 'tableRow', alignment: 'center' },
                     { text: insumo.detalles.generico_nombre, style: 'tableRow', alignment: 'center' },

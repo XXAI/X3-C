@@ -6,7 +6,7 @@ export class Movimiento {
 				  observaciones: string;
 				  cancelado: number;
 				  observaciones_cancelacion: string;
-                  responsable: string;
+                  persona_recibe: string;
                   insumos: Insumo[];
 }
 

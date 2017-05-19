@@ -85,7 +85,6 @@ export class FormInsumosComponent implements OnInit {
     this.pedidos[0].observaciones = null;
     //console.log(this.pedidos[0]);
     // this.insumosAgregados.push(new Insumo());
-    console.log(this.insumosAgregados);
   }
   regresar() {
     this.location.back();

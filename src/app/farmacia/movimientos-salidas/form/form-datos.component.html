@@ -37,13 +37,12 @@
         </p>
     </div>
 
-    <p class="control">
-        <label>Responsable</label>
-    </p>
-    <p class="control has-icon has-icon-right">
-        <input type="text" class="input" placeholder="Responsable" [ngClass]="{'is-danger': (movimiento.get('responsable').hasError('required') || movimientoRepetido || movimientoInvalido) && movimiento.get('responsable').touched}" formControlName="id">
-        <span class="help is-danger" *ngIf="movimiento.get('responsable').hasError('required') && movimiento.get('responsable').touched">Este campo es requerido.</span>
-    </p>
+    <div class="control">
+        <p class="control has-icon has-icon-right">
+            <input type="text" class="input" placeholder="Persona que recibe" [ngClass]="{'is-danger': (movimiento.get('persona_recibe').hasError('required') || movimientoRepetido || movimientoInvalido) && movimiento.get('persona_recibe').touched}" formControlName="id">
+            <span class="help is-danger" *ngIf="movimiento.get('persona_recibe').hasError('required') && movimiento.get('persona_recibe').touched">Este campo es requerido.</span>
+        </p>
+    </div>
     <div class="control" *ngIf="mostrarCancelado">
         <!-- *ngIf -->
         <p class="control">

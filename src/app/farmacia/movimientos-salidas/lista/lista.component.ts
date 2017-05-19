@@ -90,15 +90,15 @@ export class ListaComponent implements OnInit {
 
 
     switch(this.route.snapshot.url[0].path){
-      case 'estandar': 
-        this.tipo_salida = 2;
-        this.titulo = "Estandar";
-        console.log(this.tipo_salida); break;
+      //case 'estandar': 
+        //this.tipo_salida = 2;
+        //this.titulo = "Estandar";break;
       case 'receta': 
         this.tipo_salida = 5;
-        this.titulo = "Por receta";
-        console.log(this.tipo_salida); break;
-      default: this.tipo_salida = 2; this.titulo = "Estandar"; break;
+        this.titulo = "Por receta";break;
+      default: 
+        this.tipo_salida = 2; 
+        this.titulo = "Estandar"; break;
     }
 
     this.title.setTitle("Salidas / Almacen");
@@ -426,7 +426,8 @@ export class ListaComponent implements OnInit {
                 this.cargandoPdf = true;
                 var entradas_imprimir = {
                   datos: item,
-                  lista: item.datosImprimir.insumos
+                  lista: item.datosImprimir.insumos,
+                  usuario: this.usuario
                 };
                 this.pdfworker.postMessage(JSON.stringify(entradas_imprimir));
               } catch (e){
