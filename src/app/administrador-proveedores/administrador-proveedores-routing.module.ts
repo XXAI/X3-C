@@ -11,7 +11,7 @@ const routes: Routes = [
   {
     path: 'administrador-proveedores', 
     children: [
-       { path: 'pedidos', component: PedidosComponent, canActivate: [PermisosGuard], data: { key: 'bsIbPL3qv6XevcAyrRm1GxJufDbzLOax'} }
+       { path: 'pedidos', component: PedidosComponent, canActivate: [PermisosGuard], data: { key: 'MrL06vIO12iNhchP14h57Puvg71eUmYb'} }
     ],
     canActivate: [AuthGuard]
   }

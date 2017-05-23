@@ -142,10 +142,10 @@ export class VerComponent implements OnInit {
               insumo.precio = +dato.precio_unitario;
               this.pedido.lista.push(insumo);
               //this.listaClaveAgregadas.push(insumo.clave);
-              let tipo_insumo = 'ST';
+              //let tipo_insumo = 'ST';
               let tiene_iva = false;
               let clave_tipo_insumo = 'SC';
-              if(insumo.tipo == 'ME' && insumo.es_causes){
+              /*if(insumo.tipo == 'ME' && insumo.es_causes){
                 tipo_insumo = 'MEDICAMENTOS CAUSES';
                 clave_tipo_insumo = 'C'
               }else if(insumo.tipo == 'ME' && !insumo.es_causes){
@@ -155,11 +155,18 @@ export class VerComponent implements OnInit {
                 tipo_insumo = 'MATERIAL DE CURACIÓN';
                 clave_tipo_insumo = 'MC'
                 tiene_iva = true;
+              }*/
+              //tipo_insumo = dato.tipo_insumo.nombre;
+              clave_tipo_insumo = dato.tipo_insumo.clave;
+              if(dato.tipo_insumo.clave == 'MC'){
+                tiene_iva = true;
               }
+              
+
               if(!this.subPedidos[clave_tipo_insumo]){
                 this.tiposSubPedidos.push(clave_tipo_insumo);
                 this.subPedidos[clave_tipo_insumo] = {
-                  'titulo':tipo_insumo,
+                  'titulo':dato.tipo_insumo.nombre,
                   'clave_folio':clave_tipo_insumo,
                   'claves':0,
                   'cantidad':0,
@@ -373,7 +380,9 @@ export class VerComponent implements OnInit {
   // # SECCION - Webworkers
   
   imprimirExcel(){
-    window.open(environment.API_URL+"/generar-excel-pedido/"+this.pedido.id, "_blank");
+    var query = "token="+localStorage.getItem('token');
+    window.open(`${environment.API_URL}/generar-excel-pedido/${this.pedido.id}?${query}`); 
+    //window.open(environment.API_URL+"/generar-excel-pedido/"+this.pedido.id, "_blank");
   }
 
   imprimir(tipo:string = '') {
