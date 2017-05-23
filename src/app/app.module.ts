@@ -25,6 +25,9 @@ import { PipesModule }             from './pipes/pipes.module';
 // # Administrador central
 import { AdministradorCentralModule } from './administrador-central/administrador-central.module';
 
+// # Administrador proveedores
+import { AdministradorProveedoresModule } from './administrador-proveedores/administrador-proveedores.module';
+
 // # Hub Panel de control
 import { UsuariosModule } from './panel-control/usuarios/usuarios.module';
 import { RolesModule } from './panel-control/roles/roles.module';
@@ -66,6 +69,7 @@ import { CrudModule } from './crud/crud.module';
     RolesModule,
     UsuariosModule,
     AdministradorCentralModule,
+    AdministradorProveedoresModule,
     IndexFarmaciaModule,
     PedidosModule,
     EntregasModule,

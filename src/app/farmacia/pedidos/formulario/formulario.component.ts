@@ -152,6 +152,7 @@ export class FormularioComponent implements OnInit {
               insumo.cantidad = +dato.cantidad_solicitada;
               insumo.monto = +dato.monto_solicitado;
               insumo.precio = +dato.precio_unitario;
+              insumo.tipo_insumo_id = dato.tipo_insumo_id;
               this.pedido.lista.push(insumo);
               this.listaClaveAgregadas.push(insumo.clave);
             }
@@ -648,7 +649,9 @@ export class FormularioComponent implements OnInit {
   // # SECCION - Webworkers
 
   imprimirExcel(){
-    window.open(environment.API_URL+"/generar-excel-pedido/"+this.pedido.id, "_blank");
+    var query = "token="+localStorage.getItem('token');
+    window.open(`${environment.API_URL}/generar-excel-pedido/${this.pedido.id}?${query}`); 
+    //window.open(environment.API_URL+"/generar-excel-pedido/"+this.pedido.id, "_blank");
   }
 
   imprimir() {

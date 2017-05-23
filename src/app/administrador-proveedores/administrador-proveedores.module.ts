@@ -15,6 +15,7 @@ import { AdministradorProveedoresRoutingModule } from './administrador-proveedor
 import { AdministradorProveedoresService } from './administrador-proveedores.service';
 
 import { PedidosComponent } from './pedidos/pedidos.component';
+import { MenuComponent } from './menu/menu.component';
 
 @NgModule({
   imports: [
@@ -27,7 +28,7 @@ import { PedidosComponent } from './pedidos/pedidos.component';
     PaginacionModule,
     AdministradorProveedoresRoutingModule
   ],
-  declarations: [PedidosComponent],
+  declarations: [PedidosComponent, MenuComponent],
   providers: [ AdministradorProveedoresService ]
 })
 export class AdministradorProveedoresModule { }
