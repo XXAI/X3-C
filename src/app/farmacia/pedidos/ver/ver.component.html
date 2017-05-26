@@ -55,7 +55,7 @@
                     </div>
                     <hr>
                     <div class="control is-grouped" style="padding-top:10px;" *ngIf="!cargando">
-                        <p class="control" *ngIf="pedido.status != 'FI'">
+                        <p class="control" *ngIf="pedido.status != 'FI' && pedido.datosImprimir.tipo_pedido_id == 'PA'">
                         <a class="button is-primary" routerLink="/almacen/pedidos/recepcion/{{pedido.id}}"> <span class="icon"><i class="fa fa-truck"></i></span> <span>Recibir Pedido</span></a>
                         </p>
                         <p class="control">

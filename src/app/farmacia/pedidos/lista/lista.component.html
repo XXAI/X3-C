@@ -106,18 +106,21 @@
             <table class="table" *ngIf="!cargando">
                 <thead>
                     <tr>
-                    <th><abbr title="Folio del pedido">Folio</abbr></th>
-                    <th>Nombre del Pedido</th>
-                    <th>Fecha <span *ngIf="status == 'PS'">(expiración)</span></th>
-                    <th>Claves</th>
-                    <th>Cantidad</th>
-                    <th>Monto</th>
-                    <th style="text-align:center;" width="1">Opciones</th>
+                        <th><abbr title="Folio del pedido">Folio</abbr></th>
+                        <th>Nombre del Pedido</th>
+                        <th>Fecha <span *ngIf="status == 'PS'">(expiración)</span></th>
+                        <th>Claves</th>
+                        <th>Cantidad</th>
+                        <th>Monto</th>
+                        <th style="text-align:center;" width="1">Opciones</th>
                     </tr>
                 </thead>
                 <tbody  *ngIf="!busquedaActivada">
                     <tr *ngFor="let item of pedidos; let i=index">
-                        <th style="vertical-align: middle;"><a routerLink="{{obtenerDireccion(item.id,item.status)}}">{{ item.folio?item.folio:'S/F' }}</a></th>
+                        <th style="vertical-align: middle;"><a routerLink="{{obtenerDireccion(item.id,item.status)}}">
+                            <span class="icon"><i class="fa fa-{{(item.tipo_pedido_id=='PA')?'hospital-o':'building'}}"></i></span>
+                            {{ item.folio?item.folio:'S/F' }}</a>
+                        </th>
                         <td style="vertical-align: middle;"><a routerLink="{{obtenerDireccion(item.id,item.status)}}">{{ item.descripcion }}</a></td>
                         <td style="vertical-align: middle;"><a [ngClass]="{'estatus-rojo':(item.status == 'PS' && item.expira_en_dias <= 0),'estatus-amarillo':(item.status == 'PS' && (item.expira_en_dias > 0 && item.expira_en_dias <= 5))}" routerLink="{{obtenerDireccion(item.id,item.status)}}">{{ item.fecha | date:'y-MM-dd' }} <span *ngIf="item.status == 'PS'">({{item.expira_en_dias?item.expira_en_dias:'hoy'}})</span></a></td>
                         <td style="vertical-align: middle;"><a routerLink="{{obtenerDireccion(item.id,item.status)}}"> 

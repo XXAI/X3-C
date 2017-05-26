@@ -61,9 +61,11 @@ export class FormularioComponent implements OnInit {
   // # FIN SECCION
 
   // # SECCION: Pedido
-  private almacenes: Almacen[];
+  almacenes: Almacen[];
   private presupuesto:any = {};
   private mes:number = 0;
+  private subrogados: {} = {};
+  es_almacen_subrogado: boolean = false;
 
   // Harima: Se genera un unico pedido
   pedido: Pedido;
@@ -144,10 +146,11 @@ export class FormularioComponent implements OnInit {
             let fecha = pedido.fecha.split('-');
             let mes = parseInt(fecha[1]);
             this.cargarPresupuesto(mes);
+            this.cambioAlmacen();
 
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];
-              console.log(dato);
+              //console.log(dato);
               let insumo = dato.insumos_con_descripcion;
               insumo.cantidad = +dato.cantidad_solicitada;
               insumo.monto = +dato.monto_solicitado;
@@ -368,6 +371,7 @@ export class FormularioComponent implements OnInit {
     }*/
 
     if(this.pedido.datos.invalid){
+      this.pedido.datos.get('almacen_solicitante').markAsTouched();
       this.pedido.datos.get('descripcion').markAsTouched();
       this.pedido.datos.get('fecha').markAsTouched();
       this.cargando = false;
@@ -510,6 +514,15 @@ export class FormularioComponent implements OnInit {
     }
   }
 
+  cambioAlmacen(){
+    let almacen_seleccionado = this.pedido.datos.get('almacen_solicitante').value;
+    if(this.subrogados[almacen_seleccionado]){
+      this.es_almacen_subrogado = true;
+    }else{
+      this.es_almacen_subrogado = false;
+    }
+  }
+
   cargarAlmacenes() {
     this.cargandoAlmacenes = true;
     this.almacenesService.catalogo().subscribe(
@@ -517,14 +530,23 @@ export class FormularioComponent implements OnInit {
           this.cargandoAlmacenes = false;
           this.almacenes = almacenes;
 
+          for(let i in almacenes){
+            if(almacenes[i].subrogado == 1 && almacenes[i].tipo_almacen == 'FARSBR'){
+              this.subrogados[almacenes[i].id] = true;
+            }
+          }
+
           //Harima:Si no es editar, inicializamos el formulario
           if(!this.esEditar){
             let datos_iniciales:any = {}
-          
-            if(almacenes.length == 1){
-              datos_iniciales.almacen_proveedor = almacenes[0].id;
+            
+            //let datos_usuario = JSON.parse(localStorage.getItem('usuario'));
+            //datos_iniciales.almacen_solicitante = datos_usuario.almacen_activo.id;
+            
+            /*if(almacenes.length == 1){
+              datos_iniciales.almacen_solicitante = almacenes[0].id;
               //this.pedido.datos.setValue({almacen_proveedor:almacenes[0].id,descripcion:'',observaciones:''});
-            }
+            }*/
 
             this.pedido.inicializarDatos(datos_iniciales);
           }

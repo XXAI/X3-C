@@ -17,6 +17,19 @@
 
                 <div style="padding: 1em;">
                 <form name="form" novalidate [formGroup]="pedido.datos">
+                    <label class="label">Pedido para:</label>
+                    <p class="control">
+                        <span class="select is-fullwidth">
+                            <select name="almacen_solicitante" formControlName="almacen_solicitante" [ngClass]="{'is-warning': almacenes?.length == 0 }" (change)="cambioAlmacen()">
+                            <option *ngFor="let item of almacenes" value="{{item.id}}">{{ item.nombre }}</option>
+                            </select>
+                        </span>
+                        <span class="help is-danger" *ngIf="pedido.tieneError('almacen_solicitante','required')">Debe elegir el almacen solicitante.</span>
+                    </p>
+                    <p *ngIf="es_almacen_subrogado" class="subtitle is-6 is-info">
+                        Al concluir el pedido, los insumos capturados serán  asignados al inventario de la farmacia subrogada.
+                    </p>
+
                     <label class="label">Nombre del Pedido:</label>
                     <p class="control is-expanded  has-icon has-icon-right">
                         <input type="text" class="input is-fullwidth" placeholder="Ej. Pedido del mes de Mayo" [ngClass]="{'is-danger': pedido.tieneError('descripcion','required')}" formControlName="descripcion"/>
@@ -38,16 +51,6 @@
                     <div class="control">
                     <textarea name="observaciones" class="textarea" placeholder="Observaciones"  formControlName="observaciones"></textarea>
                     </div>
-
-                    <label class="label" *ngIf="pedido.tipo_pedido == 'PI'">Solicitar a:</label>
-                    <p class="control" *ngIf="pedido.tipo_pedido == 'PI'">
-                        <span class="select is-fullwidth">
-                            <select name="almacen_proveedor" formControlName="almacen_proveedor" [ngClass]="{'is-warning': almacenes?.length == 0 }">
-                            <option *ngFor="let item of almacenes" value="{{item.id}}">{{ item.nombre }}</option>
-                            </select>
-                        </span>
-                        <span class="help is-danger" *ngIf="pedido.tieneError('almacen_proveedor','required')">Debe elegir a quien solicitar.</span>
-                    </p>
                 </form>
 
                 <label *ngIf="pedido.tipo_pedido != 'PI' && esEditar" class="label">Datos del Proveedor:</label>
