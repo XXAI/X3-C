@@ -25,6 +25,12 @@
                     <p class="control">
                         <input type="text" class="input is-fullwidth" readonly="readonly" value="{{(pedido.datosImprimir)?pedido.datosImprimir.folio:'S/F'}}"/>
                     </p>
+
+                    <label class="label">Almacén:</label>
+                    <p class="control">
+                        <input type="text" class="input is-fullwidth" readonly="readonly" value="{{(pedido.datosImprimir)?pedido.datosImprimir.almacen_solicitante.nombre:'Sin almacen asignado'}}"/>
+                    </p>
+
                     <label class="label">Nombre del Pedido:</label>
                     <p class="control">
                         <input type="text" class="input is-fullwidth" readonly="readonly" value="{{(pedido.datosImprimir)?pedido.datosImprimir.descripcion:''}}"/>
