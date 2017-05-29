@@ -14,13 +14,7 @@ import { AdministradorCentralService } from '../administrador-central.service';
 export class TransferenciasRecursosComponent implements OnInit {
 
   cargando: boolean = false;
-
-  clues_origen:string = '';
-  clues_destino:string = '';
-  fecha_desde:Date  = null;
-  fecha_hasta:Date = null;
-  monto_transferir:any = null;
-  mostrarVentanaNuevaTransferencia:boolean = false;
+  
 
   // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
@@ -29,17 +23,25 @@ export class TransferenciasRecursosComponent implements OnInit {
   // # FIN SECCION
   
   // # SECCION: Filtro
-  clues:string = "";
-  jurisdicciones:any[] = [];
-  proveedores:any[] = [];
 
-  jurisdiccionesSeleccionadas:any[] = [];
-  proveedoresSeleccionados:any[] = [];
+  filtro_clues_origen:string = '';
+  filtro_clues_destino:string = '';
+  filtro_mes_origen:number = -1;
+  filtro_anio_origen:number = -1;
+  filtro_mes_destino:number = -1;
+  filtro_anio_destino:number = -1;
 
-  ordenarCauses:string = '';
-  ordenarNoCauses:string = '';
-  ordenarMaterialCuracion:string = '';
+  // # FIN SECCION
 
+  // # SECCION TRANSFERENCIA
+  listaClues:any[] = [];
+  listaMeses:any[] = [];
+  listaAnios:any[] = [];
+  // # FIN SECCION
+
+  // # SECCION ARRASTRAR SALDOS
+  listaCluesConSaldo:any[] = [];
+  listaMesesAniosAnteriorFechaActual:any[] = [];
   // # FIN SECCION
 
    // # SECCION: Lista
@@ -60,158 +62,75 @@ export class TransferenciasRecursosComponent implements OnInit {
     this.title.setTitle("Transferencias / Administrador central");
     this.listar(1);
     
-    this.cargarJurisdicciones();
-    this.cargarProveedores();
+    this.cargarUnidadesMedicas();
+    this.cargarMeses();
+    this.cargarAnios();
+    this.cargarMesesAniosAnteriorMesActual();
   }
-  cargarJurisdicciones(){
-    this.apiService.jurisdicciones().subscribe(
-      respuesta => {
-        this.jurisdicciones = respuesta;
-      }, error => {
 
-      }
-    );
-  }
-  cargarProveedores(){
-    this.apiService.proveedores().subscribe(
+  cargarUnidadesMedicas(){
+    this.apiService.unidadesMedicasConPresupuesto().subscribe(
       respuesta => {
-        console.log(respuesta)
-        this.proveedores = respuesta;
-        console.log(this.proveedores)
+        this.listaClues = respuesta;
       }, error => {
-
+        console.log(error)
       }
     );
   }
 
-
-  cambioSeleccionJurisdiccion(id){
-    if (id == -1){
-      this.jurisdiccionesSeleccionadas = [];
-    }
-    this.agregarJurisdiccion(id);
-  }
-  cambioSeleccionProveedor(id){
-    if (id == -1){
-      this.proveedoresSeleccionados = [];
-    }
-
-    this.agregarProveedor(id);
-  }
-
-  agregarProveedor(id:any){
-    if (id == -1){
-      return;
-    }
-    // Si existe en el filtro no la agregamos
-    for(var i in this.proveedoresSeleccionados){
-      if(this.proveedoresSeleccionados[i].id == id){
-        return;
+  cargarMeses(){
+    this.apiService.mesesPresupuestoActual().subscribe(
+      respuesta => {
+        this.listaMeses = respuesta;
+      }, error => {
+        console.log(error)
       }
-    }
+    );
+  }
 
-    for(var i in this.proveedores){
-      if(this.proveedores[i].id == id){
-        this.proveedoresSeleccionados.push(this.proveedores[i]);
-        break;
+  cargarAnios(){
+    this.apiService.aniosPresupuestoActual().subscribe(
+      respuesta => {
+        
+        if(respuesta.length == 1){
+          this.transaccion_anio_origen = respuesta[0].anio;
+          this.transaccion_anio_destino = respuesta[0].anio;
+        }
+        this.listaAnios = respuesta;
+
+      }, error => {
+        console.log(error)
       }
-    }
-    
+    );
   }
-  agregarJurisdiccion(id:any){
-    if (id == -1){
-      return;
-    }
-    // Si existe en el filtro no la agregamos
-    for(var i in this.jurisdiccionesSeleccionadas){
-      if(this.jurisdiccionesSeleccionadas[i].id == id){
-        return;
+
+  cargarMesesAniosAnteriorMesActual(){
+    this.apiService.mesesAniosAnteriorFechaActual().subscribe(
+      respuesta => {
+        this.listaMesesAniosAnteriorFechaActual = respuesta;
+      }, error => {
+        console.log(error)
       }
-    }
-
-    for(var i in this.jurisdicciones){
-      if(this.jurisdicciones[i].id == id){
-        this.jurisdiccionesSeleccionadas.push(this.jurisdicciones[i]);
-        break;
-      }
-    }
-  }
-  quitarProveedor(index){        
-    this.proveedoresSeleccionados.splice(index,1);
-  }
-  quitarJurisdiccion(index){    
-    this.jurisdiccionesSeleccionadas.splice(index,1);
-  }
-  filtrarClues(e: KeyboardEvent) {
-    if(e.keyCode == 13){
-      this.listar(1);
-    }
+    );
   }
 
-  toggleCauses(){
-    switch(this.ordenarCauses){
-      case '': this.ordenarCauses = 'ASC'; break;
-      case 'ASC': this.ordenarCauses = 'DESC'; break;
-      case 'DESC': this.ordenarCauses = ''; break;
-      default: this.ordenarCauses = '';
-    }
-    this.ordenarNoCauses = '';
-    this.ordenarMaterialCuracion = '';
-    this.listar(1);
-  }
-
-  toggleNoCauses(){
-    switch(this.ordenarNoCauses){
-      case '': this.ordenarNoCauses = 'ASC'; break;
-      case 'ASC': this.ordenarNoCauses = 'DESC'; break;
-      case 'DESC': this.ordenarNoCauses = ''; break;
-      default: this.ordenarNoCauses = '';
-    }
-    this.ordenarCauses = '';
-    this.ordenarMaterialCuracion = '';
-    this.listar(1);
-  }
-  toggleMaterialCuracion(){
-    switch(this.ordenarMaterialCuracion){
-      case '': this.ordenarMaterialCuracion = 'ASC'; break;
-      case 'ASC': this.ordenarMaterialCuracion = 'DESC'; break;
-      case 'DESC': this.ordenarMaterialCuracion = ''; break;
-      default: this.ordenarMaterialCuracion = '';
-    }
-    this.ordenarCauses = '';
-    this.ordenarNoCauses = '';
-    this.listar(1);
-  }
 
   listar(pagina:number): void {
     this.cargando = true;
     this.paginaActual = pagina;
 
-
-
-    var proveedoresIds = [];
-    for(var i in this.proveedoresSeleccionados){
-      proveedoresIds.push(this.proveedoresSeleccionados[i].id);
-    }
-
-
-    var jurisdiccionesIds = [];
-    for(var i in this.jurisdiccionesSeleccionadas){
-      jurisdiccionesIds.push(this.jurisdiccionesSeleccionadas[i].id);
-    }
-
     var  parametros =  {
-      clues: this.clues,
-      proveedores: proveedoresIds,
-      jurisdicciones: jurisdiccionesIds,
+      clues_origen: this.filtro_clues_origen,
+      mes_origen: this.filtro_mes_origen,
+      anio_origen: this.filtro_anio_origen,
+      clues_destino: this.filtro_clues_destino,
+      mes_destino: this.filtro_mes_destino,
+      anio_destino: this.filtro_anio_destino,
       page: this.paginaActual,
-      per_page: this.resultadosPorPagina,
-      ordenar_causes: this.ordenarCauses,
-      ordenar_no_causes: this.ordenarNoCauses,
-      ordenar_material_curacion: this.ordenarMaterialCuracion
+      per_page: this.resultadosPorPagina
     }
     //var parametros = JSON.stringify(parametrosObj);
-    this.apiService.abasto(parametros).subscribe(
+    this.apiService.transferenciasLista(parametros).subscribe(
       respuesta => {
           this.cargando = false;
           this.lista = respuesta.data as any[];
@@ -254,15 +173,291 @@ export class TransferenciasRecursosComponent implements OnInit {
   }
 
   // # SECCION: Realizar transaccion
+
+  mostrarVentanaNuevaTransferencia:boolean = false;
+
+  monto_transferir_causes:any = null;
+  monto_transferir_no_causes:any = null;
+  monto_transferir_material_curacion:any = null;  
+
+  transaccion_clues_origen: string = '';
+  transaccion_clues_destino: string = '';
+
+  transaccion_mes_origen: number = -1;
+  transaccion_mes_destino: number = -1;
+
+  transaccion_anio_origen: number = -1;
+  transaccion_anio_destino: number = -1;
+
+  datosOrigenValidos:boolean = false;
+  datosDestinoValidos:boolean = false;
+
+  presupuestoOrigen = {
+    causes: 0,
+    no_causes: 0,
+    material_curacion: 0
+  }
+
+  presupuestoDestino = {
+    causes: 0,
+    no_causes: 0,
+    material_curacion: 0
+  }
+
+  errores_transferencia = {
+    causes: '',
+    no_causes: '',
+    material_curacion: ''
+  }
+
   nuevaTransferencia(){
+    this.monto_transferir_causes = null;
+    this.monto_transferir_no_causes = null;
+    this.monto_transferir_material_curacion = null;  
+
+    this.transaccion_clues_origen = "";
+    this.datosOrigenValidos = false;
+    this.transaccion_clues_destino = "";
+    this.datosDestinoValidos = false;
+
+    this.transaccion_mes_origen = -1;
+    this.transaccion_mes_destino = -1;
+
+    this.errores_transferencia = {
+      causes: '',
+      no_causes: '',
+      material_curacion: ''
+    }
+
     this.mostrarVentanaNuevaTransferencia = true;
   }
-  realizarTransferencia(){
-    var validacion_palabra = prompt("Para confirmar esta transacción, por favor escriba: TRANSFERIR");
 
+
+  enviando_transferencia:boolean = false;
+  realizarTransferencia(){
+
+
+    if(this.transaccion_clues_origen == this.transaccion_clues_destino && this.transaccion_anio_origen == this.transaccion_anio_destino && this.transaccion_mes_origen == this.transaccion_mes_destino){
+      alert("No se puede realizar la transferencia. Los datos de origen y destino son los mismos.");
+      return;
+    }
+
+    this.errores_transferencia = {
+      causes: '',
+      no_causes: '',
+      material_curacion: ''
+    }
+    
+    if(this.monto_transferir_causes != null){
+      if(isNaN(Number(this.monto_transferir_causes))){
+        this.errores_transferencia.causes = "El monto debe ser un número válido (sólo numeros decimales sin coma).";
+      }
+
+      if(this.monto_transferir_causes > this.presupuestoOrigen.causes){
+        console.log(this.monto_transferir_causes + ":"+this.presupuestoOrigen.causes);
+        this.errores_transferencia.causes = "El monto no puede ser mayor al presupuesto disponible del origen.";
+      }
+      
+      if(this.monto_transferir_causes < 0){
+        this.errores_transferencia.causes = "El monto no puede ser menor a 0.";      
+      }
+    }
+
+    if(this.monto_transferir_no_causes != null){
+      if(isNaN(Number(this.monto_transferir_no_causes))){
+        this.errores_transferencia.no_causes = "El monto debe ser un número válido (sólo numeros decimales sin coma).";
+      }
+
+      if(this.monto_transferir_no_causes > this.presupuestoOrigen.no_causes){
+        this.errores_transferencia.no_causes = "El monto no puede ser mayor al presupuesto disponible del origen.";
+      }
+      
+      if(this.monto_transferir_no_causes < 0){
+        this.errores_transferencia.no_causes = "El monto no puede ser menor a 0.";     
+      }
+    }
+
+    if(this.monto_transferir_material_curacion != null){
+      if(isNaN(Number(this.monto_transferir_material_curacion))){
+        this.errores_transferencia.material_curacion = "El monto debe ser un número válido (sólo numeros decimales sin coma).";
+      }
+      
+      if(this.monto_transferir_material_curacion > this.presupuestoOrigen.material_curacion){
+        this.errores_transferencia.material_curacion = "El monto no puede ser mayor al presupuesto disponible del origen.";
+      } 
+      
+      if(this.monto_transferir_material_curacion < 0){
+        this.errores_transferencia.material_curacion = "El monto no puede ser menor a 0.";
+      }
+    }
+
+    if(this.errores_transferencia.causes != "" || this.errores_transferencia.no_causes != "" || this.errores_transferencia.material_curacion != ""){
+      return;
+    }
+    var payload = {
+      clues_origen: this.transaccion_clues_origen,
+      clues_destino: this.transaccion_clues_destino,
+      mes_origen: this.transaccion_mes_origen,
+      mes_destino: this.transaccion_mes_destino,
+      anio_origen: this.transaccion_anio_origen,
+      anio_destino: this.transaccion_anio_destino,
+      causes: this.monto_transferir_causes,
+      no_causes: this.monto_transferir_no_causes,
+      material_curacion: this.monto_transferir_material_curacion
+    }
+
+    // Quizás haya que hacer una pausa para darle tiempo refrescar a la pantalla antes de sacar el modal y borrar los mensajes de error
+    var validacion_palabra = prompt("Para confirmar esta transacción, por favor escriba: TRANSFERIR");
     if(validacion_palabra == 'TRANSFERIR'){
-      this.mostrarVentanaNuevaTransferencia = false;
+      this.enviando_transferencia = true;
+      this.apiService.transferirPresupuesto(payload).subscribe(
+        respuesta => {
+          this.transaccion_clues_origen = "";
+          this.datosOrigenValidos = false;
+          this.listar(1);
+          this.obtenerPresupuestoDestino();
+          this.enviando_transferencia = false;
+          // Akira: Quizás aquí deberia limpiar el filtro pa ver el registro.
+        }, error =>{
+          console.log(error);
+          this.enviando_transferencia = false;
+        }
+      );
     } 
+  }
+
+  obtenerPresupuestoOrigen(){
+    this.datosOrigenValidos = false;
+    if(this.transaccion_mes_origen != -1 && this.transaccion_anio_origen != -1 && this.transaccion_clues_origen != ''){      
+      this.cargarPresupuestoUnidadMedica(true,false,this.transaccion_clues_origen,this.transaccion_mes_origen,this.transaccion_anio_origen);
+    } 
+  }
+
+  obtenerPresupuestoDestino(){
+    this.datosDestinoValidos = false;
+    if(this.transaccion_mes_destino != -1 && this.transaccion_anio_destino != -1 && this.transaccion_clues_destino != ''){      
+      this.cargarPresupuestoUnidadMedica(false,true,this.transaccion_clues_destino,this.transaccion_mes_destino,this.transaccion_anio_destino);
+    }
+  }
+
+  cargarPresupuestoUnidadMedica(origen:boolean, destino:boolean, clues: string, mes:number, anio:number){
+    var payload = {
+      clues: clues,
+      mes: mes,
+      anio: anio
+    }
+    this.apiService.presupuestoUnidadMedica(payload).subscribe(
+      respuesta => {
+        if(origen){
+          this.datosOrigenValidos = true;
+          this.presupuestoOrigen.causes = Number(respuesta.causes_disponible);
+          this.presupuestoOrigen.no_causes = Number(respuesta.no_causes_disponible);
+          this.presupuestoOrigen.material_curacion = Number(respuesta.material_curacion_disponible);
+        }
+
+        if(destino){
+          this.datosDestinoValidos = true;
+          this.presupuestoDestino.causes = Number(respuesta.causes_disponible);
+          this.presupuestoDestino.no_causes = Number(respuesta.no_causes_disponible);
+          this.presupuestoDestino.material_curacion = Number(respuesta.material_curacion_disponible);
+        }
+
+      }, error => {
+        console.log(error)
+      }
+    );
+  }
+
+  // # SECCION: Realizar arrastre de saldo
+
+  mostrarVentanaArrastrarSaldos:boolean = false;
+  fecha_arrastrar_saldos:any = -1;
+  todas_clues_con_saldo_seleccionadas: boolean = false;
+  cargando_clues_con_saldo: boolean = false;
+  enviando_transferencia_saldos_mes_actual:boolean = false;
+
+  nuevaTransferenciaArrastrarSaldos(){
+    this.mostrarVentanaArrastrarSaldos = true;
+  }
+
+  seleccionarTodasCluesConSaldo(){
+    this.todas_clues_con_saldo_seleccionadas = !this.todas_clues_con_saldo_seleccionadas;
+    for(var i in this.listaCluesConSaldo){
+      this.listaCluesConSaldo[i].seleccionada = this.todas_clues_con_saldo_seleccionadas;
+    }
+  }
+
+  obtenerCluesConSaldo(){
+    if(this.fecha_arrastrar_saldos == -1){
+      return;
+    }
+    var fecha = this.fecha_arrastrar_saldos.split("/");
+    if(fecha.length != 2){
+      return;
+    }
+    var payload = {
+      mes: fecha[0],
+      anio: fecha[1],
+      clues_con_saldo: true
+    }
+    this.cargando_clues_con_saldo = true;
+    this.listaCluesConSaldo = [];
+    this.apiService.unidadesMedicasConPresupuesto(payload).subscribe(
+      respuesta => {
+        this.cargando_clues_con_saldo = false;
+        this.listaCluesConSaldo = respuesta;
+      }, error => {
+        console.log(error)
+        this.cargando_clues_con_saldo = false;
+      }
+    );
+  }
+
+  transferirSaldosAlMesActual(){
+    if(this.fecha_arrastrar_saldos == -1){
+      return;
+    }
+    var fecha = this.fecha_arrastrar_saldos.split("/");
+    if(fecha.length != 2){
+      return;
+    }
+
+    var payload = {
+      mes: fecha[0],
+      anio: fecha[1],
+      lista_clues: []
+    }
+    var seSelecciono1Almenos = false;
+    for(var i in this.listaCluesConSaldo){
+      if(this.listaCluesConSaldo[i].seleccionada){
+        seSelecciono1Almenos = true;
+        payload.lista_clues.push(this.listaCluesConSaldo[i].clues);
+      }
+    }
+
+    if(!seSelecciono1Almenos){
+      return;
+    }
+
+    // Quizás haya que hacer una pausa para darle tiempo refrescar a la pantalla antes de sacar el modal y borrar los mensajes de error
+    var validacion_palabra = prompt("Para confirmar esta transacción, por favor escriba: TRANSFERIR");
+    if(validacion_palabra == 'TRANSFERIR'){
+      this.enviando_transferencia_saldos_mes_actual = true;
+      this.apiService.transferirSaldosAlMesActual(payload).subscribe(
+        respuesta => {
+          this.listar(1);
+          this.mostrarVentanaArrastrarSaldos = false;
+          this.fecha_arrastrar_saldos = -1;
+          this.todas_clues_con_saldo_seleccionadas = false;
+          this.listaCluesConSaldo = [];
+          this.enviando_transferencia_saldos_mes_actual = false;
+        }, error =>{
+          console.log(error);
+          this.enviando_transferencia_saldos_mes_actual = false;
+        }
+      );
+    } 
+
   }
 }
 

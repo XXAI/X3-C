@@ -364,7 +364,7 @@ export class PedidosComponent implements OnInit {
     if(this.fecha_hasta != null){
       query += "&fecha_hasta="+this.fecha_hasta;
     }
-    window.open(`${environment.API_URL}/pedidos-administrador-central-excel?${query}`);
+    window.open(`${environment.API_URL}/administrador-central/pedidos-excel?${query}`);
    
     
     

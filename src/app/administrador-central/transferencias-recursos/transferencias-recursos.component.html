@@ -4,9 +4,9 @@
     <div class="column is-one-quarter is-hidden-mobile">
         <administrador-central-menu-lateral></administrador-central-menu-lateral>
     </div>
-    <div class="column" style="padding:2em;">
+    <div class="column">
       
-        <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
+        <div style="background: #FFF; border-radius: 1em; overflow: hidden; margin:1em;" >
             <section class="hero is-primary"  >
                 
                 <div class="hero-body" style="position:relative;">                    
@@ -16,12 +16,13 @@
                         <nav class="level">
                             <div class="level-left">
                               <h1 class="title">
-                                  <span class="icon is-medium"><i class="fa fa-exchange"></i></span> Transferencias de recursos
+                                  <span class="icon is-medium"><i class="fa fa-exchange"></i></span> $ Transferencias
                               </h1>
                             </div>
                             <div class="level-right">
                                 <div class="block">                               
-                                  <button class="button is-primary is-medium is-inverted" (click)="nuevaTransferencia()"><span class="icon"><i class="fa fa-plus"></i></span> <span>Nueva</span></button>
+                                  <button class="button is-primary is-inverted" (click)="nuevaTransferenciaArrastrarSaldos()"><span class="icon"><i class="fa fa-arrow-circle-up"></i></span> <span>Arrastrar saldos</span></button>
+                                  <button class="button is-primary is-inverted" (click)="nuevaTransferencia()"><span class="icon"><i class="fa fa-plus"></i></span> <span>Nueva transferencia</span></button>
                                 </div>
                             </div>
                         </nav>                        
@@ -29,35 +30,77 @@
                             <div class="column">
                                 <label for="jurisdicciones">Origen:</label>                       
                                 <p class="control is-expanded">
-                                    <input class="input is-medium" type="text" placeholder="CLUES / Nombre" [(ngModel)] = "clues_origen" (keyup)="filtrarClues($event)">
+                                    <input class="input " type="text" placeholder="CLUES / Nombre" [(ngModel)] = "filtro_clues_origen" >
                                 </p>                 
                           
                             </div>
                             <div class="column">
                                 <label for="jurisdicciones">Destino:</label>                             
                                 <p class="control is-expanded">
-                                    <input class="input is-medium" type="text" placeholder="CLUES / Nombre" [(ngModel)] = "clues_destino" (keyup)="filtrarClues($event)">
+                                    <input class="input " type="text" placeholder="CLUES / Nombre" [(ngModel)] = "filtro_clues_destino">
                                 </p>
                             </div>
+                        </div>
+                        <div class="columns">   
                             <div class="column">
-                                <label for="jurisdicciones">Desde:</label>                             
-                                <p class="control is-expanded">
-                                    <input class="input is-medium" type="date"  [(ngModel)] = "fecha_desde" >
-                                </p>
+                                <div class="columns">
+                                    <div class="column">
+                                        <label>Mes:</label>                       
+                                        <p class="control is-expanded">
+                                            <span class="select is-fullwidth">
+                                            <select [(ngModel)]="filtro_mes_origen">
+                                                <option value="-1">Todos</option>
+                                                <option *ngFor="let item of listaMeses" [value]="item.mes">{{ item.nombre }}</option>
+                                            </select>
+                                            </span>
+                                        </p> 
+                                    </div>
+                                    <div class="column">
+                                        <label >Año:</label>                       
+                                        <p class="control is-expanded">
+                                            <span class="select is-fullwidth">
+                                            <select  [(ngModel)]="filtro_anio_origen">
+                                                <option value="-1" >Todos</option>
+                                                <option *ngFor="let item of listaAnios" [value]="item.anio">{{ item.anio }}</option>
+                                            </select>
+                                            </span>
+                                        </p> 
+                                    </div>
+                                </div>                                
                             </div>
                             <div class="column">
-                                <label for="jurisdicciones">Hasta:</label>                             
-                                <p class="control is-expanded">
-                                    <input class="input is-medium" type="date"  [(ngModel)] = "fecha_hasta" >
-                                </p>
+                                <div class="columns">
+                                    <div class="column">
+                                        <label>Mes:</label>                       
+                                        <p class="control is-expanded">
+                                            <span class="select is-fullwidth">
+                                            <select [(ngModel)]="filtro_mes_destino">
+                                                <option value="-1">Todos</option>
+                                                <option *ngFor="let item of listaMeses" [value]="item.mes">{{ item.nombre }}</option>
+                                            </select>
+                                            </span>
+                                        </p> 
+                                    </div>
+                                    <div class="column">
+                                        <label >Año:</label>                       
+                                        <p class="control is-expanded">
+                                            <span class="select is-fullwidth">
+                                            <select  [(ngModel)]="filtro_anio_destino">
+                                                <option value="-1" >Todos</option>
+                                                <option *ngFor="let item of listaAnios" [value]="item.anio">{{ item.anio }}</option>
+                                            </select>
+                                            </span>
+                                        </p> 
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <nav class="level">
                             <div class="level-left"></div>
                             <div class="level-right">
                                 <div class="block">
-                                <button *ngIf=" clues_origen != ''|| clues_destino != ''  || fecha_desde != null || fecha_hasta != null " class="button " (click)="clues_origen = ''; clues_destino = ''; fecha_desde = null; fecha_hasta = null;"><span class="icon"><i class="fa fa-times"></i></span> <span>Limpiar búsqueda</span></button>
-                                <button class="button is-primary " (click)="listar(1)"><span class="icon"><i class="fa fa-search"></i></span> <span>Buscar</span></button>
+                                <button *ngIf=" filtro_clues_origen != ''|| filtro_clues_destino != ''  || filtro_mes_origen != -1 || filtro_anio_origen != -1 || filtro_mes_destino != -1 || filtro_anio_destino  != -1 " class="button is-primary" (click)="filtro_clues_origen = ''; filtro_clues_destino = ''; filtro_mes_origen = -1; filtro_anio_origen = -1; filtro_mes_destino = -1; filtro_anio_destino = -1;"><span class="icon"><i class="fa fa-times"></i></span> <span>Limpiar búsqueda</span></button>
+                                <button class="button is-primary is-inverted" (click)="listar(1)"><span class="icon"><i class="fa fa-search"></i></span> <span>Buscar</span></button>
                                 </div>
                             </div>
                         </nav>
@@ -73,25 +116,45 @@
                 <br>
             </div>
             
-            <table class="table" *ngIf="!cargando">
+            <table class="table is-bordered is-striped has-text-centered" style="font-size:0.7em;" *ngIf="!cargando">
                 <thead>
                     <tr>
-                    <th>Origen</th>
-                    <th>Destino</th>
-                    <th>Monto</th>
-                    <th>Fecha</th>                    
+                        <th colspan="3" style="text-align: center;">Origen</th>
+                        <th colspan="3" style="text-align: center;">Destino</th>
+                        <th colspan="3" style="text-align: center;">Presupuesto transferido</th>
+                        <th colspan="2"></th>
+                    </tr>
+                    <tr>
+                        <th style="text-align: center;">Clues</th>
+                        <th style="text-align: center;">Mes</th>
+                        <th style="text-align: center;">Año</th>
+                        <th style="text-align: center;">Clues</th>
+                        <th style="text-align: center;">Mes</th>
+                        <th style="text-align: center;">Año</th>
+                        <th style="text-align: center;"><abbr title="Causes">CA</abbr></th>
+                        <th style="text-align: center;"><abbr title="No causes">NCA</abbr></th>
+                        <th style="text-align: center;"><abbr title="Material de curación">MC</abbr></th>                        
+                        <th style="text-align: center;">Usuario</th>
+                        <th style="text-align: center;">Fecha</th>                    
                     </tr>
                 </thead>
                 
                 <tbody>
                     <tr *ngFor="let item of lista; let i=index">                        
-                        <td style="vertical-align: middle;">{{ item.proveedor }}</td>
-                        <td style="vertical-align: middle;">{{ item.clues }}</td>
-                        <td style="vertical-align: middle;">{{ item.unidad_medica }}</td>
-                        <td style="vertical-align: middle;">{{ item.porcentaje_causes }}</td>
+                        <td style="vertical-align: middle; text-align: center;"><abbr title="{{ item.unidad_medica_origen }}">{{ item.clues_origen }}</abbr></td>
+                        <td style="vertical-align: middle; text-align: center;">{{ item.mes_origen }}</td>
+                        <td style="vertical-align: middle; text-align: center;">{{ item.anio_origen }}</td>
+                        <td style="vertical-align: middle; text-align: center;"><abbr title="{{ item.unidad_medica_destino }}">{{ item.clues_destino }}</abbr></td>
+                        <td style="vertical-align: middle; text-align: center;">{{ item.mes_destino }}</td>
+                        <td style="vertical-align: middle; text-align: center;">{{ item.anio_destino }}</td>
+                        <td style="vertical-align: middle; text-align: right;">{{ item.causes  | currency:'USD':true:'1.2-2' }}</td>
+                        <td style="vertical-align: middle; text-align: right;">{{ item.no_causes  | currency:'USD':true:'1.2-2'}}</td>
+                        <td style="vertical-align: middle; text-align: right;">{{ item.material_curacion | currency:'USD':true:'1.2-2' }}</td>
+                        <td style="vertical-align: middle; text-align: center;">{{ item.usuario_id }}</td>
+                        <td style="vertical-align: middle; text-align: center;">{{ item.created_at }}</td>
                     </tr>
                     <tr *ngIf="lista.length == 0">
-                        <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
+                        <td colspan="11" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
                     </tr>
                 </tbody>
             </table>
@@ -106,9 +169,7 @@
                 (onSiguiente)="paginaSiguiente()" 
                 (onAnterior)="paginaAnterior()" 
                 (onListar)="listar($event)" 
-                *ngIf="total>0 && total > resultadosPorPagina"></paginacion>
-           
-            
+                *ngIf="total>0 && total > resultadosPorPagina"></paginacion>         
         </div>
         
     </div>
@@ -130,47 +191,203 @@
 <!-- Nueva Transferencia -->
 <div class="modal" [ngClass]="{ 'is-active': mostrarVentanaNuevaTransferencia }">
   <div class="modal-background" (click)="mostrarVentanaNuevaTransferencia = false"></div>
-  <div class="modal-card">
+  <div class="modal-card" style="width:95%; height: 100%;">
     <header class="modal-card-head">
       <p class="modal-card-title"><span class="icon"><i class="fa fa-exchange"></i></span> Nueva transferencia</p>
       <button class="delete" (click)="mostrarVentanaNuevaTransferencia = false"></button>
     </header>
     <section class="modal-card-body">
-      <div class="columns">
-        <div class="column">
-          <label for="jurisdicciones">Origen:</label>                       
-          <p class="control is-expanded">
-              <span class="select is-fullwidth">
-              <select #proveedoresSelect (change)="cambioSeleccionProveedor(proveedoresSelect.value)">
-                  <option value="-1">Elija una unidad médica</option>
-                  <option *ngFor="let item of proveedores" value="{{item.id}}">{{ item.nombre }}</option>
-              </select>
-              </span>
-          </p> 
+        <div class="columns">
+            <div class="column">
+                <label><b>Origen:</b></label>                       
+                <p class="control is-expanded">
+                    <span class="select is-fullwidth">
+                    <select #cluesOrigen  (change)="obtenerPresupuestoOrigen()"  [(ngModel)]="transaccion_clues_origen">
+                        <option value="">Elija una unidad médica</option>
+                        <option *ngFor="let item of listaClues" [value]="item.clues">{{ item.clues }} - {{ item.unidad_medica.nombre }}</option>
+                    </select>
+                    </span>
+                </p> 
+
+                <div class="columns">
+                    <div class="column">
+                        <label>Mes:</label>                       
+                        <p class="control is-expanded">
+                            <span class="select is-fullwidth">
+                            <select #mesOrigen  (change)="obtenerPresupuestoOrigen()"  [(ngModel)]="transaccion_mes_origen">
+                                <option value="-1">Elija un mes</option>
+                                <option *ngFor="let item of listaMeses" [value]="item.mes">{{ item.nombre }}</option>
+                            </select>
+                            </span>
+                        </p> 
+                    </div>
+                    <div class="column">
+                        <label >Año:</label>                       
+                        <p class="control is-expanded">
+                            <span class="select is-fullwidth">
+                            <select #anioOrigen (change)="obtenerPresupuestoOrigen()"  [(ngModel)]="transaccion_anio_origen">
+                                <option value="-1" *ngIf="listaAnios.length>1">Elija un año</option>
+                                <option *ngFor="let item of listaAnios" [value]="item.anio">{{ item.anio }}</option>
+                            </select>
+                            </span>
+                        </p> 
+                    </div>
+                </div>
+                <table class="table" *ngIf="datosOrigenValidos">
+                    <thead>
+                        <tr><th colspan="2">Presupuesto origen disponible:</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><th>Causes</th><td>{{ presupuestoOrigen.causes | currency:'USD':true:'1.2-2' }}</td></tr>
+                        <tr><th>No causes</th><td>{{ presupuestoOrigen.no_causes | currency:'USD':true:'1.2-2' }}</td></tr>
+                        <tr><th>Material de curación</th><td>{{ presupuestoOrigen.material_curacion | currency:'USD':true:'1.2-2' }}</td></tr>
+                    </tbody>                    
+                </table>
+            </div>
+            <div class="column">
+                <label ><b>Destino:</b></label>                       
+                <p class="control is-expanded">
+                    <span class="select is-fullwidth">
+                    <select #cluesDestino (change)="obtenerPresupuestoDestino()" [(ngModel)]="transaccion_clues_destino">
+                        <option value="">Elija una unidad médica</option>
+                        <option *ngFor="let item of listaClues" [value]="item.clues">{{ item.clues }} - {{ item.unidad_medica.nombre }}</option>
+                    </select>
+                    </span>
+                </p>
+                <div class="columns">
+                    <div class="column">
+                        <label >Mes:</label>                       
+                        <p class="control is-expanded">
+                            <span class="select is-fullwidth">
+                            <select #mesDestino (change)="obtenerPresupuestoDestino()" [(ngModel)]="transaccion_mes_destino">
+                                <option value="-1">Elija un mes</option>
+                                <option *ngFor="let item of listaMeses" [value]="item.mes">{{ item.nombre }}</option>
+                            </select>
+                            </span>
+                        </p> 
+                    </div>
+                    <div class="column">
+                        <label>Año:</label>                       
+                        <p class="control is-expanded">
+                            <span class="select is-fullwidth">
+                            <select #anioDestino  (change)="obtenerPresupuestoDestino()" [(ngModel)]="transaccion_anio_destino">
+                                <option value="-1" *ngIf="listaAnios.length>1">Elija un año</option>
+                                <option *ngFor="let item of listaAnios" value="{{item.anio}}">{{ item.anio }}</option>
+                            </select>
+                            </span>
+                        </p> 
+                    </div>
+                </div>
+                <table class="table" *ngIf="datosDestinoValidos">
+                    <thead>
+                        <tr><th colspan="2">Presupuesto destino actual (disponible):</th></tr>
+                    </thead>
+                     <tbody>
+                        <tr><th>Causes</th><td>{{ presupuestoDestino.causes | currency:'USD':true:'1.2-2' }}</td></tr>
+                        <tr><th>No causes</th><td>{{ presupuestoDestino.no_causes | currency:'USD':true:'1.2-2' }}</td></tr>
+                        <tr><th>Material de curación</th><td>{{ presupuestoDestino.material_curacion | currency:'USD':true:'1.2-2' }}</td></tr>
+                    </tbody>                    
+                </table>
+            </div>
         </div>
-        <div class="column">
-          <label for="jurisdicciones">Destino:</label>                       
-          <p class="control is-expanded">
-              <span class="select is-fullwidth">
-              <select #proveedoresSelect (change)="cambioSeleccionProveedor(proveedoresSelect.value)">
-                  <option value="-1">Elija una unidad médica</option>
-                  <option *ngFor="let item of proveedores" value="{{item.id}}">{{ item.nombre }}</option>
-              </select>
-              </span>
-          </p> 
+        <div *ngIf="datosDestinoValidos && datosOrigenValidos">
+            <h1 class="title is-4">Presupuesto a transferir:</h1>
+            <div class="columns">
+                <div class="column">
+                    <div class="field">
+                        <label for="monto">Causes:</label>
+                        <p class="control is-expanded">
+                            <input class="input is-medium" type="text" placeholder="$ 0.00" [(ngModel)] = "monto_transferir_causes" [ngClass]="{ 'is-danger': errores_transferencia.causes != '' }" >
+                        </p>
+                        <p class="help is-danger" *ngIf="errores_transferencia.causes != ''">{{ errores_transferencia.causes }}</p>
+                    </div>        
+                </div>
+                <div class="column">
+                    <div class="field">
+                        <label for="monto">No Causes:</label>
+                        <p class="control is-expanded">
+                            <input class="input is-medium" type="text" placeholder="$ 0.00" [(ngModel)] = "monto_transferir_no_causes" [ngClass]="{ 'is-danger': errores_transferencia.no_causes != '' }" >
+                        </p> 
+                        <p class="help is-danger" *ngIf="errores_transferencia.no_causes != ''">{{ errores_transferencia.no_causes }}</p>
+                    </div>        
+                </div>
+                <div class="column">
+                    <div class="field">
+                        <label for="monto">Material de curación:</label>
+                        <p class="control is-expanded">
+                            <input class="input is-medium" type="text" placeholder="$ 0.00" [(ngModel)] = "monto_transferir_material_curacion" [ngClass]="{ 'is-danger': errores_transferencia.material_curacion != '' }" >
+                        </p> 
+                        <p class="help is-danger" *ngIf="errores_transferencia.material_curacion != ''">{{ errores_transferencia.material_curacion }}</p>
+                    </div>        
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="field">
-        <label for="monto">Monto a transferir:</label>
-        <p class="control is-expanded">
-            <input class="input is-medium" type="text" placeholder="$ 0.00" [(ngModel)] = "monto_transferir">
-        </p> 
-      </div>
+      
       
     </section>
     <footer class="modal-card-foot">
-      <a class="button is-danger" (click)="realizarTransferencia()"><span class="icon"><i class="fa fa-exchange"></i></span> <span>Realizar transferencia</span></a>
+      <a class="button is-danger" (click)="realizarTransferencia()" [ngClass]=" { 'is-loading': enviando_transferencia, 'is-disabled': !datosDestinoValidos || !datosOrigenValidos || ( (monto_transferir_causes == 0 || !monto_transferir_causes) && (monto_transferir_no_causes == 0 || !monto_transferir_no_causes) && (monto_transferir_material_curacion == 0 || !monto_transferir_material_curacion)  ) }"><span class="icon"><i class="fa fa-exchange"></i></span> <span>Realizar transferencia</span></a>
       <a class="button" (click)="mostrarVentanaNuevaTransferencia = false">Cerrar</a>
+    </footer>
+  </div>
+</div>
+
+
+<!-- Arrastrar Saldos -->
+<div class="modal" [ngClass]="{ 'is-active': mostrarVentanaArrastrarSaldos }">
+  <div class="modal-background" (click)="mostrarVentanaArrastrarSaldos = false"></div>
+  <div class="modal-card" style="width:95%; height: 100%;">
+    <header class="modal-card-head">
+      <p class="modal-card-title"><span class="icon"><i class="fa fa-arrow-circle-up"></i></span> Transferir saldos al mes actual</p>
+      <button class="delete" (click)="mostrarVentanaArrastrarSaldos = false"></button>
+    </header>
+    <section class="modal-card-body">
+        <div class="field">
+            <label>Mes/Año:</label>                       
+            <p class="control is-expanded">
+                <span class="select is-fullwidth">
+                <select   (change)="obtenerCluesConSaldo()"  [(ngModel)]="fecha_arrastrar_saldos">
+                    <option value="-1">Elija una fecha:</option>
+                    <option *ngFor="let item of listaMesesAniosAnteriorFechaActual" [value]="item.fecha">{{ item.mes_nombre }}/{{ item.anio }}</option>
+                </select>
+                </span>
+            </p> 
+        </div>
+        <div class="is-fullwidth has-text-centered" *ngIf="cargando_clues_con_saldo">
+            <br>
+            <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
+            <br>
+            <br>
+        </div>
+        <table class="table" style="font-size:0.8em;" *ngIf="fecha_arrastrar_saldos != -1 && !cargando_clues_con_saldo">
+            <thead>
+                <tr>
+                    <td style="width:42px; cursor:pointer;" (click)="seleccionarTodasCluesConSaldo()">
+                      <span class="icon" style="color:#00d1b2"><i class="fa" [ngClass]="{ 'fa-square-o': !todas_clues_con_saldo_seleccionadas, 'fa-check-square': todas_clues_con_saldo_seleccionadas }"></i></span>
+                    </td>
+                    <th style="text-align: center;">Clues</th>
+                    <th >Nombre</th>
+                    <th style="text-align: center;"><abbr title="Causes">CA</abbr></th>
+                    <th style="text-align: center;"><abbr title="No causes">NCA</abbr></th>
+                    <th style="text-align: center;"><abbr title="Material de curación">MC</abbr></th>   
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of listaCluesConSaldo" (click)="item.seleccionada = !item.seleccionada" style="cursor:pointer">
+                    <td><span class="icon"><i class="fa" [ngClass]="{ 'fa-square-o': !item.seleccionada, 'fa-check-square': item.seleccionada }"></i></span></td>
+                    <td style="text-align: center;">{{ item.clues }}</td>
+                    <td>{{ item.unidad_medica.nombre }}</td>
+                    <td style="text-align: right;">{{ item.causes_disponible | currency:'USD':true:'1.2-2' }}</td>
+                    <td style="text-align: right;">{{ item.no_causes_disponible | currency:'USD':true:'1.2-2' }}</td>
+                    <td style="text-align: right;">{{ item.material_curacion_disponible | currency:'USD':true:'1.2-2' }}</td>
+                </tr>
+            </tbody>
+        </table>
+      
+    </section>
+    <footer class="modal-card-foot">
+      <a class="button is-danger" (click)="transferirSaldosAlMesActual()" [ngClass]=" { 'is-disabled': fecha_arrastrar_saldos == -1, 'is-loading': enviando_transferencia_saldos_mes_actual  }"><span class="icon"><i class="fa fa-exchange"></i></span> <span> Transferir saldos al mes actual</span></a>
+      <a class="button" (click)="mostrarVentanaArrastrarSaldos = false">Cerrar</a>
     </footer>
   </div>
 </div>
