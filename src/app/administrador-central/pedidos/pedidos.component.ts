@@ -371,7 +371,8 @@ export class PedidosComponent implements OnInit {
   }
 
   imprimirExcelItem(id){
-    window.open(environment.API_URL+"/generar-excel-pedido/"+id, "_blank");
+    var query = "token="+localStorage.getItem('token');
+    window.open(`${environment.API_URL}/generar-excel-pedido/${id}?${query}`);
   }
   // # SECCION: Paginación
   paginaSiguiente():void {

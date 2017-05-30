@@ -40,7 +40,8 @@
                     <th>
                       <p class="control is-expanded">
                         <input type="hidden" #searchBoxDescripcionClavePrevia >
-                        <input class="input is-small" type="text" placeholder="Clave o Genérico" #searchBoxDescripcionClave id="search-box-descripcion-clave-{{indexPedido}}" (keyup)="buscar($event,searchBoxDescripcionClave,searchBoxDescripcionClavePrevia,[{ input: searchBoxDescripcionClave, campos: ['clave','generico_nombre','informacion.concentracion','informacion.presentacion']}])">
+                        <!--input class="input is-small" type="text" placeholder="Clave o Descripción" #searchBoxDescripcionClave id="search-box-descripcion-clave-{{indexPedido}}" (keyup)="buscar($event,searchBoxDescripcionClave,searchBoxDescripcionClavePrevia,[{ input: searchBoxDescripcionClave, campos: ['clave','generico_nombre','informacion.concentracion','informacion.presentacion']}])"-->
+                        <input class="input is-small" type="text" placeholder="Clave o Descripción" #searchBoxDescripcionClave id="search-box-descripcion-clave" (keyup)="buscar($event,searchBoxDescripcionClave,searchBoxDescripcionClavePrevia,[{ input: searchBoxDescripcionClave, campos: ['clave','descripcion']}])">
                       </p>
                     </th>  
                     

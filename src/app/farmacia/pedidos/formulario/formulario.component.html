@@ -105,7 +105,7 @@
                         <p class="subtitle" style="font-weight:bold;">
                             <small>
                                 Disponible Causes:<br> 
-                                $ {{ (presupuesto.causes_disponible - pedido.totalMontoCauses) | number: '1.2-2' }}
+                                $ {{ (presupuesto.causes_disponible - pedido.totalMontoCauses.toFixed(2)) | number: '1.2-2' }}
                             </small>
                         </p>
                     </div>
@@ -116,7 +116,7 @@
                         <span *ngIf="(presupuesto.no_causes_disponible - pedido.totalMontoNoCauses) <= 0" class="icon"><i class="fa fa-warning"></i></span>
                         <p class="subtitle" style="font-weight:bold;">
                             <small>
-                                Disponible No Causes:<br>  $ {{ (presupuesto.no_causes_disponible - pedido.totalMontoNoCauses) | number: '1.2-2' }}
+                                Disponible No Causes:<br>  $ {{ (presupuesto.no_causes_disponible - pedido.totalMontoNoCauses.toFixed(2)) | number: '1.2-2' }}
                             </small>
                         </p>
                     </div>
@@ -127,7 +127,7 @@
                         <span *ngIf="(presupuesto.material_curacion_disponible - pedido.totalMontoMaterialCuracion) <= 0" class="icon"><i class="fa fa-warning"></i></span>
                         <p class="subtitle" style="font-weight:bold;">
                             <small>
-                                Disp. Material de Curación:<br>  $ {{ (presupuesto.material_curacion_disponible - pedido.totalMontoMaterialCuracion) | number: '1.2-2' }}
+                                Disp. Material de Curación:<br>  $ {{ (presupuesto.material_curacion_disponible - pedido.totalMontoMaterialCuracion.toFixed(2)) | number: '1.2-2' }}
                             </small>
                         </p>
                     </div>
@@ -151,7 +151,8 @@
                         <th class="is-hidden-mobile" style="width:118px;">
                         <p class="control is-expanded" >
                             <input type="hidden" #searchBoxClavePrevia >
-                            <input class="input is-small" type="text" placeholder="Clave" #searchBoxClave id="search-box-clave-{{indexPedido}}" (keyup)="buscar($event,searchBoxClave, searchBoxClavePrevia,[{ input: searchBoxDescripcion, campos: ['generico','informacion.concentracion','informacion.presentacion']}, { input: searchBoxClave, campos: ['clave']}])">
+                            <!--input class="input is-small" type="text" placeholder="Clave" #searchBoxClave id="search-box-clave-{{indexPedido}}" (keyup)="buscar($event,searchBoxClave, searchBoxClavePrevia,[{ input: searchBoxDescripcion, campos: ['generico','informacion.concentracion','informacion.presentacion']}, { input: searchBoxClave, campos: ['clave']}])"-->
+                            <input class="input is-small" type="text" placeholder="Filtrar" #searchBoxClave id="search-box-clave" (keyup)="buscar($event,searchBoxClave,searchBoxClavePrevia,[{ input: searchBoxClave, campos: ['clave','descripcion']}])">
                         </p>
                         </th>
                         <!--th class="is-hidden-mobile">
@@ -163,7 +164,8 @@
                         <th class="is-hidden-tablet">
                         <p class="control is-expanded">
                             <input type="hidden" #searchBoxDescripcionClavePrevia >
-                            <input class="input is-small" type="text" placeholder="Clave o Genérico" #searchBoxDescripcionClave id="search-box-descripcion-clave-{{indexPedido}}" (keyup)="buscar($event,searchBoxDescripcionClave,searchBoxDescripcionClavePrevia,[{ input: searchBoxDescripcionClave, campos: ['clave','generico_nombre','informacion.concentracion','informacion.presentacion']}])">
+                            <!--input class="input is-small" type="text" placeholder="Clave o Genérico" #searchBoxDescripcionClave id="search-box-descripcion-clave-{{indexPedido}}" (keyup)="buscar($event,searchBoxDescripcionClave,searchBoxDescripcionClavePrevia,[{ input: searchBoxDescripcionClave, campos: ['clave','generico_nombre','informacion.concentracion','informacion.presentacion']}])"-->
+                            <input class="input is-small" type="text" placeholder="Clave o Genérico" #searchBoxDescripcionClave id="search-box-descripcion-clave-{{indexPedido}}" (keyup)="buscar($event,searchBoxDescripcionClave,searchBoxDescripcionClavePrevia,[{ input: searchBoxDescripcionClave, campos: ['clave','descripcion']}])">
                         </p>
                         </th>  
                         <th style="vertical-align: middle;" class="is-hidden-mobile is-hidden-tablet-only" >Descripcion</th>                  

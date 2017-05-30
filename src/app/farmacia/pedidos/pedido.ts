@@ -43,8 +43,8 @@ export class Pedido {
         });
         //Harima: Al crear el objeto, se crea como borrador
         this.status = 'BR';
-        this.paginacion.resultadosPorPagina = 10;
     }
+    this.paginacion.resultadosPorPagina = 10;
   }
 
   public tieneError = function(atributo:string, error:string){
