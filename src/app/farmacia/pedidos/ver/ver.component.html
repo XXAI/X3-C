@@ -84,6 +84,13 @@
                 <span *ngIf="!pedido.filtro.activo">Claves: {{ pedido.lista.length }} Insumos: {{pedido.totalInsumos}} Total: $ {{ pedido.totalMonto | number: '1.2-2' }}</span>
                 <span *ngIf="pedido.filtro.activo"><span class="icon"><i class="fa fa-search"></i></span> Resultados: {{ pedido.filtro.lista.length }}</span>
             </div> 
+
+            <div class="is-fullwidth has-text-centered" *ngIf="cargando">
+                <br>
+                <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
+                <br>
+                <br>
+            </div>
             
             <table class="table is-unselectable" *ngIf="!cargando" style="font-size: 0.8em;">
                 <thead>

@@ -55,7 +55,7 @@
 
                 <label *ngIf="pedido.tipo_pedido != 'PI' && esEditar" class="label">Datos del Proveedor:</label>
                 <div *ngIf="pedido.tipo_pedido != 'PI' && esEditar" class="level-item">
-                    <div *ngIf="esEditar && !cargando" >
+                    <div *ngIf="esEditar" >
                     <p class="subtitle is-5">
                         {{proveedor.nombre}}<br>
                         <small>
@@ -74,17 +74,17 @@
                     </p-->
 
                     <p class="control">
-                    <a class="button is-primary " (click)="guardar()" [ngClass]="{'is-loading': cargando}" >Guardar</a>
+                        <a class="button is-primary " (click)="guardar()" [ngClass]="{'is-loading': guardando}" >Guardar</a>
                     </p>
                     <p class="control" *ngIf="esEditar">
-                    <a class="button is-danger " (click)="finalizar()" [ngClass]="{'is-loading': cargando}" ><span class="icon"><i class="fa fa-check"></i></span><span>Concluir</span></a>
+                        <a class="button is-danger " (click)="finalizar()" [ngClass]="{'is-loading': guardando}" ><span class="icon"><i class="fa fa-check"></i></span><span>Concluir</span></a>
                     </p>
                 
                     <!--p class="control" *ngIf="esEditar">
                     <a class="button is-primary " [ngClass]="{ 'is-loading': cargandoPdf, 'is-inverted': !cargandoPdf }" (click)="imprimir()" ><span class="icon"><i class="fa fa-print"></i></span></a>
                     </p-->
                     <p class="control">
-                    <a class="button is-white" routerLink="{{obtenerDireccion()}}" >Ir a la lista</a>
+                    <a class="button is-white" [ngClass]="{'is-loading': guardando}" routerLink="{{obtenerDireccion()}}" >Ir a la lista</a>
                     </p>                
                 </div>
                 </div>
@@ -144,7 +144,21 @@
                 </a>
             </div> 
 
-            <table class="table is-unselectable" *ngIf="!cargando" style="font-size: 0.8em;">
+            <div class="is-fullwidth has-text-centered" *ngIf="guardando">
+                <br>
+                <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-spinner fa-spin"></i></span> &nbsp;<span>Guardando...</span></span>
+                <br>
+                <br>
+            </div>
+
+            <div class="is-fullwidth has-text-centered" *ngIf="cargando">
+                <br>
+                <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
+                <br>
+                <br>
+            </div>
+
+            <table class="table is-unselectable" *ngIf="!cargando && !guardando" style="font-size: 0.8em;">
                 <thead>
                     <tr  >
                         <th style="width:41px;vertical-align: middle;" class="has-text-centered" >Lote</th>

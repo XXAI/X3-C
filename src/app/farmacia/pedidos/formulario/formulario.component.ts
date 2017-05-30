@@ -37,6 +37,7 @@ import { Almacen } from '../../../catalogos/almacenes/almacen';
 export class FormularioComponent implements OnInit {
 
   cargando: boolean = false;
+  guardando: boolean = false;
   cargandoAlmacenes: boolean = false;
   cargandoInsumos: boolean = false;
   cargandoPresupuestos: boolean = false;
@@ -363,7 +364,7 @@ export class FormularioComponent implements OnInit {
   }
 
   guardar(finalizar:boolean = false){
-    this.cargando = true;
+    this.guardando = true;
     var guardar_pedido;
     /*var guardar_pedidos = [];
     for(var i in this.pedidos){
@@ -383,8 +384,8 @@ export class FormularioComponent implements OnInit {
     if(finalizar){
       guardar_pedido.datos.status = 'CONCLUIR';
 
-      if((this.presupuesto.causes_disponible - this.pedido.totalMontoCauses) < 0 || (this.presupuesto.no_causes_disponible - this.pedido.totalMontoNoCauses) < 0 || (this.presupuesto.material_curacion_disponible - this.pedido.totalMontoMaterialCuracion) < 0){
-        this.cargando = false;
+      if((this.presupuesto.causes_disponible - +this.pedido.totalMontoCauses.toFixed(2)) < 0 || (this.presupuesto.no_causes_disponible - +this.pedido.totalMontoNoCauses.toFixed(2)) < 0 || (this.presupuesto.material_curacion_disponible - +this.pedido.totalMontoMaterialCuracion.toFixed(2)) < 0){
+        this.guardando = false;
         this.mensajeError = new Mensaje(true);
         this.mensajeError.texto = 'Presupuesto insuficiente';
         this.mensajeError.mostrar = true;
@@ -401,7 +402,7 @@ export class FormularioComponent implements OnInit {
       //this.pedidosService.editar(this.pedidos[0].id,guardar_pedidos).subscribe(
       this.pedidosService.editar(this.pedido.id,guardar_pedido).subscribe(
         pedido => {
-          this.cargando = false;
+          this.guardando = false;
           //console.log('Pedido editado');
           if(pedido.status != 'BR'){
             this.router.navigate(['/almacen/pedidos/ver/'+pedido.id]);
@@ -409,7 +410,7 @@ export class FormularioComponent implements OnInit {
           //hacer cosas para dejar editar
         },
         error => {
-          this.cargando = false;
+          this.guardando = false;
           //console.log(error);
           this.mensajeError = new Mensaje(true);
           this.mensajeError.texto = 'No especificado';
@@ -461,14 +462,14 @@ export class FormularioComponent implements OnInit {
     }else{
       this.pedidosService.crear(guardar_pedido).subscribe(
         pedido => {
-          this.cargando = false;
+          this.guardando = false;
           //console.log('Pedido creado');
           //console.log(pedido);
           this.router.navigate(['/almacen/pedidos/editar/'+pedido.id]);
           //hacer cosas para dejar editar
         },
         error => {
-          this.cargando = false;
+          this.guardando = false;
           console.log(error);
           this.mensajeError = new Mensaje(true);
           this.mensajeError.texto = 'No especificado';
