@@ -14,7 +14,8 @@ export class MenuLateralComponent implements OnInit {
     en_transito: 0,
     por_surtir: 0,
     finalizados: 0,
-    expirados: 0
+    expirados: 0,
+    farmacia: 0
   };
 
   constructor(private pedidosService:PedidosService) { }

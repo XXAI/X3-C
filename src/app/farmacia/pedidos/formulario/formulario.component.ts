@@ -375,7 +375,7 @@ export class FormularioComponent implements OnInit {
       this.pedido.datos.get('almacen_solicitante').markAsTouched();
       this.pedido.datos.get('descripcion').markAsTouched();
       this.pedido.datos.get('fecha').markAsTouched();
-      this.cargando = false;
+      this.guardando = false;
       return false;
     }
 

@@ -169,6 +169,7 @@
                             <span class="icon is-small sin-surtir"><i class="fa fa-circle"></i></span> Sin Surtir | 
                             <span class="icon is-small surtiendo"><i class="fa fa-minus-circle"></i></span> Surtiendo | 
                             <span class="icon is-small surtido"><i class="fa fa-check-circle"></i></span> Finalizado | 
+                            <span class="icon is-small farmacia"><i class="fa fa-cubes"></i></span> Farmacia |
                             <span class="icon is-small expirado"><i class="fa fa-times-circle"></i></span> Expirado
                         </th>
                         <th colspan="2">Total</th>
@@ -207,16 +208,34 @@
                         <td style="text-align:center; vertical-align: middle; white-space: nowrap;">{{ item.total_claves_recibidas }} / {{ item.total_claves_solicitadas }} <br> <strong>({{(item.total_claves_recibidas/item.total_claves_solicitadas)*100 | number:'1.0-2'}} %)</strong></td>
                         <td style="text-align:center; vertical-align: middle;">${{ item.total_monto_recibido | number:'1.2-2' }} / ${{ item.total_monto_solicitado | number:'1.2-2' }} <br> <strong>({{((item.total_monto_recibido/item.total_monto_solicitado)*100) | number:'1.0-2'}} %)</strong></td>
 
-                        <td class="causes"  style="text-align:center; vertical-align: middle; white-space: nowrap;">{{ item.total_claves_causes_recibidas }} / {{ item.total_claves_causes }} <br> <strong>({{((item.total_claves_causes_recibidas/item.total_claves_causes)*100||0) | number:'1.0-2'}} %)</strong></td>
-                        <td class="causes"  style="text-align:center; vertical-align: middle;">${{ item.total_monto_causes_recibido  | number:'1.2-2'}} / ${{ item.total_monto_causes  | number:'1.2-2'}} <br> <strong>({{((item.total_monto_causes_recibido/item.total_monto_causes)*100||0.00) | number:'1.0-2'}} %)</strong></td>
+                        <td class="causes"  style="text-align:center; vertical-align: middle; white-space: nowrap;">
+                            <span *ngIf="item.total_claves_causes">{{ item.total_claves_causes_recibidas }} / {{ item.total_claves_causes }} <br> <strong>({{((item.total_claves_causes_recibidas/item.total_claves_causes)*100) | number:'1.0-2'}} %)</strong></span>
+                            <span *ngIf="!item.total_claves_causes"> --- </span>
+                        </td>
+                        <td class="causes"  style="text-align:center; vertical-align: middle;">
+                            <span *ngIf="(+item.total_monto_causes*1)">${{ item.total_monto_causes_recibido  | number:'1.2-2'}} / ${{ item.total_monto_causes  | number:'1.2-2'}} <br> <strong>({{((item.total_monto_causes_recibido/item.total_monto_causes)*100) | number:'1.0-2'}} %)</strong></span>
+                            <span *ngIf="!(+item.total_monto_causes*1)"> --- </span>
+                        </td>
 
-                        <td class="no-causes" style="text-align:center; vertical-align: middle; white-space: nowrap;">{{ item.total_claves_no_causes_recibidas }} / {{ item.total_claves_no_causes }} <br> <strong>({{((item.total_claves_no_causes_recibidas/item.total_claves_no_causes)*100||0) | number:'1.0-2'}} %)</strong></td>
-                        <td class="no-causes" style="text-align:center; vertical-align: middle;">${{ item.total_monto_no_causes_recibido  | number:'1.2-2'}} / ${{ item.total_monto_no_causes  | number:'1.2-2'}} <br> <strong>({{((item.total_monto_no_causes_recibido/item.total_monto_no_causes)*100||0.00) | number:'1.0-2'}} %)</strong></td>
+                        <td class="no-causes" style="text-align:center; vertical-align: middle; white-space: nowrap;">
+                            <span *ngIf="item.total_claves_no_causes">{{ item.total_claves_no_causes_recibidas }} / {{ item.total_claves_no_causes }} <br> <strong>({{((item.total_claves_no_causes_recibidas/item.total_claves_no_causes)*100) | number:'1.0-2'}} %)</strong></span>
+                            <span *ngIf="!item.total_claves_no_causes"> --- </span>
+                        </td>
+                        <td class="no-causes" style="text-align:center; vertical-align: middle;">
+                            <span *ngIf="(+item.total_monto_no_causes*1)">${{ item.total_monto_no_causes_recibido  | number:'1.2-2'}} / ${{ item.total_monto_no_causes  | number:'1.2-2'}} <br> <strong>({{((item.total_monto_no_causes_recibido/item.total_monto_no_causes)*100) | number:'1.0-2'}} %)</strong></span>
+                            <span *ngIf="!(+item.total_monto_no_causes*1)"> --- </span>
+                        </td>
 
-                        <td class="material-curacion" style="text-align:center; vertical-align: middle; white-space: nowrap;">{{ item.total_claves_material_curacion_recibidas }} / {{ item.total_claves_material_curacion }} <br> <strong>({{((item.total_claves_material_curacion_recibidas/item.total_claves_material_curacion)*100||0) | number:'1.0-2'}} %)</strong></td>
-                        <td class="material-curacion" style="text-align:center; vertical-align: middle;">${{ item.total_monto_material_curacion_recibido | number:'1.2-2' }} / ${{ item.total_monto_material_curacion | number:'1.2-2' }} <br> <strong>({{((item.total_monto_material_curacion_recibido/item.total_monto_material_curacion)*100||0.00) | number:'1.0-2'}} %)</strong></td>
+                        <td class="material-curacion" style="text-align:center; vertical-align: middle; white-space: nowrap;">
+                            <span *ngIf="item.total_claves_material_curacion">{{ item.total_claves_material_curacion_recibidas }} / {{ item.total_claves_material_curacion }} <br> <strong>({{((item.total_claves_material_curacion_recibidas/item.total_claves_material_curacion)*100) | number:'1.0-2'}} %)</strong></span>
+                            <span *ngIf="!item.total_claves_material_curacion"> --- </span>
+                        </td>
+                        <td class="material-curacion" style="text-align:center; vertical-align: middle;">
+                            <span *ngIf="(+item.total_monto_material_curacion*1)">${{ item.total_monto_material_curacion_recibido | number:'1.2-2' }} / ${{ item.total_monto_material_curacion | number:'1.2-2' }} <br> <strong>({{((item.total_monto_material_curacion_recibido/item.total_monto_material_curacion)*100) | number:'1.0-2'}} %)</strong></span>
+                            <span *ngIf="!(+item.total_monto_material_curacion*1)"> --- </span>
+                        </td>
 
-                        <td [ngClass]="{'borrador':item.status=='BR','surtido':item.status=='FI','expirado':item.status=='EX','sin-surtir':(item.total_cantidad_recibida==0 && item.status!='BR'),'surtiendo':item.total_cantidad_recibida>0}" style="text-align:center; vertical-align: middle;"><span class="icon"><i class="fa" [ngClass]="{'fa-pencil':item.status=='BR','fa-check-circle':item.status=='FI','fa-times-circle':item.status=='EX','fa-circle':(item.total_cantidad_recibida==0 && item.status != 'BR'),'fa-minus-circle':item.total_cantidad_recibida>0}"></i></span></td>
+                        <td [ngClass]="{'borrador':item.status=='BR','surtido':item.status=='FI','expirado':item.status=='EX','sin-surtir':(item.total_cantidad_recibida==0 && item.status=='PS'),'surtiendo':(item.total_cantidad_recibida>0 && item.status=='PS'),'farmacia':item.status=='EF'}" style="text-align:center; vertical-align: middle;"><span class="icon"><i class="fa" [ngClass]="{'fa-pencil':item.status=='BR','fa-check-circle':item.status=='FI','fa-times-circle':item.status=='EX','fa-circle':(item.total_cantidad_recibida==0 && item.status == 'PS'),'fa-minus-circle':(item.total_cantidad_recibida>0 && item.status == 'PS'),'fa-cubes':item.status=='EF'}"></i></span></td>
                         <!--td style="vertical-align: middle;">{{ item.status == 'BR' ? 'Borrador': item.status == 'TR' ? 'En transito': item.status == 'PS' ? 'Por surtir': item.status == 'FI' ? 'Finalizado': item.status == 'EX' ? 'Expirado': 'Otro' }}</td-->
 
                         <td style="vertical-align: middle;">
