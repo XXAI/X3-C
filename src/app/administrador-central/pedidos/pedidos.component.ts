@@ -32,8 +32,9 @@ export class PedidosComponent implements OnInit {
   jurisdiccionesSeleccionadas:any[] = [];
   proveedoresSeleccionados:any[] = [];
 
-  fecha_desde:Date  = null;
+  fecha_desde:Date = null;
   fecha_hasta:Date = null;
+  sin_pedidos:boolean = false;
 
   ordenarCauses:string = '';
   ordenarNoCauses:string = '';
@@ -232,9 +233,6 @@ export class PedidosComponent implements OnInit {
     this.cargando = true;
     this.paginaActual = pagina;
 
-
-    
-
     var proveedoresIds = [];
     for(var i in this.proveedoresSeleccionados){
       proveedoresIds.push(this.proveedoresSeleccionados[i].id);
@@ -270,13 +268,18 @@ export class PedidosComponent implements OnInit {
       response => {
         this.cargandoPresupuestos = false;
         this.presupuesto = response.data;
+
+        this.presupuesto.total_modificado = (+response.data.causes_modificado) + (+response.data.no_causes_modificado) + (+response.data.material_curacion_modificado);
+        this.presupuesto.total_comprometido = (+response.data.causes_comprometido) + (+response.data.no_causes_comprometido) + (+response.data.material_curacion_comprometido);
+        this.presupuesto.total_devengado = (+response.data.causes_devengado) + (+response.data.no_causes_devengado) + (+response.data.material_curacion_devengado);
+        this.presupuesto.total_disponible = (+response.data.causes_disponible) + (+response.data.no_causes_disponible) + (+response.data.material_curacion_disponible);
       },
       error => {
         this.cargandoPresupuestos = false;
         console.log(error);
       }
     );
-
+    
     this.apiService.pedidos(parametros).subscribe(
       respuesta => {
           this.cargando = false;
@@ -311,6 +314,7 @@ export class PedidosComponent implements OnInit {
       }
     )
   }
+  
   exportar(){
 
     var query = "token="+localStorage.getItem('token')+"&ordenar_causes="+this.ordenarCauses+"&ordenar_no_causes="+this.ordenarNoCauses+"&ordenar_material_curacion="+this.ordenarMaterialCuracion;
@@ -360,14 +364,15 @@ export class PedidosComponent implements OnInit {
     if(this.fecha_hasta != null){
       query += "&fecha_hasta="+this.fecha_hasta;
     }
-    window.open(`${environment.API_URL}/pedidos-administrador-central-excel?${query}`);
+    window.open(`${environment.API_URL}/administrador-central/pedidos-excel?${query}`);
    
     
     
   }
 
   imprimirExcelItem(id){
-    window.open(environment.API_URL+"/generar-excel-pedido/"+id, "_blank");
+    var query = "token="+localStorage.getItem('token');
+    window.open(`${environment.API_URL}/generar-excel-pedido/${id}?${query}`);
   }
   // # SECCION: Paginación
   paginaSiguiente():void {

@@ -40,6 +40,13 @@
                         <td style="text-align:center"><span class="tag is-danger">$ {{ presupuesto.material_curacion_devengado | number:'1.2-2' }}</span></td>
                         <td style="text-align:center"><span class="tag is-success">$ {{ presupuesto.material_curacion_disponible | number:'1.2-2' }}</span></td>
                     </tr>
+                    <tr>
+                        <th>Total</th>
+                        <td style="text-align:center"><span class="tag is-primary">$ {{ presupuesto.total_modificado | number:'1.2-2' }}</span></td>
+                        <td style="text-align:center"><span class="tag is-warning"> $ {{ presupuesto.total_comprometido | number:'1.2-2' }}</span></td>
+                        <td style="text-align:center"><span class="tag is-danger">$ {{ presupuesto.total_devengado | number:'1.2-2' }}</span></td>
+                        <td style="text-align:center"><span class="tag is-success">$ {{ presupuesto.total_disponible | number:'1.2-2' }}</span></td>
+                    </tr>
                 </tbody>
             </table>
          </div>
@@ -114,6 +121,12 @@
                                 <input class="input " type="date"  [(ngModel)] = "fecha_hasta" >
                             </p>
                         </div>
+                        <!--div class="column">
+                            <label>Sin Pedidos</label>
+                            <div class="control">
+                                <button class="button is-primary" (click)="sin_pedidos = !sin_pedidos"><span class="icon"><i class="fa" [ngClass]="{'fa-check-square-o': sin_pedidos, 'fa-square-o':!sin_pedidos }"></i></span></button>
+                            </div>
+                        </div-->
                     </div>
 
                     <div *ngIf="jurisdiccionesSeleccionadas.length>0 || proveedoresSeleccionados.length>0 || statusSeleccionados.length>0">
@@ -150,7 +163,14 @@
             <table class="table" *ngIf="!cargando" style="min-width:100%; font-size:0.8em;">
                 <thead>
                     <tr>
-                        <th colspan="6"></th>
+                        <th colspan="5">
+                             Status: 
+                            <span class="icon is-small borrador"><i class="fa fa-pencil"></i></span> Borrador | 
+                            <span class="icon is-small sin-surtir"><i class="fa fa-circle"></i></span> Sin Surtir | 
+                            <span class="icon is-small surtiendo"><i class="fa fa-minus-circle"></i></span> Surtiendo | 
+                            <span class="icon is-small surtido"><i class="fa fa-check-circle"></i></span> Finalizado | 
+                            <span class="icon is-small expirado"><i class="fa fa-times-circle"></i></span> Expirado
+                        </th>
                         <th colspan="2">Total</th>
                         <th colspan="2">Causes</th>
                         <th colspan="2">No causes</th>
@@ -161,7 +181,6 @@
                         <th>Proveedor</th>
                         <th>Folio</th>
                         <th>Nombre</th>
-                        <th>Clues</th>
                         <th>Unidad médica</th>
                         <th>Fecha</th>
                         <th>Claves</th>
@@ -180,24 +199,30 @@
                 <tbody>
                     <tr *ngFor="let item of lista; let i=index">                        
                         <td style="vertical-align: middle;">{{ item.proveedor }}</td>
-                        <td style="vertical-align: middle;">{{ item.folio }}</td>
+                        <td style="vertical-align: middle;">{{ (item.folio)?item.folio:'S/F' }}</td>
                         <td style="vertical-align: middle;">{{ item.descripcion }}</td>
-                        <td style="vertical-align: middle;">{{ item.clues }}</td>
                         <td style="vertical-align: middle;">{{ item.unidad_medica }}</td>
                         <td style="vertical-align: middle;">{{ item.fecha }}</td>
-                        <td style="vertical-align: middle;">{{ item.total_claves_solicitadas }}</td>
-                        <td style="vertical-align: middle;">{{ item.total_monto_solicitado | number:'1.2-2' }}</td>
 
-                        <td style="vertical-align: middle;">{{ item.total_claves_causes }}</td>
-                        <td style="vertical-align: middle;">{{ item.total_monto_causes  | number:'1.2-2'}}</td>
+                        <td style="text-align:center; vertical-align: middle; white-space: nowrap;">{{ item.total_claves_recibidas }} / {{ item.total_claves_solicitadas }} <br> <strong>({{(item.total_claves_recibidas/item.total_claves_solicitadas)*100 | number:'1.0-2'}} %)</strong></td>
+                        <td style="text-align:center; vertical-align: middle;">${{ item.total_monto_recibido | number:'1.2-2' }} / ${{ item.total_monto_solicitado | number:'1.2-2' }} <br> <strong>({{((item.total_monto_recibido/item.total_monto_solicitado)*100) | number:'1.0-2'}} %)</strong></td>
 
-                        <td style="vertical-align: middle;">{{ item.total_claves_no_causes }}</td>
-                        <td style="vertical-align: middle;">{{ item.total_monto_no_causes  | number:'1.2-2'}}</td>
+                        <td class="causes"  style="text-align:center; vertical-align: middle; white-space: nowrap;">{{ item.total_claves_causes_recibidas }} / {{ item.total_claves_causes }} <br> <strong>({{((item.total_claves_causes_recibidas/item.total_claves_causes)*100||0) | number:'1.0-2'}} %)</strong></td>
+                        <td class="causes"  style="text-align:center; vertical-align: middle;">${{ item.total_monto_causes_recibido  | number:'1.2-2'}} / ${{ item.total_monto_causes  | number:'1.2-2'}} <br> <strong>({{((item.total_monto_causes_recibido/item.total_monto_causes)*100||0.00) | number:'1.0-2'}} %)</strong></td>
 
-                        <td style="vertical-align: middle;">{{ item.total_claves_material_curacion }}</td>
-                        <td style="vertical-align: middle;">{{ item.total_monto_material_curacion | number:'1.2-2' }}</td>
-                        <td style="vertical-align: middle;">{{ item.status == 'BR' ? 'Borrador': item.status == 'TR' ? 'En transito': item.status == 'PS' ? 'Por surtir': item.status == 'FI' ? 'Finalizado': item.status == 'EX' ? 'Expirado': 'Otro' }}</td>
-                        <td style="vertical-align: middle;"><a (click)="imprimirExcelItem(item.pedido_id)"><span class="icon"><i class="fa fa-file-excel-o"></i></span></a> <a><span class="icon"><i class="fa fa-file-pdf-o"></i></span></a></td>
+                        <td class="no-causes" style="text-align:center; vertical-align: middle; white-space: nowrap;">{{ item.total_claves_no_causes_recibidas }} / {{ item.total_claves_no_causes }} <br> <strong>({{((item.total_claves_no_causes_recibidas/item.total_claves_no_causes)*100||0) | number:'1.0-2'}} %)</strong></td>
+                        <td class="no-causes" style="text-align:center; vertical-align: middle;">${{ item.total_monto_no_causes_recibido  | number:'1.2-2'}} / ${{ item.total_monto_no_causes  | number:'1.2-2'}} <br> <strong>({{((item.total_monto_no_causes_recibido/item.total_monto_no_causes)*100||0.00) | number:'1.0-2'}} %)</strong></td>
+
+                        <td class="material-curacion" style="text-align:center; vertical-align: middle; white-space: nowrap;">{{ item.total_claves_material_curacion_recibidas }} / {{ item.total_claves_material_curacion }} <br> <strong>({{((item.total_claves_material_curacion_recibidas/item.total_claves_material_curacion)*100||0) | number:'1.0-2'}} %)</strong></td>
+                        <td class="material-curacion" style="text-align:center; vertical-align: middle;">${{ item.total_monto_material_curacion_recibido | number:'1.2-2' }} / ${{ item.total_monto_material_curacion | number:'1.2-2' }} <br> <strong>({{((item.total_monto_material_curacion_recibido/item.total_monto_material_curacion)*100||0.00) | number:'1.0-2'}} %)</strong></td>
+
+                        <td [ngClass]="{'borrador':item.status=='BR','surtido':item.status=='FI','expirado':item.status=='EX','sin-surtir':(item.total_cantidad_recibida==0 && item.status!='BR'),'surtiendo':item.total_cantidad_recibida>0}" style="text-align:center; vertical-align: middle;"><span class="icon"><i class="fa" [ngClass]="{'fa-pencil':item.status=='BR','fa-check-circle':item.status=='FI','fa-times-circle':item.status=='EX','fa-circle':(item.total_cantidad_recibida==0 && item.status != 'BR'),'fa-minus-circle':item.total_cantidad_recibida>0}"></i></span></td>
+                        <!--td style="vertical-align: middle;">{{ item.status == 'BR' ? 'Borrador': item.status == 'TR' ? 'En transito': item.status == 'PS' ? 'Por surtir': item.status == 'FI' ? 'Finalizado': item.status == 'EX' ? 'Expirado': 'Otro' }}</td-->
+
+                        <td style="vertical-align: middle;">
+                            <a (click)="imprimirExcelItem(item.pedido_id)"><span class="icon"><i class="fa fa-file-excel-o"></i></span></a> 
+                            <!--a><span class="icon"><i class="fa fa-file-pdf-o"></i></span></a-->
+                        </td>
                         <td></td>
                     </tr>
                     <tr *ngIf="lista.length == 0">

@@ -133,6 +133,7 @@ export class VerComponent implements OnInit {
             this.pedido.datosImprimir = pedido;
             this.pedido.status = pedido.status;
             
+
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];
               let insumo = dato.insumos_con_descripcion;
@@ -141,20 +142,32 @@ export class VerComponent implements OnInit {
               insumo.precio = +dato.precio_unitario;
               this.pedido.lista.push(insumo);
               //this.listaClaveAgregadas.push(insumo.clave);
-              let tipo_insumo = 'ST';
+              //let tipo_insumo = 'ST';
               let tiene_iva = false;
-              if(insumo.tipo == 'ME' && insumo.es_causes){
+              let clave_tipo_insumo = 'SC';
+              /*if(insumo.tipo == 'ME' && insumo.es_causes){
                 tipo_insumo = 'MEDICAMENTOS CAUSES';
+                clave_tipo_insumo = 'C'
               }else if(insumo.tipo == 'ME' && !insumo.es_causes){
                 tipo_insumo = 'MEDICAMENTOS NO CAUSES';
+                clave_tipo_insumo = 'NC'
               }else if(insumo.tipo == 'MC'){
-                tipo_insumo = 'MATERIAL CURACIÓN';
+                tipo_insumo = 'MATERIAL DE CURACIÓN';
+                clave_tipo_insumo = 'MC'
+                tiene_iva = true;
+              }*/
+              //tipo_insumo = dato.tipo_insumo.nombre;
+              clave_tipo_insumo = dato.tipo_insumo.clave;
+              if(dato.tipo_insumo.clave == 'MC'){
                 tiene_iva = true;
               }
-              if(!this.subPedidos[tipo_insumo]){
-                this.tiposSubPedidos.push(tipo_insumo);
-                this.subPedidos[tipo_insumo] = {
-                  'titulo':tipo_insumo,
+              
+
+              if(!this.subPedidos[clave_tipo_insumo]){
+                this.tiposSubPedidos.push(clave_tipo_insumo);
+                this.subPedidos[clave_tipo_insumo] = {
+                  'titulo':dato.tipo_insumo.nombre,
+                  'clave_folio':clave_tipo_insumo,
                   'claves':0,
                   'cantidad':0,
                   'monto':0,
@@ -163,10 +176,10 @@ export class VerComponent implements OnInit {
                   'lista':[]
                 }
               }
-              this.subPedidos[tipo_insumo].claves++;
-              this.subPedidos[tipo_insumo].cantidad += insumo.cantidad;
-              this.subPedidos[tipo_insumo].monto += insumo.monto;
-              this.subPedidos[tipo_insumo].lista.push(insumo);
+              this.subPedidos[clave_tipo_insumo].claves++;
+              this.subPedidos[clave_tipo_insumo].cantidad += insumo.cantidad;
+              this.subPedidos[clave_tipo_insumo].monto += insumo.monto;
+              this.subPedidos[clave_tipo_insumo].lista.push(insumo);
             }
             pedido.insumos = undefined;
             this.pedido.indexar();
@@ -367,7 +380,9 @@ export class VerComponent implements OnInit {
   // # SECCION - Webworkers
   
   imprimirExcel(){
-    window.open(environment.API_URL+"/generar-excel-pedido/"+this.pedido.id, "_blank");
+    var query = "token="+localStorage.getItem('token');
+    window.open(`${environment.API_URL}/generar-excel-pedido/${this.pedido.id}?${query}`); 
+    //window.open(environment.API_URL+"/generar-excel-pedido/"+this.pedido.id, "_blank");
   }
 
   imprimir(tipo:string = '') {

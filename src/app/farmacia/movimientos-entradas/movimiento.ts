@@ -25,6 +25,8 @@ export class Mov {
 export class Movimiento {
                   id: any;
 				  almacen_id: string;
+                  status: string;
+                  persona_recibe: string;
 				  tipo_movimiento_id: number;
 				  fecha_movimiento: Date;
 				  observaciones: string;
@@ -37,6 +39,7 @@ export class Insumo {
 			         clave: string;
                      descripcion: string;
                      informacion: any[];
+                     generico_nombre: string;
                      tipo: string;
                      es_causes: boolean;
 			         cantidad: number;

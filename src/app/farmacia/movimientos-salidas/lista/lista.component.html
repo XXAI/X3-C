@@ -6,7 +6,7 @@
     <div class="column is-one-quarter is-hidden-mobile">
         <!-- <menu-lateral (onEnviarTipo)=enviarTipo($event);></menu-lateral>  -->
         <aside class="menu" style="padding: 1em;">
-            <a routerLink="/almacen/movimientos/salidas/nuevo" routerLinkActive="is-active" class="button is-primary is-inverted is-medium is-fullwidth"><span class="icon"  ><i class="fa fa-plus"></i></span> <span>Nueva Salida</span></a>
+            <a routerLink="/almacen/movimientos/salidas/nuevo/{{tipo_salida}}" routerLinkActive="is-active" class="button is-primary is-inverted is-medium is-fullwidth"><span class="icon"  ><i class="fa fa-plus"></i></span> <span>Nueva Salida</span></a>
             <br>
             <ul class="menu-list">
                 <li>
@@ -84,7 +84,7 @@
                         <td style="vertical-align: middle;"><a routerLink="/almacen/movimientos/salidas/editar/{{item.id}}">{{ item.created_at | date: 'HH:mm'}}</a></td>
                         <td style="vertical-align: middle;" class="has-text-centered">
                             <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-print"></i></span><a class="is is-danger" (click)="imprimir(item, i)"><span class="icon"><i class="fa fa-print"></i></span></a>
-                            <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando && item.cancelado == 0" class="is-danger" (click)="toggleModalCancelado(item, i)"><span class="icon"><i class="fa fa-times"></i></span></a>
+                            <!-- <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando && item.cancelado == 0" class="is-danger" (click)="toggleModalCancelado(item, i)"><span class="icon"><i class="fa fa-times"></i></span></a> -->
                             <!-- <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a> -->
                         </td>
                     </tr>
@@ -100,8 +100,8 @@
                         <td style="vertical-align: middle;"><a routerLink="/almacen/movimientos/salidas/editar/{{item.id}}">{{ item.created_at | date: 'HH:mm'}}</a></td>
                         <td style="vertical-align: middle;" class="has-text-centered">
                             <span class="icon " *ngIf="item.cargando"><i class="fa fa-print"></i></span><a *ngIf="!item.cargando" class="is-danger " (click)="imprimir()"><span class="icon"><i class="fa fa-print"></i></span></a>
-                            <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando && item.cancelado == 0" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-times"></i></span></a>
-                            <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
+                            <!-- <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando && item.cancelado == 0" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-times"></i></span></a>
+                            <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a> -->
                         </td>
                     </tr>
 

@@ -26,6 +26,7 @@ export class Modelo {
   public fecha_movimiento: string;
   public movimiento_insumos: Movimiento_insumo[] = [];
   public almacen:any[] = [];
+  public stockExistencia:any[] = [];
   public datosImprimir?: any;
   //public nombre:String;
   //public observaciones:string;

@@ -11,6 +11,7 @@ import { MovimientosEntradasService }       from '../movimientos-entradas.servic
 
 import { Mov }       from '../movimiento';
 import { Insumo  } from '../movimiento';
+import { Entrada  } from '../entrada';
 import { Mensaje } from '../../../mensaje';
 
 @Component({
@@ -33,6 +34,9 @@ export class EditarComponent implements OnInit {
   private almacenes: any = {};
   private usuario: any ={};
   datos : any[];
+  entradaMovimiento : Entrada[];
+  mostrarCancelado: boolean = false;
+  fecha_actual: any = new Date();
 
   private almacenId: string;
  
@@ -82,6 +86,10 @@ export class EditarComponent implements OnInit {
       console.log(this.id);
       this.cargarDatos();
     });
+  }
+
+  asignarTipo(value:number){
+    return true;
   }
 
   initInsumo() {
@@ -158,11 +166,21 @@ export class EditarComponent implements OnInit {
     this.cargando = true;
     console.log("Cargando movimiento.");
     this.movimientosEntradasService.ver(this.id).subscribe(
-      movimiento =>{
+      /*movimiento =>{
         this.cargando = false;
         this.datosCargados = true;
 
         this.movimiento.patchValue(movimiento);
+        console.log("Movimiento cargado.");
+        console.log(this.movimiento);
+      }*/
+      resultado =>{
+        this.cargando = false;
+        this.datosCargados = true;
+        this.movimiento.patchValue(resultado);
+        console.log(resultado);
+        this.entradaMovimiento = resultado as Entrada[];
+          console.log(this.entradaMovimiento);          
         console.log("Movimiento cargado.");
         console.log(this.movimiento);
       },

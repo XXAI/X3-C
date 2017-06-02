@@ -1,4 +1,255 @@
 <menu-farmacia [modulo]="'Entradas'" [icono]="'assets/icono-entradas.svg'" [url]="'/almacen/movimientos/entradas'"></menu-farmacia>
 
 <div style="height:50px;"></div>
-<entradas-form *ngIf="datosCargados" [movimiento]="movimiento" [insumosForm]="insumosNuevo" [cargando]="cargando" (onEnviar)="enviar($event)"></entradas-form>
+<!--
+    <entradas-form *ngIf="datosCargados" [movimiento]="movimiento" [insumosForm]="insumosNuevo" [cargando]="cargando" (onEnviar)="enviar($event)"></entradas-form>
+-->
+
+
+
+<div class="contenedor columns " style="height:100%; padding:1em;">
+    <div class="column is-one-third">
+        <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
+            <section class="hero is-primary">
+                <h1 class="title" style="margin:0.5em; "><span class="icon is-medium"><i class="fa fa-file-text"></i></span> Editar </h1>
+            </section>
+            <div style="padding: 1em;">
+                <div [formGroup]="movimiento">
+
+                    <div class="control is-grouped">
+                        <p class="control">
+                            <label>Tipo de movimiento</label>
+                        </p>
+                        <p class="control">
+                            <a class="button" (click)="asignarTipo(2);" [ngClass]="{'is-success': movimiento.get('tipo_movimiento_id').value==2}" style="height: 60px"><label> <strong> Salida estándar </strong></label></a>
+                        </p>
+                        <span style="width: auto;"> &nbsp; &nbsp; </span>
+                        <p class="control">
+                            <a class="button" (click)="asignarTipo(5);" [ngClass]="{'is-success': movimiento.get('tipo_movimiento_id').value==5}" style="height: 60px"><label> <strong> Salida receta </strong></label></a>
+                        </p>
+                    </div>
+
+                    <div class="control is-grouped">
+                        <p class="control">
+                            <label>Fecha de movimiento</label>
+                        </p>
+                        <p class="control is-expanded  has-icon has-icon-right">
+                            <input class="input" placeholder="Fecha de movimiento" [value]="fecha_actual | date:'yyyy-MM-dd'" formControlName="fecha_movimiento" autofocus type="date" [ngClass]="{'is-danger': movimiento.get('fecha_movimiento').hasError('required') && movimiento.get('fecha_movimiento').touched}">
+                            <span class="icon is-small" *ngIf="movimiento.get('fecha_movimiento').hasError('required') && movimiento.get('fecha_movimiento').touched">
+                <i class="fa fa-warning"></i>
+              </span>
+                            <span class="help is-danger" *ngIf="movimiento.get('fecha_movimiento').hasError('required') && movimiento.get('fecha_movimiento').touched">Este campo es requerido.</span>
+                        </p>
+                    </div>
+
+
+                    <div class="control">
+                        <p class="control is-expanded  has-icon has-icon-right">
+                            <textarea class="textarea" autofocus type="text" [ngClass]="{'is-danger': movimiento.get('observaciones').hasError('required') && movimiento.get('observaciones').touched}" placeholder="Observaciones" formControlName="observaciones"></textarea>
+                            <span class="icon is-small" *ngIf="movimiento.get('observaciones').hasError('required') && movimiento.get('observaciones').touched">
+                <i class="fa fa-warning"></i>
+              </span>
+                            <span class="help is-danger" *ngIf="movimiento.get('observaciones').hasError('required') && movimiento.get('observaciones').touched">Este campo es requerido.</span>
+                        </p>
+                    </div>
+                    <div class="control" *ngIf="mostrarCancelado">
+                        <!-- *ngIf -->
+                        <p class="control">
+                            <label class="checkbox">
+                <input type="checkbox" formControlName="cancelado">
+                Cancelado
+              </label>
+                        </p>
+                        <p class="control is-expanded  has-icon has-icon-right">
+                            <textarea class="textarea" autofocus type="text" [ngClass]="{'is-danger': movimiento.get('observaciones_cancelacion').hasError('required') && movimiento.get('observaciones_cancelacion').touched}" placeholder="Observaciones de cancelacion" formControlName="observaciones_cancelacion"></textarea>
+                            <span class="icon is-small" *ngIf="movimiento.get('observaciones_cancelacion').hasError('required') && movimiento.get('observaciones_cancelacion').touched">
+                <i class="fa fa-warning"></i>
+              </span>
+                            <span class="help is-danger" *ngIf="movimiento.get('observaciones_cancelacion').hasError('required') && movimiento.get('observaciones_cancelacion').touched">Este campo es requerido.</span>
+                        </p>
+                    </div>
+
+                </div>
+                <div class="control is-grouped">
+                </div>
+
+                <div class="control is-grouped">
+                    <p class="control">
+                        <a class="button is-primary " routerLink="/almacen/movimientos/entradas/" type="submit" [ngClass]="{'is-loading': cargando}">Finalizar</a>
+                    </p>
+                    <p class="control">
+                        <a class="button is-white" routerLink="/almacen/movimientos/entradas/">Ir a la lista</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="column">
+        <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
+            <section class="hero is-primary">
+                <h1 class="title" style="margin:0.5em; "><span class="icon is-medium"><i class="fa fa-file-text"></i></span> Insumos</h1>
+            </section>
+
+            <div style="padding: 1em;">
+                <!-- TABLA de la lista de elementos
+                <table class="table" *ngIf="!cargando">
+                    <thead>
+                        <tr>
+                            <th><abbr title="Folio de la salida">Clave</abbr></th>
+                            <th>Lote</th>
+                            <th>Cantidad</th>
+                            <th>Existencia</th>
+                            <th><abbr title="Codigo de barras">Cod. barras</abbr></th>
+                            <th><abbr title="Fecha de caducidad">Caducidad</abbr></th>
+                            <th><abbr title="Fecha de movimiento">Id stock</abbr></th>
+                            <th>Usuario</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="!busquedaActivada">
+                        <tr *ngFor="let item of salidaMovimiento.insumos; let i=index">
+                            <th style="vertical-align: middle;"><a>{{ item.stock.clave_insumo_medico }}</a></th>
+                            <td style="vertical-align: middle;">
+                                <a>{{ item.stock.lote }}</a>
+                            </td>
+                            <td style="vertical-align: middle;"><a>{{ item.cantidad }}</a></td>
+                            <td style="vertical-align: middle;"><a>{{ item.stock.existencia }}</a></td>
+                            <td style="vertical-align: middle;"><a>{{ item.stock.codigo_barras }}</a></td>
+                            <td style="vertical-align: middle;"><a>{{ item.stock.fecha_caducidad  | date }}</a></td>
+                            <td style="vertical-align: middle;"><a>{{ item.stock_id}}</a></td>
+                            <td style="vertical-align: middle;"><a>{{ item.usuario_id}}</a></td>
+                            <td style="vertical-align: middle;" class="has-text-centered">
+                        <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-print"></i></span><a class="is is-danger" (click)="imprimir(item, i)"><span class="icon"><i class="fa fa-print"></i></span></a>
+                        <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando && item.cancelado == 0" class="is-danger" (click)="toggleModalCancelado(item, i)"><span class="icon"><i class="fa fa-times"></i></span></a>
+                        <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a> 
+                    </td>
+                        </tr>
+                        <tr *ngIf="salidaMovimiento.insumos.length == 0">
+                            <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>
+                        </tr>
+                    </tbody>
+                </table> -->
+
+                <!--
+
+                 -->
+
+                <table class="table is-unselectable is-striped" *ngIf="!cargando" style="font-size: 0.8em;">
+                    <thead>
+                        <tr>
+                            <th style="width:41px;vertical-align: middle;" class="has-text-centered"><abbr title="Numero progresivo">NP</abbr></th>
+                            <th class="is-hidden-mobile" style="width:118px;">
+                                <p class="control is-expanded">
+                                    <input type="hidden" #searchBoxClavePrevia>
+                                    <input class="input is-small" type="text" placeholder="Clave" #searchBoxClave id="search-box-clave-{{indexPedido}}" (keyup)="buscar($event,searchBoxClave, searchBoxClavePrevia,[{ input: searchBoxDescripcion, campos: ['generico','informacion.concentracion','informacion.presentacion']}, { input: searchBoxClave, campos: ['clave']}])">
+
+                                </p>
+                            </th>
+                            <th class="is-hidden-mobile">
+                                <p class="control is-expanded">
+                                    <input type="hidden" #searchBoxDescripcionPrevia>
+                                    <input class="input is-small" type="text" placeholder="Genérico" #searchBoxDescripcion id="search-box-descripcion-{{indexPedido}}" (keyup)="buscar($event,searchBoxDescripcion,searchBoxDescripcionPrevia,[{ input: searchBoxDescripcion, campos: ['generico_nombre','informacion.concentracion','informacion.presentacion']}, { input: searchBoxClave, campos: ['clave']}])">
+                                </p>
+                            </th>
+                            <th class="is-hidden-tablet">
+                                <p class="control is-expanded">
+                                    <input type="hidden" #searchBoxDescripcionClavePrevia>
+                                    <input class="input is-small" type="text" placeholder="Clave o Genérico" #searchBoxDescripcionClave id="search-box-descripcion-clave-{{indexPedido}}" (keyup)="buscar($event,searchBoxDescripcionClave,searchBoxDescripcionClavePrevia,[{ input: searchBoxDescripcionClave, campos: ['clave','generico_nombre','informacion.concentracion','informacion.presentacion']}])">
+                                </p>
+                            </th>
+                            <th style="vertical-align: middle;" class="is-hidden-mobile is-hidden-tablet-only">Descripcion</th>
+                            <th style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title=""></abbr></th>
+                            <th style="width:21px !important;"></th>
+                        </tr>
+                    </thead>
+
+
+                    <tbody>
+
+                        <tr *ngFor="let item of entradaMovimiento.insumos;  let i = index;">
+                            <!-- LOTE -->
+                            <td class="has-text-centered">{{ i+1 }}</td>
+                            <!-- CLAVE -->
+                            <td class="has-text-centered is-hidden-mobile"><a (click)="mostrarFichaInformativa($event, item.clave)" style="cursor:help;">{{ item.clave }}</a></td>
+
+                            <!-- DESCRIPCION  -->
+                            <td>
+                                <small class="is-hidden-tablet">{{ item.detalles.clave }}<br></small>
+                                <b>{{ item.detalles.generico_nombre }} {{ item.detalles.clave }} </b> <br class="is-hidden-mobile"><small *ngIf="item.tipo == 'ME'"><b>{{ item.detalles.informacion_ampliada.concentracion }}</b></small><br>
+
+                                <div class="is-hidden-desktop" *ngIf="item.tipo == 'ME'" style="line-height:1em;">
+                                    <small><i>{{ item.detalles.presentacion_nombre }}</i></small><br>
+                                    <small><i>{{ item.detalles.informacion_ampliada.contenido }} </i></small>
+                                </div>
+                                <div class="is-hidden-desktop" *ngIf="item.tipo != 'ME'" style="line-height:1em;">
+                                    <small>{{ item.detalles.descripcion }}</small>
+                                </div>
+                                <div class="is-hidden-desktop" style="padding: 0.5em 0 0.5em 0; ">
+                                    <span *ngIf="item.detalles.es_causes" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
+                                    <span *ngIf="!item.detalles.es_causes" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
+                                    <span *ngIf="item.detalles.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
+
+                                    <span *ngIf="item.detalles.tipo == 'ME'">
+                        <span *ngIf="item.detalles.informacion_ampliada.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
+                                    <span *ngIf="item.detalles.informacion_ampliada.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>
+                                    </span>
+
+                                </div>
+                            </td>
+
+                            <!-- INFORMACION -->
+                            <td class="is-hidden-mobile is-hidden-tablet-only">
+                                <div *ngIf="item.detalles.tipo == 'ME'" style="line-height:1em;">
+                                    <small><i> {{ item.detalles.informacion_ampliada.presentacion_nombre }} </i></small><br>
+                                    <small><i>{{ item.detalles.informacion_ampliada.contenido }} </i></small>
+                                </div>
+                                <div *ngIf="item.detalles.tipo != 'ME'" style="line-height:1em;">
+                                    <small>{{ item.detalles.descripcion }}</small>
+                                </div>
+                                <div style="padding: 0.5em 0 0.5em 0; ">
+                                    <span *ngIf="item.detalles.es_causes" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
+                                    <span *ngIf="!item.detalles.es_causes" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
+                                    <span *ngIf="item.detalles.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
+                                    <span *ngIf="item.detalles.tipo == 'ME'">
+                        <span *ngIf="item.detalles.informacion_ampliada.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
+                                    <span *ngIf="item.detalles.informacion_ampliada.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>
+                                    </span>
+
+                                </div>
+                            </td>
+                            <!-- *************************************************************************** -->
+
+                            <!-- CANTIDAD -->
+                            <td style="width:auto !important;">
+                                <span class="tag is-success" style="line-height:0.9em;"> Cantidad total: &nbsp;<strong>{{item.cantidad}} </strong> </span>
+                                <table class="table" style="line-height:0.8em; text-align-last: left;">
+                                    <tbody>
+                                        <tr *ngFor="let lote of item.lotes">
+                                            <td>
+                                                <span style="font-size: 0.9em" class="tag is-light is-small is-fullwidth" *ngIf="item.cantidad>0"><strong>Lote: &nbsp; </strong> {{ lote.lote }}
+                                    </span>
+                                            </td>
+                                            <td>
+                                                <span style="font-size: 0.9em" class="tag is-light is-small" *ngIf="item.cantidad>0"><strong>Cantidad: &nbsp;</strong> <span></span> {{lote.cantidad}}</span>
+                                            </td>
+                                            <td>
+                                                <span style="font-size: 0.9em" class="tag is-light is-small" *ngIf="item.cantidad>0"><strong>Caducidad: &nbsp;<span></span> </strong> {{ lote.fecha_caducidad | date}}</span>
+                                            </td>
+                                            <td>
+                                                <span style="font-size: 0.9em" class="tag is-light is-small" *ngIf="item.cantidad>0"><strong class="is-small">Codigo de barras: &nbsp; <span></span></strong> {{ lote.codigo_barras}}</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+
+                            <!-- *************************************************************************** -->
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>

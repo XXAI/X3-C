@@ -101,9 +101,11 @@
                     <span class="tag is-success" style="line-height:0.9em;"> Cantidad total: &nbsp;<strong>{{item.cantidad}} </strong> </span>
                     <table class="table" style="line-height:0.8em; text-align-last: left;">
                         <tbody>
-                            <tr *ngFor="let lote of item.lotes">
+                            <tr *ngFor="let lote of item.lotes;   let iLote = index;">
                                 <td>
-                                    <span style="font-size: 0.9em" class="tag is-light is-small is-fullwidth" *ngIf="lote.cantidad>0"><strong>Lote: &nbsp; </strong> {{lote.lote}}
+                                    <span style="font-size: 0.9em" [ngClass]="{'is-success': lote.nuevo}" class="tag is-light is-small is-fullwidth" *ngIf="lote.cantidad>0">
+                                        
+                                    <strong>Lote: &nbsp; </strong> {{lote.lote}}
                                     </span>
                                 </td>
                                 <td>
@@ -115,13 +117,16 @@
                                 <td>
                                     <span style="font-size: 0.9em" class="tag is-light is-small" *ngIf="lote.cantidad>0"><strong class="is-small">Codigo de barras: &nbsp; <span></span></strong> {{lote.codigo_barras}}</span>
                                 </td>
+                                <td>
+                                    <a class="delete" (click)="eliminarLote(i, iLote)"></a>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                 </td>
 
-                <!-- *************************************************************************** -->
-                <td style="width:21px !important;"><a (click)="eliminarInsumo(item,i)"><span class="icon"><i class="fa fa-trash"></i></span></a></td>
+                <!-- *************************************************************************** 
+                <td style="width:21px !important;"><a (click)="eliminarInsumo(item,i)"><span class="icon"><i class="fa fa-trash"></i></span></a></td>-->
             </tr>
         </tbody>
 
@@ -194,7 +199,7 @@
                         <input class="input is-small has-text-centered" type="text" placeholder="Codigo de barras" [(ngModel)]="item.codigo_barras">
                     </p>
                 </td>
-                <td style="width:21px !important;"><a (click)="eliminarInsumo(item,i,true)"><span class="icon"><i class="fa fa-trash"></i></span></a></td>
+                <!-- <td style="width:21px !important;"><a (click)="eliminarInsumo(item,i,true)"><span class="icon"><i class="fa fa-trash"></i></span></a></td>-->
             </tr>
 
 

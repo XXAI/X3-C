@@ -36,6 +36,13 @@
             <span class="help is-danger" *ngIf="movimiento.get('observaciones').hasError('required') && movimiento.get('observaciones').touched">Este campo es requerido.</span>
         </p>
     </div>
+
+    <div class="control">
+        <p class="control has-icon has-icon-right">
+            <input type="text" class="input" placeholder="Persona que recibe" [ngClass]="{'is-danger': (movimiento.get('persona_recibe').hasError('required') || movimientoRepetido || movimientoInvalido) && movimiento.get('persona_recibe').touched}" formControlName="id">
+            <span class="help is-danger" *ngIf="movimiento.get('persona_recibe').hasError('required') && movimiento.get('persona_recibe').touched">Este campo es requerido.</span>
+        </p>
+    </div>
     <div class="control" *ngIf="mostrarCancelado">
         <!-- *ngIf -->
         <p class="control">

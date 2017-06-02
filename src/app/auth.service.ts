@@ -83,10 +83,7 @@ export class AuthService {
           json.usuario.clues_activa = null;
           json.usuario.almacen_activo = null;
         }
-
         
-
-
         localStorage.setItem('token', json.token)
         localStorage.setItem('usuario', JSON.stringify(json.usuario));
         localStorage.setItem('server_info', JSON.stringify(json.server_info));

@@ -161,13 +161,14 @@ export class RecepcionComponent implements OnInit {
             this.cargando = false;
 
             this.mensajeError = new Mensaje(true);
-            this.mensajeError = new Mensaje(true);
             this.mensajeError.mostrar;
 
             try {
               let e = error.json();
               if (error.status == 401 ){
                 this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+              }else{
+                this.mensajeError.texto = e.error;
               }
               
             } catch(e){

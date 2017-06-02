@@ -1,0 +1,31 @@
+td.causes {
+    background-color: #cdff8c;
+}
+
+td.no-causes {
+    background-color: #ffa838;
+}
+
+td.material-curacion {
+    background-color: #ffff7c;
+}
+
+.borrador{
+    color:#aaaaaa;
+}
+
+.sin-surtir{
+    color:#dddddd;
+}
+
+.surtiendo{
+    color:#e8dd14;
+}
+
+.surtido{
+    color:#4aba53;
+}
+
+.expirado{
+    color:red;
+}

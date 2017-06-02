@@ -50,7 +50,7 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
                         [
                             { text: 'PEDIDO DE ABASTOS A UNIDADES MEDICAS EN RELACION AL CONTRATO ABIERTO DE PRESTACION DE SERVICIO.', style: 'tableHeaderVerde', colSpan: 4, alignment: 'center' },{},{},{},
                             { text: 'FOLIO', style: 'tableHeaderVerde',  alignment: 'center'},
-                            { text: pedido.datos.folio, style: 'tableHeader', alignment: 'center', colSpan: 2},{}
+                            { text: pedido.datos.folio+'-'+pedido.insumos.clave_folio, style: 'tableHeader', alignment: 'center', colSpan: 2},{}
                         ],
                         [
                             { text: 'EMPRESA ADJUDICADA', style: 'tableHeaderVerde', alignment: 'center'},
@@ -247,7 +247,7 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
         );
         
         pdfMake.createPdf( dd ).getBase64( function( base64 ) {
-            postMessage( { fileName: pedido.datos.folio, base64: base64 } );
+            postMessage( { fileName: pedido.datos.folio+'-'+pedido.insumos.clave_folio, base64: base64 } );
         });
     }
 

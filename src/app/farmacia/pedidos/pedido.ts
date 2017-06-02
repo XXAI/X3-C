@@ -38,14 +38,13 @@ export class Pedido {
         this.datos = this.fb.group({
           descripcion: ['', [Validators.required]],
           fecha: ['',[Validators.required]],
-          //almacen_proveedor: ['',[Validators.required]],
-          almacen_proveedor: '',
+          almacen_solicitante: ['',[Validators.required]],
           observaciones: ''
         });
         //Harima: Al crear el objeto, se crea como borrador
         this.status = 'BR';
-        this.paginacion.resultadosPorPagina = 10;
     }
+    this.paginacion.resultadosPorPagina = 10;
   }
 
   public tieneError = function(atributo:string, error:string){
@@ -54,7 +53,7 @@ export class Pedido {
 
   public inicializarDatos = function(datos:any={}){
     let today = datos.fecha;
-
+    let almacen_solicitante = '';
     if(!datos.fecha){
       //Harima:obtenemos la fecha actual
       let now = new Date();
@@ -63,7 +62,11 @@ export class Pedido {
       today = now.getFullYear() + "-" + (month) + "-" + (day);
     }
 
-    this.datos.setValue({almacen_proveedor:'',descripcion:'',observaciones:'',fecha:today});
+    if(datos.almacen_solicitante){
+      almacen_solicitante = datos.almacen_solicitante;
+    }
+
+    this.datos.setValue({almacen_solicitante: almacen_solicitante,descripcion:'',observaciones:'',fecha:today});
   }
 
   //Harima: es necesario para evitar un error al enviar los datos al servidor

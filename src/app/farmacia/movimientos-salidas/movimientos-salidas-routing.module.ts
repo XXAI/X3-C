@@ -8,15 +8,15 @@ import { EditarComponent }  from  './editar/editar.component';
 import {  AuthGuard } from '../../auth-guard.service';
 
 const routes: Routes = [
-  {path: 'almacen/movimientos', redirectTo: 'almacen/movimientos/salidas', pathMatch: 'full'},
+  {path: 'almacen/movimientos', redirectTo: 'almacen/movimientos/estandar', pathMatch: 'full'},
+  {path: 'almacen/movimientos/salidas', redirectTo: 'almacen/movimientos/estandar', pathMatch: 'full'},
   {
     path:'almacen/movimientos',
     children:[
-      {path: 'salidas', component: ListaComponent},
        { path: 'estandar', component: ListaComponent},
        { path: 'receta', component: ListaComponent},
-       { path: 'salidas/nuevo', component: NuevoComponent},
-      { path: 'salidas/editar/:id', component: EditarComponent}
+       { path: 'salidas/nuevo/:tipo_salida', component: NuevoComponent},
+       { path: 'salidas/editar/:id', component: EditarComponent}
     ],
     canActivate: [AuthGuard]
   }

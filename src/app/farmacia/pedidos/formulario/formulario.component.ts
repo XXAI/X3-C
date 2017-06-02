@@ -37,6 +37,7 @@ import { Almacen } from '../../../catalogos/almacenes/almacen';
 export class FormularioComponent implements OnInit {
 
   cargando: boolean = false;
+  guardando: boolean = false;
   cargandoAlmacenes: boolean = false;
   cargandoInsumos: boolean = false;
   cargandoPresupuestos: boolean = false;
@@ -61,9 +62,11 @@ export class FormularioComponent implements OnInit {
   // # FIN SECCION
 
   // # SECCION: Pedido
-  private almacenes: Almacen[];
+  almacenes: Almacen[];
   private presupuesto:any = {};
   private mes:number = 0;
+  private subrogados: {} = {};
+  es_almacen_subrogado: boolean = false;
 
   // Harima: Se genera un unico pedido
   pedido: Pedido;
@@ -89,7 +92,7 @@ export class FormularioComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.title.setTitle('Nuevo pedido');
+    this.title.setTitle('Formulario pedido');
 
     // Inicializamos el objeto para los reportes con web Webworkers
     this.pdfworker = new Worker("web-workers/farmacia/pedidos/imprimir.js")
@@ -131,6 +134,7 @@ export class FormularioComponent implements OnInit {
         //cargar datos del pedido
         this.esEditar = true;
         this.formularioTitulo = 'Editar';
+        this.title.setTitle('Editar pedido');
 
         this.pedidosService.ver(params['id']).subscribe(
           pedido => {
@@ -143,14 +147,16 @@ export class FormularioComponent implements OnInit {
             let fecha = pedido.fecha.split('-');
             let mes = parseInt(fecha[1]);
             this.cargarPresupuesto(mes);
+            this.cambioAlmacen();
 
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];
-              console.log(dato);
+              //console.log(dato);
               let insumo = dato.insumos_con_descripcion;
               insumo.cantidad = +dato.cantidad_solicitada;
               insumo.monto = +dato.monto_solicitado;
               insumo.precio = +dato.precio_unitario;
+              insumo.tipo_insumo_id = dato.tipo_insumo_id;
               this.pedido.lista.push(insumo);
               this.listaClaveAgregadas.push(insumo.clave);
             }
@@ -181,9 +187,8 @@ export class FormularioComponent implements OnInit {
             }
           }
         );
-        console.log('editar pedido');
       }else{
-        console.log('nuevo pedido');
+        this.title.setTitle('Nuevo pedido');
         this.cargarPresupuesto();
       }
       //Harima:cargamos catalogos
@@ -359,7 +364,7 @@ export class FormularioComponent implements OnInit {
   }
 
   guardar(finalizar:boolean = false){
-    this.cargando = true;
+    this.guardando = true;
     var guardar_pedido;
     /*var guardar_pedidos = [];
     for(var i in this.pedidos){
@@ -367,6 +372,7 @@ export class FormularioComponent implements OnInit {
     }*/
 
     if(this.pedido.datos.invalid){
+      this.pedido.datos.get('almacen_solicitante').markAsTouched();
       this.pedido.datos.get('descripcion').markAsTouched();
       this.pedido.datos.get('fecha').markAsTouched();
       this.cargando = false;
@@ -378,8 +384,8 @@ export class FormularioComponent implements OnInit {
     if(finalizar){
       guardar_pedido.datos.status = 'CONCLUIR';
 
-      if((this.presupuesto.causes_disponible - this.pedido.totalMontoCauses) < 0 || (this.presupuesto.no_causes_disponible - this.pedido.totalMontoNoCauses) < 0 || (this.presupuesto.material_curacion_disponible - this.pedido.totalMontoMaterialCuracion) < 0){
-        this.cargando = false;
+      if((this.presupuesto.causes_disponible - +this.pedido.totalMontoCauses.toFixed(2)) < 0 || (this.presupuesto.no_causes_disponible - +this.pedido.totalMontoNoCauses.toFixed(2)) < 0 || (this.presupuesto.material_curacion_disponible - +this.pedido.totalMontoMaterialCuracion.toFixed(2)) < 0){
+        this.guardando = false;
         this.mensajeError = new Mensaje(true);
         this.mensajeError.texto = 'Presupuesto insuficiente';
         this.mensajeError.mostrar = true;
@@ -396,7 +402,7 @@ export class FormularioComponent implements OnInit {
       //this.pedidosService.editar(this.pedidos[0].id,guardar_pedidos).subscribe(
       this.pedidosService.editar(this.pedido.id,guardar_pedido).subscribe(
         pedido => {
-          this.cargando = false;
+          this.guardando = false;
           //console.log('Pedido editado');
           if(pedido.status != 'BR'){
             this.router.navigate(['/almacen/pedidos/ver/'+pedido.id]);
@@ -404,7 +410,7 @@ export class FormularioComponent implements OnInit {
           //hacer cosas para dejar editar
         },
         error => {
-          this.cargando = false;
+          this.guardando = false;
           //console.log(error);
           this.mensajeError = new Mensaje(true);
           this.mensajeError.texto = 'No especificado';
@@ -456,14 +462,14 @@ export class FormularioComponent implements OnInit {
     }else{
       this.pedidosService.crear(guardar_pedido).subscribe(
         pedido => {
-          this.cargando = false;
+          this.guardando = false;
           //console.log('Pedido creado');
           //console.log(pedido);
           this.router.navigate(['/almacen/pedidos/editar/'+pedido.id]);
           //hacer cosas para dejar editar
         },
         error => {
-          this.cargando = false;
+          this.guardando = false;
           console.log(error);
           this.mensajeError = new Mensaje(true);
           this.mensajeError.texto = 'No especificado';
@@ -509,6 +515,15 @@ export class FormularioComponent implements OnInit {
     }
   }
 
+  cambioAlmacen(){
+    let almacen_seleccionado = this.pedido.datos.get('almacen_solicitante').value;
+    if(this.subrogados[almacen_seleccionado]){
+      this.es_almacen_subrogado = true;
+    }else{
+      this.es_almacen_subrogado = false;
+    }
+  }
+
   cargarAlmacenes() {
     this.cargandoAlmacenes = true;
     this.almacenesService.catalogo().subscribe(
@@ -516,14 +531,23 @@ export class FormularioComponent implements OnInit {
           this.cargandoAlmacenes = false;
           this.almacenes = almacenes;
 
+          for(let i in almacenes){
+            if(almacenes[i].subrogado == 1 && almacenes[i].tipo_almacen == 'FARSBR'){
+              this.subrogados[almacenes[i].id] = true;
+            }
+          }
+
           //Harima:Si no es editar, inicializamos el formulario
           if(!this.esEditar){
             let datos_iniciales:any = {}
-          
-            if(almacenes.length == 1){
-              datos_iniciales.almacen_proveedor = almacenes[0].id;
+            
+            //let datos_usuario = JSON.parse(localStorage.getItem('usuario'));
+            //datos_iniciales.almacen_solicitante = datos_usuario.almacen_activo.id;
+            
+            /*if(almacenes.length == 1){
+              datos_iniciales.almacen_solicitante = almacenes[0].id;
               //this.pedido.datos.setValue({almacen_proveedor:almacenes[0].id,descripcion:'',observaciones:''});
-            }
+            }*/
 
             this.pedido.inicializarDatos(datos_iniciales);
           }
@@ -648,7 +672,9 @@ export class FormularioComponent implements OnInit {
   // # SECCION - Webworkers
 
   imprimirExcel(){
-    window.open(environment.API_URL+"/generar-excel-pedido/"+this.pedido.id, "_blank");
+    var query = "token="+localStorage.getItem('token');
+    window.open(`${environment.API_URL}/generar-excel-pedido/${this.pedido.id}?${query}`); 
+    //window.open(environment.API_URL+"/generar-excel-pedido/"+this.pedido.id, "_blank");
   }
 
   imprimir() {

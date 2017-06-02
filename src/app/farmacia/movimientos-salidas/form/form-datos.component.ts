@@ -9,7 +9,8 @@ import { Insumo     } from '../movimiento';
 @Component({
   moduleId: module.id,
   selector: 'salidas-form-datos',
-  templateUrl: './form-datos.component.html'
+  templateUrl: './form-datos.component.html',
+  styles: ['.cambiarColor{background:green}']
 })
 export class FormDatosComponent implements OnInit {
 

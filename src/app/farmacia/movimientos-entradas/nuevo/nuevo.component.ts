@@ -58,10 +58,13 @@ export class NuevoComponent implements OnInit {
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
     
       this.movimiento = this.fb.group({
+        id:[''],
         almacen_id: ['', [Validators.required]],
+        status: ['', [Validators.required]],
         tipo_movimiento_id: ['', [Validators.required]],
         fecha_movimiento: ['', [Validators.required]],
         observaciones: ['', [Validators.required]],
+        persona_recibe: ['', [Validators.required]],
         cancelado: ['', [Validators.required]],
         observaciones_cancelacion: ['', [Validators.required]],
         insumos: this.fb.array([
@@ -71,6 +74,7 @@ export class NuevoComponent implements OnInit {
     
     this.movimiento.patchValue({almacen_id: this.usuario.almacen_activo.id});
     this.movimiento.patchValue({cancelado: false});
+    this.movimiento.patchValue({status: "FI"});
     this.movimiento.patchValue({tipo_movimiento_id: 1});
   }
 
