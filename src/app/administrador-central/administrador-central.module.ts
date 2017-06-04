@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
+import { ChartModule } from 'angular2-highcharts';
+
 
 import { HubModule } from '../hub/hub.module';
 import { PerfilModule } from '../perfil/perfil.module';
@@ -19,6 +21,8 @@ import { MenuLateralComponent } from './menu-lateral/menu-lateral.component';
 import { AdministradorCentralService } from './administrador-central.service';
 import { EntregasMesComponent } from './entregas-mes/entregas-mes.component';
 
+
+
 @NgModule({
   imports: [
     CommonModule,
@@ -28,7 +32,8 @@ import { EntregasMesComponent } from './entregas-mes/entregas-mes.component';
     PerfilModule,
     BloquearPantallaModule,
     PaginacionModule,
-    AdministradorCentralRoutingModule
+    AdministradorCentralRoutingModule,
+    ChartModule
   ],
   declarations: [PedidosComponent, AbastoComponent, TransferenciasRecursosComponent, MenuComponent, MenuLateralComponent, EntregasMesComponent],
   providers: [ AdministradorCentralService ]

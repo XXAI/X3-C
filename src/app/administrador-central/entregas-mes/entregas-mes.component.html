@@ -10,7 +10,7 @@
             <div class="level-left">
                 <div class="level-item">
                     <h1 class="title">
-                        <span class="icon is-medium"><i class="fa fa-bar-chart"></i></span> Entregas del mes
+                        <span class="icon is-medium"><i class="fa fa-bar-chart"></i></span> Entregas por mes
                     </h1>
                 </div>
             </div>
@@ -47,6 +47,35 @@
                    
                    
                 </div>
+            </div>
+        </div>
+
+        <div class="columns is-multiline"  *ngIf="!cargandoEstadisticasGlobales">
+            <div class="column is-12" *ngFor="let item of listaEntregasEstadisticaDiaria; let  i = index">
+                <div style="display:block; background:white; border-radius:0.2em; padding: 0.5em 0;" *ngIf="!item.cargando && item.options">
+                    <nav class="level" style="margin:1em;">
+                        <div class="level-left">
+                            <p><b>ENTREGAS {{ item.proveedor }}</b> <small style="color:gray;">Estadística diaria</small></p>
+                        </div>
+                        <div class="level-right">
+                            <div>
+                                <span class="tag " style="cursor:pointer" [ngClass]="{ 'is-primary': item.tipoDatos == 'claves' }" (click)="item.tipoDatos = 'claves'; renderGrafica(i)">Claves</span> 
+                                <span class="tag " style="cursor:pointer" [ngClass]="{ 'is-primary': item.tipoDatos == 'insumos' }" (click)="item.tipoDatos = 'insumos'; renderGrafica(i)">Insumos</span> 
+                                <span class="tag " style="cursor:pointer" [ngClass]="{ 'is-primary': item.tipoDatos == 'monto' }" (click)="item.tipoDatos = 'monto'; renderGrafica(i)">$ Monto</span>
+                            </div>
+                            
+                        </div>
+                    </nav>
+                    <hr style="margin:0">
+                    <chart [options]="item.options" style="display:block;"></chart>
+                </div>
+
+                <div class="is-fullwidth has-text-centered"  *ngIf="item.cargando ">
+                    <div class="notification is-white">
+                        <span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando estadísticas diarias de: <b>{{item.proveedor}}</b>...</span>
+                    </div>
+                </div>
+                
             </div>
         </div>
         

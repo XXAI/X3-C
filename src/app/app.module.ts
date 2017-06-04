@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
+import { ChartModule } from 'angular2-highcharts';
+
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -60,6 +62,7 @@ import { CrudModule } from './crud/crud.module';
     BrowserModule,
     FormsModule,
     HttpModule,
+    ChartModule.forRoot(require('highcharts'),require('highcharts/modules/exporting')),
     AppRoutingModule,
     HubModule,
     PerfilModule,

@@ -68,5 +68,9 @@ export class AdministradorCentralService {
     return this.jwtRequest.get("administrador-central/entregas-pedidos-stats-mes-anio",null,payload).map( (response: Response) => response.json().data);
   }
 
+  entregasPedidosStatsDiarias(payload:any = {}): Observable<any>{    
+    return this.jwtRequest.get("administrador-central/entregas-pedidos-stats-diarias",null,payload).map( (response: Response) => response.json().data);
+  }
+
   
 }
