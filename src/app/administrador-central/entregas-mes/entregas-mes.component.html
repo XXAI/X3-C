@@ -1,0 +1,67 @@
+<administrador-central-menu></administrador-central-menu>
+<div style="height:50px;"></div>
+<div class="contenedor columns " style="height:100%; ">
+    <div class="column is-one-quarter is-hidden-mobile">
+        <administrador-central-menu-lateral></administrador-central-menu-lateral>
+    </div>
+    <div class="column">
+        <br>
+        <nav class="level">
+            <div class="level-left">
+                <div class="level-item">
+                    <h1 class="title">
+                        <span class="icon is-medium"><i class="fa fa-bar-chart"></i></span> Entregas del mes
+                    </h1>
+                </div>
+            </div>
+            <div class="level-right">
+                <div class="level-item">
+                     <h1 class="subtitle">Pedidos de </h1>
+                </div>
+                <div class="level-item">
+                    <p class="control "  [ngClass]="{'is-loading': cargandoFechas, 'is-disabled': cargandoFechas}">
+                        <span class="select is-fullwidth">
+                            <select  (change)="generarStats()"  [(ngModel)]="fecha">
+                                <option value="-1" *ngIf="cargandoFechas">Cargando...</option>
+                                <option value="-1" *ngIf="listaMesesAnios>0">No hay meses</option>
+                                <option *ngFor="let item of listaMesesAnios" [value]="item.fecha">{{ item.mes_nombre }}/{{ item.anio }}</option>
+                            </select>
+                        </span>
+                    </p> 
+                </div>
+            </div>
+
+        </nav>
+        <div class="is-fullwidth has-text-centered" *ngIf="cargandoEstadisticasGlobales">
+            <div class="notification is-white">
+                <span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando estadisticas globales...</span>
+            </div>
+        </div>
+        <div class="columns is-multiline "  *ngIf="!cargandoEstadisticasGlobales">
+            <div class="column is-4" *ngFor="let item of estadisticasGlobales">
+                <div class="notification is-white">
+                    <h1 class="title" style="font-size:1.2em;  margin-bottom:0.2em;color:#00d1b2">${{ item.total_monto_solicitado | number:'1.2-2' }}</h1>
+                    <h1 class="title" style="font-size:0.8em; margin-bottom:0.2em;">{{ item.proveedor }}</h1>
+                    <hr style="margin: 0.2em 0">
+                    <nav class="level"><div class="level-left"><small>Entregado</small></div><div class="level-right"><small>{{ item.porcentaje_entregado | number:'1.2-2' }}%</small></div></nav>
+                   
+                   
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeError.mostrar">
+    <button class="delete" (click)="mensajeError.mostrar = false"></button>        
+    <b>Error:</b> {{ mensajeError.texto }}<br><br>
+    <p style="text-align:center" ><a  class="button is-danger is-inverted" (click)="ultimaPeticion(); mensajeError.mostrar = false"> <span class="icon"><i class="fa fa-refresh"></i></span> <span>Volver a intentar</span></a></p>        
+</div>
+
+<div class="notification is-success" style="position:fixed; left:1em;  bottom:1em; width: auto" *ngIf="mensajeExito.mostrar">       
+    <button class="delete" (click)="mensajeExito.mostrar = false"></button>
+    <p><span class="icon" style="margin-right: 0.5em;"><i class="fa fa-check-circle"></i></span> <span>{{ mensajeExito.texto }}</span></p>
+    <br>
+    <p style="text-align: center;"><small >Este mensaje desaparecerá en {{ mensajeExito.cuentaAtras }} segundos.</small></p>       
+</div>

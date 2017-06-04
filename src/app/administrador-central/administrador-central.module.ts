@@ -17,6 +17,7 @@ import { MenuComponent } from './menu/menu.component';
 import { MenuLateralComponent } from './menu-lateral/menu-lateral.component';
 
 import { AdministradorCentralService } from './administrador-central.service';
+import { EntregasMesComponent } from './entregas-mes/entregas-mes.component';
 
 @NgModule({
   imports: [
@@ -29,7 +30,7 @@ import { AdministradorCentralService } from './administrador-central.service';
     PaginacionModule,
     AdministradorCentralRoutingModule
   ],
-  declarations: [PedidosComponent, AbastoComponent, TransferenciasRecursosComponent, MenuComponent, MenuLateralComponent],
+  declarations: [PedidosComponent, AbastoComponent, TransferenciasRecursosComponent, MenuComponent, MenuLateralComponent, EntregasMesComponent],
   providers: [ AdministradorCentralService ]
 })
 export class AdministradorCentralModule { }
