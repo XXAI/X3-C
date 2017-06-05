@@ -1,26 +1,19 @@
-<menu-farmacia [modulo]="'Salidas'" [icono]="'assets/icono-salidas.svg'" [url]="'/almacen/movimientos/salidas'"></menu-farmacia>
+<menu-farmacia [modulo]="'Salidas estandar'" [icono]="'assets/icono-salidas.svg'" [url]="'/almacen/movimientos/salidas'"></menu-farmacia>
 
 
 <div style="height:50px;"></div>
 <div class="contenedor columns " style="height:100%; ">
-    <div class="column is-one-quarter is-hidden-mobile">
+    <div class="column is-one-quarter ">
         <!-- <menu-lateral (onEnviarTipo)=enviarTipo($event);></menu-lateral>  -->
         <aside class="menu" style="padding: 1em;">
             <a routerLink="/almacen/movimientos/salidas/nuevo/{{tipo_salida}}" routerLinkActive="is-active" class="button is-primary is-inverted is-medium is-fullwidth"><span class="icon"  ><i class="fa fa-plus"></i></span> <span>Nueva Salida</span></a>
             <br>
             <ul class="menu-list">
                 <li>
-                    <a routerLink="/almacen/movimientos/estandar" #estandar routerLinkActive="is-active">
+                    <a routerLink="/almacen/movimientos/estandar" #estandar routerLinkActive="is-active is-hidden-mobile">
                         <span class="icon"><i class="fa fa-file"></i></span> Salida estandar
                         <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
                         <!-- <span class="tag is-pulled-right" [ngClass]="{ 'is-white': estandar.className == 'is-active', 'is-primary': estandar.className != 'is-active' }"></span> -->
-                    </a>
-                </li>
-                <li>
-                    <a routerLink="/almacen/movimientos/receta" #receta routerLinkActive="is-active">
-                        <span class="icon"><i class="fa fa-pencil-square-o"></i></span> Salida por receta
-                        <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
-                        <!-- <span class="tag is-pulled-right" [ngClass]="{ 'is-white': receta.className == 'is-active', 'is-primary': receta.className != 'is-active' }"></span> -->
                     </a>
                 </li>
             </ul>
@@ -38,11 +31,11 @@
                 <div class="hero-body" style="position:relative;">
                     <a class="button  is-dark" *ngIf="busquedaActivada" style="position:absolute; top:1em; right:1em;" (click)="busquedaActivada=false;searchBox.value='';resultadosBusqueda=[]"><span class="icon "><i class="fa fa-close"></i></span></a>
                     <a class="button  is-dark" *ngIf="busquedaActivada" style="position:absolute; top:1em; right:3.5em;" (click)="listarBusqueda(searchBox.value,1)"><span class="icon "><i class="fa fa-refresh"></i></span></a>
-                    <a class="button  is-primary" *ngIf="!busquedaActivada" style="position:absolute; top:1em; right:1em;" (click)="listar(1)"><span class="icon "><i class="fa fa-refresh"></i></span></a>
+                    <a class="button  is-primary" *ngIf="!busquedaActivada" style="position:absolute; top:1em; right:1em;" (click)="listar(1,tipo_salida)"><span class="icon "><i class="fa fa-refresh"></i></span></a>
                     <div class="container is-fluid">
 
                         <h1 class="title" *ngIf="!busquedaActivada">
-                            <span class="icon is-medium"><i class="fa fa-minus-circle"></i></span> Salidas
+                            <span class="icon is-medium"><i class="fa fa-minus-circle"></i></span> Salidas estandar
                         </h1>
                         <h1 class="title" *ngIf="busquedaActivada">
                             <span class="icon is-medium"><i class="fa fa-search"></i></span> Búsqueda
@@ -95,7 +88,8 @@
                 <tbody *ngIf="busquedaActivada">
                     <tr *ngFor="let item of resultadosBusqueda; let i=index">
                         <th style="vertical-align: middle;"><a routerLink="/almacen/movimientos/salidas/editar/{{item.id}}">{{ item.id }}</a></th>
-                        <td style="vertical-align: middle;"><a routerLink="/almacen/movimientos/salidas/editar/{{item.id}}">{{ item.cancelado }}</a></td>
+                        <th style="vertical-align: middle;"><a routerLink="/almacen/movimientos/salidas/editar/{{item.id}}">{{ item.usuario_id }}</a></th>
+                        <td style="vertical-align: middle;"><a routerLink="/almacen/movimientos/salidas/editar/{{item.id}}">{{ titulo }}</a></td>
                         <td style="vertical-align: middle;"><a routerLink="/almacen/movimientos/salidas/editar/{{item.id}}">{{ item.created_at | date:'dd/MM/y' }}</a></td>
                         <td style="vertical-align: middle;"><a routerLink="/almacen/movimientos/salidas/editar/{{item.id}}">{{ item.created_at | date: 'HH:mm'}}</a></td>
                         <td style="vertical-align: middle;" class="has-text-centered">

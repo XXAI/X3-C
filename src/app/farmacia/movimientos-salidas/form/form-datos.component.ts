@@ -15,13 +15,14 @@ import { Insumo     } from '../movimiento';
 export class FormDatosComponent implements OnInit {
 
   constructor(
-    private movimientosEntradasService: MovimientosSalidasService,
+    private movimientosSalidasService: MovimientosSalidasService,
   ) { }
 
   datos: any[];
   itemsDatos: any[];
   listaMovimientos: any[];
-  private usuario: any = {}
+  private usuario: any = {};
+  private servicios;
   fecha_actual;
   
   @Input() insumo: Insumo[];
@@ -42,12 +43,39 @@ export class FormDatosComponent implements OnInit {
 
   ngOnInit() {
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
-    var date= new Date();
-    this.fecha_actual = date.getFullYear()+"-"+date.getMonth()+"-"+date.getDate();
-    this.movimiento.get("fecha_movimiento").patchValue(this.fecha_actual);
-    //console.log(this.movimiento.get("tipo_movimiento_id").value);
     
-    //this.movimiento.patchValue({almacen_id: this.servidorId});
+    this.cargando = true;
+
+    this.movimientosSalidasService.listaDatos("clues-servicio", this.usuario.clues_activa.clues).subscribe(
+      servicios =>{
+        this.cargando = false;
+        this.servicios = servicios;
+      },
+        error => {
+          this.cargando = false;
+          try {
+            let e = error.json();
+            if (error.status == 401 ){
+            }
+          } catch(e){
+            console.log("No se puede interpretar el error");
+            
+            if (error.status == 500 ){
+              console.log("500 (Error interno del servidor)") ;
+            } else {
+              console.log("No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.");
+            }            
+          }
+
+        }
+    );
+    var date= new Date();
+    var mes = date.getMonth();
+    mes++;
+    this.fecha_actual = date.getFullYear()+"-"+mes+"-"+date.getDate();
+    //console.log(this.fecha_actual);
+    this.movimiento.get("fecha_movimiento").patchValue(this.fecha_actual);
+    
   }
 
   asignarTipo(tipo: number){

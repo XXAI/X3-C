@@ -20,15 +20,20 @@
                     <th style="width:41px;vertical-align: middle;" class="has-text-centered" ><abbr title="Numero progresivo">NP</abbr></th>
                     <th class="is-hidden-mobile" style="width:118px;">
                       <p class="control is-expanded" >
+                        Nombre
+                        <!--
                         <input type="hidden" #searchBoxClavePrevia >
                         <input class="input is-small" type="text" placeholder="Clave" #searchBoxClave id="search-box-clave-{{indexPedido}}" (keyup)="buscar($event,searchBoxClave, searchBoxClavePrevia,[{ input: searchBoxDescripcion, campos: ['generico','informacion.concentracion','informacion.presentacion']}, { input: searchBoxClave, campos: ['clave']}])">
-                        
+                        -->
                       </p>
                     </th>
                     <th class="is-hidden-mobile">
                       <p class="control is-expanded">
+                        Clave
+                        <!--
                         <input type="hidden" #searchBoxDescripcionPrevia >
                         <input class="input is-small" type="text" placeholder="Genérico" #searchBoxDescripcion id="search-box-descripcion-{{indexPedido}}" (keyup)="buscar($event,searchBoxDescripcion,searchBoxDescripcionPrevia,[{ input: searchBoxDescripcion, campos: ['generico_nombre','informacion.concentracion','informacion.presentacion']}, { input: searchBoxClave, campos: ['clave']}])">
+                        -->
                       </p>
                     </th> 
                     <th class="is-hidden-tablet">

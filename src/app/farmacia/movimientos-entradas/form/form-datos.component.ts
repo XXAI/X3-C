@@ -40,10 +40,12 @@ export class FormDatosComponent implements OnInit {
 
   ngOnInit() {
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
-    console.log(this.usuario);
+    
     var date= new Date();
     if(!this.movimiento.get("fecha_movimiento").value){
-      this.fecha_actual = date.getFullYear()+"-"+date.getMonth()+"-"+date.getDate();
+      var mes = date.getMonth();
+      mes++;
+      this.fecha_actual = date.getFullYear()+"-"+mes+"-"+date.getDate();
       this.movimiento.get("fecha_movimiento").patchValue(this.fecha_actual);
     }else{
       this.fecha_actual = this.movimiento.get("fecha_movimiento").value;
