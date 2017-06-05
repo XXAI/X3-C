@@ -28,10 +28,10 @@ export class EntregasMesComponent implements OnInit {
 
   estadisticasGlobales:any[] = [];
   listaEntregasEstadisticaDiaria:any[] = [];
+  listaPedidosClues: any[] = [];
   
   cargandoFechas:boolean = false;
   cargandoEstadisticasGlobales:boolean = false;
-
 
 
   constructor(private title: Title, private apiService: AdministradorCentralService) { 
@@ -86,10 +86,9 @@ export class EntregasMesComponent implements OnInit {
         this.estadisticasGlobales = respuesta;
 
         this.listaEntregasEstadisticaDiaria = [];
+        this.listaPedidosClues = [];
+
         for(var i in this.estadisticasGlobales){
-
-          
-
          
           this.listaEntregasEstadisticaDiaria.push({
             proveedor_id: this.estadisticasGlobales[i].proveedor_id,
@@ -99,6 +98,15 @@ export class EntregasMesComponent implements OnInit {
             data: []
           });
 
+          this.listaPedidosClues.push({
+            proveedor_id: this.estadisticasGlobales[i].proveedor_id,
+            proveedor: this.estadisticasGlobales[i].proveedor_nombre_completo,
+            cargando: true,
+            data: []
+
+          })
+
+          this.mostrarPedidosCluesProveedor(this.listaPedidosClues.length -1);
           this.generarStatsDiariasProveedor(this.listaEntregasEstadisticaDiaria.length -1);
 
         }
@@ -114,20 +122,44 @@ export class EntregasMesComponent implements OnInit {
 
   }
 
-  generarStatsDiariasProveedor(index){
-    console.log(this.listaEntregasEstadisticaDiaria[index]);
+  mostrarPedidosCluesProveedor(index){
     var fecha_seleccionada = this.fecha.split("/");
     if(fecha_seleccionada.length != 2){
       return;
     }
 
-    var entregasPedidosStatsPayload = {
+    var payload = {
+      mes: fecha_seleccionada[0],
+      anio: fecha_seleccionada[1],
+      proveedor_id: this.listaPedidosClues[index].proveedor_id
+    }
+    this.listaPedidosClues[index].cargando = true;
+    this.apiService.pedidosCluesMesAnio(payload).subscribe(
+      respuesta => {
+        this.listaPedidosClues[index].cargando = false;
+        this.listaPedidosClues[index].data = respuesta
+        
+        
+      }, error => {
+        console.log(error);
+        this.listaPedidosClues[index].cargando = false;
+      });
+  }
+
+  generarStatsDiariasProveedor(index){
+    
+    var fecha_seleccionada = this.fecha.split("/");
+    if(fecha_seleccionada.length != 2){
+      return;
+    }
+
+    var payload = {
       mes: fecha_seleccionada[0],
       anio: fecha_seleccionada[1],
       proveedor_id: this.listaEntregasEstadisticaDiaria[index].proveedor_id
     }
     this.listaEntregasEstadisticaDiaria[index].cargando = true;
-    this.apiService.entregasPedidosStatsDiarias(entregasPedidosStatsPayload).subscribe(
+    this.apiService.entregasPedidosStatsDiarias(payload).subscribe(
       respuesta => {
         this.listaEntregasEstadisticaDiaria[index].cargando = false;
         this.listaEntregasEstadisticaDiaria[index].data = respuesta
@@ -258,5 +290,36 @@ export class EntregasMesComponent implements OnInit {
     } 
 
   }
+
+  generarExcel(clues:string, proveedor_id:any){
+
+    var fecha_seleccionada = this.fecha.split("/");
+    if(fecha_seleccionada.length != 2){
+      return;
+    }
+    console.log(fecha_seleccionada[0]);
+
+    var mes = ('' + fecha_seleccionada[0]).length < 2 ? '0' + fecha_seleccionada[0] : fecha_seleccionada[0];
+
+    var fecha_desde = new Date(fecha_seleccionada[1],fecha_seleccionada[0] - 1, 1);
+    var fecha_hasta = new Date(fecha_seleccionada[1],fecha_seleccionada[0], 0);
+    
+
+    var cadena_fecha_desde = fecha_seleccionada[1]+"-"+mes+"-01";
+    var cadena_fecha_hasta = fecha_seleccionada[1]+"-"+mes+"-"+fecha_hasta.getDate();
+    
+    var query = "token="+localStorage.getItem('token')+"&q="+clues + "&proveedores="+proveedor_id+"&status=TR,PS,FI,EF,EX&fecha_desde="+cadena_fecha_desde+"&fecha_hasta="+cadena_fecha_hasta;
+    
+    window.open(`${environment.API_URL}/administrador-central/pedidos-excel?${query}`);
+   
+    
+    
+  }
   
+
+  parseNaN(val: any){
+    if(isNaN(val)) { return 0; }
+    return val;
+  }
+
 }

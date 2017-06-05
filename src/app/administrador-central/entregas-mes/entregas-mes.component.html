@@ -78,6 +78,55 @@
                 
             </div>
         </div>
+
+
+        <div class="columns is-multiline"  *ngIf="!cargandoEstadisticasGlobales">
+            <div class="column is-12" *ngFor="let item of listaPedidosClues; let  i = index">
+                <div style="display:block; background:white; border-radius:0.2em; padding: 0.5em 0;" *ngIf="!item.cargando">
+                    <nav class="level" style="margin:1em;">
+                        <div class="level-left">
+                            <p><b>ENTREGAS DEL MES DE {{ item.proveedor }}</b> <small style="color:gray;">Expresado en piezas</small></p>
+                        </div>
+                    </nav>
+                    <hr style="margin:0">
+                    <table class="table" style="font-size:0.8em;">
+                        <thead>
+                            <tr>
+                                <th>NUM.</th>
+                                <th>UNIDAD MÉDICA</th>
+                                <th colspan="2">CAUSES</th>
+                                <th colspan="2">NO CAUSES</th>
+                                <th colspan="2">MATERIAL DE CURACIÓN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let um of item.data; let j = index">
+                                <td>{{ j + 1 }}</td>
+                                <td><a (click)="generarExcel(um.clues,item.proveedor_id)">{{ um.unidad_medica }}</a></td>
+                                <td *ngIf="um.causes_cantidad_solicitada > 0">{{ um.causes_cantidad_recibida | number: '1.0-0' }}/{{ um.causes_cantidad_solicitada | number: '1.0-0' }}</td>                                
+                                <th *ngIf="um.causes_cantidad_solicitada > 0">{{ parseNaN((um.causes_cantidad_recibida * 100 / um.causes_cantidad_solicitada)) | number: '1.2-2' }}%</th>
+                                <td colspan="2" *ngIf="um.causes_cantidad_solicitada == 0"></td>
+
+                                <td *ngIf="um.no_causes_cantidad_solicitada > 0">{{ um.no_causes_cantidad_recibida | number: '1.0-0' }}/{{ um.no_causes_cantidad_solicitada | number: '1.0-0' }}</td>
+                                <th *ngIf="um.no_causes_cantidad_solicitada > 0">{{ parseNaN((um.no_causes_cantidad_recibida * 100 / um.no_causes_cantidad_solicitada)) | number: '1.2-2' }}%</th>
+                                <td colspan="2" *ngIf="um.no_causes_cantidad_solicitada == 0"></td>
+
+                                <td *ngIf="um.material_curacion_cantidad_solicitada > 0">{{ um.material_curacion_cantidad_recibida | number: '1.0-0' }}/{{ um.material_curacion_cantidad_solicitada | number: '1.0-0' }}</td>
+                                <th *ngIf="um.material_curacion_cantidad_solicitada > 0">{{ parseNaN((um.material_curacion_cantidad_recibida * 100 / um.material_curacion_cantidad_solicitada)) | number: '1.2-2' }}%</th>
+                                <td colspan="2" *ngIf="um.material_curacion_cantidad_solicitada == 0"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="is-fullwidth has-text-centered"  *ngIf="item.cargando ">
+                    <div class="notification is-white">
+                        <span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando entregas del mes de: <b>{{item.proveedor}}</b>...</span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
         
     </div>
 </div>
