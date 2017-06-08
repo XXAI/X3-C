@@ -6,10 +6,12 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 @Component({
   selector: 'almacenes-formulario',
-  templateUrl: './formulario.component.html'
+  templateUrl: './formulario.component.html',
+  styleUrls: ['./formulario.component.css']
 })
 
 export class FormularioComponent {
+  tipo=1;
   dato: FormGroup;
   form_almacen_tipos_servicios: any;
   private tieneid: boolean = false;
@@ -34,15 +36,23 @@ export class FormularioComponent {
   ngOnInit() {
     
     var usuario = JSON.parse(localStorage.getItem("usuario"));
-    //console.log(usuario);
+    console.log(usuario);
     
     this.dato = this.fb.group({
-      clues: [usuario.clues_activa.clues, [Validators.required]],
-      jurisdiccion_id:[usuario.clues_activa.jurisdiccion_id],
-      nombre:[usuario.clues_activa.nombre],
-      activa:[usuario.clues_activa.activa],
-      director_id:[usuario.clues_activa.director_id],
-      clues_servicios: this.fb.array([])
+      clues: ['', [Validators.required]],
+      jurisdiccion_id:[''],
+      nombre:[''],
+      activa:[''],
+      director_id:[''],
+      clues_claves: this.fb.array([])
+    });
+
+    this.dato.patchValue({
+      clues: usuario.clues_activa.clues,
+      jurisdiccion_id: usuario.clues_activa.jurisdiccion_id,
+      nombre: usuario.clues_activa.nombre,
+      activa: usuario.clues_activa.activa,
+      director_id: usuario.clues_activa.director_id,
     });
 
     this.form_almacen_tipos_servicios = {
@@ -54,19 +64,21 @@ export class FormularioComponent {
       }
     });
     //Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
-    
     document.getElementById("catalogos").click();
   }
 
   ngAfterViewInit() {
     //Solo si se tiene el control mover izquierda-derecha poner un <a id="initMover" (click)="ctrl.initMover(ctrl.dato.controls.almacen_tipos_movimientos.controls, ctrl.tipos_movimientos)>refresh</a>
     //incrementar el tiempo segun sea el caso para que cargue el catalogo en este caso va a acrgar 2 catalogos por eso pongo 5000
-    document.getElementById("actualizar").click();
     setTimeout(() => {
       document.getElementById("initMover").click();
-    }, 3000);
+    }, 5000);
 
   }
+
+  cambiarTipo(tipo){    
+    this.tipo = tipo ;
+}
 
 
 }

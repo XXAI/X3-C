@@ -6,10 +6,15 @@
         <div class="column is-one-third" style="padding:1em;">
             <div style="background: #FFF; border-radius: 1em; ">
                 <section class="hero is-primary">
-                    <h1 class="title" style="margin:0.5em; ">
+                    <h1 *ngIf="!tieneid" class="title" style="margin:0.5em; ">
                         <span class="icon is-medium">
                             <i class="fa fa-file-text"></i>
                         </span> {{ctrl.moduloTitulo}}
+                    </h1>
+                    <h1 *ngIf="tieneid" class="title" style="margin:0.5em; ">
+                        <span class="icon is-medium">
+                            <i class="fa fa-file-text"></i>
+                        </span> Entrada {{ctrl.id}}
                     </h1>
 
 
@@ -94,7 +99,7 @@
                     </div>
 
 
-                    <hr id="catalogos" (click)="ctrl.cargarCatalogo('servicios', 'servicios'); ">
+                   <!-- <hr id="catalogos" (click)="ctrl.cargarCatalogo('servicios', 'servicios'); "> -->
 
                     <div >
                         <nav class="panel" formGroupName="movimiento_metadato">

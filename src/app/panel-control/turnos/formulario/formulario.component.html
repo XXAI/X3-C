@@ -9,7 +9,7 @@
         <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
             <section class="hero is-primary">
                 <div class="hero-body">
-                    <a class="button  is-primary" style="position:absolute; top:10em; right:3em;" (click)="ctrl.cargarDatos(); "><span class="icon "><i class="fa fa-refresh"></i></span></a>
+                    <a class="button  is-primary" style="position:absolute; top:10em; right:3em;" (click)="ctrl.cargarDatos();" id="actualizar"><span class="icon "><i class="fa fa-refresh"></i></span></a>
                     <div class="container is-fluid">
                         <h1 class="title">
                             <span *ngIf="!ctrl.cargando" class="icon is-medium"><i class="fa fa-edit"></i></span>
@@ -25,7 +25,7 @@
             </div>
             <section class="section">
                 <!-- formulario -->
-                <form name="dato" novalidate [formGroup]="dato" (ngSubmit)="ctrl.enviar()">
+                <form name="dato" novalidate [formGroup]="dato" (ngSubmit)="ctrl.enviar(false)">
                     <div class="tabs is-boxed">
                         <ul>
                             <li [ngClass]="{ 'is-active' : tab == 2}">

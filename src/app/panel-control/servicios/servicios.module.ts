@@ -46,4 +46,4 @@ import { NguiAutoCompleteModule } from '@ngui/auto-complete';
   ],
   providers: [ AuthService, CrudService ]
 })
-export class ServiciosModule { }
+export class MisServiciosModule { }

@@ -6,46 +6,45 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HubModule } from '../../hub/hub.module';
 import { PerfilModule } from '../../perfil/perfil.module';
 import { BloquearPantallaModule } from '../../bloquear-pantalla/bloquear-pantalla.module';
-import { AlmacenesRoutingModule } from './almacenes-routing.module';
+import { SincronizarRecetasRoutingModule } from './sincronizar-recetas-routing.module';
 import { PaginacionModule } from '../../paginacion/paginacion.module';
 
 import { PipesModule }             from '../../pipes/pipes.module';
 import { ListaComponent } from './lista/lista.component';
 import { FormularioComponent } from './formulario/formulario.component';
+import { CargarComponent } from './formulario/cargar.component';
 
 import { AuthService } from '../../auth.service';
 
-//import { MenuPanelModule } from '../menu/menu-panel.module';
-//import { MenuAsidePanelModule } from '../menu/menu-aside/menu-aside-panel.module';
-import { MenuModule  } from './../menu/menu.module';
-
+import { IndexFarmaciaModule } from '../index-farmacia/index-farmacia.module';
 //crud
 import { CrudService } from '../../crud/crud.service';
 import { CrudModule } from '../../crud/crud.module';
 //fin crud
-
 import { NguiAutoCompleteModule } from '@ngui/auto-complete';
+import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
+
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    AlmacenesRoutingModule,
+    SincronizarRecetasRoutingModule,
     HubModule,
     PerfilModule,
     BloquearPantallaModule,
     PaginacionModule,
     PipesModule,
-    MenuModule,
-    //MenuPanelModule, 
-    //MenuAsidePanelModule,
+    IndexFarmaciaModule,
     CrudModule,
-    NguiAutoCompleteModule
+    NguiAutoCompleteModule,
+    NguiDatetimePickerModule
   ],
   declarations: [ 
     ListaComponent,   
-    FormularioComponent 
+    FormularioComponent,
+    CargarComponent
   ],
   providers: [ AuthService, CrudService ]
 })
-export class MisAlmacenesModule { }
+export class SincronizarRecetasModule { }

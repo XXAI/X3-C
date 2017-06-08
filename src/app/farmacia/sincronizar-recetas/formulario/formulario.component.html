@@ -1,20 +1,15 @@
-<formulario #ctrl URL="movimientos" titulo="Salida Estandar" [dato]="dato"></formulario>
-<menu-farmacia [modulo]="'Salida estandar'" [icono]="'assets/icono-salidas.svg'" [url]="'/almacen/salidas-estandar'"></menu-farmacia>
+<formulario #ctrl URL="sincronizar-recetas" titulo="Receta" [dato]="dato"></formulario>
+
 <div style="height:50px;"></div>
 <form name="form" novalidate [formGroup]="dato" (ngSubmit)="ctrl.enviar()">
     <div class="contenedor columns " style="height:100%">
         <div class="column is-one-third" style="padding:1em;">
             <div style="background: #FFF; border-radius: 1em; ">
                 <section class="hero is-primary">
-                    <h1 *ngIf="!tieneid" class="title" style="margin:0.5em; ">
+                    <h1 class="title" style="margin:0.5em; ">
                         <span class="icon is-medium">
                             <i class="fa fa-file-text"></i>
                         </span> {{ctrl.moduloTitulo}}
-                    </h1>
-                    <h1 *ngIf="tieneid" class="title" style="margin:0.5em; ">
-                        <span class="icon is-medium">
-                            <i class="fa fa-file-text"></i>
-                        </span> Salida {{ctrl.id}}
                     </h1>
 
 
@@ -28,9 +23,6 @@
                                         <button class="button is-primary" type="submit" [ngClass]="{'is-loading': ctrl.cargando}" [disabled]="ctrl.dato.invalid">Guardar</button>
                                     </p>
                                     <p class="control" style="float:left">
-                                        <a *ngIf="tieneid" class="button is-primary is-inverted" (click)="imprimir()">
-                                            <span class="icon"><i class="fa fa-print"></i></span>
-                                        </a>
                                         <a class="button" (click)="ctrl.regresar()">
                                             Regresar
                                         </a>
@@ -96,26 +88,12 @@
                             </div>
 
                         </div>
-                    </div>
-                    <a id="actualizar" (click)="ctrl.cargarCatalogo('servicios','mis-servicios'); ctrl.cargarCatalogo('turnos', 'mis-turnos'); "></a>
-                    <hr id="catalogos" (click)="ctrl.cargarCatalogo('servicios', 'mis-servicios'); ctrl.cargarCatalogo('turnos', 'mis-turnos'); "> 
-
-                    <div >
-                        <nav class="panel"  formGroupName="movimiento_metadato">
-
-                            <div class="field">
+                        <div formGroupName="movimiento_metadato">
+                            <div class="field"  >
                                 <label class="label">Turno:</label>
-                                <!-- NO carga los turnos -->
-                                <div class="field" *ngIf="!ctrl.turnos">
-                                    <span *ngIf="ctrl.cargando" class="tag is-primary is-medium">Cargando turnos. <i class="fa fa-refresh fa-spin" aria-hidden="true"></i></span>
-                                    <span *ngIf="!ctrl.cargando"class="tag is-medium"><a id="actualizar"  *ngIf="!ctrl.cargando" (click)="ctrl.cargarCatalogo('turnos', 'mis-turnos'); ">No se pudieron cargar los turnos. <i class="fa fa-refresh" aria-hidden="true"></i></a></span>
-                                    
-                                    <p></p>
-                                </div>
-                                <!-- SI carga los turnos -->
-                                <p  *ngIf="ctrl.turnos" class="control is-expanded  has-icon has-icon-right">
+                                <p class="control is-expanded  has-icon has-icon-right">
                                     <select class="select" name="turno" formControlName="turno_id" [ngClass]="{'is-danger': ctrl.dato.get('movimiento_metadato').get('turno_id').hasError('required') && ctrl.dato.get('movimiento_metadato').get('turno_id').touched}">
-                                        <option *ngFor="let item of ctrl.turnos.clues_turnos" value="{{item.id}}" [attr.selected]="ctrl.dato.get('movimiento_metadato').get('turno_id').value == item.id ">{{ item.nombre }}</option>
+                                        <option *ngFor="let item of ctrl.turnos" value="{{item.id}}" [attr.selected]="ctrl.dato.get('movimiento_metadato').get('turno_id').value == item.id ">{{ item.nombre }}</option>
                                     </select>
                                     <span class="icon is-small" *ngIf="ctrl.dato.get('movimiento_metadato').get('turno_id').hasError('required') && ctrl.dato.get('movimiento_metadato').get('turno_id').touched">
                                         <i class="fa fa-warning"></i>
@@ -123,43 +101,148 @@
                                     <span class="help is-danger" *ngIf="ctrl.dato.get('movimiento_metadato').get('turno_id').hasError('required') && ctrl.dato.get('movimiento_metadato').get('turno_id').touched">Este campo es requerido.</span>
                                 </p>
                             </div>
-                            <!-- SERVICIOS -->
-                            <div class="field">
-                                <label class="label">Servicio que recibe:</label>
-                                <!-- NO carga los SERVICIOS -->
-                                <div class="field" *ngIf="!ctrl.servicios">
-                                    <span *ngIf="ctrl.cargando" class="tag is-primary is-medium">Cargando servicios. <i class="fa fa-refresh fa-spin" aria-hidden="true"></i></span>
-                                    <span *ngIf="!ctrl.cargando"class="tag is-medium">No se pudieron cargar los servicios.</span>
-                                    <a id="actualizar" *ngIf="!ctrl.cargando" (click)="ctrl.cargarCatalogo('servicios', 'mis-servicios'); "><i class="fa fa-refresh is-medium" aria-hidden="true"></i></a>
-                                </div>
-                                <!-- SI carga los SERVICIOS -->
-                                <p class="control is-expanded  has-icon has-icon-right">
-                                    <select *ngIf="ctrl.servicios" class="select" name="servicio_id" formControlName="servicio_id" [ngClass]="{'is-danger': ctrl.dato.get('movimiento_metadato').get('servicio_id').hasError('required') && ctrl.dato.get('movimiento_metadato').get('servicio_id').touched}">
-                                        <option *ngFor="let item of ctrl.servicios.clues_servicios" value="{{item.id}}" [attr.selected]="ctrl.dato.get('movimiento_metadato').get('servicio_id').value == item.id ">{{ item.nombre }}</option>
-                                    </select>
-                                    <span class="icon is-small" *ngIf="ctrl.dato.get('movimiento_metadato').get('servicio_id').hasError('required') && ctrl.dato.get('movimiento_metadato').get('servicio_id').touched">
-                                        <i class="fa fa-warning"></i>
-                                    </span>
-                                    <span class="help is-danger" *ngIf="ctrl.dato.get('movimiento_metadato').get('servicio_id').hasError('required') && ctrl.dato.get('movimiento_metadato').get('servicio_id').touched">Este campo es requerido.</span>
-                                </p>
-                            </div>
-
-
-                            <div class="field">
-                                <label class="label">Persona que recibe:</label>
-                                <p class="control is-expanded  has-icon has-icon-right">
-                                    <input class="input" type="text" [ngClass]="{'is-danger': ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required') && ctrl.dato.get('movimiento_metadato').get('persona_recibe').touched}"
-                                        placeholder="Persona que recibe" formControlName="persona_recibe">
-                                    <span class="icon is-small" *ngIf="ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required') && ctrl.dato.get('movimiento_metadato').get('persona_recibe').touched">
-                                        <i class="fa fa-warning"></i>
-                                    </span>
-                                    <span class="help is-danger" *ngIf="ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required') && ctrl.dato.get('movimiento_metadato').get('persona_recibe').touched">Este campo es requerido.</span>
-                                </p>
-                            </div>
-
-                        </nav>
+                        </div>
                     </div>
 
+                    <hr id="catalogos" (click)="ctrl.cargarCatalogo('turnos', 'turnos'); ">
+                    <h3 class="title">
+                        <i class="fa fa-user-md"></i>
+                        Datos de la receta
+                    </h3>
+
+                    <div >
+                        <nav class="panel" formGroupName="receta">
+
+                            <div class="columns" style="width:100%">
+                                <div class="column is-half">
+                                    <div class="field">
+                                        <label class="label">Folio:</label>
+                                        <p class="control is-expanded  has-icon has-icon-right">
+                                            <input class="input" type="text" [ngClass]="{'is-danger': ctrl.dato.get('receta').get('folio').hasError('required') && ctrl.dato.get('receta').get('folio').touched}"
+                                                placeholder="folio" formControlName="folio">
+                                            <span class="icon is-small" *ngIf="ctrl.dato.get('receta').get('folio').hasError('required') && ctrl.dato.get('receta').get('folio').touched">
+                                                <i class="fa fa-warning"></i>
+                                            </span>
+                                            <span class="help is-danger" *ngIf="ctrl.dato.get('receta').get('folio').hasError('required') && ctrl.dato.get('receta').get('folio').touched">Este campo es requerido.</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="column is-half">
+                                    <div class="field">
+                                        <label class="label">Tipo de receta:</label>
+                                        <p class="control is-expanded  has-icon has-icon-right">
+
+                                                <select class="select" name="tipo_receta" formControlName="tipo_receta" [ngClass]="{'is-danger': ctrl.dato.get('receta').get('tipo_receta').hasError('required') && ctrl.dato.get('receta').get('tipo_receta').touched}">
+                                                    <option *ngFor="let item of tipos_recetas" value="{{item.id}}" >{{ item.nombre }}</option>
+                                                </select>
+
+                                            <span class="icon is-small" *ngIf="ctrl.dato.get('receta').get('tipo_receta').hasError('required') && ctrl.dato.get('receta').get('tipo_receta').touched">
+                                                <i class="fa fa-warning"></i>
+                                            </span>
+                                            <span class="help is-danger" *ngIf="ctrl.dato.get('receta').get('tipo_receta').hasError('required') && ctrl.dato.get('receta').get('tipo_receta').touched">Este campo es requerido.</span>
+                                        </p>
+                                    </div>
+
+                                    
+                                </div>
+                            </div>
+
+                            <div class="columns" style="width:100%">
+                                <div class="column is-half">
+                                    <div class="field">
+                                        <label class="label">Fecha de receta:</label>
+                                        <p class="control is-expanded  has-icon has-icon-right">
+                                            <input class="input" [value]="fecha_actual" [(ngModel)]='fecha_receta' formControlName="fecha_receta" ngui-datetime-picker
+                                                [min-date]="MinDate" [max-date]="MaxDate" date-only="true" [ngClass]="{'is-danger': ctrl.dato.get('receta').get('fecha_receta').hasError('required') && ctrl.dato.get('receta').get('fecha_receta').touched}"
+                                                placeholder="YYYY-MM-DD" />
+
+                                            <span class="icon is-small" *ngIf="ctrl.dato.get('receta').get('fecha_receta').hasError('required') && ctrl.dato.get('receta').get('fecha_receta').touched">
+                                                <i class="fa fa-warning"></i>
+                                            </span>
+                                            <span class="help is-danger" *ngIf="ctrl.dato.get('receta').get('fecha_receta').hasError('required') && ctrl.dato.get('receta').get('fecha_receta').touched">Este campo es requerido.</span>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="column is-half">
+                                    <div class="field">
+                                        <label class="label">Imagen:</label>
+                                        <p class="control is-expanded  has-icon has-icon-right">
+                                            <input type="file" (change)="ctrl.seleccionarImagenBase64($event, ctrl.dato.controls.receta.controls.imagen_receta)">
+                                            <input type="hidden" placeholder="Imagen de la receta" formControlName="imagen_receta">
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="columns" style="width:100%">
+                                <div class="column ">
+                                    <div class="field">
+                                        <label class="label">Doctor:</label>
+                                        <p class="control is-expanded  has-icon has-icon-right">
+                                            <input class="input" type="text" [ngClass]="{'is-danger': ctrl.dato.get('receta').get('doctor').hasError('required') && ctrl.dato.get('receta').get('doctor').touched}"
+                                                placeholder="Doctor" formControlName="doctor">
+                                            <span class="icon is-small" *ngIf="ctrl.dato.get('receta').get('doctor').hasError('required') && ctrl.dato.get('receta').get('doctor').touched">
+                                                <i class="fa fa-warning"></i>
+                                            </span>
+                                            <span class="help is-danger" *ngIf="ctrl.dato.get('receta').get('doctor').hasError('required') && ctrl.dato.get('receta').get('doctor').touched">Este campo es requerido.</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="columns" style="width:100%">
+                                <div class="column ">
+                                    <div class="field">
+                                        <label class="label">Paciente:</label>
+                                        <p class="control is-expanded  has-icon has-icon-right">
+                                            <input class="input" type="text" [ngClass]="{'is-danger': ctrl.dato.get('receta').get('paciente').hasError('required') && ctrl.dato.get('receta').get('paciente').touched}"
+                                                placeholder="Paciente" formControlName="paciente">
+                                            <span class="icon is-small" *ngIf="ctrl.dato.get('receta').get('paciente').hasError('required') && ctrl.dato.get('receta').get('paciente').touched">
+                                                <i class="fa fa-warning"></i>
+                                            </span>
+                                            <span class="help is-danger" *ngIf="ctrl.dato.get('receta').get('paciente').hasError('required') && ctrl.dato.get('receta').get('paciente').touched">Este campo es requerido.</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="columns" style="width:100%">
+                                <div class="column ">
+                                    <div class="field">
+                                        <label class="label">Diagnostico:</label>
+                                        <p class="control is-expanded  has-icon has-icon-right">
+                                            <textarea class="textarea" autofocus type="text" [ngClass]="{'is-danger': ctrl.dato.get('receta').get('diagnostico').hasError('required') && ctrl.dato.get('receta').get('diagnostico').touched}"
+                                                placeholder="Diagnostico" formControlName="diagnostico"></textarea>
+                                            <span class="icon is-small" *ngIf="ctrl.dato.get('receta').get('diagnostico').hasError('required') && ctrl.dato.get('receta').get('diagnostico').touched">
+                                                <i class="fa fa-warning"></i>
+                                            </span>
+                                            <span class="help is-danger" *ngIf="ctrl.dato.get('receta').get('diagnostico').hasError('required') && ctrl.dato.get('receta').get('diagnostico').touched">Este campo es requerido.</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="block" *ngIf="ctrl.dato.controls.receta.controls.imagen_receta.value != ''">
+                                <a class="button is-primary is-outlined is-fullwidth" (click)="abrirModal('verFoto')">
+                                    <span class="icon">
+                                        <i class="fa fa-eye"> </i> 
+                                    </span> 
+                                    &nbsp; Ver receta
+                                </a>
+                            </div>
+
+                            <div class="modal" id="verFoto">
+                                <div class="modal-background"></div>
+                                <div class="modal-content">
+                                    <p class="image is-4by3">
+                                        <img [src]="'data:image/jpg;base64,'+ctrl.dato.controls.receta.controls.imagen_receta.value" alt="Receta" />
+                                    </p>
+                                </div>
+                                <button type="button" class="modal-close" (click)="cancelarModal('verFoto')"></button>
+                            </div>
+                        </nav>
+                    </div>
                 </div>
             </div>
         </div>
@@ -168,7 +251,7 @@
             <div style="background: #FFF; border-radius: 1em; ">
                 <section class="hero is-primary">
                     <div class="hero-body">
-                        <a class="button  is-primary" style="position:absolute; top:6em; right:3em;" (click)="ctrl.cargarDatos();  "><span class="icon "><i class="fa fa-refresh"></i></span></a>
+                        <a class="button  is-primary" style="position:absolute; top:6em; right:3em;" (click)="ctrl.cargarDatos(dato);  "><span class="icon "><i class="fa fa-refresh"></i></span></a>
                         <div class="container is-fluid">
                             <h1 class="title">
                                 <span *ngIf="!ctrl.cargando || !cargando" class="icon is-medium"><i class="fa fa-edit"></i></span>
@@ -198,7 +281,7 @@
                     </div>
 
                     <div formArrayName="insumos">
-                        <div class="box" *ngFor="let item of ctrl.dato.controls.insumos.controls; let i=index" [ngStyle]="{'background': i%2 == 0 ? 'rgba(230, 230, 232, 0.44)' : ''}">
+                        <div class="box" *ngFor="let item of ctrl.dato.controls.insumos.controls; let i=index"  [ngStyle]="{'background': i%2 == 0 ? 'rgba(230, 230, 232, 0.44)' : ''}">
                             <article class="media" [formGroupName]="i">
                                 <div class="media-content">
                                     <div class="content">
@@ -238,12 +321,14 @@
                                             </thead>
                                             <tbody formArrayName="lotes">
                                                 <tr *ngFor="let val of ctrl.dato.controls.insumos.controls[i].controls.lotes.controls;  let i2 = index;">
-                                                    <td>{{val.value.lote}}</td>
+                                                    <td>{{val.value.lote}} </td>
                                                     <td>{{val.value.fecha_caducidad}}</td>
                                                     <td>{{val.value.codigo_barras}}</td>
                                                     <td *ngIf="!tieneid">{{val.value.existencia}}</td>
                                                     <td [formGroupName]="i2">
-                                                        <input class="input has-text-centered" (blur)="validar_cantidad_lote(i, val, i2)" type="number" step="1" min="0" max="{{val.value.existencia}}"
+                                                        <input *ngIf="!val.nuevo" class="input has-text-centered" (blur)="validar_cantidad_lote(i, val, i2)" type="number" step="1" min="0" max="{{val.value.existencia}}"
+                                                            placeholder="Cantidad" formControlName="cantidad">
+                                                        <input *ngIf="val.nuevo" class="input has-text-centered" (blur)="validar_cantidad_lote(i, val, i2)" type="number" step="1" min="0" 
                                                             placeholder="Cantidad" formControlName="cantidad"></td>
                                                     <td *ngIf="!tieneid">
                                                         <a class="is-danger" title="Quitar este lote" (click)="quitar_lote_insumo(i, val.value, i2)">
@@ -258,29 +343,47 @@
                                     </section>
                                     <nav class="level is-mobile">
                                         <div class="level-left">
-                                            <a class="level-item" >
+                                            <a class="level-item">
                                                 <div class="field">
-                                                    <!-- cambiar a formControlName="cantidad_solicitada"  -->
-                                                    <label class="label">Cant. solicitada:</label>
+                                                    <label class="label">Dosis:</label>
                                                     <p class="control is-expanded  has-icon has-icon-right">
-                                                        <input *ngIf="!tieneid" style="background:aliceblue" type="text" class="input" formControlName="cantidad_solicitada" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad_solicitada.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad_solicitada.touched}">
-                                                        <input *ngIf="tieneid" style="background:aliceblue" type="text" readonly class="input" formControlName="cantidad_solicitada" >
+                                                        <input type="text" class="input" formControlName="dosis" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.dosis.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.dosis.touched}">
                                                     </p>
                                                 </div>
                                             </a>
-                                        </div>
-                                        <div class="level-right">
-                                            <a class="level-item" >
+                                            <a class="level-item">
                                                 <div class="field">
-                                                    <label class="label" *ngIf="tieneid">Cant. surtida:</label>
-                                                    <label class="label" *ngIf="!tieneid">Cant. a surtir:</label>
+                                                    <label class="label">Frecuencia (Horas):</label>
+                                                    <p class="control is-expanded  has-icon has-icon-right">
+                                                        <input type="text" class="input" formControlName="frecuencia" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.frecuencia.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.frecuencia.touched}">
+                                                    </p>
+                                                </div>
+                                            </a>
+                                            <a class="level-item">
+                                                <div class="field">
+                                                    <label class="label">Duración:</label>
+                                                    <p class="control is-expanded  has-icon has-icon-right">
+                                                        <input type="text" class="input" formControlName="duracion" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.duracion.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.duracion.touched}">
+                                                    </p>
+                                                </div>
+                                            </a>
+                                            <a class="level-item">
+                                                <div class="field">
+                                                    <label class="label">Cant. recetada:</label>
+                                                    <p class="control is-expanded  has-icon has-icon-right">
+                                                        <input type="text" class="input" formControlName="cantidad_recetada" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad_recetada.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad_recetada.touched}">
+                                                    </p>
+                                                </div>
+                                            </a>
+                                            <a class="level-item">
+                                                <div class="field">
+                                                    <label class="label">Cant. surtida:</label>
                                                     <p class="control is-expanded  has-icon has-icon-right">
                                                         <input *ngIf="!tieneid" style="background:aliceblue" type="text" readonly class="input" formControlName="cantidad_surtida" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad_surtida.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad_surtida.touched}">
                                                         <input *ngIf="tieneid" style="background:aliceblue" type="text" readonly class="input" formControlName="cantidad" >
                                                     </p>
                                                 </div>
                                             </a>
-
                                         </div>
                                     </nav>
                                 </div>
@@ -299,21 +402,10 @@
     <div class="modal-background"></div>
     <div class="modal-card" style="width: 60%;">
         <header class="modal-card-head">
-            <p class="modal-card-title" id="tituloModal" style="width: 200px"> </p>
+            <p class="modal-card-title" id="tituloModal"> </p>
             <button type="button" class="delete" (click)="cancelarModal('verLotes')"></button>
         </header>
         <section class="modal-card-body">
-            <div class="columns">
-                <div class="column is-three-quarters">
-                </div>
-                <div class="column">
-                    <div class="field is-horizontal">
-                        <label class="label">Cant. solicitada:</label>
-                        <input class="input has-text-centered " type="number" step="1" min="0" placeholder="Cantidad" #cantidad_solicitada id="cantidad_solicitada" name="cantidad_solicitada" (keyup)="comprobar_cant_solicitada(cantidad_solicitada.value)">
-                       <!-- <input style="background:aliceblue" type="text" readonly class="input" formControlName="cantidad_surtida" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad_surtida.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad_surtida.touched}"> -->
-                    </div>
-                </div>
-            </div>
             <table class="table is-narrow is-bordered is-striped">
                 <thead>
                     <tr>
@@ -322,9 +414,8 @@
                         <th>Codigo de barras</th>
                         <th>Existencia</th>
                         <th>Cantidad</th>
-                        <!-- 
-                        <th *ngIf="es_unidosis">Existencia Unidosis</th> 
-                        <th *ngIf="es_unidosis">Cantidad Unidosis</th> -->
+                        <th *ngIf="es_unidosis">Existencia Unidosis</th>
+                        <th *ngIf="es_unidosis">Cantidad Unidosis</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -341,13 +432,12 @@
                             <input class="input has-text-centered " type="number" step="1" min="0" max="{{item.existencia}}" placeholder="Cantidad" [(ngModel)]="item.cantidad">
                         </td>
 
-                        <!--
                         <td *ngIf="!item.nuevo && es_unidosis">{{item.existencia_unidosis}}</td>
                         <td *ngIf="item.nuevo && es_unidosis"></td>
 
                         <td *ngIf="es_unidosis">
                             <input class="input has-text-centered " type="number" step="1" min="0" max="{{item.cantidad_unidosis}}" placeholder="Cantidad Unidosis" [(ngModel)]="item.cantidad_unidosis">
-                        </td> -->
+                        </td>
 
                         <td *ngIf="item.nuevo">
                             <a class="delete" (click)=eliminarLote(i)></a>
@@ -359,7 +449,7 @@
         </section>
         <footer class="modal-card-foot">
             <a class="button is-dark" (click)="agregarNuevoLote()">Agregar nuevo lote</a>                            
-            <a class="button is-success" [ngClass]="{'is-disabled':!cant_solicitada_valida}" (click)="agregarLoteIsumo(cantidad_solicitada.value)">Aceptar</a>
+            <a class="button is-success" (click)="agregarLoteIsumo()">Aceptar</a>
             <a class="button" (click)="cancelarModal('verLotes')">Cancelar</a>
         </footer>
     </div>

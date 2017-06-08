@@ -13,19 +13,7 @@ export class FormularioComponent {
   dato: FormGroup;
   form_almacen_tipos_servicios: any;
   private tieneid: boolean = false;
-  tipos_almacen: any[] = [
-    { id: "ALMPAL", nombre: "ALMPAL" },
-    { id: "JURIS", nombre: "JURIS" },
-    { id: "UNMED", nombre: "UNMED" },
-    { id: "LAB", nombre: "LAB" },
-    { id: "FARMACIA", nombre: "FARMACIA" },
-    { id: "CENDIS", nombre: "CENDIS" }
-  ];
 
-  niveles_almacen: any[] = [
-    { id: 1, nombre: "HACE PEDIDOS AL PROVEEDOR" },
-    { id: 2, nombre: "HACE PEDIDOS A OTRO ALMACEN DENTRO DE LA CLUES" }
-  ];
   tab: number = 2;
   
 
@@ -34,23 +22,15 @@ export class FormularioComponent {
   ngOnInit() {
     
     var usuario = JSON.parse(localStorage.getItem("usuario"));
-    console.log(usuario);
+    //console.log(usuario);
     
     this.dato = this.fb.group({
-      clues: ['', [Validators.required]],
-      jurisdiccion_id:[''],
-      nombre:[''],
-      activa:[''],
-      director_id:[''],
+      clues: [usuario.clues_activa.clues, [Validators.required]],
+      jurisdiccion_id:[usuario.clues_activa.jurisdiccion_id],
+      nombre:[usuario.clues_activa.nombre],
+      activa:[usuario.clues_activa.activa],
+      director_id:[usuario.clues_activa.director_id],
       clues_turnos: this.fb.array([])
-    });
-
-    this.dato.patchValue({
-      clues: usuario.clues_activa.clues,
-      jurisdiccion_id: usuario.clues_activa.jurisdiccion_id,
-      nombre: usuario.clues_activa.nombre,
-      activa: usuario.clues_activa.activa,
-      director_id: usuario.clues_activa.director_id,
     });
 
     this.form_almacen_tipos_servicios = {
@@ -68,9 +48,10 @@ export class FormularioComponent {
   ngAfterViewInit() {
     //Solo si se tiene el control mover izquierda-derecha poner un <a id="initMover" (click)="ctrl.initMover(ctrl.dato.controls.almacen_tipos_movimientos.controls, ctrl.tipos_movimientos)>refresh</a>
     //incrementar el tiempo segun sea el caso para que cargue el catalogo en este caso va a acrgar 2 catalogos por eso pongo 5000
+    document.getElementById("actualizar").click();
     setTimeout(() => {
       document.getElementById("initMover").click();
-    }, 5000);
+    }, 4000);
 
   }
 

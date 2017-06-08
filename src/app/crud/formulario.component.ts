@@ -89,24 +89,25 @@ export class FormularioComponent implements OnInit {
     * o solo se esta editando    
     * @return void
     */
-    enviar() {
+    enviar(regresar: boolean = true) {
         if (this.id)
             this.actualizarDatos();
         else
-            this.guardarDatos();
+            this.guardarDatos(regresar);
     }
 
     /**
     * Este método envia los datos para agregar un elemento 
     * @return void
     */
-    guardarDatos() {
+    guardarDatos(regresar) {
 
         this.cargando = true;
         var json = this.dato.getRawValue();
         this.crudService.crear(json, this.URL).subscribe(
             resultado => {
                 this.cargando = false;
+                if(regresar)
                 this.location.back();
             },
             error => {
@@ -528,10 +529,13 @@ export class FormularioComponent implements OnInit {
     private cargarDatosCatalogo: boolean = false;
     private catalogo: any[] = []; roles: any[] = [];
     cargarCatalogo(item, url) {
+        this.cargando = true;
         this.cargarDatosCatalogo = true;
         this.crudService.lista(0, 0, url).subscribe(
+            
             resultado => {
                 this[item] = resultado;
+                this.cargando = false;
                 if (resultado.length == 0) {
                     this.mensajeResponse.titulo = item;
                     this.mensajeResponse.texto = `Esta vacio, póngase en contacto con un administrador.`;
@@ -860,37 +864,81 @@ export class FormularioComponent implements OnInit {
     quitar_form_array(modelo, i: number) {
         modelo.removeAt(i);
     }
-
+    
+    private error_archivo = false;
     /**
      * Este método selecciona una imagen de un campo file <input type="file" (change)="seleccionarImagenBase64($event, 'modelo')">
      * @param evt Evento change del campo file
      * @param modelo Modelo donde guardaremos la cadena en base64 de la imagen
+     * @param multiple bandera que determina si el campo es multiple
      * @return void
      */
-    seleccionarImagenBase64(evt, modelo) {
+     seleccionarImagenBase64(evt, modelo, multiple: boolean = false) {
         var files = evt.target.files;
-        var file = files[0];
-
-        if (files && file) {
-            var reader = new FileReader();
-            reader.readAsBinaryString(file);
-            reader.onload = this.convertirImagenBase64.bind(this);
-            setTimeout(function () {
-                modelo.patchValue(localStorage.getItem('base64textString'));
-            }, 500);
+        var esto = this;
+        esto.error_archivo = false;
+        if (!multiple) {
+            var file = files[0];
+            if (files && file) {
+                var reader = new FileReader();
+                reader.readAsBinaryString(file);
+                reader.onload = (function (theFile) {
+                    return function (e) {
+                        try {
+                            modelo.patchValue(btoa(e.target.result));
+                        } catch (ex) {
+                            esto.error_archivo = true;
+                        }
+                    }
+                })(file);
+            }
+        }
+        else {
+            var objeto = [];
+            for (var i = 0, f; f = files[i]; i++) {
+                var reader = new FileReader();
+                reader.readAsBinaryString(f);
+                reader.onload = (function (theFile) {
+                    return function (e) {
+                        try {
+                            objeto.push(btoa(e.target.result));
+                        } catch (ex) {
+                            esto.error_archivo = true;
+                        }
+                    }
+                })(f);
+            }console.log(objeto);
+            modelo.patchValue(objeto);
         }
     }
-
+    private error_json = false;
     /**
-     * Este método convierte una imagen en un string de base 64 
-     * ejemplo <code><input type="file" (change)="ctrl.seleccionarImagenBase64($event, ctrl.dato.controls.receta.controls.imagen_receta)"></code>
-     * @param readerEvt Evento change del campo file
+     * Este método selecciona un archivo txt con un json para subirlo <input type="file" (change)="seleccionarJson($event, 'modelo')">
+     * @param evt Evento change del campo file
      * @param modelo Modelo donde guardaremos la cadena en base64 de la imagen
      * @return void
      */
-    convertirImagenBase64(readerEvt) {
-        var binaryString = readerEvt.target.result;
-        localStorage.setItem('base64textString', btoa(binaryString));
+    convertirJson(evt, modelo, mostrar) {
+        modelo.patchValue('');
+        this.error_json = false;
+        var files = evt.target.files;
+        var file = files[0];
+        var esto = this;
+        if (files && file) {
+            var json = "";
+            var reader = new FileReader();
+            reader.readAsBinaryString(file);
+            reader.onload = (function (theFile) {
+                return function (e) {
+                    try {
+                        json = JSON.parse(e.target.result);
+                        modelo.patchValue(json);
+                    } catch (ex) {
+                        esto.error_json = true;
+                    }
+                }
+            })(file);
+        }
     }
 
     //mostrar notificaciones configuracion default, posicion abajo izquierda, tiempo 2 segundos

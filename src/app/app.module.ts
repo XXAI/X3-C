@@ -30,9 +30,10 @@ import { CrudModule } from './crud/crud.module';
 import { UsuariosModule } from './panel-control/usuarios/usuarios.module';
 import { RolesModule    } from './panel-control/roles/roles.module';
 import { SyncModule     } from './panel-control/sync/sync.module';
-import { AlmacenesModule} from './panel-control/almacenes/almacenes.module';
-import { ServiciosModule} from './panel-control/servicios/servicios.module';
-import { TurnosModule   } from './panel-control/turnos/turnos.module';
+import { MisAlmacenesModule} from './panel-control/almacenes/almacenes.module';
+import { MisServiciosModule} from './panel-control/servicios/servicios.module';
+import { MisTurnosModule   } from './panel-control/turnos/turnos.module';
+import { MisClavesModule   } from './panel-control/claves/claves.module';
 
 // # Hub Farmacia
 import { IndexFarmaciaModule } from './farmacia/index-farmacia/index-farmacia.module';
@@ -73,9 +74,10 @@ import { DashboardSalidasModule } from './farmacia/dashboard-salidas/dashboard-s
     SyncModule,
     RolesModule,
     UsuariosModule,
-    AlmacenesModule,
-    ServiciosModule,
-    TurnosModule,
+    MisAlmacenesModule,
+    MisServiciosModule,
+    MisTurnosModule,
+    MisClavesModule,
     AdministradorCentralModule,
     IndexFarmaciaModule,
     PedidosModule,

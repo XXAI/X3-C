@@ -33,7 +33,6 @@ export class MenuAsideComponent implements OnInit {
           { permiso: 'DYwQAxJbpHWw07zT09scEogUeFKFdGSu', icono: 'fa-archive', titulo:"Mis almacenes", url:"/panel-control/almacenes" },
           { permiso: 'DYwQAxJbpHWw07zT09scEogUeFKFdGSu', icono: 'fa-hospital-o', titulo:"Mis servicios", url:"/panel-control/servicios/editar/"+ usuario.clues_activa.clues +""},
           { permiso: 'DYwQAxJbpHWw07zT09scEogUeFKFdGSu', icono: 'fa-clock-o', titulo:"Mis turnos", url:"/panel-control/turnos/editar/"+ usuario.clues_activa.clues +"" },
-          { permiso: 'DYwQAxJbpHWw07zT09scEogUeFKFdGSu', icono: 'fa-medkit', titulo:"Mis claves", url:"/panel-control/claves/editar/"+ usuario.clues_activa.clues +"" },
         ]
       },
       

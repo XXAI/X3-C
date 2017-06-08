@@ -6,11 +6,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HubModule } from '../../hub/hub.module';
 import { PerfilModule } from '../../perfil/perfil.module';
 import { BloquearPantallaModule } from '../../bloquear-pantalla/bloquear-pantalla.module';
-import { AlmacenesRoutingModule } from './almacenes-routing.module';
+import { ClavesRoutingModule } from './claves-routing.module';
 import { PaginacionModule } from '../../paginacion/paginacion.module';
 
 import { PipesModule }             from '../../pipes/pipes.module';
-import { ListaComponent } from './lista/lista.component';
 import { FormularioComponent } from './formulario/formulario.component';
 
 import { AuthService } from '../../auth.service';
@@ -30,7 +29,7 @@ import { NguiAutoCompleteModule } from '@ngui/auto-complete';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    AlmacenesRoutingModule,
+    ClavesRoutingModule,
     HubModule,
     PerfilModule,
     BloquearPantallaModule,
@@ -42,10 +41,9 @@ import { NguiAutoCompleteModule } from '@ngui/auto-complete';
     CrudModule,
     NguiAutoCompleteModule
   ],
-  declarations: [ 
-    ListaComponent,   
+  declarations: [   
     FormularioComponent 
   ],
   providers: [ AuthService, CrudService ]
 })
-export class MisAlmacenesModule { }
+export class MisClavesModule { }
