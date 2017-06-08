@@ -100,7 +100,7 @@
         <div class="tile is-child is-12" >
             <div class="tile is-parent" style="padding:0px;">
                 <article class="tile is-child notification is-success has-text-centered" style="padding:0.5rem 0.5rem 0.5rem 0.5rem">
-                    <div class="content">
+                    <div class="content" *ngIf="!cargandoPresupuestos">
                         <span *ngIf="(presupuesto.causes_disponible - pedido.totalMontoCauses) <= 0" class="icon"><i class="fa fa-warning"></i></span>
                         <p class="subtitle" style="font-weight:bold;">
                             <small>
@@ -109,10 +109,13 @@
                             </small>
                         </p>
                     </div>
+                    <div class="content" *ngIf="cargandoPresupuestos">
+                        <span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span>
+                    </div>
                 </article>
 
                 <article class="tile is-child notification is-danger has-text-centered" style="padding:0.5rem 0.5rem 0.5rem 0.5rem">
-                    <div class="content">
+                    <div class="content" *ngIf="!cargandoPresupuestos">
                         <span *ngIf="(presupuesto.no_causes_disponible - pedido.totalMontoNoCauses) <= 0" class="icon"><i class="fa fa-warning"></i></span>
                         <p class="subtitle" style="font-weight:bold;">
                             <small>
@@ -120,16 +123,22 @@
                             </small>
                         </p>
                     </div>
+                    <div class="content" *ngIf="cargandoPresupuestos">
+                        <span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span>
+                    </div>
                 </article>
 
                 <article class="tile is-child notification is-warning has-text-centered" style="padding:0.5rem 0.5rem 0.5rem 0.5rem">
-                    <div class="content">
+                    <div class="content" *ngIf="!cargandoPresupuestos">
                         <span *ngIf="(presupuesto.material_curacion_disponible - pedido.totalMontoMaterialCuracion) <= 0" class="icon"><i class="fa fa-warning"></i></span>
                         <p class="subtitle" style="font-weight:bold;">
                             <small>
                                 Disp. Material de Curación:<br>  $ {{ (presupuesto.material_curacion_disponible - pedido.totalMontoMaterialCuracion.toFixed(2)) | number: '1.2-2' }}
                             </small>
                         </p>
+                    </div>
+                    <div class="content" *ngIf="cargandoPresupuestos">
+                        <span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span>
                     </div>
                 </article>
             </div>
