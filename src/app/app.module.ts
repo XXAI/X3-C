@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { ChartModule } from 'angular2-highcharts';
+import { HighchartsStatic } from "angular2-highcharts/dist/HighchartsService";
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -46,7 +47,13 @@ import { MovimientosSalidasModule    } from './farmacia/movimientos-salidas/movi
 import { CrudModule } from './crud/crud.module';
 
 
-
+export function highchartsFactory() {
+  const hc = require('highcharts');
+  const dd = require('highcharts/modules/exporting');
+  dd(hc);
+  //return require('highcharts'),require('highcharts/modules/exporting');
+  return hc;
+}
 
 // Asegurarase que en imports "WildcardRoutingModule" vaya al ÚLTIMO
 // Esto nos sirve para redireccionar a una página 404 en lugar de que se genere un error
@@ -62,7 +69,7 @@ import { CrudModule } from './crud/crud.module';
     BrowserModule,
     FormsModule,
     HttpModule,
-    ChartModule.forRoot(require('highcharts'),require('highcharts/modules/exporting')),
+    ChartModule,
     AppRoutingModule,
     HubModule,
     PerfilModule,
@@ -82,7 +89,7 @@ import { CrudModule } from './crud/crud.module';
     WildcardRoutingModule, // Este siempre debe ir al final para que no haga conflicto con otras rutas
     
   ],
-  providers: [ Title, AuthGuard, PermisosGuard, AuthService,JwtHelper, JwtRequestService],
+  providers: [ Title, AuthGuard, PermisosGuard, AuthService,JwtHelper, JwtRequestService,{provide: HighchartsStatic, useFactory:highchartsFactory}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

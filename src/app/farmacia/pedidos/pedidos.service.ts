@@ -19,10 +19,13 @@ export class PedidosService {
     return this.jwtRequest.get(PedidosService.URL_STATS,null,null).map( (response: Response) => response.json());
   }
 
-  presupuesto(mes:number = 0): Observable<any>{
+  presupuesto(mes:number = 0,almacen:string = ''): Observable<any>{
     let parametros:any = {};
     if(mes){
       parametros.mes = mes;
+    }
+    if(almacen){
+      parametros.almacen = almacen;
     }
     return this.jwtRequest.get(PedidosService.URL_PRESUPUESTO,null,parametros).map( (response: Response) => response.json());
   }
