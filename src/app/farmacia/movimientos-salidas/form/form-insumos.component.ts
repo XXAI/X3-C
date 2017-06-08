@@ -99,9 +99,9 @@ export class FormInsumosComponent implements OnInit {
   agregarItem(item: any = {}) {
     let auxPaginasTotales = this.pedidos[this.pedidoActivo].paginacion.totalPaginas;
 
-      console.log(this.insumosAgregados);
+     /* console.log(this.insumosAgregados);
       console.log(item.lotes.length);
-      console.log(item);
+      console.log(item);*/
     if (item.lotes.lenght <= 0 || !item.lotes.length) {
       console.log("SIN ITEMS QUE AGREGAR");
     } else {
@@ -119,7 +119,7 @@ export class FormInsumosComponent implements OnInit {
       item.cantidad = 0;
       i = 0;
       for (let val of item.lotes) {
-        console.log(val);
+        //console.log(val);
         if (!val.cantidad) {
           item.lotes.splice(i, 1);
         } else if (val.cantidad == "" || val.cantidad == 0) {
@@ -132,7 +132,7 @@ export class FormInsumosComponent implements OnInit {
           item.lotes.splice(i, 1);
         }
         if (val.cantidad && val.cantidad > 0) {
-          console.log(val.cantidad);
+          //console.log(val.cantidad);
           item.cantidad = item.cantidad + val.cantidad;
         } else {
           item.lotes.splice(i, 1);
@@ -156,7 +156,7 @@ export class FormInsumosComponent implements OnInit {
         insumo.fecha_caducidad = item.fecha_caducidad;
         insumo.filtro = item.filtro;
         insumo.paginacion = item.paginacion;
-        console.log(insumo);
+        //console.log(insumo);
         this.insumosAgregados.push(insumo);
       } else {
         for (let valueItem of item.lotes) {
@@ -164,7 +164,7 @@ export class FormInsumosComponent implements OnInit {
           for (let insumo of this.insumosAgregados[posicion].lotes) {
             if (valueItem.id == insumo.id) {
               encontrado = true;
-              console.log(valueItem.cantidad);
+              //console.log(valueItem.cantidad);
               if (valueItem.cantidad) {
                 insumo.cantidad = insumo.cantidad + valueItem.cantidad;
                 this.insumosAgregados[posicion].cantidad = this.insumosAgregados[
@@ -188,10 +188,10 @@ export class FormInsumosComponent implements OnInit {
         }
       }
       this.pedidos[this.pedidoActivo].indexar();
-      console.log("pedidos");
+      /*console.log("pedidos");
       console.log(this.pedidos);
       console.log("insumosAgregados");
-      console.log(this.insumosAgregados);
+      console.log(this.insumosAgregados);*/
       // El siguiente proceso es para cambiar de página automáticamente si se encuentra en la última.
       if (this.pedidos[this.pedidoActivo].paginacion.lista.length == this.pedidos[
           this.pedidoActivo].paginacion.resultadosPorPagina &&

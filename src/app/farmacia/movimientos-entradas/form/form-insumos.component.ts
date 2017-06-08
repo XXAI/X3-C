@@ -35,9 +35,6 @@ export class FormInsumosComponent implements OnInit {
   @Output() onMovimientoSalida = new EventEmitter <any>();
 
   @Input() insumosAgregados : Insumo[];
-/*
-  @Input('group')
-    public insumosForm: FormGroup;*/
 
 
   cargando: boolean = false;
@@ -105,12 +102,9 @@ export class FormInsumosComponent implements OnInit {
 
     // Inicialicemos el pedido
     this.pedidos.push(new Modelo(true) );
-    //this.pedidos[0].nombre = "General";
+    
     this.pedidos[0].observaciones = null;
-    console.log(this.pedidos[0]);
-
-   // this.insumosAgregados.push(new Insumo());
-   // console.log(this.insumosAgregados);
+    //console.log(this.pedidos[0]);
     
   }
   
@@ -148,26 +142,19 @@ export class FormInsumosComponent implements OnInit {
     insumo.cantidad_x_envase = Number(item.informacion.cantidad_x_envase);
     insumo.codigo_barras = item.codigo_barras;
     insumo.lote = item.lote_entrada;
-    console.log(item.lote);
+    console.log(item.lote_entrada);
     insumo.fecha_caducidad = item.fecha_caducidad;
     insumo.filtro = item.filtro;
     insumo.paginacion = item.paginacion;
 
     this.insumosAgregados.push(insumo);
 
-/*
-
-    this.insumosAgregados[this.pedidoActivo].clave = item.clave;
-    this.insumosAgregados[this.pedidoActivo].cantidad = item.cantidad;
-    this.insumosAgregados[this.pedidoActivo].fecha_caducidad = item.fecha_caducidad;
-    this.insumosAgregados[this.pedidoActivo].codigo_barras = item.codigo_barras;
-  */
 
     this.pedidos[this.pedidoActivo].indexar();
-    console.log("pedidos");
+    /*console.log("pedidos");
     console.log(this.pedidos);
     console.log("insumosAgregados");
-    console.log(this.insumosAgregados);
+    console.log(this.insumosAgregados);*/
 
     // El siguiente proceso es para cambiar de página automáticamente si se encuentra en la última.
     

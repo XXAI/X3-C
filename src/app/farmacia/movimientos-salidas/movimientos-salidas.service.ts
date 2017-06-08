@@ -29,7 +29,7 @@ export class MovimientosSalidasService {
     //return this.jwtRequest.get(`${MovimientosSalidasService.URL}?almacen=${almacen}`,null,{q: term, page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
   }
 
-  lista(pagina:number = 1, resultados_por_pagina:number =5, almacen: string, tipo: number): Observable<any>{
+  lista(pagina:number = 1, resultados_por_pagina:number =20, almacen: string, tipo: number): Observable<any>{
     //console.log(tipo);
     //&tipo=${tipo}
     return this.jwtRequest.get(`${MovimientosSalidasService.URL}?almacen=${almacen}&tipo=${tipo}`,null,{page: pagina, per_page: resultados_por_pagina})
@@ -37,9 +37,13 @@ export class MovimientosSalidasService {
   }
 
   //Para listar datos de manera general
-  listaDatos(url: string ): Observable<any[]>{
+  listaDatos(url: string, id?:any ): Observable<any[]>{
     let urlModel: string;
-    return this.jwtRequest.get(url).map( (response: Response) => response.json().data);
+    if(id){
+      return this.jwtRequest.get(url,id).map( (response: Response) => response.json().data);
+    }else{
+      return this.jwtRequest.get(url).map( (response: Response) => response.json().data);
+    }
   }
 
   ver(id:any): Observable<any[]>{

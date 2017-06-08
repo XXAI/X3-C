@@ -22,6 +22,7 @@ import { Mensaje } from '../../../mensaje';
 export class NuevoComponent implements OnInit {
 
   public movimiento: FormGroup;
+  public movimiento_metadato: FormGroup;
 
   private movimientoRepetido:boolean = false;
   private movimientoInvalido:boolean = false;
@@ -63,12 +64,15 @@ export class NuevoComponent implements OnInit {
         id:[''],
         almacen_id: ['', [Validators.required]],
         status: ['', [Validators.required]],
-        persona_recibe: ['', [Validators.required]],
         tipo_movimiento_id: ['', [Validators.required]],
         fecha_movimiento: ['', [Validators.required]],
         observaciones: ['', [Validators.required]],
         cancelado: ['', [Validators.required]],
         observaciones_cancelacion: ['', [Validators.required]],
+        movimiento_metadato: this.fb.group({
+          persona_recibe: ['', [Validators.required]],
+          servicio_id: ['', [Validators.required]],
+        }),
         insumos: this.fb.array([
           this.initInsumo(),
         ])

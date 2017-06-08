@@ -13,7 +13,6 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
     };
 
     function pdf(data) {
-        console.log(data);
         var contadorLineasHorizontalesV = 0;
         var COLOR_CELDA = '#eaf1dd';
         var dd = {
@@ -35,7 +34,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         [{ text: 'SIAL', style: 'titulo', colSpan: 6, alignment: 'center' },
                             {}, {}, {}, {}, {}
                         ],
-                        [{ text: 'ENTRADA', style: 'tableHeaderTop', colSpan: 6, alignment: 'center' },
+                        [{ text: 'ENTRADA ESTANDAR', style: 'tableHeaderTop', colSpan: 6, alignment: 'center' },
                             {}, {}, {}, {}, {}
                         ],
                         [
@@ -43,14 +42,21 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                             {},
                             { text: data.datos.id, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
                             { text: 'ALMACÉN', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.datos.datosImprimir.almacen.nombre, style: 'tableHeader', alignment: 'left' }
+                            { text: data.usuario.almacen_activo.nombre, style: 'tableHeader', alignment: 'left' }
                         ],
                         [
                             { text: 'USUARIO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
                             {},
-                            { text: data.datos.usuario_id, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
+                            { text: data.usuario.nombre, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
                             { text: 'FECHA DE CREACION', style: 'tableHeaderVerde', alignment: 'right' },
                             { text: data.datos.fecha_movimiento, style: 'tableHeader', alignment: 'left' }
+                        ],
+                        [
+                            { text: 'CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
+                            {},
+                            { text: data.usuario.clues_activa.clues, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
+                            { text: 'NOMBRE DE CLUES', style: 'tableHeaderVerde', alignment: 'right' },
+                            { text: data.usuario.clues_activa.nombre, style: 'tableHeader', alignment: 'left' }
                         ],
                         [{ text: ' ', style: 'celdaEspacio', colSpan: 6, alignment: 'center' },
                             {}, {}, {}, {}, {}
@@ -175,14 +181,14 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
 
 
         for (var i in data.lista) {
-            console.log(" " + i);
+            //console.log(" " + i);
             var insumo = data.lista[i];
-            console.log(insumo);
+            //console.log(insumo);
 
             for (var j in insumo.lotes) {
-                console.log(" " + j);
+                //console.log(" " + j);
                 var lote = insumo.lotes[j];
-                console.log(lote);
+               // console.log(lote);
                 dd.content[0].table.body.push([
                     { text: lote.clave_insumo_medico, style: 'tableRow', alignment: 'center' },
                     { text: insumo.detalles.generico_nombre, style: 'tableRow', alignment: 'center' },
@@ -209,8 +215,8 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     widths: ['*', '*'],
                     body: [
                         ['RECIBE', { text: "Observaciones", style: 'text' }],
-                        [{ text: '\n\n\n\n' + 'Responsable de entradas manuales', style: 'tableRow' }, { text: '\n' + data.datos.observaciones, rowSpan: 2, alignment: 'justify' }],
-                        ['RESPONSABLE ', '']
+                        [{ text: '\n\n\n\n'  + data.datos.movimiento_metadato.persona_recibe, style: 'tableRow' }, { text: '\n' + data.datos.observaciones, rowSpan: 2, alignment: 'justify' }],
+                        ['PERSONA QUE RECIBE ', '']
                     ],
                 },
                 layout: {

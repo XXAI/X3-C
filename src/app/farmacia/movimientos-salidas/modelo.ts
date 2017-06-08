@@ -20,13 +20,13 @@ export class Movimiento_insumo{
 
 export class Modelo {
   public id:String;
+  public nombre:String;
   public almacen_id:String;
   public observaciones:string;
   public tipo_movimiento_id: string;
   public fecha_movimiento: string;
   public movimiento_insumos: Movimiento_insumo[] = [];
   public almacen:any[] = [];
-  public stockExistencia:any[] = [];
   public datosImprimir?: any;
   //public nombre:String;
   //public observaciones:string;

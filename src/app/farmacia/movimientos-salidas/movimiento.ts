@@ -6,8 +6,12 @@ export class Movimiento {
 				  observaciones: string;
 				  cancelado: number;
 				  observaciones_cancelacion: string;
-                  persona_recibe: string;
                   insumos: Insumo[];
+                  movimiento_metadato: {
+                        movimiento_id: number;
+                        persona_recibe: string;
+                        servicio_id: string;
+                  }
 }
 
 export class Insumo {

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
+import { NguiDatetimePickerModule } from '@ngui/datetime-picker';
 
 import { HubModule } from '../../hub/hub.module';
 import { PerfilModule } from '../../perfil/perfil.module';
@@ -28,6 +29,7 @@ import { MenuLateralComponent } from  './menu-lateral/menu-lateral.component';
     IndexFarmaciaModule,
     PaginacionModule,
     FormsModule,
+    NguiDatetimePickerModule,
     ReactiveFormsModule,
     BuscarInsumosMovimientosModule
   ],

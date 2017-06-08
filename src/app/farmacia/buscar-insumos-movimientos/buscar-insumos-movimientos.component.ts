@@ -84,7 +84,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
-    console.log(this.usuario);
+    
     var self = this;
 
     var busquedaSubject = this.terminosBusqueda
@@ -182,7 +182,6 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       this.lote = false;
     }
     if(this.lote){
-      console.log(this.usuario.almacen_activo.id);
       this.buscarInsumosService.comprobarStock(this.usuario.almacen_activo.id, item.clave).subscribe(
       resultado => {
           this.insumo_stock = resultado as InsumoStock[]
@@ -221,9 +220,6 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   toggleModalLote(item: InsumoMedico){
     this.mostrarModalLote = !this.mostrarModalLote
     this.insumoSeleccionado = item;
-    //console.log(item.casas);
-    //this.dato = item;
-    //this.index = index;
   }
 
   agregarNuevoLote(){
@@ -252,27 +248,20 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
 
     this.cantidadValida = true;
     
-    /*if(this.salida && this.cantidadValida){
-      this.comprobarExistencia()
-    }
-    */
     return true;
   }
   comprobarExistencia(cantidad:any, existencia: number, nuevo ?){
-    //let cant = +cantidad;
     
     var disabledCant=0;
     for(let lote of this.lotes_insumo){
       if(lote.nuevo){
-      console.log(nuevo);
       lote.existencia = lote.cantidad;
     }
-      console.log(`Cantidad ${lote.cantidad} Existencia ${lote.existencia}`);
       if(!lote.cantidad || lote.cantidad<0){
         lote.cantidad=0;
       }
       if(lote.cantidad<=lote.existencia){
-        console.log(disabledCant);
+        //console.log(disabledCant);
       }else{
         disabledCant++;
       }
@@ -308,7 +297,6 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
 
       let i: number = 0;
 
-      //var tem: Array<any>;
       var lotesNOvalidos: any[] = [];
       var lotesValidos: any[] = [];
      for(let lote of this.lotes_insumo)
@@ -335,10 +323,10 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
                      }
               }
       }
-      console.log(lotesNOvalidos);
+      /*console.log(lotesNOvalidos);
       console.log(lotesValidos);
       console.log(`LOTES_INSUMO ${this.lotes_insumo}`);
-
+*/
 
       this.insumoSeleccionado.lotes = lotesValidos;
       this.mensajeAgregado = new Mensaje(true, 2);
@@ -348,15 +336,13 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   }
 
   enviar(e){
-    //e.preventDefault();
-    //console.log(e);
       this.mensajeAgregado = new Mensaje(true, 2);
       this.mensajeAgregado.mostrar = true;    
       this.insumoSeleccionado.cantidad = this.cantidadBoxViewChildren.first.nativeElement.value;
       this.insumoSeleccionado.codigo_barras = this.codigoBarrasViewChildren.first.nativeElement.value;
       this.insumoSeleccionado.fecha_caducidad = this.fechaViewChildren.first.nativeElement.value;
       this.insumoSeleccionado.lote_entrada = this.loteViewChildren.first.nativeElement.value;
-      console.log(this.insumoSeleccionado);
+      //console.log(this.insumoSeleccionado);
       this.onEnviar.emit(this.insumoSeleccionado);
       this.searchBoxViewChildren.first.nativeElement.focus();
       //Harima: Agregamos la clave al arreglo de items agregados
