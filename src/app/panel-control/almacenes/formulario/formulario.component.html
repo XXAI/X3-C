@@ -161,7 +161,9 @@
                                                 <div class="panel-heading">
                                                     <div class="field">
                                                         <div class="b-checkbox is-info">
-                                                            <input id="Movimientos" class="styled" type="checkbox" (click)="ctrl.seleccionarTodosMover('izquierda', ctrl.tipos_movimientos)">
+                                                            <input id="Movimientos" class="styled" type="checkbox" 
+                                                            [checked]="ctrl.todosSeleccionados.izquierda"
+                                                            (click)="ctrl.seleccionarTodosMover('izquierda', ctrl.tipos_movimientos)">
                                                             <label for="Movimientos">
                                                             Movimientos disponibles
                                                         </label>
@@ -204,7 +206,9 @@
                                                 <div class="panel-heading">
                                                     <div class="field">
                                                         <div class="b-checkbox is-info">
-                                                            <input id="MisMovimientos" class="styled" type="checkbox" (click)="ctrl.seleccionarTodosMover('derecha', ctrl.dato.controls.almacen_tipos_movimientos.controls)">
+                                                            <input id="MisMovimientos" class="styled" type="checkbox" 
+                                                            [checked]="ctrl.todosSeleccionados.derecha"
+                                                            (click)="ctrl.seleccionarTodosMover('derecha', ctrl.dato.controls.almacen_tipos_movimientos.controls)">
                                                             <label for="MisMovimientos">
                                                             Mis movimientos
                                                         </label>

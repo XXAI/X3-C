@@ -8,12 +8,10 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
 
     onmessage = function(evt) {
         let data = JSON.parse(evt.data)
-        console.log(data);
         pdf(data);
     };
 
     function pdf(data) {
-        console.log(data);
         var contadorLineasHorizontalesV = 0;
         var COLOR_CELDA = '#eaf1dd';
         var dd = {
@@ -68,7 +66,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                             { text: 'NO. DE LOTE', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'FECHA DE CADUCIDAD', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'CODIGO DE BARRAS', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'CANTIDAD', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'CANTIDAD SURTIDA', style: 'tableHeaderVerde', alignment: 'center' },
                         ]
                         //Body -> insumos
                     ]
@@ -182,14 +180,10 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
 
 
         for (var i in data.lista) {
-            console.log(" " + i);
             var insumo = data.lista[i];
-            console.log(insumo);
 
             for (var j in insumo.lotes) {
-                console.log(" " + j);
                 var lote = insumo.lotes[j];
-                console.log(lote);
                 dd.content[0].table.body.push([
                     { text: lote.clave_insumo_medico, style: 'tableRow', alignment: 'center' },
                     { text: insumo.detalles.generico_nombre, style: 'tableRow', alignment: 'center' },

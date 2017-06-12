@@ -8,7 +8,6 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
 
     onmessage = function(evt) {
         let data = JSON.parse(evt.data)
-        console.log(data);
         pdf(data);
     };
 
@@ -181,14 +180,10 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
 
 
         for (var i in data.lista) {
-            //console.log(" " + i);
             var insumo = data.lista[i];
-            //console.log(insumo);
 
             for (var j in insumo.lotes) {
-                //console.log(" " + j);
                 var lote = insumo.lotes[j];
-               // console.log(lote);
                 dd.content[0].table.body.push([
                     { text: lote.clave_insumo_medico, style: 'tableRow', alignment: 'center' },
                     { text: insumo.detalles.generico_nombre, style: 'tableRow', alignment: 'center' },
