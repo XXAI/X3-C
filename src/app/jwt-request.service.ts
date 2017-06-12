@@ -102,7 +102,17 @@ export class JwtRequestService {
             this.authService.refreshToken().subscribe(
                   () => {
                     console.log("Enviando petición con token renovado.");
-                    headers = new Headers({'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('token') });
+
+                    var headersJson = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('token') };
+    
+                    if (usuario.clues_activa ) {      
+                      headersJson['X-Clues'] = usuario.clues_activa.clues; 
+                    }
+                    if (usuario.almacen_activo ) {      
+                      headersJson['X-Almacen-Id'] = usuario.almacen_activo.id; 
+                    }
+    
+                    headers = new Headers(headersJson);
                     
                     if (method == 'get'){
                       let urlSearchParams = new URLSearchParams()

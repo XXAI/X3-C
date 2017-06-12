@@ -48,10 +48,10 @@ import { EntregasModule } from './farmacia/entregas/entregas.module';
 import { EntradasEstandarModule    } from './farmacia/entradas-estandar/entradas-estandar.module';
 import { SalidasRecetasModule    } from './farmacia/salidas-recetas/salidas-recetas.module';
 import { SalidasEstandarModule    } from './farmacia/salidas-estandar/salidas-estandar.module';
-
 import { MovimientosEntradasModule    } from './farmacia/movimientos-entradas/movimientos-entradas.module';
 import { MovimientosSalidasModule    } from './farmacia/movimientos-salidas/movimientos-salidas.module';
 import { DashboardSalidasModule } from './farmacia/dashboard-salidas/dashboard-salidas.module';
+import { ClavesBasicasModule    } from './farmacia/claves-basicas/claves-basicas.module';
 
 //import { CrudModule } from './crud/crud.module';
 
@@ -102,6 +102,7 @@ export function highchartsFactory() {
     MovimientosEntradasModule,
     MovimientosSalidasModule,
     DashboardSalidasModule,
+    ClavesBasicasModule,
     //CrudModule,
     WildcardRoutingModule, // Este siempre debe ir al final para que no haga conflicto con otras rutas
     

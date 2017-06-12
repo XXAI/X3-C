@@ -38,6 +38,7 @@ export class IndexFarmaciaComponent implements OnInit {
       //{ permiso: '', icono: 'assets/icono-camion.svg', titulo:"Reabastecimiento", url:"/farmacia/pedidos-reabastecimiento" },
       //{ permiso: '', icono: 'assets/icono-pagina-lista.svg', titulo:"Actas por desabasto", url:"/farmacia/actas" },
       //{ permiso: '', icono: 'assets/icono-pagina-lista.svg', titulo:"Actas colectivas por desabasto", url:"/farmacia/actas-colectivas" },
+      { permiso: 'r1RX6Yq7fc4CRRI2OJXIPxeBLW3lFP59', icono: 'assets/icono-claves-basicas.svg', titulo:"Claves básicas", url:"/almacen/claves-basicas" },
     ]
     this.accesosDirectos = [          
       { permiso: '2nC6GUf6E737QwZSxuLORT6rZUDy5YUO', icono: 'assets/icono-pagina-lista.svg', titulo:"Nuevo pedido", url:"/almacen/pedidos/nuevo" },
