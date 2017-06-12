@@ -48,7 +48,9 @@
                                                 <div class="panel-heading">
                                                     <div class="field">
                                                         <div class="b-checkbox is-info">
-                                                            <input id="Movimientos" class="styled" type="checkbox" (click)="ctrl.seleccionarTodosMover('izquierda', ctrl.tipos_servicios)">
+                                                            <input id="Movimientos" class="styled" type="checkbox" 
+                                                            [checked]="ctrl.todosSeleccionados.izquierda"
+                                                            (click)="ctrl.seleccionarTodosMover('izquierda', ctrl.tipos_servicios)">
                                                             <label for="Movimientos">
                                                             Servicios disponibles
                                                         </label>
@@ -92,7 +94,9 @@
                                                 <div class="panel-heading">
                                                     <div class="field">
                                                         <div class="b-checkbox is-info">
-                                                            <input id="MisServicios" class="styled" type="checkbox" (click)="ctrl.seleccionarTodosMover('derecha', ctrl.dato.controls.clues_servicios.controls)">
+                                                            <input id="MisServicios" class="styled" type="checkbox" 
+                                                            [checked]="ctrl.todosSeleccionados.derecha"
+                                                            (click)="ctrl.seleccionarTodosMover('derecha', ctrl.dato.controls.clues_servicios.controls)">
                                                             <label for="MisServicios">
                                                             Mis servicios
                                                         </label>

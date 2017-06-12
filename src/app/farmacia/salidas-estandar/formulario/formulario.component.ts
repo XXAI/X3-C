@@ -96,7 +96,6 @@ export class FormularioComponent {
     this.route.params.subscribe(params => {
       if (params['id']) {
         this.tieneid = true;
-        console.log(this.tieneid);
       }
     });
 
@@ -188,7 +187,6 @@ export class FormularioComponent {
 
         this.lotes_insumo = resultado;
         this.insumo = data;
-        console.log(this.insumo);
 
         //limpiar el autocomplete
         (<HTMLInputElement>document.getElementById('buscarInsumo')).value = '';
@@ -220,7 +218,6 @@ export class FormularioComponent {
   agregarLoteIsumo(cantidad_solicitada:number) {
     //obtener el formulario reactivo para agregar los elementos
     const control = <FormArray>this.dato.controls['insumos'];
-    console.log(cantidad_solicitada);
 
     //comprobar que el isumo no este en la lista cargada
     var existe = false;
@@ -412,11 +409,8 @@ export class FormularioComponent {
 
   imprimir() {
     
-    //console.log(item);
     var usuario = JSON.parse(localStorage.getItem("usuario"));
-    console.log(this.dato.value);
     try {
-      console.log(this.dato.value);
       this.cargandoPdf = true;
       var entrada_imprimir = {
         datos: this.dato.value,
@@ -426,7 +420,6 @@ export class FormularioComponent {
       this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
     } catch (e){
       this.cargandoPdf = false;
-      console.log(e);
     }
    
   }

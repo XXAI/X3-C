@@ -48,7 +48,9 @@
                                                 <div class="panel-heading">
                                                     <div class="field">
                                                         <div class="b-checkbox is-info">
-                                                            <input id="Movimientos" class="styled" type="checkbox" (click)="ctrl.seleccionarTodosMover('izquierda', ctrl.tipos_turnos)">
+                                                            <input id="Movimientos" class="styled" type="checkbox" 
+                                                            [checked]="ctrl.todosSeleccionados.izquierda"
+                                                            (click)="ctrl.seleccionarTodosMover('izquierda', ctrl.tipos_turnos)">
                                                             <label for="Movimientos">
                                                             Turnos disponibles
                                                         </label>
@@ -92,7 +94,9 @@
                                                 <div class="panel-heading">
                                                     <div class="field">
                                                         <div class="b-checkbox is-info">
-                                                            <input id="MisServicios" class="styled" type="checkbox" (click)="ctrl.seleccionarTodosMover('derecha', ctrl.dato.controls.clues_turnos.controls)">
+                                                            <input id="MisServicios" class="styled" type="checkbox" 
+                                                            [checked]="ctrl.todosSeleccionados.derecha"
+                                                            (click)="ctrl.seleccionarTodosMover('derecha', ctrl.dato.controls.clues_turnos.controls)">
                                                             <label for="MisServicios">
                                                             Mis turnos
                                                         </label>

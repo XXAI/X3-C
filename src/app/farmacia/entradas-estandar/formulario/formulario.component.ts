@@ -302,11 +302,8 @@ export class FormularioComponent {
 
   imprimir() {
     
-    //console.log(item);
     var usuario = JSON.parse(localStorage.getItem("usuario"));
-    console.log(this.dato.value);
     try {
-      console.log(this.dato.value);
       this.cargandoPdf = true;
       var entrada_imprimir = {
         datos: this.dato.value,
@@ -316,7 +313,6 @@ export class FormularioComponent {
       this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
     } catch (e){
       this.cargandoPdf = false;
-      console.log(e);
     }
    
   }

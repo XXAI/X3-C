@@ -354,9 +354,9 @@ export class FormularioComponent implements OnInit {
                                 }
                             }
                             else {
-                                if (!resultado[key]) {
+                                /*if (!resultado[key]) {
                                     resultado[key] = this.fb.group({});
-                                }
+                                }*/
                                 data.controls[key].patchValue(resultado[key]);
                             }
                         }
@@ -581,7 +581,7 @@ export class FormularioComponent implements OnInit {
      * @param url  ruta de la pai donde se obtienen los valores
      * @param item nombre del modelo donde se guardaron los resultados
      * @param id  id del catalogo del que depende 
-     * @return void
+     * @return voidofModelo
      */
     catalogoDependiente = function (url, item, id) {
         this.cargarDatosCatalogo = true;
@@ -710,7 +710,7 @@ export class FormularioComponent implements OnInit {
                 modelo.patchValue(temp);
         }
     }
-
+ofModelo
     /**
      * Este método genera un array de datos a mover de izquierda a derecha o viseversa en el control mover
      * ejemplo <code>(click)="ctrl.seleccionarTodosMover('derecha', ctrl.dato.controls.almacen_tipos_movimientos.controls)"</code>
@@ -781,23 +781,34 @@ export class FormularioComponent implements OnInit {
      * @return void
      */
     iniciarMover(clave, toModelo, ofModelo, esmodelo: boolean = false) {
+        
         for (let item of this[clave]) {
             if (esmodelo) {
                 toModelo.push(this.fb.group(item));
-                ofModelo.splice(this[clave].indexOf(item), 1);
+                var i = 0;
+                for (let val of ofModelo) {  
+                    if (item.id == val.id) {
+                        ofModelo.splice(i, 1);
+                    }
+                    i++;
+                }
             }
             else {
                 toModelo.push(item.value);
-                ofModelo.splice(this[clave].indexOf(item), 1);
+                var i = 0;
+                for (let val of ofModelo) {
+                    if (item.value.id == val.value.id) {
+                        ofModelo.splice(i, 1);
+                    }
+                    i++;
+                }
             }
         }
-        for (let item of this[clave]) {
-            this[clave].splice(this[clave].indexOf(item), 1);
+        this[clave] = [];
+        if (this.todosSeleccionados[clave]){
+            ofModelo = [];
         }
-        if (this.todosSeleccionados[clave])
-            this[clave] = [];
-        if (this[clave].length <= 0)
-            this.todosSeleccionados[clave] = false;
+        this.todosSeleccionados[clave] = false;
     }
 
     /**
