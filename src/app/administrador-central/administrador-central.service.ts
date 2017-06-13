@@ -58,4 +58,23 @@ export class AdministradorCentralService {
   transferirSaldosAlMesActual(parametros:any = {}): Observable<any>{
     return this.jwtRequest.post("administrador-central/transferencias-saldos-mes-actual",parametros).map( (response: Response) => response.json().data) as Observable<any[]>;
   }
+
+
+  mesesAniosPedidos(): Observable<any>{    
+    return this.jwtRequest.get("administrador-central/meses-anios-pedidos",null,null).map( (response: Response) => response.json().data);
+  }
+  
+  entregasPedidosStatsMesesAnios(payload:any = {}): Observable<any>{    
+    return this.jwtRequest.get("administrador-central/entregas-pedidos-stats-mes-anio",null,payload).map( (response: Response) => response.json().data);
+  }
+
+  entregasPedidosStatsDiarias(payload:any = {}): Observable<any>{    
+    return this.jwtRequest.get("administrador-central/entregas-pedidos-stats-diarias",null,payload).map( (response: Response) => response.json().data);
+  }
+
+  pedidosCluesMesAnio(payload:any = {}): Observable<any>{    
+    return this.jwtRequest.get("administrador-central/pedidos-clues-mes-anio",null,payload).map( (response: Response) => response.json().data);
+  }
+
+  
 }

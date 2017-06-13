@@ -8,6 +8,6 @@ import { BloquearPantallaComponent }     from './bloquear-pantalla/bloquear-pant
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
- 
+ constructor(){}
   
 }

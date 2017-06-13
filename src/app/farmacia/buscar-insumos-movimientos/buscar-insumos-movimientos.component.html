@@ -171,7 +171,17 @@
                         <input class="input is-medium" [disabled]="insumoSeleccionado == null" type="text" placeholder="Lote" #loteBox id="lote" name="lote">
                     </p>
                     <p class="control is-expanded" *ngIf="!salida">
-                        <input class="input is-medium" [disabled]="insumoSeleccionado == null" type="date" placeholder="Fecha de caducidad" #fechaBox id="fecha_caducidad" name="fecha_caducidad">
+                         <input class="input is-medium" [disabled]="insumoSeleccionado == null" type="date" placeholder="Fecha de caducidad" #fechaBox id="fecha_caducidad" name="fecha_caducidad"> 
+                        <!--<input
+                            class="input is-medium"
+                            ngui-datetime-picker
+                            date-format="yyyy-MM-dd"
+                            date-only="true"
+                            id="fecha_caducidad"
+                            [disabled]="insumoSeleccionado == null"
+                            placeholder="Fecha de caducidad"
+                            #fechaBox
+                            name="fecha_caducidad"/> -->
                     </p>
                     <p class="control is-expanded" *ngIf="!salida">
                         <input class="input is-medium" required [disabled]="insumoSeleccionado == null" type="text" placeholder="Codigo de barras" #codigoBarrasBox id="codigo_barras" name="codigo_barras">

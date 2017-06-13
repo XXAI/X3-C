@@ -216,7 +216,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     widths: ['*', '*'],
                     body: [
                         ['RECIBE', { text: "Observaciones", style: 'text' }],
-                        [{ text: '\n\n\n\n' + 'Responsable de salidas', style: 'tableRow' }, { text: '\n' + data.datos.observaciones, rowSpan: 2, alignment: 'justify' }],
+                        [{ text: '\n\n\n\n' + data.datos.movimiento_metadato.persona_recibe, style: 'tableRow' }, { text: '\n' + data.datos.observaciones, rowSpan: 2, alignment: 'justify' }],
                         ['RESPONSABLE ', '']
                     ],
                 },

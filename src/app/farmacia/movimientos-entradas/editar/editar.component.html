@@ -11,7 +11,7 @@
     <div class="column is-one-third">
         <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
             <section class="hero is-primary">
-                <h1 class="title" style="margin:0.5em; "><span class="icon is-medium"><i class="fa fa-file-text"></i></span> Editar </h1>
+                <h1 class="title" style="margin:0.5em; "><span class="icon is-medium"><i class="fa fa-file-text"></i></span>Folio  {{id}} </h1>
             </section>
             <div style="padding: 1em;">
                 <div [formGroup]="movimiento">
@@ -20,13 +20,10 @@
                         <p class="control">
                             <label>Tipo de movimiento</label>
                         </p>
-                        <p class="control">
-                            <a class="button" (click)="asignarTipo(2);" [ngClass]="{'is-success': movimiento.get('tipo_movimiento_id').value==2}" style="height: 60px"><label> <strong> Salida estándar </strong></label></a>
-                        </p>
-                        <span style="width: auto;"> &nbsp; &nbsp; </span>
-                        <p class="control">
-                            <a class="button" (click)="asignarTipo(5);" [ngClass]="{'is-success': movimiento.get('tipo_movimiento_id').value==5}" style="height: 60px"><label> <strong> Salida receta </strong></label></a>
-                        </p>
+                        
+        <p class="box">
+            <label> <strong> Entrada estandar </strong></label>
+        </p>
                     </div>
 
                     <div class="control is-grouped">
@@ -34,7 +31,7 @@
                             <label>Fecha de movimiento</label>
                         </p>
                         <p class="control is-expanded  has-icon has-icon-right">
-                            <input class="input" placeholder="Fecha de movimiento" [value]="fecha_actual | date:'yyyy-MM-dd'" formControlName="fecha_movimiento" autofocus type="date" [ngClass]="{'is-danger': movimiento.get('fecha_movimiento').hasError('required') && movimiento.get('fecha_movimiento').touched}">
+                            <input class="input is-disabled" placeholder="Fecha de movimiento"  min="2017-05-01" max="2017-05-20" [value]="fecha_actual | date:'yyyy-MM-dd'" formControlName="fecha_movimiento" autofocus type="date" [ngClass]="{'is-danger': movimiento.get('fecha_movimiento').hasError('required') && movimiento.get('fecha_movimiento').touched}">
                             <span class="icon is-small" *ngIf="movimiento.get('fecha_movimiento').hasError('required') && movimiento.get('fecha_movimiento').touched">
                 <i class="fa fa-warning"></i>
               </span>
@@ -45,13 +42,24 @@
 
                     <div class="control">
                         <p class="control is-expanded  has-icon has-icon-right">
-                            <textarea class="textarea" autofocus type="text" [ngClass]="{'is-danger': movimiento.get('observaciones').hasError('required') && movimiento.get('observaciones').touched}" placeholder="Observaciones" formControlName="observaciones"></textarea>
+                            <textarea class="textarea is-disabled" autofocus type="text" [ngClass]="{'is-danger': movimiento.get('observaciones').hasError('required') && movimiento.get('observaciones').touched}" placeholder="Observaciones" formControlName="observaciones"></textarea>
                             <span class="icon is-small" *ngIf="movimiento.get('observaciones').hasError('required') && movimiento.get('observaciones').touched">
                 <i class="fa fa-warning"></i>
               </span>
                             <span class="help is-danger" *ngIf="movimiento.get('observaciones').hasError('required') && movimiento.get('observaciones').touched">Este campo es requerido.</span>
                         </p>
                     </div>
+                    <div formGroupName="movimiento_metadato">
+
+
+        <div class="control">
+            <p class="control has-icon has-icon-right">
+                <input type="text" class="input is-disabled" autofocus placeholder="Persona que recibe"  formControlName="persona_recibe">
+                
+            </p>
+        </div>
+    </div>
+    
                     <div class="control" *ngIf="mostrarCancelado">
                         <!-- *ngIf -->
                         <p class="control">
@@ -61,7 +69,7 @@
               </label>
                         </p>
                         <p class="control is-expanded  has-icon has-icon-right">
-                            <textarea class="textarea" autofocus type="text" [ngClass]="{'is-danger': movimiento.get('observaciones_cancelacion').hasError('required') && movimiento.get('observaciones_cancelacion').touched}" placeholder="Observaciones de cancelacion" formControlName="observaciones_cancelacion"></textarea>
+                            <textarea class="textarea is-disabled" autofocus type="text" [ngClass]="{'is-danger': movimiento.get('observaciones_cancelacion').hasError('required') && movimiento.get('observaciones_cancelacion').touched}" placeholder="Observaciones de cancelacion" formControlName="observaciones_cancelacion"></textarea>
                             <span class="icon is-small" *ngIf="movimiento.get('observaciones_cancelacion').hasError('required') && movimiento.get('observaciones_cancelacion').touched">
                 <i class="fa fa-warning"></i>
               </span>
@@ -75,7 +83,8 @@
 
                 <div class="control is-grouped">
                     <p class="control">
-                        <a class="button is-primary " routerLink="/almacen/movimientos/entradas/" type="submit" [ngClass]="{'is-loading': cargando}">Finalizar</a>
+                        <!-- <a class="button is-primary " routerLink="/almacen/movimientos/entradas/" type="submit" [ngClass]="{'is-loading': cargando}">Finalizar</a> -->
+                        <a class="is is-danger" (click)="imprimir(movimiento.value, id)"><span class="icon"><i class="fa fa-print"></i></span></a>
                     </p>
                     <p class="control">
                         <a class="button is-white" routerLink="/almacen/movimientos/entradas/">Ir a la lista</a>
@@ -140,21 +149,23 @@
                             <th style="width:41px;vertical-align: middle;" class="has-text-centered"><abbr title="Numero progresivo">NP</abbr></th>
                             <th class="is-hidden-mobile" style="width:118px;">
                                 <p class="control is-expanded">
-                                    <input type="hidden" #searchBoxClavePrevia>
-                                    <input class="input is-small" type="text" placeholder="Clave" #searchBoxClave id="search-box-clave-{{indexPedido}}" (keyup)="buscar($event,searchBoxClave, searchBoxClavePrevia,[{ input: searchBoxDescripcion, campos: ['generico','informacion.concentracion','informacion.presentacion']}, { input: searchBoxClave, campos: ['clave']}])">
-
-                                </p>
+                                    Clave<!--<input type="hidden" #searchBoxClavePrevia>
+                                    <input class="input is-small" type="text" placeholder="Clave" #searchBoxClave id="search-box-clave-{{indexPedido}}" (keyup)="buscar($event,searchBoxClave, searchBoxClavePrevia,[{ input: searchBoxDescripcion, campos: ['generico','informacion.concentracion','informacion.presentacion']}, { input: searchBoxClave, campos: ['clave']}])">-->
+                                </p> 
                             </th>
                             <th class="is-hidden-mobile">
                                 <p class="control is-expanded">
+                                    Nombre <!--
                                     <input type="hidden" #searchBoxDescripcionPrevia>
-                                    <input class="input is-small" type="text" placeholder="Genérico" #searchBoxDescripcion id="search-box-descripcion-{{indexPedido}}" (keyup)="buscar($event,searchBoxDescripcion,searchBoxDescripcionPrevia,[{ input: searchBoxDescripcion, campos: ['generico_nombre','informacion.concentracion','informacion.presentacion']}, { input: searchBoxClave, campos: ['clave']}])">
+                                    <input class="input is-small" type="text" placeholder="Genérico" #searchBoxDescripcion id="search-box-descripcion-{{indexPedido}}" (keyup)="buscar($event,searchBoxDescripcion,searchBoxDescripcionPrevia,[{ input: searchBoxDescripcion, campos: ['generico_nombre','informacion.concentracion','informacion.presentacion']}, { input: searchBoxClave, campos: ['clave']}])"> -->
                                 </p>
                             </th>
                             <th class="is-hidden-tablet">
                                 <p class="control is-expanded">
+                                     Nombre <!--
                                     <input type="hidden" #searchBoxDescripcionClavePrevia>
                                     <input class="input is-small" type="text" placeholder="Clave o Genérico" #searchBoxDescripcionClave id="search-box-descripcion-clave-{{indexPedido}}" (keyup)="buscar($event,searchBoxDescripcionClave,searchBoxDescripcionClavePrevia,[{ input: searchBoxDescripcionClave, campos: ['clave','generico_nombre','informacion.concentracion','informacion.presentacion']}])">
+                                    -->
                                 </p>
                             </th>
                             <th style="vertical-align: middle;" class="is-hidden-mobile is-hidden-tablet-only">Descripcion</th>
@@ -170,7 +181,7 @@
                             <!-- LOTE -->
                             <td class="has-text-centered">{{ i+1 }}</td>
                             <!-- CLAVE -->
-                            <td class="has-text-centered is-hidden-mobile"><a (click)="mostrarFichaInformativa($event, item.clave)" style="cursor:help;">{{ item.clave }}</a></td>
+                            <td class="has-text-centered is-hidden-mobile"><a style="cursor:help;">{{ item.clave }}</a></td>
 
                             <!-- DESCRIPCION  -->
                             <td>

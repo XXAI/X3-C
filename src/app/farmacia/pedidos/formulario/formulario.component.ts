@@ -63,7 +63,7 @@ export class FormularioComponent implements OnInit {
 
   // # SECCION: Pedido
   almacenes: Almacen[];
-  private presupuesto:any = {};
+  private presupuesto:any = {causes_disponible:0,no_causes_disponible:0,material_curacion_disponible:0};
   private mes:number = 0;
   private subrogados: {} = {};
   es_almacen_subrogado: boolean = false;
@@ -375,7 +375,7 @@ export class FormularioComponent implements OnInit {
       this.pedido.datos.get('almacen_solicitante').markAsTouched();
       this.pedido.datos.get('descripcion').markAsTouched();
       this.pedido.datos.get('fecha').markAsTouched();
-      this.cargando = false;
+      this.guardando = false;
       return false;
     }
 
@@ -522,6 +522,7 @@ export class FormularioComponent implements OnInit {
     }else{
       this.es_almacen_subrogado = false;
     }
+    this.cargarPresupuesto(this.mes);
   }
 
   cargarAlmacenes() {
@@ -605,30 +606,34 @@ export class FormularioComponent implements OnInit {
   }
 
   cargarPresupuesto(mes:number = 0){
-    this.cargandoPresupuestos = true;
     if(mes == 0){
       let now = new Date();
       mes = (now.getMonth() + 1);
     }
     this.mes = mes;
-    this.pedidosService.presupuesto(mes).subscribe(
-      response => {
-        this.cargando = false;
-        if(response.data){
-          this.presupuesto = response.data;
-        }else{
-          this.presupuesto.causes_disponible = 0;
-          this.presupuesto.no_causes_disponible = 0;
-          this.presupuesto.material_curacion_disponible = 0;
+    let almacen_seleccionado = this.pedido.datos.get('almacen_solicitante').value;
+    if(almacen_seleccionado){
+      this.cargandoPresupuestos = true;
+      this.pedidosService.presupuesto(mes,almacen_seleccionado).subscribe(
+        response => {
+          this.cargando = false;
+          if(response.data){
+            this.presupuesto = response.data;
+          }else{
+            this.presupuesto.causes_disponible = 0;
+            this.presupuesto.no_causes_disponible = 0;
+            this.presupuesto.material_curacion_disponible = 0;
+          }
+          this.cargandoPresupuestos = false;
+        },
+        error => {
+          this.cargando = false;
+          this.cargandoPresupuestos = false;
+          console.log(error);
         }
-        this.cargandoPresupuestos = false;
-      },
-      error => {
-        this.cargando = false;
-        this.cargandoPresupuestos = false;
-        console.log(error);
-      }
-    );
+      );
+    }
+    
   }
 
   // # SECCION: Eventos del teclado

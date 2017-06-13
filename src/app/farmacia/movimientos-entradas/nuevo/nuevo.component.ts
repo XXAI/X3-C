@@ -64,7 +64,10 @@ export class NuevoComponent implements OnInit {
         tipo_movimiento_id: ['', [Validators.required]],
         fecha_movimiento: ['', [Validators.required]],
         observaciones: ['', [Validators.required]],
-        persona_recibe: ['', [Validators.required]],
+        movimiento_metadato: this.fb.group({
+          persona_recibe: ['', [Validators.required]],
+          servicio_id: [null]
+        }),
         cancelado: ['', [Validators.required]],
         observaciones_cancelacion: ['', [Validators.required]],
         insumos: this.fb.array([
@@ -93,9 +96,8 @@ export class NuevoComponent implements OnInit {
     enviar(insumosAgregadosForm: any[]) {
     
     this.cargando = true;  
-    console.log(`Insumos ${insumosAgregadosForm}`);
     this.movimiento.value.insumos = insumosAgregadosForm;
-    console.log(this.movimiento.value);
+    //console.log(this.movimiento.value);
     this.movimientosEntradasService.crear(this.movimiento.value).subscribe(
         movimiento => {
           this.cargando = false;
@@ -116,7 +118,7 @@ export class NuevoComponent implements OnInit {
             }
             // Problema de validación
             if (error.status == 409){
-              this.mensajeError.texto = "Por favor verfique los campos marcados en rojo.";
+              this.mensajeError.texto = "Por favor verfique los campos vacíos.";
               this.movimientoRepetido = false;
               this.movimientoInvalido = false;
               for (var input in e.error){

@@ -228,6 +228,10 @@ export class VerComponent implements OnInit {
         return '/almacen/pedidos/en-transito';
       }else if(this.pedido.datosImprimir.status == 'FI'){
         return '/almacen/pedidos/finalizados';
+      }else if(this.pedido.datosImprimir.status == 'EF'){
+        return '/almacen/pedidos/farmacia-subrogada';
+      }else{return '/almacen/pedidos/todos';
+
       }
     }
   }

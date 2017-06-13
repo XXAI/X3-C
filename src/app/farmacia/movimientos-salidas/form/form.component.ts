@@ -47,7 +47,7 @@ export class FormComponent implements OnInit {
 
   enviar() {
     this.onEnviar.emit(this.insumosAgregadosEntrada);
-    console.log(this.insumosAgregadosEntrada);
+    //console.log(this.insumosAgregadosEntrada);
    
   }
 

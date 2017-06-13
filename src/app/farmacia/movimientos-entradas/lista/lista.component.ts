@@ -57,7 +57,7 @@ export class ListaComponent implements OnInit {
   public dato: Movimiento;
   public index: any;
   private paginaActual = 1;
-  resultadosPorPagina = 5;
+  resultadosPorPagina = 20;
   total = 0;
   private paginasTotales = 0;
   private indicePaginas:number[] = []
@@ -88,8 +88,8 @@ export class ListaComponent implements OnInit {
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
 
     // Inicializamos el objeto para los reportes con web Webworkers
-    this.pdfworker = new Worker("web-workers/farmacia/movimientos/imprimir-entrada.js")
-
+    this.pdfworker = new Worker("web-workers/farmacia/movimientos/imprimir-entrada.js");
+    //this.pdfworker = new Worker("web-workers/farmacia/movimientos/receta.js");
     
     // Este es un hack para poder usar variables del componente dentro de una funcion del worker
     var self = this;    
@@ -299,13 +299,15 @@ export class ListaComponent implements OnInit {
           }else{
             this.items=[];
           }
+          
+          if(resultado.data){
+            this.total = resultado.data.total | 0; //antes era resultado.total pero ahi no se encuentra el total sino en resultado.data.total
+            this.paginasTotales = Math.ceil(this.total / this.resultadosPorPagina);
 
-          this.total = resultado.total | 0;
-          this.paginasTotales = Math.ceil(this.total / this.resultadosPorPagina);
-
-          this.indicePaginas = [];
-          for(let i=0; i< this.paginasTotales; i++){
-            this.indicePaginas.push(i+1);
+            this.indicePaginas = [];
+            for(let i=0; i< this.paginasTotales; i++){
+              this.indicePaginas.push(i+1);
+            }
           }
 
           console.log("Items cargados.");
@@ -405,7 +407,8 @@ export class ListaComponent implements OnInit {
                 this.cargandoPdf = true;
                 var entradas_imprimir = {
                   datos: item,
-                  lista: item.datosImprimir.insumos
+                  lista: item.datosImprimir.insumos,
+                  usuario: this.usuario
                 };
                 this.pdfworker.postMessage(JSON.stringify(entradas_imprimir));
               } catch (e){

@@ -14,7 +14,8 @@ export class MenuAsideComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    
+    let usuario = JSON.parse(localStorage.getItem("usuario"));
+    var permisos =  usuario.permisos.split("|");
 
     this.menu = [
       {
@@ -29,6 +30,9 @@ export class MenuAsideComponent implements OnInit {
           { permiso: 'mGKikN0aJaeF2XrHwwYK3XNw0f9CSZDe', icono: 'fa-user', titulo:"Usuarios", url:"/panel-control/usuarios" },
           { permiso: 'ICmOKw3HxhgRna4a78OP0QmKrIX0bNsp', icono: 'fa-users', titulo:"Roles", url:"/panel-control/roles" },
           { permiso: 'DYwQAxJbpHWw07zT09scEogUeFKFdGSu', icono: 'fa-shield', titulo:"Permisos", url:"/panel-control/permisos" },
+          { permiso: 'DYwQAxJbpHWw07zT09scEogUeFKFdGSu', icono: 'fa-archive', titulo:"Mis almacenes", url:"/panel-control/almacenes" },
+          { permiso: 'DYwQAxJbpHWw07zT09scEogUeFKFdGSu', icono: 'fa-hospital-o', titulo:"Mis servicios", url:"/panel-control/servicios/editar/"+ usuario.clues_activa.clues +""},
+          { permiso: 'DYwQAxJbpHWw07zT09scEogUeFKFdGSu', icono: 'fa-clock-o', titulo:"Mis turnos", url:"/panel-control/turnos/editar/"+ usuario.clues_activa.clues +"" },
         ]
       },
       
@@ -43,8 +47,7 @@ export class MenuAsideComponent implements OnInit {
 
     ]
 
-    let usuario = JSON.parse(localStorage.getItem("usuario"));
-    var permisos =  usuario.permisos.split("|")
+    
     
     if(permisos.length > 0){    
       for(var i in this.menu){

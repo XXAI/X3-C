@@ -1,3 +1,16 @@
+/**
+* <h1>Listar Component</h1>
+*<p>
+* El componente listar se encarga obtener una lista de elementos
+* de la api con los parametros y filtros que se especifiquen, 
+* interactua con el servicio crud
+* </p>
+*
+* @author  Eliecer Ramirez Esquinca
+* @version 1.0
+* @since   2017-05-08 
+*/
+
 import { Observable } from 'rxjs';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Title } from '@angular/platform-browser';
@@ -21,13 +34,32 @@ import { NotificationsService } from 'angular2-notifications';
 
 @Component({
     selector: 'listar',
-    template: '<simple-notifications [options]="options"></simple-notifications>'
+    template: `<simple-notifications [options]="options"></simple-notifications>
+    <div class="modal" id="confirmarEliminar">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+            <p class="modal-card-title"><i class="fa fa-warning"></i> Alerta</p>
+            <button class="delete" (click)="cancelarModal()"></button>
+            </header>
+            <section class="modal-card-body">
+                <div class="content">
+                    <h1>¿Esta seguro de eliminar el elemento?</h1>
+                    <p>Ya no se podra recuperar la información</p>
+                </div>
+            </section>
+            <footer class="modal-card-foot">
+            <a class="button is-success" (click)="borrar(borrarItem, borrarIndex)" [ngClass]="{'is-loading': borrarCargando}">Continuar</a>
+            <a class="button" (click)="cancelarModal()">Cancelar</a>
+            </footer>
+        </div>
+    </div>`
 })
 
 export class ListarComponent implements OnInit {
 
     cargando: boolean = false;
-
+    borrarCargando: boolean = false;
     // # SECCION: Esta sección es para mostrar mensajes
 
     ultimaPeticion: any;
@@ -61,12 +93,21 @@ export class ListarComponent implements OnInit {
 
     @Input() URL: string;
     @Input() titulo: string;
+
+    /**
+     * Este método inicializa la carga de las dependencias 
+     * que se necesitan para el funcionamiento del modulo
+     */
     constructor(private title: Title, private crudService: CrudService, private authService: AuthService, private notificacion: NotificationsService) {
 
     }
-    ngOnInit() {
 
-        //this.title.setTitle("anys / Panel de control");
+    /**
+     * Este método se dispara al iniciar la carga de la vista asociada
+     * en este caso se utiliza para cargar la lista inicial
+     * @return void
+     */
+    ngOnInit() {
         this.listar(1);
 
         this.title.setTitle(this.titulo);
@@ -76,7 +117,7 @@ export class ListarComponent implements OnInit {
             .debounceTime(300) // Esperamos 300 ms pausando eventos
             .distinctUntilChanged() // Ignorar si la busqueda es la misma que la ultima
             .switchMap((term: string) => {
-                
+
                 this.busquedaActivada = term != "" ? true : false;
 
                 this.ultimoTerminoBuscado = term;
@@ -99,8 +140,6 @@ export class ListarComponent implements OnInit {
                         this.mensaje(2);
                     }
                 } catch (e) {
-                    console.log("No se puede interpretar el error");
-
                     if (error.status == 500) {
                         self.mensajeResponse.texto = "500 (Error interno del servidor)";
                     } else {
@@ -130,10 +169,23 @@ export class ListarComponent implements OnInit {
         );
     }
 
+    /**
+     * Este método es un intermediario para realizar la busqueda en
+     * api con los filtros que se especifiquen en la vista
+     * @param term contiene las palabras de busqueda     
+     * @return void
+     */
     buscar(term: string): void {
         this.terminosBusqueda.next(term);
     }
 
+    /**
+     * Este método obtiene una lista de elementos de la
+     * api con los filtros que se especifiquen en la vista
+     * @param term contiene las palabras de busqueda
+     * @param pagina  inicio de la página para mostrar resultados   
+     * @return void
+     */
     listarBusqueda(term: string, pagina: number): void {
         this.paginaActualBusqueda = pagina;
 
@@ -177,7 +229,11 @@ export class ListarComponent implements OnInit {
         );
     }
 
-
+    /**
+     * Este método obtiene una lista de elementos de la api 
+     * @param pagina  inicio de la página para mostrar resultados   
+     * @return void
+     */
     listar(pagina: number): void {
         this.paginaActual = pagina;
 
@@ -223,25 +279,63 @@ export class ListarComponent implements OnInit {
             }
         );
     }
+    //abre una modal para confirmar la eliminacion
+    borrarItem = ""; borrarIndex = "";
+
+    /**
+     * Este método es intermediario para la eliminación de un elemento 
+     * en la api, abre una ventana modal para confirmar la acción
+     * @param item contiene el valod del elemento a eliminar
+     * @param index  indica la posicion del elemento en la lista cargada  
+     * @return void
+     */
     eliminar(item: any, index): void {
+        this.borrarItem = item;
+        this.borrarIndex = index;
+        document.getElementById("confirmarEliminar").classList.add('is-active');
+    }
+
+    /**
+     * Este método cierra el modal de la de confirmación de eleimnación         
+     * @return void
+     */
+    cancelarModal() {
+        document.getElementById("confirmarEliminar").classList.remove('is-active');
+    }
+    
+    /**
+     * Este método se encarga de la eliminacion de un elemento 
+     * en la api
+     * @param item contiene el valod del elemento a eliminar
+     * @param index  indica la posicion del elemento en la lista cargada  
+     * @return void
+     */
+    borrar(item: any, index): void {
         item.cargando = true;
+        this.borrarCargando = true;
         this.crudService.eliminar(item.id, this.URL).subscribe(
             data => {
                 item.cargando = false;
+                this.borrarCargando = false;
+
                 this.dato.splice(index, 1);
 
                 this.mensajeResponse.mostrar = true;
                 this.mensajeResponse.texto = "Se eliminó el elemento de la lista.";
                 this.mensajeResponse.clase = "success";
                 this.mensaje(2);
+
+                this.cancelarModal();
             },
             error => {
                 item.cargando = false;
+                this.borrarCargando = false;
+
                 this.mensajeResponse.mostrar = true;
                 this.ultimaPeticion = function () {
                     this.eliminar(item, index);
                 }
-
+                this.cancelarModal();
 
                 try {
                     let e = error.json();
@@ -260,21 +354,41 @@ export class ListarComponent implements OnInit {
                     this.mensaje(2);
                 }
 
+
             }
         );
     }
 
     // # SECCION: Paginación
+
+    /**
+     * Este método es intermediario para el listado incrementa en uno la paginación
+     * @return void
+     */
     paginaSiguiente(): void {
         this.listar(this.paginaActual + 1);
     }
+
+    /**
+     * Este método es intermediario para el listado decrementa en uno la paginación
+     * @return void
+     */
     paginaAnterior(): void {
         this.listar(this.paginaActual - 1);
     }
 
+    /**
+     * Este método es intermediario para el listado, con busqueda activa incrementa en uno la paginación
+     * @return void
+     */
     paginaSiguienteBusqueda(term: string): void {
         this.listarBusqueda(term, this.paginaActualBusqueda + 1);
     }
+
+    /**
+     * Este método es intermediario para el listado, con busqueda activa decrementa en uno la paginación
+     * @return void
+     */
     paginaAnteriorBusqueda(term: string): void {
         this.listarBusqueda(term, this.paginaActualBusqueda - 1);
     }
@@ -286,6 +400,13 @@ export class ListarComponent implements OnInit {
         timeOut: 2000,
         lastOnBottom: true
     };
+
+    /**
+     * Este método muestra los mensajes resultantes de los llamados de la api
+     * @param cuentaAtras numero de segundo a esperar para que el mensaje desaparezca solo
+     * @param posicion  array de posicion [vertical, horizontal]
+     * @return void
+     */
     mensaje(cuentaAtras: number = 6, posicion: any[] = ["bottom", "left"]): void {
         var objeto = {
             showProgressBar: true,
@@ -300,7 +421,7 @@ export class ListarComponent implements OnInit {
             lastOnBottom: true
         };
         if (this.mensajeResponse.titulo == '')
-            this.mensajeResponse.titulo = this.URL;
+            this.mensajeResponse.titulo = this.titulo;
 
         if (this.mensajeResponse.clase == 'alert')
             this.notificacion.alert(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);

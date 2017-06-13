@@ -5,26 +5,30 @@
             <label>Tipo de movimiento</label>
         </p>
         <p class="control">
-            <a class="button" (click)="asignarTipo(2);" [ngClass]="{'is-success': movimiento.get('tipo_movimiento_id').value==2}" style="height: 60px"><label> <strong> Salida estándar </strong></label></a>
+            <a class="button" *ngIf="movimiento.get('tipo_movimiento_id').value==2" style="height: 50px"><label> <strong> Salida estándar </strong></label></a>
         </p>
         <span style="width: auto;"> &nbsp; &nbsp; </span>
         <p class="control">
-            <a class="button" (click)="asignarTipo(5);" [ngClass]="{'is-success': movimiento.get('tipo_movimiento_id').value==5}" style="height: 60px"><label> <strong> Salida receta </strong></label></a>
+            <a class="button" *ngIf="movimiento.get('tipo_movimiento_id').value==5" style="height: 50px"><label> <strong> Salida receta </strong></label></a>
         </p>
     </div>
-
+    <!-- (click)="asignarTipo(5);" [ngClass]="{'is-success': movimiento.get('tipo_movimiento_id').value==5}" -->
     <div class="control is-grouped">
         <p class="control">
             <label>Fecha de movimiento</label>
         </p>
         <p class="control is-expanded  has-icon has-icon-right">
-            <input class="input" placeholder="Fecha de movimiento" [value]="fecha_actual | date:'yyyy-MM-dd'" formControlName="fecha_movimiento" autofocus type="date" [ngClass]="{'is-danger': movimiento.get('fecha_movimiento').hasError('required') && movimiento.get('fecha_movimiento').touched}">
-            <span class="icon is-small" *ngIf="movimiento.get('fecha_movimiento').hasError('required') && movimiento.get('fecha_movimiento').touched">
-                <i class="fa fa-warning"></i>
-              </span>
-            <span class="help is-danger" *ngIf="movimiento.get('fecha_movimiento').hasError('required') && movimiento.get('fecha_movimiento').touched">Este campo es requerido.</span>
+            <input
+            ngui-datetime-picker
+            default-value="fecha_actual"
+            max-date="fecha_actual"
+            [value]="fecha_actual | date:'yyyy-MM-dd'"
+            date-only="true" 
+            formControlName="fecha_movimiento"/>
         </p>
     </div>
+
+    
 
 
     <div class="control">
@@ -37,12 +41,31 @@
         </p>
     </div>
 
-    <div class="control">
-        <p class="control has-icon has-icon-right">
-            <input type="text" class="input" placeholder="Persona que recibe" [ngClass]="{'is-danger': (movimiento.get('persona_recibe').hasError('required') || movimientoRepetido || movimientoInvalido) && movimiento.get('persona_recibe').touched}" formControlName="id">
-            <span class="help is-danger" *ngIf="movimiento.get('persona_recibe').hasError('required') && movimiento.get('persona_recibe').touched">Este campo es requerido.</span>
-        </p>
+    <div formGroupName="movimiento_metadato">
+      <div class="control is-grouped">
+            <p class="control">
+                <label>Servicio</label>
+            </p>
+            <p class="control is-expanded">
+                <span class="select">
+                    <select *ngIf="!cargando" class="select styled" name="servicio_id" formControlName="servicio_id" [ngClass]="{'is-warning': servicios?.length ==0 }">
+                        <option *ngFor="let item of servicios" value="{{item.servicio_id}}">{{ item.servicio.nombre }}</option>
+                    </select>
+                </span>
+            </p>
+        </div>
+
+        <div class="control">
+            <p class="control has-icon has-icon-right">
+                <input type="text" class="input" autofocus placeholder="Persona que recibe"  formControlName="persona_recibe" [ngClass]="{'is-danger': movimiento.get('movimiento_metadato').get('persona_recibe').hasError('required') && movimiento.get('movimiento_metadato').get('persona_recibe').touched}">
+                <span class="icon is-small" *ngIf="movimiento.get('movimiento_metadato').get('persona_recibe').hasError('required') && movimiento.get('movimiento_metadato').get('persona_recibe').touched">
+                    <i class="fa fa-warning"></i>
+                </span>
+                <span class="help is-danger" *ngIf="movimiento.get('movimiento_metadato').get('persona_recibe').hasError('required') && movimiento.get('movimiento_metadato').get('persona_recibe').touched">Este campo es requerido.</span>
+            </p>
+        </div>
     </div>
+
     <div class="control" *ngIf="mostrarCancelado">
         <!-- *ngIf -->
         <p class="control">
@@ -59,5 +82,4 @@
             <span class="help is-danger" *ngIf="movimiento.get('observaciones_cancelacion').hasError('required') && movimiento.get('observaciones_cancelacion').touched">Este campo es requerido.</span>
         </p>
     </div>
-
 </div>

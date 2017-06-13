@@ -60,7 +60,7 @@ export class ListaComponent implements OnInit {
   public dato: Movimiento;
   public index: any;
   private paginaActual = 1;
-  resultadosPorPagina = 10;
+  resultadosPorPagina =20;
   total = 0;
   private paginasTotales = 0;
   private indicePaginas:number[] = []
@@ -321,13 +321,16 @@ export class ListaComponent implements OnInit {
             this.items=[];
           }
 
-          this.total = resultado.total | 0;
-          this.paginasTotales = Math.ceil(this.total / this.resultadosPorPagina);
+          if(resultado.data){
+            this.total = resultado.data.total | 0; //antes era resultado.total pero ahi no se encuentra el total sino en resultado.data.total
+            this.paginasTotales = Math.ceil(this.total / this.resultadosPorPagina);
 
-          this.indicePaginas = [];
-          for(let i=0; i< this.paginasTotales; i++){
-            this.indicePaginas.push(i+1);
+            this.indicePaginas = [];
+            for(let i=0; i< this.paginasTotales; i++){
+              this.indicePaginas.push(i+1);
+            }
           }
+          
 
           //console.log("Items cargados.");
           

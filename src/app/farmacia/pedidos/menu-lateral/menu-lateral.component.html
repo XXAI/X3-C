@@ -60,6 +60,14 @@
                 <span *ngIf="stats.expirados>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': expirados.className == 'is-active', 'is-danger': expirados.className != 'is-active' }">{{  stats.expirados }}</span>
             </a>
         </li>
+        <hr>
+        <li>
+            <a routerLink="/almacen/pedidos/farmacia-subrogada" #farmacia routerLinkActive="is-active">
+                <span class="icon"><i class="fa fa-building"></i></span> Farmacia Subrogada
+                <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                <span *ngIf="stats.farmacia>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': farmacia.className == 'is-active', 'is-info': farmacia.className != 'is-active' }">{{  stats.farmacia }}</span>
+            </a>
+        </li>
     </ul>
 
 </aside>

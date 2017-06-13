@@ -114,7 +114,8 @@ export class PedidosComponent implements OnInit {
 
     this.status = [
       { id: 'PS', descripcion: 'Por surtir'},
-      { id: 'FI', descripcion: 'Finalizados'},
+      { id: 'FI', descripcion: 'Surtido'},
+      { id: 'EF', descripcion: 'En Farmacia'},
       { id: 'EX', descripcion: 'Expirados'}
     ]
 

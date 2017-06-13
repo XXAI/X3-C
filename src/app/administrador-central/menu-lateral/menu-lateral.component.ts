@@ -21,6 +21,7 @@ export class MenuLateralComponent implements OnInit {
         modulos: [
           { permiso: 'bsIbPL3qv6XevcAyrRm1GxJufDbzLOax', icono: 'fa-file-text', titulo:"Pedidos", url:"/administrador-central/pedidos" }, 
           { permiso: 'bwWWUufmEBRFpw9HbUJQUP8EFnagynQv', icono: 'fa-line-chart', titulo:"Abasto", url:"/administrador-central/abasto" },          
+          { permiso: 'fWA5oDswZ2Ra4O8YaCy6nEY8OeCOxg9C', icono: 'fa-bar-chart', titulo:"Entregas por mes", url:"/administrador-central/entregas-mes" },          
         ]
       },
       {
