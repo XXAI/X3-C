@@ -17,33 +17,11 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
         var insumos = {};
         var subtotal = 0;
         var iva = 0;
-        var tipos_descripcion = {
-            1:'MEDICAMENTOS CAUSES',
-            2:'MEDICAMENTOS NO CAUSES',
-            3:'MATERIALES DE CURACIÓN',
-            4:'MEDICAMENTOS CONTROLADOS',
-            5:'FACTOR SURFACTANTE (CAUSES)',
-            6:'FACTOR SURFACTANTE (NO CAUSES)'
-        };
-
+        
         for(var i in entrega.stock){
             var stock_insumo = entrega.stock[i];
             var tipo_insumo = 0;
-
-            if(stock_insumo.insumo.tipo == 1 && stock_insumo.insumo.cause == 1 && stock_insumo.insumo.surfactante == 1){
-                tipo_insumo = 5; //surfactante causes
-            }else if(stock_insumo.insumo.tipo == 1 && stock_insumo.insumo.cause == 0 && stock_insumo.insumo.surfactante == 1){
-                tipo_insumo = 6; //surfactante no causes
-            }else if(stock_insumo.insumo.tipo == 1 && stock_insumo.insumo.cause == 1 && stock_insumo.insumo.controlado == 0){
-                tipo_insumo = 1; //Causes
-            }else if(stock_insumo.insumo.tipo == 1 && stock_insumo.insumo.cause == 0 && stock_insumo.insumo.controlado == 0){
-                tipo_insumo = 2; //no causes
-            }else if(stock_insumo.insumo.tipo == 1 && stock_insumo.insumo.controlado == 1){
-                tipo_insumo = 4; //controlados
-            }else if(stock_insumo.insumo.tipo == 2){
-                tipo_insumo = 3; //material de curación
-            }
-
+            
             if(!insumos[tipo_insumo]){
                 insumos[tipo_insumo] = {subtotal:0,items:{}};
             }

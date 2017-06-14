@@ -8,12 +8,10 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
 
     onmessage = function(evt) {
         let data = JSON.parse(evt.data)
-        console.log(data);
         pdf(data);
     };
 
     function pdf(data) {
-        console.log(data);
         var contadorLineasHorizontalesV = 0;
         var COLOR_CELDA = '#eaf1dd';
         var dd = {
@@ -35,7 +33,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         [{ text: 'SIAL', style: 'titulo', colSpan: 6, alignment: 'center' },
                             {}, {}, {}, {}, {}
                         ],
-                        [{ text: 'SALIDA', style: 'tableHeaderTop', colSpan: 6, alignment: 'center' },
+                        [{ text: 'SALIDA ESTANDAR', style: 'tableHeaderTop', colSpan: 6, alignment: 'center' },
                             {}, {}, {}, {}, {}
                         ],
                         [
@@ -43,12 +41,12 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                             {},
                             { text: data.datos.id, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
                             { text: 'ALMACÉN', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.datos.datosImprimir.almacen.nombre, style: 'tableHeader', alignment: 'left' }
+                            { text: data.usuario.almacen_activo.nombre, style: 'tableHeader', alignment: 'left' }
                         ],
                         [
                             { text: 'USUARIO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
                             {},
-                            { text: data.datos.usuario_id, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
+                            { text: data.usuario.nombre, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
                             { text: 'FECHA DE CREACION', style: 'tableHeaderVerde', alignment: 'right' },
                             { text: data.datos.fecha_movimiento, style: 'tableHeader', alignment: 'left' }
                         ],
@@ -68,7 +66,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                             { text: 'NO. DE LOTE', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'FECHA DE CADUCIDAD', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'CODIGO DE BARRAS', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'CANTIDAD', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'CANTIDAD SURTIDA', style: 'tableHeaderVerde', alignment: 'center' },
                         ]
                         //Body -> insumos
                     ]
@@ -182,14 +180,10 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
 
 
         for (var i in data.lista) {
-            console.log(" " + i);
             var insumo = data.lista[i];
-            console.log(insumo);
 
             for (var j in insumo.lotes) {
-                //console.log(" " + j);
                 var lote = insumo.lotes[j];
-                //console.log(lote);
                 dd.content[0].table.body.push([
                     { text: lote.clave_insumo_medico, style: 'tableRow', alignment: 'center' },
                     { text: insumo.detalles.generico_nombre, style: 'tableRow', alignment: 'center' },
@@ -217,7 +211,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     body: [
                         ['RECIBE', { text: "Observaciones", style: 'text' }],
                         [{ text: '\n\n\n\n' + data.datos.movimiento_metadato.persona_recibe, style: 'tableRow' }, { text: '\n' + data.datos.observaciones, rowSpan: 2, alignment: 'justify' }],
-                        ['RESPONSABLE ', '']
+                        ['PERSONA QUE RECIBE ', '']
                     ],
                 },
                 layout: {

@@ -25,7 +25,7 @@
             </div>
             <section class="section">
                 <!-- formulario -->
-                <form name="dato" novalidate [formGroup]="dato" (ngSubmit)="ctrl.enviar()">
+                <form name="dato" novalidate [formGroup]="ctrl.dato" (ngSubmit)="ctrl.enviar()">
                     <div class="tabs is-boxed">
                         <ul>
                             <li [ngClass]="{ 'is-active' : tab == 1}">

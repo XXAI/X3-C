@@ -29,7 +29,7 @@ import { NotificationsService } from 'angular2-notifications';
                 </div>
             </section>
             <footer class="modal-card-foot">
-            <a class="button is-success" (click)="borrar(borrarItem, borrarIndex)" [ngClass]="{'is-loading': borrarCargando}">Continuar</a>
+            <a class="button is-success" (click)="borrar(borrarItem)" [ngClass]="{'is-loading': borrarCargando}">Continuar</a>
             <a class="button" (click)="cancelarModal()">Cancelar</a>
             </footer>
         </div>
