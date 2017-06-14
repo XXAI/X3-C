@@ -68,6 +68,8 @@ export class FormularioComponent implements OnInit {
   private subrogados: {} = {};
   es_almacen_subrogado: boolean = false;
 
+  fechasValidas: any[] = [];
+
   // Harima: Se genera un unico pedido
   pedido: Pedido;
   proveedor: any = {};
@@ -125,6 +127,30 @@ export class FormularioComponent implements OnInit {
     // Harima: Inicializamos el pedido
     this.pedido = new Pedido(true);
 
+    //Harima:calcular fechas validas
+    let now = new Date();
+    let dia = now.getDate();
+    let mes = now.getMonth()+1;
+
+    if(dia < 20){
+      //Mes actual y siguiente, se agrega mes actual
+      let day = ("0" + dia).slice(-2);
+      let month = ("0" + mes).slice(-2);
+      this.fechasValidas.push({fecha:now.getFullYear() + "-" + (month) + "-" + (day),descripcion: this.meses[mes] + " " + now.getFullYear()}); //fecha actual
+    }
+    //Mes siguiente
+    let day = '01';
+    let month = ("0" + (mes+1)).slice(-2);
+    let anio = now.getFullYear();
+
+    if(mes+1 == 13){
+      let month = '01';
+      let anio = now.getFullYear() + 1;
+      mes = 0;
+    }
+    
+    this.fechasValidas.push({fecha:anio + "-" + (month) + "-" + (day),descripcion: this.meses[mes+1] + " " + now.getFullYear()}); //fecha actual
+    
     this.route.params.subscribe(params => {
       //this.id = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number
       if(params['id']){
@@ -542,6 +568,7 @@ export class FormularioComponent implements OnInit {
           if(!this.esEditar){
             let datos_iniciales:any = {}
             
+            //datos_iniciales.fecha = this.fechasValidas[0].fecha;
             //let datos_usuario = JSON.parse(localStorage.getItem('usuario'));
             //datos_iniciales.almacen_solicitante = datos_usuario.almacen_activo.id;
             

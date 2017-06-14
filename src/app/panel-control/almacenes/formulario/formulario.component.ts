@@ -12,7 +12,7 @@ import { environment } from '../../../../environments/environment';
 export class FormularioComponent {
   dato: FormGroup;
   form_almacen_tipos_movimientos: any;
-  private tieneid: boolean = false;
+  tieneid: boolean = false;
   tipos_almacen: any[] = [
     { id: "ALMPAL", nombre: "ALMPAL" },
     { id: "JURIS", nombre: "JURIS" },

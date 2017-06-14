@@ -23,7 +23,7 @@
                         <span class="select is-fullwidth">
                             <select  (change)="generarStats()"  [(ngModel)]="fecha">
                                 <option value="-1" *ngIf="cargandoFechas">Cargando...</option>
-                                <option value="-1" *ngIf="listaMesesAnios>0">No hay meses</option>
+                                <option value="-1" *ngIf="listaMesesAnios.length > 0">No hay meses</option>
                                 <option *ngFor="let item of listaMesesAnios" [value]="item.fecha">{{ item.mes_nombre }}/{{ item.anio }}</option>
                             </select>
                         </span>

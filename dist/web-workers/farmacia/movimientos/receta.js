@@ -27,7 +27,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     body: [
                         [{
                             image: 'header',
-                            width: 500,
+                            width: 550,
                             style: 'tableHeaderTop',
                             colSpan: 6,
                             alignment: 'center'
@@ -35,22 +35,32 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         [{ text: 'SIAL', style: 'titulo', colSpan: 6, alignment: 'center' },
                             {}, {}, {}, {}, {}
                         ],
-                        [{ text: 'SALIDA', style: 'tableHeaderTop', colSpan: 6, alignment: 'center' },
+                        [{ text: 'RECETA', style: 'tableHeaderTop', colSpan: 6, alignment: 'center' },
                             {}, {}, {}, {}, {}
                         ],
                         [
                             { text: 'FOLIO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
                             {},
-                            { text: data.datos.id, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
-                            { text: 'ALMACÉN', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.datos.datosImprimir.almacen.nombre, style: 'tableHeader', alignment: 'left' }
+                            { text: data.datos.receta.folio, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
+                            { text: 'TIPO', style: 'tableHeaderVerde', alignment: 'right' },
+                            { text: data.datos.receta.tipo_receta, style: 'tableHeader', alignment: 'left' }
+                        ],
+                        [
+                            { text: 'PACIENTE', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
+                            {},
+                            { text: data.datos.receta.paciente, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
+                            { text: 'DIAGNOSTICO', style: 'tableHeaderVerde', alignment: 'right' },
+                            { text: data.datos.receta.diagnostico, style: 'tableHeader', alignment: 'left' }
+                        ],
+                        [{ text: ' ', style: 'celdaEspacio', colSpan: 6, alignment: 'center' },
+                            {}, {}, {}, {}, {}
                         ],
                         [
                             { text: 'USUARIO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
                             {},
-                            { text: data.datos.usuario_id, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
-                            { text: 'FECHA DE CREACION', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.datos.fecha_movimiento, style: 'tableHeader', alignment: 'left' }
+                            { text: data.usuario.nombre, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
+                            { text: 'FECHA', style: 'tableHeaderVerde', alignment: 'right' },
+                            { text: data.datos.receta.fecha_receta, style: 'tableHeader', alignment: 'left' }
                         ],
                         [
                             { text: 'CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
@@ -62,13 +72,14 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         [{ text: ' ', style: 'celdaEspacio', colSpan: 6, alignment: 'center' },
                             {}, {}, {}, {}, {}
                         ],
+                        
                         [
                             { text: 'CLAVE', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'NOMBRE', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'NO. DE LOTE', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'FECHA DE CADUCIDAD', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'CODIGO DE BARRAS', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'CANTIDAD', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'DATOS INSUMO', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'INDICACIONES', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'CANTIDAD RECETADA', style: 'tableHeaderVerde',alignment: 'center' },
+                            { text: 'CANTIDAD SURTIDA', style: 'tableHeaderVerde', alignment: 'center' },
                         ]
                         //Body -> insumos
                     ]
@@ -103,6 +114,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                 }
             }],
             pageSize: 'LETTER',
+            pageMargins: [ 30, 5, 5, 5 ],
             compress: true,
             pageOrientation: 'portrait',
             footer: function(currentPage, pageCount) {
@@ -110,7 +122,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
             },
             styles: {
                 titulo: {
-                    fontSize: 12,
+                    fontSize: 16,
                     bold: true,
                     color: 'black'
                 },
@@ -187,16 +199,16 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
             console.log(insumo);
 
             for (var j in insumo.lotes) {
-                //console.log(" " + j);
+                console.log(" " + j);
                 var lote = insumo.lotes[j];
-                //console.log(lote);
+                console.log(lote);
                 dd.content[0].table.body.push([
                     { text: lote.clave_insumo_medico, style: 'tableRow', alignment: 'center' },
-                    { text: insumo.detalles.generico_nombre, style: 'tableRow', alignment: 'center' },
-                    { text: lote.lote, style: 'tableRow', alignment: 'center' },
-                    { text: lote.fecha_caducidad, style: 'tableRow', alignment: 'center' },
-                    { text: lote.codigo_barras, style: 'tableRow', alignment: 'center' },
-                    { text: lote.cantidad, style: 'tableRow', alignment: 'center' }
+                    { text: insumo.generico_nombre, style: 'tableRow', alignment: 'center' },
+                    { text: "Lote:"+lote.lote + '\n' + "Caducidad:"+ lote.fecha_caducidad, style: 'tableRow', alignment: 'center' },
+                    { text: "Dosis: "+insumo.dosis + '\n' + "Frecuencia: Cada "+insumo.frecuencia + " hrs.", style: 'tableRow', alignment: 'center' },
+                    { text: insumo.cantidad_recetada, style: 'tableRow', alignment: 'center' },
+                    { text: insumo.cantidad_surtida, style: 'tableRow', alignment: 'center' }
                 ]);
             }
 
@@ -215,8 +227,14 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                 table: {
                     widths: ['*', '*'],
                     body: [
-                        ['RECIBE', { text: "Observaciones", style: 'text' }],
-                        [{ text: '\n\n\n\n' + data.datos.movimiento_metadato.persona_recibe, style: 'tableRow' }, { text: '\n' + data.datos.observaciones, rowSpan: 2, alignment: 'justify' }],
+                        [
+                            { text: '\n\n\n\n' + 'DR.' + data.datos.receta.doctor, rowSpan: 2, style: 'tableRow' }, 
+                            { text: "Observaciones", style: 'text' }
+                        ],
+                        [
+                            '', 
+                            { text: '\n' + data.datos.observaciones, rowSpan: 2, alignment: 'justify' }
+                        ],
                         ['RESPONSABLE ', '']
                     ],
                 },
@@ -242,7 +260,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
         );
 
         pdfMake.createPdf(dd).getBase64(function(base64) {
-            postMessage({ fileName: 'Salida' + data.datos.id + '.pdf', base64: base64 });
+            postMessage({ fileName: 'RECETA' + data.datos.id + '.pdf', base64: base64 });
         });
     }
 
