@@ -53,6 +53,11 @@ import { MovimientosSalidasModule    } from './farmacia/movimientos-salidas/movi
 import { DashboardSalidasModule } from './farmacia/dashboard-salidas/dashboard-salidas.module';
 import { ClavesBasicasModule    } from './farmacia/claves-basicas/claves-basicas.module';
 
+
+// #modulo de admisión de pacientes
+import { EgresoModule } from './admision/egreso/egreso.module';
+import { PacienteModule } from './admision/paciente/paciente.module';
+
 //import { CrudModule } from './crud/crud.module';
 
 
@@ -104,6 +109,8 @@ export function highchartsFactory() {
     DashboardSalidasModule,
     ClavesBasicasModule,
     //CrudModule,
+    PacienteModule,
+    EgresoModule,
     WildcardRoutingModule, // Este siempre debe ir al final para que no haga conflicto con otras rutas
     
   ],

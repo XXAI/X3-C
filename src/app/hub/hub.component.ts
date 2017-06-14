@@ -43,6 +43,12 @@ export class HubComponent implements OnInit {
         'DYwQAxJbpHWw07zT09scEogUeFKFdGSu' // Ver permisos
 
       ] 
+    }, 
+    { 
+      title:'Pacientes', routerLink:'/paciente', icono:'assets/avatar-enfermero.svg',
+      permisos: [
+        'PpXKhxdG8dGheNKm1rRSCT4EXZYyhRMm', // Ver admision
+      ] 
     }
   ]
   
