@@ -41,7 +41,7 @@
 
                     <label class="label">Fecha (aaaa-mm-dd):</label>
                     <p class="control is-expanded  has-icon has-icon-right">
-                        <input type="text" class="input is-fullwidth" placeholder="aaaa-mm-dd" [ngClass]="{'is-danger': pedido.tieneError('fecha','required')}" (keyup)="recargarPresupuesto(fecha.value)"/>
+                        <input type="text" class="input is-fullwidth" placeholder="aaaa-mm-dd" [ngClass]="{'is-danger': pedido.tieneError('fecha','required')}" formControlName="fecha" #fecha id="fecha" (keyup)="recargarPresupuesto(fecha.value)"/>
                         <span class="icon is-small" *ngIf="pedido.tieneError('fecha','required')">
                             <i class="fa fa-warning"></i>
                         </span>

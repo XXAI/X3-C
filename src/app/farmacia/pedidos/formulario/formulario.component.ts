@@ -568,7 +568,7 @@ export class FormularioComponent implements OnInit {
           if(!this.esEditar){
             let datos_iniciales:any = {}
             
-            datos_iniciales.fecha = this.fechasValidas[0].fecha;
+            //datos_iniciales.fecha = this.fechasValidas[0].fecha;
             //let datos_usuario = JSON.parse(localStorage.getItem('usuario'));
             //datos_iniciales.almacen_solicitante = datos_usuario.almacen_activo.id;
             
