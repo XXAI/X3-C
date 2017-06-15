@@ -81,7 +81,7 @@ export class FormularioComponent {
       tipo_movimiento_id: ['5', [Validators.required]],
       status: ['FI'],
       fecha_movimiento: ['', [Validators.required]],
-      observaciones: ['', [Validators.required]],
+      observaciones: [''],
       cancelado: [''],
       observaciones_cancelacion: [''],
       movimiento_metadato: this.fb.group({
@@ -288,6 +288,11 @@ export class FormularioComponent {
               //agregar la cantida nueva al lote
               let cantidad_lote: number = l.controls.cantidad.value + item.cantidad;
 
+              //Si es nuevo entonces igualar la cantidad a la existencia
+              if(item.nuevo){
+                item.existencia = item.cantidad * 1;
+              }
+
               //validar que la cantidad escrita no sea mayor que la existencia si no poner la existencia como la cantidad maxima      
               if (cantidad_lote > l.controls.existencia.value && item.nuevo == 0) {
                 this.notificacion.alert("Cantidad Excedida", "La cantidad maxima es: " + l.controls.existencia.value, objeto);
@@ -405,12 +410,8 @@ export class FormularioComponent {
 
   
   imprimir() {
-    
-    //console.log(item);
     var usuario = JSON.parse(localStorage.getItem("usuario"));
-    console.log(this.dato.value);
     try {
-      console.log(this.dato.value);
       this.cargandoPdf = true;
       var entrada_imprimir = {
         datos: this.dato.value,
@@ -421,8 +422,7 @@ export class FormularioComponent {
     } catch (e){
       this.cargandoPdf = false;
       console.log(e);
-    }
-   
+    }   
   }
 
   base64ToBlob( base64, type ) {

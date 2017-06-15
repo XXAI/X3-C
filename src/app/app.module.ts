@@ -42,6 +42,9 @@ import { MisTurnosModule   } from './panel-control/turnos/turnos.module';
 import { MisClavesModule   } from './panel-control/claves/claves.module';
 
 // # Hub Farmacia
+import { IndexFarmaciaSubrrogadaModule } from './farmacia-subrrogada/index-farmacia-subrrogada/index-farmacia-subrrogada.module';
+
+// # Hub Farmacia
 import { IndexFarmaciaModule } from './farmacia/index-farmacia/index-farmacia.module';
 import { PedidosModule  } from './farmacia/pedidos/pedidos.module';
 import { EntregasModule } from './farmacia/entregas/entregas.module';
@@ -98,6 +101,7 @@ export function highchartsFactory() {
     MisClavesModule,
     AdministradorCentralModule,
     AdministradorProveedoresModule,
+    IndexFarmaciaSubrrogadaModule,
     IndexFarmaciaModule,
     PedidosModule,
     EntregasModule,

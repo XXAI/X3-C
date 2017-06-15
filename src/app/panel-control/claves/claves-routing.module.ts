@@ -10,7 +10,6 @@ const routes: Routes = [
   {
     path:'panel-control/claves',
     children:[
-      { path: 'nuevo', component: FormularioComponent},
       { path: 'editar/:clues', component: FormularioComponent},
     ],
     canActivate: [AuthGuard]

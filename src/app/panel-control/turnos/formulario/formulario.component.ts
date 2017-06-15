@@ -12,6 +12,8 @@ import { environment } from '../../../../environments/environment';
 export class FormularioComponent {
   dato: FormGroup;
   form_almacen_tipos_servicios: any;
+  actualizacion;
+  actualizacion_usuario;
   private tieneid: boolean = false;
 
   tab: number = 2;
@@ -43,6 +45,9 @@ export class FormularioComponent {
     });
     //Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
     document.getElementById("catalogos").click();
+    
+    
+    
   }
 
   ngAfterViewInit() {
@@ -51,9 +56,24 @@ export class FormularioComponent {
     document.getElementById("actualizar").click();
     setTimeout(() => {
       document.getElementById("initMover").click();
+          //obtener el formulario reactivo para agregar los elementos
+    const control = <FormArray>this.dato.controls['clues_turnos'];
+    var c=0, c1;
+    var tempUpdateAt="";
+    var temp_usuario_id="";
+
+    tempUpdateAt =control.value[c].updated_at;
+    temp_usuario_id =control.value[c].usuario_id;
+    for(c=0; c < control.length;){
+      if(control.value[c].updated_at > tempUpdateAt){
+        tempUpdateAt =control.value[c].updated_at;
+        temp_usuario_id =control.value[c].usuario_id;
+      }
+      c=c+1;
+    }
+    this.actualizacion=tempUpdateAt;
+    this.actualizacion_usuario=temp_usuario_id;
     }, 4000);
-
+    
   }
-
-
 }

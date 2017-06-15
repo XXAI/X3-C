@@ -758,11 +758,11 @@ ofModelo
      * @param ofModelo modelo de donde se quitan los valores
      * @return void
      */
-    initMover(toModelo, ofModelo) {
+    initMover(toModelo, ofModelo, campo:string='id') {
         for (let item of toModelo) {
             var i = 0;
             for (let val of ofModelo) {
-                if (item.value.id == val.id) {
+                if (item.value[campo] == val[campo]) {
                     ofModelo.splice(i, 1);
                 }
                 i++;
@@ -772,38 +772,44 @@ ofModelo
     /**
      * Este método agrega un objeto a un array de elementos para mover
      * ejemplo 
-     * <code>(click)="ctrl.iniciarMover('derecha', ctrl.tipos_movimientos, ctrl.dato.controls.almacen_tipos_movimientos.controls, false)"</code>
-     * <code>(click)="ctrl.iniciarMover('izquierda', ctrl.dato.controls.almacen_tipos_movimientos.controls, ctrl.tipos_movimientos, true)"</code>
+     * <code>(click)="ctrl.iniciarMover('derecha', ctrl.tipos_movimientos, ctrl.dato.controls.almacen_tipos_movimientos.controls, false, campo)"</code>
+     * <code>(click)="ctrl.iniciarMover('izquierda', ctrl.dato.controls.almacen_tipos_movimientos.controls, ctrl.tipos_movimientos, true, campo)"</code>
      * @param clave Posicion izquierda-derecha del movimiento de los datos
      * @param toModelo  modelo que corresponde al array a agregar los elementos
      * @param ofModelo modelo de donde se quitan los valores
      * @param esmodelo Bandera que determina si el modelo es un formGroup
+     * @param campo variable que determina el valor a comparar
      * @return void
      */
-    iniciarMover(clave, toModelo, ofModelo, esmodelo: boolean = false) {
+    iniciarMover(clave, toModelo, ofModelo, esmodelo: boolean = false, campo:string='id') {
         
-        for (let item of this[clave]) {
-            if (esmodelo) {
-                toModelo.push(this.fb.group(item));
-                var i = 0;
-                for (let val of ofModelo) {  
-                    if (item.id == val.id) {
-                        ofModelo.splice(i, 1);
+             for (let item of this[clave]) {
+                if (esmodelo) {
+                    toModelo.push(this.fb.group(item));
+                    var i = 0;
+                    
+                    for (let val of ofModelo) {  
+                        if (item[campo] == val[campo]) {
+                            console.log(item[campo]);
+                            ofModelo.splice(i, 1);
+                        }
+                        i++;
                     }
-                    i++;
+                }
+                else {
+                    toModelo.push(item.value);
+                    console.log(ofModelo);
+                    var i = 0;
+                    for (let val of ofModelo) {
+                        if (item.value[campo] == val.value[campo]) {
+                            console.log(item.value[campo]);
+                            ofModelo.splice(i, 1);
+                        }
+                        i++;
+                    }
                 }
             }
-            else {
-                toModelo.push(item.value);
-                var i = 0;
-                for (let val of ofModelo) {
-                    if (item.value.id == val.value.id) {
-                        ofModelo.splice(i, 1);
-                    }
-                    i++;
-                }
-            }
-        }
+
         this[clave] = [];
         if (this.todosSeleccionados[clave]){
             ofModelo = [];

@@ -27,7 +27,7 @@ export class IndexFarmaciaComponent implements OnInit {
     this.modulos = [
       { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-pagina-lista.svg', titulo:"Pedidos", url:"/almacen/pedidos" },
       { permiso: 'iSxK0TpoYpnzf8KIQTWOq9Web7WnSKhz', icono: 'assets/icono-pedidos-alt.svg', titulo:"Entregas de pedidos", url:"/almacen/entregas" },
-      //{ permiso: '2nC6GUf6E737QwZSxuLORT6rZUDy5YUO', icono: 'assets/icono-recetas.svg', titulo:"Recetas", url:"/almacen/salidas-recetas" },
+      { permiso: '2nC6GUf6E737QwZSxuLORT6rZUDy5YUO', icono: 'assets/icono-recetas.svg', titulo:"Recetas", url:"/almacen/salidas-recetas" },
       { permiso: 'ZNrN0e8cQL8cIAcXHJfczGpFEC2Ap9QA', icono: 'assets/icono-salidas.svg', titulo:"Salida estandar", url:"/almacen/salidas-estandar" },
       { permiso: 'hAeTBeuyxHcAi2OerU7NsVpTA5isktJ7', icono: 'assets/icono-entradas.svg', titulo:"Entrada estandar", url:"/almacen/entradas-estandar" },
       //{ permiso: '', icono: 'assets/icono-salidas.svg', titulo:"Salidas", url:"/farmacia/salidas" },

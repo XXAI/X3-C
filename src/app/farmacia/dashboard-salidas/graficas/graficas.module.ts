@@ -11,6 +11,12 @@ import { HighchartsStatic } from 'angular2-highcharts/dist/HighchartsService';
 
 import { GraficasComponent } from '../graficas/graficas.component';
 
+import { AuthService     } from '../../../auth.service';
+import { GraficasService } from '../graficas/graficas.service';
+
+import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
+
+
 declare var require: any;
 export function highchartsFactory() {
   return require('highcharts');
@@ -19,13 +25,16 @@ export function highchartsFactory() {
 @NgModule({
   imports: [
     CommonModule,
-    ChartModule,
-    IndexFarmaciaModule
+    ChartModule,  
+    IndexFarmaciaModule,
+    NguiDatetimePickerModule
   ],
   providers: [
+      AuthService, 
+      GraficasService,
     { //Propiedad de la gráfica
       provide: HighchartsStatic,
-      useFactory: highchartsFactory
+      useFactory: highchartsFactory,
     }
   ],
   declarations: [
