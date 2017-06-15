@@ -22,6 +22,7 @@ export class FormularioComponent {
   tab: number = 1;
   cargando = false;
   cant_solicitada_valida = false;
+  unidad_medida;
   public insumos_term: string = `${environment.API_URL}/insumos-auto?term=:keyword`;
   constructor(
     private fb: FormBuilder, 
@@ -159,8 +160,8 @@ export class FormularioComponent {
               html += `<label class="tag is-success" ><strong>Cause </strong></label>`;
               if(!data.es_causes)
               html += `<label class="tag is-success" ><strong>No Cause </strong> </label>`; 
-              if(data.es_unidosis)                                                                 
-              html += `<label class="tag is-warning" ><strong>Unidosis</strong> </label>`;
+              if(data.es_unidosis == 1)                                                                 
+              html += `<label class="tag is-warning" ><strong>Unidosis</strong></label>`;
               
     html += `
             </p>
@@ -192,8 +193,12 @@ export class FormularioComponent {
         (<HTMLInputElement>document.getElementById('buscarInsumo')).value = '';
 
         //poner el titulo a la modal
-        document.getElementById('tituloModal').innerHTML = ` ${data.nombre} <br><p aling="justify" style="font-size:12px">${data.descripcion}</p> `;
+        document.getElementById('tituloModal').innerHTML = ` ${data.nombre} <br>
+          <p aling="justify" style="font-size:12px">${data.descripcion}</p> 
+          <p aling="justify" style="font-size:12px"> CANTIDAD POR ENVASE: ${data.cantidad_x_envase} ${data.presentacion}</p>`;
         this.es_unidosis = data.es_unidosis;
+        this.unidad_medida = data.unidad_medida;
+        
         this.cargando = false;
         this.abrirModal('verLotes');
       },
@@ -339,8 +344,8 @@ export class FormularioComponent {
      * @return void
      */
   agregarNuevoLote() {
-    //this.lotes_insumo.push({ id: "" + Math.floor(Math.random() * (999)) + 1, codigo_barras: "", lote: "", fecha_caducidad: "", existencia: '', cantidad: '', nuevo: 1, existencia_unidosis: '', cantidad_unidosis: '' });
-    this.lotes_insumo.push({ id: "" + Math.floor(Math.random() * (999)) + 1, codigo_barras: "", lote: "", fecha_caducidad: "", existencia: '', cantidad: '', nuevo: 1});
+    this.lotes_insumo.push({ id: "" + Math.floor(Math.random() * (999)) + 1, codigo_barras: "", lote: "", fecha_caducidad: "", existencia: '', cantidad: '', nuevo: 1, existencia_unidosis: '', cantidad_unidosis: '' });
+    //this.lotes_insumo.push({ id: "" + Math.floor(Math.random() * (999)) + 1, codigo_barras: "", lote: "", fecha_caducidad: "", existencia: '', cantidad: '', nuevo: 1});
   }
 
   /**

@@ -322,9 +322,9 @@
                         <th>Codigo de barras</th>
                         <th>Existencia</th>
                         <th>Cantidad</th>
-                        <!-- 
+                         
                         <th *ngIf="es_unidosis">Existencia Unidosis</th> 
-                        <th *ngIf="es_unidosis">Cantidad Unidosis</th> -->
+                        <th *ngIf="es_unidosis">Cantidad Unidosis</th> 
                     </tr>
                 </thead>
                 <tbody>
@@ -335,19 +335,19 @@
                         <td *ngIf="item.nuevo"><input class="input has-text-centered " type="date" placeholder="Fecha de caducidad" [(ngModel)]="item.fecha_caducidad"></td>
                         <td *ngIf="!item.nuevo">{{item.codigo_barras}}</td>
                         <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Codigo de barras" [(ngModel)]="item.codigo_barras"></td>
-                        <td *ngIf="!item.nuevo">{{item.existencia}}</td>
+                        <td *ngIf="!item.nuevo">{{item.existencia}} - {{item.unidad_medida}}</td>
                         <td *ngIf="item.nuevo"></td>
                         <td>
                             <input class="input has-text-centered " type="number" step="1" min="0" max="{{item.existencia}}" placeholder="Cantidad" [(ngModel)]="item.cantidad">
                         </td>
 
-                        <!--
+                        
                         <td *ngIf="!item.nuevo && es_unidosis">{{item.existencia_unidosis}}</td>
                         <td *ngIf="item.nuevo && es_unidosis"></td>
 
                         <td *ngIf="es_unidosis">
                             <input class="input has-text-centered " type="number" step="1" min="0" max="{{item.cantidad_unidosis}}" placeholder="Cantidad Unidosis" [(ngModel)]="item.cantidad_unidosis">
-                        </td> -->
+                        </td> 
 
                         <td *ngIf="item.nuevo">
                             <a class="delete" (click)=eliminarLote(i)></a>

@@ -4,7 +4,7 @@
 
 <div class="box" style="margin: 20px;">
       <div class="columns">
-        <div class="column is-three-quarters">
+        <div class="column is-half">
   <section class="section">
           <div class="heading">
             <h1 class="title">{{usuario.almacen_activo.nombre}}</h1>
@@ -15,24 +15,21 @@
   </section>
         </div>
         <div class="column">
-          
-          <div class="field is-horizontal">
-            <div class="field-label is-normal">
-              <label class="label">MES</label>
-            </div>
-            <div class="field-body">
-              <div class="field is-narrow">
-                <div class="control">
-                  <div class="select is-fullwidth">
-                    <select>
-                      <option>ABRIL</option>
-                      <option>MAYO</option>
-                      <option>JUNIO</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div class="field">
+            <label class="label">Fecha inicial:</label>
+            <p class="control is-expanded  has-icon has-icon-right">
+              <input class="input" [value]="fecha_inicial_actual" [(ngModel)]='fecha_inicial' formControlName="fecha_inicial" ngui-datetime-picker
+                  [min-date]="MinDate" [max-date]="MaxDate" date-only="true" 
+                  placeholder="YYYY-MM-DD" />
+            </p>
+          </div>
+          <div class="field">
+            <label class="label">Fecha final:</label>
+            <p class="control is-expanded  has-icon has-icon-right">
+              <input class="input" [value]="fecha_actual" [(ngModel)]='fecha_final' formControlName="fecha_final" ngui-datetime-picker
+                  [min-date]="MinDate" [max-date]="MaxDate" date-only="true" 
+                  placeholder="YYYY-MM-DD" />
+            </p>
           </div>
 
         </div>
