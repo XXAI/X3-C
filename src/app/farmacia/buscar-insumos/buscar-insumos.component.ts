@@ -29,14 +29,17 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   
   @ViewChildren('searchBox') searchBoxViewChildren;
   @ViewChildren('cantidadBox') cantidadBoxViewChildren;
+  @ViewChildren('cluesSelect') cluesSelectViewChildren;
   
   @Output() onCerrar = new EventEmitter<void>();
   @Output() onEnviar = new EventEmitter<any>();
 
   //Harima: Para evitar agregar insumos que ya estan en la lista
   @Input() listaAgregados: Array<string>;
+  @Input() listaAgregadosConClues: any[] = [];
   @Input() conPrecios: boolean = false;
   @Input() conCantidad: boolean = true;
+  @Input() conClues: boolean = false;
   @Input() tipo: string = null;
 
   cargando: boolean = false;
@@ -52,6 +55,15 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   private indicePaginas:number[] = [];
   // # FIN SECCION
 
+
+   // # SECCION: Unidades Medicas dependientes
+
+  private listaClues:any[] = [];
+  private clues:any = -1;
+
+  private listaCluesUtilizadasConInsumo:any[] = [];
+
+   // # FIN SECCION
   
   // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
@@ -66,7 +78,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   constructor(private buscarInsumosService: BuscarInsumosService) { }
 
   ngOnInit() {
-    
+     console.log(this.listaAgregadosConClues);
     var self = this;
 
     var busquedaSubject = this.terminosBusqueda
@@ -129,6 +141,20 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       }
 
     );
+    console.log(this.conClues)
+    if(this.conClues){
+      this.buscarInsumosService.clues().subscribe(
+        respuesta => {
+          this.listaClues = respuesta;
+        }, error => {
+          console.log(error);
+        }
+      );
+    }
+    
+
+
+   
   }
   ngAfterViewInit() {
     try{
@@ -157,7 +183,29 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   seleccionar(item:InsumoMedico){
     this.insumoSeleccionado = item;
     this.cantidadBoxViewChildren.first.nativeElement.disabled = false;
-    this.cantidadBoxViewChildren.first.nativeElement.focus();
+    
+
+    if(this.conClues){
+      this.listaCluesUtilizadasConInsumo = [];
+      for(var i in this.listaAgregadosConClues){
+        if(this.listaAgregadosConClues[i].clave == item.clave){
+          for(var j in this.listaAgregadosConClues[i].lista){
+            this.listaCluesUtilizadasConInsumo.push(this.listaAgregadosConClues[i].lista[j]);
+          }
+          break;          
+        }
+      }
+
+      try{
+          setTimeout(() => { this.cluesSelectViewChildren.first.nativeElement.focus();} ); 
+          
+        } catch(e){
+          console.log(e);
+        }  
+    } else {
+      this.cantidadBoxViewChildren.first.nativeElement.focus();
+    }
+    
   }
   comprobarCantidad(value: any){
     if (value.replace(/ /g,'') == ""){
@@ -180,8 +228,116 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   }
   enviar(e){
     e.preventDefault();
+    console.log(this.clues);
+    
+
     //Harima: Checamos si el insumo que seleccionamos no se encuentra agregado
-    if(this.listaAgregados.indexOf(this.insumoSeleccionado.clave) < 0){
+    if(!this.conClues && this.listaAgregados.indexOf(this.insumoSeleccionado.clave) >= 0 ){
+      //Harima: Mostramos un mensaje de error al intentar agregar un insumo ya presente en la lista
+      this.mensajeError = new Mensaje(true,2);
+      this.mensajeError.texto = "El insumo seleccionado ya se encuentra en la lista";
+      this.mensajeError.mostrar = true;
+      return;
+    }
+   
+    if(this.conClues){
+
+      var existe = false;
+      
+      
+
+      if(this.clues == "TODAS"){
+        this.listaAgregadosConClues.push({
+            clave: this.insumoSeleccionado.clave,
+            lista: []
+        }); 
+        let ultimo = this.listaAgregadosConClues.length - 1;
+        console.log(ultimo)
+        for(var i in this.listaClues){
+          this.listaAgregadosConClues[ultimo].lista.push(this.listaClues[i].clues);
+
+          
+          var item = {
+            insumo: this.insumoSeleccionado,
+            clues: this.listaClues[i].clues,
+            nombre:this.listaClues[i].nombre,            
+            cantidad: Number(this.cantidadBoxViewChildren.first.nativeElement.value)
+          }
+          console.log(item)
+          this.listaCluesUtilizadasConInsumo.push(this.listaClues[i].clues);
+          this.onEnviar.emit(item);
+        } 
+        this.mensajeAgregado = new Mensaje(true, 2);
+        this.mensajeAgregado.mostrar = true;  
+
+        
+        this.cluesSelectViewChildren.first.nativeElement.value = -1;
+        this.cantidadBoxViewChildren.first.nativeElement.value = "";
+        this.clues = -1;
+        try{
+            setTimeout(() => { this.searchBoxViewChildren.first.nativeElement.focus();} ); 
+            
+        } catch(e){
+          console.log(e);
+        } 
+
+      } else {
+
+        
+        for(var i in this.listaAgregadosConClues){
+          if(this.listaAgregadosConClues[i].clave == this.insumoSeleccionado.clave){
+            existe = true;
+
+            if(this.listaAgregadosConClues[i].lista.indexOf(this.clues)>=0){
+                this.mensajeError = new Mensaje(true,2);
+                this.mensajeError.texto = "La unidad seleccionada ya tiene asignado ese insumo asignado";
+                this.mensajeError.mostrar = true;
+                return;
+            } else {
+              this.listaAgregadosConClues[i].lista.push(this.clues);
+            }
+            break;
+          } 
+        } 
+        if(!existe){
+          this.listaAgregadosConClues.push({
+            clave: this.insumoSeleccionado.clave,
+            lista: [this.clues]
+          });        
+        } 
+
+        var um = { clues: '', nombre: ''};
+        for(var i in this.listaClues){
+          if(this.listaClues[i].clues == this.clues){
+            um.clues = this.clues;
+            um.nombre = this.listaClues[i].nombre;
+          }
+        }
+        
+        var _item = {
+            insumo: this.insumoSeleccionado,
+            clues: this.clues,
+            nombre: um.nombre,            
+            cantidad: Number(this.cantidadBoxViewChildren.first.nativeElement.value)
+        }
+
+        this.mensajeAgregado = new Mensaje(true, 2);
+        this.mensajeAgregado.mostrar = true;   
+        this.onEnviar.emit(_item);
+        
+        this.listaCluesUtilizadasConInsumo.push(this.clues);
+        this.cluesSelectViewChildren.first.nativeElement.value = -1;
+        this.clues = -1;
+        try{
+            setTimeout(() => { this.cluesSelectViewChildren.first.nativeElement.focus();} ); 
+            
+        } catch(e){
+          console.log(e);
+        }  
+      }
+       
+
+    } else {
       this.mensajeAgregado = new Mensaje(true, 2);
       this.mensajeAgregado.mostrar = true;    
       this.insumoSeleccionado.cantidad = this.cantidadBoxViewChildren.first.nativeElement.value;
@@ -190,12 +346,16 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       //Harima: Agregamos la clave al arreglo de items agregados
       this.listaAgregados.push(this.insumoSeleccionado.clave);
       this.resetItemSeleccionado();
-    }else{
-      //Harima: Mostramos un mensaje de error al intentar agregar un insumo ya presente en la lista
-      this.mensajeError = new Mensaje(true,2);
-      this.mensajeError.texto = "El insumo seleccionado ya se encuentra en la lista";
-      this.mensajeError.mostrar = true;
     }
+
+
+    
+    
+
+    
+    
+    
+    
   }
   
   buscar(term: string): void {
@@ -301,5 +461,20 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
     }
     
         
+  }
+
+  seleccionarClues(value){
+    this.clues = value;
+
+    try{
+          // Por alguna razón si no implemento un setTimeout me lanza error
+          // investigar porque ocurre esto
+
+          // Poner el focus en la barra de busqueda
+          setTimeout(() => { this.cantidadBoxViewChildren.first.nativeElement.focus();} ); 
+          
+        } catch(e){
+          console.log(e);
+        }  
   }
 }
