@@ -146,9 +146,12 @@
                 </tbody>
                 <tbody *ngIf="busquedaActivada">
                     <tr *ngFor="let item of resultadosBusqueda; let i=index">
-                        <th style="vertical-align: middle;"><a routerLink="{{obtenerDireccion(item.id,item.status)}}">{{ item.id }}</a></th>
+                        <th style="vertical-align: middle;"><a routerLink="{{obtenerDireccion(item.id,item.status)}}">
+                            <span class="icon"><i class="fa fa-{{(item.tipo_pedido_id=='PA')?'hospital-o':'building'}}"></i></span>
+                            {{ item.folio?item.folio:'S/F' }}</a>
+                        </th>
                         <td style="vertical-align: middle;"><a routerLink="{{obtenerDireccion(item.id,item.status)}}">{{ item.descripcion }}</a></td>
-                        <td style="vertical-align: middle;"><a [ngClass]="{'estatus-rojo':(item.status == 'PS' && item.expira_en_dias <= 0),'estatus-amarillo':(item.status == 'PS' && (item.expira_en_dias > 0 && item.expira_en_dias <= 5))}" routerLink="{{obtenerDireccion(item.id,item.status)}}">{{ item.created_at | date:'y-MM-dd' }} <span *ngIf="item.status == 'PS'">({{item.expira_en_dias}})</span></a></td>
+                        <td style="vertical-align: middle;"><a [ngClass]="{'estatus-rojo':(item.status == 'PS' && item.expira_en_dias <= 0),'estatus-amarillo':(item.status == 'PS' && (item.expira_en_dias > 0 && item.expira_en_dias <= 5))}" routerLink="{{obtenerDireccion(item.id,item.status)}}">{{ item.fecha | date:'y-MM-dd' }} <span *ngIf="item.status == 'PS'">({{item.expira_en_dias?item.expira_en_dias:'hoy'}})</span></a></td>
                         <td style="vertical-align: middle;"><a routerLink="{{obtenerDireccion(item.id,item.status)}}"> 
                             {{ (item.total_claves_recibidas || 0) | number }} / {{ item.total_claves_solicitadas | number }} [{{(item.total_claves_recibidas/item.total_claves_solicitadas)*100 | number:'1.0-2'}}%]
                         </a></td>
@@ -161,7 +164,9 @@
                         <td style="vertical-align: middle;" class="has-text-centered">
                             <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
                             <a *ngIf="!item.cargando && item.status == 'BR'" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
-                            <a *ngIf="!item.cargando && item.status == 'PS'" routerLink="/almacen/pedidos/recepcion/{{item.id}}" title="Recibir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
+                            <a *ngIf="!item.cargando && item.status == 'PS' && item.expira_en_dias >= 0" routerLink="/almacen/pedidos/recepcion/{{item.id}}" title="Recibir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
+                            <span *ngIf="!item.cargando && item.status == 'PS' && item.expira_en_dias < 0" class="tag is-danger" title="Expirado"><span class="icon"><i class="fa fa-exclamation"></i></span></span>
+                            <span *ngIf="!item.cargando && item.status == 'FI'" class="is-success" title="Finalizado"><span class="icon"><i class="fa fa-check-circle"></i></span></span>
                         </td>
                     </tr>
 
