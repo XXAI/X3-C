@@ -20,4 +20,8 @@ export class BuscarInsumosService {
     return this.jwtRequest.get(BuscarInsumosService.URL,null,{q: term, page: pagina, per_page: resultados_por_pagina, con_precios: con_precios, tipo: tipo}).map( (response: Response) => response.json().data);
   }
 
+  clues( ): Observable<any>{
+    return this.jwtRequest.get('unidades-medicas-dependientes',null,null).map( (response: Response) => response.json().data);
+  }
+
 }

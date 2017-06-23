@@ -21,6 +21,13 @@ export class HubComponent implements OnInit {
       ] 
     },
     { 
+      title:'Farmacia Subrrogada', routerLink:'/farmacia-subrrogada', icono:'assets/hub-farmacia-sub.svg',
+      permisos: [
+        'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk--', // Ver pedidos
+        'iSxK0TpoYpnzf8KIQTWOq9Web7WnSKhz--' // Ver entregas
+      ] 
+    },
+    { 
       title:'Administrador central', routerLink:'/administrador-central', icono:'assets/hub-administrador-central.svg',
       permisos: [
         'bsIbPL3qv6XevcAyrRm1GxJufDbzLOax', // Ver pedidos

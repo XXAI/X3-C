@@ -9,13 +9,15 @@
     <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
       <section class="hero is-primary">
         <div class="hero-body">
-          <a class="button  is-primary" style="position:absolute; top:10em; right:3em;" (click)="ctrl.cargarDatos(); "><span class="icon "><i class="fa fa-refresh"></i></span></a>
+          <a class="button  is-primary" style="position:absolute; top:10em; right:3em;" (click)="ctrl.cargarDatos(); "  id="actualizar"><span class="icon "><i class="fa fa-refresh"></i></span></a>
           <div class="container is-fluid">
             <h1 class="title">
               <span *ngIf="!ctrl.cargando" class="icon is-medium"><i class="fa fa-edit"></i></span>
               <span *ngIf="ctrl.cargando" class="icon is-medium"><i class="fa fa-refresh fa-spin"></i></span>
               <!-- -->Mis claves
             </h1>
+            <span style="text-align: right">Última actualización: <strong>{{actualizacion | date}}</strong>.
+              Por: <strong>{{actualizacion_usuario}} </strong> </span>
 
           </div>
         </div>
@@ -28,162 +30,113 @@
         <!-- formulario -->
         <form name="dato" novalidate [formGroup]="dato" (ngSubmit)="ctrl.enviar()">
           <a id="catalogos" (click)="ctrl.cargarCatalogo('tipos_claves', 'insumos-auto'); "></a>
-          <div class="tabs is-boxed">
-            <ul>
-              <li [ngClass]="{ 'is-active' : tab == 2}">
-                <a (click)="tab=2">
-                    <span class="icon is-small"><i class="fa fa-home"></i></span>
-                    <span>Tipos de claves</span>
-                </a>
-              </li>
-            </ul>
-          </div>
 
-          <div [ngClass]="{ 'is-hidden': tab != 2}">
+
 
             <div class="box">
               <article class="media">
                 <div class="media-content">
                   <div class="content">
-                    <div class="column is-5" style="float:left">
-                      <nav class="panel">
-                        <div class="panel-heading">
-                          <div class="field">
-                            <div class="b-checkbox is-info">
-                              <input id="Movimientos" class="styled" type="checkbox" (click)="ctrl.seleccionarTodosMover('izquierda', ctrl.tipos_claves)">
-                              <label for="Movimientos">
-                                 Claves disponibles
-                              </label>
-                            </div>
+                    <nav class="panel">
+                      <div class="panel-heading">
+                        <div class="field">
+                          <label for="Claves">
+                                Claves disponibles
+                            </label>
+                          <div style="height:15px;"></div>
 
+                          <input ngui-auto-complete [source]="insumos_term" [list-formatter]="autocompleListFormatter" 
+                            id="buscarInsumo" value-property-name="clave"
+                            display-property-name="nombre" path-to-data="" loading-text="Cargando..." no-match-found-text="No hay resultados."
+                            (valueChanged)="select_insumo_autocomplete($event)" min-chars="1" class="input is-success is-medium"
+                            type="text" placeholder="Escanea el codigo de barra, o empieza escribir el nombre del producto" >
+                        </div>
+                      </div>
+                    </nav>
+                    
+                    <nav class="panel" >
+                      <div class="panel-heading">
+                        <div class="field">
+                          <label for="MisClaves" style="padding-bottom: 5px">
+                              Mis claves
+                          </label>
+                        </div>
+                      </div>
+                      <div class="content">
+                        <div class="card">
+                          <div class="columns" style="padding: 5px; padding-left: 15px">
+                            <div class="nav-left nav-menu">
+                              <p class="control" style="padding: 10px">
+                                <a class="button" [ngClass]="{ 'is-primary': tipo == 'ME' && es_causes == 1}" (click)="tipo='ME'; es_causes = 1">
+                                  <span class="icon">
+                                    <i class="fa fa-medkit"></i>
+                                  </span>
+                                  <span>CAUSES</span>
+                                </a>
+                              </p>
+                              <p class="control" style="padding: 10px">
+                                <a class="button" [ngClass]="{ 'is-primary': tipo == 'ME' && es_causes == 0}" (click)="tipo= 'ME'; es_causes = 0">
+                                  <span class="icon">
+                                    <i class="fa fa-medkit"></i>
+                                  </span>
+                                  <span>NO CAUSES</span>
+                                </a>
+                              </p>
+                              <p class="control" style="padding: 10px">
+                                <a class="button" [ngClass]="{ 'is-primary': tipo == 'MC' && es_causes == 0}" (click)="tipo='MC'; es_causes = 0">
+                                  <span class="icon">
+                                    <i class="fa fa-medkit"></i>
+                                  </span>
+                                  <span>MATERIAL DE CURACION</span>
+                                </a>
+                              </p>
+                            </div>
+                            <label class="label" style="padding: 15px">
+                              Total de claves: {{ctrl.dato.get('clues_claves').length}}
+                            </label>
+                          </div>
+                          <!-- AGRUPADO POR CAUSES/NOCAUSES -->
+                          <div>
+                            <div class="scroll">
+                              <div class="content" formArrayName="clues_claves"  *ngIf="ctrl.dato.get('clues_claves').length > 0">
+                                <table class="table is-striped" style="padding: 20px;">
+                                  <tbody *ngFor="let val of  ctrl.dato.controls.clues_claves.controls ; let i=index;" >
+                                    <tr *ngIf="val.value.tipo==tipo && val.value.es_causes==es_causes" [formGroupName]="i">
+                                      <td>{{val.value.clave_insumo_medico}} </td>
+                                      <td>{{val.value.descripcion}} </td>
+                                      <td>{{val.value.tipo}} </td>
+                                      <td> </td>
+                                      <td><a class="delete" (click)="ctrl.quitar_form_array(ctrl.dato.controls.clues_claves, i)"></a></td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
                           </div>
                         </div>
-
-                        <!-- CAUSES Y NO CAUSES -->
-                        <div class="content" *ngFor="let item of ctrl.tipos_claves | groupBy:'es_causes'">
-                          <div class="card" [ngClass]="{'is-hidden': tipo != item.key }">
-
-                            <p class="panel-tabs">
-                              <a (click)="cambiarTipo(1)" [ngClass]="{'is-active': tipo == 1}">CAUSES</a>
-                              <a (click)="cambiarTipo(0)" [ngClass]="{'is-active': tipo == 0}">NO CAUSES</a>
-                              <a (click)="cambiarTipo('MC')" [ngClass]="{'is-active': tipo == 'MC'}">MATERIAL DE CURACION</a>
-                            </p>
-                            <!-- -->
-                            <div class="scroll">
-                              <label class="panel-block" *ngFor="let val of item.value; let i=index">          
-                                <div class="field">
-                                    <div class="b-checkbox">
-                                        <input id="{{val.id}}" class="styled" type="checkbox" 
-                                        [checked]="ctrl.izquierda.indexOf(val) > -1"
-                                        (click)="ctrl.agregarMover('izquierda', item.value, val)">
-                                        <label for="{{val.id}}">
-                                            {{val.descripcion}} 
-                                        </label>
-                                    </div>
-                                </div>
-
-                          </label>
-                        </div>
-                        <!-- -->
-                    </div>
-                  </div>
-                  <!-- MATERIAL DE CURACION -->
-                  <div class="content" *ngFor="let item of ctrl.tipos_claves | groupBy:'tipo'">
-                    <div class="card" [ngClass]="{'is-hidden': tipo != item.key }">
-
-                      <p class="panel-tabs">
-                        <a (click)="cambiarTipo(1)" [ngClass]="{'is-active': tipo == 1}">CAUSES</a>
-                        <a (click)="cambiarTipo(0)" [ngClass]="{'is-active': tipo == 0}">NO CAUSES</a>
-                        <a (click)="cambiarTipo('MC')" [ngClass]="{'is-active': tipo == 'MC'}">MATERIAL DE CURACION</a>
-                      </p>
-                      <!-- -->
-                      <div class="scroll">
-                        <label class="panel-block" *ngFor="let val of item.value; let i=index">          
-                                                    <div class="field">
-                                                        <div class="b-checkbox">
-                                                            <input id="{{val.id}}" class="styled" type="checkbox" 
-                                                            [checked]="ctrl.izquierda.indexOf(val) > -1"
-                                                            (click)="ctrl.agregarMover('izquierda', item.value, val)">
-                                                            <label for="{{val.id}}">
-                                                                {{val.descripcion}} 
-                                                            </label>
                       </div>
-                    </div>
-
-                    </label>
-                  </div>
-                  <!-- -->
-                </div>
+                    </nav>
             </div>
-
-            </nav>
           </div>
-          <div class="column is-2" style="float:left">
+          </article>
+    </div>
+  <br><br>
+  <div class="control is-grouped" style="float:left; padding:10px;">
+    <p class="control">
+      <button class="button is-primary" type="submit" [ngClass]="{'is-loading': ctrl.cargando}"
+        [disabled]="ctrl.dato.invalid">Guardar</button>
+    </p>
+    <p class="control" *ngIf="ctrl.id">
+      <button class="button is-danger" type="button" [ngClass]="{'is-loading': ctrl.cargando}"
+        (click)="ctrl.eliminar(ctrl.id)">Eliminar </button>
+    </p>
+    <p class="control">
+      <a class="button is-white" (click)="ctrl.regresar()">Regresar</a>
+    </p>
+  </div>
 
-            <p class="control">
-              <button class="button is-default" type="button" style="width:100%" [ngClass]="{'is-success': ctrl.izquierda.length > 0}"
-                [disabled]="ctrl.izquierda.length <= 0" (click)="ctrl.iniciarMover('izquierda', ctrl.dato.controls.clues_claves.controls, ctrl.tipos_claves, true)">></button>
-            </p>
-            <p class="control">
-              <button class="button is-default" type="button" style="width:100%" [ngClass]="{'is-success': ctrl.derecha.length > 0}"
-                [disabled]="ctrl.derecha.length <= 0" (click)="ctrl.iniciarMover('derecha', ctrl.tipos_claves, ctrl.dato.controls.clues_claves.controls, false)"><</button>
-            </p>
-
-          </div>
-          <div class="column is-5" style="float:left">
-            <nav class="panel" formGroupName="clues_claves">
-              <div class="panel-heading">
-                <div class="field">
-                  <div class="b-checkbox is-info">
-                    <input id="MisServicios" class="styled" type="checkbox" (click)="ctrl.seleccionarTodosMover('derecha', ctrl.dato.controls.clues_claves.controls)">
-                    <label for="MisServicios">
-                        Mis claves
-                    </label>
-                  </div>
-                </div>
-              </div>
-              <p class="panel-tabs">
-              <div class="scroll">
-                <label class="panel-block" *ngFor="let item of ctrl.dato.controls.clues_claves.controls; let i2=index">          
-                  <div class="field" [formGroupName]="i2">
-                      <div class="b-checkbox">
-                          <input id="{{item.value.id}}" class="styled" type="checkbox"
-                          [checked]="ctrl.derecha.indexOf(item) > -1"
-                          (click)="ctrl.agregarMover('derecha', ctrl.dato.controls.clues_claves.controls, item)">
-                          <label for="{{item.value.id}}">
-                              {{item.value.descripcion}} 
-                          </label>
-                      </div>
-                    </div>
-                </label>
-              </div>
-            </nav>
-          </div>
-          
-        </div>
-</div>
-</article>
-</div>
-</div>
-<a (click)="ctrl.initMover(ctrl.dato.controls.clues_claves.controls, ctrl.tipos_claves); "
-  id="initMover"></a>
-<br><br>
-<div class="control is-grouped" style="float:left; padding:10px;">
-  <p class="control">
-    <button class="button is-primary" type="submit" [ngClass]="{'is-loading': ctrl.cargando}"
-      [disabled]="ctrl.dato.invalid">Guardar</button>
-  </p>
-  <p class="control" *ngIf="ctrl.id">
-    <button class="button is-danger" type="button" [ngClass]="{'is-loading': ctrl.cargando}"
-      (click)="ctrl.eliminar(ctrl.id)">Eliminar </button>
-  </p>
-  <p class="control">
-    <a class="button is-white" (click)="ctrl.regresar()">Regresar</a>
-  </p>
-</div>
-
-</form>
-</section>
+  </form>
+  </section>
 </div>
 </div>
 </div>

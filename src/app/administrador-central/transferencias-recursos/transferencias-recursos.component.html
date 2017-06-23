@@ -141,10 +141,16 @@
                 
                 <tbody>
                     <tr *ngFor="let item of lista; let i=index">                        
-                        <td style="vertical-align: middle; text-align: center;"><abbr title="{{ item.unidad_medica_origen }}">{{ item.clues_origen }}</abbr></td>
+                        <td style="vertical-align: middle; text-align: center;">
+                            <abbr title="{{ item.almacen_origen_nombre }}"><span class="icon is-small"><i class="fa fa-{{(item.almacen_origen_tipo == 'ALMPAL')?'hospital-o':'building'}}"></i></span></abbr>
+                            <abbr title="{{ item.unidad_medica_origen }}">{{ item.clues_origen }}</abbr>
+                        </td>
                         <td style="vertical-align: middle; text-align: center;">{{ item.mes_origen }}</td>
                         <td style="vertical-align: middle; text-align: center;">{{ item.anio_origen }}</td>
-                        <td style="vertical-align: middle; text-align: center;"><abbr title="{{ item.unidad_medica_destino }}">{{ item.clues_destino }}</abbr></td>
+                        <td style="vertical-align: middle; text-align: center;">
+                            <abbr title="{{ item.almacen_destino_nombre }}"><span class="icon is-small"><i class="fa fa-{{(item.almacen_destino_tipo == 'ALMPAL')?'hospital-o':'building'}}"></i></span></abbr>
+                            <abbr title="{{ item.unidad_medica_destino }}">{{ item.clues_destino }}</abbr>
+                        </td>
                         <td style="vertical-align: middle; text-align: center;">{{ item.mes_destino }}</td>
                         <td style="vertical-align: middle; text-align: center;">{{ item.anio_destino }}</td>
                         <td style="vertical-align: middle; text-align: right;">{{ item.causes  | currency:'USD':true:'1.2-2' }}</td>
@@ -199,12 +205,22 @@
     <section class="modal-card-body">
         <div class="columns">
             <div class="column">
-                <label><b>Origen:</b></label>                       
+                <label><b>Unidad Medica Origen:</b></label>
                 <p class="control is-expanded">
                     <span class="select is-fullwidth">
                     <select #cluesOrigen  (change)="obtenerPresupuestoOrigen()"  [(ngModel)]="transaccion_clues_origen">
+                        <!--option [ngValue]="{clues:''}" [selected]="true">Elija una unidad médica</option-->
+                        <option *ngFor="let item of listaClues" [ngValue]="item">{{ item.clues }} - {{ item.unidad_medica.nombre }}</option>
+                    </select>
+                    </span>
+                </p> 
+
+                <label><b>Almacen Origen:</b></label>      
+                <p class="control is-expanded">
+                    <span class="select is-fullwidth">
+                    <select #almacenOrigen  (change)="obtenerPresupuestoOrigen()"  [(ngModel)]="transaccion_almacen_origen">
                         <option value="">Elija una unidad médica</option>
-                        <option *ngFor="let item of listaClues" [value]="item.clues">{{ item.clues }} - {{ item.unidad_medica.nombre }}</option>
+                        <option *ngFor="let item of listaAlmacenesOrigen" [value]="item.id">[{{item.clues}}] {{ item.nombre }}</option>
                     </select>
                     </span>
                 </p> 
@@ -233,27 +249,67 @@
                         </p> 
                     </div>
                 </div>
+                <table class="table" *ngIf="!datosOrigenValidos && !conPresupuestoOrigen">
+                    <tbody>
+                        <tr *ngIf="!conPresupuestoOrigen">
+                            <th>Este almacen no tiene presupuesto asignado en el mes especificado</th>
+                        </tr>
+                    </tbody>
+                </table>
                 <table class="table" *ngIf="datosOrigenValidos">
                     <thead>
-                        <tr><th colspan="2">Presupuesto origen disponible:</th></tr>
+                        <tr><th colspan="2">Presupuesto origen (disponible):</th></tr>
                     </thead>
                     <tbody>
-                        <tr><th>Causes</th><td>{{ presupuestoOrigen.causes | currency:'USD':true:'1.2-2' }}</td></tr>
-                        <tr><th>No causes</th><td>{{ presupuestoOrigen.no_causes | currency:'USD':true:'1.2-2' }}</td></tr>
-                        <tr><th>Material de curación</th><td>{{ presupuestoOrigen.material_curacion | currency:'USD':true:'1.2-2' }}</td></tr>
+                        <tr *ngIf="conPresupuestoOrigen">
+                            <th>Causes</th>
+                            <td [ngClass]="{'rojo':presupuestoOrigen.causes < 0}"> <span *ngIf="cargandoPresupuestoOrigen"><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>&nbsp;Cargando...</span> <span *ngIf="!cargandoPresupuestoOrigen">{{ presupuestoOrigen.causes | currency:'USD':true:'1.2-2' }}</span></td>
+                        </tr>
+                        <tr *ngIf="conPresupuestoOrigen">
+                            <th>No causes</th>
+                            <td [ngClass]="{'rojo':presupuestoOrigen.no_causes < 0}"> <span *ngIf="cargandoPresupuestoOrigen"><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>&nbsp;Cargando...</span> <span *ngIf="!cargandoPresupuestoOrigen">{{ presupuestoOrigen.no_causes | currency:'USD':true:'1.2-2' }}</span></td>
+                        </tr>
+                        <tr *ngIf="conPresupuestoOrigen">
+                            <th>Material de curación</th>
+                            <td [ngClass]="{'rojo':presupuestoOrigen.material_curacion < 0}"> <span *ngIf="cargandoPresupuestoOrigen"><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>&nbsp;Cargando...</span> <span *ngIf="!cargandoPresupuestoOrigen">{{ presupuestoOrigen.material_curacion | currency:'USD':true:'1.2-2' }}</span></td>
+                        </tr>
                     </tbody>                    
                 </table>
             </div>
+            <div class="column is-1">
+                <div class="has-text-centered">
+                    <div class="field is-grouped">
+                        <p class="control">
+                            <a class="button is-large is-fullwidth" [ngClass]="{'is-active':ligarCluesOrigenDestino}" (click)="ligarCluesOrigenDestino = !ligarCluesOrigenDestino" title="Ligar la CLUES de Origen y Destino">
+                                <span class="icon is-large">
+                                <i class="fa" [ngClass]="{'fa-lock':ligarCluesOrigenDestino,'fa-unlock':!ligarCluesOrigenDestino}"></i>
+                                </span>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>        
             <div class="column">
-                <label ><b>Destino:</b></label>                       
+                <label ><b>Unidad Medica Destino:</b></label>
                 <p class="control is-expanded">
                     <span class="select is-fullwidth">
-                    <select #cluesDestino (change)="obtenerPresupuestoDestino()" [(ngModel)]="transaccion_clues_destino">
-                        <option value="">Elija una unidad médica</option>
-                        <option *ngFor="let item of listaClues" [value]="item.clues">{{ item.clues }} - {{ item.unidad_medica.nombre }}</option>
+                    <select #cluesDestino (change)="obtenerPresupuestoDestino()" [(ngModel)]="transaccion_clues_destino" [disabled]="ligarCluesOrigenDestino">
+                        <!--option value="">Elija una unidad médica</option-->
+                        <option *ngFor="let item of listaClues" [ngValue]="item">{{ item.clues }} - {{ item.unidad_medica.nombre }}</option>
                     </select>
                     </span>
                 </p>
+
+                <label ><b>Almacen Destino:</b></label>
+                <p class="control is-expanded">
+                    <span class="select is-fullwidth">
+                    <select #almacenOrigen  (change)="obtenerPresupuestoDestino()"  [(ngModel)]="transaccion_almacen_destino">
+                        <option value="">Elija una unidad médica</option>
+                        <option *ngFor="let item of listaAlmacenesDestino" [value]="item.id">[{{item.clues}}] {{ item.nombre }}</option>
+                    </select>
+                    </span>
+                </p> 
+
                 <div class="columns">
                     <div class="column">
                         <label >Mes:</label>                       
@@ -278,14 +334,30 @@
                         </p> 
                     </div>
                 </div>
+                <table class="table" *ngIf="!datosDestinoValidos && !conPresupuestoDestino">
+                    <tbody>
+                        <tr *ngIf="!conPresupuestoDestino">
+                            <th>Este almacen no tiene presupuesto asignado en el mes especificado</th>
+                        </tr>
+                    </tbody>
+                </table>
                 <table class="table" *ngIf="datosDestinoValidos">
                     <thead>
-                        <tr><th colspan="2">Presupuesto destino actual (disponible):</th></tr>
+                        <tr><th colspan="2">Presupuesto destino (disponible):</th></tr>
                     </thead>
                      <tbody>
-                        <tr><th>Causes</th><td>{{ presupuestoDestino.causes | currency:'USD':true:'1.2-2' }}</td></tr>
-                        <tr><th>No causes</th><td>{{ presupuestoDestino.no_causes | currency:'USD':true:'1.2-2' }}</td></tr>
-                        <tr><th>Material de curación</th><td>{{ presupuestoDestino.material_curacion | currency:'USD':true:'1.2-2' }}</td></tr>
+                        <tr *ngIf="conPresupuestoDestino">
+                            <th>Causes</th>
+                            <td [ngClass]="{'rojo':presupuestoDestino.causes < 0}"> <span *ngIf="cargandoPresupuestoDestino"><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>&nbsp;Cargando...</span> <span *ngIf="!cargandoPresupuestoDestino">{{ presupuestoDestino.causes | currency:'USD':true:'1.2-2' }}</span></td>
+                        </tr>
+                        <tr *ngIf="conPresupuestoDestino">
+                            <th>No causes</th>
+                            <td [ngClass]="{'rojo':presupuestoDestino.no_causes < 0}"> <span *ngIf="cargandoPresupuestoDestino"><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>&nbsp;Cargando...</span> <span *ngIf="!cargandoPresupuestoDestino">{{ presupuestoDestino.no_causes | currency:'USD':true:'1.2-2' }}</span></td>
+                        </tr>
+                        <tr *ngIf="conPresupuestoDestino">
+                            <th>Material de curación</th>
+                            <td [ngClass]="{'rojo':presupuestoDestino.material_curacion < 0}"> <span *ngIf="cargandoPresupuestoDestino"><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>&nbsp;Cargando...</span> <span *ngIf="!cargandoPresupuestoDestino">{{ presupuestoDestino.material_curacion | currency:'USD':true:'1.2-2' }}</span></td>
+                        </tr>
                     </tbody>                    
                 </table>
             </div>

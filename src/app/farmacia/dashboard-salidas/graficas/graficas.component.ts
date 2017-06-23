@@ -4,6 +4,8 @@ import { HttpModule,Http }   from '@angular/http';
 import { CrudService    } from '../../../crud/crud.service';
 import { PedidosService } from '../../../farmacia/pedidos/pedidos.service';
 
+import { GraficasService } from '../graficas/graficas.service';
+
 @Component({
   selector: 'app-graficas',
   templateUrl: './graficas.component.html',
@@ -14,6 +16,7 @@ export class GraficasComponent {
   constructor(
       private http: Http,
       private crudService: CrudService,
+      private graficasService: GraficasService,
       private pedidosService: PedidosService) {
       
         this.grafica_opciones = {
@@ -245,7 +248,7 @@ export class GraficasComponent {
                 }
             ]
         };
-
+//http://sialapi.yoursoft.com.mx/public/index.php/grafica-entregas
         http.get('https://cdn.rawgit.com/gevgeny/angular2-highcharts/99c6324d/examples/aapl.json').subscribe(res => {
             this.datos = {
                 title : { text : 'AAPL Stock Price' },   
@@ -276,6 +279,7 @@ export class GraficasComponent {
     private surtido=1;
     private grafica=1;
     presupuesto:any = {};
+    datosGraficas:any = {};
     claves_categorias: any = {};
     claves_causes: any = {};
     claves_no_causes: any = {};
@@ -285,15 +289,40 @@ export class GraficasComponent {
     grafica_no_causes: any[] = [];
     grafica_mc: any[] = [];
 
+    
+  private MinDate = new Date();
+  private MaxDate = new Date();
+  private fecha_actual;
+  private fecha_inicial_actual;
+
 ngOnInit() {
 
     //obtener los datos del usiario logueado almacen y clues
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
     //console.log(this.usuario);
 
+    //inicializar el data picker minimo y maximo
+    var date = new Date();
+    
+    this.MinDate = new Date(date.getFullYear() - 1, 0, 1);
+    this.MaxDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    this.fecha_actual = date.getFullYear() + '-' + ('00' + (date.getMonth() + 1)).slice(-2) + '-' + date.getDate();
+    this.fecha_inicial_actual = date.getFullYear() + '-' + ('00' + (date.getMonth() + 1)).slice(-2) + '-' + '01';
+
     this.pedidosService.presupuesto().subscribe(
       response => {
         this.presupuesto = response.data;
+      },
+      error => {
+        console.log(error);
+      }
+    );
+
+    this.graficasService.listaDatos().subscribe(
+        response => {
+        this.datosGraficas = response;
+        console.log(this.datosGraficas);
+        console.log(this.datosGraficas.data);        
       },
       error => {
         console.log(error);

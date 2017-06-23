@@ -14,7 +14,7 @@
                     <a class="button is-success is-fullwidth" title="Imprimir Excel" (click)="imprimirExcel(); " *ngIf="esEditar">
                         <span class="icon"><i class="fa fa-file-excel-o"></i></span> &nbsp; Descargar Excel
                     </a>
-                    <a class="button is-info is-fullwidth" [ngClass]="{ 'is-loading': cargandoPdf, 'is-inverted': !cargandoPdf }" title="Imprimir PDF" (click)="mostrarDialogo(); " *ngIf="esEditar">
+                    <a class="button is-info is-fullwidth" title="Imprimir PDF" (click)="mostrarDialogo(); " *ngIf="esEditar">
                         <span class="icon"><i class="fa fa-print"></i></span> &nbsp; Imprimir Pedido
                     </a>
                 </div>
@@ -352,8 +352,11 @@
                 </div>
               </div>
               <footer class="card-footer">
-                <a class="card-footer-item" (click)="imprimir(tipo)" [ngClass]="{ 'is-loading': cargandoPdf, 'is-inverted': !cargandoPdf }">
+                <!--a class="card-footer-item" (click)="imprimir(tipo)" [ngClass]="{ 'is-loading': cargandoPdf, 'is-inverted': !cargandoPdf }">
                   <span class="icon is-medium"><i class="fa fa-file-pdf-o"></i></span>&nbsp;<span>Descargar/Imprimir</span>
+                </a-->
+                <a class="button is-primary is-fullwidth" [ngClass]="{ 'is-loading': cargandoPdf, 'is-inverted': !cargandoPdf }" title="Imprimir Pedido" (click)="imprimir(tipo)">
+                    <span class="icon"><i class="fa fa-file-pdf-o"></i></span> &nbsp; Descargar/Imprimir
                 </a>
               </footer>
             </div>

@@ -33,11 +33,13 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
             });
         }
         
+        pedido.datos.fecha_concluido = pedido.datos.fecha_concluido.substring(0,10);
+
         var dd = {
             content:[{
                 style: 'PEDIDO',
                 table: {
-                    headerRows: 5,
+                    headerRows: 7,
                     dontBreakRows: true,
                     widths: [ 65, 55, '*', 55, 50,50, 60],
                     body: [
@@ -48,16 +50,27 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
                         },{},{},{},{},{},{}],
                         [{ text: 'SECRETARIA DE SALUD\nINSTITUTO DE SALUD\n'+pedido.datos.almacen_solicitante.unidad_medica.nombre+'\nPEDIDO PARA '+pedido.insumos.titulo, style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },{},{},{},{},{}],
                         [
-                            { text: 'PEDIDO DE ABASTOS A UNIDADES MEDICAS EN RELACION AL CONTRATO ABIERTO DE PRESTACION DE SERVICIO.', style: 'tableHeaderVerde', colSpan: 4, alignment: 'center' },{},{},{},
+                            { text: 'PEDIDO DE ABASTOS A UNIDADES MEDICAS EN RELACION AL CONTRATO ABIERTO DE PRESTACION DE SERVICIO.', style: 'tableHeaderVerde', colSpan: 7, alignment: 'center' },{},{},{},{},{},{}
+                        ],
+                        [
+                            { text: 'NOMBRE DEL PEDIDO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },{},
+                            { text: pedido.datos.descripcion, style: 'tableHeader', alignment: 'center', colSpan:2},{},
                             { text: 'FOLIO', style: 'tableHeaderVerde',  alignment: 'center'},
                             { text: pedido.datos.folio+'-'+pedido.insumos.clave_folio, style: 'tableHeader', alignment: 'center', colSpan: 2},{}
                         ],
                         [
-                            { text: 'EMPRESA ADJUDICADA', style: 'tableHeaderVerde', alignment: 'center'},
-                            { text: pedido.datos.proveedor.nombre, style: 'tableHeader', alignment: 'center', colSpan:4},
-                            {},{},{},
+                            { text: 'EMPRESA ADJUDICADA', style: 'tableHeaderVerde', alignment: 'center',colSpan:2},{},
+                            { text: pedido.datos.proveedor.nombre, style: 'tableHeader', alignment: 'center', colSpan:2},
+                            {},
+                            { text: 'FECHA', style: 'tableHeaderVerde', alignment: 'center'},
+                            { text: pedido.datos.fecha_concluido, style: 'tableHeader', alignment: 'center', colSpan:2},{}
+                        ],
+                        [
+                            { text: 'ENTREGAR EN', style: 'tableHeaderVerde', alignment: 'center',colSpan:2},{},
+                            { text: pedido.datos.almacen_solicitante.nombre + ' DEL ' + pedido.datos.almacen_solicitante.unidad_medica.nombre, style: 'tableHeader', alignment: 'center', colSpan:2},
+                            {},
                             { text: 'No. DE LOTES', style: 'tableHeaderVerde', alignment: 'center'},
-                            { text: insumos.length.toString(), style: 'tableHeader', alignment: 'center'}
+                            { text: insumos.length.toString(), style: 'tableHeader', alignment: 'center', colSpan:2},{}
                         ],
                         [
                             { text: 'NO.', style: 'tableHeaderVerde', alignment: 'center'},
