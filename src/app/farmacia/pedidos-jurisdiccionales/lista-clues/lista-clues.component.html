@@ -1,6 +1,6 @@
 <div class="modal is-active" >
   <div class="modal-background" (click)="cerrar()"></div>
-  <div class="modal-card" style="width:95%; height: 100%;">
+  <div class="modal-card" style="width:95%; height: auto;">
    
     <header class="modal-card-head" style="background: #00d1b2;">
       
@@ -21,6 +21,7 @@
                 <th class="is-hidden-tablet">Clave o Genérico</th>  
                 <th style="vertical-align: middle;" class="is-hidden-mobile " >Descripcion</th>                  
                 <th style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Cantidad">Cant.</abbr></th>
+                 <th style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Precio">Precio</abbr></th>
                 <th style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Monto">Monto</abbr></th>
                 <th  style="width:21px !important;"></th>
             </tr>
@@ -47,7 +48,8 @@
                     </div>
                 </td>                
                 <td style="width:100px !important;text-align:center;">{{ insumo.cantidad }}</td>
-                <td style="width:78px !important;"><b><abbr>$ {{insumo.monto | number:'1.2-2'}}</abbr></b></td>
+                <td style="width:78px !important; text-align:center;">$<b><abbr>{{insumo.precio | number:'1.2-2'}}</abbr></b></td>
+                <td style="width:78px !important; text-align:center;">$<b><abbr>{{insumo.monto | number:'1.2-2'}}</abbr></b></td>
             </tr>      
         </tbody>
       </table>
@@ -55,24 +57,26 @@
       <table class="table" style="font-size: 0.8em;">
         <thead>
           <tr>
-            <th>Clues</th>
+            <th style="width:110px !important;">Clues ({{ insumo.lista_clues.length }})</th>
             <th>Nombre</th>
-            <th style="text-align:center">Cantidad</th>  
-            <th style="text-align:right">Monto</th>  
-            <th></th> 
+            <th style="width:90px !important;text-align:center">Cantidad</th>              
+            <th style="width:50px; text-align:right">Monto</th>  
+            <th  *ngIf="!lectura"></th> 
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of insumo.listaClues; let i = index">
+          <tr *ngFor="let item of insumo.lista_clues; let i = index">
             <td>{{ item.clues}}</td>
             <td>{{ item.nombre}}</td>
-            <td style="width:100px !important;">
+            <td style="width:100px !important;"  *ngIf="!lectura">
                 <p class="control is-expanded">
-                <input class="input is-small has-text-centered"  type="number" placeholder="Cant" (keyup)="actualizarTotales()" [(ngModel)]="item.cantidad">
+                <input class="input is-small has-text-centered"  type="number" placeholder="Cant" (keyup)="actualizarTotales()" (mouseup)="actualizarTotales()" [(ngModel)]="item.cantidad">
                 </p>
             </td>
-            <td style="text-align:right"><b><abbr>$ {{insumo.precio * item.cantidad | number:'1.2-2'}}</abbr></b></td>
-            <td style="width:32px !important;">
+
+            <td style="width:100px !important; text-align:center;"  *ngIf="lectura">{{ item.cantidad }} </td>
+            <td style="text-align:right">$<b><abbr>{{insumo.precio * item.cantidad | number:'1.2-2'}}</abbr></b></td>
+            <td style="width:32px !important;" *ngIf="!lectura">
                 <a (click)="eliminarInsumo(item,i)"><span class="icon"><i class="fa fa-trash"></i></span></a>
             </td>
           </tr>
@@ -80,9 +84,6 @@
       </table>
             
     </section>
-    <footer class="" style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em " >
-      
-     
-    </footer>
+    <footer class="" style="position:relative; padding:1em;background: #FFF; border-radius:0 0 0.8em 0.8em " ></footer>
   </div>
 </div>

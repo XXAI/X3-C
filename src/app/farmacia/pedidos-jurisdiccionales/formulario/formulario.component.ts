@@ -58,7 +58,7 @@ export class FormularioComponent implements OnInit {
   // # SECCION: Modal Insumos
   mostrarModalInsumos = false;  
   //Harima: Lista de claves agregadas al pedido, para checar duplicidad
-  listaClaveAgregadas: Array<string> = [];
+  listaClaveAgregadas: any[] = [];
   // # FIN SECCION
 
   // # SECCION: Modal Lista clues
@@ -188,8 +188,24 @@ export class FormularioComponent implements OnInit {
               insumo.monto = +dato.monto_solicitado;
               insumo.precio = +dato.precio_unitario;
               insumo.tipo_insumo_id = dato.tipo_insumo_id;
+              insumo.lista_clues = dato.lista_clues;
+              
+              
               this.pedido.lista.push(insumo);
-              this.listaClaveAgregadas.push(insumo.clave);
+
+              this.listaClaveAgregadas.push({
+                  clave: insumo.clave,
+                  lista: []
+              });   
+
+              console.log(dato.lista_clues)
+              let ultimo = this.listaClaveAgregadas.length - 1;
+
+              for( var j in insumo.lista_clues){
+                console.log(insumo.lista_clues[j])
+                this.listaClaveAgregadas[ultimo].lista.push(insumo.lista_clues[j].clues);
+              }
+
             }
             this.pedido.indexar();
             this.pedido.listar(1);
@@ -234,9 +250,9 @@ export class FormularioComponent implements OnInit {
   obtenerDireccion(): string{
     //if(this.pedidos[this.pedidoActivo].status == 'AB'){
     if(this.pedido.status == 'BR'){
-      return '/almacen/pedidos/borradores';
+      return '/almacen/pedidos-jurisdiccionales/borradores';
     }else{
-      return '/almacen/pedidos/todos';
+      return '/almacen/pedidos-jurisdiccionales/todos';
     }
   }
 
@@ -271,17 +287,17 @@ export class FormularioComponent implements OnInit {
       if(this.pedido.lista[i].clave == insumo.clave){
         existe = true;
 
-        this.pedido.lista[i].listaClues.push({
+        this.pedido.lista[i].lista_clues.push({
           clues:item.clues,
           nombre:item.nombre,
           cantidad: item.cantidad
         });
 
-        console.log(this.pedido.lista[i].listaClues);
+        console.log(this.pedido.lista[i].lista_clues);
 
 
-        for(var j in this.pedido.lista[i].listaClues){
-          cantidad += this.pedido.lista[i].listaClues[j].cantidad;
+        for(var j in this.pedido.lista[i].lista_clues){
+          cantidad += this.pedido.lista[i].lista_clues[j].cantidad;
         }
         this.pedido.lista[i].cantidad  = cantidad;
         this.pedido.lista[i].monto  = insumo.precio * cantidad;
@@ -289,11 +305,11 @@ export class FormularioComponent implements OnInit {
     }
     if(!existe){
       //insumo.monto = insumo.cantidad * insumo.precio;
-      if(!insumo.listaClues){
-        insumo.listaClues = [];
+      if(!insumo.lista_clues){
+        insumo.lista_clues = [];
       }
       
-      insumo.listaClues.push( {
+      insumo.lista_clues.push( {
         clues:item.clues,
         nombre:item.nombre,
         cantidad: item.cantidad
@@ -451,10 +467,6 @@ export class FormularioComponent implements OnInit {
   guardar(finalizar:boolean = false){
     this.guardando = true;
     var guardar_pedido;
-    /*var guardar_pedidos = [];
-    for(var i in this.pedidos){
-      guardar_pedidos.push(this.pedidos[i].obtenerDatosGuardar());
-    }*/
 
     if(this.pedido.datos.invalid){
       this.pedido.datos.get('almacen_solicitante').markAsTouched();
@@ -476,9 +488,6 @@ export class FormularioComponent implements OnInit {
         this.mensajeError.mostrar = true;
         return false;
       }
-      /*for(var i in guardar_pedidos){
-        guardar_pedidos[i].datos.status = 'ES';
-      }*/
     }else{
       guardar_pedido.datos.status = 'BR';
     }
@@ -490,7 +499,7 @@ export class FormularioComponent implements OnInit {
           this.guardando = false;
           //console.log('Pedido editado');
           if(pedido.status != 'BR'){
-            this.router.navigate(['/almacen/pedidos/ver/'+pedido.id]);
+            this.router.navigate(['/almacen/pedidos-jurisdiccionales/ver/'+pedido.id]);
           }
           //hacer cosas para dejar editar
         },
@@ -514,18 +523,6 @@ export class FormularioComponent implements OnInit {
             // Problema de validación
             if (error.status == 409){
               this.mensajeError.texto = "Por favor verfique los campos marcados en rojo.";
-              /*for (var input in e.error){
-                // Iteramos todos los errores
-                for (var i in e.error[input]){
-
-                  if(input == 'id' && e.error[input][i] == 'unique'){
-                    this.usuarioRepetido = true;
-                  }
-                  if(input == 'id' && e.error[input][i] == 'email'){
-                    this.usuarioInvalido = true;
-                  }
-                }                      
-              }*/
             }
             
             if(error.status == 500){
@@ -550,7 +547,7 @@ export class FormularioComponent implements OnInit {
           this.guardando = false;
           //console.log('Pedido creado');
           //console.log(pedido);
-          this.router.navigate(['/almacen/pedidos/editar/'+pedido.id]);
+          this.router.navigate(['/almacen/pedidos-jurisdiccionales/editar/'+pedido.id]);
           //hacer cosas para dejar editar
         },
         error => {
@@ -568,18 +565,6 @@ export class FormularioComponent implements OnInit {
               // Problema de validación
               if (error.status == 409){
                 this.mensajeError.texto = "Por favor verfique los campos marcados en rojo.";
-                /*for (var input in e.error){
-                  // Iteramos todos los errores
-                  for (var i in e.error[input]){
-
-                    if(input == 'id' && e.error[input][i] == 'unique'){
-                      this.usuarioRepetido = true;
-                    }
-                    if(input == 'id' && e.error[input][i] == 'email'){
-                      this.usuarioInvalido = true;
-                    }
-                  }                      
-                }*/
               }
               if(error.status == 500){
                 if(e.error){
@@ -612,7 +597,7 @@ export class FormularioComponent implements OnInit {
 
   cargarAlmacenes() {
     this.cargandoAlmacenes = true;
-    this.almacenesService.catalogo().subscribe(
+    this.almacenesService.catalogo(0).subscribe(
         almacenes => {
           this.cargandoAlmacenes = false;
           this.almacenes = almacenes;
@@ -626,15 +611,6 @@ export class FormularioComponent implements OnInit {
           //Harima:Si no es editar, inicializamos el formulario
           if(!this.esEditar){
             let datos_iniciales:any = {}
-            
-            //datos_iniciales.fecha = this.fechasValidas[0].fecha;
-            //let datos_usuario = JSON.parse(localStorage.getItem('usuario'));
-            //datos_iniciales.almacen_solicitante = datos_usuario.almacen_activo.id;
-            
-            /*if(almacenes.length == 1){
-              datos_iniciales.almacen_solicitante = almacenes[0].id;
-              //this.pedido.datos.setValue({almacen_proveedor:almacenes[0].id,descripcion:'',observaciones:''});
-            }*/
 
             this.pedido.inicializarDatos(datos_iniciales);
           }
@@ -645,6 +621,13 @@ export class FormularioComponent implements OnInit {
             this.mensajeAdvertencia = new Mensaje(true);
             this.mensajeAdvertencia.texto = `No hay almacenes registrados en el sistema, póngase en contacto con un administrador.`;
             this.mensajeAdvertencia.mostrar = true;
+          } 
+          // Akira: esto es para seleccionar por default al primero
+          else {
+            this.pedido.datos.patchValue({
+              almacen_solicitante: this.almacenes[0].id
+            });
+            this.cambioAlmacen();
           }
         },
         error => {
@@ -764,8 +747,7 @@ export class FormularioComponent implements OnInit {
 
   imprimirExcel(){
     var query = "token="+localStorage.getItem('token');
-    window.open(`${environment.API_URL}/generar-excel-pedido/${this.pedido.id}?${query}`); 
-    //window.open(environment.API_URL+"/generar-excel-pedido/"+this.pedido.id, "_blank");
+    window.open(`${environment.API_URL}/generar-excel-pedido-jurisdiccional/${this.pedido.id}?${query}`); 
   }
 
   imprimir() {

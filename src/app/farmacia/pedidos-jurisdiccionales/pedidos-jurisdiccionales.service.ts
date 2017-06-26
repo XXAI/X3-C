@@ -9,9 +9,9 @@ import { Pedido } from '../pedidos/pedido';
 @Injectable()
 export class PedidosJurisdiccionalesService {
 
-  static readonly URL: string = "pedidos";
-  static readonly URL_STATS: string = "pedidos-stats";
-  static readonly URL_PRESUPUESTO: string = "pedidos-presupuesto";
+  static readonly URL: string = "pedidos-jurisdiccionales";
+  static readonly URL_STATS: string = "pedidos-jurisdiccionales-stats";
+  static readonly URL_PRESUPUESTO: string = "pedidos-jurisdiccionales-presupuesto";
   
   constructor(private http: Http,   private jwtRequest:JwtRequestService) { }
 

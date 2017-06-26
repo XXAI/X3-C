@@ -97,64 +97,40 @@
             <br>
         </div>
         
-        <div class="tile is-child  notification is-white">
-        </div>
       </div>
 
       <div class="tile is-parent is-vertical">
         <div class="tile is-child is-12" >
             <div class="tile is-parent" style="padding:0px;">
-                <article class="tile is-child notification is-success has-text-centered" style="padding:0.5rem 0.5rem 0.5rem 0.5rem">
-                    <div class="content" *ngIf="!cargandoPresupuestos">
-                        <span *ngIf="(presupuesto.causes_disponible - pedido.totalMontoCauses) <= 0" class="icon"><i class="fa fa-warning"></i></span>
-                        <p class="subtitle" style="font-weight:bold;">
-                            <small>
-                                Disponible Causes:<br> 
-                                $ {{ (presupuesto.causes_disponible - pedido.totalMontoCauses.toFixed(2)) | number: '1.2-2' }}
-                            </small>
-                        </p>
-                    </div>
-                    <div class="content" *ngIf="cargandoPresupuestos">
-                        <span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span>
-                    </div>
-                </article>
-
-                <article class="tile is-child notification is-danger has-text-centered" style="padding:0.5rem 0.5rem 0.5rem 0.5rem">
-                    <div class="content" *ngIf="!cargandoPresupuestos">
-                        <span *ngIf="(presupuesto.no_causes_disponible - pedido.totalMontoNoCauses) <= 0" class="icon"><i class="fa fa-warning"></i></span>
-                        <p class="subtitle" style="font-weight:bold;">
-                            <small>
-                                Disponible No Causes:<br>  $ {{ (presupuesto.no_causes_disponible - pedido.totalMontoNoCauses.toFixed(2)) | number: '1.2-2' }}
-                            </small>
-                        </p>
-                    </div>
-                    <div class="content" *ngIf="cargandoPresupuestos">
-                        <span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span>
-                    </div>
-                </article>
-
-                <article class="tile is-child notification is-warning has-text-centered" style="padding:0.5rem 0.5rem 0.5rem 0.5rem">
-                    <div class="content" *ngIf="!cargandoPresupuestos">
-                        <span *ngIf="(presupuesto.material_curacion_disponible - pedido.totalMontoMaterialCuracion) <= 0" class="icon"><i class="fa fa-warning"></i></span>
-                        <p class="subtitle" style="font-weight:bold;">
-                            <small>
-                                Disp. Material de Curación:<br>  $ {{ (presupuesto.material_curacion_disponible - pedido.totalMontoMaterialCuracion.toFixed(2)) | number: '1.2-2' }}
-                            </small>
-                        </p>
-                    </div>
-                    <div class="content" *ngIf="cargandoPresupuestos">
-                        <span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span>
-                    </div>
-                </article>
+                <div style="border-radius:0.5em; overflow:hidden; width:100%;">
+                    <table class="table" *ngIf="!cargandoPresupuestos" style="margin:0px;">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Causes</th>
+                                <th>No Causes</th>
+                                <th>Material de curación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>Disponible:</th>
+                                <td><span *ngIf="(presupuesto.causes_disponible - pedido.totalMontoCauses) <= 0" class="icon" style="color:red"><i class="fa fa-warning"></i></span>$<b>{{(presupuesto.causes_disponible - pedido.totalMontoCauses.toFixed(2)) | number: '1.2-2' }}</b></td>
+                                <td><span *ngIf="(presupuesto.no_causes_disponible - pedido.totalMontoNoCauses) <= 0" class="icon" style="color:red"><i class="fa fa-warning"></i></span>$<b>{{(presupuesto.no_causes_disponible - pedido.totalMontoNoCauses.toFixed(2)) | number: '1.2-2' }}</b></td>
+                                <td><span *ngIf="(presupuesto.material_curacion_disponible - pedido.totalMontoMaterialCuracion) <= 0" class="icon" style="color:red"><i class="fa fa-warning"></i></span>$<b>{{(presupuesto.material_curacion_disponible - pedido.totalMontoMaterialCuracion.toFixed(2)) | number: '1.2-2' }}</b></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
         <div class="tile is-child" >
           <div class="contenedor-pedido" >
             <div class="top-bar" [ngClass]="{'is-primary':!pedido.filtro.activo,'is-dark': pedido.filtro.activo }">
-                <span *ngIf="!pedido.filtro.activo"><b>Mes:</b> {{ meses[mes] }} <b>Claves:</b> {{ pedido.lista.length | number }} <b>Insumos:</b> {{pedido.totalInsumos | number}} <b>Total:</b> $ {{ pedido.totalMonto | number: '1.2-2' }}</span>
+                <span *ngIf="!pedido.filtro.activo"><small><b>Mes:</b> {{ meses[mes] }} <b>Claves:</b> {{ pedido.lista.length | number }} <b>Insumos:</b> {{pedido.totalInsumos | number}} <b>Total:</b> $ {{ pedido.totalMonto | number: '1.2-2' }}</small></span>
                 <span *ngIf="pedido.filtro.activo"><span class="icon"><i class="fa fa-search"></i></span> Resultados: {{ pedido.filtro.lista.length }}</span>
                 <a class="button is-primary  is-pulled-right" [ngClass]="{ 'is-inverted': pedido.filtro.activo }" style="margin-top:-0.25em;" title="Ctrl + espacio" (click)="toggleModalInsumos(); ">
-                <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar Clave</span>
+                    <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar Clave</span>
                 </a>
             </div> 
 
@@ -174,31 +150,24 @@
 
             <table class="table is-unselectable" *ngIf="!cargando && !guardando" style="font-size: 0.8em;">
                 <thead>
-                    <tr  >
+                    <tr>
                         <th style="width:41px;vertical-align: middle;" class="has-text-centered" >Lote</th>
                         <th class="is-hidden-mobile" style="width:118px;">
                         <p class="control is-expanded" >
                             <input type="hidden" #searchBoxClavePrevia >
-                            <!--input class="input is-small" type="text" placeholder="Clave" #searchBoxClave id="search-box-clave-{{indexPedido}}" (keyup)="buscar($event,searchBoxClave, searchBoxClavePrevia,[{ input: searchBoxDescripcion, campos: ['generico','informacion.concentracion','informacion.presentacion']}, { input: searchBoxClave, campos: ['clave']}])"-->
                             <input class="input is-small" type="text" placeholder="Filtrar" #searchBoxClave id="search-box-clave" (keyup)="buscar($event,searchBoxClave,searchBoxClavePrevia,[{ input: searchBoxClave, campos: ['clave','descripcion']}])">
                         </p>
                         </th>
-                        <!--th class="is-hidden-mobile">
-                        <p class="control is-expanded">
-                            <input type="hidden" #searchBoxDescripcionPrevia >
-                            <input class="input is-small" type="text" placeholder="Genérico" #searchBoxDescripcion id="search-box-descripcion-{{indexPedido}}" (keyup)="buscar($event,searchBoxDescripcion,searchBoxDescripcionPrevia,[{ input: searchBoxDescripcion, campos: ['generico_nombre','informacion.concentracion','informacion.presentacion']}, { input: searchBoxClave, campos: ['clave']}])">
-                        </p>
-                        </th--> 
                         <th class="is-hidden-tablet">
                         <p class="control is-expanded">
                             <input type="hidden" #searchBoxDescripcionClavePrevia >
-                            <!--input class="input is-small" type="text" placeholder="Clave o Genérico" #searchBoxDescripcionClave id="search-box-descripcion-clave-{{indexPedido}}" (keyup)="buscar($event,searchBoxDescripcionClave,searchBoxDescripcionClavePrevia,[{ input: searchBoxDescripcionClave, campos: ['clave','generico_nombre','informacion.concentracion','informacion.presentacion']}])"-->
+                            
                             <input class="input is-small" type="text" placeholder="Clave o Genérico" #searchBoxDescripcionClave id="search-box-descripcion-clave-{{indexPedido}}" (keyup)="buscar($event,searchBoxDescripcionClave,searchBoxDescripcionClavePrevia,[{ input: searchBoxDescripcionClave, campos: ['clave','descripcion']}])">
                         </p>
                         </th>  
                         <th style="vertical-align: middle;" class="is-hidden-mobile " >Descripcion</th>                  
                         <th style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Cantidad">Cant.</abbr></th>
-                        <th style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Monto">Monto</abbr></th>
+                        <th style="text-align: center; vertical-align: middle;"><abbr title="Monto">Monto</abbr></th>
                         <th style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Unidades médicas asignadas">Clues</abbr></th>
                         <th  style="width:21px !important;"></th>
                     </tr>
@@ -211,7 +180,6 @@
                         
                         <td>
                             <small class="is-hidden-tablet">{{ item.clave }} <br></small>
-                            <!--div *ngIf="item.tipo != 'ME'" style="line-height:1em;"-->
                             <div style="line-height:1em;">
                             <small>{{ item.descripcion }}</small>
                             </div>
@@ -231,13 +199,11 @@
                             <a (click)="toggleModalListaClues(item); ">{{ item.cantidad }}</a>
                         </td>
 
-                        <td style="width:78px !important;">
-                            <b>
-                                <abbr>$ {{item.monto | number:'1.2-2'}}</abbr>
-                            </b>
+                        <td style="text-align: right;">
+                            $<b><abbr>{{item.monto | number:'1.2-2'}}</abbr></b>
                         </td>
                         <td style="width:100px !important; text-align:center">
-                             <a (click)="toggleModalListaClues(item); ">{{ item.listaClues.length }}</a>
+                             <a (click)="toggleModalListaClues(item); ">{{ item.lista_clues.length }}</a>
                         </td>
                         <td style="width:70px !important;">
                             <a (click)="toggleModalListaClues(item); "><span class="icon"><i class="fa fa-list"></i></span></a>
@@ -252,7 +218,6 @@
                         
                         <td>
                             <small class="is-hidden-tablet">{{ item.clave }} <br></small>
-                            <!--div *ngIf="item.tipo != 'ME'" style="line-height:1em;"-->
                             <div style="line-height:1em;">
                             <small>{{ item.descripcion }}</small>
                             </div>
@@ -273,12 +238,10 @@
                         </td>
 
                         <td style="width:78px !important;">
-                            <b>
-                                <abbr>$ {{item.monto | number:'1.2-2'}}</abbr>
-                            </b>
+                            $<b><abbr>{{item.monto | number:'1.2-2'}}</abbr></b>
                         </td> 
                         <td style="width:100px !important; text-align:center">
-                             <a (click)="toggleModalListaClues(item); ">{{ item.listaClues.length }}</a>
+                             <a (click)="toggleModalListaClues(item); ">{{ item.lista_clues.length }}</a>
                         </td>
                         <td style="width:70px !important;">
                             <a (click)="toggleModalListaClues(item); "><span class="icon"><i class="fa fa-list"></i></span></a>
@@ -333,4 +296,4 @@
 </div>
 
 <buscar-insumos *ngIf="mostrarModalInsumos" (onCerrar)="mostrarModalInsumos = false" (onEnviar)="agregarItem($event)" [listaAgregadosConClues]="listaClaveAgregadas" [conPrecios]="true" [conClues]="true"></buscar-insumos>
-<pedidos-jurisdiccionales-lista-clues *ngIf="mostrarModalListaClues" [insumo]="loteSeleccionado" (onCerrar)="mostrarModalListaClues = false"></pedidos-jurisdiccionales-lista-clues>
+<pedidos-jurisdiccionales-lista-clues *ngIf="mostrarModalListaClues" [insumo]="loteSeleccionado" [listaClaveAgregadas]="listaClaveAgregadas" (onCerrar)="mostrarModalListaClues = false"></pedidos-jurisdiccionales-lista-clues>

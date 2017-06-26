@@ -78,6 +78,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   constructor(private buscarInsumosService: BuscarInsumosService) { }
 
   ngOnInit() {
+    console.log("Se supone me vuelvo a ejectuar");
      console.log(this.listaAgregadosConClues);
     var self = this;
 
