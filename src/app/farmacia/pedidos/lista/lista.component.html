@@ -9,31 +9,34 @@
         <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
             <table class="table" style="margin-bottom:0px;background-color:whitesmoke;">
                 <tbody>
-                    <tr>
-                        <th>Presupuesto Anual Causes:</th>
+                    <tr *ngIf="!presupuesto">
+                        <th colspan="2"><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>&nbsp;Cargando Presupuesto...</th>
+                    </tr>
+                    <tr *ngIf="presupuesto">
+                        <th>Presupuesto Anual Causes y Material de Curación:</th>
                         <th>
                             <div class="columns">
                                 <div class="column">
-                                    <span class="tag is-primary">Autorizado: $ {{ presupuesto.causes_modificado | number:'1.2-2' }}</span>
+                                    <span class="tag is-info">Autorizado: $ {{ (presupuesto.causes_modificado + presupuesto.material_curacion_modificado) | number:'1.2-2' }}</span>
                                 </div>
                                 <div class="column">
-                                    <span class="tag is-warning">Comprometido: $ {{ presupuesto.causes_comprometido | number:'1.2-2' }}</span>
+                                    <span class="tag is-warning">Comprometido: $ {{ (presupuesto.causes_comprometido + presupuesto.material_curacion_comprometido) | number:'1.2-2' }}</span>
                                 </div>
                                 <div class="column">
-                                    <span class="tag is-danger">Devengado: $ {{ presupuesto.causes_devengado | number:'1.2-2' }}</span>
+                                    <span class="tag is-danger">Devengado: $ {{ (presupuesto.causes_devengado + presupuesto.material_curacion_devengado) | number:'1.2-2' }}</span>
                                 </div>
                                 <div class="column">
-                                    <span class="tag is-success">Disponible: $ {{ presupuesto.causes_disponible | number:'1.2-2' }}</span>
+                                    <span class="tag is-success">Disponible: $ {{ (presupuesto.causes_disponible + presupuesto.material_curacion_disponible) | number:'1.2-2' }}</span>
                                 </div>
                             </div>
                         </th>
                     </tr>
-                    <tr>
+                    <tr *ngIf="presupuesto">
                         <th>Presupuesto Anual No Causes:</th>
                         <th>
                             <div class="columns">
                                 <div class="column">
-                                    <span class="tag is-primary">Autorizado: $ {{ presupuesto.no_causes_modificado | number:'1.2-2' }}</span>
+                                    <span class="tag is-info">Autorizado: $ {{ presupuesto.no_causes_modificado | number:'1.2-2' }}</span>
                                 </div>
                                 <div class="column">
                                     <span class="tag is-warning">Comprometido: $ {{ presupuesto.no_causes_comprometido | number:'1.2-2' }}</span>
@@ -47,21 +50,21 @@
                             </div>
                         </th>
                     </tr>
-                    <tr>
-                        <th>Presupuesto Anual Material de Curación:</th>
+                    <tr *ngIf="presupuesto">
+                        <th>Presupuesto Anual Total:</th>
                         <th>
                             <div class="columns">
                                 <div class="column">
-                                    <span class="tag is-primary">Autorizado: $ {{ presupuesto.material_curacion_modificado | number:'1.2-2' }}</span>
+                                    <span class="tag is-info">Autorizado: $ {{ ( presupuesto.no_causes_modificado + presupuesto.causes_modificado + presupuesto.material_curacion_modificado) | number:'1.2-2' }}</span>
                                 </div>
                                 <div class="column">
-                                    <span class="tag is-warning">Comprometido: $ {{ presupuesto.material_curacion_comprometido | number:'1.2-2' }}</span>
+                                    <span class="tag is-warning">Comprometido: $ {{ ( presupuesto.no_causes_comprometido + presupuesto.causes_comprometido + presupuesto.material_curacion_comprometido) | number:'1.2-2' }}</span>
                                 </div>
                                 <div class="column">
-                                    <span class="tag is-danger">Devengado: $ {{ presupuesto.material_curacion_devengado | number:'1.2-2' }}</span>
+                                    <span class="tag is-danger">Devengado: $ {{ ( presupuesto.no_causes_devengado + presupuesto.causes_devengado + presupuesto.material_curacion_devengado) | number:'1.2-2' }}</span>
                                 </div>
                                 <div class="column">
-                                    <span class="tag is-success">Disponible: $ {{ presupuesto.material_curacion_disponible | number:'1.2-2' }}</span>
+                                    <span class="tag is-success">Disponible: $ {{ ( presupuesto.no_causes_disponible + presupuesto.causes_disponible + presupuesto.material_curacion_disponible) | number:'1.2-2' }}</span>
                                 </div>
                             </div>
                         </th>
@@ -116,7 +119,7 @@
                     </tr>
                 </thead>
                 <tbody  *ngIf="!busquedaActivada">
-                    <tr *ngFor="let item of pedidos; let i=index">
+                    <tr *ngFor="let item of pedidos; let i=index" [ngClass]="{'proyecto-estatus-azul':item.status == 'EF','proyecto-estatus-rojo':item.status == 'EX-CA','proyecto-estatus-amarillo':item.status == 'EX','proyecto-estatus-verde':item.status == 'FI'}">
                         <th style="vertical-align: middle;"><a routerLink="{{obtenerDireccion(item.id,item.status)}}">
                             <span class="icon"><i class="fa fa-{{(item.tipo_pedido_id=='PA')?'hospital-o':'building'}}"></i></span>
                             {{ item.folio?item.folio:'S/F' }}</a>
@@ -137,7 +140,9 @@
                             <a *ngIf="!item.cargando && item.status == 'BR'" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
                             <a *ngIf="!item.cargando && item.status == 'PS' && item.expira_en_dias >= 0" routerLink="/almacen/pedidos/recepcion/{{item.id}}" title="Recibir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
                             <span *ngIf="!item.cargando && item.status == 'PS' && item.expira_en_dias < 0" class="tag is-danger" title="Expirado"><span class="icon"><i class="fa fa-exclamation"></i></span></span>
-                            <span *ngIf="!item.cargando && item.status == 'FI'" class="is-success" title="Finalizado"><span class="icon"><i class="fa fa-check-circle"></i></span></span>
+                            <span *ngIf="!item.cargando && item.status == 'FI'" class="estatus-verde" title="Finalizado"><span class="icon"><i class="fa fa-check-circle"></i></span></span>
+                            <span *ngIf="!item.cargando && item.status == 'EX-CA'" class="estatus-rojo" title="Expirado - Cancelado"><span class="icon"><i class="fa fa-times-circle"></i></span></span>
+                            <span *ngIf="!item.cargando && item.status == 'EX'" class="estatus-amarillo" title="Expirado"><span class="icon"><i class="fa fa-exclamation-circle"></i></span></span>
                         </td>
                     </tr>
                     <tr *ngIf="pedidos.length == 0">

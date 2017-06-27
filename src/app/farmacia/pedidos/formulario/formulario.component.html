@@ -104,13 +104,13 @@
       <div class="tile is-parent is-vertical">
         <div class="tile is-child is-12" >
             <div class="tile is-parent" style="padding:0px;">
-                <article class="tile is-child notification is-success has-text-centered" style="padding:0.5rem 0.5rem 0.5rem 0.5rem">
+                <article class="tile is-child notification is-info has-text-centered" style="padding:0.5rem 0.5rem 0.5rem 0.5rem">
                     <div class="content" *ngIf="!cargandoPresupuestos">
                         <span *ngIf="(presupuesto.causes_disponible - pedido.totalMontoCauses) <= 0" class="icon"><i class="fa fa-warning"></i></span>
                         <p class="subtitle" style="font-weight:bold;">
                             <small>
-                                Disponible Causes:<br> 
-                                $ {{ (presupuesto.causes_disponible - pedido.totalMontoCauses.toFixed(2)) | number: '1.2-2' }}
+                                Disponible Causes y Material de Curación:<br> 
+                                $ {{ (presupuesto.causes_disponible - pedido.totalMontoCauses.toFixed(2)) + (presupuesto.material_curacion_disponible - pedido.totalMontoMaterialCuracion.toFixed(2)) | number: '1.2-2' }}
                             </small>
                         </p>
                     </div>
@@ -133,7 +133,7 @@
                     </div>
                 </article>
 
-                <article class="tile is-child notification is-warning has-text-centered" style="padding:0.5rem 0.5rem 0.5rem 0.5rem">
+                <!--article class="tile is-child notification is-warning has-text-centered" style="padding:0.5rem 0.5rem 0.5rem 0.5rem">
                     <div class="content" *ngIf="!cargandoPresupuestos">
                         <span *ngIf="(presupuesto.material_curacion_disponible - pedido.totalMontoMaterialCuracion) <= 0" class="icon"><i class="fa fa-warning"></i></span>
                         <p class="subtitle" style="font-weight:bold;">
@@ -145,7 +145,7 @@
                     <div class="content" *ngIf="cargandoPresupuestos">
                         <span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span>
                     </div>
-                </article>
+                </article-->
             </div>
         </div>
         <div class="tile is-child" >
@@ -360,7 +360,7 @@
 
                     <td style="width:100px !important;">
                         <p class="control is-expanded">
-                        <input class="input is-small has-text-centered"  type="number" placeholder="Cant" (keyup)="modificarItem(item)" [(ngModel)]="item.cantidad">
+                        <input class="input is-small has-text-centered"  type="number" placeholder="Cant" (keyup)="modificarItem(item)" (change)="modificarItem(item)" [(ngModel)]="item.cantidad">
                         </p>
                     </td>
 

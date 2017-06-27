@@ -6,18 +6,24 @@
       <div class="tile is-4 is-parent is-vertical ">
         <div class="tile is-child">
             <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
-                <section class="hero is-primary" >
-                <h1 class="title" style="margin:0.5em;" >
-                    <span class="icon is-medium"><i class="fa fa-file-text"></i></span> Detalles del pedido
-                </h1>
-                <div class="control is-grouped">
-                    <a class="button is-success is-fullwidth" title="Imprimir Excel" (click)="imprimirExcel(); " *ngIf="esEditar">
-                        <span class="icon"><i class="fa fa-file-excel-o"></i></span> &nbsp; Descargar Excel
-                    </a>
-                    <a class="button is-info is-fullwidth" title="Imprimir PDF" (click)="mostrarDialogo(); " *ngIf="esEditar">
-                        <span class="icon"><i class="fa fa-print"></i></span> &nbsp; Imprimir Pedido
-                    </a>
-                </div>
+                <section class="hero is-primary" [ngClass]="{'is-primary':pedido.status!='EX','is-danger':pedido.status=='EX' || pedido.status=='EX-CA'}" >
+                    <h1 *ngIf="pedido.status != 'EX' && pedido.status != 'EX-CA'" class="title" style="margin:0.5em;" >
+                        <span class="icon is-medium"><i class="fa fa-file-text"></i></span> Detalles del pedido
+                    </h1>
+                    <h1 *ngIf="pedido.status == 'EX'" class="title" style="margin:0.5em;" >
+                        <span class="icon is-medium"><i class="fa fa-exclamation-circle"></i></span> Pedido Expirado
+                    </h1>
+                    <h1 *ngIf="pedido.status == 'EX-CA'" class="title" style="margin:0.5em;" >
+                        <span class="icon is-medium"><i class="fa fa-exclamation-circle"></i></span> Pedido Cancelado
+                    </h1>
+                    <div class="control is-grouped">
+                        <a class="button is-success is-fullwidth" title="Imprimir Excel" (click)="imprimirExcel(); " *ngIf="esEditar">
+                            <span class="icon"><i class="fa fa-file-excel-o"></i></span> &nbsp; Descargar Excel
+                        </a>
+                        <a class="button is-info is-fullwidth" title="Imprimir PDF" (click)="mostrarDialogo(); " *ngIf="esEditar">
+                            <span class="icon"><i class="fa fa-print"></i></span> &nbsp; Imprimir Pedido
+                        </a>
+                    </div>
                 </section>
 
                 <div style="padding: 1em;">
@@ -61,11 +67,16 @@
                     </div>
                     <hr>
                     <div class="control is-grouped" style="padding-top:10px;" *ngIf="!cargando">
-                        <p class="control" *ngIf="pedido.status != 'FI' && pedido.datosImprimir.tipo_pedido_id == 'PA'">
-                        <a class="button is-primary" routerLink="/almacen/pedidos/recepcion/{{pedido.id}}"> <span class="icon"><i class="fa fa-truck"></i></span> <span>Recibir Pedido</span></a>
+                        <p class="control" *ngIf="pedido.status != 'FI' && pedido.datosImprimir.tipo_pedido_id == 'PA' && pedido.status != 'EX-CA'">
+                            <a class="button is-primary" routerLink="/almacen/pedidos/recepcion/{{pedido.id}}"> <span class="icon"><i class="fa fa-truck"></i></span> <span>Recibir Pedido</span></a>
                         </p>
+
+                        <!--p class="control" *ngIf="pedido.status == 'EX' && pedido.datosImprimir.tipo_pedido_id == 'PA'">
+                            <a class="button is-danger" (click)="mostrarDialogoCancelarPedido()"> <span class="icon"><i class="fa fa-ban"></i></span> <span>Cancelar Pedido</span></a>
+                        </p-->
+
                         <p class="control">
-                        <a class="button is-white" routerLink="{{obtenerDireccion()}}" >Ir a la lista</a>
+                            <a class="button is-white" routerLink="{{obtenerDireccion()}}" >Ir a la lista</a>
                         </p>                
                     </div>
                 </div>
@@ -86,6 +97,7 @@
                 <!--a class="button is-primary  is-pulled-right" [ngClass]="{ 'is-inverted': pedido.filtro.activo }" style="margin-top:-0.25em;" title="Recepciones" (click)="toggleModalRecepciones(); ">
                     <span class="icon"><i class="fa fa-file"></i></span><span>Recepciones: {{pedido.datosImprimir.recepciones.length}}</span>
                 </a-->
+                <a *ngIf="pedido.status == 'EX' && pedido.datosImprimir.tipo_pedido_id == 'PA'" class="button is-danger is-pulled-right" (click)="mostrarDialogoCancelarPedido()"> <span class="icon"><i class="fa fa-ban"></i></span> <span>Cancelar Pedido</span></a>
             </div> 
 
             <div class="is-fullwidth has-text-centered" *ngIf="cargando">
@@ -321,6 +333,62 @@
     <p><span class="icon" style="margin-right: 0.5em;"><i class="fa fa-check-circle"></i></span> <span>{{ mensajeExito.texto }}</span></p>
     <br>
     <p style="text-align: center;"><small >Este mensaje desaparecerá en {{ mensajeExito.cuentaAtras }} segundos.</small></p>       
+</div>
+
+<div class="modal is-active" [ngClass]="{'is-active': mostrarCancelarDialogo}">
+  <div class="modal-background" (click)="cerrarDialogoCancelarPedido()"></div>
+  <div class="modal-card" style="width:95%; height: auto;">
+    <header class="modal-card-head" style="background: #ff3860;">
+      <div class="container is-fluid"  style="width:100%;">
+          <h1 class="title" style="color:#FFF;">
+            <span class="icon is-medium"><i class="fa fa-ban"></i></span> Cancelar Pedido 
+          </h1>
+      </div>            
+      <a class="button  is-danger" style="position:absolute; top:1em; right:1em;" (click)="cerrarDialogoCancelarPedido()"><span class="icon "><i class="fa fa-close"></i></span></a>
+    </header>
+    <section class="modal-card-body" style="padding:0px;" >
+      <div style="padding: 1em;">
+          El pedido actual sera <strong>cancelado</strong>, y el recurso no utilzado estara disponible. Una vez cancelado este pedido ya no podran hacerse mas recepciones de insumos:
+          <table class="table" *ngIf="pedido.datosImprimir">
+              <thead>
+                <tr><th>Folio</th><th colspan="2">Nombre del Pedido</th><th>Fecha</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>{{pedido.datosImprimir.folio}}</td><td colspan="2">{{pedido.datosImprimir.descripcion}}</td><td>{{pedido.datosImprimir.fecha}}</td></tr>
+              </tbody>
+              <thead>
+                <tr><th>Almacén</th><th colspan="3">Observaciones:</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>{{pedido.datosImprimir.almacen_solicitante.nombre}}</td><td colspan="3">{{pedido.datosImprimir.observaciones}}</td></tr>
+              </tbody>
+              <thead>
+                  <tr><th>Total Monto del Pedido</th><th>Monto Recibido</th><th>Monto Disponible</th><th>Transferir a</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                    <td>$ {{pedido.datosImprimir.total_monto_solicitado | number:'1.2-2'}}</td>
+                    <td>$ {{(pedido.datosImprimir.total_monto_recibido||0) | number:'1.2-2'}}</td>
+                    <td>$ {{(pedido.datosImprimir.total_monto_solicitado - (pedido.datosImprimir.total_monto_recibido||0)) | number:'1.2-2'}}</td>
+                    <td>
+                        <span class="select is-fullwidth">
+                            <select [(ngModel)]="dialogCancelarFechaTransferencia">
+                                <option *ngFor="let item of dialogCancelarMeses" [ngValue]="item">{{ item.descripcion }}</option>
+                            </select>
+                        </span>
+                    </td>
+                </tr>
+              </tbody>
+          </table>
+      </div>
+    </section>
+    <footer class="" style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em " >
+        <span *ngIf="errorCancelarPedido" class="notification is-small is-danger is-inverted">{{errorCancelarPedidoTexto}}</span>
+        <button class="button is-medium is-primary is-pulled-right" [ngClass]="{'is-loading': cancelandoPedido}"  (click)="transferirRecurso()">
+            <span class="icon"><i class="fa fa-exchange"></i></span> &nbsp;Transferir Recurso
+        </button>
+    </footer>
+  </div>
 </div>
 
 <div class="modal is-active" [ngClass]="{'is-active': mostrarImprimirDialogo}">

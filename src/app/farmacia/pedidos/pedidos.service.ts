@@ -12,6 +12,7 @@ export class PedidosService {
   static readonly URL: string = "pedidos";
   static readonly URL_STATS: string = "pedidos-stats";
   static readonly URL_PRESUPUESTO: string = "pedidos-presupuesto";
+  static readonly URL_CANCELAR: string = "cancelar-pedido-transferir";
   
   constructor(private http: Http,   private jwtRequest:JwtRequestService) { }
 
@@ -63,6 +64,10 @@ export class PedidosService {
 
   eliminar(id:any): Observable<Pedido> {
     return this.jwtRequest.delete(PedidosService.URL,id).map( (response: Response) => response.json().data) as Observable<Pedido>;
+  }
+
+  cancelarPedidoTransferir(id:any, parametros:any = {}): Observable<any>{
+    return this.jwtRequest.put(PedidosService.URL_CANCELAR,id,parametros).map( (response: Response) => response.json().data) as Observable<any[]>;
   }
   
 }

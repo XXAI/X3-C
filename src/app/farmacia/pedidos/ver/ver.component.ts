@@ -47,8 +47,17 @@ export class VerComponent implements OnInit {
   // # FIN SECCION  
 
   mostrarImprimirDialogo:boolean = false;
+  mostrarCancelarDialogo:boolean = false;
   tiposSubPedidos:string[] = [];
   subPedidos:any = {};
+
+  meses:any = {1:'Enero', 2:'Febrero', 3:'Marzo', 4:'Abril', 5:'Mayo', 6:'Junio', 7:'Julio', 8:'Agosto', 9:'Septiembre', 10:'Octubre', 11:'Noviembre', 12:'Diciembre'};
+
+  dialogCancelarFechaTransferencia: any = {};
+  dialogCancelarMeses: any[] = [];
+  errorCancelarPedido: boolean = false;
+  errorCancelarPedidoTexto: string = '';
+  cancelandoPedido:boolean = false;
 
   //Harima: para ver si el formulaior es para crear o para editar
   formularioTitulo:string = 'Nuevo';
@@ -221,17 +230,21 @@ export class VerComponent implements OnInit {
   }
 
   obtenerDireccion(): string{
-    if(this.pedido.datosImprimir){
-      if(this.pedido.datosImprimir.status == 'PS'){
+    if(this.pedido.status){
+      if(this.pedido.status == 'PS'){
         return '/almacen/pedidos/por-surtir';
-      }else if(this.pedido.datosImprimir.status == 'ET'){
+      }else if(this.pedido.status == 'ET'){
         return '/almacen/pedidos/en-transito';
-      }else if(this.pedido.datosImprimir.status == 'FI'){
+      }else if(this.pedido.status == 'FI'){
         return '/almacen/pedidos/finalizados';
-      }else if(this.pedido.datosImprimir.status == 'EF'){
+      }else if(this.pedido.status == 'EF'){
         return '/almacen/pedidos/farmacia-subrogada';
-      }else{return '/almacen/pedidos/todos';
-
+      }else if(this.pedido.status == 'EX'){
+        return '/almacen/pedidos/expirados';
+      }else if(this.pedido.status == 'EX-CA'){
+        return '/almacen/pedidos/expirados-cancelados';
+      }else{
+        return '/almacen/pedidos/todos';
       }
     }
   }
@@ -409,6 +422,94 @@ export class VerComponent implements OnInit {
 
   cerrarDialogo(){
     this.mostrarImprimirDialogo = false;
+  }
+
+  mostrarDialogoCancelarPedido(){
+    this.dialogCancelarMeses = [];
+    this.errorCancelarPedido = false;
+    this.errorCancelarPedidoTexto = 'Ocurrio un error al intentar cancelar el pedido';
+    let fecha_pedido = this.pedido.datosImprimir.fecha.split('-');
+
+    let mes_pedido = parseInt(fecha_pedido[1]);
+
+    this.dialogCancelarMeses.push({
+      anio: parseInt(fecha_pedido[0]),
+      mes: mes_pedido,
+      descripcion: this.meses[mes_pedido] + ' ' + fecha_pedido[0]
+    });
+
+    if(mes_pedido+1 <= 12){
+      this.dialogCancelarMeses.push({
+        anio: parseInt(fecha_pedido[0]),
+        mes: mes_pedido+1,
+        descripcion: this.meses[mes_pedido+1] + ' ' + fecha_pedido[0]
+      });
+    }
+
+    this.dialogCancelarFechaTransferencia = this.dialogCancelarMeses[0];
+
+    this.mostrarCancelarDialogo = true;
+  }
+
+  transferirRecurso(){
+    var validacion_palabra = prompt("Para confirmar esta transacción, por favor escriba: CANCELAR PEDIDO");
+    if(validacion_palabra == 'CANCELAR PEDIDO'){
+      this.cancelandoPedido = true;
+
+      let parametros = {
+        transferir_a_mes: this.dialogCancelarFechaTransferencia.mes,
+        transferir_a_anio: this.dialogCancelarFechaTransferencia.anio
+      };
+
+      this.pedidosService.cancelarPedidoTransferir(this.pedido.datosImprimir.id,parametros).subscribe(
+        respuesta => {
+          //this.transaccion_clues_origen = {clues:''}; //"";
+          this.pedido.status = 'EX-CA';
+
+          this.cancelandoPedido = false;
+          this.mostrarCancelarDialogo = false;
+          this.errorCancelarPedido = false;
+          // Akira: Quizás aquí deberia limpiar el filtro pa ver el registro.
+        }, error =>{
+          console.log(error);
+          this.errorCancelarPedido = true;
+          this.cancelandoPedido = false;
+          this.mostrarCancelarDialogo = true;
+
+          try {
+
+            let e = error.json();
+
+            if (error.status == 401 ){
+              this.errorCancelarPedidoTexto = "No tiene permiso para esta acción.";
+            }
+            if (error.status == 500 ){
+              this.errorCancelarPedidoTexto = "500 (Error interno del servidor)";
+            }
+
+            if(e.error){
+              this.errorCancelarPedidoTexto = e.error;
+            }
+          } catch(e){
+
+            if (error.status == 500 ){
+              this.errorCancelarPedidoTexto = "500 (Error interno del servidor)";
+            } else {
+              this.errorCancelarPedidoTexto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }          
+          }
+        }
+      );
+    }else{
+      if(validacion_palabra != null){
+        alert("Error al ingresar el texto para confirmar la transferencia.");
+      }
+      return;
+    }
+  }
+
+  cerrarDialogoCancelarPedido(){
+    this.mostrarCancelarDialogo = false;
   }
 
   base64ToBlob( base64, type ) {
