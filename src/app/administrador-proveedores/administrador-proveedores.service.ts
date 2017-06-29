@@ -30,6 +30,28 @@ export class AdministradorProveedoresService {
       }) as Observable<any>;
   }
 
+  verArchivos(id:any): Observable<any>{
+    return this.jwtRequest.get('repository',id,{}).map( (response: Response) => {
+       let jsonData = response.json().data;
+       var repositorio = jsonData as any;
+        
+        return repositorio;
+      }) as Observable<any>;
+  }
+
+  eliminarArchivos(id:any): Observable<any>{
+    return this.jwtRequest.delete('repository',id,{}).map( (response: Response) => {
+       let jsonData = response.json().data;
+       var repositorio = jsonData as any;
+        
+        return repositorio;
+      }) as Observable<any>;
+  }
+  descargarArchivos(id:any): Observable<any>{
+    return this.jwtRequest.get('repository-download',id,{}).map( (response: Response) => {
+        return 0;
+      }) as Observable<any>;
+  }
   presupuesto(parametros): Observable<any>{    
     return this.jwtRequest.get("presupuesto-pedidos-administrador-proveedores",null,parametros).map( (response: Response) => response.json());
   }

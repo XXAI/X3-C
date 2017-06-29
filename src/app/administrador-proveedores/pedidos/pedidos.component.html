@@ -241,6 +241,7 @@
 
                         <td style="text-align:center; vertical-align: middle;">
                             <a  (click)="mostrarDialogoPedidos(item.pedido_id)"><span class="icon"><i class="fa fa-archive"></i></span></a>
+                            <a  (click)="mostrarDialogoArchivos(item.pedido_id, item.folio)"><span class="icon"><i class="fa fa-upload"></i></span></a>
                             <!--a (click)="imprimirExcelItem(item.pedido_id)"><span class="icon"><i class="fa fa-file-excel-o"></i></span></a> <a><span class="icon"><i class="fa fa-file-pdf-o"></i></span></a-->
                         </td>
                     </tr>
@@ -332,3 +333,74 @@
     </footer>
   </div>
 </div>
+
+
+<div class="modal is-active" [ngClass]="{'is-active': verDialogoArchivo}">
+  <div class="modal-background" (click)="cerrarDialogoArchivos()"></div>
+  <div class="modal-card" style="width:70%; height: auto;">
+    <header class="modal-card-head" style="background: #00d1b2;">
+      <div class="container is-fluid"  style="width:100%;">
+          <h1 class="title" style="color:#FFF;">
+            <span class="icon is-medium"><i class="fa fa-file"></i></span> {{nombre_pedido}} 
+          </h1>
+      </div>            
+      <a class="button  is-primary" style="position:absolute; top:1em; right:1em;" (click)="cerrarDialogoArchivos()"><span class="icon "><i class="fa fa-close"></i></span></a>
+    </header>
+    <section class="modal-card-body" style="padding:0px;" >
+      <div style="padding: 1em;">
+        <div class="is-fullwidth has-text-centered" *ngIf="cargandoDatosArchivo">
+            <br>
+            <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando repositorio...</span></span>
+            <br>
+            <br>
+        </div>
+        <div class="columns" *ngIf="!cargandoDatosArchivo">
+          <table class="table" *ngIf="!cargandoDatosArchivo" style="min-width:100%; font-size:0.8em;">
+                <thead>
+                    <tr>
+                        <th style="text-align:center;">Nombre</th>
+                        <th style="text-align:center;">Peso</th>
+                        <th style="text-align:center;">Fecha</th>
+                        <th style="text-align:center;">Descargas</th>
+                        
+                        <th></th>
+                    </tr>
+                    
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of lista_repositorio; let i=index"> 
+                        <td style="text-align: center;"><strong>{{ item.nombre_archivo }}</strong></td>   
+                        <td style="text-align: center;"><strong>{{ item.peso }}</strong></td>   
+                        <td style="text-align: center;"><strong>{{ item.created_at }}</strong></td>   
+                        <td style="text-align: center;"><strong>{{ item.descargas }}</strong></td>   
+                        <td style="text-align: center;"><button type="button" class="button is-primary"><i class="fa fa-download" (click)='descargar(item.id)'></i></button><button type="button" class="button is-danger" (click)='eliminar_archivo(item.id)'><i class="fa fa-close"></i></button></td>   
+                    </tr>
+                    <tr *ngIf="lista_repositorio.length == 0">
+                        <td colspan="12" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="5" style="text-align: center;"  *ngIf="!subir_archivo">
+                            <progress class="progress is-success" value="{{cargando_archivo}}" max="5"></progress>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5"  style="text-align: center;" *ngIf="subir_archivo"> 
+                            Subir Archivo <input type="file" (change)="fileChanged($event)" name="file" accept="application/pdf"><br><br>
+                            <button type="button" class="button is-primary" name="enviar" (click)="upload()">Subir Archivo</button>
+                        </td>
+
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+      </div>
+    </section>
+    <footer class="" style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em " >
+        
+    </footer>
+  </div>
+</div>
+
+
