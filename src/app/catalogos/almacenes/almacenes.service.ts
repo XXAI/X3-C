@@ -21,8 +21,8 @@ export class AlmacenesService {
     return this.jwtRequest.get(AlmacenesService.URL,null,{page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
   }
 
-  catalogo(): Observable<Almacen[]>{
-    return this.jwtRequest.get(AlmacenesService.URL,null,{filtro_usuario:1}).map( (response: Response) => response.json().data) as Observable<Almacen[]>;
+  catalogo(subrogado = null): Observable<Almacen[]>{
+    return this.jwtRequest.get(AlmacenesService.URL,null,{filtro_usuario:1, subrogado: subrogado}).map( (response: Response) => response.json().data) as Observable<Almacen[]>;
   }
 
   ver(id:any): Observable<Almacen>{

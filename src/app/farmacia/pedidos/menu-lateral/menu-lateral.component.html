@@ -57,7 +57,14 @@
             <a routerLink="/almacen/pedidos/expirados" #expirados routerLinkActive="is-active">
                 <span class="icon"><i class="fa fa-exclamation-circle"></i></span> Expirados
                 <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
-                <span *ngIf="stats.expirados>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': expirados.className == 'is-active', 'is-danger': expirados.className != 'is-active' }">{{  stats.expirados }}</span>
+                <span *ngIf="stats.expirados>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': expirados.className == 'is-active', 'is-warning': expirados.className != 'is-active' }">{{  stats.expirados }}</span>
+            </a>
+        </li>
+        <li>
+            <a routerLink="/almacen/pedidos/expirados-cancelados" #expiradosCancelados routerLinkActive="is-active">
+                <span class="icon"><i class="fa fa-times-circle"></i></span> Expirados - Cancelados
+                <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                <span *ngIf="stats.expirados_cancelados>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': expiradosCancelados.className == 'is-active', 'is-danger': expiradosCancelados.className != 'is-active' }">{{  stats.expirados_cancelados }}</span>
             </a>
         </li>
         <hr>

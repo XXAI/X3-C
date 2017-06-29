@@ -39,7 +39,7 @@ export class ListaComponent implements OnInit {
   titulo: string = "Pedidos";
   icono = "fa-file";
   pedidos: Pedido[] = [];
-  presupuesto:any = {};
+  presupuesto:any = false;
   private paginaActual = 1;
   resultadosPorPagina = 10;
   total = 0;
@@ -68,6 +68,7 @@ export class ListaComponent implements OnInit {
       case 'en-transito': this.status = "ET"; this.titulo = "En transito"; this.icono = "fa-clock-o"; break;
       case 'por-surtir': this.status = "PS"; this.titulo = "Por surtir"; this.icono = "fa-truck"; break;
       case 'expirados': this.status = "EX"; this.titulo = "Expirados"; this.icono = "fa-exclamation-circle"; break;
+      case 'expirados-cancelados': this.status = "EX-CA"; this.titulo = "Expirados - Cancelados"; this.icono = "fa-times-circle"; break;
       case 'farmacia-subrogada': this.status = "EF"; this.titulo = "Farmacia Subrogada"; this.icono = "fa-building"; break;
       case 'finalizados': 
           this.status = "FI";
@@ -92,7 +93,23 @@ export class ListaComponent implements OnInit {
     this.pedidosService.presupuesto().subscribe(
       response => {
         this.cargando = false;
-        this.presupuesto = response.data;
+        //this.presupuesto = response.data;
+        this.presupuesto = {};
+        
+        this.presupuesto.causes_modificado = +response.data.causes_modificado;
+        this.presupuesto.causes_comprometido = +response.data.causes_comprometido;
+        this.presupuesto.causes_devengado = +response.data.causes_devengado;
+        this.presupuesto.causes_disponible = +response.data.causes_disponible;
+        
+        this.presupuesto.material_curacion_modificado = +response.data.material_curacion_modificado;
+        this.presupuesto.material_curacion_comprometido = +response.data.material_curacion_comprometido;
+        this.presupuesto.material_curacion_devengado = +response.data.material_curacion_devengado;
+        this.presupuesto.material_curacion_disponible = +response.data.material_curacion_disponible;
+        
+        this.presupuesto.no_causes_modificado = +response.data.no_causes_modificado;
+        this.presupuesto.no_causes_comprometido = +response.data.no_causes_comprometido;
+        this.presupuesto.no_causes_devengado = +response.data.no_causes_devengado;
+        this.presupuesto.no_causes_disponible = +response.data.no_causes_disponible;
       },
       error => {
         this.cargando = false;

@@ -410,7 +410,11 @@ export class FormularioComponent implements OnInit {
     if(finalizar){
       guardar_pedido.datos.status = 'CONCLUIR';
 
-      if((this.presupuesto.causes_disponible - +this.pedido.totalMontoCauses.toFixed(2)) < 0 || (this.presupuesto.no_causes_disponible - +this.pedido.totalMontoNoCauses.toFixed(2)) < 0 || (this.presupuesto.material_curacion_disponible - +this.pedido.totalMontoMaterialCuracion.toFixed(2)) < 0){
+      let causes_material_disponible = (this.presupuesto.causes_disponible - +this.pedido.totalMontoCauses.toFixed(2)) + (this.presupuesto.material_curacion_disponible - +this.pedido.totalMontoMaterialCuracion.toFixed(2));
+      let no_causes_disponible = this.presupuesto.no_causes_disponible - +this.pedido.totalMontoNoCauses.toFixed(2);
+
+      //if((this.presupuesto.causes_disponible - +this.pedido.totalMontoCauses.toFixed(2)) < 0 || (this.presupuesto.no_causes_disponible - +this.pedido.totalMontoNoCauses.toFixed(2)) < 0 || (this.presupuesto.material_curacion_disponible - +this.pedido.totalMontoMaterialCuracion.toFixed(2)) < 0){
+      if( causes_material_disponible < 0 || no_causes_disponible < 0){
         this.guardando = false;
         this.mensajeError = new Mensaje(true);
         this.mensajeError.texto = 'Presupuesto insuficiente';

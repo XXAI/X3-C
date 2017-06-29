@@ -73,6 +73,10 @@ export class VerComponent implements OnInit {
   cargandoPdf:boolean = false;
   // # FIN SECCION
 
+    // # SECCION: Modal Lista clues
+  mostrarModalListaClues = false;
+  loteSeleccionado: any = null;
+  // # FIN SECCION
 
   constructor(
     private title: Title, 
@@ -140,23 +144,11 @@ export class VerComponent implements OnInit {
               insumo.cantidad = +dato.cantidad_solicitada;
               insumo.monto = +dato.monto_solicitado;
               insumo.precio = +dato.precio_unitario;
+
+              insumo.lista_clues = dato.lista_clues;
               this.pedido.lista.push(insumo);
-              //this.listaClaveAgregadas.push(insumo.clave);
-              //let tipo_insumo = 'ST';
               let tiene_iva = false;
               let clave_tipo_insumo = 'SC';
-              /*if(insumo.tipo == 'ME' && insumo.es_causes){
-                tipo_insumo = 'MEDICAMENTOS CAUSES';
-                clave_tipo_insumo = 'C'
-              }else if(insumo.tipo == 'ME' && !insumo.es_causes){
-                tipo_insumo = 'MEDICAMENTOS NO CAUSES';
-                clave_tipo_insumo = 'NC'
-              }else if(insumo.tipo == 'MC'){
-                tipo_insumo = 'MATERIAL DE CURACIÓN';
-                clave_tipo_insumo = 'MC'
-                tiene_iva = true;
-              }*/
-              //tipo_insumo = dato.tipo_insumo.nombre;
               clave_tipo_insumo = dato.tipo_insumo.clave;
               if(dato.tipo_insumo.clave == 'MC'){
                 tiene_iva = true;
@@ -223,14 +215,14 @@ export class VerComponent implements OnInit {
   obtenerDireccion(): string{
     if(this.pedido.datosImprimir){
       if(this.pedido.datosImprimir.status == 'PS'){
-        return '/almacen/pedidos/por-surtir';
+        return '/almacen/pedidos-jurisdiccionales/por-surtir';
       }else if(this.pedido.datosImprimir.status == 'ET'){
-        return '/almacen/pedidos/en-transito';
+        return '/almacen/pedidos-jurisdiccionales/en-transito';
       }else if(this.pedido.datosImprimir.status == 'FI'){
-        return '/almacen/pedidos/finalizados';
+        return '/almacen/pedidos-jurisdiccionales/finalizados';
       }else if(this.pedido.datosImprimir.status == 'EF'){
-        return '/almacen/pedidos/farmacia-subrogada';
-      }else{return '/almacen/pedidos/todos';
+        return '/almacen/pedidos-jurisdiccionales/farmacia-subrogada';
+      }else{return '/almacen/pedidos-jurisdiccionales/todos';
 
       }
     }
@@ -381,12 +373,18 @@ export class VerComponent implements OnInit {
         
   }
 
+  toggleModalListaClues(item:any){
+    //console.log(this.mostrarModalInsumos)
+    this.loteSeleccionado = item;
+    this.mostrarModalListaClues = !this.mostrarModalListaClues
+    //console.log(this.mostrarModalInsumos)
+  }
+
   // # SECCION - Webworkers
   
   imprimirExcel(){
     var query = "token="+localStorage.getItem('token');
-    window.open(`${environment.API_URL}/generar-excel-pedido/${this.pedido.id}?${query}`); 
-    //window.open(environment.API_URL+"/generar-excel-pedido/"+this.pedido.id, "_blank");
+    window.open(`${environment.API_URL}/generar-excel-pedido-jurisdiccional/${this.pedido.id}?${query}`); 
   }
 
   imprimir(tipo:string = '') {

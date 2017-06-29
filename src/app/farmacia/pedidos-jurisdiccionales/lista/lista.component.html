@@ -8,63 +8,36 @@
     <div class="column" style="padding:2em;">
         <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
             <table class="table" style="margin-bottom:0px;background-color:whitesmoke;">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Autorizado</th>
+                        <th>Comprometido</th>
+                        <th>Devengado</th>
+                        <th>Disponible</th>
+                    </tr>
+                </thead>
                 <tbody>
                     <tr>
-                        <th>Presupuesto Anual Causes:</th>
-                        <th>
-                            <div class="columns">
-                                <div class="column">
-                                    <span class="tag is-primary">Autorizado: $ {{ presupuesto.causes_modificado | number:'1.2-2' }}</span>
-                                </div>
-                                <div class="column">
-                                    <span class="tag is-warning">Comprometido: $ {{ presupuesto.causes_comprometido | number:'1.2-2' }}</span>
-                                </div>
-                                <div class="column">
-                                    <span class="tag is-danger">Devengado: $ {{ presupuesto.causes_devengado | number:'1.2-2' }}</span>
-                                </div>
-                                <div class="column">
-                                    <span class="tag is-success">Disponible: $ {{ presupuesto.causes_disponible | number:'1.2-2' }}</span>
-                                </div>
-                            </div>
-                        </th>
+                        <th><abbr title="Presupuesto Anual Causes">PAC</abbr></th>
+                        <td><span class="tag is-primary">$<b>{{ presupuesto.causes_modificado | number:'1.2-2' }}</b></span></td>
+                        <td><span class="tag is-warning">$<b>{{ presupuesto.causes_comprometido | number:'1.2-2' }}</b></span></td>
+                        <td><span class="tag is-danger">$<b>{{ presupuesto.causes_devengado | number:'1.2-2' }}</b></span></td>
+                        <td><span class="tag is-success">$<b>{{ presupuesto.causes_disponible | number:'1.2-2' }}</b></span></td>
                     </tr>
                     <tr>
-                        <th>Presupuesto Anual No Causes:</th>
-                        <th>
-                            <div class="columns">
-                                <div class="column">
-                                    <span class="tag is-primary">Autorizado: $ {{ presupuesto.no_causes_modificado | number:'1.2-2' }}</span>
-                                </div>
-                                <div class="column">
-                                    <span class="tag is-warning">Comprometido: $ {{ presupuesto.no_causes_comprometido | number:'1.2-2' }}</span>
-                                </div>
-                                <div class="column">
-                                    <span class="tag is-danger">Devengado: $ {{ presupuesto.no_causes_devengado | number:'1.2-2' }}</span>
-                                </div>
-                                <div class="column">
-                                    <span class="tag is-success">Disponible: $ {{ presupuesto.no_causes_disponible | number:'1.2-2' }}</span>
-                                </div>
-                            </div>
-                        </th>
+                        <th><abbr title="Presupuesto Anual No Causes">PANC</abbr></th>
+                    <td><span class="tag is-primary">$<b>{{ presupuesto.no_causes_modificado | number:'1.2-2' }}</b></span></td>
+                        <td><span class="tag is-warning">$<b>{{ presupuesto.no_causes_comprometido | number:'1.2-2' }}</b></span></td>
+                        <td><span class="tag is-danger">$<b>{{ presupuesto.no_causes_devengado | number:'1.2-2' }}</b></span></td>
+                        <td><span class="tag is-success">$<b>{{ presupuesto.no_causes_disponible | number:'1.2-2' }}</b></span></td>
                     </tr>
                     <tr>
-                        <th>Presupuesto Anual Material de Curación:</th>
-                        <th>
-                            <div class="columns">
-                                <div class="column">
-                                    <span class="tag is-primary">Autorizado: $ {{ presupuesto.material_curacion_modificado | number:'1.2-2' }}</span>
-                                </div>
-                                <div class="column">
-                                    <span class="tag is-warning">Comprometido: $ {{ presupuesto.material_curacion_comprometido | number:'1.2-2' }}</span>
-                                </div>
-                                <div class="column">
-                                    <span class="tag is-danger">Devengado: $ {{ presupuesto.material_curacion_devengado | number:'1.2-2' }}</span>
-                                </div>
-                                <div class="column">
-                                    <span class="tag is-success">Disponible: $ {{ presupuesto.material_curacion_disponible | number:'1.2-2' }}</span>
-                                </div>
-                            </div>
-                        </th>
+                        <th><abbr title="Presupuesto Anual Material de Curación">PAMC</abbr></th>
+                        <td><span class="tag is-primary">$<b>{{ presupuesto.material_curacion_modificado | number:'1.2-2' }}</b></span></td>
+                        <td><span class="tag is-warning">$<b>{{ presupuesto.material_curacion_comprometido | number:'1.2-2' }}</b></span></td>
+                        <td><span class="tag is-danger">$<b>{{ presupuesto.material_curacion_devengado | number:'1.2-2' }}</b></span></td>
+                        <td><span class="tag is-success">$<b>{{ presupuesto.material_curacion_disponible | number:'1.2-2' }}</b></span></td>
                     </tr>
                 </tbody>
             </table>
@@ -135,7 +108,7 @@
                         <td style="vertical-align: middle;" class="has-text-centered">
                             <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
                             <a *ngIf="!item.cargando && item.status == 'BR'" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
-                            <a *ngIf="!item.cargando && item.status == 'PS' && item.expira_en_dias >= 0" routerLink="/almacen/pedidos/recepcion/{{item.id}}" title="Recibir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
+                            <a *ngIf="!item.cargando && item.status == 'PS' && item.expira_en_dias >= 0" routerLink="/almacen/pedidos-jurisdiccionales/recepcion/{{item.id}}" title="Recibir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
                             <span *ngIf="!item.cargando && item.status == 'PS' && item.expira_en_dias < 0" class="tag is-danger" title="Expirado"><span class="icon"><i class="fa fa-exclamation"></i></span></span>
                             <span *ngIf="!item.cargando && item.status == 'FI'" class="is-success" title="Finalizado"><span class="icon"><i class="fa fa-check-circle"></i></span></span>
                         </td>
@@ -161,7 +134,7 @@
                         <td style="vertical-align: middle;" class="has-text-centered">
                             <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
                             <a *ngIf="!item.cargando && item.status == 'BR'" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
-                            <a *ngIf="!item.cargando && item.status == 'PS'" routerLink="/almacen/pedidos/recepcion/{{item.id}}" title="Recibir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
+                            <a *ngIf="!item.cargando && item.status == 'PS'" routerLink="/almacen/pedidos-jurisdiccionales/recepcion/{{item.id}}" title="Recibir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
                         </td>
                     </tr>
 

@@ -173,9 +173,9 @@ export class ListaComponent implements OnInit {
 
   obtenerDireccion(id:string, status:string): string{
     if(status == 'BR'){
-      return '/almacen/pedidos/editar/'+id;
+      return '/almacen/pedidos-jurisdiccionales/editar/'+id;
     }else{
-      return '/almacen/pedidos/ver/'+id;
+      return '/almacen/pedidos-jurisdiccionales/ver/'+id;
     }
   }
   

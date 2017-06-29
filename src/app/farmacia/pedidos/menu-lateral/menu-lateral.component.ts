@@ -15,6 +15,7 @@ export class MenuLateralComponent implements OnInit {
     por_surtir: 0,
     finalizados: 0,
     expirados: 0,
+    expirados_cancelados: 0,
     farmacia: 0
   };
 

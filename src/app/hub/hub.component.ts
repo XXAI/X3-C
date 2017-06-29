@@ -17,7 +17,9 @@ export class HubComponent implements OnInit {
       title:'Almacén', routerLink:'/almacen', icono:'assets/hub-farmacia.svg',
       permisos: [
         'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
+        'r6REUnVWlsQ00zVYXakLUxdKtGArcenY', // Ver pedidos jurisdiccionales
         'iSxK0TpoYpnzf8KIQTWOq9Web7WnSKhz' // Ver entregas
+        
       ] 
     },
     { 
