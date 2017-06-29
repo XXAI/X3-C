@@ -51,13 +51,16 @@ export class PedidosComponent implements OnInit {
   // # SECCION: Para Imprimir Pedidos
   datosPedido:any = {};
   verDialogoPedido:boolean = false;
+  verDialogoArchivo:boolean = false;
   tiposSubPedidos:string[] = [];
   subPedidos:any = {};
   cargandoDatosPedido:boolean = false;
+  cargandoDatosArchivo:boolean = true;
   // # FIN SECCION
 
   // # SECCION: Lista
   lista: any[] = [];
+  lista_repositorio: any[] = [];
   paginaActual = 1;
   resultadosPorPagina = 30;
   total = 0;
@@ -69,6 +72,13 @@ export class PedidosComponent implements OnInit {
   private pdfworker:Worker;
   cargandoPdf:boolean = false;
   // # FIN SECCION
+  tag:any;
+  id_pedido:string;
+  nombre_pedido:string;
+  cargando_archivo:number = 0;
+  subir_archivo:boolean = true;
+    
+    
 
   constructor(private title: Title, private apiService: AdministradorProveedoresService, private _ngZone: NgZone) { }
 
@@ -327,6 +337,52 @@ export class PedidosComponent implements OnInit {
     )
   }
 
+    fileChanged(e: Event) {
+      var element: HTMLInputElement = e.target as HTMLInputElement;
+      this.tag = element;    
+    }
+
+    upload() {
+        this.subir_archivo = false;
+        let img:any = this.tag.files[0];
+        var formData: FormData = new FormData();
+        formData.append("file", img, img.name);
+        formData.append("id_pedido", this.id_pedido);
+        var xhr = new XMLHttpRequest();
+        xhr.upload.addEventListener("progress", (ev: ProgressEvent) => {
+            
+        });
+        var self = this;
+        xhr.open("POST", environment.API_URL+"/repository", true);
+        xhr.setRequestHeader("Authorization", "Bearer "+localStorage.getItem('token'));
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+               self.actualiza_lista();
+            }
+
+            if(xhr.readyState === XMLHttpRequest.DONE && xhr.status != 200) {
+               self.error_envio();
+            }
+            self.cargando_archivo = xhr.readyState;
+        };        
+        xhr.send(formData);
+    }
+
+    actualiza_lista()
+    {
+      this.subir_archivo = true;
+      this.cargando_archivo = 0;
+      this.mostrarDialogoArchivos(this.id_pedido, this.nombre_pedido);
+      this.mensajeExito.mostrar = true;
+      this.mensajeExito.texto = "Se ha Guardado Exitosamente el documento";
+    }
+
+    error_envio()
+    {
+      this.mensajeError.mostrar = true;
+      this.mensajeError.texto = "Ha ocurrido un error al enviar el archivo";
+    }
+  
   exportar(){
     var query = "token="+localStorage.getItem('token')+"&ordenar_causes="+this.ordenarCauses+"&ordenar_no_causes="+this.ordenarNoCauses+"&ordenar_material_curacion="+this.ordenarMaterialCuracion;
     
@@ -442,6 +498,117 @@ export class PedidosComponent implements OnInit {
     this.verDialogoPedido = true;
   }
 
+  mostrarDialogoArchivos(id:string, nombre:string){
+    this.cargando_archivo = 0;
+    this.cargandoDatosArchivo = true;
+    this.datosPedido = {folio:id};
+    this.nombre_pedido = nombre;
+    this.id_pedido = id;
+    
+    this.apiService.verArchivos(id).subscribe(
+        repositorio => {
+        this.lista_repositorio =repositorio;
+        this.cargandoDatosArchivo = false;
+        },
+        error => {
+          this.cargandoDatosArchivo = false;
+
+          this.mensajeError = new Mensaje(true);
+          this.mensajeError.mostrar;
+
+          try {
+            let e = error.json();
+            if (error.status == 401 ){
+              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }else{
+              this.mensajeError.texto = e.error;
+            }
+            
+          } catch(e){
+                        
+            if (error.status == 500 ){
+              this.mensajeError.texto = "500 (Error interno del servidor)";
+            } else {
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }            
+          }
+        }
+      );
+    this.verDialogoArchivo = true;
+  }
+
+  eliminar_archivo(id:string)
+  {
+    if(confirm("¿Desea eliminar el archivo realmente?"))
+    {
+      this.apiService.eliminarArchivos(id).subscribe(
+        repositorio => {
+          this.mostrarDialogoArchivos(this.id_pedido, this.nombre_pedido);
+           this.mensajeExito.mostrar = true;
+          this.mensajeExito.texto = "Se ha Elimiinado Exitosamente el archivo";
+        },
+        error => {
+
+          this.mensajeError = new Mensaje(true);
+          this.mensajeError.mostrar;
+
+          try {
+            let e = error.json();
+            if (error.status == 401 ){
+              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }else{
+              this.mensajeError.texto = e.error;
+            }
+            
+          } catch(e){
+                        
+            if (error.status == 500 ){
+              this.mensajeError.texto = "500 (Error interno del servidor)";
+            } else {
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }            
+          }
+        }
+      );
+    }
+  }
+
+  descargar(id:string)
+  {
+      let id_pedido = id;
+      this.apiService.descargarArchivos(id).subscribe(
+        repositorio => {
+          
+          this.mostrarDialogoArchivos(this.id_pedido, this.nombre_pedido);
+           var query = "token="+localStorage.getItem('token');
+           window.open(`${environment.API_URL}/download-file/`+id_pedido);
+          },
+        error => {
+
+          this.mensajeError = new Mensaje(true);
+          this.mensajeError.mostrar;
+
+          try {
+            let e = error.json();
+            if (error.status == 401 ){
+              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }else{
+              this.mensajeError.texto = e.error;
+            }
+            
+          } catch(e){
+                        
+            if (error.status == 500 ){
+              this.mensajeError.texto = "500 (Error interno del servidor)";
+            } else {
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }            
+          }
+        }
+      );
+       
+  }
+
   imprimirExcelPedido(){
     var query = "token="+localStorage.getItem('token');
     window.open(`${environment.API_URL}/generar-excel-pedido/${this.datosPedido.id}?${query}`); 
@@ -463,6 +630,10 @@ export class PedidosComponent implements OnInit {
 
   cerrarDialogoPedidos(){
     this.verDialogoPedido = false;
+  }
+
+  cerrarDialogoArchivos(){
+    this.verDialogoArchivo = false;
   }
 
   // # SECCION: Paginación
