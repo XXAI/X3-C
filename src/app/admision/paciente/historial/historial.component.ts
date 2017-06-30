@@ -32,11 +32,12 @@ import { Paciente } from '../paciente';
 })
 export class HistorialComponent implements OnInit {
 	cargando: boolean = false;
+  busquedaActivada: boolean = false;
 
 	mensajeError: Mensaje = new Mensaje();
 	mensajeExito: Mensaje = new Mensaje();
 
-	private id:string;
+	id:string;
 
 	// # FIN SECCION
 
@@ -49,9 +50,9 @@ export class HistorialComponent implements OnInit {
 	private indicePaginas:number[] = []
 	// # FIN SECCION
 
-	  private id_paciente:number;
-	  private nombre_paciente:string;
-	  private localidad_paciente:string;
+	  id_paciente:number;
+	  nombre_paciente:string;
+	  localidad_paciente:string;
 	
 	
   constructor(

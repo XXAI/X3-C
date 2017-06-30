@@ -23,7 +23,7 @@ export class IngresoComponent implements OnInit {
 
   pacienteIngreso: FormGroup;
 
-  private id:string;
+   id:string;
   cargando: boolean = false;
   
   cargandoUnidadesMedicas: boolean = false;
@@ -32,11 +32,11 @@ export class IngresoComponent implements OnInit {
   permiso_guardar: boolean = true;
   datosCargados: boolean;
 
-  private id_paciente:string;
-  private nombre_paciente:string;
-  private localidad_paciente:string;
+   id_paciente:string;
+   nombre_paciente:string;
+   localidad_paciente:string;
 
-  private verForm:boolean = false;
+   verForm:boolean = false;
   // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje()
   mensajeAdvertencia: Mensaje = new Mensaje()

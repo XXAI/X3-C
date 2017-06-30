@@ -6,7 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./menu-lateral.component.css']
 })
 export class MenuLateralComponent implements OnInit {
-
+  
+  cargando:boolean = false;	
   constructor() { }
 
   ngOnInit() {

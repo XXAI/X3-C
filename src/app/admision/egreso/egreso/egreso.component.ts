@@ -22,7 +22,7 @@ export class EgresoComponent implements OnInit {
 
   pacienteEgreso: FormGroup;
 
-  private id:string;
+  id:string;
   cargando: boolean = false;
   
   cargandoMunicipios: boolean = false;
@@ -31,11 +31,11 @@ export class EgresoComponent implements OnInit {
   cargandoUnidadesMedicas: boolean = false;
   datosCargados: boolean;
 
-  private id_paciente:string;
-  private nombre_paciente:string;
-  private localidad_paciente:string;
-  private fecha_ingreso:string;
-  private area_ingreso:string;
+  id_paciente:string;
+  nombre_paciente:string;
+  localidad_paciente:string;
+  fecha_ingreso:string;
+  area_ingreso:string;
 
 
 

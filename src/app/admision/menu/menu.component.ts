@@ -10,7 +10,7 @@ export class MenuComponent implements OnInit {
   usuario: any = {};
   constructor() { }
 
-  DatoUnidad: String;
+  DatoUnidad: any;
 
   ngOnInit() {
     this.DatoUnidad = JSON.parse(localStorage.getItem("usuario"));

@@ -22,7 +22,7 @@ export class EditarComponent implements OnInit {
   
   paciente: FormGroup;
 
-  private id:string;
+  id:string;
   cargando: boolean = false;
   
   cargandoMunicipios: boolean = false;

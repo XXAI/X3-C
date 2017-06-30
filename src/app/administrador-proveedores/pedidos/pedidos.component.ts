@@ -575,13 +575,12 @@ export class PedidosComponent implements OnInit {
 
   descargar(id:string)
   {
-      let id_pedido = id;
+    let id_pedido = id;
+    var query = "token="+localStorage.getItem('token');
+    window.open(`${environment.API_URL}/download-file/${id_pedido}?${query}`);
       this.apiService.descargarArchivos(id).subscribe(
         repositorio => {
-          
-          this.mostrarDialogoArchivos(this.id_pedido, this.nombre_pedido);
-           var query = "token="+localStorage.getItem('token');
-           window.open(`${environment.API_URL}/download-file/`+id_pedido);
+            this.mostrarDialogoArchivos(this.id_pedido, this.nombre_pedido);
           },
         error => {
 
