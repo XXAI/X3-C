@@ -6,6 +6,10 @@ import { Mensaje } from '../../mensaje';
 
 import  * as FileSaver    from 'file-saver'; 
 
+import { Subscription }   from 'rxjs/Subscription';
+
+import { CambiarEntornoService } from '../../perfil/cambiar-entorno.service';
+
 import { AdministradorProveedoresService } from '../administrador-proveedores.service';
 
 @Component({
@@ -70,7 +74,9 @@ export class PedidosComponent implements OnInit {
   cargandoPdf:boolean = false;
   // # FIN SECCION
 
-  constructor(private title: Title, private apiService: AdministradorProveedoresService, private _ngZone: NgZone) { }
+  private cambiarEntornoSuscription: Subscription;
+
+  constructor(private title: Title, private apiService: AdministradorProveedoresService, private _ngZone: NgZone, private cambiarEntornoService:CambiarEntornoService) { }
 
   ngOnInit() {
     this.mensajeError = new Mensaje();
@@ -108,6 +114,11 @@ export class PedidosComponent implements OnInit {
     this.anio = fecha_actual.getFullYear();
     this.mes = fecha_actual.getMonth()+1;
 
+    this.cambiarEntornoSuscription = this.cambiarEntornoService.entornoCambiado$.subscribe(evento => {
+      this.listar(1);
+      this.cargarJurisdicciones();
+    });
+
     this.listar(1);
 
     this.cargarJurisdicciones();
@@ -116,10 +127,12 @@ export class PedidosComponent implements OnInit {
       { id: 'PS', descripcion: 'Por surtir'},
       { id: 'FI', descripcion: 'Surtido'},
       { id: 'EF', descripcion: 'En Farmacia'},
-      { id: 'EX', descripcion: 'Expirados'}
-    ]
+      { id: 'EX', descripcion: 'Expirados'},
+      { id: 'EX-CA', descripcion: 'Cancelados'}
+    ];
 
     this.meses = [
+      {id:0, nombre:'Todos'},
       {id:1, nombre:'Enero'},
       {id:2, nombre:'Febrero'},
       {id:3, nombre:'Marzo'},
@@ -272,17 +285,21 @@ export class PedidosComponent implements OnInit {
       ordenar_no_causes: this.ordenarNoCauses,
       ordenar_material_curacion: this.ordenarMaterialCuracion
     }
-    console.log(parametros);
+    //console.log(parametros);
     this.cargandoPresupuestos = true;
     this.apiService.presupuesto(parametros).subscribe(
       response => {
         this.cargandoPresupuestos = false;
         this.presupuesto = response.data;
 
-        //this.presupuesto.total_modificado = (+response.data.causes_modificado) + (+response.data.no_causes_modificado) + (+response.data.material_curacion_modificado);
         this.presupuesto.total_comprometido = (+response.data.causes_comprometido) + (+response.data.no_causes_comprometido) + (+response.data.material_curacion_comprometido);
         this.presupuesto.total_devengado = (+response.data.causes_devengado) + (+response.data.no_causes_devengado) + (+response.data.material_curacion_devengado);
-        //this.presupuesto.total_disponible = (+response.data.causes_disponible) + (+response.data.no_causes_disponible) + (+response.data.material_curacion_disponible);
+        
+        this.presupuesto.total_causes = (+this.presupuesto.causes_comprometido) + (+this.presupuesto.causes_devengado);
+        this.presupuesto.total_no_causes = (+this.presupuesto.no_causes_comprometido) + (+this.presupuesto.no_causes_devengado);
+        this.presupuesto.total_material_curacion = (+this.presupuesto.material_curacion_comprometido) + (+this.presupuesto.material_curacion_devengado);
+        this.presupuesto.total_pedido = (+this.presupuesto.total_comprometido) + (+this.presupuesto.total_devengado);
+
       },
       error => {
         this.cargandoPresupuestos = false;
@@ -330,6 +347,11 @@ export class PedidosComponent implements OnInit {
   exportar(){
     var query = "token="+localStorage.getItem('token')+"&ordenar_causes="+this.ordenarCauses+"&ordenar_no_causes="+this.ordenarNoCauses+"&ordenar_material_curacion="+this.ordenarMaterialCuracion;
     
+    let usuario = JSON.parse(localStorage.getItem("usuario"));
+    if(usuario.proveedor_activo){
+      query += "&proveedor="+usuario.proveedor_activo.id;
+    }
+
     if(this.q!= ""){
       query += "&q="+this.q;
     }
@@ -479,6 +501,10 @@ export class PedidosComponent implements OnInit {
       for ( var i=0 ; i < len ; i++ )
       view[i] = bytes.charCodeAt(i) & 0xff;
       return new Blob( [ buffer ], { type: type } );
+  }
+
+  ngOnDestroy(){
+    this.cambiarEntornoSuscription.unsubscribe();
   }
 
 }

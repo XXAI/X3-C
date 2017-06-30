@@ -1,5 +1,5 @@
 .estatus-rojo{
-    color:red;
+    color:red !important;
 }
 .estatus-amarillo{
     color:orange;
@@ -9,6 +9,9 @@
 }
 .estatus-azul{
     color:#3273dc;
+}
+.estatus-normal{
+    color:#555555;
 }
 
 .proyecto-estatus-amarillo td a,.proyecto-estatus-amarillo th a {
@@ -22,4 +25,7 @@
 }
 .proyecto-estatus-azul td a,.proyecto-estatus-azul th a {
     color:#3273dc !important;
+}
+.proyecto-estatus-normal td a,.proyecto-estatus-normal th a {
+    color:#555555;
 }

@@ -1,11 +1,12 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Location}           from '@angular/common';
-import { ActivatedRoute, Params }   from '@angular/router'
+import { ActivatedRoute, Params, Router } from '@angular/router'
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import { Subscription }   from 'rxjs/Subscription';
 
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/throw';
@@ -20,6 +21,8 @@ import  * as FileSaver    from 'file-saver';
 import { environment } from '../../../../environments/environment';
 
 import { Mensaje } from '../../../mensaje';
+
+import { CambiarEntornoService } from '../../../perfil/cambiar-entorno.service';
 
 import { AlmacenesService } from '../../../catalogos/almacenes/almacenes.service';
 import { PedidosService } from '../pedidos.service';
@@ -76,25 +79,31 @@ export class VerComponent implements OnInit {
   
   // # FIN SECCION
 
-
   // # SECCION: Reportes
   private pdfworker:Worker;
   cargandoPdf:boolean = false;
   // # FIN SECCION
 
+  private cambiarEntornoSuscription: Subscription;
 
   constructor(
     private title: Title, 
     private location: Location, 
+    private router: Router,
     private route: ActivatedRoute,
     private _ngZone: NgZone, 
     private pedidosService: PedidosService,
     private almacenesService: AlmacenesService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private cambiarEntornoService:CambiarEntornoService
   ) { }
 
   ngOnInit() {
     this.title.setTitle('Nuevo pedido / Almacén');
+
+    this.cambiarEntornoSuscription = this.cambiarEntornoService.entornoCambiado$.subscribe(evento => {
+      this.router.navigate(['/almacen/pedidos']);
+    });
 
     // Inicializamos el objeto para los reportes con web Webworkers
     //this.pdfworker = new Worker("web-workers/farmacia/pedidos/imprimir.js")
@@ -430,22 +439,29 @@ export class VerComponent implements OnInit {
     this.errorCancelarPedidoTexto = 'Ocurrio un error al intentar cancelar el pedido';
     let fecha_pedido = this.pedido.datosImprimir.fecha.split('-');
 
+    let now = new Date();
+    let anio = now.getFullYear();
+    let mes = now.getMonth()+1;
+
     let mes_pedido = parseInt(fecha_pedido[1]);
 
     this.dialogCancelarMeses.push({
       anio: parseInt(fecha_pedido[0]),
-      mes: mes_pedido,
-      descripcion: this.meses[mes_pedido] + ' ' + fecha_pedido[0]
+      mes: mes,
+      descripcion: this.meses[mes] + ' ' + fecha_pedido[0]
     });
 
-    if(mes_pedido+1 <= 12){
-      this.dialogCancelarMeses.push({
-        anio: parseInt(fecha_pedido[0]),
-        mes: mes_pedido+1,
-        descripcion: this.meses[mes_pedido+1] + ' ' + fecha_pedido[0]
-      });
+    for(var i = 1; i <= 2; i++){
+      mes += 1;
+      if(mes <= 12){
+        this.dialogCancelarMeses.push({
+          anio: parseInt(fecha_pedido[0]),
+          mes: mes,
+          descripcion: this.meses[mes] + ' ' + fecha_pedido[0]
+        });
+      }
     }
-
+    
     this.dialogCancelarFechaTransferencia = this.dialogCancelarMeses[0];
 
     this.mostrarCancelarDialogo = true;
@@ -518,5 +534,9 @@ export class VerComponent implements OnInit {
       for ( var i=0 ; i < len ; i++ )
       view[i] = bytes.charCodeAt(i) & 0xff;
       return new Blob( [ buffer ], { type: type } );
+  }
+
+  ngOnDestroy(){
+    this.cambiarEntornoSuscription.unsubscribe();
   }
 }

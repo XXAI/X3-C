@@ -73,7 +73,8 @@ export class PedidosComponent implements OnInit {
       { id: 'PS', descripcion: 'Por surtir'},
       { id: 'FI', descripcion: 'Finalizados'},
       { id: 'EF', descripcion: 'En Farmacia'},
-      { id: 'EX', descripcion: 'Expirados'}
+      { id: 'EX', descripcion: 'Expirados'},
+      { id: 'EX-CA', descripcion: 'Cancelados'}
     ]
     
   }

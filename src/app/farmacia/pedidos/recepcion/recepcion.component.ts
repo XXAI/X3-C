@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChildren } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Params }   from '@angular/router'
+import { ActivatedRoute, Params, Router } from '@angular/router'
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import { Subscription }   from 'rxjs/Subscription';
 
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/throw';
@@ -19,6 +20,8 @@ import  * as FileSaver    from 'file-saver';
 import { PedidosService } from '../../pedidos/pedidos.service';
 import { RecepcionService } from './recepcion.service';
 import { StockService } from '../../stock/stock.service';
+
+import { CambiarEntornoService } from '../../../perfil/cambiar-entorno.service';
 
 import { Pedido } from '../../pedidos/pedido';
 import { Mensaje } from '../../../mensaje';
@@ -60,8 +63,10 @@ export class RecepcionComponent implements OnInit {
   private claveInsumoSeleccionado:string = null;
   private claveNoSolicitada:boolean = false;
   private itemSeleccionado: any = null;
+
+  private cambiarEntornoSuscription: Subscription;
   
-  constructor(private title: Title, private route:ActivatedRoute, private pedidosService:PedidosService, private recepcionService:RecepcionService, private stockService:StockService) {
+  constructor(private title: Title, private route:ActivatedRoute, private pedidosService:PedidosService, private recepcionService:RecepcionService, private stockService:StockService, private router: Router, private cambiarEntornoService:CambiarEntornoService) {
     this.fb  = new FormBuilder();
     let now = new Date();
     let day = ("0" + now.getDate()).slice(-2);
@@ -77,6 +82,10 @@ export class RecepcionComponent implements OnInit {
 
   ngOnInit() {
     this.title.setTitle('Surtir pedido / Almacén');
+
+    this.cambiarEntornoSuscription = this.cambiarEntornoService.entornoCambiado$.subscribe(evento => {
+      this.router.navigate(['/almacen/pedidos']);
+    });
 
     /*if(this.marcas.length == 1){
       this.formStock.marca = this.marcas[0];
@@ -607,7 +616,6 @@ export class RecepcionComponent implements OnInit {
     }*/
   }
 
-
   validarItemStock(item:any, setMaxVal:boolean = false){
 
    
@@ -725,5 +733,9 @@ export class RecepcionComponent implements OnInit {
       event.preventDefault();
       event.stopPropagation();
     }     
+  }
+
+  ngOnDestroy(){
+    this.cambiarEntornoSuscription.unsubscribe();
   }
 }
