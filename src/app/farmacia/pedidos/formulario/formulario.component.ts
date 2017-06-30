@@ -6,6 +6,7 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import { Subscription }   from 'rxjs/Subscription';
 
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/throw';
@@ -20,6 +21,8 @@ import  * as FileSaver    from 'file-saver';
 import { environment } from '../../../../environments/environment';
 
 import { Mensaje } from '../../../mensaje';
+
+import { CambiarEntornoService } from '../../../perfil/cambiar-entorno.service';
 
 import { AlmacenesService } from '../../../catalogos/almacenes/almacenes.service';
 import { PedidosService } from '../pedidos.service';
@@ -75,12 +78,12 @@ export class FormularioComponent implements OnInit {
   proveedor: any = {};
   // # FIN SECCION
 
-
   // # SECCION: Reportes
   private pdfworker:Worker;
   private cargandoPdf:boolean = false;
   // # FIN SECCION
 
+  private cambiarEntornoSuscription: Subscription;
 
   constructor(
     private title: Title, 
@@ -90,7 +93,8 @@ export class FormularioComponent implements OnInit {
     private _ngZone: NgZone, 
     private pedidosService: PedidosService,
     private almacenesService: AlmacenesService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private cambiarEntornoService:CambiarEntornoService
   ) { }
 
   ngOnInit() {
@@ -105,6 +109,9 @@ export class FormularioComponent implements OnInit {
 
     //Harima: Cargar el presupuesto del mes actual
     //this.cargarPresupuesto();
+    this.cambiarEntornoSuscription = this.cambiarEntornoService.entornoCambiado$.subscribe(evento => {
+      this.router.navigate(['/almacen/pedidos']);
+    });
 
     this.pdfworker.onmessage = function( evt ) {       
       // Esto es un hack porque estamos fuera de contexto dentro del worker
@@ -735,5 +742,9 @@ export class FormularioComponent implements OnInit {
       for ( var i=0 ; i < len ; i++ )
       view[i] = bytes.charCodeAt(i) & 0xff;
       return new Blob( [ buffer ], { type: type } );
+  }
+
+  ngOnDestroy(){
+    this.cambiarEntornoSuscription.unsubscribe();
   }
 }

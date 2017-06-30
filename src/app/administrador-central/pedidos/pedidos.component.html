@@ -1,7 +1,7 @@
 <administrador-central-menu></administrador-central-menu>
 
 <div class="contenedor columns " style="height:100%; ">
-    <div class="column is-one-quarter is-hidden-mobile">
+    <div class="column is-narrow is-hidden-mobile">
         <div style="height:50px;"></div>
         <administrador-central-menu-lateral></administrador-central-menu-lateral>
     </div>
@@ -163,15 +163,18 @@
             <table class="table" *ngIf="!cargando" style="min-width:100%; font-size:0.8em;">
                 <thead>
                     <tr>
-                        <th colspan="5">
-                             Status: 
-                            <span class="icon is-small borrador"><i class="fa fa-pencil"></i></span> Borrador | 
+                        <th colspan="16">
+                            Status: 
                             <span class="icon is-small sin-surtir"><i class="fa fa-circle"></i></span> Sin Surtir | 
                             <span class="icon is-small surtiendo"><i class="fa fa-minus-circle"></i></span> Surtiendo | 
-                            <span class="icon is-small surtido"><i class="fa fa-check-circle"></i></span> Finalizado | 
+                            <span class="icon is-small surtido"><i class="fa fa-check-circle"></i></span> Surtido | 
                             <span class="icon is-small farmacia"><i class="fa fa-cubes"></i></span> Farmacia |
-                            <span class="icon is-small expirado"><i class="fa fa-times-circle"></i></span> Expirado
+                            <span class="icon is-small expirado"><i class="fa fa-exclamation-circle"></i></span> Expirado |
+                            <span class="icon is-small expirado"><i class="fa fa-times-circle"></i></span> Cancelado
                         </th>
+                    </tr>
+                    <tr>
+                        <th colspan="5"></th>
                         <th colspan="2">Total</th>
                         <th colspan="2">Causes</th>
                         <th colspan="2">No causes</th>
@@ -235,7 +238,7 @@
                             <span *ngIf="!(+item.total_monto_material_curacion*1)"> --- </span>
                         </td>
 
-                        <td [ngClass]="{'borrador':item.status=='BR','surtido':item.status=='FI','expirado':item.status=='EX','sin-surtir':(item.total_cantidad_recibida==0 && item.status=='PS'),'surtiendo':(item.total_cantidad_recibida>0 && item.status=='PS'),'farmacia':item.status=='EF'}" style="text-align:center; vertical-align: middle;"><span class="icon"><i class="fa" [ngClass]="{'fa-pencil':item.status=='BR','fa-check-circle':item.status=='FI','fa-times-circle':item.status=='EX','fa-circle':(item.total_cantidad_recibida==0 && item.status == 'PS'),'fa-minus-circle':(item.total_cantidad_recibida>0 && item.status == 'PS'),'fa-cubes':item.status=='EF'}"></i></span></td>
+                        <td [ngClass]="{'borrador':item.status=='BR','surtido':item.status=='FI','expirado':(item.status=='EX' || item.status=='EX-CA'),'sin-surtir':(item.total_cantidad_recibida==0 && item.status=='PS'),'surtiendo':(item.total_cantidad_recibida>0 && item.status=='PS'),'farmacia':item.status=='EF'}" style="text-align:center; vertical-align: middle;"><span class="icon"><i class="fa" [ngClass]="{'fa-pencil':item.status=='BR','fa-check-circle':item.status=='FI','fa-times-circle':item.status=='EX-CA','fa-exclamation-circle':item.status=='EX','fa-circle':(item.total_cantidad_recibida==0 && item.status == 'PS'),'fa-minus-circle':(item.total_cantidad_recibida>0 && item.status == 'PS'),'fa-cubes':item.status=='EF'}"></i></span></td>
                         <!--td style="vertical-align: middle;">{{ item.status == 'BR' ? 'Borrador': item.status == 'TR' ? 'En transito': item.status == 'PS' ? 'Por surtir': item.status == 'FI' ? 'Finalizado': item.status == 'EX' ? 'Expirado': 'Otro' }}</td-->
 
                         <td style="vertical-align: middle;">

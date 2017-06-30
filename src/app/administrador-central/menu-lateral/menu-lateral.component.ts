@@ -10,6 +10,8 @@ export class MenuLateralComponent implements OnInit {
   usuario: any = {}
   menu:any[] = [];
   menuAutorizado: any[] = [];
+  toggleMinimizado:boolean = false;
+  
   constructor() { }
 
   ngOnInit() {

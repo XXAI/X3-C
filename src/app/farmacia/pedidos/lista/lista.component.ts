@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import { Subscription }   from 'rxjs/Subscription';
 
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/throw';
@@ -14,6 +15,7 @@ import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/catch';
 
 import { PedidosService } from '../pedidos.service';
+import { CambiarEntornoService } from '../../../perfil/cambiar-entorno.service';
 
 import { Pedido } from '../pedido';
 import { Mensaje } from '../../../mensaje';
@@ -25,8 +27,7 @@ import { Mensaje } from '../../../mensaje';
   providers: [PedidosService]
 })
 export class ListaComponent implements OnInit {
-
-    cargando: boolean = false;
+  cargando: boolean = false;
 
   // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
@@ -59,7 +60,9 @@ export class ListaComponent implements OnInit {
   private indicePaginasBusqueda:number[] = []
   // # FIN SECCION
 
-  constructor(private title: Title, private route: ActivatedRoute, private pedidosService: PedidosService) { }
+  private cambiarEntornoSuscription: Subscription;
+
+  constructor(private title: Title, private route: ActivatedRoute, private pedidosService: PedidosService, private cambiarEntornoService:CambiarEntornoService) { }
 
   ngOnInit() {
     switch(this.route.snapshot.url[0].path){
@@ -89,35 +92,16 @@ export class ListaComponent implements OnInit {
       break;
       default: this.titulo = "Pedidos"; this.icono = "fa-file"; break;
     }
-
-    this.pedidosService.presupuesto().subscribe(
-      response => {
-        this.cargando = false;
-        //this.presupuesto = response.data;
-        this.presupuesto = {};
-        
-        this.presupuesto.causes_modificado = +response.data.causes_modificado;
-        this.presupuesto.causes_comprometido = +response.data.causes_comprometido;
-        this.presupuesto.causes_devengado = +response.data.causes_devengado;
-        this.presupuesto.causes_disponible = +response.data.causes_disponible;
-        
-        this.presupuesto.material_curacion_modificado = +response.data.material_curacion_modificado;
-        this.presupuesto.material_curacion_comprometido = +response.data.material_curacion_comprometido;
-        this.presupuesto.material_curacion_devengado = +response.data.material_curacion_devengado;
-        this.presupuesto.material_curacion_disponible = +response.data.material_curacion_disponible;
-        
-        this.presupuesto.no_causes_modificado = +response.data.no_causes_modificado;
-        this.presupuesto.no_causes_comprometido = +response.data.no_causes_comprometido;
-        this.presupuesto.no_causes_devengado = +response.data.no_causes_devengado;
-        this.presupuesto.no_causes_disponible = +response.data.no_causes_disponible;
-      },
-      error => {
-        this.cargando = false;
-        console.log(error);
-      }
-    );
-
+    console.log('inicializar lista de pedidos');
     this.title.setTitle("Pedidos");
+
+    this.cargarPresupuestoAnual();
+
+    this.cambiarEntornoSuscription = this.cambiarEntornoService.entornoCambiado$.subscribe(evento => {
+      console.log('subscripcion en lista de pedidos');
+      this.listar(this.paginaActual);
+      this.cargarPresupuestoAnual();
+    });
 
     this.listar(1);
     this.mensajeError = new Mensaje();
@@ -188,6 +172,35 @@ export class ListaComponent implements OnInit {
     );
   }
 
+  cargarPresupuestoAnual(){
+    this.pedidosService.presupuesto().subscribe(
+      response => {
+        this.cargando = false;
+        //this.presupuesto = response.data;
+        this.presupuesto = {};
+        
+        this.presupuesto.causes_modificado = +response.data.causes_modificado;
+        this.presupuesto.causes_comprometido = +response.data.causes_comprometido;
+        this.presupuesto.causes_devengado = +response.data.causes_devengado;
+        this.presupuesto.causes_disponible = +response.data.causes_disponible;
+        
+        this.presupuesto.material_curacion_modificado = +response.data.material_curacion_modificado;
+        this.presupuesto.material_curacion_comprometido = +response.data.material_curacion_comprometido;
+        this.presupuesto.material_curacion_devengado = +response.data.material_curacion_devengado;
+        this.presupuesto.material_curacion_disponible = +response.data.material_curacion_disponible;
+        
+        this.presupuesto.no_causes_modificado = +response.data.no_causes_modificado;
+        this.presupuesto.no_causes_comprometido = +response.data.no_causes_comprometido;
+        this.presupuesto.no_causes_devengado = +response.data.no_causes_devengado;
+        this.presupuesto.no_causes_disponible = +response.data.no_causes_disponible;
+      },
+      error => {
+        this.cargando = false;
+        console.log(error);
+      }
+    );
+  }
+
   obtenerDireccion(id:string, status:string): string{
     if(status == 'BR'){
       return '/almacen/pedidos/editar/'+id;
@@ -196,7 +209,6 @@ export class ListaComponent implements OnInit {
     }
   }
   
-
   buscar(term: string): void {
     this.terminosBusqueda.next(term);
   }
@@ -354,6 +366,10 @@ export class ListaComponent implements OnInit {
   }
   paginaAnteriorBusqueda(term:string):void {
     this.listarBusqueda(term,this.paginaActualBusqueda-1);
+  }
+
+  ngOnDestroy(){
+    this.cambiarEntornoSuscription.unsubscribe();
   }
 
 }

@@ -68,6 +68,16 @@ export class PerfilComponent implements OnInit {
     }
   }
 
+  seleccionarProveedor(value){
+    this.mostrarCambiarEntorno = true;
+    for(var i in this.usuario.proveedores){
+      if(value == this.usuario.proveedores[i].id){
+        this.usuario.proveedor_activo = this.usuario.proveedores[i];
+        break;
+      }
+    }
+  }
+
   cambiarEntorno(){
     localStorage.setItem('usuario', JSON.stringify(this.usuario));
     this.mostrarCambiarEntorno = false;

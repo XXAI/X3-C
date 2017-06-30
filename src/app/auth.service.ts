@@ -34,8 +34,31 @@ export class AuthService {
 
         json.usuario.clues_activa = null;
         json.usuario.almacen_activo = null;
+        json.usuario.proveedor_activo = null; //Harima: Se agrego proveedor activo, para acceder a los modulos de proveedores
         
-        if(json.usuario.unidades_medicas.length > 0 ){          
+        if(json.usuario.proveedores){
+          if(usuarioAnterior && usuarioAnterior.id == json.usuario.id ){
+            var bandera = false;
+            
+            if(usuarioAnterior.proveedor_activo){
+              for(var i in json.usuario.proveedores){
+                if(usuarioAnterior.proveedor_activo.id == json.usuario.proveedores[i].id){
+                  json.usuario.proveedor_activo = json.usuario.proveedores[i];
+                  bandera = true;
+                  break;
+                }
+              }
+            }
+            
+            if(!bandera){
+              json.usuario.proveedor_activo = json.usuario.proveedores[0];
+            }
+          } else {
+            json.usuario.proveedor_activo = json.usuario.proveedores[0];
+          }
+        }
+
+        if(json.usuario.unidades_medicas.length > 0 ){
            
           if(usuarioAnterior && usuarioAnterior.id == json.usuario.id ){
             var bandera = false;

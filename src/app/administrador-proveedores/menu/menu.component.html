@@ -8,6 +8,12 @@
                       <h1 class="title">&nbsp;Administrador Proveedores</h1>
                     </a>
                 </div>
+
+                <div class="nav-center">
+                    <span *ngIf="usuario.proveedor_activo" class="nav-item is-small">
+                        <span>{{usuario.proveedor_activo.nombre}}</span>
+                    </span>
+                </div>
                 
                 <a class="nav-item"  (click)="hub.toggle()">
                     <span class="icon">
@@ -25,8 +31,6 @@
                     
                     <figure class="image" style="width:26px;"><img src="assets/{{ usuario.avatar || 'avatar-unknow' }}.svg" alt="avatar"></figure>
                 </a>
-               
-                
             </nav>
         </div>
     </div>
