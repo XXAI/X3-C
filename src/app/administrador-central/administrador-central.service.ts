@@ -76,5 +76,13 @@ export class AdministradorCentralService {
     return this.jwtRequest.get("administrador-central/pedidos-clues-mes-anio",null,payload).map( (response: Response) => response.json().data);
   }
 
+  cumplimientoStatsGlobales(): Observable<any> {
+    return this.jwtRequest.get("administrador-central/cumplimiento-stats-globales",null,null).map( (response: Response) => response.json().data);
+  }
+
+  cumplimientoStatsProveedor(id:any): Observable<any> {
+    return this.jwtRequest.get("administrador-central/cumplimiento-stats-proveedor",id,null).map( (response: Response) => response.json().data);
+  }
+
   
 }

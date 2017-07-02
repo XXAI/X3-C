@@ -35,7 +35,8 @@ export class HubComponent implements OnInit {
         'bsIbPL3qv6XevcAyrRm1GxJufDbzLOax', // Ver pedidos
         'bwWWUufmEBRFpw9HbUJQUP8EFnagynQv', // Ver abasto
         's8kSv2Gj9DZwRvClVRmZohp92Rtvi26i', // Transferencia de recursos
-        'fWA5oDswZ2Ra4O8YaCy6nEY8OeCOxg9C' // Entregas por mes
+        'fWA5oDswZ2Ra4O8YaCy6nEY8OeCOxg9C', // Entregas por mes
+        'BBg7HSOEmjjOsVl48s8wSz8AxXhmBXA1' // Cumplimiento
       ] 
     },
     { 

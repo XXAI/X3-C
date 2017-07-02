@@ -20,6 +20,7 @@ import { MenuLateralComponent } from './menu-lateral/menu-lateral.component';
 
 import { AdministradorCentralService } from './administrador-central.service';
 import { EntregasMesComponent } from './entregas-mes/entregas-mes.component';
+import { CumplimientoComponent } from './cumplimiento/cumplimiento.component';
 
 
 
@@ -35,7 +36,7 @@ import { EntregasMesComponent } from './entregas-mes/entregas-mes.component';
     AdministradorCentralRoutingModule,
     ChartModule
   ],
-  declarations: [PedidosComponent, AbastoComponent, TransferenciasRecursosComponent, MenuComponent, MenuLateralComponent, EntregasMesComponent],
+  declarations: [PedidosComponent, AbastoComponent, TransferenciasRecursosComponent, MenuComponent, MenuLateralComponent, EntregasMesComponent, CumplimientoComponent],
   providers: [ AdministradorCentralService ]
 })
 export class AdministradorCentralModule { }

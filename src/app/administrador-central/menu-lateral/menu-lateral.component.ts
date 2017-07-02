@@ -23,7 +23,8 @@ export class MenuLateralComponent implements OnInit {
         modulos: [
           { permiso: 'bsIbPL3qv6XevcAyrRm1GxJufDbzLOax', icono: 'fa-file-text', titulo:"Pedidos", url:"/administrador-central/pedidos" }, 
           { permiso: 'bwWWUufmEBRFpw9HbUJQUP8EFnagynQv', icono: 'fa-line-chart', titulo:"Abasto", url:"/administrador-central/abasto" },          
-          { permiso: 'fWA5oDswZ2Ra4O8YaCy6nEY8OeCOxg9C', icono: 'fa-bar-chart', titulo:"Entregas por mes", url:"/administrador-central/entregas-mes" },          
+          { permiso: 'fWA5oDswZ2Ra4O8YaCy6nEY8OeCOxg9C', icono: 'fa-bar-chart', titulo:"Entregas por mes", url:"/administrador-central/entregas-mes" }, 
+          { permiso: 'BBg7HSOEmjjOsVl48s8wSz8AxXhmBXA1', icono: 'fa-thumbs-o-up', titulo:"Cumplimiento", url:"/administrador-central/cumplimiento" },          
         ]
       },
       {
