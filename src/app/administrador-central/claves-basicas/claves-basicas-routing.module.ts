@@ -10,10 +10,10 @@ import { PermisosGuard } from '../../permisos.guard';
 
 const routes: Routes = [
    {
-    path: 'almacen/claves-basicas',
+    path: 'administrador-central/claves-basicas',
     children: [
        { path: '', component: ListaComponent, canActivate: [PermisosGuard], data: { key: 'r1RX6Yq7fc4CRRI2OJXIPxeBLW3lFP59'} },
-       { path: 'crear', component: FormularioComponent, canActivate: [PermisosGuard], data: { key: 'N9tkWbLzXzdoAyBzcgLc85JPXqvRNvUh'} },
+       { path: 'nueva', component: FormularioComponent, canActivate: [PermisosGuard], data: { key: 'N9tkWbLzXzdoAyBzcgLc85JPXqvRNvUh'} },
        { path: 'editar/:id', component: FormularioComponent, canActivate: [PermisosGuard], data: { key: 'ityO3IAU1jhIlXnr9WPhINvdr09pQJry'}},
     ],
     canActivate: [AuthGuard]

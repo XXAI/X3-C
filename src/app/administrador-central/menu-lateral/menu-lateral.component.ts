@@ -33,6 +33,12 @@ export class MenuLateralComponent implements OnInit {
           { permiso: 's8kSv2Gj9DZwRvClVRmZohp92Rtvi26i', icono: 'fa-exchange', titulo:"Transferencias de recursos", url:"/administrador-central/transferencias-recursos" },
         ]
       },
+      {
+        titulo: 'Catálogos',
+        modulos: [
+          { permiso: 'r1RX6Yq7fc4CRRI2OJXIPxeBLW3lFP59', icono: 'fa-check-square', titulo:"Claves básicas", url:"/administrador-central/claves-basicas" },
+        ]
+      }
       
     ],
     this.menuAutorizado = []

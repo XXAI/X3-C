@@ -55,7 +55,7 @@ import { SalidasEstandarModule    } from './farmacia/salidas-estandar/salidas-es
 import { MovimientosEntradasModule    } from './farmacia/movimientos-entradas/movimientos-entradas.module';
 import { MovimientosSalidasModule    } from './farmacia/movimientos-salidas/movimientos-salidas.module';
 import { DashboardSalidasModule } from './farmacia/dashboard-salidas/dashboard-salidas.module';
-import { ClavesBasicasModule    } from './farmacia/claves-basicas/claves-basicas.module';
+import { ClavesBasicasModule    } from './administrador-central/claves-basicas/claves-basicas.module';
 
 
 // #modulo de admisión de pacientes

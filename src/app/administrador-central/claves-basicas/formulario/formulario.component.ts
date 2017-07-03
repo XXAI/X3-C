@@ -27,7 +27,6 @@ export class FormularioComponent implements OnInit {
 
 	private errores = {
 		nombre: null,
-		tipo: null,
 		items: null
 	}
 
@@ -82,7 +81,7 @@ export class FormularioComponent implements OnInit {
 
 		//cargar datos del pedido
 		this.esEditar = true;
-		this.formularioTitulo = 'Editar';
+		this.formularioTitulo = 'Editar lista';
 		this.title.setTitle('Editar lista');
 	
 		this.apiService.ver(this.lista.id).subscribe(
@@ -91,7 +90,6 @@ export class FormularioComponent implements OnInit {
 				console.log(respuesta);
 
 				this.lista.nombre = respuesta.nombre;
-				this.lista.tipo = respuesta.tipo;
 				
 				for(let i in respuesta.detalles){
 					let dato = respuesta.detalles[i];
@@ -112,7 +110,7 @@ export class FormularioComponent implements OnInit {
 					if (error.status == 401 || error.status == 403 ){
 						
 						this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
-						this.router.navigate(['/almacen/claves-basicas/']);
+						this.router.navigate(['/administrador-central/claves-basicas/']);
 					}
 				
 				} catch(e){
@@ -257,7 +255,6 @@ export class FormularioComponent implements OnInit {
 		
 		var payload = {
 				nombre: this.lista.nombre,
-				tipo: this.lista.tipo,
 				items: []
 		}
 
@@ -267,7 +264,6 @@ export class FormularioComponent implements OnInit {
 
 		this.errores = {
 			nombre: null,
-			tipo: null,
 			items: null
 		}
 
@@ -310,7 +306,7 @@ export class FormularioComponent implements OnInit {
 			this.apiService.crear(payload).subscribe(
 			respuesta => {
 				this.guardando = false;
-				this.router.navigate(['/almacen/claves-basicas/editar/'+respuesta.id]);
+				this.router.navigate(['/administrador-central/claves-basicas/editar/'+respuesta.id]);
 			},
 			error => {
 				this.guardando = false;

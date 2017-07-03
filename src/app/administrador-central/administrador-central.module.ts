@@ -36,6 +36,9 @@ import { CumplimientoComponent } from './cumplimiento/cumplimiento.component';
     AdministradorCentralRoutingModule,
     ChartModule
   ],
+  exports: [
+    MenuLateralComponent, MenuComponent
+  ],
   declarations: [PedidosComponent, AbastoComponent, TransferenciasRecursosComponent, MenuComponent, MenuLateralComponent, EntregasMesComponent, CumplimientoComponent],
   providers: [ AdministradorCentralService ]
 })
