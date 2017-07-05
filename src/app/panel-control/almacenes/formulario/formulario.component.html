@@ -72,7 +72,7 @@
                         <div class="field">
                             <label class="label">Nivel de almacén:</label>
                             <p class="control is-expanded  has-icon has-icon-right">
-                                <select class="select" name="nivel_almacen" formControlName="nivel_almacen" [ngClass]="{'is-warning': nivel_almacen?.length ==0 }">
+                                <select class="select" formControlName="nivel_almacen" name="nivel_almacen"  [ngClass]="{'is-warning': nivel_almacen?.length ==0 }">
                                     <option *ngFor="let item of niveles_almacen" value="{{item.id}}" >{{ item.nombre }}</option>
                                 </select>
                                 <span class="icon is-small" *ngIf="ctrl.dato.get('nivel_almacen').hasError('required') && ctrl.dato.get('nivel_almacen').touched">
@@ -85,7 +85,7 @@
                         <div class="field">
                             <label class="label">Tipo de almacén:</label>
                             <p class="control is-expanded  has-icon has-icon-right">
-                                <select class="select" name="tipo_almacen" formControlName="tipo_almacen" [ngClass]="{'is-warning': tipo_almacen?.length ==0 }">
+                                <select class="select" formControlName="tipo_almacen" name="tipo_almacen" [ngClass]="{'is-warning': tipo_almacen?.length ==0 }">
                                     <option *ngFor="let item of tipos_almacen" value="{{item.id}}" >{{ item.nombre }}</option>
                                 </select>
                                 <span class="icon is-small" *ngIf="ctrl.dato.get('tipo_almacen').hasError('required') && ctrl.dato.get('tipo_almacen').touched">

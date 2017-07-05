@@ -31,14 +31,17 @@ export class FormularioComponent {
     ) { }
 
 
-  private MinDate = new Date();
-  private MaxDate = new Date();
-  private fecha_actual;
-  private tieneid: boolean = false;
+  MinDate = new Date();
+  MaxDate = new Date();
+  fecha_actual;
+  tieneid: boolean = false;
+
+  fecha_movimiento;
+  mostrarCancelado;
 
   // # SECCION: Reportes
-  private pdfworker:Worker;
-  private cargandoPdf:boolean = false;
+  pdfworker:Worker;
+  cargandoPdf:boolean = false;
   // # FIN SECCION
 
   ngOnInit() {
@@ -146,17 +149,17 @@ export class FormularioComponent {
       <div class="card-content">
         <div class="media">          
           <div class="media-content">
-            <p class="title is-4">${data.nombre} <small>${data.descripcion}</small></p>
+            <p class="title is-4"><small>${data.descripcion}</small></p>
             <p class="subtitle is-6">
               <strong>Clave: </strong> ${data.clave}) 
               `;
     
-              if(data.es_causes)
-              html += `<label class="tag is-success" ><strong>Cause </strong></label>`;
-              if(!data.es_causes)
-              html += `<label class="tag is-success" ><strong>No Cause </strong> </label>`; 
-              if(data.es_unidosis)                                                                 
-              html += `<label class="tag is-warning" ><strong>Unidosis</strong> </label>`;
+              if(data.es_causes == 1)
+                html += `<label class="tag is-success" ><strong>Cause </strong></label>`;
+              if(data.es_causes == 0)
+                html += `<label class="tag" style="background: #B8FB7E; border-color: #B8FB7E; color: rgba(0,0,0,0.7);"><strong>No Cause </strong> </label>`; 
+              if(data.es_unidosis == 1)                                                                 
+                html += `<label class="tag is-warning" ><strong>Unidosis</strong> </label>`;
               
     html += `
             </p>
@@ -243,7 +246,7 @@ export class FormularioComponent {
       "es_causes": this.insumo.es_causes,
       "es_unidosis": this.insumo.es_unidosis,
       "lote": ['', [Validators.required]],
-      "codigo_barras": ['', [Validators.required]],
+      "codigo_barras": [''],
       "fecha_caducidad": ['', [Validators.required]],
       "cantidad": ['', [Validators.required]],
       "cantidad_x_envase": parseInt(temporal_cantidad_x_envase),     

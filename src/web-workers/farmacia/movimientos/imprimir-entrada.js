@@ -21,7 +21,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     headerRows: 5,
                     dontBreakRows: true,
                     //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
-                    widths: [80, 70, 'auto', 'auto', 'auto', 'auto'],
+                    widths: [80, 90, 'auto', 'auto', 'auto', 'auto'],
                     body: [
                         [{
                             image: 'header',
@@ -186,7 +186,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                 var lote = insumo.lotes[j];
                 dd.content[0].table.body.push([
                     { text: lote.clave_insumo_medico, style: 'tableRow', alignment: 'center' },
-                    { text: insumo.detalles.generico_nombre, style: 'tableRow', alignment: 'center' },
+                    { text: insumo.detalles.descripcion, style: 'tableRow', alignment: 'center' },
                     { text: lote.lote, style: 'tableRow', alignment: 'center' },
                     { text: lote.fecha_caducidad, style: 'tableRow', alignment: 'center' },
                     { text: lote.codigo_barras, style: 'tableRow', alignment: 'center' },
@@ -209,9 +209,15 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                 table: {
                     widths: ['*', '*'],
                     body: [
-                        ['RECIBE', { text: "Observaciones", style: 'text' }],
-                        [{ text: '\n\n\n\n'  + data.datos.movimiento_metadato.persona_recibe, style: 'tableRow' }, { text: '\n' + data.datos.observaciones, rowSpan: 2, alignment: 'justify' }],
-                        ['PERSONA QUE RECIBE ', '']
+                        [
+                            { text: '\n\n\n\n'+ data.datos.movimiento_metadato.persona_recibe, rowSpan: 2, style: 'tableRow' }, 
+                            { text: "Observaciones", style: 'text' }
+                        ],
+                        [
+                            '', 
+                            { text: '\n' + data.datos.observaciones, rowSpan: 2, alignment: 'justify' }
+                        ],
+                        ['Persona que recibe ', '']
                     ],
                 },
                 layout: {

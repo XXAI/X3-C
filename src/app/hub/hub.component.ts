@@ -18,15 +18,19 @@ export class HubComponent implements OnInit {
       permisos: [
         'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
         'r6REUnVWlsQ00zVYXakLUxdKtGArcenY', // Ver pedidos jurisdiccionales
-        'iSxK0TpoYpnzf8KIQTWOq9Web7WnSKhz' // Ver entregas
-        
+        'iSxK0TpoYpnzf8KIQTWOq9Web7WnSKhz', // Ver entregas
+        'GPSDLmXckXcdfdj7lD4rdacwMivsTp9g', // Ver salidas recetas
+        'qQvNeb1UFPOfVMKQnNkvxyqjCIUgFuEG', // Ver salidas de almacen
+        'a1OMZVn7dveOf5aUK8V0VsvvSCxz8EMw' // Ver entradas de almacen
+
       ] 
     },
     { 
       title:'Farmacia Subrrogada', routerLink:'/farmacia-subrrogada', icono:'assets/hub-farmacia-sub.svg',
       permisos: [
         'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk--', // Ver pedidos
-        'iSxK0TpoYpnzf8KIQTWOq9Web7WnSKhz--' // Ver entregas
+        'iSxK0TpoYpnzf8KIQTWOq9Web7WnSKhz--', // Ver entregas
+        'RZsvMjtPtpLWC8afsAFZsNnD9iXtiZC3', // Ver sincronizar recetas
       ] 
     },
     { 

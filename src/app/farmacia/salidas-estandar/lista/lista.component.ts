@@ -5,6 +5,11 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './lista.component.html'
 })
 
-export class ListaComponent{
+export class ListaComponent implements OnInit {
+  usuario;
+
+  ngOnInit() {
+      this.usuario = JSON.parse(localStorage.getItem("usuario"));
+  }
   
 }

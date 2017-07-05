@@ -275,9 +275,9 @@ export class GraficasComponent {
     claves: Object;
     insumos: Object;
     monto: Object;
-    private usuario;
-    private surtido=1;
-    private grafica=1;
+    usuario;
+    surtido=1;
+    grafica=1;
     presupuesto:any = {};
     datosGraficas:any = {};
     claves_categorias: any = {};
@@ -290,10 +290,12 @@ export class GraficasComponent {
     grafica_mc: any[] = [];
 
     
-  private MinDate = new Date();
-  private MaxDate = new Date();
-  private fecha_actual;
-  private fecha_inicial_actual;
+  MinDate = new Date();
+  MaxDate = new Date();
+  fecha_actual;
+  fecha_inicial_actual;
+  fecha_inicial;
+  fecha_final;
 
 ngOnInit() {
 

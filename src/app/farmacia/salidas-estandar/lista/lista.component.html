@@ -1,24 +1,26 @@
-<listar #ctrl URL="movimientos?tipo=2" titulo="Salida Estandar"></listar>
-<menu-farmacia [modulo]="'Salidas estandar'" [icono]="'assets/icono-salidas.svg'" [url]="'/almacen/salidas-estandar'"></menu-farmacia>
+<listar #ctrl URL="movimientos?tipo=2" titulo="Salida  de almacén"></listar>
+<menu-farmacia [modulo]="'Salidas  de almacén'" [icono]="'assets/icono-salidas.svg'" [url]="'/almacen/salidas-estandar'"></menu-farmacia>
 <div style="height:50px;"></div>
 <div class="contenedor columns " style="height:100%; ">
-     <div class="column is-one-quarter is-hidden-mobile">
+ <!--
+     <div class="column is-one-quarter is-hidden-mobile">  -->
         <!-- <menu-lateral (onEnviarTipo)=enviarTipo($event);></menu-lateral>  -->
-        <aside class="menu" style="padding: 1em;">
+        <!--<aside class="menu" style="padding: 1em;">
             <a routerLink="/almacen/salidas-estandar/nuevo" routerLinkActive="is-active" class="button is-primary is-inverted is-medium is-fullwidth"><span class="icon"  ><i class="fa fa-plus"></i></span> <span>Nueva Salida</span></a>
             <br>
             <ul class="menu-list">
                 <li>
                     <a routerLink="/almacen/salidas-estandar" #estandar routerLinkActive="is-active">
                         <span class="icon"><i class="fa fa-file"></i></span> Salida estandar
-                        <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                        <span class="icon is-pulled-right" *ngIf="ctrl.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                          -->
                         <!-- <span class="tag is-pulled-right" [ngClass]="{ 'is-white': estandar.className == 'is-active', 'is-primary': estandar.className != 'is-active' }"></span> -->
-                    </a>
+<!--                    </a>
                 </li>
             </ul>
 
         </aside>
-    </div>
+    </div>  -->
     <div class="column" style="padding:2em;">
         <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
             <section class="hero" [ngClass]=" {'is-dark': ctrl.busquedaActivada, 'is-primary': !ctrl.busquedaActivada } ">
@@ -27,11 +29,14 @@
                     <a class="button  is-dark" *ngIf="ctrl.busquedaActivada" style="position:absolute; top:1em; right:1em;" (click)="ctrl.busquedaActivada=false;searchBox.value=''; ctrl.resultadosBusqueda=[]"><span class="icon "><i class="fa fa-close"></i></span></a>
                     <a class="button  is-dark" *ngIf="ctrl.busquedaActivada" style="position:absolute; top:1em; right:3.5em;" (click)="ctrl.listarBusqueda(searchBox.value,1)"><span class="icon "><i class="fa fa-refresh"></i></span></a>
                     <a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" style="position:absolute; top:1em; right:1em;" (click)="ctrl.listar(1)"><span class="icon "><i class="fa fa-refresh"></i></span></a>
+                    
                     <div class="container is-fluid">
-
-                        <h1 class="title" *ngIf="!ctrl.busquedaActivada">
-                            <span class="icon is-medium"><i class="fa fa-user"></i></span> salidas estandar
-                        </h1>
+                        <span></span>
+                        <div class="is-hidden-desktop">
+                            <h1 class="title" *ngIf="!ctrl.busquedaActivada">
+                                <span class="icon is-medium"><i class="fa fa-user"></i></span> Salidas  de almacén
+                            </h1>
+                        </div>
                         <h1 class="title" *ngIf="ctrl.busquedaActivada">
                             <span class="icon is-medium"><i class="fa fa-search"></i></span> Búsqueda
                         </h1>
@@ -41,7 +46,7 @@
                             </p>
                             <p class="control">
                                 <a class="button is-medium is-primary is-inverted " routerLink="/almacen/salidas-estandar/nuevo">
-                                    <span class="icon"><i class="fa fa-plus"></i></span><span>Nuevo</span>
+                                    <span class="icon"><i class="fa fa-plus"></i></span><span>Nueva salida</span>
                                 </a>
                             </p>
                         </div>
@@ -58,21 +63,28 @@
             <table class="table" *ngIf="!ctrl.cargando">
                 <thead>
                     <tr>
-                        <th><abbr title="Usuario ID">ID</abbr></th>
-                        <th>Almacén</th>
-                        <th>Fecha</th>
+                        <th style=" text-align: center;"><abbr title="Folio">Folio</abbr></th>
+                        <th>Servicio</th>
+                        <th>Turno</th>
+                        <th>Usuario</th>
                         <th>Estatus</th>
-                        <th style="text-align:center;">Opciones</th>
+                        <th style=" text-align: center;">Creado</th>
+                        <th style=" text-align: center;">Actualizado</th>
                     </tr>
                 </thead>
                 <tbody *ngIf="!ctrl.busquedaActivada">
                     <tr *ngFor="let item of ctrl.dato; let i=index">
-                        <th style="vertical-align: middle;"><a routerLink="/almacen/salidas-estandar/editar/{{item.id}}">{{ item.id }}</a></th>
-                        <td style="vertical-align: middle;"><a routerLink="/almacen/salidas-estandar/editar/{{item.id}}">{{ item.almacen_id }} </a></td>
-                        <td style="vertical-align: middle;"><a routerLink="/almacen/salidas-estandar/editar/{{item.id}}">{{ item.fecha_movimiento }} </a></td>
+                        <th style="vertical-align: middle; text-align: center;"><a routerLink="/almacen/salidas-estandar/editar/{{item.id}}">{{ item.id }}</a></th>
+                        <td style="vertical-align: middle;"><a routerLink="/almacen/salidas-estandar/editar/{{item.id}}">{{ item.movimiento_metadato.servicio.nombre }} </a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/almacen/salidas-estandar/editar/{{item.id}}">{{ item.movimiento_metadato.turno.nombre }} </a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/almacen/salidas-estandar/editar/{{item.id}}">{{ item.movimiento_usuario.nombre }} {{ item.movimiento_usuario.apellidos }} </a></td>
                         <td style="vertical-align: middle;"><a routerLink="/almacen/salidas-estandar/editar/{{item.id}}">{{ item.status }} </a></td>
+                        <td style="vertical-align: middle; text-align: center;"><a routerLink="/almacen/salidas-estandar/editar/{{item.id}}">{{ item.created_at | date:'medium'}} </a></td>
+                        <td style="vertical-align: middle; text-align: center;"><a routerLink="/almacen/salidas-estandar/editar/{{item.id}}">{{ item.updated_at | date:'medium'}} </a></td>
+                        <!--
                         <td style="vertical-align: middle;" class="has-text-centered"><span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando"
                                 class="is-danger" (click)="ctrl.eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>
+                        -->
 
                     </tr>
                     <tr *ngIf="ctrl.dato.length == 0">
@@ -81,13 +93,13 @@
                 </tbody>
                 <tbody *ngIf="ctrl.busquedaActivada">
                     <tr *ngFor="let item of ctrl.resultadosBusqueda; let i=index">
-                        <th style="vertical-align: middle;"><a routerLink="/almacen/salidas-estandar/editar/{{item.id}}">{{ item.id }}</a></th>
-                        <td style="vertical-align: middle;"><a routerLink="/almacen/salidas-estandar/editar/{{item.id}}">{{ item.almacen_id }} </a></td>
-                        <td style="vertical-align: middle;"><a routerLink="/almacen/salidas-estandar/editar/{{item.id}}">{{ item.fecha_movimiento }} </a></td>
+                        <th style="vertical-align: middle; text-align: center;"><a routerLink="/almacen/salidas-estandar/editar/{{item.id}}">{{ item.id }}</a></th>
+                        <td style="vertical-align: middle;"><a routerLink="/almacen/salidas-estandar/editar/{{item.id}}">{{ item.movimiento_metadato.servicio.nombre }}</a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/almacen/salidas-estandar/editar/{{item.id}}">{{ item.movimiento_metadato.turno.nombre }} </a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/almacen/salidas-estandar/editar/{{item.id}}">{{ item.movimiento_usuario.nombre }} {{ item.movimiento_usuario.apellidos }} </a></td>
                         <td style="vertical-align: middle;"><a routerLink="/almacen/salidas-estandar/editar/{{item.id}}">{{ item.status }} </a></td>
-                        <td style="vertical-align: middle;" class="has-text-centered"><span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando"
-                                class="is-danger" (click)="ctrl.eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>
-
+                        <td style="vertical-align: middle; text-align: center;"><a routerLink="/almacen/salidas-estandar/editar/{{item.id}}">{{ item.created_at | date}} </a></td>
+                        <td style="vertical-align: middle; text-align: center;"><a routerLink="/almacen/salidas-estandar/editar/{{item.id}}">{{ item.updated_at | date}} </a></td>
                     </tr>
 
                     <tr *ngIf="ctrl.resultadosBusqueda.length == 0 && ctrl.busquedaActivada">

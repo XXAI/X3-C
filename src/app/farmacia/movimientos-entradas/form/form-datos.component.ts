@@ -20,7 +20,7 @@ export class FormDatosComponent implements OnInit {
   datos: any[];
   itemsDatos: any[];
   listaMovimientos: any[];
-  private usuario: any = {};
+  usuario: any = {};
   fecha_actual;
   
   @Input() insumo: Insumo[];

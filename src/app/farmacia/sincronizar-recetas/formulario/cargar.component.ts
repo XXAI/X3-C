@@ -19,7 +19,7 @@ export class CargarComponent {
   tamano:number = 0;
   @ViewChild('mainScreen') elementView: ElementRef;
   constructor(private fb: FormBuilder,  private crudService: CrudService, private route: ActivatedRoute, private _sanitizer: DomSanitizer, private notificacion: NotificationsService) { }
-  private tieneid: boolean = false;
+  tieneid: boolean = false;
   ngOnInit() {
 
     //obtener los datos del usiario logueado almacen y clues
@@ -31,7 +31,7 @@ export class CargarComponent {
       archivos: ['']
     }); 
   }
-private foto = '';
+  foto = '';
    /**
      * Este método abre una modal
      * @param id identificador del elemento de la modal
