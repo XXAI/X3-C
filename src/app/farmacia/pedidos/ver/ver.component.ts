@@ -54,6 +54,9 @@ export class VerComponent implements OnInit {
   tiposSubPedidos:string[] = [];
   subPedidos:any = {};
 
+  recepciones:any = {};
+  tieneRecepcionIniciada:boolean = false;
+
   meses:any = {1:'Enero', 2:'Febrero', 3:'Marzo', 4:'Abril', 5:'Mayo', 6:'Junio', 7:'Julio', 8:'Agosto', 9:'Septiembre', 10:'Octubre', 11:'Noviembre', 12:'Diciembre'};
 
   dialogCancelarFechaTransferencia: any = {};
@@ -77,6 +80,7 @@ export class VerComponent implements OnInit {
   private almacenes: Almacen[];
   pedido: Pedido;
   
+  porcentageTotalPedido: number = 0.00;
   // # FIN SECCION
 
   // # SECCION: Reportes
@@ -156,25 +160,16 @@ export class VerComponent implements OnInit {
               let dato = pedido.insumos[i];
               let insumo = dato.insumos_con_descripcion;
               insumo.cantidad = +dato.cantidad_solicitada;
+              insumo.cantidad_recibida = (+dato.cantidad_recibida||0);
               insumo.monto = +dato.monto_solicitado;
+              insumo.monto_recibido = (+dato.monto_recibido||0);
               insumo.precio = +dato.precio_unitario;
               this.pedido.lista.push(insumo);
               //this.listaClaveAgregadas.push(insumo.clave);
               //let tipo_insumo = 'ST';
               let tiene_iva = false;
               let clave_tipo_insumo = 'SC';
-              /*if(insumo.tipo == 'ME' && insumo.es_causes){
-                tipo_insumo = 'MEDICAMENTOS CAUSES';
-                clave_tipo_insumo = 'C'
-              }else if(insumo.tipo == 'ME' && !insumo.es_causes){
-                tipo_insumo = 'MEDICAMENTOS NO CAUSES';
-                clave_tipo_insumo = 'NC'
-              }else if(insumo.tipo == 'MC'){
-                tipo_insumo = 'MATERIAL DE CURACIÓN';
-                clave_tipo_insumo = 'MC'
-                tiene_iva = true;
-              }*/
-              //tipo_insumo = dato.tipo_insumo.nombre;
+              
               clave_tipo_insumo = dato.tipo_insumo.clave;
               if(dato.tipo_insumo.clave == 'MC'){
                 tiene_iva = true;
@@ -199,9 +194,24 @@ export class VerComponent implements OnInit {
               this.subPedidos[clave_tipo_insumo].monto += insumo.monto;
               this.subPedidos[clave_tipo_insumo].lista.push(insumo);
             }
+
+            if(pedido.status != 'EF'){
+              for(let i in pedido.recepciones){
+                if(pedido.recepciones[i].entrada.status == 'BR'){
+                  this.tieneRecepcionIniciada = true;
+                }
+              }
+            }
+            
             pedido.insumos = undefined;
             this.pedido.indexar();
             this.pedido.listar(1);
+
+            let porcentajeClaves = ((this.pedido.datosImprimir.total_claves_recibidas||0) / this.pedido.lista.length) * 100; 
+            let porcentajeCantidad = ((this.pedido.datosImprimir.total_cantidad_recibida||0) / this.pedido.totalInsumos) * 100;
+            let porcentajeMonto = ((this.pedido.datosImprimir.total_monto_recibido||0) / this.pedido.totalMonto) * 100;
+            
+            this.porcentageTotalPedido = (porcentajeCantidad + porcentajeClaves + porcentajeMonto)/3;
 
             this.cargando = false;
           },

@@ -71,7 +71,7 @@ export class AbastoComponent implements OnInit {
       respuesta => {
         console.log(respuesta)
         this.proveedores = respuesta;
-        console.log(this.proveedores)
+        //console.log(this.proveedores)
       }, error => {
 
       }

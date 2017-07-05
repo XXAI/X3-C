@@ -94,7 +94,7 @@
                     </tr>
                 </thead>
                 <tbody  *ngIf="!busquedaActivada">
-                    <tr *ngFor="let item of pedidos; let i=index" [ngClass]="{'proyecto-estatus-normal':item.status == 'BR','proyecto-estatus-azul':item.status == 'EF','proyecto-estatus-rojo':item.status == 'EX-CA','proyecto-estatus-amarillo':item.status == 'EX','proyecto-estatus-verde':item.status == 'FI'}">
+                    <tr *ngFor="let item of pedidos; let i=index" [ngClass]="{'proyecto-estatus-normal':(item.status == 'BR' || item.status == 'PS'),'proyecto-estatus-azul':item.status == 'EF','proyecto-estatus-rojo':item.status == 'EX-CA','proyecto-estatus-amarillo':item.status == 'EX','proyecto-estatus-verde':item.status == 'FI'}">
                         <th style="vertical-align: middle;"><a routerLink="{{obtenerDireccion(item.id,item.status)}}">
                             <span class="icon"><i class="fa fa-{{(item.tipo_pedido_id=='PA')?'hospital-o':'building'}}"></i></span>
                             {{ item.folio?item.folio:'S/F' }}</a>
