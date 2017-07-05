@@ -40,7 +40,7 @@
         <div class="columns is-multiline "  *ngIf="!cargandoEstadisticasGlobales">
             <div class="column is-4" *ngFor="let item of estadisticasGlobales">
                 <div class="notification is-white">
-                    <h1 class="title" style="font-size:1.2em;  margin-bottom:0.2em;color:#00d1b2">${{ item.total_monto_solicitado | number:'1.2-2' }}</h1>
+                    <h1 class="title" style="font-size:1.2em;  margin-bottom:0.2em;color:#00d1b2"><strong>${{ item.total_monto_solicitado | number:'1.2-2' }}</strong></h1>
                     <h1 class="title" style="font-size:0.8em; margin-bottom:0.2em;">{{ item.proveedor }}</h1>
                     <hr style="margin: 0.2em 0">
                     <nav class="level"><div class="level-left"><small>Entregado</small></div><div class="level-right"><small>{{ item.porcentaje_entregado | number:'1.2-2' }}%</small></div></nav>
@@ -102,7 +102,7 @@
                         <tbody>
                             <tr *ngFor="let um of item.data; let j = index">
                                 <td>{{ j + 1 }}</td>
-                                <td><a (click)="generarExcel(um.clues,item.proveedor_id)">{{ um.unidad_medica }}</a></td>
+                                <td><a style="color:black !important; font-weight:bold;" (click)="generarExcel(um.clues,item.proveedor_id)">{{ um.unidad_medica }}</a></td>
                                 <td *ngIf="um.causes_cantidad_solicitada > 0">{{ um.causes_cantidad_recibida | number: '1.0-0' }}/{{ um.causes_cantidad_solicitada | number: '1.0-0' }}</td>                                
                                 <th *ngIf="um.causes_cantidad_solicitada > 0">{{ parseNaN((um.causes_cantidad_recibida * 100 / um.causes_cantidad_solicitada)) | number: '1.2-2' }}%</th>
                                 <td colspan="2" *ngIf="um.causes_cantidad_solicitada == 0"></td>

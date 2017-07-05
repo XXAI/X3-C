@@ -6,51 +6,66 @@
       <div class="tile is-4 is-parent is-vertical ">
         <div class="tile is-child">
             <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
-                <section class="hero is-primary" [ngClass]="{'is-primary':pedido.status!='EX','is-danger':pedido.status=='EX' || pedido.status=='EX-CA'}" >
-                    <h1 *ngIf="pedido.status != 'EX' && pedido.status != 'EX-CA'" class="title" style="margin:0.5em;" >
-                        <span class="icon is-medium"><i class="fa fa-file-text"></i></span> Detalles del pedido
+                <section class="hero is-primary" [ngClass]="{'is-primary':pedido.status=='PS','is-success':pedido.status=='FI','is-info':pedido.status=='EF','is-danger':pedido.status=='EX' || pedido.status=='EX-CA'}" >
+                    <h1 *ngIf="pedido.status == 'PS'" class="title" style="margin:0.5em;" >
+                        <span class="icon is-medium"><i class="fa fa-file-text"></i></span> Pedido Por Surtir <span class="is-pulled-right">{{porcentageTotalPedido | number:'1.0-2'}} %</span>
+                    </h1>
+                    <h1 *ngIf="pedido.status == 'FI'" class="title" style="margin:0.5em;" >
+                        <span class="icon is-medium"><i class="fa fa-file-text"></i></span> Pedido Finalizado <span class="is-pulled-right">{{porcentageTotalPedido | number:'1.0-2'}} %</span>
+                    </h1>
+                    <h1 *ngIf="pedido.status == 'EF'" class="title" style="margin:0.5em;" >
+                        <span class="icon is-medium"><i class="fa fa-file-text"></i></span> Pedido En Farmacia <span class="is-pulled-right">{{porcentageTotalPedido | number:'1.0-2'}} %</span>
                     </h1>
                     <h1 *ngIf="pedido.status == 'EX'" class="title" style="margin:0.5em;" >
-                        <span class="icon is-medium"><i class="fa fa-exclamation-circle"></i></span> Pedido Expirado
+                        <span class="icon is-medium"><i class="fa fa-exclamation-circle"></i></span> Pedido Expirado <span class="is-pulled-right">{{porcentageTotalPedido | number:'1.0-2'}} %</span>
                     </h1>
                     <h1 *ngIf="pedido.status == 'EX-CA'" class="title" style="margin:0.5em;" >
-                        <span class="icon is-medium"><i class="fa fa-exclamation-circle"></i></span> Pedido Cancelado
+                        <span class="icon is-medium"><i class="fa fa-exclamation-circle"></i></span> Pedido Cancelado <span class="is-pulled-right">{{porcentageTotalPedido | number:'1.0-2'}} %</span>
                     </h1>
+                </section>
+                <section>
                     <div class="control is-grouped">
-                        <a class="button is-success is-fullwidth" title="Imprimir Excel" (click)="imprimirExcel(); " *ngIf="esEditar">
-                            <span class="icon"><i class="fa fa-file-excel-o"></i></span> &nbsp; Descargar Excel
+                        <a class="button is-success is-fullwidth is-outlined" title="Imprimir Excel" (click)="imprimirExcel(); " *ngIf="esEditar">
+                            <span class="icon"><i class="fa fa-file-excel-o"></i></span> &nbsp; Excel
                         </a>
-                        <a class="button is-info is-fullwidth" title="Imprimir PDF" (click)="mostrarDialogo(); " *ngIf="esEditar">
-                            <span class="icon"><i class="fa fa-print"></i></span> &nbsp; Imprimir Pedido
+                        <a class="button is-info is-fullwidth is-outlined" title="Imprimir PDF" (click)="mostrarDialogo(); " *ngIf="esEditar">
+                            <span class="icon"><i class="fa fa-print"></i></span> &nbsp; Pedido
                         </a>
                     </div>
                 </section>
 
                 <div style="padding: 1em;">
-                    <label class="label">Folio:</label>
+                    <!--label class="label">Folio:</label>
                     <p class="control">
                         <input type="text" class="input is-fullwidth" readonly="readonly" value="{{(pedido.datosImprimir)?pedido.datosImprimir.folio:'S/F'}}"/>
                     </p>
-
                     <label class="label">Almacén:</label>
                     <p class="control">
                         <input type="text" class="input is-fullwidth" readonly="readonly" value="{{(pedido.datosImprimir)?pedido.datosImprimir.almacen_solicitante.nombre:'Sin almacen asignado'}}"/>
                     </p>
-
                     <label class="label">Nombre del Pedido:</label>
                     <p class="control">
                         <input type="text" class="input is-fullwidth" readonly="readonly" value="{{(pedido.datosImprimir)?pedido.datosImprimir.descripcion:''}}"/>
                     </p>
-
                     <label class="label">Fecha:</label>
                     <p class="control">
                         <input type="text" class="input is-fullwidth" readonly="readonly" value="{{(pedido.datosImprimir)?pedido.datosImprimir.fecha:''}}"/>
                     </p>
-
                     <div class="control">
                         <textarea name="observaciones" class="textarea" placeholder="Observaciones"  readonly="readonly">{{(pedido.datosImprimir)?pedido.datosImprimir.observaciones:''}}</textarea>
-                    </div>
+                    </div-->
 
+                    <label class="label">Datos del Pedido:</label>
+                    <div *ngIf="pedido.datosImprimir" class="level-item">
+                        <p class="subtitle is-5">
+                            <strong>Folio: </strong> {{pedido.datosImprimir.folio}}<br>
+                            <strong>Almacén: </strong> {{pedido.datosImprimir.almacen_solicitante.nombre}}<br>
+                            <strong>Nombre del pedido: </strong> {{pedido.datosImprimir.descripcion}}<br>
+                            <strong>Fecha: </strong> {{pedido.datosImprimir.fecha}}<br>
+                            <strong>Observaciones: </strong> {{pedido.datosImprimir.observaciones}}<br>
+                        </p>
+                    </div>
+                    <hr>
                     <label class="label">Datos del Proveedor:</label>
                     <div *ngIf="pedido.datosImprimir" class="level-item">
                         <input *ngIf="pedido.datosImprimir.almacen_proveedor" type="text" class="input is-fullwidth" readonly="readonly" value="{{pedido.datosImprimir.almacen_proveedor.nombre}}"/>
@@ -68,12 +83,8 @@
                     <hr>
                     <div class="control is-grouped" style="padding-top:10px;" *ngIf="!cargando">
                         <p class="control" *ngIf="pedido.status != 'FI' && pedido.datosImprimir.tipo_pedido_id == 'PA' && pedido.status != 'EX-CA'">
-                            <a class="button is-primary" routerLink="/almacen/pedidos/recepcion/{{pedido.id}}"> <span class="icon"><i class="fa fa-truck"></i></span> <span>Recibir Pedido</span></a>
+                            <a class="button is-primary" routerLink="/almacen/pedidos/recepcion/{{pedido.id}}"> <span class="icon"><i class="fa fa-truck"></i></span> <span *ngIf="!tieneRecepcionIniciada">Recibir Pedido</span><span *ngIf="tieneRecepcionIniciada">Continuar Recepción</span></a>
                         </p>
-
-                        <!--p class="control" *ngIf="pedido.status == 'EX' && pedido.datosImprimir.tipo_pedido_id == 'PA'">
-                            <a class="button is-danger" (click)="mostrarDialogoCancelarPedido()"> <span class="icon"><i class="fa fa-ban"></i></span> <span>Cancelar Pedido</span></a>
-                        </p-->
 
                         <p class="control">
                             <a class="button is-white" routerLink="{{obtenerDireccion()}}" >Ir a la lista</a>
@@ -92,7 +103,11 @@
         <div class="tile is-child" >
           <div class="contenedor-pedido" >
             <div class="top-bar" [ngClass]="{'is-primary':!pedido.filtro.activo,'is-dark': pedido.filtro.activo }">
-                <span *ngIf="!pedido.filtro.activo">Claves: {{ pedido.lista.length }} Insumos: {{pedido.totalInsumos | number}} Total: $ {{ pedido.totalMonto | number: '1.2-2' }}</span>
+                <span *ngIf="!pedido.filtro.activo">
+                    Claves: {{((pedido.datosImprimir)?(pedido.datosImprimir.total_claves_recibidas||0):0) | number:'1.0'}} de {{ pedido.lista.length | number }} 
+                    Insumos: {{((pedido.datosImprimir)?(pedido.datosImprimir.total_cantidad_recibida||0):0) | number:'1.0'}} de {{pedido.totalInsumos | number}} 
+                    Total: $ {{((pedido.datosImprimir)?(pedido.datosImprimir.total_monto_recibido||0):0) | number:'1.2-2'}} de $ {{ pedido.totalMonto | number: '1.2-2' }}
+                </span>
                 <span *ngIf="pedido.filtro.activo"><span class="icon"><i class="fa fa-search"></i></span> Resultados: {{ pedido.filtro.lista.length }}</span>
                 <!--a class="button is-primary  is-pulled-right" [ngClass]="{ 'is-inverted': pedido.filtro.activo }" style="margin-top:-0.25em;" title="Recepciones" (click)="toggleModalRecepciones(); ">
                     <span class="icon"><i class="fa fa-file"></i></span><span>Recepciones: {{pedido.datosImprimir.recepciones.length}}</span>
@@ -147,7 +162,6 @@
                         <!--div *ngIf="item.tipo != 'ME'" style="line-height:1em;"-->
                         <div style="line-height:1em;">
                         <small>{{ item.descripcion }}</small>
-                        {{item.tipo}}asdasdasds
                         </div>
                         <div style="padding: 0.5em 0 0.5em 0; ">
                         <span *ngIf="(item.es_causes && item.tipo == 'ME')" class="tag is-success" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
@@ -207,11 +221,11 @@
 
                     <td style="width:78px !important;">
                         <p class="control is-expanded">
-                            {{item.cantidad}}
+                            {{item.cantidad_recibida | number}} / {{item.cantidad | number}}
                         </p>
                     </td>
                     <td style="width:78px !important;">
-                        <b><abbr>$ {{item.monto | number:'1.2-2'}}</abbr></b>
+                        <b><abbr> ${{item.monto_recibido | number:'1.2-2'}} / ${{item.monto | number:'1.2-2'}}</abbr></b>
                     </td> 
                     </tr>      
                 </tbody>
@@ -283,11 +297,11 @@
                     </td--> 
                     <td style="width:78px !important;">
                         <p class="control is-expanded">
-                            {{item.cantidad}}
+                            {{item.cantidad_recibida | number}} / {{item.cantidad | number}}
                         </p>
                     </td>
                     <td style="width:78px !important;">
-                        <b><abbr>$ {{item.monto | number:'1.2-2'}}</abbr></b>
+                        <b><abbr> ${{item.monto_recibido | number:'1.2-2'}} / ${{item.monto | number:'1.2-2'}}</abbr></b>
                     </td> 
                     </tr>
                 </tbody>              

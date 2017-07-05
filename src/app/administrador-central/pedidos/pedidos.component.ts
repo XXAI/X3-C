@@ -90,9 +90,9 @@ export class PedidosComponent implements OnInit {
   cargarProveedores(){
     this.apiService.proveedores().subscribe(
       respuesta => {
-        console.log(respuesta)
+        //console.log(respuesta)
         this.proveedores = respuesta;
-        console.log(this.proveedores)
+        //console.log(this.proveedores)
       }, error => {
 
       }

@@ -183,11 +183,13 @@
                             <span class="icon is-small surtido"><i class="fa fa-check-circle"></i></span> Surtido | 
                             <span class="icon is-small farmacia"><i class="fa fa-cubes"></i></span> Farmacia |
                             <span class="icon is-small expirado"><i class="fa fa-exclamation-circle"></i></span> Expirado |
-                            <span class="icon is-small expirado"><i class="fa fa-times-circle"></i></span> Cancelado
+                            <span class="icon is-small cancelado"><i class="fa fa-times-circle"></i></span> Cancelado
                         </th>
                     </tr>
                     <tr>
-                        <th colspan="3"></th>
+                        <th></th>
+                        <th style="text-align:center;">Fecha</th>
+                        <th></th>
                         <th colspan="2" style="text-align:center;">Total</th>
                         <th class="causes" colspan="2" style="text-align:center;">Causes</th>
                         <th class="no-causes" colspan="2" style="text-align:center;">No causes</th>
@@ -198,7 +200,7 @@
                         <th>Folio/Nombre del Pedido/Unidad Medica</th>
                         <!--th>Nombre</th>
                         <th>Unidad médica</th-->
-                        <th style="text-align:center;">Fecha</th>
+                        <th style="text-align:center;">Pedido [Expiración]</th>
                         <th style="text-align:center;">Status</th>
                         <th style="text-align:center;">Claves</th>
                         <th style="text-align:center;">Monto</th>
@@ -220,8 +222,19 @@
                         <td style="vertical-align: middle;"><strong>{{ item.folio }}</strong><br>{{item.unidad_medica}}<br>{{item.descripcion}}</td>
                         <!--td style="vertical-align: middle;">{{ item.descripcion }}</td>
                         <td style="vertical-align: middle;">{{ item.unidad_medica }}</td-->
-                        <td style="text-align:center; vertical-align: middle;">{{ item.fecha_concluido | date:'y-MM-dd' }}</td>
-                        <td [ngClass]="{'surtido':item.status=='FI','expirado':(item.status=='EX' || item.status=='EX-CA'),'sin-surtir':(item.total_cantidad_recibida==0 && item.status=='PS'),'surtiendo':(item.total_cantidad_recibida>0 && item.status=='PS'),'farmacia':item.status=='EF'}" style="text-align:center; vertical-align: middle;"><span class="icon"><i class="fa" [ngClass]="{'fa-check-circle':item.status=='FI','fa-times-circle':item.status=='EX-CA','fa-exclamation-circle':item.status=='EX','fa-circle':(item.total_cantidad_recibida==0 && item.status == 'PS'),'fa-minus-circle':(item.total_cantidad_recibida>0 && item.status == 'PS'),'fa-cubes':item.status=='EF'}"></i></span></td>
+                        <td style="text-align:center; vertical-align: middle;" [ngClass]="{'estatus-rojo':(item.status != 'EF' && item.expira_en_dias <= 0),'estatus-amarillo':(item.status == 'PS' && (item.expira_en_dias > 0 && item.expira_en_dias <= 5))}">
+                            {{ item.fecha_concluido | date:'y-MM-dd' }}<br>
+                            <span *ngIf="item.status != 'EF'">
+                                [{{ item.fecha_expiracion | date:'y-MM-dd' }}]<br>
+                            </span>
+                            <strong *ngIf="item.status == 'PS' && item.expira_en_dias >= 0">
+                                Expira <span *ngIf="item.expira_en_dias == 0">Hoy</span><span *ngIf="item.expira_en_dias > 0">en {{item.expira_en_dias}} día(s)</span>
+                            </strong>
+                            <strong *ngIf="item.status == 'EX' && item.expira_en_dias < 0">
+                                <span *ngIf="item.status != 'EX-CA'">Expirado  hace {{item.expira_en_dias*(-1)}} día(s)</span>
+                            </strong>
+                        </td>
+                        <td [ngClass]="{'surtido':item.status=='FI','expirado':item.status=='EX', 'cancelado':item.status=='EX-CA','sin-surtir':(item.total_cantidad_recibida==0 && item.status=='PS'),'surtiendo':(item.total_cantidad_recibida>0 && item.status=='PS'),'farmacia':item.status=='EF'}" style="text-align:center; vertical-align: middle;"><span class="icon is-medium"><i class="fa" [ngClass]="{'fa-check-circle':item.status=='FI','fa-times-circle':item.status=='EX-CA','fa-exclamation-circle':item.status=='EX','fa-circle':(item.total_cantidad_recibida==0 && item.status == 'PS'),'fa-minus-circle':(item.total_cantidad_recibida>0 && item.status == 'PS'),'fa-cubes':item.status=='EF'}"></i></span></td>
                         
                         <td style="text-align:center; vertical-align: middle; white-space: nowrap;">{{ item.total_claves_recibidas }} / {{ item.total_claves_solicitadas }} <br> <strong>({{(item.total_claves_recibidas/item.total_claves_solicitadas)*100 | number:'1.0-2'}} %)</strong></td>
                         <td style="text-align:center; vertical-align: middle;">$ {{ item.total_monto_recibido | number:'1.2-2' }} / $ {{ item.total_monto_solicitado | number:'1.2-2' }} <br> <strong>({{((item.total_monto_recibido/item.total_monto_solicitado)*100) | number:'1.0-2'}} %)</strong></td>
