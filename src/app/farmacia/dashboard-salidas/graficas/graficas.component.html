@@ -18,7 +18,7 @@
           <div class="field">
             <label class="label">Fecha inicial:</label>
             <p class="control is-expanded  has-icon has-icon-right">
-              <input class="input" [value]="fecha_inicial_actual" [(ngModel)]='fecha_inicial' formControlName="fecha_inicial" ngui-datetime-picker
+              <input class="input" [value]="fecha_inicial_actual" formControlName="fecha_inicial" [(ngModel)]="fecha_inicial" ngui-datetime-picker
                   [min-date]="MinDate" [max-date]="MaxDate" date-only="true" 
                   placeholder="YYYY-MM-DD" />
             </p>
@@ -26,7 +26,7 @@
           <div class="field">
             <label class="label">Fecha final:</label>
             <p class="control is-expanded  has-icon has-icon-right">
-              <input class="input" [value]="fecha_actual" [(ngModel)]='fecha_final' formControlName="fecha_final" ngui-datetime-picker
+              <input class="input" [value]="fecha_actual" formControlName="fecha_final" [(ngModel)]="fecha_final" ngui-datetime-picker
                   [min-date]="MinDate" [max-date]="MaxDate" date-only="true" 
                   placeholder="YYYY-MM-DD" />
             </p>

@@ -23,10 +23,10 @@ export class FormularioComponent {
   constructor(private fb: FormBuilder, private crudService: CrudService, private route: ActivatedRoute, private _sanitizer: DomSanitizer, private notificacion: NotificationsService) { }
 
 
-  private MinDate = new Date();
-  private MaxDate = new Date();
-  private fecha_actual;
-  private tieneid: boolean = false;
+  MinDate = new Date();
+  MaxDate = new Date();
+  fecha_actual;
+  tieneid: boolean = false;
 
   tipos_recetas: any[] = [
                               { id: 1, nombre: "Normal"},
@@ -187,6 +187,9 @@ export class FormularioComponent {
   };
 
   mostrar_lote = [];
+  mostrarCancelado = false;
+  fecha_receta;
+  fecha_movimiento;
   /**
      * Este método agrega los lostes del modal a el modelo que se envia a la api
      * @return void

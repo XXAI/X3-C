@@ -17,12 +17,16 @@ export class HubComponent implements OnInit {
       title:'Almacén', routerLink:'/almacen', icono:'assets/hub-farmacia.svg',
       permisos: [
         'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
-        'iSxK0TpoYpnzf8KIQTWOq9Web7WnSKhz' // Ver entregas
+        'iSxK0TpoYpnzf8KIQTWOq9Web7WnSKhz', // Ver entregas
+        'GPSDLmXckXcdfdj7lD4rdacwMivsTp9g', // Ver salidas recetas
+        'qQvNeb1UFPOfVMKQnNkvxyqjCIUgFuEG', // Ver salidas de almacen
+        'a1OMZVn7dveOf5aUK8V0VsvvSCxz8EMw' // Ver entradas de almacen
       ] 
     },
     { 
       title:'Farmacia Subrrogada', routerLink:'/farmacia-subrrogada', icono:'assets/hub-farmacia-sub.svg',
       permisos: [
+        'RZsvMjtPtpLWC8afsAFZsNnD9iXtiZC3', // Ver sincronizar recetas
         'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
         'iSxK0TpoYpnzf8KIQTWOq9Web7WnSKhz' // Ver entregas
       ] 

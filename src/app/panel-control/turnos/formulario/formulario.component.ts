@@ -14,7 +14,7 @@ export class FormularioComponent {
   form_almacen_tipos_servicios: any;
   actualizacion;
   actualizacion_usuario;
-  private tieneid: boolean = false;
+  tieneid: boolean = false;
 
   tab: number = 2;
   

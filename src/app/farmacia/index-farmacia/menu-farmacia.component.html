@@ -6,9 +6,9 @@
             <img src="assets/hub-farmacia.svg" alt="icono">
         
         </a>
-        <div class="nav-left">
+        <div class="nav-left is-hidden-touch">
             
-            <span *ngIf="!modulo" class="nav-item" >
+            <span *ngIf="!modulo" class="nav-item">
                 <h1 class="title">&nbsp;Almacén</h1>
             </span>
             <a *ngIf="modulo" class="nav-item" routerLink="{{ url }}" >
@@ -16,6 +16,12 @@
             <!-- <img src="{{ icono }}" alt="icono">-->
                 <h1 class="title">&nbsp;{{ modulo }}</h1>                     
             </a>
+        </div>
+
+        <div class="nav-center">
+            <span class="nav-item" >
+                {{usuario.clues_activa.nombre}} &nbsp;  - &nbsp; {{usuario.almacen_activo.nombre}}
+            </span>
         </div>
 
         <a class="nav-item"  (click)="hub.toggle()">

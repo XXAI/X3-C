@@ -27,27 +27,27 @@ export class EditarComponent implements OnInit {
 
   public movimiento: FormGroup;
 
-  private id:string;
-  private movimientoRepetido:boolean = false;
-  private movimientoInvalido:boolean = false;
+  id:string;
+  movimientoRepetido:boolean = false;
+  movimientoInvalido:boolean = false;
 
     // # SECCION: Reportes
-  private pdfworker:Worker;
-  private cargandoPdf:boolean = false;
+  pdfworker:Worker;
+  cargandoPdf:boolean = false;
   // # FIN SECCION
  
   datosCargados: boolean;
   cargando: boolean = false;
-  private cargandoDatos: boolean = false;  
-  private almacenes: any = {};
-  private usuario: any ={};
+  cargandoDatos: boolean = false;  
+  almacenes: any = {};
+  usuario: any ={};
   datos : any[];
   salidaMovimiento : Salida[];
-  private servicios;
+  servicios;
 
   fecha_actual:any;
   mostrarCancelado: boolean = false;
-  private almacenId: string;
+  almacenId: string;
  
 
   // # SECCION: Esta sección es para mostrar mensajes

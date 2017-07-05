@@ -1,5 +1,5 @@
-<formulario #ctrl URL="movimientos" titulo="Entrada Estandar" [dato]="dato"></formulario>
-<menu-farmacia [modulo]="'Entrada estandar'" [icono]="'assets/icono-entradas.svg'" [url]="'/almacen/entradas-estandar'"></menu-farmacia>
+<formulario #ctrl URL="movimientos" titulo="Entrada  de almacén" [dato]="dato"></formulario>
+<menu-farmacia [modulo]="'Entrada  de almacén'" [icono]="'assets/icono-entradas.svg'" [url]="'/almacen/entradas-estandar'"></menu-farmacia>
 <div style="height:50px;"></div>
 <form name="form" novalidate [formGroup]="dato" (ngSubmit)="ctrl.enviar()">
     <div class="contenedor columns " style="height:100%">
@@ -14,14 +14,15 @@
                     <h1 *ngIf="tieneid" class="title" style="margin:0.5em; ">
                         <span class="icon is-medium">
                             <i class="fa fa-file-text"></i>
-                        </span> Entrada {{ctrl.id}}
+                        </span> Folio {{ctrl.id}}
                     </h1>
 
 
                 </section>
+                
                 <div style="padding: 1em;">
                     <nav class="nav">
-                        <div class="nav-right nav-menu">
+                        <div class="nav-right">
                             <div class="nav-item">
                                 <div class="field is-grouped">
                                     <p class="control" *ngIf="!tieneid" style="float:left">
@@ -127,7 +128,7 @@
             <div style="background: #FFF; border-radius: 1em; ">
                 <section class="hero is-primary">
                     <div class="hero-body">
-                        <a class="button  is-primary" style="position:absolute; top:6em; right:3em;" (click)="ctrl.cargarDatos();  "><span class="icon "><i class="fa fa-refresh"></i></span></a>
+                        <a class="button  is-primary" style="position:absolute; top:5em; right:3em;" (click)="ctrl.cargarDatos();  "><span class="icon "><i class="fa fa-refresh"></i></span></a>
                         <div class="container is-fluid">
                             <h1 class="title">
                                 <span *ngIf="!ctrl.cargando || !cargando" class="icon is-medium"><i class="fa fa-edit"></i></span>
@@ -161,7 +162,7 @@
                             <article class="media" [formGroupName]="i">
                                 <div class="media-content">
                                     <div class="content">
-                                        <a *ngIf="!tieneid" class="is-danger" title="Quitar este elemento de la lista" style="float:right" (click)="ctrl.quitar_form_array('insumos', i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
+                                        <a *ngIf="!tieneid" class="is-danger" title="Quitar este elemento de la lista" style="float:right" (click)="ctrl.quitar_form_array(ctrl.dato.controls.insumos,i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
                                         <p>
                                             <strong>
                                                 <span style="color:cornflowerblue">
@@ -169,10 +170,10 @@
                                                 </span>
                                                 Nombre: {{ctrl.dato.controls.insumos.controls[i].controls.nombre.value}}
                                             
-                                                <label class="tag is-success" *ngIf="ctrl.dato.controls.insumos.controls[i].controls.es_causes.value"><strong>Cause </strong></label>
-                                                <label class="tag is-success" *ngIf="!ctrl.dato.controls.insumos.controls[i].controls.es_causes.value"><strong>No Cause </strong> </label>                                           
+                                                <label class="tag is-success" *ngIf="ctrl.dato.controls.insumos.controls[i].controls.es_causes.value == 1"><strong>Cause </strong></label>
+                                                <label class="tag is-success" *ngIf="ctrl.dato.controls.insumos.controls[i].controls.es_causes.value == 0"><strong>No Cause </strong> </label>                                           
                                                                                             
-                                                <label class="tag is-warning" *ngIf="ctrl.dato.controls.insumos.controls[i].controls.es_unidosis.value"><strong>Unidosis</strong> </label>
+                                                <label class="tag is-warning" *ngIf="ctrl.dato.controls.insumos.controls[i].controls.es_unidosis.value == 1"><strong>Unidosis</strong> </label>
                                             </strong>
                                             <br> {{ctrl.dato.controls.insumos.controls[i].controls.descripcion.value}}
                                         </p>
@@ -209,42 +210,34 @@
                                             </tbody>
                                         </table>
                                     </section>
-                                    <nav *ngIf="!tieneid" class="level is-mobile">
-                                        <div class="level-left">
-                                            <a class="level-item">
-                                                <div class="field">
-                                                    <label class="label">Lote:</label>
-                                                    <p class="control is-expanded  has-icon has-icon-right">
-                                                        <input type="text" class="input" formControlName="lote" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.lote.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.lote.touched}">
-                                                    </p>
-                                                </div>
-                                            </a>
-                                            <a class="level-item">
-                                                <div class="field">
+                                    <div *ngIf="!tieneid"  class="level-left">
+                                        <div class="columns is-flex-desktop" style="width: 100%">
+                                            <div class="column is-3">
+                                                <p class="control is-expanded">
+                                                <label class="label">Lote:</label>
+                                                    <input type="text" class="input" formControlName="lote" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.lote.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.lote.touched}">
+                                                </p>
+                                            </div>                       
+                                            <div class="column is-4">
+                                                <p class="control is-expanded">
                                                     <label class="label">Caducidad:</label>
-                                                    <p class="control is-expanded  has-icon has-icon-right">
-                                                        <input type="date" class="input" formControlName="fecha_caducidad" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.touched}">
-                                                    </p>
-                                                </div>
-                                            </a>
-                                            <a class="level-item">
-                                                <div class="field">
+                                                    <input type="date" class="input" formControlName="fecha_caducidad" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.touched}">
+                                                </p>
+                                            </div>                          
+                                            <div class="column is-3">
+                                                <p class="control is-expanded">
                                                     <label class="label">Codigo de barras:</label>
-                                                    <p class="control is-expanded  has-icon has-icon-right">
-                                                        <input type="text" class="input" formControlName="codigo_barras" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.codigo_barras.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.codigo_barras.touched}">
-                                                    </p>
-                                                </div>
-                                            </a>
-                                            <a class="level-item">
-                                                <div class="field">
+                                                    <input type="text" class="input" formControlName="codigo_barras">
+                                                </p>
+                                            </div>    
+                                            <div class="column is-2">                                                
+                                                <p class="control is-expanded">
                                                     <label class="label">Cantidad:</label>
-                                                    <p class="control is-expanded  has-icon has-icon-right">
-                                                        <input type="number" class="input" formControlName="cantidad" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad.touched}">
-                                                    </p>
-                                                </div>
-                                            </a>
+                                                    <input type="number" class="input" formControlName="cantidad" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad.touched}">
+                                                </p>
+                                            </div>
                                         </div>
-                                    </nav>
+                                    </div>
                                 </div>
                             </article>
                         </div>

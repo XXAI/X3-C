@@ -13,6 +13,9 @@ export class FormularioComponent {
   dato: FormGroup;
   form_almacen_tipos_movimientos: any;
   tieneid: boolean = false;
+  nivel_almacen;
+  tipo_almacen;
+  proveedor_id;
   tipos_almacen: any[] = [
     { id: "ALMPAL", nombre: "ALMPAL" },
     { id: "JURIS", nombre: "JURIS" },

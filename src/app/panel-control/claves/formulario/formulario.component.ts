@@ -20,7 +20,7 @@ export class FormularioComponent {
   insumo;
   es_unidosis = false;
   form_almacen_tipos_servicios: any;
-  private tieneid: boolean = false;
+  tieneid: boolean = false;
 
   public insumos_term: string = `${environment.API_URL}/insumos-auto?term=:keyword`;
   tab: number = 1;
