@@ -202,7 +202,7 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let item of lista; let i=index">                        
-                        <td style="vertical-align: middle;">{{ item.proveedor }}</td>
+                        <td style="vertical-align: middle;"><button type="button" class="button is-warning is-small" (click)='verInformacion(item)'><i class="fa fa-exclamation-triangle"></i></button> {{ item.proveedor }}</td>
                         <td style="vertical-align: middle;">{{ (item.folio)?item.folio:'S/F' }}</td>
                         <td style="vertical-align: middle;">{{ item.descripcion }}</td>
                         <td style="vertical-align: middle;">{{ item.unidad_medica }}</td>
@@ -266,14 +266,7 @@
                 (onListar)="listar($event)" 
                 *ngIf="total>0 && total > resultadosPorPagina"></paginacion>
         </div>
-     
-        
-        
-          
-           
-            
-           
-        
+
     </div>
 </div>
 
@@ -288,4 +281,99 @@
     <p><span class="icon" style="margin-right: 0.5em;"><i class="fa fa-check-circle"></i></span> <span>{{ mensajeExito.texto }}</span></p>
     <br>
     <p style="text-align: center;"><small >Este mensaje desaparecerá en {{ mensajeExito.cuentaAtras }} segundos.</small></p>       
+</div>
+
+<div id="modal-pedido" class="modal is-active" [ngClass]="{'is-active': showPedido}">
+  <div class="modal-background"  (click)="showPedido = !showPedido"></div>
+  <div class="modal-card" style="width:60%; height: auto;">
+    <header class="modal-card-head" style="background-color: #00d1b2" >
+      <div class="container is-fluid"  style="width:100%;">
+          <h1 class="title" style="color:#FFF;">
+            <span class="icon is-medium"><i class="fa fa-user"></i></span> PEDIDO
+          </h1>
+      </div>            
+      <a class="button  is-primary" style="position:absolute; top:1em; right:1em;" (click)="showPedido = !showPedido"><span class="icon "><i class="fa fa-close"></i></span></a>
+    </header>
+        <section class="section" style="padding:  1rem 1.5rem;">
+            <form name="form"  >
+                <table class="table">
+                    <thead>
+                        <th colspan="5">Datos Pedido:</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>CLUES:</b> {{ datos_pedido.clues }}
+                            </td>
+                            <td>
+                                <b>FOLIO:</b> {{ datos_pedido.folio }}
+                            </td>
+                            <td>
+                                <b>FECHA:</b> {{ datos_pedido.fecha }}
+                            </td>
+                            <td>
+                                <b>FECHA EXPIRACION:</b> {{ datos_pedido.fecha_expiracion }}
+                            </td>
+                            <td>
+                                <button type="button" class="button is-warning" [disabled]="borrador" (click)='regresarBorrador(datos_pedido.pedido_id)'><i class="fa fa-exclamation-triangle"></i> REGRESAR A BORRADOR</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <b>UNIDAD MEDICA:</b> {{ datos_pedido.unidad_medica }}
+                            </td>
+                            <td colspan="2">
+                                <b>PROVEEDOR:</b> {{ datos_pedido.proveedor }}
+                            </td>                            
+                        </tr>
+                       
+                    </tbody>
+                </table>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th colspan="5">Lista de Recepciones</th>
+                        </tr>
+                        <tr>
+                            <th>Fecha Creación</th>
+                            <th>Fecha Actualización</th>
+                            <th>Estatus</th>
+                            <th>Insumos</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="cargaRecepciones">
+                        
+                        <tr *ngFor="let item of recepciones; let i=index" >  
+                            <td>{{ item.movimiento.created_at }}</td>                      
+                            <td>{{ item.movimiento.updated_at }}</td>                      
+                            <td *ngIf="item.movimiento.status == 'FI'">FINALIZADO</td>                      
+                            <td *ngIf="item.movimiento.status == 'BR'">BORRADOR</td>                      
+                            <td>{{ item.cantidad_insumos }}</td>
+                            <td *ngIf="item.movimiento.status == 'FI'"><button type="button" class="button is-small is-danger" (click)='borrarRecepcion(item.movimiento.id)' [disabled]=""><i class="fa fa-close"></i></button></td>                      
+                            <td *ngIf="item.movimiento.status == 'BR'"></td>                      
+                                                  
+                        </tr>
+                        <tr *ngIf="recepciones.length == 0">
+                        <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
+                    </tr>
+                    </tbody>
+                    <tbody>
+                        <tr *ngIf="!cargaRecepciones">
+                            <td colspan="5">
+                                Cargando
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>     
+              <!--<div class="control is-grouped">
+                <p class="control">
+                  <button class="button is-primary" type="submit" [ngClass]="{'is-loading': cargando}" [disabled]="paciente.invalid">Guardar</button>
+                </p>
+              </div>-->
+            </form>
+        </section>
+    <footer class="" style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em " >
+    </footer>
+  </div>
 </div>

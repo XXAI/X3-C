@@ -379,6 +379,7 @@ export class PedidosComponent implements OnInit {
 
             if(xhr.readyState === XMLHttpRequest.DONE && xhr.status != 200) {
                self.error_envio();
+               self.subir_archivo = true;        
             }
             self.cargando_archivo = xhr.readyState;
         };        

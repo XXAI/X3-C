@@ -52,7 +52,12 @@ export class PedidosComponent implements OnInit {
   resultadosPorPagina = 10;
   total = 0;
   paginasTotales = 0;
-  indicePaginas:number[] = []
+  indicePaginas:number[] = [];
+  showPedido:boolean = false;
+  datos_pedido:any = {};
+  recepciones:any[] = [];
+  borrador:boolean = true;
+  cargaRecepciones:boolean = false;
   // # FIN SECCION
   
   constructor(private title: Title, private apiService: AdministradorCentralService) { }
@@ -78,6 +83,84 @@ export class PedidosComponent implements OnInit {
     ]
     
   }
+
+  verInformacion(obj:any)
+  {
+    this.datos_pedido = obj;
+    this.showPedido = true;
+    this.borrador = true;
+    this.apiService.verRecepciones(this.datos_pedido.pedido_id).subscribe(
+      respuesta => {
+          this.cargaRecepciones = true; 
+          this.recepciones = respuesta.recepciones;
+          if(respuesta.status == 'PS' && (respuesta.recepciones.length == 0 || respuesta.recepciones == null))
+              this.borrador= false;
+      }, error => {
+        this.cargaRecepciones = false;
+      }
+    );
+
+  } 
+
+  regresarBorrador(id:string)
+  {
+    if(prompt("Para confirmar que desea regresar el pedido a borrador, ingrese BORRADOR PEDIDO") == "BORRADOR PEDIDO")
+    {
+      this.apiService.pedidoBorrador(id).subscribe(
+        respuesta => {
+          this.showPedido = false;
+          this.mensajeExito.mostrar = true;
+          this.mensajeExito.texto = "Se ha regresado correctamente el pedido a borrador";
+          this.cargaRecepciones = true;
+          this.listar(1);
+           
+        }, error => {
+          this.cargaRecepciones = true;
+        }
+      );
+    }
+  }
+
+  borrarRecepcion(id:string)
+  {
+    this.cargaRecepciones = false;
+    this.apiService.recepcionBorrador(id).subscribe(
+        respuesta => {
+          //this.showPedido = false;
+          this.mensajeExito.mostrar = true;
+          this.mensajeExito.texto = "Se ha borrado correctamente la recepcion de medicamento";
+          
+          //this.listar(1);
+          this.apiService.verRecepciones(respuesta.id).subscribe(
+            respuesta => {
+                this.cargaRecepciones = true;
+                this.recepciones = respuesta.recepciones;
+                if(respuesta.status == 'PS' && (respuesta.recepciones.length == 0 || respuesta.recepciones == null))
+                    this.borrador= false;
+            }, error => {
+                this.cargaRecepciones = true;
+            }
+          );
+        }, error => {
+          this.cargaRecepciones = true;
+          this.mensajeError.mostrar = true;
+          try {
+            let e = error.json();
+            if (error.status == 401 ){
+              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }
+            if (error.status == 500 ){
+              this.mensajeError.texto = e.error;
+            } else {
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }
+          } catch(e){
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";           
+          }
+        }
+      );
+  }
+
   cargarJurisdicciones(){
     this.apiService.jurisdicciones().subscribe(
       respuesta => {
