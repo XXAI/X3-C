@@ -84,5 +84,16 @@ export class AdministradorCentralService {
     return this.jwtRequest.get("administrador-central/cumplimiento-stats-proveedor",id,null).map( (response: Response) => response.json().data);
   }
 
+
+  verRecepciones(id:any): Observable<any>{    
+    return this.jwtRequest.get("administrador-central/pedidos-recepcion",id,null).map( (response: Response) => response.json().data);
+  }
+
+  pedidoBorrador(id:any): Observable<any>{    
+    return this.jwtRequest.get("administrador-central/pedidos-borrador",id,null).map( (response: Response) => response.json().data);
+  }
+  recepcionBorrador(id:any): Observable<any>{    
+    return this.jwtRequest.get("administrador-central/recepcion-borrador",id,null).map( (response: Response) => response.json().data);
+  }
   
 }

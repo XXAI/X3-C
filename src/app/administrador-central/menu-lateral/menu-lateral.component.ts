@@ -12,6 +12,7 @@ export class MenuLateralComponent implements OnInit {
   menuAutorizado: any[] = [];
   toggleMinimizado:boolean = false;
   
+  
   constructor() { }
 
   ngOnInit() {
@@ -62,7 +63,8 @@ export class MenuLateralComponent implements OnInit {
         }
 
       }
-    } 
+    }
+    
   }
 
   initMenuAutorizadoPorItem(titulo:string){
@@ -76,5 +78,7 @@ export class MenuLateralComponent implements OnInit {
      return this.menuAutorizado[this.menuAutorizado.length - 1];
      
   }
+
+
 
 }
