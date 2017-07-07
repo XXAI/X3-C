@@ -23,7 +23,7 @@ td.material-curacion {
 }
 
 .surtiendo{
-    color:#e8dd14;
+    color:#3273dc;
 }
 
 .surtido{
@@ -31,5 +31,9 @@ td.material-curacion {
 }
 
 .expirado{
+    color:#e8dd14;
+}
+
+.cancelado{
     color:red;
 }
