@@ -132,7 +132,7 @@ export class PedidosComponent implements OnInit {
             this.mensajeExito.mostrar = true;
             this.mensajeExito.texto = "Se ha borrado correctamente la recepcion de medicamento";
             
-            //this.listar(1);
+            this.listar(1);
             this.apiService.verRecepciones(respuesta.id).subscribe(
               respuesta => {
                   this.cargaRecepciones = true;

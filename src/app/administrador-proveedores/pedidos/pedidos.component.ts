@@ -620,8 +620,19 @@ export class PedidosComponent implements OnInit {
   {
     let id_pedido = id;
     var query = "token="+localStorage.getItem('token');
-    window.open(`${environment.API_URL}/download-file/${id_pedido}?${query}`);
-      this.apiService.descargarArchivos(id).subscribe(
+    var self = this;
+    
+    var download = window.open(`${environment.API_URL}/download-file/${id_pedido}?${query}`);
+    var timer = setInterval(function ()
+    {
+        if (download.closed)
+        {
+            clearInterval(timer);
+            //console.log(self.id_pedido+" - "+self.nombre_pedido);
+            self.mostrarDialogoArchivos(self.id_pedido, self.nombre_pedido);
+        }
+    }, 500);
+      /*this.apiService.descargarArchivos(id).subscribe(
         repositorio => {
             this.mostrarDialogoArchivos(this.id_pedido, this.nombre_pedido);
           },
@@ -647,7 +658,7 @@ export class PedidosComponent implements OnInit {
             }            
           }
         }
-      );
+      );*/
        
   }
 

@@ -267,13 +267,14 @@
                             <span *ngIf="!(+item.total_monto_material_curacion*1)"> --- </span>
                         </td>
 
-                        <td style="text-align:center; vertical-align: middle;">
-                            <button type="button" class="button is-success" (click)="mostrarDialogoPedidos(item.pedido_id)">
-                                <span class="icon"><i class="fa fa-archive"></i></span>
+                        <td style="text-align:center; vertical-align: middle; width: 130px">
+                            
+                            <button type="button" class="button"  (click)="mostrarDialogoPedidos(item.pedido_id)" >
+                                <span class="icon is-small"><i class="fa fa-archive"></i></span>
                             </button>
                             
-                            <button type="button" class="button is-success" (click)="mostrarDialogoArchivos(item.pedido_id, item.folio)">
-                                <span class="icon"><i class="fa fa-upload"></i></span><span class="tag is-dark">{{ item.repositorio }}</span>
+                            <button type="button" class="button" [ngClass]="{'descargado':item.repositorio>0 }" (click)="mostrarDialogoArchivos(item.pedido_id, item.folio)" >
+                                <span class="icon is-small"><i class="fa fa-upload"></i></span><span class="tag" [ngClass]="{'color_tag_descargas':item.repositorio>0 }"><b>{{ item.repositorio }}</b></span>
                             </button>
                             <!--a (click)="imprimirExcelItem(item.pedido_id)"><span class="icon"><i class="fa fa-file-excel-o"></i></span></a> <a><span class="icon"><i class="fa fa-file-pdf-o"></i></span></a-->
                         </td>
@@ -408,7 +409,9 @@
                         <td style="text-align: center;"><strong>{{ item.usuario_id }}</strong></td>   
                          
                         <td style="text-align: center;"><strong>{{ item.descargas }}</strong></td>   
-                        <td style="text-align: center;" *ngIf="!item.deleted_at"><button type="button" class="button is-primary"><i class="fa fa-download" (click)='descargar(item.id)'></i></button><button type="button" class="button is-danger" (click)='eliminar_archivo(item.id)'><i class="fa fa-close"></i></button></td>
+                        <td style="text-align: center;" *ngIf="!item.deleted_at">
+                        <button type="button" class="button is-primary"  (click)='descargar(item.id)'><i class="fa fa-download"></i></button>
+                        <button type="button" class="button is-danger" (click)='eliminar_archivo(item.id)'><i class="fa fa-close"></i></button></td>
                         <td style="text-align: center;" *ngIf="item.deleted_at">
                             <div class="block">
                               <span class="tag is-danger">

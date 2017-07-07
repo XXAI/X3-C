@@ -204,7 +204,7 @@
                     <tr *ngFor="let item of lista; let i=index">
                         <td [ngClass]="{'borrador':item.status=='BR','surtido':item.status=='FI','expirado':item.status=='EX','cancelado':item.status=='EX-CA','sin-surtir':(item.total_cantidad_recibida==0 && item.status=='PS'),'surtiendo':(item.total_cantidad_recibida>0 && item.status=='PS'),'farmacia':item.status=='EF'}" style="text-align:center; vertical-align: middle;"><span class="icon is-medium"><i class="fa" [ngClass]="{'fa-pencil':item.status=='BR','fa-check-circle':item.status=='FI','fa-times-circle':item.status=='EX-CA','fa-exclamation-circle':item.status=='EX','fa-circle':(item.total_cantidad_recibida==0 && item.status == 'PS'),'fa-minus-circle':(item.total_cantidad_recibida>0 && item.status == 'PS'),'fa-cubes':item.status=='EF'}"></i></span></td>
                         <td style="vertical-align: middle;">
-                        <button type="button" class="button is-warning is-small" (click)='verInformacion(item)'><i class="fa fa-exclamation-triangle"></i>    
+                        <button type="button" class="button is-warning is-small" (click)='verInformacion(item)'><i class="fa fa-exclamation-triangle"></i></button> 
                         {{ item.proveedor }}</td>
 
                         <td style="vertical-align: middle;">{{ (item.folio)?item.folio:'S/F' }}</td>
