@@ -104,7 +104,7 @@ export class PedidosComponent implements OnInit {
 
   regresarBorrador(id:string)
   {
-    if(prompt("Para confirmar que desea regresar el pedido a borrador, ingrese BORRADOR PEDIDO") == "BORRADOR PEDIDO")
+    if(prompt("Para confirmar que desea regresar el pedido a borrador, ingrese PEDIDO BORRADOR ") == "PEDIDO BORRADOR")
     {
       this.apiService.pedidoBorrador(id).subscribe(
         respuesta => {
@@ -123,42 +123,45 @@ export class PedidosComponent implements OnInit {
 
   borrarRecepcion(id:string)
   {
-    this.cargaRecepciones = false;
-    this.apiService.recepcionBorrador(id).subscribe(
-        respuesta => {
-          //this.showPedido = false;
-          this.mensajeExito.mostrar = true;
-          this.mensajeExito.texto = "Se ha borrado correctamente la recepcion de medicamento";
-          
-          //this.listar(1);
-          this.apiService.verRecepciones(respuesta.id).subscribe(
-            respuesta => {
-                this.cargaRecepciones = true;
-                this.recepciones = respuesta.recepciones;
-                if(respuesta.status == 'PS' && (respuesta.recepciones.length == 0 || respuesta.recepciones == null))
-                    this.borrador= false;
-            }, error => {
-                this.cargaRecepciones = true;
+    if(prompt("Para confirmar que desea regresar el pedido a borrador, ingrese BORRAR RECEPCION") == "BORRAR RECEPCION")
+    {
+      this.cargaRecepciones = false;
+      this.apiService.recepcionBorrador(id).subscribe(
+          respuesta => {
+            //this.showPedido = false;
+            this.mensajeExito.mostrar = true;
+            this.mensajeExito.texto = "Se ha borrado correctamente la recepcion de medicamento";
+            
+            //this.listar(1);
+            this.apiService.verRecepciones(respuesta.id).subscribe(
+              respuesta => {
+                  this.cargaRecepciones = true;
+                  this.recepciones = respuesta.recepciones;
+                  if(respuesta.status == 'PS' && (respuesta.recepciones.length == 0 || respuesta.recepciones == null))
+                      this.borrador= false;
+              }, error => {
+                  this.cargaRecepciones = true;
+              }
+            );
+          }, error => {
+            this.cargaRecepciones = true;
+            this.mensajeError.mostrar = true;
+            try {
+              let e = error.json();
+              if (error.status == 401 ){
+                this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+              }
+              if (error.status == 500 ){
+                this.mensajeError.texto = e.error;
+              } else {
+                this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+              }
+            } catch(e){
+                this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";           
             }
-          );
-        }, error => {
-          this.cargaRecepciones = true;
-          this.mensajeError.mostrar = true;
-          try {
-            let e = error.json();
-            if (error.status == 401 ){
-              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
-            }
-            if (error.status == 500 ){
-              this.mensajeError.texto = e.error;
-            } else {
-              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
-            }
-          } catch(e){
-              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";           
           }
-        }
-      );
+        );
+    }
   }
 
   cargarJurisdicciones(){
