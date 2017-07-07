@@ -628,37 +628,10 @@ export class PedidosComponent implements OnInit {
         if (download.closed)
         {
             clearInterval(timer);
-            //console.log(self.id_pedido+" - "+self.nombre_pedido);
             self.mostrarDialogoArchivos(self.id_pedido, self.nombre_pedido);
         }
     }, 500);
-      /*this.apiService.descargarArchivos(id).subscribe(
-        repositorio => {
-            this.mostrarDialogoArchivos(this.id_pedido, this.nombre_pedido);
-          },
-        error => {
-
-          this.mensajeError = new Mensaje(true);
-          this.mensajeError.mostrar;
-
-          try {
-            let e = error.json();
-            if (error.status == 401 ){
-              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
-            }else{
-              this.mensajeError.texto = e.error;
-            }
-            
-          } catch(e){
-                        
-            if (error.status == 500 ){
-              this.mensajeError.texto = "500 (Error interno del servidor)";
-            } else {
-              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
-            }            
-          }
-        }
-      );*/
+     
        
   }
 
