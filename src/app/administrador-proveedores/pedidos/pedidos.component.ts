@@ -372,6 +372,12 @@ export class PedidosComponent implements OnInit {
         var self = this;
         xhr.open("POST", environment.API_URL+"/repository", true);
         xhr.setRequestHeader("Authorization", "Bearer "+localStorage.getItem('token'));
+        var usuario = JSON.parse(localStorage.getItem("usuario"));
+
+        if(usuario.proveedor_activo){
+          xhr.setRequestHeader("X-Proveedor-Id", usuario.proveedor_activo.id);
+        }
+
         xhr.onreadystatechange = function () {
             if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                self.actualiza_lista();
@@ -392,7 +398,14 @@ export class PedidosComponent implements OnInit {
       this.cargando_archivo = 0;
       this.mostrarDialogoArchivos(this.id_pedido, this.nombre_pedido);
       this.mensajeExito.mostrar = true;
+      this.mensajeExito.iniciarCuentaAtras();
       this.mensajeExito.texto = "Se ha Guardado Exitosamente el documento";
+      for(var i in this.lista){
+        if(this.lista[i].pedido_id == this.id_pedido){
+          this.lista[i].repositorio += 1;
+          break;
+        }
+      }
     }
 
     error_envio()
@@ -568,7 +581,14 @@ export class PedidosComponent implements OnInit {
         repositorio => {
           this.mostrarDialogoArchivos(this.id_pedido, this.nombre_pedido);
            this.mensajeExito.mostrar = true;
+           this.mensajeExito.iniciarCuentaAtras();
           this.mensajeExito.texto = "Se ha Elimiinado Exitosamente el archivo";
+          for(var i in this.lista){
+            if(this.lista[i].pedido_id == this.id_pedido){
+              this.lista[i].repositorio -= 1;
+              break;
+            }
+          }
         },
         error => {
 
