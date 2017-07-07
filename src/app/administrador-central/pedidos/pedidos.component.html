@@ -246,9 +246,9 @@
                             <!--a><span class="icon"><i class="fa fa-file-pdf-o"></i></span></a-->
                         </td>
                         <td style="vertical-align: middle; text-align:center;">
-                            <!--button type="button" class="button is-light" (click)="mostrarDialogoArchivos(item)">
+                            <button type="button" class="button is-light" [ngClass]="{'is-success':item.numero_archivos > 0}" (click)="mostrarDialogoArchivos(item)">
                                 <span class="icon"><i class="fa fa-download"></i></span><span class="tag">{{ item.numero_archivos }}</span>
-                            </button-->
+                            </button>
                         </td>
                     </tr>
                     <tr *ngIf="lista.length == 0">
@@ -270,14 +270,6 @@
                 (onListar)="listar($event)" 
                 *ngIf="total>0 && total > resultadosPorPagina"></paginacion>
         </div>
-     
-        
-        
-          
-           
-            
-           
-        
     </div>
 </div>
 
@@ -292,4 +284,67 @@
     <p><span class="icon" style="margin-right: 0.5em;"><i class="fa fa-check-circle"></i></span> <span>{{ mensajeExito.texto }}</span></p>
     <br>
     <p style="text-align: center;"><small >Este mensaje desaparecerá en {{ mensajeExito.cuentaAtras }} segundos.</small></p>       
+</div>
+
+<div class="modal is-active" [ngClass]="{'is-active': verDialogoArchivos}">
+  <div class="modal-background" (click)="cerrarDialogoArchivos()"></div>
+  <div class="modal-card" style="width:70%; height: auto;">
+    <header class="modal-card-head" style="background: #00d1b2;">
+      <div class="container is-fluid"  style="width:100%;">
+          <h1 class="title" style="color:#FFF;">
+            <span class="icon is-medium"><i class="fa fa-file"></i></span> {{tituloDialogoArchivos}} 
+          </h1>
+      </div>            
+      <a class="button  is-primary" style="position:absolute; top:1em; right:1em;" (click)="cerrarDialogoArchivos()"><span class="icon "><i class="fa fa-close"></i></span></a>
+    </header>
+    <section class="modal-card-body" style="padding:0px;" >
+      <div style="padding: 1em;">
+        <div class="is-fullwidth has-text-centered" *ngIf="cargandoArchivos">
+            <br>
+            <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando repositorio...</span></span>
+            <br>
+            <br>
+        </div>
+        <div class="columns" *ngIf="!cargandoArchivos">
+          <table class="table" *ngIf="!cargandoArchivos" style="min-width:100%; font-size:0.8em;">
+                <thead>
+                    <tr>
+                        <th style="text-align:center;">Fecha Subido</th>
+                        <th style="text-align:center;">Nombre</th>
+                        <th style="text-align:center;">Peso</th>                        
+                        <th style="text-align:center;">Usuario</th>                        
+                        <th style="text-align:center;">Descargas</th>                        
+                        <th></th>
+                    </tr>
+                    
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of lista_archivos_pedido; let i=index"> 
+                        <td style="text-align: center;"><strong>{{ item.created_at }}</strong></td>  
+                        <td style="text-align: center;"><strong>{{ item.nombre_archivo }}</strong></td>   
+                        <td style="text-align: center;"><strong>{{ item.peso }}</strong></td>   
+                        <td style="text-align: center;"><strong>{{ item.usuario_id }}</strong></td>   
+                         
+                        <td style="text-align: center;"><strong>{{ item.descargas }}</strong></td>   
+                        <td style="text-align: center;" *ngIf="!item.deleted_at"><button type="button" class="button is-primary"><i class="fa fa-download" (click)='descargar(item)'></i></button></td>
+                        <td style="text-align: center;" *ngIf="item.deleted_at">
+                            <div class="block">
+                              <span class="tag is-danger">
+                                {{ item.usuario_deleted_id}} {{ item.deleted_at }}
+                              </span>
+                            </div>
+                        </td>   
+                    </tr>
+                    <tr *ngIf="lista_archivos_pedido.length == 0">
+                        <td colspan="12" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+      </div>
+    </section>
+    <footer class="" style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em " >
+        
+    </footer>
+  </div>
 </div>

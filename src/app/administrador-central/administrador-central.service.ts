@@ -24,6 +24,16 @@ export class AdministradorCentralService {
     return this.jwtRequest.get("administrador-central/pedidos",null,parametros).map( (response: Response) => response.json().data) as Observable<any[]>;
   }
 
+  verArchivosPedidoProveedor(id:any): Observable<any>{
+    return this.jwtRequest.get("administrador-central/pedidos-archivos-proveedor/"+id,null,{}).map( (response: Response) => response.json().data) as Observable<any[]>;
+  }
+
+  descargarArchivosPedidoProveedor(id:any): Observable<any>{
+    return this.jwtRequest.get('repository-download',id,{}).map( (response: Response) => {
+        return 0;
+      }) as Observable<any>;
+  }
+
   presupuesto(parametros): Observable<any>{    
     return this.jwtRequest.get("administrador-central/presupuesto-pedidos",null,parametros).map( (response: Response) => response.json());
   }
