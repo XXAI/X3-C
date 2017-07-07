@@ -17,7 +17,12 @@ export class MenuLateralComponent implements OnInit {
 
   ngOnInit() {
     
-
+    if(!localStorage.getItem('adminCentralMenuLateralMinimizado')){
+      localStorage.setItem('adminCentralMenuLateralMinimizado',this.toggleMinimizado+'');
+    }else{
+      this.toggleMinimizado = (localStorage.getItem('adminCentralMenuLateralMinimizado') == 'true');
+    }
+    
     this.menu = [
       {
         titulo: 'Reportes',
@@ -65,6 +70,10 @@ export class MenuLateralComponent implements OnInit {
       }
     }
     
+  }
+
+  ngOnDestroy(){
+    localStorage.setItem('adminCentralMenuLateralMinimizado',this.toggleMinimizado+'');
   }
 
   initMenuAutorizadoPorItem(titulo:string){
