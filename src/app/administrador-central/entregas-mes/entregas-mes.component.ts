@@ -11,7 +11,8 @@ import { AdministradorCentralService } from '../administrador-central.service';
 @Component({
   selector: 'app-entregas-mes',
   templateUrl: './entregas-mes.component.html',
-  styleUrls: ['./entregas-mes.component.css']
+  styleUrls: ['./entregas-mes.component.css'],
+  host: { '(window:resize)' : 'onResize($event)'}
 })
 export class EntregasMesComponent implements OnInit {
 
@@ -321,5 +322,16 @@ export class EntregasMesComponent implements OnInit {
     if(isNaN(val)) { return 0; }
     return val;
   }
+
+  mostrarGraficas:boolean = true;
+	onResize(event){
+		this.mostrarGraficas = false;
+		try{
+      setTimeout(() => { 	this.mostrarGraficas = true;} ); 
+      
+    } catch(e){
+      console.log(e);
+    }  
+	}
 
 }

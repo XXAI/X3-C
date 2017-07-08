@@ -11,7 +11,8 @@ import { AdministradorCentralService } from '../administrador-central.service';
 @Component({
   selector: 'app-cumplimiento',
   templateUrl: './cumplimiento.component.html',
-  styleUrls: ['./cumplimiento.component.css']
+  styleUrls: ['./cumplimiento.component.css'],
+	host: { '(window:resize)' : 'onResize($event)'}
 })
 export class CumplimientoComponent implements OnInit {
 
@@ -273,5 +274,15 @@ export class CumplimientoComponent implements OnInit {
     if(isNaN(val)) { return 0; }
     return val;
   }
-
+	
+	mostrarGraficas:boolean = true;
+	onResize(event){
+		this.mostrarGraficas = false;
+		try{
+      setTimeout(() => { 	this.mostrarGraficas = true;} ); 
+      
+    } catch(e){
+      console.log(e);
+    }  
+	}
 }

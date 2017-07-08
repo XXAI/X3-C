@@ -43,7 +43,7 @@
                     <h1 class="title" style="font-size:1.2em;  margin-bottom:0.2em;color:#00d1b2"><strong>${{ item.total_monto_solicitado | number:'1.2-2' }}</strong></h1>
                     <h1 class="title" style="font-size:0.8em; margin-bottom:0.2em;">{{ item.proveedor }}</h1>
                     <hr style="margin: 0.2em 0">
-                    <nav class="level"><div class="level-left"><small>Entregado</small></div><div class="level-right"><small>{{ item.porcentaje_entregado | number:'1.2-2' }}%</small></div></nav>
+                    <nav class="level"><div class="level-left">Entregado</div><div class="level-right"><b>{{ item.porcentaje_entregado | number:'1.2-2' }}%</b></div></nav>
                    
                    
                 </div>
@@ -52,7 +52,7 @@
 
         <div class="columns is-multiline"  *ngIf="!cargandoEstadisticasGlobales">
             <div class="column is-12" *ngFor="let item of listaEntregasEstadisticaDiaria; let  i = index">
-                <div style="display:block; background:white; border-radius:0.2em; padding: 0.5em 0;" *ngIf="!item.cargando && item.options">
+                <div style="display:block; background:white; border-radius:0.2em; padding: 0.5em 0; min-height:471px" *ngIf="!item.cargando && item.options">
                     <nav class="level" style="margin:1em;">
                         <div class="level-left">
                             <p><b>ENTREGAS {{ item.proveedor }}</b> <small style="color:gray;">Estadística diaria</small></p>
@@ -67,7 +67,7 @@
                         </div>
                     </nav>
                     <hr style="margin:0">
-                    <chart [options]="item.options" style="display:block;"></chart>
+                    <chart *ngIf="mostrarGraficas" [options]="item.options" style="display:block;"></chart>
                 </div>
 
                 <div class="is-fullwidth has-text-centered"  *ngIf="item.cargando ">
