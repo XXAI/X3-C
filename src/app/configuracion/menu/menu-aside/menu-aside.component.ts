@@ -18,31 +18,20 @@ export class MenuAsideComponent implements OnInit {
     var permisos =  usuario.permisos.split("|");
 
     this.menu = [
+    
       {
-        titulo: 'Sincronización con servidor principal',
+        titulo: 'Configuración',
         modulos: [
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'fa-cloud-upload', titulo:"Sincronización manual", url:"/panel-control/sync/manual" },          
-        ]
-      },
-      {
-        titulo: 'Usuarios y privilegios',
-        modulos: [
-          { permiso: 'mGKikN0aJaeF2XrHwwYK3XNw0f9CSZDe', icono: 'fa-user', titulo:"Usuarios", url:"/panel-control/usuarios" },
-          { permiso: 'ICmOKw3HxhgRna4a78OP0QmKrIX0bNsp', icono: 'fa-users', titulo:"Roles", url:"/panel-control/roles" },
-          { permiso: 'DYwQAxJbpHWw07zT09scEogUeFKFdGSu', icono: 'fa-shield', titulo:"Permisos", url:"/panel-control/permisos" }          
+          // Estos permisos son los del módulo de "permisos", ¿porque no tienen asignados?
+          { permiso: 'DYwQAxJbpHWw07zT09scEogUeFKFdGSu', icono: 'fa-archive', titulo:"Mis almacenes", url:"/configuracion/almacenes" },
+          { permiso: 'DYwQAxJbpHWw07zT09scEogUeFKFdGSu', icono: 'fa-hospital-o', titulo:"Mis servicios", url:"/configuracion/servicios/editar/"+ usuario.clues_activa.clues +""},
+          { permiso: 'DYwQAxJbpHWw07zT09scEogUeFKFdGSu', icono: 'fa-clock-o', titulo:"Mis turnos", url:"/configuracion/turnos/editar/"+ usuario.clues_activa.clues +"" },
+          { permiso: 'DYwQAxJbpHWw07zT09scEogUeFKFdGSu', icono: 'fa-medkit', titulo:"Mis claves", url:"/configuracion/claves/editar/"+ usuario.clues_activa.clues +"" },
         ]
       },
       
     ],
-    this.menuAutorizado = [
-      {
-        titulo: 'Sincronización con servidor principal',
-        modulos: [
-          { icono: 'fa-server', titulo:"Estatus de sincronización", url:"/panel-control/sync/estatus" },       
-        ]
-      },
-
-    ]
+    this.menuAutorizado = []
 
     
     

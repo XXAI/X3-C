@@ -36,10 +36,10 @@ import { AdministradorProveedoresModule } from './administrador-proveedores/admi
 import { UsuariosModule } from './panel-control/usuarios/usuarios.module';
 import { RolesModule    } from './panel-control/roles/roles.module';
 import { SyncModule     } from './panel-control/sync/sync.module';
-import { MisAlmacenesModule} from './panel-control/almacenes/almacenes.module';
-import { MisServiciosModule} from './panel-control/servicios/servicios.module';
-import { MisTurnosModule   } from './panel-control/turnos/turnos.module';
-import { MisClavesModule   } from './panel-control/claves/claves.module';
+import { MisAlmacenesModule} from './configuracion/almacenes/almacenes.module';
+import { MisServiciosModule} from './configuracion/servicios/servicios.module';
+import { MisTurnosModule   } from './configuracion/turnos/turnos.module';
+import { MisClavesModule   } from './configuracion/claves/claves.module';
 
 // # Hub Farmacia
 import { IndexFarmaciaSubrrogadaModule } from './farmacia-subrrogada/index-farmacia-subrrogada/index-farmacia-subrrogada.module';

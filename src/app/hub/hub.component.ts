@@ -59,6 +59,13 @@ export class HubComponent implements OnInit {
       ] 
     }, 
     { 
+      title:'Configuracion', routerLink:'/configuracion', icono:'assets/hub-configuracion.svg', 
+      permisos: [
+        'DYwQAxJbpHWw07zT09scEogUeFKFdGSu',  // Este permiso es del módulo de "permisos", ¿porque no tienen asignados los módulos de joram?
+
+      ] 
+    }, 
+    { 
       title:'Pacientes', routerLink:'/paciente', icono:'assets/avatar-enfermero.svg',
       permisos: [
         'PpXKhxdG8dGheNKm1rRSCT4EXZYyhRMm', // Ver admision

@@ -6,10 +6,11 @@ import { FormularioComponent } from './formulario/formulario.component';
 import { AuthGuard } from '../../auth-guard.service';
 
 const routes: Routes = [
-  {path: 'panel-control/claves', redirectTo: 'panel-control/claves/editar/:clues', pathMatch: 'full'},
+  {path: 'configuracion/turnos', redirectTo: 'configuracion/turnos/editar/:clues', pathMatch: 'full'},
   {
-    path:'panel-control/claves',
+    path:'configuracion/turnos',
     children:[
+      { path: 'nuevo', component: FormularioComponent},
       { path: 'editar/:clues', component: FormularioComponent},
     ],
     canActivate: [AuthGuard]
@@ -21,5 +22,5 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: []
 })
-export class ClavesRoutingModule { }
+export class TurnosRoutingModule { }
 
