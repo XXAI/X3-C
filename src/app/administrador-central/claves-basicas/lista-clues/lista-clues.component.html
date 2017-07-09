@@ -1,170 +1,89 @@
-<div class="modal is-active" >
-  <div class="modal-background" (click)="cerrar()"></div>
-  <div class="modal-card" style="width:95%; height:100%;">
-   
-    <header class="modal-card-head" style="background: #00d1b2;">
-      
-                    
-      <div class="container is-fluid"  style="width:100%;">
-          <h1 class="title" style="color:#FFF;">
-            Clues asignadas a: <b>{{ lista.nombre }}</b>
-          </h1>
-          <!--
-          <p class="control is-expanded">
-              <input class="input "  type="text" placeholder="Buscar insumo" #searchBox id="search-box" (keyup)="buscar(searchBox.value)">
-          </p>-->
-      </div>            
-      <a class="button  is-primary" style="position:absolute; top:1em; right:1em;" (click)="cerrar()"><span class="icon "><i class="fa fa-close"></i></span></a>
-    </header>
-    <section class="modal-card-body" style="padding:0px;" >
-      
-      <div class="is-fullwidth has-text-centered" *ngIf="cargando">
-          <br>
-          <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
-          <br>
-          <br>
-      </div>
-      
-      <table class="table" *ngIf="!cargando" style="font-size: 0.8em;" >
-        <thead>
-        
-            <tr>
-            <th>Clues</th>
-            <th>Nombre</th>            
-            <th>Fecha de modificación</th>
-            <th>Por usuario</th>
-            <th></th>
-            </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let item of unidadesMedicas">
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr *ngIf="unidadesMedicas.length == 0">
-                <td colspan="7" style="vertical-align: middle; color:#888;">No hay unidades médicas asiganadas a esta lista.</td>                    
-            </tr>
-        </tbody>
+<div class="modal is-active">
+	<div class="modal-background" (click)="cerrar()"></div>
+	<div class="modal-card" style="width:95%; height:100%;">
+		<header class="modal-card-head" style="background: #00d1b2;">
+			<div class="container is-fluid" style="width:100%;">
+				<h1 class="title" style="color:#FFF;">
+					Clues asignadas a: <b>{{ lista.nombre }}</b>
+				</h1>
+			</div>
+			<a class="button  is-primary" style="position:absolute; top:1em; right:1em;" (click)="cerrar()"><span class="icon "><i class="fa fa-close"></i></span></a>
+		</header>
+		<section class="modal-card-body" style="padding:0px;">
 
-        <!--
-        <tbody>
-            <tr *ngFor="let item of insumos" class="is-unselectable" [ngClass]="{'item-seleccionado': item == insumoSeleccionado, 'is-disabled': (!conClues && listaAgregados.indexOf(item.clave) >= 0)}" style="cursor: pointer" (click)="seleccionar(item)">
-              <td valign="middle">
-                <span *ngIf="item != insumoSeleccionado" class="icon is-small" style="color:#999"><i class="fa fa-circle-thin"></i></span>
-                <span *ngIf="item == insumoSeleccionado" class="icon is-small" style="color:#00d1b2"><i class="fa fa-check-circle"></i></span>
-              </td>                      
-              <td class="is-hidden-mobile">{{ item.clave }}</td>
+			<div class="is-fullwidth has-text-centered" *ngIf="cargando">
+				<br>
+				<span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
+				<br>
+				<br>
+			</div>
 
-              <td>
-                <small class="is-hidden-tablet">{{ item.clave }} <br></small>
-                <div style="line-height:1em;">
-                  <small>{{ item.descripcion }}</small>
-                </div>
-                <div style="padding: 0.5em 0 0.5em 0; ">
-                  <span *ngIf="(item.es_causes && item.tipo == 'ME')" class="tag is-success" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
-                  <span *ngIf="(!item.es_causes && item.tipo == 'ME')" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
-                  <span *ngIf="item.tipo == 'MC'" class="tag is-warning" style="font-size: 0.7em !important;">MATERIAL CURACIÓN</span>
-                  <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
-                  <span *ngIf="(item.tipo == 'ME' && item.informacion)">
-                    <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
-                    <span *ngIf="item.informacion.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>  
-                  </span>
-                </div>
-              </td>
+			<table class="table" *ngIf="!cargando" style="font-size: 0.8em;">
+				<thead>
+					<tr>
+						<th>Clues</th>
+						<th>Nombre</th>
+						<th>Fecha</th>
+						<th>Por usuario</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of unidadesMedicas; let i = index">
+						<td>{{ item.clues }}</td>
+						<td>{{ item.nombre }}</td>
+						<td>{{ item.created_at }}</td>
+						<td>{{ item.usuario_id }}</td>
+						<td style="width:70px !important;">
+							<span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+							<a (click)="eliminar(item,i)" *ngIf="!item.cargando"><span class="icon"><i class="fa fa-trash"></i></span></a>
+						</td>
+					</tr>
+					<tr *ngIf="unidadesMedicas.length == 0">
+						<td colspan="4" style="vertical-align: middle; color:#888;">No hay unidades médicas asiganadas a esta lista.</td>
+					</tr>
+				</tbody>
+			</table>
+			<br>
 
-              <td style="text-align:center;" class="is-hidden-mobile">
-                <div *ngIf="item.generico">
-                  <span *ngFor="let grupo of item.generico.grupos">{{grupo.nombre}}<br></span>
-                </div>
-              </td>
-              <td style="text-align:center;">
-                <b>
-                  <abbr *ngIf="item.tipo == 'ME'" title="Medicamento">ME</abbr>
-                  <abbr *ngIf="item.tipo == 'MC'" title="Material de curación">MC</abbr>
-                  <abbr *ngIf="item.tipo == 'AD'" title="Auxiliar de diagnóstico">AD</abbr>
-                </b>
-              </td>
-              <td style="text-align:left;" *ngIf="conPrecios">
-                <b>
-                  <abbr>$ {{item.precio | number:'1.2-2'}}</abbr>
-                </b>
-              </td>
-            </tr>  
-            <tr *ngIf="insumos.length == 0 && searchBox.value != ''">
-                <td colspan="7" style="vertical-align: middle; color:#888;">No se encontraron resultados.</td>                    
-            </tr>
-            <tr *ngIf="insumos.length == 0 && searchBox.value == '' ">
-                <td colspan="7" style="vertical-align: middle; color:#888;">Por favor escriba en el campo de búsqueda para encontrar insumos.</td>                    
-            </tr>      
-        </tbody>  -->
-      </table>
-    <br>
-            
-    </section>
-    <footer class="" style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em " >
-      <!--
-      <paginacion 
-                [total]="total" 
-                [paginasTotales]="paginasTotales" 
-                [resultadosPorPagina]="resultadosPorPagina" 
-                [paginaActual]="paginaActual" 
-                [indicePaginas]="indicePaginas"
-                (onSiguiente)="paginaSiguiente(searchBox.value)" 
-                (onAnterior)="paginaAnterior(searchBox.value)" 
-                (onListar)="listar(searchBox.value,$event)" 
-                *ngIf="total > 0 && total > resultadosPorPagina "></paginacion>
+		</section>
+		<footer class="" style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em ">
 
-    
-        
-      <div class="notification is-dark is-unselectable mensaje-agregar" [ngClass]="{ 'mostrar': mensajeAgregado.mostrar}"    *ngIf="mensajeAgregado.mostrar" (click)="mensajeAgregado.mostrar=false">
-        <span class="icon"><i class="fa fa-check-circle"></i></span> <span>Agregado</span>
-      </div>
-  
-      <form (submit)="enviar($event)" >
-        <div class="columns">
-          <div class="column" *ngIf="conClues">
-           
-               <div class="field">
-                <label>Unidad médica:</label>
-                <p class="control is-expanded">                  
-                  <span class="select is-fullwidth">              
-                    <select (change)="seleccionarClues($event.target.value)" #cluesSelect [disabled]="listaCluesUtilizadasConInsumo.length == listaClues.length">
-                      <option value="-1">Seleccione una clues</option>
-                      <option value="TODAS" *ngIf="listaClues.length > 0" [disabled]="listaCluesUtilizadasConInsumo.length > 0">Todas las unidades médicas</option>
-                      <option *ngFor="let um of listaClues" value="{{ um.clues }}" [disabled]="listaCluesUtilizadasConInsumo.indexOf(um.clues)>= 0">{{ um.clues }} - {{ um.nombre }}</option>
-                    </select>
-                  </span>
-                </p>
-              </div>                   
-          </div>
-          <div class="column">
-           
-              <div class="control is-grouped is-pulled-right" >            
-                <p class="control is-expanded" [ngClass]=" {'is-hidden': !conCantidad }" >
-                    <label>Consumo promedio mensual: 0</label>
-                    <input class="input is-medium" [disabled]="insumoSeleccionado == null" type="number" placeholder="Cantidad" #cantidadBox id="cantidad" (keyup)="comprobarCantidad(cantidadBox.value)" >
-                </p>
-                <p class="control">
-                    <label>&nbsp;</label>
-                    <button [disabled]="(!cantidadValida && conCantidad )|| insumoSeleccionado == null || (conClues && clues == -1)" class="button is-medium is-primary " >
-                    <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span>
-                    </button>
-                </p>
-              </div>
-          </div>
-        </div>
-        
-      </form>
-      
--->
-    </footer>
-      <!--
-    <div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeError.mostrar">
-        <button class="delete" (click)="mensajeError.mostrar = false"></button>        
-        <b>Error:</b> {{ mensajeError.texto }}
-    </div>-->
-  </div>
+			<paginacion [total]="total" [paginasTotales]="paginasTotales" [resultadosPorPagina]="resultadosPorPagina" [paginaActual]="paginaActual"
+			 [indicePaginas]="indicePaginas" (onSiguiente)="paginaSiguiente()" (onAnterior)="paginaAnterior()" (onListar)="listar($event)"
+			 *ngIf="total > 0 && total > resultadosPorPagina "></paginacion>
+
+
+
+			<div class="notification is-dark is-unselectable mensaje-agregar" [ngClass]="{ 'mostrar': mensajeAgregado.mostrar}" *ngIf="mensajeAgregado.mostrar"
+			 (click)="mensajeAgregado.mostrar=false">
+				<span class="icon"><i class="fa fa-check-circle"></i></span> <span>Agregado</span>
+			</div>
+
+			<form (submit)="agregar($event)">
+				<div class="control is-grouped">
+					<p class="control is-expanded " [ngClass]="{ 'is-loading': cargandoUnidadesMedicasSinAsignar }">
+						<span class="select is-fullwidth" >              
+							<select (change)="seleccionarClues($event.target.value)" #cluesSelect  [disabled]="unidadesMedicasSinAsignar.length == 0 || agregandoUnidadMedica">
+							<option value="-1">Seleccione una clues</option>
+							<option value="TODAS" *ngIf="unidadesMedicasSinAsignar.length > 1">Todas las unidades médicas</option>
+							<option *ngFor="let um of unidadesMedicasSinAsignar" value="{{ um.clues }}" >{{ um.clues }} - {{ um.nombre }}</option>
+						</select>
+					</span>
+					</p>
+					<p class="control">
+						<button [disabled]="clues == -1 || unidadesMedicasSinAsignar.length == 0" [ngClass]="{ 'is-loading': agregandoUnidadMedica }" class="button is-primary">
+							<span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span>
+						</button>
+					</p>
+				</div>
+
+			</form>
+		</footer>
+
+		<div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeError.mostrar">
+			<button class="delete" (click)="mensajeError.mostrar = false"></button>
+			<b>Error:</b> {{ mensajeError.texto }}
+		</div>
+	</div>
 </div>
