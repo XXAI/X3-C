@@ -620,17 +620,33 @@ export class PedidosComponent implements OnInit {
   {
     let id_pedido = id;
     var query = "token="+localStorage.getItem('token');
+    var permisos = localStorage.getItem('usuario');
     var self = this;
-    
-    var download = window.open(`${environment.API_URL}/download-file/${id_pedido}?${query}`);
+    var obj = JSON.parse(permisos);
+    var permisos = "&permisos="+obj.permisos;
+
+    var download = window.open(`${environment.API_URL}/download-file/${id_pedido}?${query}${permisos}`);
+    var contador = 0;
     var timer = setInterval(function ()
     {
+       contador = contador + 1;
         if (download.closed)
         {
             clearInterval(timer);
             self.mostrarDialogoArchivos(self.id_pedido, self.nombre_pedido);
+             self.mensajeError.mostrar = false;
+             self.mensajeExito.mostrar = true;
+            self.mensajeExito.texto = "Se ha descargado correctamente el archivo";
+        }else{
+          if(contador == 5)
+          {
+            clearInterval(timer);
+            download.close();
+            self.mensajeError.mostrar = true;
+            self.mensajeError.texto = "Ocurrio un error al intentar descargar el archivo.";
+          }
         }
-    }, 500);
+    }, 1000);
      
        
   }
