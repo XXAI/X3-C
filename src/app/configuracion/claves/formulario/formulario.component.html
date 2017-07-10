@@ -1,4 +1,4 @@
-<formulario #ctrl URL="mis-claves" titulo="Claves / Panel Control" [dato]="dato"></formulario>
+<formulario #ctrl URL="mis-claves" titulo="Claves / Configuración" [dato]="dato"></formulario>
 <panel-control-menu></panel-control-menu>
 <div style="height:50px;"></div>
 <div class="contenedor columns " style="height:100%">
@@ -9,16 +9,18 @@
     <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
       <section class="hero is-primary">
         <div class="hero-body">
-          <a class="button  is-primary" style="position:absolute; top:10em; right:3em;" (click)="ctrl.cargarDatos(); "  id="actualizar"><span class="icon "><i class="fa fa-refresh"></i></span></a>
+          <a class="button  is-primary" style="position:absolute;top: 6em;right: 3em;" (click)="ctrl.cargarDatos(); "  id="actualizar"><span class="icon "><i class="fa fa-refresh"></i></span></a>
           <div class="container is-fluid">
             <h1 class="title">
               <span *ngIf="!ctrl.cargando" class="icon is-medium"><i class="fa fa-edit"></i></span>
               <span *ngIf="ctrl.cargando" class="icon is-medium"><i class="fa fa-refresh fa-spin"></i></span>
               <!-- -->Mis claves
             </h1>
-            <span style="text-align: right">Última actualización: <strong>{{actualizacion | date}}</strong>.
-              Por: <strong>{{actualizacion_usuario}} </strong> </span>
-
+            <span style="text-align: right">Última actualización: <span *ngIf="!actualizado" class="icon is-small"><i class="fa fa-refresh fa-spin"></i></span>
+                <strong *ngIf="actualizado" >{{actualizacion | date}}</strong> 
+                Por: <span *ngIf="!actualizado" class="icon is-small"><i class="fa fa-refresh fa-spin"></i></span>
+                <strong *ngIf="actualizado">{{actualizacion_usuario}} </strong> 
+            </span>
           </div>
         </div>
       </section>
@@ -28,7 +30,7 @@
       </div>
       <section class="section">
         <!-- formulario -->
-        <form name="dato" novalidate [formGroup]="dato" (ngSubmit)="ctrl.enviar()">
+        <form name="dato" novalidate [formGroup]="dato" (ngSubmit)="ctrl.enviar(false)">
           <a id="catalogos" (click)="ctrl.cargarCatalogo('tipos_claves', 'insumos-auto'); "></a>
 
 

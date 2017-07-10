@@ -28,9 +28,16 @@ export class HubComponent implements OnInit {
     { 
       title:'Farmacia Subrrogada', routerLink:'/farmacia-subrrogada', icono:'assets/hub-farmacia-sub.svg',
       permisos: [
-        'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk--', // Ver pedidos
-        'iSxK0TpoYpnzf8KIQTWOq9Web7WnSKhz--', // Ver entregas
-        'RZsvMjtPtpLWC8afsAFZsNnD9iXtiZC3', // Ver sincronizar recetas
+        'RZsvMjtPtpLWC8afsAFZsNnD9iXtiZC3' // Ver sincronizar recetas
+      ] 
+    },
+    { 
+      title:'Configuración', routerLink:'/configuracion', icono:'assets/hub-config.svg',
+      permisos: [
+        'zRTSAl0H8YNFMWcn00yeeJPigztCbSdC', // Ver mis almacenes
+        '9dKCEyujSdLQF2CbpjXiWKeap0NlJCzw', // Ver mis turnos
+        'Ki9kBghgqYsY17kqL620GWYl0bpeU6TB', // Ver mis servicios
+        'BnB3LhrDbKNBrbQaeB2BPXKGrLEYrEw7' // Ver mis claves
       ] 
     },
     { 

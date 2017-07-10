@@ -261,7 +261,6 @@ export class FormularioComponent {
     if (!existe)
       control.push(this.fb.group(lotes));
 
-    console.log(control);
     //obtener la ultima posicion para que en esa se agreguen los lostes
     var posicion = control.length - 1;
     //obtener el control del formulario en la posicion para agregar el nuevo form array que corresponde a los lotes
@@ -294,7 +293,7 @@ export class FormularioComponent {
               existe_lote = true;
               //agregar la cantida nueva al lote
               let cantidad_lote: number = l.controls.cantidad.value + item.cantidad;
-              console.log(item);
+              
               //Si es nuevo entonces igualar la cantidad a la existencia
               if(item.nuevo){
                 item.existencia = item.cantidad * 1;

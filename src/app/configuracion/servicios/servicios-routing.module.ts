@@ -6,9 +6,9 @@ import { FormularioComponent } from './formulario/formulario.component';
 import { AuthGuard } from '../../auth-guard.service';
 
 const routes: Routes = [
-  {path: 'panel-control/servicios', redirectTo: 'panel-control/servicios/editar/:clues', pathMatch: 'full'},
+  {path: 'configuracion/servicios', redirectTo: 'configuracion/servicios/editar/:clues', pathMatch: 'full'},
   {
-    path:'panel-control/servicios',
+    path:'configuracion/servicios',
     children:[
       { path: 'nuevo', component: FormularioComponent},
       { path: 'editar/:clues', component: FormularioComponent},
