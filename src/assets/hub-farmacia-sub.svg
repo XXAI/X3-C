@@ -1,83 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   version="1.1"
-   x="0px"
-   y="0px"
-   width="48px"
-   height="48px"
-   viewBox="0 0 48 48"
-   enable-background="new 0 0 48 48"
-   xml:space="preserve"
-   id="svg2"
-   inkscape:version="0.91 r13725"
-   sodipodi:docname="hub-farmacia-sub.svg"><metadata
-     id="metadata20"><rdf:RDF><cc:Work
-         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
-     id="defs18" /><sodipodi:namedview
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1"
-     objecttolerance="10"
-     gridtolerance="10"
-     guidetolerance="10"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:window-width="1855"
-     inkscape:window-height="1056"
-     id="namedview16"
-     showgrid="false"
-     inkscape:zoom="4.9166667"
-     inkscape:cx="24"
-     inkscape:cy="25.66652"
-     inkscape:window-x="65"
-     inkscape:window-y="24"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg2" /><path
-     fill="#E91E63"
-     d="M7.937,25.92c-4.016,4.016-4.106,10.438-0.2,14.344c3.905,3.904,10.326,3.814,14.343-0.201l8.99-8.992  L16.929,16.929L7.937,25.92z"
-     id="path4" /><path
-     d="M40.264,7.736C36.357,3.83,29.938,3.92,25.92,7.938l-8.991,8.991L31.07,31.07l8.99-8.991  C44.078,18.063,44.168,11.642,40.264,7.736z"
-     id="path6"
-     fill="#00BCD4" /><rect
-     x="14.707"
-     y="22.293"
-     transform="matrix(-0.7071 -0.7071 0.7071 -0.7071 25.7064 57.2329)"
-     fill="#00838F"
-     width="19.999"
-     height="2"
-     id="rect8" /><path
-     d="M18.857,18.857l-9.192,9.191c0,0-5.143,5.144,0,10.285c0.447,0.446,0.945,0.812,1.474,1.099  c-4.045-3.668,1.097-8.812,1.097-8.812l9.192-9.192L18.857,18.857z"
-     id="path10"
-     fill="#FCE4EC" /><path
-     fill="#E0F7FA"
-     d="M31.264,11.593c0,0,4.5-4.499,8.356-0.643c-0.287-0.528-0.649-1.028-1.097-1.475  c-5.332-4.954-9.832-0.454-9.832-0.454l-9.834,9.836l2.571,2.571L31.264,11.593z"
-     id="path12" /><rect
-     x="19.032"
-     y="18.435"
-     transform="matrix(-0.7071 -0.7071 0.7071 -0.7071 21.8493 47.9209)"
-     fill="#80DEEA"
-     width="3.636"
-     height="2"
-     id="rect14" /><text
-     xml:space="preserve"
-     style="font-style:normal;font-weight:normal;font-size:6.26982927px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-     x="-16.53215"
-     y="42.223339"
-     id="text3348"
-     sodipodi:linespacing="125%"
-     transform="matrix(0.70721093,-0.71813519,0.75316084,0.64921041,0,0)"><tspan
-       sodipodi:role="line"
-       id="tspan3350"
-       x="-16.53215"
-       y="42.223339"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5px;font-family:'Khmer OS System';-inkscape-font-specification:'Khmer OS System';word-spacing:-0.00151489px;fill:#ffffff;fill-opacity:1"
-       rotate="0 0 0 0 0 0 0 0 0 0 0">Subrrogada</tspan></text>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="48px" height="48px" viewBox="0 0 48 48" enable-background="new 0 0 48 48" xml:space="preserve">
+<path fill="#EDE7F6" d="M24,7L4,18.89V43h40V18.89L24,7z"></path>
+<path fill="#455A64" d="M45,22.048L24,10L3,22.048V17L24,5l0,0l21,12V22.048z"></path>
+<g>
+	<rect x="21" y="18" fill="#F44336" width="6" height="20"></rect>
+	<rect x="14" y="25" fill="#F44336" width="20" height="6"></rect>
+</g>
+<rect x="4" y="41" fill="#B39DDB" width="40" height="2"></rect>
 </svg>

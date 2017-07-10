@@ -21,7 +21,7 @@ export class IndexFarmaciaComponent implements OnInit {
   constructor(private title: Title) { }
   
   ngOnInit() {
-    this.title.setTitle("Farmacia");
+    this.title.setTitle("Almacén");
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
 
     this.modulos = [

@@ -14,8 +14,6 @@ import { FormularioComponent } from './formulario/formulario.component';
 
 import { AuthService } from '../../auth.service';
 
-//import { MenuPanelModule } from '../menu/menu-panel.module';
-//import { MenuAsidePanelModule } from '../menu/menu-aside/menu-aside-panel.module';
 import { MenuModule  } from './../menu/menu.module';
 
 //crud
@@ -36,8 +34,6 @@ import { NguiAutoCompleteModule } from '@ngui/auto-complete';
     PaginacionModule,
     PipesModule,
     MenuModule,
-    //MenuPanelModule, 
-    //MenuAsidePanelModule,
     CrudModule,
     NguiAutoCompleteModule
   ],

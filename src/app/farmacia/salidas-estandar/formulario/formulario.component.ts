@@ -198,7 +198,7 @@ export class FormularioComponent {
         let unidosis_temporal: Number; 
         let normal_temporal: Number; 
         for(let item of this.dato.get('insumos').value){
-          if(!resultado[0].clave_insumo_medico)
+          if(resultado.length == 0)
             break;
           if(item.clave == resultado[0].clave_insumo_medico){
             var existencia_unidosis = 0;
@@ -233,9 +233,10 @@ export class FormularioComponent {
         (<HTMLInputElement>document.getElementById('buscarInsumo')).value = '';
 
         //poner el titulo a la modal                ${data.presentacion}
+
         document.getElementById('tituloModal').innerHTML = ` ${data.descripcion} <br>
           <p aling="justify" style="font-size:12px">${data.descripcion}</p> 
-          <p aling="justify" style="font-size:16px"> CANTIDAD POR ENVASE: ${data.cantidad_x_envase}</p>`;
+          <p aling="justify" style="font-size:16px"> CANTIDAD POR ENVASE: ${data.cantidad_x_envase ? data.cantidad_x_envase : "Sin especificar" }</p>`;
         this.es_unidosis = data.es_unidosis;
         this.unidad_medida = data.unidad_medida;
         

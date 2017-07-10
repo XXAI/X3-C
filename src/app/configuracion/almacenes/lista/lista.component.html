@@ -1,4 +1,4 @@
-<listar #ctrl URL="mis-almacenes" titulo="Almacenes / Panel control"></listar>
+<listar #ctrl URL="mis-almacenes" titulo="Almacenes / Configuración"></listar>
 <panel-control-menu></panel-control-menu>
 <div style="height:50px;"></div>
 <div class="contenedor columns " style="height:100%; ">
@@ -26,7 +26,7 @@
                                 <input class="input is-medium" type="text" placeholder="Buscar" #searchBox id="search-box" (keyup)="ctrl.buscar(searchBox.value)">
                             </p>
                             <p class="control">
-                                <a class="button is-medium is-primary is-inverted " routerLink="/panel-control/almacenes/nuevo">
+                                <a class="button is-medium is-primary is-inverted " routerLink="/configuracion/almacenes/nuevo">
                                     <span class="icon"><i class="fa fa-plus"></i></span><span>Nuevo</span>
                                 </a>
                             </p>
@@ -57,14 +57,14 @@
                 </thead>
                 <tbody *ngIf="!ctrl.busquedaActivada">
                     <tr *ngFor="let item of ctrl.dato; let i=index">
-                        <th style="vertical-align: middle;"><a routerLink="/panel-control/almacenes/editar/{{item.id}}">{{ item.id }}</a></th>                        
-                        <td style="vertical-align: middle;"><a routerLink="/panel-control/almacenes/editar/{{item.id}}">{{ item.nombre }} </a></td>
-                        <td style="vertical-align: middle;"><a routerLink="/panel-control/almacenes/editar/{{item.id}}">{{ item.servidor_id }} </a></td>
-                        <td style="vertical-align: middle;"><a routerLink="/panel-control/almacenes/editar/{{item.id}}">{{ item.nivel_almacen == 1 ? 'HACE PEDIDOS AL PROVEEDOR' : 'HACE PEDIDOS A OTRO ALMACEN DENTRO DE LA CLUES'}} </a></td>
-                        <td style="vertical-align: middle;"><a routerLink="/panel-control/almacenes/editar/{{item.id}}">{{ item.tipo_almacen }} </a></td>
-                        <td style="vertical-align: middle;"><a routerLink="/panel-control/almacenes/editar/{{item.id}}">{{ item.clues }} </a></td>
-                        <td style="vertical-align: middle;"><a routerLink="/panel-control/almacenes/editar/{{item.id}}">{{ item.subrogado == 0 ? 'No' : 'Si'}} </a></td>
-                        <td style="vertical-align: middle;"><a routerLink="/panel-control/almacenes/editar/{{item.id}}">{{ item.unidosis  == 0 ? 'No' : 'Si'}} </a></td>
+                        <th style="vertical-align: middle;"><a routerLink="/configuracion/almacenes/editar/{{item.id}}">{{ item.id }}</a></th>                        
+                        <td style="vertical-align: middle;"><a routerLink="/configuracion/almacenes/editar/{{item.id}}">{{ item.nombre }} </a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/configuracion/almacenes/editar/{{item.id}}">{{ item.servidor_id }} </a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/configuracion/almacenes/editar/{{item.id}}">{{ item.nivel_almacen == 1 ? 'HACE PEDIDOS AL PROVEEDOR' : 'HACE PEDIDOS A OTRO ALMACEN DENTRO DE LA CLUES'}} </a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/configuracion/almacenes/editar/{{item.id}}">{{ item.tipo_almacen }} </a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/configuracion/almacenes/editar/{{item.id}}">{{ item.clues }} </a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/configuracion/almacenes/editar/{{item.id}}">{{ item.subrogado == 0 ? 'No' : 'Si'}} </a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/configuracion/almacenes/editar/{{item.id}}">{{ item.unidosis  == 0 ? 'No' : 'Si'}} </a></td>
                         <td style="vertical-align: middle;" class="has-text-centered"><span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando"
                                 class="is-danger" (click)="ctrl.eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>
 
@@ -75,14 +75,14 @@
                 </tbody>
                 <tbody *ngIf="ctrl.busquedaActivada">
                     <tr *ngFor="let item of ctrl.resultadosBusqueda; let i=index">
-                        <th style="vertical-align: middle;"><a routerLink="/panel-control/almacenes/editar/{{item.id}}">{{ item.id }}</a></th>
-                        <td style="vertical-align: middle;"><a routerLink="/panel-control/almacenes/editar/{{item.id}}">{{ item.nombre }} </a></td>
-                        <td style="vertical-align: middle;"><a routerLink="/panel-control/almacenes/editar/{{item.id}}">{{ item.servidor_id }} </a></td>
-                        <td style="vertical-align: middle;"><a routerLink="/panel-control/almacenes/editar/{{item.id}}">{{ item.nivel_almacen == 1 ? 'HACE PEDIDOS AL PROVEEDOR' : 'HACE PEDIDOS A OTRO ALMACEN DENTRO DE LA CLUES'}} </a></td>
-                        <td style="vertical-align: middle;"><a routerLink="/panel-control/almacenes/editar/{{item.id}}">{{ item.tipo_almacen }} </a></td>
-                        <td style="vertical-align: middle;"><a routerLink="/panel-control/almacenes/editar/{{item.id}}">{{ item.clues }} </a></td>
-                        <td style="vertical-align: middle;"><a routerLink="/panel-control/almacenes/editar/{{item.id}}">{{ item.subrogado == 0 ? 'No' : 'Si'}} </a></td>
-                        <td style="vertical-align: middle;"><a routerLink="/panel-control/almacenes/editar/{{item.id}}">{{ item.unidosis  == 0 ? 'No' : 'Si'}} </a></td>
+                        <th style="vertical-align: middle;"><a routerLink="/configuracion/almacenes/editar/{{item.id}}">{{ item.id }}</a></th>
+                        <td style="vertical-align: middle;"><a routerLink="/configuracion/almacenes/editar/{{item.id}}">{{ item.nombre }} </a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/configuracion/almacenes/editar/{{item.id}}">{{ item.servidor_id }} </a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/configuracion/almacenes/editar/{{item.id}}">{{ item.nivel_almacen == 1 ? 'HACE PEDIDOS AL PROVEEDOR' : 'HACE PEDIDOS A OTRO ALMACEN DENTRO DE LA CLUES'}} </a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/configuracion/almacenes/editar/{{item.id}}">{{ item.tipo_almacen }} </a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/configuracion/almacenes/editar/{{item.id}}">{{ item.clues }} </a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/configuracion/almacenes/editar/{{item.id}}">{{ item.subrogado == 0 ? 'No' : 'Si'}} </a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/configuracion/almacenes/editar/{{item.id}}">{{ item.unidosis  == 0 ? 'No' : 'Si'}} </a></td>
                         <td style="vertical-align: middle;" class="has-text-centered"><span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando"
                                 class="is-danger" (click)="ctrl.eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>
 

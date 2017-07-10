@@ -12,6 +12,7 @@ import { environment } from '../../../../environments/environment';
 export class FormularioComponent {
   dato: FormGroup;
   form_almacen_tipos_servicios: any;
+  actualizado;
   actualizacion;
   actualizacion_usuario;
   tieneid: boolean = false;
@@ -24,7 +25,6 @@ export class FormularioComponent {
   ngOnInit() {
     
     var usuario = JSON.parse(localStorage.getItem("usuario"));
-    //console.log(usuario);
     
     this.dato = this.fb.group({
       clues: [usuario.clues_activa.clues, [Validators.required]],
@@ -62,17 +62,29 @@ export class FormularioComponent {
     var tempUpdateAt="";
     var temp_usuario_id="";
 
-    tempUpdateAt =control.value[c].updated_at;
-    temp_usuario_id =control.value[c].usuario_id;
-    for(c=0; c < control.length;){
-      if(control.value[c].updated_at > tempUpdateAt){
-        tempUpdateAt =control.value[c].updated_at;
+      //Comprobar si el arreglo no está vacío
+      if(control.value.length != 0){
+        //Comprobacion de la última fecha en la que se modificó y el usuario que lo hizo
+        if(control.value[c].updated_at){
+          tempUpdateAt =control.value[c].updated_at;
+        }else{
+          tempUpdateAt =control.value[c].created_at;
+        }
         temp_usuario_id =control.value[c].usuario_id;
+        for(c=0; c < control.length;){
+          if(control.value[c].updated_at > tempUpdateAt){
+            tempUpdateAt =control.value[c].updated_at;
+            temp_usuario_id =control.value[c].usuario_id;
+          }
+          c=c+1;
+        }
+        this.actualizacion=tempUpdateAt;
+        this.actualizacion_usuario=temp_usuario_id;
+        this.actualizado = true;
+      }else{
+        this.actualizacion="Sin actualización";
+        this.actualizacion_usuario="Sin actualización";
       }
-      c=c+1;
-    }
-    this.actualizacion=tempUpdateAt;
-    this.actualizacion_usuario=temp_usuario_id;
     }, 4000);
     
   }

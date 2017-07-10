@@ -108,7 +108,12 @@ export class FormularioComponent implements OnInit {
             resultado => {
                 this.cargando = false;
                 if(regresar)
-                this.location.back();
+                    this.location.back();
+
+                this.mensajeResponse.texto = "Se han guardado los cambios.";
+                this.mensajeResponse.mostrar = true;
+                this.mensajeResponse.clase = "success";
+                this.mensaje(2);                    
             },
             error => {
                 this.cargando = false;
@@ -790,7 +795,6 @@ ofModelo
                     
                     for (let val of ofModelo) {  
                         if (item[campo] == val[campo]) {
-                            console.log(item[campo]);
                             ofModelo.splice(i, 1);
                         }
                         i++;
@@ -798,11 +802,9 @@ ofModelo
                 }
                 else {
                     toModelo.push(item.value);
-                    console.log(ofModelo);
                     var i = 0;
                     for (let val of ofModelo) {
                         if (item.value[campo] == val.value[campo]) {
-                            console.log(item.value[campo]);
                             ofModelo.splice(i, 1);
                         }
                         i++;
@@ -924,7 +926,7 @@ ofModelo
                         }
                     }
                 })(f);
-            }console.log(objeto);
+            }
             modelo.patchValue(objeto);
         }
     }

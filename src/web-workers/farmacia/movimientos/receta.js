@@ -56,7 +56,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         [
                             { text: 'USUARIO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
                             {},
-                            { text: data.usuario.nombre, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
+                            { text: data.usuario.nombre +' '+ data.usuario.apellidos, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
                             { text: 'FECHA', style: 'tableHeaderVerde', alignment: 'right' },
                             { text: data.datos.receta.fecha_receta, style: 'tableHeader', alignment: 'left' }
                         ],

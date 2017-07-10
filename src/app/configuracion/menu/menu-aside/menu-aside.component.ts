@@ -18,15 +18,13 @@ export class MenuAsideComponent implements OnInit {
     var permisos =  usuario.permisos.split("|");
 
     this.menu = [
-    
       {
         titulo: 'Configuración',
         modulos: [
-          // Estos permisos son los del módulo de "permisos", ¿porque no tienen asignados?
-          { permiso: 'DYwQAxJbpHWw07zT09scEogUeFKFdGSu', icono: 'fa-archive', titulo:"Mis almacenes", url:"/configuracion/almacenes" },
-          { permiso: 'DYwQAxJbpHWw07zT09scEogUeFKFdGSu', icono: 'fa-hospital-o', titulo:"Mis servicios", url:"/configuracion/servicios/editar/"+ usuario.clues_activa.clues +""},
-          { permiso: 'DYwQAxJbpHWw07zT09scEogUeFKFdGSu', icono: 'fa-clock-o', titulo:"Mis turnos", url:"/configuracion/turnos/editar/"+ usuario.clues_activa.clues +"" },
-          { permiso: 'DYwQAxJbpHWw07zT09scEogUeFKFdGSu', icono: 'fa-medkit', titulo:"Mis claves", url:"/configuracion/claves/editar/"+ usuario.clues_activa.clues +"" },
+          { permiso: 'zRTSAl0H8YNFMWcn00yeeJPigztCbSdC', icono: 'fa-archive', titulo:"Mis almacenes", url:"/configuracion/almacenes" },
+          { permiso: 'Ki9kBghgqYsY17kqL620GWYl0bpeU6TB', icono: 'fa-hospital-o', titulo:"Mis servicios", url:"/configuracion/servicios/editar/"+ usuario.clues_activa.clues +""},
+          { permiso: '9dKCEyujSdLQF2CbpjXiWKeap0NlJCzw', icono: 'fa-clock-o', titulo:"Mis turnos", url:"/configuracion/turnos/editar/"+ usuario.clues_activa.clues +"" },
+          { permiso: 'BnB3LhrDbKNBrbQaeB2BPXKGrLEYrEw7', icono: 'fa-medkit', titulo:"Mis claves", url:"/configuracion/claves/editar/"+ usuario.clues_activa.clues +"" },
         ]
       },
       

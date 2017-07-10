@@ -414,7 +414,7 @@
                                     <span class="tag is-large" [ngClass]="{'is-success':modo == 'N'}">Normal</span>
                                 </label>
                             </div>
-                            <div class="column is-auto">
+                            <div *ngIf="es_unidosis == 1" class="column is-auto">
                                 <input class="styled" type="radio" id="modo_u" [checked]="modo == 'U'" (click)="modo = 'U'" [value]="'U'" name="modo">                                    
                                 <label for="modo_u">
                                     <span class="tag is-large" [ngClass]="{'is-success':modo == 'U'}">Unidosis</span>

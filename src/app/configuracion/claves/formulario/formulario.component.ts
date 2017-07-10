@@ -13,6 +13,7 @@ import { environment } from '../../../../environments/environment';
 export class FormularioComponent {
   tipo='ME';
   es_causes=1;
+  actualizado=false;
   actualizacion;
   actualizacion_usuario;
   dato: FormGroup;
@@ -81,19 +82,30 @@ export class FormularioComponent {
     var tempUpdateAt="";
     var temp_usuario_id="";
 
-    //Comprobacion de la última fecha en la que se modificó y el usuario que lo hizo
-    tempUpdateAt =control.value[c].updated_at;
-    temp_usuario_id =control.value[c].usuario_id;
-    for(c=0; c < control.length;){
-      if(control.value[c].updated_at > tempUpdateAt){
+    //Comprobar si el arreglo no está vacío
+    if(control.value.length != 0){
+      //Comprobacion de la última fecha en la que se modificó y el usuario que lo hizo
+      if(control.value[c].updated_at){
         tempUpdateAt =control.value[c].updated_at;
-        temp_usuario_id =control.value[c].usuario_id;
+      }else{
+        tempUpdateAt =control.value[c].created_at;
       }
-      c=c+1;
+      temp_usuario_id =control.value[c].usuario_id;
+      for(c=0; c < control.length;){
+        if(control.value[c].updated_at > tempUpdateAt){
+          tempUpdateAt =control.value[c].updated_at;
+          temp_usuario_id =control.value[c].usuario_id;
+        }
+        c=c+1;
+      }
+      this.actualizacion=tempUpdateAt;
+      this.actualizacion_usuario=temp_usuario_id;
+      this.actualizado = true;
+    }else{
+      this.actualizacion="Sin actualización";
+      this.actualizacion_usuario="Sin actualización";
     }
-    this.actualizacion=tempUpdateAt;
-    this.actualizacion_usuario=temp_usuario_id;
-    }, 4000);
+      }, 4000);
   }
 
    /**
@@ -167,8 +179,8 @@ export class FormularioComponent {
               if(data.es_causes == 1)
               html += `<label class="tag is-success" ><strong>Cause </strong></label>`;
               if(data.es_causes == 0)
-              html += `<label class="tag is-success" ><strong>No Cause </strong> </label>`; 
-              if(data.es_unidosis == 0)                                                                 
+              html += `<label class="tag" style="background: #B8FB7E; border-color: #B8FB7E; color: rgba(0,0,0,0.7);"><strong>No Cause </strong> </label>`; 
+              if(data.es_unidosis == 1)                                                                 
               html += `<label class="tag is-warning" ><strong>Unidosis</strong> </label>`;
               
     html += `
@@ -182,7 +194,6 @@ export class FormularioComponent {
 
   cambiarTipo(tipo){    
     this.tipo = tipo ;
-    console.log(this.tipo);
 }
 
 
