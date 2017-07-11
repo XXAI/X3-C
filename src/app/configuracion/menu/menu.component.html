@@ -16,6 +16,13 @@
                         <i class="fa fa-navicon"></i>
                     </span>
                 </a>
+
+                <div class="nav-center">
+                    <span *ngIf="usuario.almacen_activo" class="nav-item is-small">
+                        <span>{{usuario.clues_activa.clues}}&nbsp;-&nbsp;</span><span class="is-hidden-mobile">{{usuario.clues_activa.nombre}}&nbsp;-&nbsp;</span><span>{{usuario.almacen_activo.nombre}}</span>
+                    </span>
+                </div>
+
                 <a class="nav-item"  (click)="hub.toggle()">
                     <span class="icon">
                         <i class="fa fa-th"></i>

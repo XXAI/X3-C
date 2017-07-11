@@ -6,7 +6,7 @@
       <div class="tile is-4 is-parent is-vertical ">
         <div class="tile is-child">
             <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
-                <section class="hero is-primary" [ngClass]="{'is-primary':pedido.status=='PS','is-success':pedido.status=='FI','is-info':pedido.status=='EF','is-danger':pedido.status=='EX' || pedido.status=='EX-CA'}" >
+                <section class="hero is-primary" [ngClass]="{'is-primary':pedido.status=='PS','is-success':pedido.status=='FI','is-info':pedido.status=='EF','is-warning':pedido.status=='EX', 'is-danger': pedido.status=='EX-CA'}" >
                     <h1 *ngIf="pedido.status == 'PS'" class="title" style="margin:0.5em;" >
                         <span class="icon is-medium"><i class="fa fa-file-text"></i></span> Pedido Por Surtir <span class="is-pulled-right">{{porcentageTotalPedido | number:'1.0-2'}} %</span>
                     </h1>

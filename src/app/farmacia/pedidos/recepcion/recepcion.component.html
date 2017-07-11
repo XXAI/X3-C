@@ -331,7 +331,7 @@
           <div class="column" ></div>
           <div class="column is-4" style="text-align:right; " *ngIf="statusRecepcion != 'FI'">
             <div style="margin:1em;">
-            <a  class="button is-primary" style="width:45%; margin-right:5%;" (click)="guardar(true)"> <span class="icon"><i class="fa fa-check"></i></span> <span>Concluir</span></a>
+            <a  class="button is-primary" style="width:45%; margin-right:5%;" [ngClass]="{ 'is-loading': guardando }"   (click)="guardar(true)"> <span class="icon"><i class="fa fa-check"></i></span> <span>Concluir</span></a>
             </div>
           </div>
         </div> 

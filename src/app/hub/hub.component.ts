@@ -39,7 +39,7 @@ export class HubComponent implements OnInit {
         'Ki9kBghgqYsY17kqL620GWYl0bpeU6TB', // Ver mis servicios
         'BnB3LhrDbKNBrbQaeB2BPXKGrLEYrEw7' // Ver mis claves
       ] 
-    },
+    }, 
     { 
       title:'Administrador central', routerLink:'/administrador-central', icono:'assets/hub-administrador-central.svg',
       permisos: [
@@ -62,13 +62,6 @@ export class HubComponent implements OnInit {
         'mGKikN0aJaeF2XrHwwYK3XNw0f9CSZDe', // Ver usuarios
         'ICmOKw3HxhgRna4a78OP0QmKrIX0bNsp', // Ver roles
         'DYwQAxJbpHWw07zT09scEogUeFKFdGSu' // Ver permisos
-
-      ] 
-    }, 
-    { 
-      title:'Configuracion', routerLink:'/configuracion', icono:'assets/hub-configuracion.svg', 
-      permisos: [
-        'DYwQAxJbpHWw07zT09scEogUeFKFdGSu',  // Este permiso es del módulo de "permisos", ¿porque no tienen asignados los módulos de joram?
 
       ] 
     }, 
