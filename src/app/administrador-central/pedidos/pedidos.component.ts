@@ -473,7 +473,7 @@ export class PedidosComponent implements OnInit {
   mostrarDialogoArchivos(item:any){
     this.verDialogoArchivos = true;
     this.cargandoArchivos = true;
-    this.tituloDialogoArchivos = 'Folio: ' + item.folio;
+    this.tituloDialogoArchivos = item.folio;
     /*
     this.cargando_archivo = 0;
     this.cargandoDatosArchivo = true;
@@ -513,6 +513,23 @@ export class PedidosComponent implements OnInit {
   }
 
   descargar(item){
+    let id_pedido = item.id;
+    var query = "token="+localStorage.getItem('token');
+    var self = this;
+    
+    var download = window.open(`${environment.API_URL}/download-file/${id_pedido}?${query}`);
+    var timer = setInterval(function ()
+    {
+        if (download.closed)
+        {
+            clearInterval(timer);
+            self.mostrarDialogoArchivos({pedido_id: id_pedido, folio: self.tituloDialogoArchivos});
+        }
+    }, 500);
+    
+  }
+
+  /*descargars(item){
     console.log(item);
     let id_pedido = item.id;
     var query = "token="+localStorage.getItem('token');
@@ -544,7 +561,7 @@ export class PedidosComponent implements OnInit {
         }
       }
     );
-  }
+  }*/
   // # SECCION: Paginación
   paginaSiguiente():void {
     this.listar(this.paginaActual+1);
