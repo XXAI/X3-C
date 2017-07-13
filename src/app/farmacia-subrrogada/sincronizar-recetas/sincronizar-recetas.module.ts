@@ -16,7 +16,7 @@ import { CargarComponent } from './formulario/cargar.component';
 
 import { AuthService } from '../../auth.service';
 
-import { IndexFarmaciaModule } from '../index-farmacia/index-farmacia.module';
+import { IndexFarmaciaSubrrogadaModule } from '../index-farmacia-subrrogada/index-farmacia-subrrogada.module';
 //crud
 import { CrudService } from '../../crud/crud.service';
 import { CrudModule } from '../../crud/crud.module';
@@ -35,7 +35,7 @@ import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
     BloquearPantallaModule,
     PaginacionModule,
     PipesModule,
-    IndexFarmaciaModule,
+    IndexFarmaciaSubrrogadaModule,
     CrudModule,
     NguiAutoCompleteModule,
     NguiDatetimePickerModule

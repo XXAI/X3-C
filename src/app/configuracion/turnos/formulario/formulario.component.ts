@@ -35,9 +35,6 @@ export class FormularioComponent {
       clues_turnos: this.fb.array([])
     });
 
-    this.form_almacen_tipos_servicios = {
-      tipo_movimiento_id: ['', [Validators.required]]
-    };
     this.route.params.subscribe(params => {
       if (params['clues']) {
         this.tieneid = true;

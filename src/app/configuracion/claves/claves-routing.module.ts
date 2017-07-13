@@ -6,11 +6,11 @@ import { FormularioComponent } from './formulario/formulario.component';
 import { AuthGuard } from '../../auth-guard.service';
 
 const routes: Routes = [
-  {path: 'configuracion/claves', redirectTo: 'configuracion/claves/editar/:clues', pathMatch: 'full'},
+  {path: 'configuracion/claves', redirectTo: 'configuracion/claves', pathMatch: 'full'},
   {
     path:'configuracion/claves',
     children:[
-      { path: 'editar/:clues', component: FormularioComponent},
+      { path: '', component: FormularioComponent},
     ],
     canActivate: [AuthGuard]
   }

@@ -192,9 +192,4 @@ export class FormularioComponent {
     return this._sanitizer.bypassSecurityTrustHtml(html);
   }
 
-  cambiarTipo(tipo){    
-    this.tipo = tipo ;
-}
-
-
 }
