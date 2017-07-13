@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'sincronizar-recetas-lista',
+  selector: 'unidades-medicas-lista',
   templateUrl: './lista.component.html'
 })
 

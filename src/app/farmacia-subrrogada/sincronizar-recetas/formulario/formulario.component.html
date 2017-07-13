@@ -1,5 +1,5 @@
-<formulario #ctrl URL="sincronizar-recetas" titulo="Receta" [dato]="dato"></formulario>
-
+<formulario #ctrl URL="sincronizar-recetas" titulo="Sincronizar receta" [dato]="dato"></formulario>
+<menu-farmacia [modulo]="'Sincronizar recetas'" [icono]="'assets/hub-farmacia-sub.svg'" [url]="'/farmacia-subrrogada/sincronizar-recetas'"></menu-farmacia>
 <div style="height:50px;"></div>
 <form name="form" novalidate [formGroup]="dato" (ngSubmit)="ctrl.enviar()">
     <div class="contenedor columns " style="height:100%">

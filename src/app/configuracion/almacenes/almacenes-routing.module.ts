@@ -6,7 +6,7 @@ import { FormularioComponent } from './formulario/formulario.component';
 import { AuthGuard } from '../../auth-guard.service';
 
 const routes: Routes = [
-  { path: 'configuracion', redirectTo: '/configuracion/almacenes', pathMatch: 'full' },
+  //{ path: 'configuracion', redirectTo: '/configuracion/almacenes', pathMatch: 'full' },
   {
     path: 'configuracion/almacenes',
     children: [

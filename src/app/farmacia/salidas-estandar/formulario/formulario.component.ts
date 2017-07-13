@@ -274,7 +274,9 @@ export class FormularioComponent {
       "es_causes": this.insumo.es_causes,
       "es_unidosis": this.insumo.es_unidosis,
       "cantidad": 1,
-      "cantidad_x_envase": parseInt(this.insumo.cantidad_x_envase),     
+      "presentacion_nombre": this.insumo.presentacion_nombre,
+      "unidad_medida": this.insumo.unidad_medida,
+      "cantidad_x_envase": this.insumo.cantidad_x_envase ? parseInt(this.insumo.cantidad_x_envase) : 1,     
       "cantidad_surtida": 1,
       "modo_salida": this.modo,
       "cantidad_solicitada": cantidad_solicitada, //this.modo == 'N' ? cantidad_solicitada : 0,
@@ -429,6 +431,7 @@ export class FormularioComponent {
     this.cantidad_solicitadaBoxViewChildren.first.nativeElement.focus();
     this.cant_solicitada_valida = false;
     this.sum_cant_lotes = false;
+    this.modo = 'N';
   }
   /**
      * Este método agrega una nueva fila para los lotes nuevos

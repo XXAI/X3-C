@@ -45,6 +45,7 @@ import { MisClavesModule   } from './configuracion/claves/claves.module';
 
 // # Hub Farmacia subrrogada
 import { IndexFarmaciaSubrrogadaModule } from './farmacia-subrrogada/index-farmacia-subrrogada/index-farmacia-subrrogada.module';
+import { SincronizarRecetasModule } from './farmacia-subrrogada/sincronizar-recetas/sincronizar-recetas.module';
 
 // # Hub Farmacia
 import { IndexFarmaciaModule } from './farmacia/index-farmacia/index-farmacia.module';
@@ -54,11 +55,21 @@ import { EntregasModule } from './farmacia/entregas/entregas.module';
 import { EntradasEstandarModule    } from './farmacia/entradas-estandar/entradas-estandar.module';
 import { SalidasRecetasModule    } from './farmacia/salidas-recetas/salidas-recetas.module';
 import { SalidasEstandarModule    } from './farmacia/salidas-estandar/salidas-estandar.module';
-import { MovimientosEntradasModule    } from './farmacia/movimientos-entradas/movimientos-entradas.module';
-import { MovimientosSalidasModule    } from './farmacia/movimientos-salidas/movimientos-salidas.module';
+//import { MovimientosEntradasModule    } from './farmacia/movimientos-entradas/movimientos-entradas.module';
+//import { MovimientosSalidasModule    } from './farmacia/movimientos-salidas/movimientos-salidas.module';
 import { DashboardSalidasModule } from './farmacia/dashboard-salidas/dashboard-salidas.module';
 import { ClavesBasicasModule    } from './administrador-central/claves-basicas/claves-basicas.module';
 
+// # Hub almacén artículos
+import { IndexAlmacenArticulosModule } from './almacen-articulos/index-almacen-articulos/index-almacen-articulos.module';
+import { IndexCatalogoModule } from './almacen-articulos/catalogos/index-catalogo/index-catalogo.module';
+import { UnidadesMedicasModule } from './almacen-articulos/catalogos/unidades-medicas/unidades-medicas.module';
+
+// # Hub laboratorio
+import { IndexLaboratorioModule } from './laboratorio/index-laboratorio/index-laboratorio.module';
+
+// # Hub equipamiento
+import { IndexEquipamientoModule } from './equipamiento/index-equipamiento/index-equipamiento.module';
 
 // #modulo de admisión de pacientes
 import { EgresoModule } from './admision/egreso/egreso.module';
@@ -112,10 +123,14 @@ export function highchartsFactory() {
     EntradasEstandarModule,
     SalidasEstandarModule,
     SalidasRecetasModule,
-    MovimientosEntradasModule,
-    MovimientosSalidasModule,
     DashboardSalidasModule,
     ClavesBasicasModule,
+    IndexAlmacenArticulosModule,
+    IndexCatalogoModule,
+    UnidadesMedicasModule,
+    IndexLaboratorioModule,
+    IndexEquipamientoModule,
+    SincronizarRecetasModule,
     //CrudModule,
     PacienteModule,
     EgresoModule,

@@ -16,19 +16,6 @@ export class FormularioComponent {
   actualizacion;
   actualizacion_usuario;
   tieneid: boolean = false;
-  tipos_almacen: any[] = [
-    { id: "ALMPAL", nombre: "ALMPAL" },
-    { id: "JURIS", nombre: "JURIS" },
-    { id: "UNMED", nombre: "UNMED" },
-    { id: "LAB", nombre: "LAB" },
-    { id: "FARMACIA", nombre: "FARMACIA" },
-    { id: "CENDIS", nombre: "CENDIS" }
-  ];
-
-  niveles_almacen: any[] = [
-    { id: 1, nombre: "HACE PEDIDOS AL PROVEEDOR" },
-    { id: 2, nombre: "HACE PEDIDOS A OTRO ALMACEN DENTRO DE LA CLUES" }
-  ];
   tab: number = 2;
   
 
@@ -47,9 +34,6 @@ export class FormularioComponent {
       clues_servicios: this.fb.array([])
     });
 
-    this.form_almacen_tipos_servicios = {
-      tipo_movimiento_id: ['', [Validators.required]]
-    };
     this.route.params.subscribe(params => {
       if (params['clues']) {
         this.tieneid = true;

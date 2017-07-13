@@ -8,7 +8,7 @@ import { AuthGuard } from '../../auth-guard.service';
 
 const routes: Routes = [
   {
-    path: 'almacen/sincronizar-recetas',
+    path: 'farmacia-subrrogada/sincronizar-recetas',
     children: [
        { path: '', component: ListaComponent},
        { path: 'nuevo', component: CargarComponent },
