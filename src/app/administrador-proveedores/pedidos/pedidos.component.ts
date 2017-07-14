@@ -360,36 +360,41 @@ export class PedidosComponent implements OnInit {
     }
 
     upload() {
-        this.subir_archivo = false;
-        let img:any = this.tag.files[0];
-        var formData: FormData = new FormData();
-        formData.append("file", img, img.name);
-        formData.append("id_pedido", this.id_pedido);
-        var xhr = new XMLHttpRequest();
-        xhr.upload.addEventListener("progress", (ev: ProgressEvent) => {
-            
-        });
-        var self = this;
-        xhr.open("POST", environment.API_URL+"/repository", true);
-        xhr.setRequestHeader("Authorization", "Bearer "+localStorage.getItem('token'));
-        var usuario = JSON.parse(localStorage.getItem("usuario"));
+        if(this.tag)
+        {
+          this.subir_archivo = false;
+          let img:any = this.tag.files[0];
+          var formData: FormData = new FormData();
+          formData.append("file", img, img.name);
+          formData.append("id_pedido", this.id_pedido);
+          var xhr = new XMLHttpRequest();
+          xhr.upload.addEventListener("progress", (ev: ProgressEvent) => {
+              
+          });
+          var self = this;
+          xhr.open("POST", environment.API_URL+"/repository", true);
+          xhr.setRequestHeader("Authorization", "Bearer "+localStorage.getItem('token'));
+          var usuario = JSON.parse(localStorage.getItem("usuario"));
 
-        if(usuario.proveedor_activo){
-          xhr.setRequestHeader("X-Proveedor-Id", usuario.proveedor_activo.id);
+          if(usuario.proveedor_activo){
+            xhr.setRequestHeader("X-Proveedor-Id", usuario.proveedor_activo.id);
+          }
+
+          xhr.onreadystatechange = function () {
+              if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                 self.actualiza_lista();
+              }
+
+              if(xhr.readyState === XMLHttpRequest.DONE && xhr.status != 200) {
+                 self.error_envio();
+                 self.subir_archivo = true;        
+              }
+              self.cargando_archivo = xhr.readyState;
+          };        
+          xhr.send(formData);
+        }else{
+          alert("ES NECESARIO ELEGIR UN ARCHIVO A SUBIR, VUELVA A INTENTARLO POR FAVOR");
         }
-
-        xhr.onreadystatechange = function () {
-            if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-               self.actualiza_lista();
-            }
-
-            if(xhr.readyState === XMLHttpRequest.DONE && xhr.status != 200) {
-               self.error_envio();
-               self.subir_archivo = true;        
-            }
-            self.cargando_archivo = xhr.readyState;
-        };        
-        xhr.send(formData);
     }
 
     actualiza_lista()
