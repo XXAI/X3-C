@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { Location}           from '@angular/common';
-import { ActivatedRoute, Params , Router}   from '@angular/router'
+import { ActivatedRoute, Params , Router}   from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 
 import 'rxjs/add/observable/of';

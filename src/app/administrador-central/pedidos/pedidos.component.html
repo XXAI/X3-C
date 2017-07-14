@@ -306,49 +306,50 @@
             <form name="form"  >
                 <table class="table">
                     <thead>
-                        <th colspan="5">Datos Pedido:</th>
+                        <th colspan="3">Datos Pedido</th>
+                         <th colspan="2">
+                                <button type="button" class="button is-warning" [disabled]="borrador" (click)='regresarBorrador(datos_pedido.pedido_id)'><i class="fa fa-exclamation-triangle"></i> REGRESAR A BORRADOR</button>
+                            </th>
                     </thead>
                     <tbody>
                         <tr>
                             <td>
-                                <b>CLUES:</b> {{ datos_pedido.clues }}
+                                <b>CLUES</b> <br>{{ datos_pedido.clues }}
                             </td>
                             <td>
-                                <b>FOLIO:</b> {{ datos_pedido.folio }}
+                                <b>FOLIO</b> <br>{{ datos_pedido.folio }}
                             </td>
                             <td>
-                                <b>FECHA:</b> {{ datos_pedido.fecha }}
+                                <b>FECHA</b> <br>{{ datos_pedido.fecha }}
                             </td>
                             <td>
-                                <b>FECHA EXPIRACION:</b> {{ datos_pedido.fecha_expiracion }}
+                                <b>FECHA EXPIRACION</b><br>{{ datos_pedido.fecha_expiracion }}
                             </td>
-                            <td>
-                                <button type="button" class="button is-warning" [disabled]="borrador" (click)='regresarBorrador(datos_pedido.pedido_id)'><i class="fa fa-exclamation-triangle"></i> REGRESAR A BORRADOR</button>
-                            </td>
+                           
                         </tr>
                         <tr>
-                            <td colspan="2">
-                                <b>UNIDAD MEDICA:</b> {{ datos_pedido.unidad_medica }}
+                            <td>
+                                <b>UNIDAD MEDICA:</b> 
                             </td>
-                            <td colspan="2">
-                                <b>PROVEEDOR:</b> {{ datos_pedido.proveedor }}
+                            <td colspan="3">
+                                {{ datos_pedido.unidad_medica }}
+                            </td>
+                        </tr>
+                        <tr>    
+                            <td>
+                                <b>PROVEEDOR:</b>
+                            </td>
+                            <td colspan="3">
+                                {{ datos_pedido.proveedor }}
                             </td>                            
                         </tr>
+
                        
                     </tbody>
                 </table>
                 <table class="table">
                     <thead>
-                        <tr>
-                            <th colspan="5">Lista de Recepciones</th>
-                        </tr>
-                        <tr>
-                            <th>Fecha Creación</th>
-                            <th>Fecha Actualización</th>
-                            <th>Estatus</th>
-                            <th>Insumos</th>
-                            <th></th>
-                        </tr>
+                        
                     </thead>
                     <tbody *ngIf="cargaRecepciones">
                         

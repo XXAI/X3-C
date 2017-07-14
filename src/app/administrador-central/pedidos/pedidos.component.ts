@@ -91,14 +91,15 @@ export class PedidosComponent implements OnInit {
 
   verInformacion(obj:any)
   {
-    this.datos_pedido = obj;
+    this.datos_pedido = obj;    
     this.showPedido = true;
     this.borrador = true;
     this.apiService.verRecepciones(this.datos_pedido.pedido_id).subscribe(
       respuesta => {
           this.cargaRecepciones = true; 
           this.recepciones = respuesta.recepciones;
-          if(respuesta.status == 'PS' && (respuesta.recepciones.length == 0 || respuesta.recepciones == null))
+          console.log(respuesta.recepciones);
+          if((respuesta.status == 'PS' || respuesta.status == 'EX') && (respuesta.recepciones.length == 0 || respuesta.recepciones == null))
               this.borrador= false;
       }, error => {
         this.cargaRecepciones = false;
