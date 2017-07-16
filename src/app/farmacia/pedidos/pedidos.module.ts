@@ -25,6 +25,8 @@ import { VerComponent } from './ver/ver.component';
 import { FormularioComponent } from './formulario/formulario.component';
 import { RecepcionComponent } from './recepcion/recepcion.component';
 
+import { ListaCluesComponent } from './lista-clues/lista-clues.component';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -38,7 +40,7 @@ import { RecepcionComponent } from './recepcion/recepcion.component';
     PedidosRoutingModule,
     IndexFarmaciaModule
   ],
-  declarations: [PedidosComponent, MenuLateralComponent, ListaComponent, VerComponent, FormularioComponent, RecepcionComponent],
+  declarations: [PedidosComponent, MenuLateralComponent, ListaComponent, VerComponent, FormularioComponent, RecepcionComponent, ListaCluesComponent],
   providers:[PedidosService,AlmacenesService,StockService,RecepcionService]
 })
 export class PedidosModule { }

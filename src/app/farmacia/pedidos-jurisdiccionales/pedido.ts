@@ -162,11 +162,8 @@ export class Pedido {
   
   public  eliminarItem = function (item:any, index:number){
     var contador: number = 0;
-    console.log(this.lista)
-    for(let i in this.lista){
-       
-      if(this.lista[i] === item){
-       
+    for(let i in this.lista){       
+      if(this.lista[i] === item){       
         this.paginacion.lista.splice(index, 1);  
         this.lista.splice(contador, 1);  
         this.indexar();

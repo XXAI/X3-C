@@ -189,8 +189,6 @@ export class FormularioComponent implements OnInit {
               insumo.precio = +dato.precio_unitario;
               insumo.tipo_insumo_id = dato.tipo_insumo_id;
               insumo.lista_clues = dato.lista_clues;
-              
-              
               this.pedido.lista.push(insumo);
 
               this.listaClaveAgregadas.push({
@@ -272,14 +270,15 @@ export class FormularioComponent implements OnInit {
   // # SECCION Funciones globales
   
   agregarItem(item:any = {}){
-    console.log("entre a la funcion del pedido")
-    console.log(item)
-    let insumo = item.insumo;
+  
+    
     let auxPaginasTotales = this.pedido.paginacion.totalPaginas;
 
+
+    let insumo = item.insumo;
     var existe = false;
 
-    var total
+    //var total
     for( var i in this.pedido.lista){
 
       var cantidad = 0;

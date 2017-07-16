@@ -45,6 +45,9 @@ export class FormularioComponent implements OnInit {
   cargandoInsumos: boolean = false;
   cargandoPresupuestos: boolean = false;
 
+  esPedidoJurisdiccional: boolean = false;
+
+
   // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
   mensajeAdvertencia: Mensaje = new Mensaje()
@@ -61,7 +64,10 @@ export class FormularioComponent implements OnInit {
   // # SECCION: Modal Insumos
   mostrarModalInsumos = false;
   //Harima: Lista de claves agregadas al pedido, para checar duplicidad
-  listaClaveAgregadas: Array<string> = [];
+  //listaClaveAgregadas: Array<string> = [];
+
+  // Akira: Lo volvy tipo any en lugar de string porque en pedidos jurisdiccionales se agregan más datos :P
+  listaClaveAgregadas: any[] = [];
   // # FIN SECCION
 
   // # SECCION: Pedido
@@ -83,6 +89,15 @@ export class FormularioComponent implements OnInit {
   private cargandoPdf:boolean = false;
   // # FIN SECCION
 
+
+
+  // ######### PEDIDOS JURISDICCIONALES #########
+
+  mostrarModalListaClues = false;
+  loteSeleccionado: any = null;
+
+  // ############################################
+
   private cambiarEntornoSuscription: Subscription;
 
   constructor(
@@ -98,6 +113,18 @@ export class FormularioComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
+    // ######### PEDIDOS JURISDICCIONALES #########
+
+    var usuario =  JSON.parse(localStorage.getItem("usuario"));
+    
+    if(usuario.clues_activa.tipo == "OA"){
+      this.esPedidoJurisdiccional = true;
+    }
+
+    // ############################################
+    
+    
     this.title.setTitle('Formulario pedido');
 
     // Inicializamos el objeto para los reportes con web Webworkers
@@ -190,8 +217,30 @@ export class FormularioComponent implements OnInit {
               insumo.monto = +dato.monto_solicitado;
               insumo.precio = +dato.precio_unitario;
               insumo.tipo_insumo_id = dato.tipo_insumo_id;
-              this.pedido.lista.push(insumo);
-              this.listaClaveAgregadas.push(insumo.clave);
+              if(pedido.tipo_pedido_id != "PJS"){
+                this.pedido.lista.push(insumo);
+                this.listaClaveAgregadas.push(insumo.clave);
+                this.esPedidoJurisdiccional = false;
+              } 
+              // ######### PEDIDOS JURISDICCIONALES #########
+              else {
+
+                this.esPedidoJurisdiccional = true;
+                insumo.lista_clues = dato.lista_clues;
+                this.pedido.lista.push(insumo);
+                this.listaClaveAgregadas.push({
+                    clave: insumo.clave,
+                    lista: []
+                });   
+                let ultimo = this.listaClaveAgregadas.length - 1;
+                for( var j in insumo.lista_clues){
+                  console.log(insumo.lista_clues[j])
+                  this.listaClaveAgregadas[ultimo].lista.push(insumo.lista_clues[j].clues);
+                }
+              }
+              // ############################################
+
+              
             }
             this.pedido.indexar();
             this.pedido.listar(1);
@@ -248,24 +297,85 @@ export class FormularioComponent implements OnInit {
     //console.log(this.mostrarModalInsumos)
   }
 
+  // ######### PEDIDOS JURISDICCIONALES #########
+
+  toggleModalListaClues(item:any){
+    this.loteSeleccionado = item;
+    this.mostrarModalListaClues = !this.mostrarModalListaClues
+  }
+
+  // ############################################
+
   // # SECCION Funciones globales
   
   agregarItem(item:any = {}){
     let auxPaginasTotales = this.pedido.paginacion.totalPaginas;
 
-    item.monto = item.cantidad * item.precio;
+    if(!this.esPedidoJurisdiccional){
     
-    this.pedido.lista.push(item);
+      item.monto = item.cantidad * item.precio;    
+      this.pedido.lista.push(item);
+      
+    } 
+    // ######### PEDIDOS JURISDICCIONALES #########
+    else {
+
+      
+      let insumo = item.insumo;
+      var existe = false;
+
+      //var total
+      for( var i in this.pedido.lista){
+
+        var cantidad = 0;
+
+        if(this.pedido.lista[i].clave == insumo.clave){
+          existe = true;
+
+          this.pedido.lista[i].lista_clues.push({
+            clues:item.clues,
+            nombre:item.nombre,
+            cantidad: item.cantidad
+          });
+
+          console.log(this.pedido.lista[i].lista_clues);
+
+
+          for(var j in this.pedido.lista[i].lista_clues){
+            cantidad += this.pedido.lista[i].lista_clues[j].cantidad;
+          }
+          this.pedido.lista[i].cantidad  = cantidad;
+          this.pedido.lista[i].monto  = insumo.precio * cantidad;
+        }
+      }
+      if(!existe){
+        //insumo.monto = insumo.cantidad * insumo.precio;
+        if(!insumo.lista_clues){
+          insumo.lista_clues = [];
+        }
+        
+        insumo.lista_clues.push( {
+          clues:item.clues,
+          nombre:item.nombre,
+          cantidad: item.cantidad
+        })
+        insumo.cantidad = item.cantidad;
+        insumo.monto = insumo.cantidad * insumo.precio;
+        
+        this.pedido.lista.push(insumo);
+      }
+    }
+    // ############################################
+
     this.pedido.indexar();
 
     if(this.pedido.paginacion.lista.length == this.pedido.paginacion.resultadosPorPagina
-      && this.pedido.paginacion.paginaActual == auxPaginasTotales
-      && !this.pedido.filtro.activo){
-        this.pedido.listar(this.pedido.paginacion.paginaActual + 1);
-    } else {
-      this.pedido.listar(this.pedido.paginacion.paginaActual);
-    }
-    
+        && this.pedido.paginacion.paginaActual == auxPaginasTotales
+        && !this.pedido.filtro.activo){
+          this.pedido.listar(this.pedido.paginacion.paginaActual + 1);
+      } else {
+        this.pedido.listar(this.pedido.paginacion.paginaActual);
+      }
   }
   
   modificarItem(item:any = {}){
@@ -564,7 +674,17 @@ export class FormularioComponent implements OnInit {
 
   cargarAlmacenes() {
     this.cargandoAlmacenes = true;
-    this.almacenesService.catalogo().subscribe(
+
+    // ######### PEDIDOS JURISDICCIONALES #########
+    
+    var subrogado = null;
+    if(this.esPedidoJurisdiccional){
+      subrogado = 0;
+    }
+    
+    // ############################################
+    
+    this.almacenesService.catalogo(subrogado).subscribe(
         almacenes => {
           this.cargandoAlmacenes = false;
           this.almacenes = almacenes;
@@ -598,6 +718,18 @@ export class FormularioComponent implements OnInit {
             this.mensajeAdvertencia.texto = `No hay almacenes registrados en el sistema, póngase en contacto con un administrador.`;
             this.mensajeAdvertencia.mostrar = true;
           }
+          // ######### PEDIDOS JURISDICCIONALES #########
+          else {
+            // Akira: esto es para seleccionar por default al primero
+            if(this.esPedidoJurisdiccional){
+              this.pedido.datos.patchValue({
+                almacen_solicitante: this.almacenes[0].id
+              });
+              this.cambioAlmacen();
+            }
+            
+          }
+          // ############################################
         },
         error => {
           this.cargandoAlmacenes = false;

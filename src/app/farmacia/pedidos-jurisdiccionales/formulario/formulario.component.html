@@ -295,5 +295,14 @@
     <p style="text-align: center;"><small >Este mensaje desaparecerá en {{ mensajeExito.cuentaAtras }} segundos.</small></p>       
 </div>
 
-<buscar-insumos *ngIf="mostrarModalInsumos" (onCerrar)="mostrarModalInsumos = false" (onEnviar)="agregarItem($event)" [listaAgregadosConClues]="listaClaveAgregadas" [conPrecios]="true" [conClues]="true"></buscar-insumos>
-<pedidos-jurisdiccionales-lista-clues *ngIf="mostrarModalListaClues" [insumo]="loteSeleccionado" [listaClaveAgregadas]="listaClaveAgregadas" (onCerrar)="mostrarModalListaClues = false"></pedidos-jurisdiccionales-lista-clues>
+<buscar-insumos 
+    *ngIf="mostrarModalInsumos" 
+    (onCerrar)="mostrarModalInsumos = false" 
+    (onEnviar)="agregarItem($event)" 
+    [listaAgregadosConClues]="listaClaveAgregadas" 
+    [conPrecios]="true" 
+    [conClues]="true"></buscar-insumos>
+<pedidos-jurisdiccionales-lista-clues 
+    *ngIf="mostrarModalListaClues" [insumo]="loteSeleccionado" 
+    [listaClaveAgregadas]="listaClaveAgregadas" 
+    (onCerrar)="mostrarModalListaClues = false"></pedidos-jurisdiccionales-lista-clues>
