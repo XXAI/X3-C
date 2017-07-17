@@ -5,6 +5,7 @@ import { HttpModule } from '@angular/http';
 
 import { ChartModule } from 'angular2-highcharts';
 import { HighchartsStatic } from "angular2-highcharts/dist/HighchartsService";
+import { Uploader }      from 'angular2-http-file-upload';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -137,7 +138,7 @@ export function highchartsFactory() {
     WildcardRoutingModule, // Este siempre debe ir al final para que no haga conflicto con otras rutas
     
   ],
-  providers: [ Title, AuthGuard, PermisosGuard, AuthService,JwtHelper, JwtRequestService,{provide: HighchartsStatic, useFactory:highchartsFactory}],
+  providers: [ Title, AuthGuard, PermisosGuard, AuthService,JwtHelper, JwtRequestService,{provide: HighchartsStatic, useFactory:highchartsFactory}, Uploader],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

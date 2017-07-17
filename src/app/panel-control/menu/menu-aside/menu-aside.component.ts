@@ -21,7 +21,8 @@ export class MenuAsideComponent implements OnInit {
       {
         titulo: 'Sincronización con servidor principal',
         modulos: [
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'fa-cloud-upload', titulo:"Sincronización manual", url:"/panel-control/sync/manual" },          
+          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'fa-cloud', titulo:"Servidor central", url:"/panel-control/sync/central" },          
+          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'fa-desktop', titulo:"Servidor local", url:"/panel-control/sync/local" },          
         ]
       },
       {
@@ -38,7 +39,7 @@ export class MenuAsideComponent implements OnInit {
       {
         titulo: 'Sincronización con servidor principal',
         modulos: [
-          { icono: 'fa-server', titulo:"Estatus de sincronización", url:"/panel-control/sync/estatus" },       
+          { icono: 'fa-server', titulo:"Estatus", url:"/panel-control/sync/estatus" },       
         ]
       },
 
