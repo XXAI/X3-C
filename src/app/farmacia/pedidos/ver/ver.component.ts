@@ -85,7 +85,8 @@ export class VerComponent implements OnInit {
 
   // # SECCION: Reportes
   private pdfworker:Worker;
-  cargandoPdf:boolean = false;
+  cargandoPdf:any = {};
+  errorEnPDF:boolean = false;
   // # FIN SECCION
 
   private cambiarEntornoSuscription: Subscription;
@@ -121,7 +122,8 @@ export class VerComponent implements OnInit {
       // Esto es un hack porque estamos fuera de contexto dentro del worker
       // Y se usa esto para actualizar alginas variables
       $ngZone.run(() => {
-         self.cargandoPdf = false;
+        console.log(evt);
+        self.cargandoPdf[evt.data.tipoPedido] = false;
       });
 
       FileSaver.saveAs( self.base64ToBlob( evt.data.base64, 'application/pdf' ), evt.data.fileName );
@@ -130,9 +132,11 @@ export class VerComponent implements OnInit {
 
     this.pdfworker.onerror = function( e ) {
       $ngZone.run(() => {
-         self.cargandoPdf = false;
+        console.log(e);
+        self.errorEnPDF = true;
+        //self.cargandoPdf[error.tipoPedido] = false;
       });
-      console.log(e)
+      //console.log(e)
     };
     
     // Inicialicemos el pedido
@@ -178,6 +182,7 @@ export class VerComponent implements OnInit {
 
               if(!this.subPedidos[clave_tipo_insumo]){
                 this.tiposSubPedidos.push(clave_tipo_insumo);
+                this.cargandoPdf[clave_tipo_insumo] = false;
                 this.subPedidos[clave_tipo_insumo] = {
                   'titulo':dato.tipo_insumo.nombre,
                   'clave_folio':clave_tipo_insumo,
@@ -423,14 +428,14 @@ export class VerComponent implements OnInit {
 
   imprimir(tipo:string = '') {
     try {
-      this.cargandoPdf = true;
+      this.cargandoPdf[tipo] = true;
       var pedidos_imprimir = {
         datos: this.pedido.datosImprimir,
         insumos: this.subPedidos[tipo]
       };
       this.pdfworker.postMessage(JSON.stringify(pedidos_imprimir));
     } catch (e){
-      this.cargandoPdf = false;
+      this.cargandoPdf[tipo] = false;
       console.log(e);
     }
   }

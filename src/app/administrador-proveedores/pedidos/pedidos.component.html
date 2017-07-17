@@ -304,14 +304,14 @@
 <div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeError.mostrar">
     <button class="delete" (click)="mensajeError.mostrar = false"></button>        
     <b>Error:</b> {{ mensajeError.texto }}<br><br>
-    <p style="text-align:center" ><a  class="button is-danger is-inverted" (click)="ultimaPeticion(); mensajeError.mostrar = false"> <span class="icon"><i class="fa fa-refresh"></i></span> <span>Volver a intentar</span></a></p>        
+    <p style="text-align: center;"><small >Este mensaje desaparecerá en {{ mensajeExito.cuentaAtras }} segundos.</small></p>
 </div>
 
 <div class="notification is-success" style="position:fixed; left:1em;  bottom:1em; width: auto" *ngIf="mensajeExito.mostrar">       
     <button class="delete" (click)="mensajeExito.mostrar = false"></button>
     <p><span class="icon" style="margin-right: 0.5em;"><i class="fa fa-check-circle"></i></span> <span>{{ mensajeExito.texto }}</span></p>
     <br>
-    <p style="text-align: center;"><small >Este mensaje desaparecerá en {{ mensajeExito.cuentaAtras }} segundos.</small></p>       
+    <p style="text-align: center;"><small >Este mensaje desaparecerá en {{ mensajeExito.cuentaAtras }} segundos.</small></p>
 </div>
 
 <div class="modal is-active" [ngClass]="{'is-active': verDialogoPedido}">
@@ -333,7 +333,7 @@
             <br>
             <br>
         </div>
-        <div class="columns" *ngIf="!cargandoDatosPedido">
+        <div class="columns is-multiline" *ngIf="!cargandoDatosPedido">
           <div class="column is-one-quarter" *ngFor="let tipo of tiposSubPedidos">
             <div class="card">
               <header class="card-header">
@@ -349,8 +349,11 @@
                 </div>
               </div>
               <footer class="card-footer">
-                <a class="card-footer-item" (click)="imprimirPedido(tipo)" [ngClass]="{ 'is-loading': cargandoPdf, 'is-inverted': !cargandoPdf }">
+                <!--a class="card-footer-item" (click)="imprimirPedido(tipo)" [ngClass]="{ 'is-loading': cargandoPdf, 'is-inverted': !cargandoPdf }">
                   <span class="icon is-medium"><i class="fa fa-file-pdf-o"></i></span>&nbsp;<span>Descargar/Imprimir</span>
+                </a-->
+                <a class="button is-primary is-fullwidth"  [ngClass]="{ 'is-loading': cargandoPdf[tipo], 'is-inverted': !cargandoPdf[tipo] }" title="Imprimir Pedido" (click)="imprimirPedido(tipo)">
+                    <span class="icon"><i class="fa fa-file-pdf-o"></i></span> &nbsp; Descargar/Imprimir
                 </a>
               </footer>
             </div>
@@ -364,6 +367,10 @@
             <span class="icon"><i class="fa fa-file-excel-o"></i></span><span>Excel del Pedido</span>
             </button>
         </p>
+        <div class="notification is-danger is-small" *ngIf="errorEnPDF">
+            <button class="delete" (click)="errorEnPDF = false"></button>        
+            <b>Error:</b> Ocurrio un error al generar el PDF<br><br>
+        </div>
     </footer>
   </div>
 </div>

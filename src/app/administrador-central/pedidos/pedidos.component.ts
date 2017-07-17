@@ -64,6 +64,7 @@ export class PedidosComponent implements OnInit {
   cargandoArchivos:boolean = false;
   lista_archivos_pedido:any[] = [];
   tituloDialogoArchivos: string = '';
+  datosPedido:any = {};
 
   constructor(private title: Title, private apiService: AdministradorCentralService) { }
 
@@ -474,11 +475,11 @@ export class PedidosComponent implements OnInit {
   mostrarDialogoArchivos(item:any){
     this.verDialogoArchivos = true;
     this.cargandoArchivos = true;
-    this.tituloDialogoArchivos = item.folio;
+    this.tituloDialogoArchivos = 'Folio: ' + item.folio;
+    this.datosPedido = {folio:item.folio,pedido_id:item.pedido_id};
     /*
     this.cargando_archivo = 0;
     this.cargandoDatosArchivo = true;
-    this.datosPedido = {folio:id};
     this.nombre_pedido = nombre;
     this.id_pedido = id;
     */
@@ -517,17 +518,31 @@ export class PedidosComponent implements OnInit {
     let id_pedido = item.id;
     var query = "token="+localStorage.getItem('token');
     var self = this;
-    
+
     var download = window.open(`${environment.API_URL}/download-file/${id_pedido}?${query}`);
+    var contador = 0;
     var timer = setInterval(function ()
     {
+       contador = contador + 1;
         if (download.closed)
         {
             clearInterval(timer);
-            self.mostrarDialogoArchivos({pedido_id: id_pedido, folio: self.tituloDialogoArchivos});
+            self.mostrarDialogoArchivos(self.datosPedido);
+             self.mensajeError.mostrar = false;
+             self.mensajeExito.mostrar = true;
+             self.mensajeExito.iniciarCuentaAtras();
+            self.mensajeExito.texto = "Se ha descargado correctamente el archivo";
+        }else{
+          if(contador == 5)
+          {
+            clearInterval(timer);
+            download.close();
+            self.mensajeError.mostrar = true;
+            self.mensajeError.iniciarCuentaAtras();
+            self.mensajeError.texto = "Ocurrio un error al intentar descargar el archivo.";
+          }
         }
-    }, 500);
-    
+    }, 1000);
   }
 
   /*descargars(item){
