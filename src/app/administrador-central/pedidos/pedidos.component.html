@@ -277,20 +277,6 @@
     </div>
 </div>
 
-<div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeError.mostrar">
-    <button class="delete" (click)="mensajeError.mostrar = false"></button>        
-    <b>Error:</b> {{ mensajeError.texto }}<br><br>
-    <p style="text-align: center;"><small >Este mensaje desaparecerá en {{ mensajeError.cuentaAtras }} segundos.</small></p>       
-</div>
-
-<div class="notification is-success" style="position:fixed; left:1em;  bottom:1em; width: auto" *ngIf="mensajeExito.mostrar">       
-    <button class="delete" (click)="mensajeExito.mostrar = false"></button>
-    <p><span class="icon" style="margin-right: 0.5em;"><i class="fa fa-check-circle"></i></span> <span>{{ mensajeExito.texto }}</span></p>
-    <br>
-    <p style="text-align: center;"><small >Este mensaje desaparecerá en {{ mensajeExito.cuentaAtras }} segundos.</small></p>       
-</div>
-
-
 <div id="modal-pedido" class="modal is-active" [ngClass]="{'is-active': showPedido}">
   <div class="modal-background"  (click)="showPedido = !showPedido"></div>
   <div class="modal-card" style="width:60%; height: auto;">
@@ -343,24 +329,62 @@
                                 {{ datos_pedido.proveedor }}
                             </td>                            
                         </tr>
+                        <tr>
+                            <td colspan="4"><b>RESUMEN</b></td>
+                        </tr>
+                        <tr>
+                            <td><b>TOTAL CLAVES</b> <br>
+                                  {{ datos_pedido.total_claves_recibidas}} / {{ datos_pedido.total_claves_solicitadas}}
+                            </td>
+                            <td><b>TOTAL CANTIDAD INSUMOS</b> <br>
+                                {{ datos_pedido.total_cantidad_recibida}} / {{ datos_pedido.total_cantidad_solicitada}}
+                               
+                            </td>
+                            <td><b>TOTAL MONTO</b> <br>
+                                {{ datos_pedido.total_monto_recibido | currency:'USD':true:'4.2-2'}} / {{ datos_pedido.total_monto_solicitado | currency:'USD':true:'4.2-2'}}
+                            
+                            </td>
 
+                        </tr>
+                        
                        
                     </tbody>
                 </table>
                 <table class="table">
                     <thead>
-                        
+                        <th>ACTUALIZADO</th>
+                        <th>ESTATUS</th>
+                        <th>CLAVES</th> 
+                        <th>CANTIDAD INSUMOS</th>
+                        <th>MONTO</th>
+                        <th>ACCIONES</th>
                     </thead>
                     <tbody *ngIf="cargaRecepciones">
                         
                         <tr *ngFor="let item of recepciones; let i=index" >  
-                            <td>{{ item.movimiento.created_at }}</td>                      
-                            <td>{{ item.movimiento.updated_at }}</td>                      
-                            <td *ngIf="item.movimiento.status == 'FI'">FINALIZADO</td>                      
-                            <td *ngIf="item.movimiento.status == 'BR'">BORRADOR</td>                      
-                            <td>{{ item.cantidad_insumos }}</td>
-                            <td *ngIf="item.movimiento.status == 'FI'"><button type="button" class="button is-small is-danger" (click)='borrarRecepcion(item.movimiento.id)' [disabled]=""><i class="fa fa-close"></i></button></td>                      
-                            <td *ngIf="item.movimiento.status == 'BR'"></td>                      
+                            <!--<td>{{ item.movimiento.created_at }}</td>-->                      
+                            <td>{{ item.movimiento_borrados.updated_at }}</td>                      
+                            
+                            <td *ngIf="item.movimiento_borrados.status == 'FI'">FINALIZADO</td>                      
+                            <td *ngIf="item.movimiento_borrados.status == 'BR'">BORRADOR</td> 
+                            <td *ngIf="item.movimiento_borrados.status == 'FI'">{{ item.total_claves }}</td>
+                            <td *ngIf="item.movimiento_borrados.status == 'BR'">--</td>
+                            <td *ngIf="item.movimiento_borrados.status == 'FI'">{{ item.total_cantidad }}</td>
+                            <td *ngIf="item.movimiento_borrados.status == 'BR'">--</td>
+                            <td *ngIf="item.movimiento_borrados.status == 'FI'">{{ item.total_monto | currency:'USD':true:'4.2-2'}}</td>
+                            <td *ngIf="item.movimiento_borrados.status == 'BR'">--</td>
+                            <td *ngIf="item.movimiento_borrados.status == 'FI'  && item.movimiento_borrados.deleted_at== null">
+                                <button type="button" class="button is-small is-danger" (click)='borrarRecepcion(item.movimiento_borrados.id)' [disabled]=""><i class="fa fa-close"></i></button>
+                                <button type="button" class="button is-small is-primary" (click)='regresarBorrarRecepcion(item.movimiento_borrados.id)' [disabled]=""><i class="fa fa-edit"></i></button>
+                            </td>                          
+                            <td *ngIf="item.movimiento_borrados.status == 'BR' && item.movimiento_borrados.deleted_at== null"></td>
+                            <td *ngIf="item.movimiento_borrados.deleted_at!= null">
+                              <div class="block">
+                                  <span class="tag is-danger">
+                                    {{ item.borrado_por }} {{ item.borrado_al }}                                    
+                                  </span>
+                               </div>
+                            </td>
                                                   
                         </tr>
                         <tr *ngIf="recepciones.length == 0">
@@ -375,11 +399,7 @@
                         </tr>
                     </tbody>
                 </table>     
-              <!--<div class="control is-grouped">
-                <p class="control">
-                  <button class="button is-primary" type="submit" [ngClass]="{'is-loading': cargando}" [disabled]="paciente.invalid">Guardar</button>
-                </p>
-              </div>-->
+             
             </form>
         </section>
     <footer class="" style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em " >
@@ -449,3 +469,19 @@
     </footer>
   </div>
 </div>
+
+
+<div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em; z-index: 10000;" *ngIf="mensajeError.mostrar">
+    <button class="delete" (click)="mensajeError.mostrar = false"></button>        
+    <b>Error:</b> {{ mensajeError.texto }}<br><br>
+    <p style="text-align:center" ><a  class="button is-danger is-inverted" (click)="ultimaPeticion(); mensajeError.mostrar = false"> <span class="icon"><i class="fa fa-refresh"></i></span> <span>Volver a intentar</span></a></p>        
+</div>
+
+<div class="notification is-success" style="position:fixed; left:1em;  bottom:1em; width: auto; z-index: 10000;" *ngIf="mensajeExito.mostrar">       
+    <button class="delete" (click)="mensajeExito.mostrar = false"></button>
+    <p><span class="icon" style="margin-right: 0.5em;"><i class="fa fa-check-circle"></i></span> <span>{{ mensajeExito.texto }}</span></p>
+    <br>
+    <p style="text-align: center;"><small >Este mensaje desaparecerá en {{ mensajeExito.cuentaAtras }} segundos.</small></p>       
+</div>
+
+
