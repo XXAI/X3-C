@@ -102,8 +102,8 @@ export class AdministradorCentralService {
   pedidoBorrador(id:any): Observable<any>{    
     return this.jwtRequest.get("administrador-central/pedidos-borrador",id,null).map( (response: Response) => response.json().data);
   }
-  recepcionBorrador(id:any): Observable<any>{    
-    return this.jwtRequest.get("administrador-central/recepcion-borrador",id,null).map( (response: Response) => response.json().data);
+  recepcionBorrador(id:any, type:any): Observable<any>{    
+    return this.jwtRequest.get("administrador-central/recepcion-borrador",id,{type}).map( (response: Response) => response.json().data);
   }
   
 }

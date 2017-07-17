@@ -625,12 +625,9 @@ export class PedidosComponent implements OnInit {
   {
     let id_pedido = id;
     var query = "token="+localStorage.getItem('token');
-    var permisos = localStorage.getItem('usuario');
     var self = this;
-    var obj = JSON.parse(permisos);
-    var permisos = "&permisos="+obj.permisos;
-
-    var download = window.open(`${environment.API_URL}/download-file/${id_pedido}?${query}${permisos}`);
+    
+    var download = window.open(`${environment.API_URL}/download-file/${id_pedido}?${query}`);
     var contador = 0;
     var timer = setInterval(function ()
     {
