@@ -74,7 +74,8 @@ export class PedidosComponent implements OnInit {
 
   // # SECCION: Reportes
   private pdfworker:Worker;
-  cargandoPdf:boolean = false;
+  cargandoPdf:any = {};
+  errorEnPDF:boolean = false;
   // # FIN SECCION
   tag:any;
   id_pedido:string;
@@ -105,7 +106,7 @@ export class PedidosComponent implements OnInit {
       // Esto es un hack porque estamos fuera de contexto dentro del worker
       // Y se usa esto para actualizar alginas variables
       $ngZone.run(() => {
-          self.cargandoPdf = false;
+          self.cargandoPdf[evt.data.tipoPedido] = false;
       });
 
       FileSaver.saveAs( self.base64ToBlob( evt.data.base64, 'application/pdf' ), evt.data.fileName );
@@ -114,7 +115,8 @@ export class PedidosComponent implements OnInit {
 
     this.pdfworker.onerror = function( e ) {
       $ngZone.run(() => {
-          self.cargandoPdf = false;
+          //self.cargandoPdf = false;
+          self.errorEnPDF = true;
       });
       console.log(e)
     };
@@ -484,6 +486,7 @@ export class PedidosComponent implements OnInit {
 
             if(!this.subPedidos[clave_tipo_insumo]){
               this.tiposSubPedidos.push(clave_tipo_insumo);
+              this.cargandoPdf[clave_tipo_insumo] = false;
               this.subPedidos[clave_tipo_insumo] = {
                 'titulo':dato.tipo_insumo.nombre,
                 'clave_folio':clave_tipo_insumo,
@@ -620,12 +623,9 @@ export class PedidosComponent implements OnInit {
   {
     let id_pedido = id;
     var query = "token="+localStorage.getItem('token');
-    var permisos = localStorage.getItem('usuario');
     var self = this;
-    var obj = JSON.parse(permisos);
-    var permisos = "&permisos="+obj.permisos;
 
-    var download = window.open(`${environment.API_URL}/download-file/${id_pedido}?${query}${permisos}`);
+    var download = window.open(`${environment.API_URL}/download-file/${id_pedido}?${query}`);
     var contador = 0;
     var timer = setInterval(function ()
     {
@@ -636,6 +636,7 @@ export class PedidosComponent implements OnInit {
             self.mostrarDialogoArchivos(self.id_pedido, self.nombre_pedido);
              self.mensajeError.mostrar = false;
              self.mensajeExito.mostrar = true;
+             self.mensajeExito.iniciarCuentaAtras();
             self.mensajeExito.texto = "Se ha descargado correctamente el archivo";
         }else{
           if(contador == 5)
@@ -643,6 +644,7 @@ export class PedidosComponent implements OnInit {
             clearInterval(timer);
             download.close();
             self.mensajeError.mostrar = true;
+            self.mensajeError.iniciarCuentaAtras();
             self.mensajeError.texto = "Ocurrio un error al intentar descargar el archivo.";
           }
         }
@@ -658,14 +660,14 @@ export class PedidosComponent implements OnInit {
 
   imprimirPedido(tipo:string = '') {
     try {
-      this.cargandoPdf = true;
+      this.cargandoPdf[tipo] = true;
       var pedidos_imprimir = {
         datos: this.datosPedido,
         insumos: this.subPedidos[tipo]
       };
       this.pdfworker.postMessage(JSON.stringify(pedidos_imprimir));
     } catch (e){
-      this.cargandoPdf = false;
+      this.cargandoPdf[tipo] = false;
       console.log(e);
     }
   }

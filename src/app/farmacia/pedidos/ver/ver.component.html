@@ -418,7 +418,7 @@
     </header>
     <section class="modal-card-body" style="padding:0px;" >
       <div style="padding: 1em;">
-        <div class="columns">
+        <div class="columns is-multiline">
           <div class="column is-one-quarter" *ngFor="let tipo of tiposSubPedidos">
             <div class="card">
               <header class="card-header">
@@ -437,7 +437,7 @@
                 <!--a class="card-footer-item" (click)="imprimir(tipo)" [ngClass]="{ 'is-loading': cargandoPdf, 'is-inverted': !cargandoPdf }">
                   <span class="icon is-medium"><i class="fa fa-file-pdf-o"></i></span>&nbsp;<span>Descargar/Imprimir</span>
                 </a-->
-                <a class="button is-primary is-fullwidth" [ngClass]="{ 'is-loading': cargandoPdf, 'is-inverted': !cargandoPdf }" title="Imprimir Pedido" (click)="imprimir(tipo)">
+                <a class="button is-primary is-fullwidth" [ngClass]="{ 'is-loading': cargandoPdf[tipo], 'is-inverted': !cargandoPdf[tipo] }" title="Imprimir Pedido" (click)="imprimir(tipo)">
                     <span class="icon"><i class="fa fa-file-pdf-o"></i></span> &nbsp; Descargar/Imprimir
                 </a>
               </footer>
@@ -447,6 +447,10 @@
       </div>
     </section>
     <footer class="" style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em " >
+        <div class="notification is-danger is-small" *ngIf="errorEnPDF">
+            <button class="delete" (click)="errorEnPDF = false"></button>        
+            <b>Error:</b> Ocurrio un error al generar el PDF<br><br>
+        </div>
     </footer>
   </div>
 </div>

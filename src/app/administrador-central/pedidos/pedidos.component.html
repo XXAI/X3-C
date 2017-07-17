@@ -206,7 +206,7 @@
                         <td style="vertical-align: middle;">
                         <!--<button type="button" *ngIf="item.status!='EX-CA' && item.status!='EF' && item.status!='BR'" class="button is-warning is-small" (click)='verInformacion(item)'><i class="fa fa-exclamation-triangle"></i></button>--> 
                         {{ item.proveedor }}</td>
-
+                        
                         <td style="vertical-align: middle;" *ngIf="item.status!='EX-CA' && item.status!='EF' && item.status!='BR'"><b><a class="surtiendo" (click)='verInformacion(item)'>{{ (item.folio)?item.folio:'S/F' }}</a></b></td>
                         <td style="vertical-align: middle;" *ngIf="item.status=='EX-CA' || item.status=='EF' || item.status=='BR'">{{ (item.folio)?item.folio:'S/F' }}</td>
                         <td style="vertical-align: middle;">{{ item.descripcion }}</td>
@@ -280,7 +280,7 @@
 <div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeError.mostrar">
     <button class="delete" (click)="mensajeError.mostrar = false"></button>        
     <b>Error:</b> {{ mensajeError.texto }}<br><br>
-    <p style="text-align:center" ><a  class="button is-danger is-inverted" (click)="ultimaPeticion(); mensajeError.mostrar = false"> <span class="icon"><i class="fa fa-refresh"></i></span> <span>Volver a intentar</span></a></p>        
+    <p style="text-align: center;"><small >Este mensaje desaparecerá en {{ mensajeError.cuentaAtras }} segundos.</small></p>       
 </div>
 
 <div class="notification is-success" style="position:fixed; left:1em;  bottom:1em; width: auto" *ngIf="mensajeExito.mostrar">       

@@ -133,30 +133,6 @@ export class FormularioComponent implements OnInit {
     
     // Harima: Inicializamos el pedido
     this.pedido = new Pedido(true);
-
-    //Harima:calcular fechas validas
-    let now = new Date();
-    let dia = now.getDate();
-    let mes = now.getMonth()+1;
-
-    if(dia < 20){
-      //Mes actual y siguiente, se agrega mes actual
-      let day = ("0" + dia).slice(-2);
-      let month = ("0" + mes).slice(-2);
-      this.fechasValidas.push({fecha:now.getFullYear() + "-" + (month) + "-" + (day),descripcion: this.meses[mes] + " " + now.getFullYear()}); //fecha actual
-    }
-    //Mes siguiente
-    let day = '01';
-    let month = ("0" + (mes+1)).slice(-2);
-    let anio = now.getFullYear();
-
-    if(mes+1 == 13){
-      let month = '01';
-      let anio = now.getFullYear() + 1;
-      mes = 0;
-    }
-    
-    this.fechasValidas.push({fecha:anio + "-" + (month) + "-" + (day),descripcion: this.meses[mes+1] + " " + now.getFullYear()}); //fecha actual
     
     this.route.params.subscribe(params => {
       //this.id = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number
@@ -171,15 +147,53 @@ export class FormularioComponent implements OnInit {
 
         this.pedidosService.ver(params['id']).subscribe(
           pedido => {
+            //Harima:calcular fechas validas
+            let now = new Date();
+            let dia = now.getDate();
+            let mes_actual = now.getMonth()+1;
+
+            let fecha_pedido = pedido.fecha.split('-');
+            let mes_pedido = parseInt(fecha_pedido[1]);
+
+            if(fecha_pedido[0] != now.getFullYear()){
+              this.fechasValidas.push({fecha:fecha_pedido[0] + "-" + fecha_pedido[1] + "-" + fecha_pedido[2], descripcion: this.meses[mes_pedido] + " " + fecha_pedido[0]}); //fecha diferente año
+            }else if(mes_pedido < mes_actual){
+              this.fechasValidas.push({fecha:fecha_pedido[0] + "-" + fecha_pedido[1] + "-" + fecha_pedido[2], descripcion: this.meses[mes_pedido] + " " + fecha_pedido[0]}); //fecha anterior
+            }
+
+            if(mes_pedido == mes_actual && fecha_pedido[0] == now.getFullYear()){
+              this.fechasValidas.push({fecha:fecha_pedido[0] + "-" + fecha_pedido[1] + "-" + fecha_pedido[2], descripcion: this.meses[mes_pedido] + " " + fecha_pedido[0]}); //fecha actual
+            }else if(dia < 20){
+              //Mes actual y siguiente, se agrega mes actual
+              let day = ("0" + dia).slice(-2);
+              let month = ("0" + mes_actual).slice(-2);
+              this.fechasValidas.push({fecha:now.getFullYear() + "-" + (month) + "-" + (day),descripcion: this.meses[mes_actual] + " " + now.getFullYear()}); //fecha actual
+            }
+            //Mes siguiente
+            let day = '01';
+            let anio = now.getFullYear();
+            mes_actual += 1;
+            if(mes_actual == 13){
+              mes_actual = 1;
+              anio = now.getFullYear()+1;
+            }
+            let month = ("0" + (mes_actual)).slice(-2);
+            
+            if(mes_pedido == mes_actual && fecha_pedido[0] == anio){
+              this.fechasValidas.push({fecha:fecha_pedido[0] + "-" + fecha_pedido[1] + "-" + fecha_pedido[2], descripcion: this.meses[mes_pedido] + " " + fecha_pedido[0]}); //fecha siguiente
+            }else{
+              this.fechasValidas.push({fecha:anio + "-" + (month) + "-" + (day),descripcion: this.meses[mes_actual] + " " + anio}); //fecha siguiente
+            }
+
             //this.datosCargados = true;
             this.pedido.datos.patchValue(pedido);
             this.pedido.status = pedido.status;
 
             this.proveedor = pedido.proveedor;
 
-            let fecha = pedido.fecha.split('-');
-            let mes = parseInt(fecha[1]);
-            this.cargarPresupuesto(mes);
+            //let fecha = pedido.fecha.split('-');
+            //let mes = parseInt(fecha_pedido[1]);
+            this.cargarPresupuesto(mes_pedido);
             this.cambioAlmacen();
 
             for(let i in pedido.insumos){
@@ -221,6 +235,29 @@ export class FormularioComponent implements OnInit {
           }
         );
       }else{
+        //Harima:calcular fechas validas
+        let now = new Date();
+        let dia = now.getDate();
+        let mes = now.getMonth()+1;
+
+        if(dia < 20){
+          //Mes actual y siguiente, se agrega mes actual
+          let day = ("0" + dia).slice(-2);
+          let month = ("0" + mes).slice(-2);
+          this.fechasValidas.push({fecha:now.getFullYear() + "-" + (month) + "-" + (day),descripcion: this.meses[mes] + " " + now.getFullYear()}); //fecha actual
+        }
+        //Mes siguiente
+        let day = '01';
+        let month = ("0" + (mes+1)).slice(-2);
+        let anio = now.getFullYear();
+
+        if(mes+1 == 13){
+          let month = '01';
+          let anio = now.getFullYear() + 1;
+          mes = 0;
+        }
+        this.fechasValidas.push({fecha:anio + "-" + (month) + "-" + (day),descripcion: this.meses[mes+1] + " " + now.getFullYear()}); //fecha actual
+
         this.title.setTitle('Nuevo pedido');
         this.cargarPresupuesto();
       }

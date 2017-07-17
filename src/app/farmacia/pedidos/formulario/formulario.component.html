@@ -41,15 +41,15 @@
 
                     <label class="label">Fecha (aaaa-mm-dd):</label>
                     <p class="control is-expanded  has-icon has-icon-right">
-                        <input type="text" class="input is-fullwidth" placeholder="aaaa-mm-dd" [ngClass]="{'is-danger': pedido.tieneError('fecha','required')}" formControlName="fecha" #fecha id="fecha" (keyup)="recargarPresupuesto(fecha.value)"/>
+                        <!--input type="text" class="input is-fullwidth" placeholder="aaaa-mm-dd" [ngClass]="{'is-danger': pedido.tieneError('fecha','required')}" formControlName="fecha" #fecha id="fecha" (keyup)="recargarPresupuesto(fecha.value)"/-->
                         <span class="icon is-small" *ngIf="pedido.tieneError('fecha','required')">
                             <i class="fa fa-warning"></i>
                         </span>
-                        <!--span class="select is-fullwidth">
+                        <span class="select is-fullwidth">
                             <select [ngClass]="{'is-danger': pedido.tieneError('fecha','required')}" formControlName="fecha" #fecha id="fecha" (change)="recargarPresupuesto(fecha.value)">
                                 <option *ngFor="let item of fechasValidas" value="{{item.fecha}}">{{ item.descripcion }}</option>
                             </select>
-                        </span-->
+                        </span>
                         <span class="help is-danger" *ngIf="pedido.tieneError('fecha','required')">Este campo es requerido.</span>
                     </p>
 
