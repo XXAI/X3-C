@@ -6,12 +6,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HubModule } from '../../hub/hub.module';
 import { PerfilModule } from '../../perfil/perfil.module';
 import { BloquearPantallaModule } from '../../bloquear-pantalla/bloquear-pantalla.module';
-import { SalidasEstandarRoutingModule } from './salidas-estandar-routing.module';
+import { InventarioRoutingModule } from './inventario-routing.module';
 import { PaginacionModule } from '../../paginacion/paginacion.module';
 
 import { PipesModule }             from '../../pipes/pipes.module';
 import { ListaComponent } from './lista/lista.component';
-import { FormularioComponent } from './formulario/formulario.component';
 
 import { AuthService } from '../../auth.service';
 
@@ -28,7 +27,7 @@ import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    SalidasEstandarRoutingModule,
+    InventarioRoutingModule,
     HubModule,
     PerfilModule,
     BloquearPantallaModule,
@@ -40,9 +39,8 @@ import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
     NguiDatetimePickerModule
   ],
   declarations: [ 
-    ListaComponent,
-    FormularioComponent
+    ListaComponent
   ],
   providers: [ AuthService, CrudService ]
 })
-export class SalidasEstandarModule { }
+export class InventarioModule { }

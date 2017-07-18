@@ -1,5 +1,5 @@
 <listar #ctrl URL="unidades-medicas" titulo="UM / Catalogo"></listar>
-<panel-control-menu></panel-control-menu>
+<menu-catalogo [modulo]="'Unidades Médicas'" [icono]="'assets/icono-catalogos.svg'" [url]="'/almacen-articulos/catalogos'"></menu-catalogo>
 <div style="height:50px;"></div>
 <div class="contenedor columns " style="height:100%; ">
     <div class="column is-one-quarter is-hidden-mobile">
@@ -26,7 +26,7 @@
                                 <input class="input is-medium" type="text" placeholder="Buscar" #searchBox id="search-box" (keyup)="ctrl.buscar(searchBox.value)">
                             </p>
                             <p class="control">
-                                <a class="button is-medium is-primary is-inverted " routerLink="/catalogos/unidades-medicas/nuevo">
+                                <a class="button is-medium is-primary is-inverted " routerLink="/almacen-articulos/catalogos/unidades-medicas/nuevo">
                                     <span class="icon"><i class="fa fa-plus"></i></span><span>Nuevo</span>
                                 </a>
                             </p>
