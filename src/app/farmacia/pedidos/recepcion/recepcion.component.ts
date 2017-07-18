@@ -387,11 +387,17 @@ export class RecepcionComponent implements OnInit {
         return false;
       }
 
-      if(confirm('Atención la recepción ya no podra editarse, Esta seguro que desea concluir el movimiento?')){
+      var validacion_palabra = prompt("Atención la recepción ya no podra editarse, para confirmar que desea concluir la recepción por favor escriba: CONCLUIR RECEPCION");
+
+      //if(confirm('Atención la recepción ya no podra editarse, Esta seguro que desea concluir el movimiento?')){
+      if(validacion_palabra == 'CONCLUIR RECEPCION'){
         guardar_recepcion = this.formularioRecepcion.value;
         guardar_recepcion.status = 'FI';
         guardar_recepcion.stock = [];
       }else{
+        if(validacion_palabra != null){
+          alert("Error al ingresar el texto para confirmar la acción.");
+        }
         return false;
       }
     }else{

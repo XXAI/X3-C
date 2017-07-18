@@ -45,8 +45,10 @@ export class FormularioComponent implements OnInit {
   cargandoInsumos: boolean = false;
   cargandoPresupuestos: boolean = false;
 
-  esPedidoJurisdiccional: boolean = false;
+  erroresEnInsumos:any = {lista:{}, errores:0};
 
+  esPedidoJurisdiccional: boolean = false;
+  esOficinaJurisdiccional: boolean = false;
 
   // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
@@ -61,6 +63,10 @@ export class FormularioComponent implements OnInit {
   formularioTitulo:string = 'Nuevo';
   esEditar:boolean = false;
   
+  //Harima: Estos totales solo te toman en cuenta cuando el pedido ya estuvo en Por Surtir, y recibio insumos, pero por alguna razon se regreso a Borrador, es para ajustar el presupuesto disponible
+  totalMontoComprometidoCausesMaterial: number = 0;
+  totalMontoComprometidoNoCauses: number = 0;
+
   // # SECCION: Modal Insumos
   mostrarModalInsumos = false;
   //Harima: Lista de claves agregadas al pedido, para checar duplicidad
@@ -76,6 +82,7 @@ export class FormularioComponent implements OnInit {
   private mes:number = 0;
   private subrogados: {} = {};
   es_almacen_subrogado: boolean = false;
+  almacenSeleccionado: any = {};
 
   fechasValidas: any[] = [];
 
@@ -88,8 +95,6 @@ export class FormularioComponent implements OnInit {
   private pdfworker:Worker;
   private cargandoPdf:boolean = false;
   // # FIN SECCION
-
-
 
   // ######### PEDIDOS JURISDICCIONALES #########
 
@@ -119,7 +124,7 @@ export class FormularioComponent implements OnInit {
     var usuario =  JSON.parse(localStorage.getItem("usuario"));
     
     if(usuario.clues_activa.tipo == "OA"){
-      this.esPedidoJurisdiccional = true;
+      this.esOficinaJurisdiccional = true;
     }
 
     // ############################################
@@ -212,6 +217,13 @@ export class FormularioComponent implements OnInit {
               this.fechasValidas.push({fecha:anio + "-" + (month) + "-" + (day),descripcion: this.meses[mes_actual] + " " + anio}); //fecha siguiente
             }
 
+            //Harima:cargamos presupuesto apartado, en caso de que el pedido se este editando despues de tener recepciones
+            if(pedido.presupuesto_apartado){
+              let presupuesto_apartado = pedido.presupuesto_apartado;
+              this.totalMontoComprometidoCausesMaterial = (+presupuesto_apartado.causes_comprometido)+(+presupuesto_apartado.causes_devengado)+(+presupuesto_apartado.material_curacion_comprometido)+(+presupuesto_apartado.material_curacion_devengado);
+              this.totalMontoComprometidoNoCauses = (+presupuesto_apartado.no_causes_comprometido)+(+presupuesto_apartado.no_causes_devengado);
+            }
+
             //this.datosCargados = true;
             this.pedido.datos.patchValue(pedido);
             this.pedido.status = pedido.status;
@@ -231,13 +243,18 @@ export class FormularioComponent implements OnInit {
               insumo.monto = +dato.monto_solicitado;
               insumo.precio = +dato.precio_unitario;
               insumo.tipo_insumo_id = dato.tipo_insumo_id;
+
+              if(dato.cantidad_recibida){
+                insumo.cantidad_recibida = +dato.cantidad_recibida;
+              }else{
+                insumo.cantidad_recibida = 0;
+              }
+
               if(pedido.tipo_pedido_id != "PJS"){
                 this.pedido.lista.push(insumo);
                 this.listaClaveAgregadas.push(insumo.clave);
                 this.esPedidoJurisdiccional = false;
-              } 
-              // ######### PEDIDOS JURISDICCIONALES #########
-              else {
+              }else { // ######### PEDIDOS JURISDICCIONALES #########
 
                 this.esPedidoJurisdiccional = true;
                 insumo.lista_clues = dato.lista_clues;
@@ -259,6 +276,9 @@ export class FormularioComponent implements OnInit {
             this.pedido.indexar();
             this.pedido.listar(1);
             this.cargando = false;
+
+            //Harima:cargamos catalogos
+            this.cargarAlmacenes();
           },
           error => {
             this.cargando = false;
@@ -309,9 +329,11 @@ export class FormularioComponent implements OnInit {
 
         this.title.setTitle('Nuevo pedido');
         this.cargarPresupuesto();
+
+        //Harima:cargamos catalogos
+        this.cargarAlmacenes();
       }
-      //Harima:cargamos catalogos
-      this.cargarAlmacenes();
+      
 
       //this.cargarDatos();
     });
@@ -349,15 +371,14 @@ export class FormularioComponent implements OnInit {
     let auxPaginasTotales = this.pedido.paginacion.totalPaginas;
 
     if(!this.esPedidoJurisdiccional){
-    
+      if(!item.cantidad_recibida){
+        item.cantidad_recibida = 0;
+      }
       item.monto = item.cantidad * item.precio;    
       this.pedido.lista.push(item);
-      
     } 
     // ######### PEDIDOS JURISDICCIONALES #########
     else {
-
-      
       let insumo = item.insumo;
       var existe = false;
 
@@ -375,9 +396,7 @@ export class FormularioComponent implements OnInit {
             cantidad: item.cantidad
           });
 
-          console.log(this.pedido.lista[i].lista_clues);
-
-
+          //console.log(this.pedido.lista[i].lista_clues);
           for(var j in this.pedido.lista[i].lista_clues){
             cantidad += this.pedido.lista[i].lista_clues[j].cantidad;
           }
@@ -395,7 +414,8 @@ export class FormularioComponent implements OnInit {
           clues:item.clues,
           nombre:item.nombre,
           cantidad: item.cantidad
-        })
+        });
+        insumo.cantidad_recibida = 0;
         insumo.cantidad = item.cantidad;
         insumo.monto = insumo.cantidad * insumo.precio;
         
@@ -418,6 +438,20 @@ export class FormularioComponent implements OnInit {
   modificarItem(item:any = {}){
     item.monto = item.cantidad * item.precio;
     this.pedido.actualizarTotales();
+
+    //quitamos el error si existe
+    if(this.erroresEnInsumos.lista[item.clave]){
+      delete this.erroresEnInsumos.lista[item.clave];
+      this.erroresEnInsumos.errores -= 1;
+    }
+
+    //validamos la cantidad, para determinar si hay un error y agregarlo
+    if(item.cantidad < item.cantidad_recibida || item.cantidad <= 0){
+      this.erroresEnInsumos.lista[item.clave] = true;
+      this.erroresEnInsumos.errores += 1;
+    }
+
+    console.log(this.erroresEnInsumos);
   }
 
   buscar(e: KeyboardEvent, input:HTMLInputElement, inputAnterior: HTMLInputElement,  parametros:any[]){
@@ -511,8 +545,22 @@ export class FormularioComponent implements OnInit {
     this.pedido.filtro.listar(1); 
   }
 
+  deshabilitarAlmacen(almacen):boolean{
+    if(this.esPedidoJurisdiccional && this.pedido.lista.length > 0 && this.subrogados[almacen.id]){
+      return true;
+    }else if(this.esOficinaJurisdiccional && this.pedido.lista.length > 0 && !this.subrogados[almacen.id]){
+      return true;
+    }
+    return false;
+  }
+
   //Harima: necesitamos eliminar también de la lista de claves agregadas
   eliminarInsumo(item,index,filtro:boolean = false){
+    //Harima: si el insumo tiene cantidad recibida mayor a cero, no podemos eliminarla
+    if(item.cantidad_recibida > 0){
+      return false;
+    }
+
     //Harima: eliminar el elemento en la lista de claves agregadas, para poder agregarla de nuevo si se desea
     var i = this.listaClaveAgregadas.indexOf(item.clave);
     this.listaClaveAgregadas.splice(i,1);
@@ -524,6 +572,12 @@ export class FormularioComponent implements OnInit {
     }else{
       //this.pedidos[this.pedidoActivo].filtro.eliminarItem(item,index);
       this.pedido.filtro.eliminarItem(item,index);
+    }
+    
+    //Harima: si el insumo que estamos eliminando tiene un error, quitamos el error del arreglo
+    if(this.erroresEnInsumos.lista[item.clave]){
+      delete this.erroresEnInsumos.lista[item.clave];
+      this.erroresEnInsumos.errores -= 1;
     }
   }
 
@@ -538,14 +592,21 @@ export class FormularioComponent implements OnInit {
   }
 
   finalizar(){
-    if(confirm('Atención el pedido ya no podra editarse, Esta seguro de concluir el pedido?')){
+    var validacion_palabra = prompt("Atención el pedido ya no podra editarse, para confirmar que desea concluir el pedido por favor escriba: CONCLUIR PEDIDO");
+    if(validacion_palabra == 'CONCLUIR PEDIDO'){
       this.guardar(true);
+    }else{
+      if(validacion_palabra != null){
+        alert("Error al ingresar el texto para confirmar la acción.");
+      }
+      return false;
     }
   }
 
   guardar(finalizar:boolean = false){
     this.guardando = true;
     var guardar_pedido;
+    this.mensajeError.mostrar = false;
     /*var guardar_pedidos = [];
     for(var i in this.pedidos){
       guardar_pedidos.push(this.pedidos[i].obtenerDatosGuardar());
@@ -559,13 +620,25 @@ export class FormularioComponent implements OnInit {
       return false;
     }
 
+    if(this.erroresEnInsumos.errores > 0){
+      var insumos_errores = [];
+      for(var i in this.erroresEnInsumos.lista){
+        insumos_errores.push(i);
+      }
+      this.mensajeError = new Mensaje(false);
+      this.mensajeError.texto = 'Se encontaron errores en los siguientes insumos: ' + insumos_errores.join(', ');
+      this.mensajeError.mostrar = true;
+      this.guardando = false;
+      return false;
+    }
+
     guardar_pedido = this.pedido.obtenerDatosGuardar();
 
     if(finalizar){
       guardar_pedido.datos.status = 'CONCLUIR';
 
-      let causes_material_disponible = (this.presupuesto.causes_disponible - +this.pedido.totalMontoCauses.toFixed(2)) + (this.presupuesto.material_curacion_disponible - +this.pedido.totalMontoMaterialCuracion.toFixed(2));
-      let no_causes_disponible = this.presupuesto.no_causes_disponible - +this.pedido.totalMontoNoCauses.toFixed(2);
+      let causes_material_disponible = this.totalMontoComprometidoCausesMaterial + (this.presupuesto.causes_disponible - +this.pedido.totalMontoCauses.toFixed(2)) + (this.presupuesto.material_curacion_disponible - +this.pedido.totalMontoMaterialCuracion.toFixed(2));
+      let no_causes_disponible = this.totalMontoComprometidoNoCauses + this.presupuesto.no_causes_disponible - +this.pedido.totalMontoNoCauses.toFixed(2);
 
       //if((this.presupuesto.causes_disponible - +this.pedido.totalMontoCauses.toFixed(2)) < 0 || (this.presupuesto.no_causes_disponible - +this.pedido.totalMontoNoCauses.toFixed(2)) < 0 || (this.presupuesto.material_curacion_disponible - +this.pedido.totalMontoMaterialCuracion.toFixed(2)) < 0){
       if( causes_material_disponible < 0 || no_causes_disponible < 0){
@@ -707,6 +780,14 @@ export class FormularioComponent implements OnInit {
       this.es_almacen_subrogado = false;
     }
     this.cargarPresupuesto(this.mes);
+
+    this.almacenSeleccionado = {id:almacen_seleccionado,subrogado:this.es_almacen_subrogado};
+
+    if(this.esOficinaJurisdiccional && !this.subrogados[almacen_seleccionado]){
+      this.esPedidoJurisdiccional = true;
+    }else{
+      this.esPedidoJurisdiccional = false;
+    }
   }
 
   cargarAlmacenes() {
@@ -715,8 +796,10 @@ export class FormularioComponent implements OnInit {
     // ######### PEDIDOS JURISDICCIONALES #########
     
     var subrogado = null;
-    if(this.esPedidoJurisdiccional){
+    if(this.esPedidoJurisdiccional && this.esEditar && this.esOficinaJurisdiccional){
       subrogado = 0;
+    }else if(!this.esPedidoJurisdiccional && this.esEditar && this.esOficinaJurisdiccional){
+      subrogado = 1;
     }
     
     // ############################################
@@ -736,15 +819,6 @@ export class FormularioComponent implements OnInit {
           if(!this.esEditar){
             let datos_iniciales:any = {}
             
-            //datos_iniciales.fecha = this.fechasValidas[0].fecha;
-            //let datos_usuario = JSON.parse(localStorage.getItem('usuario'));
-            //datos_iniciales.almacen_solicitante = datos_usuario.almacen_activo.id;
-            
-            /*if(almacenes.length == 1){
-              datos_iniciales.almacen_solicitante = almacenes[0].id;
-              //this.pedido.datos.setValue({almacen_proveedor:almacenes[0].id,descripcion:'',observaciones:''});
-            }*/
-
             this.pedido.inicializarDatos(datos_iniciales);
           }
           
@@ -759,10 +833,11 @@ export class FormularioComponent implements OnInit {
           else {
             // Akira: esto es para seleccionar por default al primero
             if(this.esPedidoJurisdiccional){
-              this.pedido.datos.patchValue({
+              /*this.pedido.datos.patchValue({
                 almacen_solicitante: this.almacenes[0].id
               });
               this.cambioAlmacen();
+              */
             }
             
           }

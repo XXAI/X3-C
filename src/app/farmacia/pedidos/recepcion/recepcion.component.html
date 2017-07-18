@@ -14,7 +14,8 @@
         <div class="columns">
           <div class="column" >
             <div style="padding:1em;">
-              Folio: <strong style="color:#FFF;">{{ folio }}</strong>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Claves Recibidas: {{ lotesSurtidos.length  }}<!-- / {{ pedido.lista.length }}-->
+              Folio: <a style="color:#FFFFFF !important; font-weight:bold;" routerLink="{{'/almacen/pedidos/ver/'+id}}">{{ folio }}</a>
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Claves Recibidas: {{ lotesSurtidos.length  }}<!-- / {{ pedido.lista.length }}-->
                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span *ngIf="statusRecepcion == 'BR'"><strong style="color:#FFF;">Recepción inciada</strong></span>
                <span *ngIf="statusRecepcion == 'FI'"><strong style="color:#FFF;">Recepción concluida</strong></span>
             </div>
@@ -56,6 +57,9 @@
                   <td class="has-text-centered">{{ item.lote }}</td>
                   <td >
                     <small >{{ item.clave }} <br></small>
+                      <div style="line-height:1em;">
+                        <small>{{ item.descripcion }}</small>
+                      </div>
                     <!--b>{{ item.generico_nombre }}</b> <small *ngIf="(item.tipo == 'ME' && item.informacion)"><b>{{ item.informacion.concentracion }}</b></small><br-->
                     <div class="item-detalle">
                       <!--div   *ngIf="(item.tipo == 'ME' && item.informacion)" style="line-height:1em;">
@@ -65,9 +69,7 @@
                       <div *ngIf="item.tipo != 'ME'" style="line-height:1em;">
                         <small>{{ item.descripcion }}</small>
                       </div-->
-                      <div style="line-height:1em;">
-                        <small>{{ item.descripcion }}</small>
-                      </div>
+                      
 
                       <div  style="padding: 0.5em 0 0.5em 0; ">
                         <span *ngIf="(item.es_causes && item.tipo == 'ME')" class="tag is-success" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
