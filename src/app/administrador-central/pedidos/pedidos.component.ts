@@ -92,17 +92,21 @@ export class PedidosComponent implements OnInit {
 
   verInformacion(obj:any)
   {
+    this.cargaRecepciones = true;
+    this.datos_pedido = {}; 
     this.datos_pedido = obj; 
     this.showPedido = true;
     this.borrador = true;
     this.apiService.verRecepciones(this.datos_pedido.pedido_id).subscribe(
       respuesta => {
-          this.cargaRecepciones = true; 
+          this.cargaRecepciones = false; 
           this.recepciones = respuesta.recepciones;
           if(respuesta.status != 'BR')
               this.borrador= false;
       }, error => {
         this.cargaRecepciones = false;
+        this.mensajeError.mostrar = true;
+        this.mensajeError.texto = "Ocurrio uun error al ver la información por favor vuelva a intentarlo";
       }
     );
 
@@ -112,16 +116,20 @@ export class PedidosComponent implements OnInit {
   {
     if(prompt("Para confirmar que desea regresar el pedido a borrador, ingrese PEDIDO BORRADOR ") == "PEDIDO BORRADOR")
     {
+      this.cargaRecepciones = true;
       this.apiService.pedidoBorrador(id).subscribe(
         respuesta => {
+          this.cargaRecepciones = false;
           this.showPedido = false;
           this.mensajeExito.mostrar = true;
           this.mensajeExito.texto = "Se ha regresado correctamente el pedido a borrador";
-          this.cargaRecepciones = true;
+          
           this.listar(1);
            
         }, error => {
-          this.cargaRecepciones = true;
+          this.cargaRecepciones = false;
+          this.mensajeError.mostrar = true;
+          this.mensajeError.texto = "Se ha encontrador un error al regresar a borrador el pedido, por favor vuelva a intentarlo ";
         }
       );
     }
@@ -131,7 +139,7 @@ export class PedidosComponent implements OnInit {
   {
     if(prompt("Para confirmar que desea borrar la recepcion, ingrese BORRAR RECEPCION") == "BORRAR RECEPCION")
     {
-      this.cargaRecepciones = false;
+      this.cargaRecepciones = true;
       this.apiService.recepcionBorrador(id, 1).subscribe(
           respuesta => {
             //this.showPedido = false;
@@ -141,7 +149,7 @@ export class PedidosComponent implements OnInit {
             this.listar(1);
             this.apiService.verRecepciones(respuesta.id).subscribe(
               respuesta => {
-                  this.cargaRecepciones = true;
+                  this.cargaRecepciones = false;
                   this.recepciones = respuesta.recepciones;
                   this.datos_pedido.total_claves_recibidas = respuesta.total_claves_recibidas;
                   this.datos_pedido.total_cantidad_recibida = respuesta.total_cantidad_recibida;
@@ -149,11 +157,13 @@ export class PedidosComponent implements OnInit {
                   if(respuesta.status != 'BR')
                       this.borrador= false;
               }, error => {
-                  this.cargaRecepciones = true;
+                  this.cargaRecepciones = false;
+                  this.mensajeError.mostrar = true;
+                  this.mensajeError.texto = "Ocurrio un error al cargar los datos de recepciones, por favor vuelva a intentarlo";
               }
             );
           }, error => {
-            this.cargaRecepciones = true;
+            this.cargaRecepciones = false;
             this.mensajeError.mostrar = true;
             try {
               let e = error.json();
@@ -177,7 +187,7 @@ export class PedidosComponent implements OnInit {
   {
     if(prompt("Para confirmar que desea regresar la recepcion, ingrese REGRESAR RECEPCION") == "REGRESAR RECEPCION")
     {
-      this.cargaRecepciones = false;
+      this.cargaRecepciones = true;
       this.apiService.recepcionBorrador(id, 2).subscribe(
           respuesta => {
             this.mensajeExito.mostrar = true;
@@ -186,7 +196,7 @@ export class PedidosComponent implements OnInit {
             this.listar(1);
             this.apiService.verRecepciones(respuesta.id).subscribe(
               respuesta => {
-                  this.cargaRecepciones = true;
+                  this.cargaRecepciones = false;
                   this.recepciones = respuesta.recepciones;
                  
                   this.datos_pedido.total_claves_recibidas = respuesta.total_claves_recibidas;
@@ -195,11 +205,13 @@ export class PedidosComponent implements OnInit {
                   if(respuesta.status != 'BR')
                     this.borrador= false;
               }, error => {
-                  this.cargaRecepciones = true;
+                  this.cargaRecepciones = false;
+                  this.mensajeError.mostrar = true;
+                  this.mensajeError.texto = "Ocurrio un error al cargar los datos de recepciones, por favor vuelva a intentarlo";
               }
             );
           }, error => {
-            this.cargaRecepciones = true;
+            this.cargaRecepciones = false;
             this.mensajeError.mostrar = true;
             try {
               let e = error.json();
