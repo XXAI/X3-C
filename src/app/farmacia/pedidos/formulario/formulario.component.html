@@ -20,8 +20,8 @@
                     <label class="label">Pedido para:</label>
                     <p class="control">
                         <span class="select is-fullwidth">
-                            <select name="almacen_solicitante" formControlName="almacen_solicitante" [ngClass]="{'is-warning': almacenes?.length == 0 }" (change)="cambioAlmacen()">
-                                <option *ngFor="let item of almacenes" value="{{item.id}}">{{ item.nombre }}</option>
+                            <select name="almacen_solicitante" formControlName="almacen_solicitante" [ngClass]="{'is-warning': almacenes?.length == 0 }" (change)="cambioAlmacen()"> 
+                                <option *ngFor="let item of almacenes" value="{{item.id}}" [disabled]="deshabilitarAlmacen(item)">{{ item.nombre }}</option>
                             </select>
                         </span>
                         <span class="help is-danger" *ngIf="pedido.tieneError('almacen_solicitante','required')">Debe elegir el almacen solicitante.</span>
@@ -106,11 +106,11 @@
             <div class="tile is-parent" style="padding:0px;">
                 <article class="tile is-child notification is-info has-text-centered" style="padding:0.5rem 0.5rem 0.5rem 0.5rem">
                     <div class="content" *ngIf="!cargandoPresupuestos">
-                        <span *ngIf="(presupuesto.causes_disponible - pedido.totalMontoCauses) <= 0" class="icon is-large pull-right"><i class="fa fa-warning"></i></span>
+                        <span *ngIf="(totalMontoComprometidoCausesMaterial + (presupuesto.causes_disponible + presupuesto.material_curacion_disponible) - (pedido.totalMontoCauses + pedido.totalMontoMaterialCuracion)) < 0" class="icon is-large pull-right"><i class="fa fa-warning"></i></span>
                         <p class="subtitle" style="font-weight:bold;">
                             <small>
                                 Disponible Causes y Material de Curación:<br> 
-                                $ {{ (presupuesto.causes_disponible - pedido.totalMontoCauses.toFixed(2)) + (presupuesto.material_curacion_disponible - pedido.totalMontoMaterialCuracion.toFixed(2)) | number: '1.2-2' }}
+                                $ {{ totalMontoComprometidoCausesMaterial + (presupuesto.causes_disponible - pedido.totalMontoCauses.toFixed(2)) + (presupuesto.material_curacion_disponible - pedido.totalMontoMaterialCuracion.toFixed(2)) | number: '1.2-2' }}
                             </small>
                         </p>
                     </div>
@@ -121,10 +121,10 @@
 
                 <article class="tile is-child notification is-danger has-text-centered" style="padding:0.5rem 0.5rem 0.5rem 0.5rem">
                     <div class="content" *ngIf="!cargandoPresupuestos">
-                        <span *ngIf="(presupuesto.no_causes_disponible - pedido.totalMontoNoCauses) <= 0" class="icon is-large pull-right"><i class="fa fa-warning"></i></span>
+                        <span *ngIf="(totalMontoComprometidoNoCauses + presupuesto.no_causes_disponible - pedido.totalMontoNoCauses) < 0" class="icon is-large pull-right"><i class="fa fa-warning"></i></span>
                         <p class="subtitle" style="font-weight:bold;">
                             <small>
-                                Disponible No Causes:<br>  $ {{ (presupuesto.no_causes_disponible - pedido.totalMontoNoCauses.toFixed(2)) | number: '1.2-2' }}
+                                Disponible No Causes:<br>  $ {{ totalMontoComprometidoNoCauses + (presupuesto.no_causes_disponible - pedido.totalMontoNoCauses.toFixed(2)) | number: '1.2-2' }}
                             </small>
                         </p>
                     </div>
@@ -148,8 +148,8 @@
                 <span *ngIf="pedido.filtro.activo">
                     <span class="icon"><i class="fa fa-search"></i></span> Resultados: {{ pedido.filtro.lista.length }}
                 </span>
-                <a class="button is-primary  is-pulled-right" [ngClass]="{ 'is-inverted': pedido.filtro.activo }" style="margin-top:-0.25em;" title="Ctrl + espacio" (click)="toggleModalInsumos(); ">
-                <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar Clave</span>
+                <a class="button is-primary  is-pulled-right" *ngIf="almacenSeleccionado.id" [ngClass]="{ 'is-inverted': pedido.filtro.activo }" style="margin-top:-0.25em;" title="Ctrl + espacio" (click)="toggleModalInsumos(); ">
+                    <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar Clave</span>
                 </a>
             </div> 
 
@@ -216,8 +216,8 @@
                             <span *ngIf="item.tipo == 'MC'" class="tag is-warning" style="font-size: 0.7em !important;">MATERIAL CURACIÓN</span>
                             <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
                             <span *ngIf="(item.tipo == 'ME' && item.informacion)">
-                                <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
-                                <span *ngIf="item.informacion.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>  
+                                <span *ngIf="item.informacion.es_controlado" class="tag is-info" style="font-size: 0.7em">Controlado</span>
+                                <span *ngIf="item.informacion.es_surfactante" class="tag is-info" style="font-size: 0.7em">Surfactante</span>  
                             </span>
                             </div>
                         </td>
@@ -241,8 +241,8 @@
                             <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
                             
                             <span *ngIf="(item.tipo == 'ME' && item.informacion)">
-                                <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
-                                <span *ngIf="item.informacion.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>  
+                                <span *ngIf="item.informacion.es_controlado" class="tag is-info" style="font-size: 0.7em">Controlado</span>
+                                <span *ngIf="item.informacion.es_surfactante" class="tag is-info" style="font-size: 0.7em">Surfactante</span>  
                             </span>
                             
                             </div>
@@ -263,8 +263,8 @@
 
                             <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
                             <span *ngIf="(item.tipo == 'ME' && item.informacion)">
-                                <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
-                                <span *ngIf="item.informacion.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>  
+                                <span *ngIf="item.informacion.es_controlado" class="tag is-info" style="font-size: 0.7em">Controlado</span>
+                                <span *ngIf="item.informacion.es_surfactante" class="tag is-info" style="font-size: 0.7em">Surfactante</span>  
                             </span>
                             
                             </div>
@@ -278,12 +278,11 @@
 
                         <td style="width:100px !important;" *ngIf="!esPedidoJurisdiccional">
                             <p class="control is-expanded">
-                            <input class="input is-small has-text-centered"  type="number" placeholder="Cant" (keyup)="modificarItem(item)" (change)="modificarItem(item)" [(ngModel)]="item.cantidad">
+                                <input class="input is-small has-text-centered" [ngClass]="{'is-danger':erroresEnInsumos.lista[item.clave]}"  type="number" placeholder="Cant" (keyup)="modificarItem(item)" min="{{(item.cantidad_recibida)?item.cantidad_recibida:0}}" (change)="modificarItem(item)" [(ngModel)]="item.cantidad">
+                                <small *ngIf="item.cantidad_recibida">Recibido: <strong>{{item.cantidad_recibida}}</strong></small>
                             </p>
                         </td>
                         
-                        
-
                         <td style="width:78px !important;">
                             <b>
                                 <abbr>${{item.monto | number:'1.2-2'}}</abbr>
@@ -295,11 +294,11 @@
                         </td>
                         <td style="width:70px !important;" *ngIf="esPedidoJurisdiccional">
                             <a (click)="toggleModalListaClues(item); "><span class="icon"><i class="fa fa-list"></i></span></a>
-                            <a (click)="eliminarInsumo(item,i,false)"><span class="icon"><i class="fa fa-trash"></i></span></a>
+                            <a *ngIf="!item.cantidad_recibida" (click)="eliminarInsumo(item,i,false)"><span class="icon"><i class="fa fa-trash"></i></span></a>
                         </td>
                        
                         <td style="width:21px !important;"  *ngIf="!esPedidoJurisdiccional">
-                            <a (click)="eliminarInsumo(item,i)"><span class="icon"><i class="fa fa-trash"></i></span></a>
+                            <a *ngIf="!item.cantidad_recibida" (click)="eliminarInsumo(item,i)"><span class="icon"><i class="fa fa-trash"></i></span></a>
                         </td>
                     </tr>      
                 </tbody>
@@ -320,8 +319,8 @@
                             <span *ngIf="item.tipo == 'MC'" class="tag is-warning" style="font-size: 0.7em !important;">MATERIAL CURACIÓN</span>
                             <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
                             <span *ngIf="(item.tipo == 'ME' && item.informacion)">
-                                <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
-                                <span *ngIf="item.informacion.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>  
+                                <span *ngIf="item.informacion.es_controlado" class="tag is-info" style="font-size: 0.7em">Controlado</span>
+                                <span *ngIf="item.informacion.es_surfactante" class="tag is-info" style="font-size: 0.7em">Surfactante</span>  
                             </span>
                             </div>
                         </td>
@@ -344,8 +343,8 @@
                             <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
                             
                             <span *ngIf="(item.tipo == 'ME' && item.informacion)">
-                                <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
-                                <span *ngIf="item.informacion.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>  
+                                <span *ngIf="item.informacion.es_controlado" class="tag is-info" style="font-size: 0.7em">Controlado</span>
+                                <span *ngIf="item.informacion.es_surfactante" class="tag is-info" style="font-size: 0.7em">Surfactante</span>  
                             </span>
                             
                             </div>
@@ -365,8 +364,8 @@
                             <span *ngIf="item.tipo == 'MC'" class="tag is-warning" style="font-size: 0.7em !important;">MATERIAL CURACIÓN</span>
                             <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
                             <span *ngIf="(item.tipo == 'ME' && item.informacion)">
-                                <span *ngIf="item.informacion.es_controlado" class="tag is-warning" style="font-size: 0.7em">Controlado</span>
-                                <span *ngIf="item.informacion.es_surfactante" class="tag is-warning" style="font-size: 0.7em">Surfactante</span>  
+                                <span *ngIf="item.informacion.es_controlado" class="tag is-info" style="font-size: 0.7em">Controlado</span>
+                                <span *ngIf="item.informacion.es_surfactante" class="tag is-info" style="font-size: 0.7em">Surfactante</span>  
                             </span>
                             
                             </div>
@@ -374,7 +373,8 @@
 
                         <td style="width:100px !important;">
                             <p class="control is-expanded">
-                            <input class="input is-small has-text-centered"  type="number" placeholder="Cant" (keyup)="modificarItem(item)" (change)="modificarItem(item)" [(ngModel)]="item.cantidad">
+                                <input class="input is-small has-text-centered" [ngClass]="{'is-danger':erroresEnInsumos.lista[item.clave]}"  type="number" placeholder="Cant" (keyup)="modificarItem(item)" min="{{(item.cantidad_recibida)?item.cantidad_recibida:0}}" (change)="modificarItem(item)" [(ngModel)]="item.cantidad">
+                                <small *ngIf="item.cantidad_recibida">Recibido: <strong>{{item.cantidad_recibida}}</strong></small>
                             </p>
                         </td>
 
@@ -393,7 +393,7 @@
                             <a (click)="eliminarInsumo(item,i,true)"><span class="icon"><i class="fa fa-trash"></i></span></a>
                         </td>
                         <td style="width:21px !important;" *ngIf="!esPedidoJurisdiccional">
-                            <a (click)="eliminarInsumo(item,i,true)"><span class="icon"><i class="fa fa-trash"></i></span></a>
+                            <a *ngIf="!item.cantidad_recibida" (click)="eliminarInsumo(item,i)"><span class="icon"><i class="fa fa-trash"></i></span></a>
                         </td>
                     </tr>
                 </tbody>              
