@@ -352,6 +352,7 @@ export class EntregasMesComponent implements OnInit {
             tipo_pedido_id: respuesta[i].tipo_pedido_id,
             status: respuesta[i].status,
             fecha: respuesta[i].fecha,
+            fecha_concluido: respuesta[i].fecha_concluido,
             fecha_expiracion: respuesta[i].fecha_expiracion,
             fecha_cancelacion: respuesta[i].fecha_cancelacion,
             total_monto_solicitado: +respuesta[i].total_monto_solicitado,
