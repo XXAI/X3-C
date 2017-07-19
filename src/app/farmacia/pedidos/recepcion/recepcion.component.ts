@@ -398,6 +398,7 @@ export class RecepcionComponent implements OnInit {
         if(validacion_palabra != null){
           alert("Error al ingresar el texto para confirmar la acción.");
         }
+        this.guardando = false;
         return false;
       }
     }else{
