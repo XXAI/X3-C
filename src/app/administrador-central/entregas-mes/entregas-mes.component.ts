@@ -34,6 +34,11 @@ export class EntregasMesComponent implements OnInit {
   cargandoFechas:boolean = false;
   cargandoEstadisticasGlobales:boolean = false;
 
+  //Harima: Se agrego dialogo para ver los pedidos por separado, asi como sus entregas
+  mostrarDialogoPedidos: boolean = false;
+  pedidosUnidadMedica: any[] = [];
+  cargandoPedidosUnidadMedica: boolean = false;
+  tituloDialogoPedidos: string;
 
   constructor(private title: Title, private apiService: AdministradorCentralService) { 
    
@@ -317,6 +322,124 @@ export class EntregasMesComponent implements OnInit {
     
   }
   
+  verDialogoPedidos(proveedor_id:any, unidad_medica:any){
+    this.tituloDialogoPedidos = unidad_medica.clues + ' - ' + unidad_medica.unidad_medica;
+    this.mostrarDialogoPedidos = true;
+    
+
+    var fecha_seleccionada = this.fecha.split("/");
+    if(fecha_seleccionada.length != 2){
+      return;
+    }
+
+    var payload = {
+      mes: fecha_seleccionada[0],
+      anio: fecha_seleccionada[1],
+      proveedor_id: proveedor_id,
+      clues: unidad_medica.clues
+    }
+    this.cargandoPedidosUnidadMedica = true;
+
+    this.apiService.pedidosEntregasCluesMesAnio(payload).subscribe(
+      respuesta => {
+        console.log(respuesta);
+        let pedidos_procesados = [];
+
+        for(let i in respuesta){
+          let pedido = {
+            folio: respuesta[i].folio,
+            nombre_pedido: respuesta[i].descripcion,
+            tipo_pedido_id: respuesta[i].tipo_pedido_id,
+            status: respuesta[i].status,
+            fecha: respuesta[i].fecha,
+            fecha_expiracion: respuesta[i].fecha_expiracion,
+            fecha_cancelacion: respuesta[i].fecha_cancelacion,
+            total_monto_solicitado: +respuesta[i].total_monto_solicitado,
+            total_monto_recibido: +respuesta[i].total_monto_recibido,
+            total_claves_solicitadas: +respuesta[i].total_claves_solicitadas,
+            total_claves_recibidas: +respuesta[i].total_claves_recibidas,
+            total_cantidad_solicitada: +respuesta[i].total_cantidad_solicitada,
+            total_cantidad_recibida: +respuesta[i].total_cantidad_recibida,
+            entregas:[]
+          };
+
+          if(respuesta[i].tipo_pedido_id != 'PFS'){
+            if(respuesta[i].recepciones.length){
+
+              let acumulado_total_claves = 0;
+              let acumulado_total_cantidad = 0;
+              let acumulado_total_monto = 0;
+              let acumulado_claves_encontradas = {};
+              
+              for(let j in respuesta[i].recepciones){                
+                let recepcion = respuesta[i].recepciones[j];
+                
+                if(recepcion.entrada.status == 'FI'){
+                  let entrega = {
+                    fecha: recepcion.entrada.fecha_movimiento,
+                    total_claves: 0,
+                    total_cantidad: 0,
+                    total_monto: 0,
+                    acumulado_claves: 0,
+                    acumulado_cantidad: 0,
+                    acumulado_monto: 0
+                  };
+
+                  let claves_encontradas = {};
+                  let calculo_iva = 0;
+                  for(let k in recepcion.entrada.insumos_detalles){
+                    let insumo = recepcion.entrada.insumos_detalles[k];
+
+                    entrega.total_cantidad += +insumo.cantidad;
+                    entrega.total_monto += +insumo.precio_total;
+
+                    if(insumo.detalles.tipo == 'MC'){
+                      calculo_iva += +insumo.precio_total;
+                    }
+
+                    if(!claves_encontradas[insumo.clave_insumo_medico]){
+                      claves_encontradas[insumo.clave_insumo_medico] = true;
+                      entrega.total_claves += 1;
+                    }
+
+                    if(!acumulado_claves_encontradas[insumo.clave_insumo_medico]){
+                      acumulado_claves_encontradas[insumo.clave_insumo_medico] = true;
+                      acumulado_total_claves += 1;
+                    }
+                  }
+
+                  if(calculo_iva > 0){
+                    entrega.total_monto += (calculo_iva*16/100);
+                  }
+
+                  acumulado_total_cantidad += entrega.total_cantidad;
+                  acumulado_total_monto += entrega.total_monto;
+
+                  entrega.acumulado_cantidad = acumulado_total_cantidad;
+                  entrega.acumulado_claves = acumulado_total_claves;
+                  entrega.acumulado_monto = acumulado_total_monto;
+
+                  pedido.entregas.push(entrega);
+                }
+              }
+            }
+          }
+          
+          pedidos_procesados.push(pedido);
+        }
+
+        this.pedidosUnidadMedica = pedidos_procesados;
+        console.log(pedidos_procesados);
+        this.cargandoPedidosUnidadMedica = false;
+      }, error => {
+        console.log(error);
+        this.cargandoPedidosUnidadMedica = false;
+      });
+  }
+
+  cerrarDialogoPedidos(){
+    this.mostrarDialogoPedidos = false;
+  }
 
   parseNaN(val: any){
     if(isNaN(val)) { return 0; }

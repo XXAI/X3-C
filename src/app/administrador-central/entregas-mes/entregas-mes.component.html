@@ -97,12 +97,13 @@
                                 <th colspan="2">CAUSES</th>
                                 <th colspan="2">NO CAUSES</th>
                                 <th colspan="2">MATERIAL DE CURACIÓN</th>
+                                <th>PEDIDOS</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let um of item.data; let j = index">
                                 <td>{{ j + 1 }}</td>
-                                <td><a style="color:black !important; font-weight:bold;" (click)="generarExcel(um.clues,item.proveedor_id)">{{ um.unidad_medica }}</a></td>
+                                <td><a style="color:#3273dc !important; font-weight:bold;" (click)="generarExcel(um.clues,item.proveedor_id)">{{ um.unidad_medica }}</a></td>
                                 <td *ngIf="um.causes_cantidad_solicitada > 0">{{ um.causes_cantidad_recibida | number: '1.0-0' }}/{{ um.causes_cantidad_solicitada | number: '1.0-0' }}</td>                                
                                 <th *ngIf="um.causes_cantidad_solicitada > 0">{{ parseNaN((um.causes_cantidad_recibida * 100 / um.causes_cantidad_solicitada)) | number: '1.2-2' }}%</th>
                                 <td colspan="2" *ngIf="um.causes_cantidad_solicitada == 0"></td>
@@ -114,6 +115,7 @@
                                 <td *ngIf="um.material_curacion_cantidad_solicitada > 0">{{ um.material_curacion_cantidad_recibida | number: '1.0-0' }}/{{ um.material_curacion_cantidad_solicitada | number: '1.0-0' }}</td>
                                 <th *ngIf="um.material_curacion_cantidad_solicitada > 0">{{ parseNaN((um.material_curacion_cantidad_recibida * 100 / um.material_curacion_cantidad_solicitada)) | number: '1.2-2' }}%</th>
                                 <td colspan="2" *ngIf="um.material_curacion_cantidad_solicitada == 0"></td>
+                                <td><a class="button is-info is-outlined is-small" (click)="verDialogoPedidos(item.proveedor_id,um)">{{ um.total_pedidos }} Pedido(s)</a></td>
                             </tr>
                         </tbody>
                     </table>
@@ -129,6 +131,91 @@
         </div>
         
     </div>
+</div>
+
+<div class="modal is-active" [ngClass]="{'is-active': mostrarDialogoPedidos}">
+  <div class="modal-background" (click)="cerrarDialogoPedidos()"></div>
+  <div class="modal-card" style="width:95%; height: auto;">
+    <header class="modal-card-head" style="background: #00d1b2;">
+      <div class="container is-fluid"  style="width:100%;">
+          <h1 class="title" style="color:#FFF;">
+            <span class="icon is-medium"><i class="fa fa-file"></i></span> {{tituloDialogoPedidos}} 
+          </h1>
+      </div>            
+      <a class="button  is-primary" style="position:absolute; top:1em; right:1em;" (click)="cerrarDialogoPedidos()"><span class="icon "><i class="fa fa-close"></i></span></a>
+    </header>
+    <section class="modal-card-body" style="padding:0px;" >
+      <div style="padding: 1em;">
+        <div class="is-fullwidth has-text-centered" *ngIf="cargandoPedidosUnidadMedica">
+            <br>
+            <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando repositorio...</span></span>
+            <br>
+            <br>
+        </div>
+        <div class="columns" *ngIf="!cargandoPedidosUnidadMedica">
+          <table class="table" *ngIf="!cargandoPedidosUnidadMedica" style="min-width:100%; font-size:0.8em;">
+                <thead>
+                    <tr>
+                        <th colspan="3" style="text-align:center;">Datos del Pedido</th>
+                        <th colspan="2" style="text-align:center;">Claves</th>
+                        <th colspan="2" style="text-align:center;">Insumos</th>
+                        <th colspan="2" style="text-align:center;">Montos</th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <th style="text-align:center;">Folio</th>
+                        <th style="text-align:center;">Nombre del Pedido</th>
+                        <th style="text-align:center;">Fecha</th>
+                        <th style="text-align:center;">Surtidas/Solicitadas</th>
+                        <th style="text-align:center;">% Acu</th>
+                        <th style="text-align:center;">Surtidos/Solicitados</th>
+                        <th style="text-align:center;">% Acu</th>
+                        <th style="text-align:center;">Surtido/Solicitado</th>
+                        <th style="text-align:center;">% Acu</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody *ngFor="let pedido of pedidosUnidadMedica">
+                    <tr>
+                        <td>{{pedido.folio}}</td>
+                        <td>{{pedido.nombre_pedido}}</td>
+                        <td style="text-align:center;">{{pedido.fecha}}</td>
+                        <td style="text-align:center;">{{pedido.total_claves_recibidas | number: '1.0-0'}} / {{pedido.total_claves_solicitadas | number: '1.0-0'}}</td>
+                        <td style="text-align:center;">{{parseNaN((pedido.total_claves_recibidas * 100 /pedido.total_claves_solicitadas)) | number: '1.2-2'}}%</td>
+                        <td style="text-align:center;">{{pedido.total_cantidad_recibida | number: '1.0-0'}} / {{pedido.total_cantidad_solicitada | number: '1.0-0'}}</td>
+                        <td style="text-align:center;">{{parseNaN((pedido.total_cantidad_recibida * 100 /pedido.total_cantidad_solicitada)) | number: '1.2-2'}}%</td>
+                        <td style="text-align:center;">$ {{pedido.total_monto_recibido | number: '1.2-2'}} / $ {{pedido.total_monto_solicitado | number: '1.2-2'}}</td>
+                        <td style="text-align:center;">{{parseNaN((pedido.total_monto_recibido * 100 /pedido.total_monto_solicitado)) | number: '1.2-2'}}%</td>
+                        <td style="text-align:center;">
+                            <span *ngIf="pedido.tipo_pedido_id == 'PFS' && pedido.entregas.length == 0">En Farmacia</span>
+                            <span *ngIf="pedido.tipo_pedido_id != 'PFS' && pedido.entregas.length == 0">Sin entregas</span>
+                            <span *ngIf="pedido.entregas.length > 0">{{pedido.entregas.length}} entrega(s)</span>
+                        </td>
+                    </tr>
+                    <tr *ngFor="let entrega of pedido.entregas" class="lista-entregas">
+                        <td style="text-align:right;" colspan="2"> Recepción</td>
+                        <td style="text-align:center;">{{entrega.fecha}}</td>
+                        <td style="text-align:center;">{{entrega.total_claves | number: '1.0-0'}}</td>
+                        <td style="text-align:center;">{{parseNaN((entrega.acumulado_claves * 100 /pedido.total_claves_solicitadas)) | number: '1.2-2'}}%*</td>
+                        <td style="text-align:center;">{{entrega.total_cantidad | number: '1.0-0'}}</td>
+                        <td style="text-align:center;">{{parseNaN((entrega.acumulado_cantidad * 100 /pedido.total_cantidad_solicitada)) | number: '1.2-2'}}%*</td>
+                        <td style="text-align:center;">$ {{entrega.total_monto | number: '1.2-2'}}</td>
+                        <td style="text-align:center;">{{parseNaN((entrega.acumulado_monto * 100 /pedido.total_monto_solicitado)) | number: '1.2-2'}}%*</td>
+                        <td></td>
+                    </tr>
+                    <tr *ngIf="pedido.entregas.length > 0"><td colspan="10" style="text-align:right"></td></tr>
+                </tbody>
+                <tbody>
+                    <tr><td colspan="10" style="text-align:right">*porcentaje acumulado</td></tr>
+                </tbody>
+            </table>
+        </div>
+      </div>
+    </section>
+    <footer class="" style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em " >
+        
+    </footer>
+  </div>
 </div>
 
 <div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeError.mostrar">
