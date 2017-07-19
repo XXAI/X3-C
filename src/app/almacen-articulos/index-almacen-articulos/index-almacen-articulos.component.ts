@@ -28,7 +28,7 @@ export class IndexAlmacenArticulosComponent implements OnInit {
       
     ]
     this.accesosDirectos = [          
-      { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-catalogos.svg', titulo:"Catálogos", url:"/almacen-articulos/catalogos"},
+     // { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-catalogos.svg', titulo:"Catálogos", url:"/almacen-articulos/catalogos"},
     ]
 
     let usuario = JSON.parse(localStorage.getItem("usuario"));

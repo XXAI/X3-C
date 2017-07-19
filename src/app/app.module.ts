@@ -56,7 +56,7 @@ import { EntregasModule } from './farmacia/entregas/entregas.module';
 import { EntradasEstandarModule    } from './farmacia/entradas-estandar/entradas-estandar.module';
 import { SalidasRecetasModule    } from './farmacia/salidas-recetas/salidas-recetas.module';
 import { SalidasEstandarModule    } from './farmacia/salidas-estandar/salidas-estandar.module';
-//import { MovimientosEntradasModule    } from './farmacia/movimientos-entradas/movimientos-entradas.module';
+import { InventarioModule    } from './farmacia/inventario/inventario.module';
 //import { MovimientosSalidasModule    } from './farmacia/movimientos-salidas/movimientos-salidas.module';
 import { DashboardSalidasModule } from './farmacia/dashboard-salidas/dashboard-salidas.module';
 import { ClavesBasicasModule    } from './administrador-central/claves-basicas/claves-basicas.module';
@@ -123,6 +123,7 @@ export function highchartsFactory() {
     EntregasModule,
     EntradasEstandarModule,
     SalidasEstandarModule,
+    InventarioModule,
     SalidasRecetasModule,
     DashboardSalidasModule,
     ClavesBasicasModule,

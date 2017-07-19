@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {Router} from '@angular/router';
 
 @Component({
-  selector: 'panel-control-menu',
+  selector: 'articulos-catalogo-menu',
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.css']
 })

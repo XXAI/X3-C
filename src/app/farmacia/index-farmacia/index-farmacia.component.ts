@@ -28,13 +28,13 @@ export class IndexFarmaciaComponent implements OnInit {
       { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-pagina-lista.svg', titulo:"Pedidos", url:"/almacen/pedidos" },
       { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-pedidos-jurisdiccionales.svg', titulo:"Pedidos jurisdiccionales", url:"/almacen/pedidos-jurisdiccionales" },
       { permiso: 'iSxK0TpoYpnzf8KIQTWOq9Web7WnSKhz', icono: 'assets/icono-pedidos-alt.svg', titulo:"Entregas de pedidos", url:"/almacen/entregas" },
+      
       { permiso: 'GPSDLmXckXcdfdj7lD4rdacwMivsTp9g', icono: 'assets/icono-recetas.svg', titulo:"Recetas", url:"/almacen/salidas-recetas" },
       { permiso: 'qQvNeb1UFPOfVMKQnNkvxyqjCIUgFuEG', icono: 'assets/icono-salidas.svg', titulo:"Salida  de almacén", url:"/almacen/salidas-estandar" },
       { permiso: 'a1OMZVn7dveOf5aUK8V0VsvvSCxz8EMw', icono: 'assets/icono-entradas.svg', titulo:"Entrada  de almacén", url:"/almacen/entradas-estandar" },
-      
-      //{ permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-salidas.svg', titulo:"Salida  de almacén", url:"/almacen/salidas-estandar" }, //solo para pruebas 
-      //{ permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-entradas.svg', titulo:"Entrada  de almacén", url:"/almacen/entradas-estandar" },//solo para pruebas 
-      //{ permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-recetas.svg', titulo:"Recetas", url:"/almacen/salidas-recetas" }, //solo para pruebas 
+
+      //{ permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-stock.svg', titulo:"Inventario", url:"/almacen/inventario" }, //solo para pruebas 
+
       //{ permiso: '', icono: 'assets/hub-almacen.svg', titulo:"Inventario", url:"/farmacia/inventario" },
       //{ permiso: '', icono: 'assets/icono-ajustes-inventario.svg', titulo:"Ajustes de inventario", url:"/farmacia/inventario/ajustes" },
       //{ permiso: '', icono: 'assets/icono-recetas.svg', titulo:"Recetas", url:"/farmacia/recetas" },

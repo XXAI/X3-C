@@ -13,6 +13,8 @@ import { PipesModule }             from '../../../pipes/pipes.module';
 import { ListaComponent } from './lista/lista.component';
 import { FormularioComponent } from './formulario/formulario.component';
 
+import { IndexCatalogoModule } from '../index-catalogo/index-catalogo.module';
+
 import { AuthService } from '../../../auth.service';
 
 import { MenuPanelModule } from '../menu/menu-panel.module';
@@ -38,6 +40,7 @@ import { NguiAutoCompleteModule } from '@ngui/auto-complete';
     MenuPanelModule, 
     MenuAsidePanelModule,
     CrudModule,
+    IndexCatalogoModule,
     NguiAutoCompleteModule
   ],
   declarations: [ 
