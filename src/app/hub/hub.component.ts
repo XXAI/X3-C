@@ -28,26 +28,26 @@ export class HubComponent implements OnInit {
     { 
       title:'Almacén artículos', routerLink:'/almacen-articulos', icono:'assets/hub-almacen-articulos.svg',
       permisos: [
-        'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
+        //'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
         'cuSmlV9lvABXzfjtLbzEe0VbI47Dh6Cv', // Ver catálogos
       ] 
     },
     { 
       title:'Laboratorio', routerLink:'/laboratorio', icono:'assets/hub-laboratorio.svg',
       permisos: [
-        'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
+        //'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
       ] 
     },
     { 
       title:'Equipamiento', routerLink:'/equipamiento', icono:'assets/hub-equipamiento.svg',
       permisos: [
-        'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
+        //'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
       ] 
     },
     { 
       title:'Farmacia Subrrogada', routerLink:'/farmacia-subrrogada', icono:'assets/hub-farmacia-sub.svg',
       permisos: [
-        'bsIbPL3qv6XevcAyrRm1GxJufDbzLOax', // Ver pedidos pruebas
+        //'bsIbPL3qv6XevcAyrRm1GxJufDbzLOax', // Ver pedidos pruebas
         'RZsvMjtPtpLWC8afsAFZsNnD9iXtiZC3' // Ver sincronizar recetas
       ] 
     }, 
@@ -79,7 +79,7 @@ export class HubComponent implements OnInit {
     { 
       title:'Configuración', routerLink:'/configuracion', icono:'assets/hub-configuracion.svg',
       permisos: [
-        'bsIbPL3qv6XevcAyrRm1GxJufDbzLOax', // Ver pedidos pruebas
+        //'bsIbPL3qv6XevcAyrRm1GxJufDbzLOax', // Ver pedidos pruebas
         'zRTSAl0H8YNFMWcn00yeeJPigztCbSdC', // Ver mis almacenes
         '9dKCEyujSdLQF2CbpjXiWKeap0NlJCzw', // Ver mis turnos
         'Ki9kBghgqYsY17kqL620GWYl0bpeU6TB', // Ver mis servicios
