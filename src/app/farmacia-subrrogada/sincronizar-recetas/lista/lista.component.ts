@@ -25,7 +25,7 @@ export class ListaComponent{
   recetas_resultado = false;
     //Crear la variable que mustra las notificaciones
   mensajeResponse: Mensaje = new Mensaje();
-  @Input() titulo: string;
+  titulo="Sincronizar recetas";
   //@ViewChild('mainScreen') elementView: ElementRef;
   constructor(private fb: FormBuilder,  
     private crudService: CrudService, 
@@ -80,7 +80,6 @@ export class ListaComponent{
      * @return void
      */
   convertirJson(evt, modelo, mostrar) {
-      console.log(this.dato2.value);
       modelo.patchValue('');
       this.error_json = false;
       var files = evt.target.files;
@@ -118,7 +117,6 @@ export class ListaComponent{
               if(resultado.data){
                 this.json_valido = resultado.data;
               }
-              console.log(resultado);
               this.recetas_resultado = true;
               this.mensajeResponse.texto = "Se han guardado los cambios.";
               this.mensajeResponse.mostrar = true;
@@ -139,10 +137,10 @@ export class ListaComponent{
                         this.mensajeResponse.texto = "Por favor verfique los campos marcados en rojo.";
                         this.mensajeResponse.clase = 'warning';
                         this.mensaje(8);
+                                
                         for (var input in e.error) {
                             // Iteramos todos los errores
                             for (var i in e.error[input]) {
-                                console.log(input);
                                 this.mensajeResponse.titulo = input;
                                 this.mensajeResponse.texto = e.error[input][i];
                                 this.mensajeResponse.clase = "error";
@@ -176,7 +174,7 @@ export class ListaComponent{
               this.cancelarModal(modal);
               //this.recetas_resultado=false;
               console.log(resultado);
-              this.mensajeResponse.texto = "Se han guardado los cambios.";
+              this.mensajeResponse.texto = "Se han sincronizado las recetas.";
               this.mensajeResponse.mostrar = true;
               this.mensajeResponse.clase = "success";
               this.mensaje(2);            
