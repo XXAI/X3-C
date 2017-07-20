@@ -65,6 +65,8 @@ import { ClavesBasicasModule    } from './administrador-central/claves-basicas/c
 import { IndexAlmacenArticulosModule } from './almacen-articulos/index-almacen-articulos/index-almacen-articulos.module';
 import { IndexCatalogoModule } from './almacen-articulos/catalogos/index-catalogo/index-catalogo.module';
 import { UnidadesMedicasModule } from './almacen-articulos/catalogos/unidades-medicas/unidades-medicas.module';
+import { ViasAdministracionModule } from './almacen-articulos/catalogos/vias-administracion/vias-administracion.module';
+//import { ProveedoresModule } from './almacen-articulos/catalogos/proveedores/proveedores.module';
 
 // # Hub laboratorio
 import { IndexLaboratorioModule } from './laboratorio/index-laboratorio/index-laboratorio.module';
@@ -130,6 +132,8 @@ export function highchartsFactory() {
     IndexAlmacenArticulosModule,
     IndexCatalogoModule,
     UnidadesMedicasModule,
+    ViasAdministracionModule,
+    //ProveedoresModule,
     IndexLaboratorioModule,
     IndexEquipamientoModule,
     SincronizarRecetasModule,

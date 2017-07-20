@@ -29,7 +29,7 @@ export class IndexCatalogoComponent implements OnInit {
       { permiso: '', icono: 'assets/catalogo-medicamento.svg', titulo:"Medicamentos", url:"/catalogos/medicamentos"}, //      
       { permiso: '', icono: 'assets/catalogo-programas.svg', titulo:"Programas", url:"/catalogos/programas"}, //
       { permiso: '', icono: 'assets/catalogo-presentacion.svg', titulo:"Presentaciones de medicamentos", url:"/catalogos/presentaciones-medicamentos"}, 
-      { permiso: '', icono: 'assets/catalogo-administracion.svg', titulo:"Vias de administración", url:"/catalogos/vias-administracion" },
+      { permiso: '', icono: 'assets/catalogo-administracion.svg', titulo:"Vias de administración", url:"vias-administracion" },
       { permiso: '', icono: 'assets/catalogo-unid-medida.svg', titulo:"Unidades de medida", url:"/almacen-articulos/catalogos/unidades-medida" },
       { permiso: '', icono: 'assets/catalogo-servicios.svg', titulo:"Servicios", url:"/catalogos/servicios"},
       { permiso: '', icono: 'assets/catalogo-pedido.svg', titulo:"Tipos de pedidos", url:"/catalogos/tipo-pedido" },
