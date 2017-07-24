@@ -106,4 +106,7 @@ export class AdministradorCentralService {
     return this.jwtRequest.get("administrador-central/recepcion-borrador",id,{type}).map( (response: Response) => response.json().data);
   }
   
+  pedidoBorradorCancelado(id:any): Observable<any>{    
+    return this.jwtRequest.get("administrador-central/pedidos-borrador-cancelado",id,null).map( (response: Response) => response.json().data);
+  }
 }
