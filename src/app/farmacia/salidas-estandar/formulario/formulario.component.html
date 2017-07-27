@@ -352,7 +352,8 @@
                                                 </div>
                                                 <div class="field" *ngIf="ctrl.dato.controls.insumos.controls[i].controls.modo_salida.value == 'U'">
                                                     <!-- cambiar a formControlName="cantidad_solicitada_unidosis"  -->
-                                                    <label class="label">Cant. solicitada unidosis ({{ctrl.dato.controls.insumos.controls[i].controls.unidad_medida.value}}):</label>
+                                                    <label class="label" *ngIf="tieneid">Cant. solicitada ({{ctrl.dato.get("insumos").value[i].detalles.informacion_ampliada.unidad_medida_nombre}}):</label>
+                                                    <label class="label" *ngIf="!tieneid">Cant. solicitada unidosis ({{ctrl.dato.controls.insumos.controls[i].controls.unidad_medida.value}}):</label>
                                                     <p class="control is-expanded  has-icon has-icon-right">
                                                         <input *ngIf="!tieneid" style="background:aliceblue" type="text" class="input" formControlName="cantidad_solicitada" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad_solicitada.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad_solicitada.touched}">
                                                         <input *ngIf="tieneid" style="background:aliceblue" type="text" readonly class="input" formControlName="cantidad_solicitada" >
@@ -371,7 +372,7 @@
                                                     </p>
                                                 </div>
                                                 <div class="field"  *ngIf="ctrl.dato.controls.insumos.controls[i].controls.modo_salida.value == 'U'">
-                                                    <label class="label" *ngIf="tieneid">Cant. surtida ():</label>
+                                                    <label class="label" *ngIf="tieneid">Cant. surtida ({{ctrl.dato.get("insumos").value[i].detalles.informacion_ampliada.unidad_medida_nombre}}):</label>
                                                     <label class="label" *ngIf="!tieneid">Cant. a surtir unidosis ({{ctrl.dato.controls.insumos.controls[i].controls.unidad_medida.value}}):</label>
                                                     <p class="control is-expanded  has-icon has-icon-right">
                                                         <input *ngIf="!tieneid" style="background:aliceblue" type="text" readonly class="input" formControlName="cantidad_surtida" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad_surtida.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad_surtida.touched}">

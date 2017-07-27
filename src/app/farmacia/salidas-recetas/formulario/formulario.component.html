@@ -1,4 +1,4 @@
-<formulario #ctrl URL="movimientos" titulo="Salida Receta" [dato]="dato"></formulario>
+<formulario #ctrl URL="movimientos" titulo="Sincronizar receta" [dato]="dato"></formulario>
 <menu-farmacia [modulo]="'Salida por receta'" [icono]="'assets/icono-salidas.svg'" [url]="'/almacen/salidas-recetas'"></menu-farmacia>
 <div style="height:50px;"></div>
 <form name="form" novalidate [formGroup]="dato" (ngSubmit)="ctrl.enviar()">

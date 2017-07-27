@@ -2,21 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { CrudService } from '../../../crud/crud.service';
 
 @Component({
-  selector: 'inventario-lista',
+  selector: 'ajuste-inventario-lista',
   templateUrl: './lista.component.html'
 })
 
 export class ListaComponent implements OnInit {
   usuario;
   dato;
-  lista;
+  modo = 'MC';
   lotes_insumo;
   cargando;
-  buscar_en = 'MC';
-  seleccionar = 'TODO';
   insumo;
   es_unidosis;
-  unidad_medida;
+  unidad_medida
 
   constructor(
     private crudService: CrudService){}
@@ -24,7 +22,6 @@ export class ListaComponent implements OnInit {
   ngOnInit() {
       this.usuario = JSON.parse(localStorage.getItem("usuario"));
   }
-    
 
   /**
      * Este método carga los datos de un elemento de la api con el id que se pase por la url

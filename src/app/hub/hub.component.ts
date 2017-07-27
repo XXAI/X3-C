@@ -28,7 +28,7 @@ export class HubComponent implements OnInit {
     { 
       title:'Almacén artículos', routerLink:'/almacen-articulos', icono:'assets/hub-almacen-articulos.svg',
       permisos: [
-        //'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
+        'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
         'cuSmlV9lvABXzfjtLbzEe0VbI47Dh6Cv', // Ver catálogos
       ] 
     },
@@ -47,7 +47,7 @@ export class HubComponent implements OnInit {
     { 
       title:'Farmacia Subrrogada', routerLink:'/farmacia-subrrogada', icono:'assets/hub-farmacia-sub.svg',
       permisos: [
-        //'bsIbPL3qv6XevcAyrRm1GxJufDbzLOax', // Ver pedidos pruebas
+        'MrL06vIO12iNhchP14h57Puvg71eUmYb', // Ver FS proveedor pruebas
         'RZsvMjtPtpLWC8afsAFZsNnD9iXtiZC3' // Ver sincronizar recetas
       ] 
     }, 
