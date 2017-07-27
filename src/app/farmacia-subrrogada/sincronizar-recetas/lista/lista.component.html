@@ -204,6 +204,7 @@
             <a class="button is-success" [ngClass]="{'is-disabled': !recetas_resultado}" (click)="sincronizarReceta('sincronizarRecetasJson'); ">Sincronizar recetas</a>
             <a class="button" (click)="cancelarModal('sincronizarRecetasJson'); dato2.controls.json.value == '';">Cancelar</a>
         </footer>
+        <simple-notifications [options]="options"></simple-notifications>
     </div>
 </div>
 <!--

@@ -1,0 +1,255 @@
+<formulario #ctrl URL="movimientos" titulo="Ajuste de inventario" [dato]="dato"></formulario>
+<menu-farmacia [modulo]="'Ajuste de inventario'" [icono]="'assets/icono-salidas.svg'" [url]="'/almacen/ajuste-inventario'"></menu-farmacia>
+<div style="height:50px;"></div>
+<form name="form" novalidate [formGroup]="dato">
+    <div class="contenedor columns " style="height:100%">
+        <!-- apartado de insumos -->
+        <div class="column" style="padding:1em;">
+            <div style="background: #FFF; border-radius: 1em; ">
+                <section class="hero is-primary">
+                    <div class="hero-body">
+                        <!-- Main container -->
+                        <nav class="level">
+                            <div class="level-left">
+                                <h1 *ngIf="!tieneid" class="title" style="margin:0.5em; ">
+                                    <span class="icon is-medium">
+                                        <i class="fa fa-file-text"></i>
+                                    </span> {{ctrl.moduloTitulo}}
+                                </h1>
+                                <h1 *ngIf="tieneid" class="title" style="margin:0.5em; ">
+                                    <span class="icon is-medium">
+                                        <i class="fa fa-file-text"></i>
+                                    </span> Folio {{ctrl.id}}
+                                </h1>
+                            </div>
+                            <!-- Right side -->
+                            <div class="level-right">
+                                <p class="level-item" *ngIf="!tieneid" style="float:left">
+                                    <button class="button is-primary is-medium" (click)="guardar_movimiento()"
+                                    [ngClass]="{'is-loading': ctrl.cargando}" [disabled]="ctrl.dato.invalid"><span class="icon "><i class="fa fa-floppy-o" aria-hidden="true"></i></span>&nbsp; Guardar</button>
+                                </p>
+                                <p class="level-item" style="float:left">
+                                        <a *ngIf="tieneid" class="button is-primary is-inverted" (click)="imprimir()">
+                                            <span class="icon"><i class="fa fa-print"></i></span>
+                                        </a>
+                                        <a class="button is-primary is-medium" (click)="ctrl.regresar()"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp;<span>Regresar</span>                                            
+                                        </a>
+                                </p>
+                                <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" (click)="ctrl.busquedaActivada=false;searchBox.value=''; ctrl.resultadosBusqueda=[]"><span class="icon "><i class="fa fa-close"></i></span></a></p>
+                                <p class="level-item"><a class="button  is-primary" (click)="ctrl.cargarDatos();  "><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
+                                <p class="level-item">&nbsp;</p>
+                            </div>
+                        </nav>
+                        
+                    </div>
+                </section>
+                <div class="is-fullwidth has-text-centered" *ngIf="!ctrl.datosCargados">
+                    <br>
+                    <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>                    &nbsp;<span>Cargando...</span></span>
+                </div>
+                <section class="section">
+
+                    <div class="field has-addons has-addons-centered" *ngIf="!tieneid">
+
+                        <p class="control">
+                            <input ngui-auto-complete [source]="insumos_term" [list-formatter]="autocompleListFormatter" id="buscarInsumo" value-property-name="clave"
+                                display-property-name="descripcion" path-to-data="" loading-text="Cargando..." no-match-found-text="No hay resultados."
+                                (valueChanged)="select_insumo_autocomplete($event)" min-chars="1" class="input is-success is-medium"
+                                type="text" placeholder="Escanea el codigo de barra, o empieza escribir el nombre del producto" >
+
+                        </p>
+
+                        <hr>
+                    </div>
+
+                    <div style="height:50px;"></div>
+
+                    <div formArrayName="insumos">
+                        <div class="box" *ngFor="let item of ctrl.dato.controls.insumos.controls; let i=index" [ngStyle]="{'background': i%2 == 0 ? 'rgba(230, 230, 232, 0.44)' : ''}">
+                            <article class="media" [formGroupName]="i">
+                                <div class="media-content">
+                                    <div class="content">
+                                        <a *ngIf="!tieneid" class="is-danger" title="Quitar este elemento de la lista" style="float:right" (click)="ctrl.quitar_form_array(ctrl.dato.controls.insumos,i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
+                                        <p>
+                                            <strong>
+                                                <span style="color:cornflowerblue">
+                                                    Clave: {{ ctrl.dato.controls.insumos.controls[i].controls.clave.value }} 
+                                                </span>
+                                                Nombre: {{ctrl.dato.controls.insumos.controls[i].controls.descripcion.value}}
+                                            
+                                                <label class="tag is-success" *ngIf="ctrl.dato.controls.insumos.controls[i].controls.es_causes.value == 1"><strong>Cause </strong></label>
+                                                <label class="tag is-success" *ngIf="ctrl.dato.controls.insumos.controls[i].controls.es_causes.value == 0"><strong>No Cause </strong> </label>                                           
+                                                                                            
+                                                <label class="tag is-warning" *ngIf="ctrl.dato.controls.insumos.controls[i].controls.es_unidosis.value == 1
+                                                "><strong>Unidosis</strong> </label>
+                                            </strong>
+                                            <br> {{ctrl.dato.controls.insumos.controls[i].controls.descripcion.value}}
+                                        </p>
+                                    </div>
+                                    <section>
+                                        <table class="table is-narrow is-bordered is-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Lote</th>
+                                                    <th>Caducidad</th>
+                                                    <th>Codigo de barras</th>
+                                                    <th *ngIf="ctrl.dato.controls.insumos.controls[i].controls.tipo_ajuste.value == 1">Existencia</th>
+                                                    <th *ngIf="ctrl.dato.controls.insumos.controls[i].controls.tipo_ajuste.value == 2">Existencia Unidosis</th>
+                                                    
+                                                    <th *ngIf="ctrl.dato.controls.insumos.controls[i].controls.tipo_ajuste.value == 1">Cantidad normal</th>
+                                                    <th *ngIf="ctrl.dato.controls.insumos.controls[i].controls.tipo_ajuste.value == 2">Cantidad unidosis</th>
+                                                    <th *ngIf="!tieneid"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody formArrayName="lotes">
+                                                <tr *ngFor="let val of ctrl.dato.controls.insumos.controls[i].controls.lotes.controls;  let i2 = index;">
+                                                    <td>{{val.value.lote}}</td>
+                                                    <td>{{val.value.fecha_caducidad}}</td>
+                                                    <td>{{val.value.codigo_barras}}</td>
+                                                    <td *ngIf="ctrl.dato.controls.insumos.controls[i].controls.tipo_ajuste.value == 1">{{val.value.existencia}}</td>
+                                                    <td *ngIf="ctrl.dato.controls.insumos.controls[i].controls.tipo_ajuste.value == 2">{{val.value.existencia_unidosis}}</td>
+                                                    <td [formGroupName]="i2">
+                                                        <input  *ngIf="val.value.tipo_ajuste == 1" class="input has-text-centered" (blur)="validar_cantidad_lote(i, val, i2, tipo_ajuste)" type="number" step="1" min="0" max="{{val.value.existencia}}"
+                                                            placeholder="Cantidad" formControlName="cantidad">
+                                                        <input  *ngIf="val.value.tipo_ajuste == 2" class="input has-text-centered" (blur)="validar_cantidad_lote(i, val, i2, tipo_ajuste)" type="number" step="1" min="0" max="{{val.value.existencia_unidosis}}"
+                                                            placeholder="Cantidad unidosis" formControlName="cantidad"></td>
+                                                    <td *ngIf="!tieneid">
+                                                        <a class="is-danger" title="Quitar este lote" (click)="quitar_lote_insumo(i, val.value, i2)">
+                                                            <span class="icon">
+                                                                <i class="fa fa-trash-o"></i>
+                                                            </span>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </section>
+                                    <nav class="level is-mobile">
+                                        <div class="level-left">
+                                           
+                                        </div>
+                                        <div class="level-right">
+                                            
+                                        </div>
+                                    </nav>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+
+                </section>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<div class="modal" id="verLotes">
+    <div class="modal-background"></div>
+    <div class="modal-card" style="width: 60%;">
+        <header class="modal-card-head">
+            <p class="modal-card-title" id="tituloModal" style="width: 200px"> </p>
+            <button type="button" class="delete" (click)="cancelarModal('verLotes'); tipo_ajuste = 1;"></button>
+        </header>
+        <section class="modal-card-body">
+            <div class="columns">
+                <div class="column is-two-thirds">
+                    <div class="columns">
+                        <div class="column is-4">
+                            <label class="label" style="font-size: large;float: left;margin-right: 6%;">Tipo de ajuste: </label>
+                        </div>
+                        <div class="b-checkbox is-info is-circular">
+                            <div class="column is-auto">
+                                <input class="styled" type="radio" id="tipo_ajuste_1" [checked]="tipo_ajuste == 1" (click)="tipo_ajuste = 1" [value]="1" name="tipo_ajuste">                                    
+                                <label for="tipo_ajuste_1">
+                                    <span class="tag is-large" [ngClass]="{'is-success':tipo_ajuste == 1}">Ajuste más</span>
+                                </label>
+                            </div>
+                            <div *ngIf="es_unidosis == 1" class="column is-auto">
+                                <input class="styled" type="radio" id="tipo_ajuste_2" [checked]="tipo_ajuste == 2" (click)="tipo_ajuste = 2" [value]="2" name="tipo_ajuste">                                    
+                                <label for="tipo_ajuste_2">
+                                    <span class="tag is-large" [ngClass]="{'is-success':tipo_ajuste == 2}">Ajuste menos</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <table class="table is-narrow is-bordered is-striped">
+                <thead>
+                    <tr>
+                        <th>Lote</th>
+                        <th>Caducidad</th>
+                        <th>Codigo de barras</th>
+                        <th>Existencia</th>
+                        <th>Nueva Existencia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of lotes_insumo;  let i = index;">
+                        <td *ngIf="!item.nuevo">{{item.lote}}</td>
+                        <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Lote" [(ngModel)]="item.lote"></td>
+                        <td *ngIf="!item.nuevo">{{item.fecha_caducidad}}</td>
+                        <td *ngIf="item.nuevo"><input class="input has-text-centered " type="date" placeholder="Fecha de caducidad" [(ngModel)]="item.fecha_caducidad"></td>
+                        <td *ngIf="!item.nuevo">{{item.codigo_barras}}</td>
+                        <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Codigo de barras" [(ngModel)]="item.codigo_barras"></td>
+                        <td *ngIf="!item.nuevo">{{item.existencia}}</td>
+                        <td *ngIf="item.nuevo "></td>
+                        <td >
+                            <input class="input has-text-centered" type="number" step="1" min="0" (keypress)="quitar_punto($event)"  (keyup)="comprobar_cant_lotes()" (change)="comprobar_cant_lotes()" max="{{item.existencia}}" placeholder="Cantidad" [(ngModel)]="item.cantidad">
+                        </td>
+                        <td *ngIf="item.nuevo">
+                            <a class="delete" (click)=eliminarLote(i)></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        <footer class="modal-card-foot">
+            <a class="button is-dark" (click)="agregarNuevoLote()">Agregar nuevo lote</a>                       
+            <a class="button is-success" [ngClass]="{'is-disabled':cant_solicitada_valida || !sum_cant_lotes}" (click)="agregarLoteIsumo(10)">Aceptar</a>
+            <a class="button" (click)="cancelarModal('verLotes'); tipo_ajuste = 1;">Cancelar</a>
+            <div class="card-footer-item"></div>
+        </footer>
+    </div>
+</div>
+
+<div class="modal" id="negarExistencia">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title"><i class="fa fa-warning"></i> Alerta</p>
+            <button class="delete" (click)="cancelarModal('negarExistencia')"></button>
+        </header>
+        <section class="modal-card-body">
+            <div class="content">
+                <h1>¿Esta seguro de negar la existencia del insumo?</h1>
+                <p>Ya no se podra cambiar la cantidad negada</p>
+            </div>
+        </section>
+        <footer class="modal-card-foot">
+            <a class="button is-success" (click)="agregarLoteIsumo(cantidad_solicitada.value)">Continuar</a>
+            <a class="button" (click)="cancelarModal('negarExistencia')">Cancelar</a>
+        </footer>
+    </div>
+</div>
+
+<div class="modal" id="guardarMovimiento">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title"><i class="fa fa-warning"></i> Alerta</p>
+            <button class="delete" (click)="cancelarModal('guardarMovimiento')"></button>
+        </header>
+        <section class="modal-card-body">
+            <div class="content">
+                <h1>¿Esta seguro de guardar la salida?</h1>
+                <p>Ya no se podrá realizar cambios</p>
+            </div>
+        </section>
+        <footer class="modal-card-foot">
+            <a class="button is-success" (click)="ctrl.enviar(); cancelarModal('guardarMovimiento')">Continuar</a>
+            <a class="button" (click)="cancelarModal('guardarMovimiento')">Cancelar</a>
+        </footer>
+    </div>
+</div>

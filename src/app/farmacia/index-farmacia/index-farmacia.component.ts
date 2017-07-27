@@ -34,6 +34,7 @@ export class IndexFarmaciaComponent implements OnInit {
       { permiso: 'a1OMZVn7dveOf5aUK8V0VsvvSCxz8EMw', icono: 'assets/icono-entradas.svg', titulo:"Entrada  de almacén", url:"/almacen/entradas-estandar" },
 
       { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-stock.svg', titulo:"Inventario", url:"/almacen/inventario" }, //solo para pruebas 
+      { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-stock-edit.svg', titulo:"Ajuste de Inventario", url:"/almacen/ajuste-inventario" }, //solo para pruebas 
 
       //{ permiso: '', icono: 'assets/hub-almacen.svg', titulo:"Inventario", url:"/farmacia/inventario" },
       //{ permiso: '', icono: 'assets/icono-ajustes-inventario.svg', titulo:"Ajustes de inventario", url:"/farmacia/inventario/ajustes" },

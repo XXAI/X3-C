@@ -26,7 +26,7 @@ export class ListaComponent{
     //Crear la variable que mustra las notificaciones
   mensajeResponse: Mensaje = new Mensaje();
   titulo="Sincronizar recetas";
-  //@ViewChild('mainScreen') elementView: ElementRef;
+  
   constructor(private fb: FormBuilder,  
     private crudService: CrudService, 
     private route: ActivatedRoute, 
@@ -70,7 +70,6 @@ export class ListaComponent{
     this.pedido_id = "";
     this.recetas_resultado = false;
     this.json_valido='';
-    console.log(this.dato2);
   }  
 
   /**
@@ -118,7 +117,7 @@ export class ListaComponent{
                 this.json_valido = resultado.data;
               }
               this.recetas_resultado = true;
-              this.mensajeResponse.texto = "Se han guardado los cambios.";
+              this.mensajeResponse.texto = "Validación realizada.";
               this.mensajeResponse.mostrar = true;
               this.mensajeResponse.clase = "success";
               this.mensaje(2);            
@@ -141,10 +140,12 @@ export class ListaComponent{
                         for (var input in e.error) {
                             // Iteramos todos los errores
                             for (var i in e.error[input]) {
+                                for(var j in e.error[input][i]){
                                 this.mensajeResponse.titulo = input;
-                                this.mensajeResponse.texto = e.error[input][i];
+                                this.mensajeResponse.texto = e.error[input][i][j];
                                 this.mensajeResponse.clase = "error";
                                 this.mensaje(3);
+                                }
                             }
                         }
                     }
@@ -172,8 +173,6 @@ export class ListaComponent{
               this.cargando = false;   
               
               this.cancelarModal(modal);
-              //this.recetas_resultado=false;
-              console.log(resultado);
               this.mensajeResponse.texto = "Se han sincronizado las recetas.";
               this.mensajeResponse.mostrar = true;
               this.mensajeResponse.clase = "success";
@@ -196,7 +195,6 @@ export class ListaComponent{
                         for (var input in e.error) {
                             // Iteramos todos los errores
                             for (var i in e.error[input]) {
-                                console.log(input);
                                 this.mensajeResponse.titulo = input;
                                 this.mensajeResponse.texto = e.error[input][i];
                                 this.mensajeResponse.clase = "error";

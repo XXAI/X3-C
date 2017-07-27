@@ -49,22 +49,22 @@ import { IndexFarmaciaSubrrogadaModule } from './farmacia-subrrogada/index-farma
 import { SincronizarRecetasModule } from './farmacia-subrrogada/sincronizar-recetas/sincronizar-recetas.module';
 
 // # Hub Farmacia
-import { IndexFarmaciaModule } from './farmacia/index-farmacia/index-farmacia.module';
-import { PedidosModule  } from './farmacia/pedidos/pedidos.module';
+import { IndexFarmaciaModule    } from './farmacia/index-farmacia/index-farmacia.module';
+import { PedidosModule          } from './farmacia/pedidos/pedidos.module';
 import { PedidosJurisdiccionalesModule  } from './farmacia/pedidos-jurisdiccionales/pedidos-jurisdiccionales.module';
-import { EntregasModule } from './farmacia/entregas/entregas.module';
-import { EntradasEstandarModule    } from './farmacia/entradas-estandar/entradas-estandar.module';
-import { SalidasRecetasModule    } from './farmacia/salidas-recetas/salidas-recetas.module';
-import { SalidasEstandarModule    } from './farmacia/salidas-estandar/salidas-estandar.module';
-import { InventarioModule    } from './farmacia/inventario/inventario.module';
-//import { MovimientosSalidasModule    } from './farmacia/movimientos-salidas/movimientos-salidas.module';
+import { EntregasModule         } from './farmacia/entregas/entregas.module';
+import { EntradasEstandarModule } from './farmacia/entradas-estandar/entradas-estandar.module';
+import { SalidasRecetasModule   } from './farmacia/salidas-recetas/salidas-recetas.module';
+import { SalidasEstandarModule  } from './farmacia/salidas-estandar/salidas-estandar.module';
+import { InventarioModule       } from './farmacia/inventario/inventario.module';
+import { AjusteInventarioModule } from './farmacia/ajuste-inventario/ajuste-inventario.module';
 import { DashboardSalidasModule } from './farmacia/dashboard-salidas/dashboard-salidas.module';
 import { ClavesBasicasModule    } from './administrador-central/claves-basicas/claves-basicas.module';
 
 // # Hub almacén artículos
 import { IndexAlmacenArticulosModule } from './almacen-articulos/index-almacen-articulos/index-almacen-articulos.module';
-import { IndexCatalogoModule } from './almacen-articulos/catalogos/index-catalogo/index-catalogo.module';
-import { UnidadesMedicasModule } from './almacen-articulos/catalogos/unidades-medicas/unidades-medicas.module';
+import { IndexCatalogoModule      } from './almacen-articulos/catalogos/index-catalogo/index-catalogo.module';
+import { UnidadesMedicasModule    } from './almacen-articulos/catalogos/unidades-medicas/unidades-medicas.module';
 import { ViasAdministracionModule } from './almacen-articulos/catalogos/vias-administracion/vias-administracion.module';
 //import { ProveedoresModule } from './almacen-articulos/catalogos/proveedores/proveedores.module';
 
@@ -126,6 +126,7 @@ export function highchartsFactory() {
     EntradasEstandarModule,
     SalidasEstandarModule,
     InventarioModule,
+    AjusteInventarioModule,
     SalidasRecetasModule,
     DashboardSalidasModule,
     ClavesBasicasModule,
