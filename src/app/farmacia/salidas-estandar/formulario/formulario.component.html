@@ -213,8 +213,8 @@
                                                 </span>
                                                 Nombre: {{ctrl.dato.controls.insumos_negados.controls[i].controls.descripcion.value}}
                                             
-                                                <label class="tag is-success" *ngIf="ctrl.dato.controls.insumos_negados.controls[i].controls.es_causes.value"><strong>Cause </strong></label>
-                                                <label class="tag is-success" *ngIf="!ctrl.dato.controls.insumos_negados.controls[i].controls.es_causes.value"><strong>No Cause </strong> </label>                                           
+                                                <label class="tag is-success" *ngIf="ctrl.dato.controls.insumos_negados.controls[i].controls.es_causes.value == 1"><strong>Cause </strong></label>
+                                                <label class="tag is-success" *ngIf="ctrl.dato.controls.insumos_negados.controls[i].controls.es_causes.value == 0"><strong>No Cause </strong> </label>                                           
                                                                                             
                                                 <label class="tag is-warning" *ngIf="ctrl.dato.controls.insumos_negados.controls[i].controls.es_unidosis.value == 1
                                                 "><strong>Unidosis</strong> </label>
@@ -234,8 +234,8 @@
                                                     </p>
                                                 </div>
                                                 <div class="field" *ngIf="ctrl.dato.controls.insumos_negados.controls[i].controls.modo_salida.value == 'U'">
-                                                    <!-- cambiar a formControlName="cantidad_solicitada_unidosis"  -->
-                                                    <label class="label">Cant. solicitada unidosis ({{insumo.unidad_medida}}):</label>
+                                                    <label class="label" *ngIf="tieneid">Cant. solicitada ({{ctrl.dato.get("insumos_negados").value[i].informacion_ampliada.unidad_medida_nombre}}):</label>
+                                                    <label class="label" *ngIf="!tieneid">Cant. solicitada unidosis ({{ctrl.dato.controls.insumos_negados.controls[i].controls.unidad_medida.value}}):</label>
                                                     <p class="control is-expanded  has-icon has-icon-right">
                                                         <input *ngIf="!tieneid" style="background:aliceblue" type="text" class="input" formControlName="cantidad_solicitada_unidosis" [ngClass]="{'is-danger': ctrl.dato.controls.insumos_negados.controls[i].controls.cantidad_solicitada_unidosis.hasError('required') && ctrl.dato.controls.insumos_negados.controls[i].controls.cantidad_solicitada_unidosis.touched}">
                                                         <input *ngIf="tieneid" style="background:aliceblue" type="text" readonly class="input" formControlName="cantidad_solicitada_unidosis" >
