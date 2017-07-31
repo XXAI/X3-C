@@ -10,6 +10,9 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/catch';
 
+import { Uploader }      from 'angular2-http-file-upload';
+import { SubirArchivoConfirmacion }  from '../subir-archivo-confirmacion';
+
 import { environment } from '../../../../environments/environment';
 
 import { SyncService } from '../sync.service';
@@ -51,7 +54,20 @@ export class LocalComponent implements OnInit {
 	private indicePaginasBusqueda:number[] = []
 	// # FIN SECCION
 
-	constructor(private apiService: SyncService) { }
+
+	// Subir confirmacion
+	errores = {
+		archivo: null
+	}
+
+	mostrarModalSubirArchivoSync:boolean = false;
+	mensajeErrorSync:string = "";
+	archivo:File = null;
+	archivoSubido:boolean = false;
+  	enviandoDatos: boolean = false;
+  	progreso: number = 0;
+
+	constructor(private apiService: SyncService,  private uploaderService: Uploader) { }
 	cargando: boolean = false;
 	sincronizandoEnLinea:boolean = false;
 	subiendoConfirmacion:boolean = false;
@@ -230,9 +246,68 @@ export class LocalComponent implements OnInit {
 		this.listarBusqueda(term,this.paginaActualBusqueda-1);
 	}
 
+	// # SECCION: Sincronización
+
 	descargarSync(){
 		var query = "token="+localStorage.getItem('token');
     		window.open(`${environment.API_URL}/sync/manual/?${query}`); 
+	}
+
+	fileChange(event){
+		let fileList: FileList = event.target.files;
+		if(fileList.length > 0) {
+			this.archivo = fileList[0];
+		}
+	}
+
+	reset(){
+		this.errores = {
+			archivo: null
+		}
+		
+		this.mensajeErrorSync = "";
+		this.archivoSubido = false;
+		this.archivo = null;
+	}
+
+	adjuntar(){
+		if(this.archivo){
+
+			this.errores = {
+			archivo: null
+			}
+			this.mensajeErrorSync = "";
+			this.archivoSubido = false;
+			this.enviandoDatos = true;
+				
+			let miArchivo = new SubirArchivoConfirmacion(this.archivo);
+			
+
+			this.uploaderService.onSuccessUpload = (item, response, status, headers) => {             
+				this.archivoSubido = true;
+				this.listar(1);
+				this.mostrarModalSubirArchivoSync = false;
+			};
+
+			this.uploaderService.onErrorUpload = (item, response, status, headers) => {
+				var error = response.error;
+				this.mensajeErrorSync = error;
+			};
+			this.uploaderService.onCompleteUpload = (item, response, status, headers) => {
+				// complete callback, called regardless of success or failure        
+				this.enviandoDatos = false;        
+			};
+
+			this.uploaderService.onProgressUpload = (item, percentComplete) => {
+				// progress callback
+				console.log(percentComplete)
+				this.progreso = percentComplete;
+			};
+			
+			this.uploaderService.upload(miArchivo);
+			
+		}
+	
 	}
 
 	sincronizarEnLinea(){
@@ -250,12 +325,20 @@ export class LocalComponent implements OnInit {
 				console.log(respuesta);
 			}, error => {
 				this.sincronizandoEnLinea = false;
-				this.mensajeError.mostrar = true;
+				
+				
 				try {
 					let e = error.json();
+					this.logAutoSync = e.data;
+					this.mostrarLogAutoSync = true;
+
 					if (error.status == 401 ){
 					this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
-					}
+					} else if (error.status == 500 ){
+					this.mensajeError.texto = "500 (Error interno del servidor)";
+					} else {
+					this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+					} 
 				} catch(e){
 					console.log("No se puede interpretar el error");
 					
@@ -265,6 +348,7 @@ export class LocalComponent implements OnInit {
 					this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
 					}            
 				}
+				this.mensajeError.mostrar = true;
 			}
 
 		)
