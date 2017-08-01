@@ -125,6 +125,7 @@ export class PedidosComponent implements OnInit {
         respuesta => {
           this.cargaRecepciones = false;
           this.showPedido = false;
+          this.mensajeExito = new Mensaje(true);
           this.mensajeExito.mostrar = true;
           this.mensajeExito.texto = "Se ha regresado correctamente el pedido a borrador";
           
@@ -132,6 +133,8 @@ export class PedidosComponent implements OnInit {
            
         }, error => {
           this.cargaRecepciones = false;
+          this.mensajeError = new Mensaje(true);
+          
           this.mensajeError.mostrar = true;
           this.mensajeError.texto = "Se ha encontrador un error al regresar a borrador el pedido, por favor vuelva a intentarlo ";
         }
@@ -148,6 +151,7 @@ export class PedidosComponent implements OnInit {
         respuesta => {
           this.cargaRecepciones = false;
           this.showPedido = false;
+          this.mensajeExito = new Mensaje(true);
           this.mensajeExito.mostrar = true;
           this.mensajeExito.texto = "Se ha regresado correctamente el pedido a borrador";
           
@@ -155,6 +159,7 @@ export class PedidosComponent implements OnInit {
            
         }, error => {
           this.cargaRecepciones = false;
+          this.mensajeError = new Mensaje(true);
           this.mensajeError.mostrar = true;
           this.mensajeError.texto = "Se ha encontrador un error al regresar a borrador el pedido, por favor vuelva a intentarlo ";
         }
@@ -170,6 +175,7 @@ export class PedidosComponent implements OnInit {
       this.apiService.recepcionBorrador(id, 1).subscribe(
           respuesta => {
             //this.showPedido = false;
+            this.mensajeExito = new Mensaje(true);
             this.mensajeExito.mostrar = true;
             this.mensajeExito.texto = "Se ha borrado correctamente la recepcion de medicamento";
             
@@ -184,6 +190,7 @@ export class PedidosComponent implements OnInit {
                   if(respuesta.status != 'BR')
                       this.borrador= false;
               }, error => {
+                this.mensajeError = new Mensaje(true);
                   this.cargaRecepciones = false;
                   this.mensajeError.mostrar = true;
                   this.mensajeError.texto = "Ocurrio un error al cargar los datos de recepciones, por favor vuelva a intentarlo";
@@ -191,6 +198,7 @@ export class PedidosComponent implements OnInit {
             );
           }, error => {
             this.cargaRecepciones = false;
+            this.mensajeError = new Mensaje(true);
             this.mensajeError.mostrar = true;
             try {
               let e = error.json();
@@ -217,6 +225,7 @@ export class PedidosComponent implements OnInit {
       this.cargaRecepciones = true;
       this.apiService.recepcionBorrador(id, 2).subscribe(
           respuesta => {
+            this.mensajeExito = new Mensaje(true);
             this.mensajeExito.mostrar = true;
             this.mensajeExito.texto = "Se ha borrado correctamente la recepcion de medicamento";
             
@@ -233,12 +242,14 @@ export class PedidosComponent implements OnInit {
                     this.borrador= false;
               }, error => {
                   this.cargaRecepciones = false;
+                  this.mensajeError = new Mensaje(true);
                   this.mensajeError.mostrar = true;
                   this.mensajeError.texto = "Ocurrio un error al cargar los datos de recepciones, por favor vuelva a intentarlo";
               }
             );
           }, error => {
             this.cargaRecepciones = false;
+            this.mensajeError = new Mensaje(true);
             this.mensajeError.mostrar = true;
             try {
               let e = error.json();
