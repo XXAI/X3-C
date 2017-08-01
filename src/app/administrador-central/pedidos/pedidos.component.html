@@ -295,7 +295,7 @@
                         <th colspan="3">Datos Pedido</th>
                          <th colspan="2"> 
                                 <button type="button" class="button is-warning"  *ngIf="!borrador" [ngClass]="{'is-loading': cargaRecepciones}" [disabled]="borrador" (click)='regresarBorrador(datos_pedido.pedido_id)'><i class="fa fa-exclamation-triangle"></i> REGRESAR A BORRADOR</button>
-                                <button type="button" class="button is-warning"  *ngIf="!borrador_cancelado" [ngClass]="{'is-loading': cargaRecepciones}" [disabled]="borrador_cancelado" (click)='regresarBorradorCancelador(datos_pedido.pedido_id)'><i class="fa fa-exclamation-triangle"></i> REGRESAR A BORRADOR</button>
+                                <button type="button" class="button is-warning"  *ngIf="!borrador_cancelado" [ngClass]="{'is-loading': cargaRecepciones}" [disabled]="borrador_cancelado" (click)='regresarBorradorCancelador(datos_pedido.pedido_id)'><i class="fa fa-exclamation-triangle"></i> REGRESAR A EXPIRADO</button>
                             </th>
                     </thead>
                     <tbody>
