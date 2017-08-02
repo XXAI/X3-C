@@ -11,14 +11,16 @@ import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/catch';
 
 
-import { Uploader }      from 'angular2-http-file-upload';
-import { SubirArchivo }  from '../subir-archivo';
+import { Headers, Http, Response, RequestOptions, ResponseContentType } from '@angular/http';
+
+import  * as FileSaver    from 'file-saver'; 
 
 import { environment } from '../../../../environments/environment';
 
 import { SyncService } from '../sync.service';
 
 import { Mensaje } from '../../../mensaje';
+
 
 @Component({
   selector: 'app-central',
@@ -66,7 +68,7 @@ export class CentralComponent implements OnInit {
   	enviandoDatos: boolean = false;
   	progreso: number = 0;
 
-	constructor(private apiService: SyncService, private uploaderService: Uploader) { }
+	constructor(private apiService: SyncService, private http:Http) { }
 	cargando: boolean = false;
 	
 
@@ -242,6 +244,8 @@ export class CentralComponent implements OnInit {
 		this.listarBusqueda(term,this.paginaActualBusqueda-1);
 	}
 
+	// # SECCION: Sincronización
+
 	fileChange(event){
 		let fileList: FileList = event.target.files;
 		if(fileList.length > 0) {
@@ -258,6 +262,11 @@ export class CentralComponent implements OnInit {
 		this.archivoSubido = false;
 		this.archivo = null;
 	}
+	
+	// En este caso la respuesta no será un json, sino un archivo,
+	// la librería que uso en otros módulos de sincronizacion no me permite descargar
+	// archivos porque no me permite setear de manera correcta los headers
+	// Por este motivo se implementa la petición usando las funciones que nos provee angular2
 	adjuntar(){
 		if(this.archivo){
 
@@ -267,34 +276,58 @@ export class CentralComponent implements OnInit {
 			this.mensajeErrorSync = "";
 			this.archivoSubido = false;
 			this.enviandoDatos = true;
-				
-			let miArchivo = new SubirArchivo(this.archivo);
 			
-
-			this.uploaderService.onSuccessUpload = (item, response, status, headers) => {             
-				this.archivoSubido = true;
-				this.listar(1);
-				this.mostrarModalSubirArchivoSync = false;
-			};
-
-			this.uploaderService.onErrorUpload = (item, response, status, headers) => {
-				var error = response.error;
-				this.mensajeErrorSync = error;
-			};
-			this.uploaderService.onCompleteUpload = (item, response, status, headers) => {
-				// complete callback, called regardless of success or failure        
-				this.enviandoDatos = false;        
-			};
-
-			this.uploaderService.onProgressUpload = (item, percentComplete) => {
-				// progress callback
-				console.log(percentComplete)
-				this.progreso = percentComplete;
-			};
+			let formData:FormData = new FormData();
+			formData.append('sync', this.archivo, this.archivo.name);
 			
-			this.uploaderService.upload(miArchivo);
+			let headers = new Headers();
+			headers.delete('Content-Type');
+			headers.append('Authorization',  'Bearer ' + localStorage.getItem('token'));
+			let options = new RequestOptions({ headers: headers, responseType: ResponseContentType.Blob });
+
+			
+			var responseHeaders:any;
+			var contentDisposition:any;
+			this.http.post(`${environment.API_URL}/sync/importar`, formData, options)
+				.map(response => {					
+					contentDisposition = response.headers.get('content-disposition');
+					return response.blob()
+				})
+				.catch(error => Observable.throw(error))				
+				.subscribe(
+					blob => {
+						var filename;
+						var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+						var matches = filenameRegex.exec(contentDisposition);
+						if (matches != null && matches[1]) { 
+							filename = matches[1].replace(/['"]/g, '');
+						}
+						FileSaver.saveAs(blob, filename);
+						this.archivoSubido = true;
+						this.enviandoDatos = false;
+						this.progreso = 100;
+					},					
+					error => {
+						console.log(error);
+						if(error.status == 409){
+							this.mensajeErrorSync = "No se pudo subir el archivo, verifica que el archivo que tratas de subir sea correcto, que el nombre no haya sido modificado. Verifica que el archivo que intentas subir ya ha sido sincronizado previamente.";
+						} else if(error.status == 401){
+							this.mensajeErrorSync = "El archivo que intentas subir ya ha sido sincronizado previamente";
+						} else {
+							this.mensajeErrorSync = "Hubo un problema al sincronizar, prueba recargar el sitio de lo contrario llama a soporte técnico.";
+						}
+						
+						this.progreso = 100;
+						this.enviandoDatos = false;
+					}
+					
+				)
+			
+			
 			
 		}
 	
 	}
+	
+	
 }

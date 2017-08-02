@@ -25,7 +25,7 @@
                             <a class="button is-primary is-inverted" [ngClass]="{ 'is-disabled': sincronizandoEnLinea }" (click)="descargarSync()">
                                 <span class="icon"><i class="fa fa-download"></i></span><span>Descargar sincronización</span>
                             </a>
-                            <a class="button is-primary is-inverted" [ngClass]="{ 'is-disabled': sincronizandoEnLinea }">
+                            <a class="button is-primary is-inverted" [ngClass]="{ 'is-disabled': sincronizandoEnLinea }" (click)="mostrarModalSubirArchivoSync = true;">
                                 <span class="icon"><i class="fa fa-upload"></i></span><span>Cargar confirmación</span>
                             </a>
                         </div>
@@ -124,12 +124,11 @@
     <div class="modal-background" (click)="mostrarLogAutoSync = !mostrarLogAutoSync"></div>
     <div class="modal-card">
         <header class="modal-card-head">
-        <p class="modal-card-title">¡Sincronización exitosa!</p>
+        <p class="modal-card-title">Detalles de la sincronización</p>
         <button class="delete" (click)="mostrarLogAutoSync = !mostrarLogAutoSync"></button>
         </header>
         <section class="modal-card-body">
             <div class="content">
-                <h3>Detalles de la sincronización</h3>
                 <pre>{{ logAutoSync }}</pre>
             </div>
         </section>
@@ -138,7 +137,43 @@
         </footer>
     </div>
 </div>
-<div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeError.mostrar">
+
+
+
+
+
+<div class="modal"  [ngClass]="{ 'is-active': mostrarModalSubirArchivoSync }">
+  <div class="modal-background" (click)="mostrarModalSubirArchivoSync =!mostrarModalSubirArchivoSync"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title"><span class="icon"><i class="fa fa-cloud-upload"></i></span> Subir archivo de sincronización manual</p>
+      <button class="delete" (click)="mostrarModalSubirArchivoSync = !mostrarModalSubirArchivoSync"></button>
+    </header>
+    <section class="modal-card-body">        
+        <div class="notification is-danger" *ngIf="mensajeErrorSync!=''"><span class="icon"><i class="fa fa-exclamation-circle"></i></span> {{ mensajeErrorSync }}</div>
+       
+        <div class="field" [ngClass]="{ 'is-hidden' : enviandoDatos || documentoSubido }">
+            <label for="sync" class="label" [ngClass]="{ 'is-danger': errores.archivo != null }">Elige el archivo sync.XXXX.zip</label>            
+            <input class="input-file" type="file" #archivoInput  name="sync" id="sync" style="width:100%" [disabled]="documentoSubido" (change)="fileChange($event)" accept=".zip">            
+            <p class="help is-danger" *ngIf="errores.archivo == 'required'">Debe elegir un archivo.</p>
+            <p class="help is-danger" *ngIf="errores.archivo == 'max'">El archivo no puede ser superior a los <b>10MB</b>.</p>
+            <p class="help is-danger" *ngIf="errores.archivo == 'mimetypes'">El tipo de archivo no es valido, verifique que tenga las siguientes extensiones: .zip</p>
+        </div>
+        <div *ngIf="enviandoDatos || documentoSubido">
+            <h1 class="subtitle" *ngIf="enviandoDatos">Subiendo documento...</h1>
+            <h1 class="subtitle" *ngIf="documentoSubido && !enviandoDatos"><span class="icon"><i class="fa fa-check-circle"></i></span> ¡El documento se ha subido exitosamente!</h1>
+            <progress class="progress is-primary" value="{{ progreso }}" max="100">{{ progreso}}%</progress>
+        </div>
+    </section>
+    <footer class="modal-card-foot">
+        <a class="button is-primary" [ngClass]="{ 'is-disabled' : !archivo || enviandoDatos  }" *ngIf="!documentoSubido" (click)="adjuntar()">Adjuntar</a>
+        <a class="button is-primary" [ngClass]="{ 'is-disabled' : !archivo || enviandoDatos  }" *ngIf="documentoSubido" (click)="reset()">Adjuntar otro documento</a>
+        <a class="button" [ngClass]="{ 'is-disabled' : enviandoDatos  }" (click)="mostrarModalSubirArchivoSync = !mostrarModalSubirArchivoSync">Cerrar</a>      
+    </footer>
+  </div>
+</div>
+
+<div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;z-index:9999;" *ngIf="mensajeError.mostrar">
     <button class="delete" (click)="mensajeError.mostrar = false"></button>        
     <b>Error:</b> {{ mensajeError.texto }}<br><br>     
 </div>
@@ -149,7 +184,3 @@
     <br>
     <p style="text-align: center;"><small >Este mensaje desaparecerá en {{ mensajeExito.cuentaAtras }} segundos.</small></p>       
 </div>
-
-
-
-

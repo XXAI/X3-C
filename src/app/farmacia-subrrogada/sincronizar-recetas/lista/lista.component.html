@@ -1,4 +1,5 @@
-<formulario #ctrl URL="sincronizar-recetas" titulo="Sincronizar receta" [dato]="dato"></formulario>
+<listar #ctrl URL="listar-pedidos-proveedor" titulo="Sincronizar Receta"></listar>
+<formulario #ctrl2 URL="analizar-json-proveedor" titulo="Sincronizar receta" [dato]="dato2"></formulario>
 <menu-farmacia [modulo]="'Sincronizar recetas'" [icono]="'assets/hub-farmacia-sub.svg'" [url]="'/farmacia-subrrogada/sincronizar-recetas'"></menu-farmacia>
 <div style="height:50px;"></div>
 <div class="contenedor columns " style="height:100%; ">
@@ -15,7 +16,7 @@
 
                         <div class="is-hidden-desktop">
                             <h1 class="title" *ngIf="!ctrl.busquedaActivada">
-                                <span class="icon is-medium"><i class="fa fa-user"></i></span> Salidas por recetas
+                                <span class="icon is-medium"><i class="fa fa-user"></i></span> Sincronizar recetas
                             </h1>
                         </div>
                         <div class="is-hidden-touch">
@@ -48,13 +49,15 @@
                 <thead>
                     <tr>
                         <th></th>
+                        <th></th>
                         <th style="text-align:center;"></th>
                         <th colspan="2" style="text-align:center;">Aceptados</th>
                         <th class="causes" colspan="2" style="text-align:center;">Ignorados</th>
                         <th></th>
                     </tr>
                     <tr>
-                        <th>Folio/Nombre del Pedido/Unidad Medica</th>
+                        <th>Folio/Descripción del Pedido</th>
+                        <th>CLUES</th>
                         <th style="text-align:center;">Fecha</th>
                         
                         <th class="aceptados" style="text-align:center;">Recetas</th>
@@ -66,78 +69,64 @@
                         <th style="text-align:center;">Opciones</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
+                <tbody *ngIf="!ctrl.busquedaActivada">
+                    <tr *ngFor="let item of ctrl.dato; let i=index">
                         <td style="vertical-align: middle;">
-                            <strong>CSSSA018740-2017-PA-003</strong>
-                            <br>H. B. C. DR. RAFAEL ALFARO GONZÁLEZ PIJIJIAPAN<br>
-                            solicitud de pedido
+                            <strong>{{item.folio}}</strong>
+                            <br>{{item.descripcion}}<br>
+                        </td>
+                        <td style="vertical-align: middle;">
+                            {{item.clues}}
                         </td>
                         <td style="text-align:center; vertical-align: middle;">
-                            2017-05-26<br>
+                            {{item.fecha | date}}<br>
                         </td>
-                        <td class="aceptados" style="text-align:center; vertical-align: middle;">3</td>
+                        <td class="aceptados" style="text-align:center; vertical-align: middle;">3<a routerLink="/almacen/sincronizar-recetas/editar/{{item.id}}"></a></td>
                         <td class="aceptados" style="text-align:center; vertical-align: middle;" >10</td>
                         <td class="ignorados" style="text-align:center; vertical-align: middle;" >2</td>
                         <td class="ignorados" style="text-align:center; vertical-align: middle;" >0</td>
                         <td style="text-align:center; vertical-align: middle;">
-                            <button type="button" class="button" (click)="abrirModal('sincronizarRecetasJson')" >
+                            <button type="button" class="button" (click)="abrirModal('sincronizarRecetasJson', item.id)" >
                                 <span class="icon"><i class="fa fa-upload"></i></span>
                                 <i class="fa fa-file-code-o" aria-hidden="true"></i>
                             </button>
-                            <button type="button" class="button" (click)="abrirModal('sincronizarRecetasImagenes')" >
+                            <button type="button" class="button" (click)="abrirModal('sincronizarRecetasImagenes', item.id)" >
                                 <span class="icon"><i class="fa fa-upload"></i></span>
                                 <i class="fa fa-file-image-o" aria-hidden="true"></i>
                             </button>
                         </td>
                     </tr>
-                    <!--
-                    <tr *ngFor="let item of lista; let i=index"> 
-                        
-                        <td style="vertical-align: middle;">
-                            <strong>{{ item.folio }}</strong>
-                            <br>{{item.unidad_medica}}
-                            <br>{{item.descripcion}}
-                        </td>
-                        
-                        <td style="text-align:center; vertical-align: middle;" [ngClass]="{'estatus-rojo':(item.status != 'EF' && item.expira_en_dias <= 0),'estatus-amarillo':(item.status == 'PS' && (item.expira_en_dias > 0 && item.expira_en_dias <= 5))}">
-                            {{ item.fecha_concluido | date:'y-MM-dd' }}<br>
-                            <span *ngIf="item.status != 'EF'">
-                                [{{ item.fecha_expiracion | date:'y-MM-dd' }}]<br>
-                            </span>
-                            <strong *ngIf="item.status == 'PS' && item.expira_en_dias >= 0">
-                                Expira <span *ngIf="item.expira_en_dias == 0">Hoy</span><span *ngIf="item.expira_en_dias > 0">en {{item.expira_en_dias}} día(s)</span>
-                            </strong>
-                            <strong *ngIf="item.status == 'EX' && item.expira_en_dias < 0">
-                                <span *ngIf="item.status != 'EX-CA'">Expirado  hace {{item.expira_en_dias*(-1)}} día(s)</span>
-                            </strong>
-                        </td>
-                        
-                        <td style="text-align:center; vertical-align: middle; white-space: nowrap;">{{ item.total_claves_recibidas }} / {{ item.total_claves_solicitadas }} <br> <strong>({{(item.total_claves_recibidas/item.total_claves_solicitadas)*100 | number:'1.0-2'}} %)</strong></td>
-                        <td style="text-align:center; vertical-align: middle;">$ {{ item.total_monto_recibido | number:'1.2-2' }} / $ {{ item.total_monto_solicitado | number:'1.2-2' }} <br> <strong>({{((item.total_monto_recibido/item.total_monto_solicitado)*100) | number:'1.0-2'}} %)</strong></td>
-
-                        <td class="causes"  style="text-align:center; vertical-align: middle; white-space: nowrap;">
-                            <span *ngIf="item.total_claves_causes">{{ item.total_claves_causes_recibidas }} / {{ item.total_claves_causes }} <br> <strong>({{((item.total_claves_causes_recibidas/item.total_claves_causes)*100) | number:'1.0-2'}} %)</strong></span>
-                            <span *ngIf="!item.total_claves_causes"> </span>
-                        </td>
-                        <td class="causes"  style="text-align:center; vertical-align: middle;">
-                            <span *ngIf="(+item.total_monto_causes*1)">${{ item.total_monto_causes_recibido  | number:'1.2-2'}} / ${{ item.total_monto_causes  | number:'1.2-2'}} <br> <strong>({{((item.total_monto_causes_recibido/item.total_monto_causes)*100) | number:'1.0-2'}} %)</strong></span>
-                            <span *ngIf="!(+item.total_monto_causes*1)">  </span>
-                        </td>
-
-                        <td style="text-align:center; vertical-align: middle; width: 130px">
-                            <button type="button" class="button"  (click)="mostrarDialogoPedidos(item.pedido_id)" >
-                                <span class="icon is-small"><i class="fa fa-archive"></i></span>
-                            </button>
-                            
-                            <button type="button" class="button" [ngClass]="{'descargado':item.repositorio>0 }" (click)="mostrarDialogoArchivos(item.pedido_id, item.folio)" >
-                                <span class="icon is-small"><i class="fa fa-upload"></i></span><span class="tag" [ngClass]="{'color_tag_descargas':item.repositorio>0 }"><b>{{ item.repositorio }}</b></span>
-                            </button>
-                        </td>
-                    </tr> 
-                    <tr *ngIf="lista.length == 0">
+                    <tr *ngIf="ctrl.dato.length == 0">
                         <td colspan="12" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
-                    </tr>-->
+                    </tr>
+                </tbody>
+                <tbody *ngIf="ctrl.busquedaActivada">
+                    <tr *ngFor="let item of ctrl.resultadosBusqueda; let i=index">
+                        <td style="vertical-align: middle;">
+                            <strong>{{item.folio}}</strong>
+                            <br>{{item.descripcion}}<br>
+                        </td>
+                        <td style="vertical-align: middle;">
+                            {{item.clues}}
+                        </td>
+                        <td style="text-align:center; vertical-align: middle;">
+                            {{item.fecha | date}}<br>
+                        </td>
+                        <td class="aceptados" style="text-align:center; vertical-align: middle;">3<a routerLink="/almacen/sincronizar-recetas/editar/{{item.id}}"></a></td>
+                        <td class="aceptados" style="text-align:center; vertical-align: middle;" >10</td>
+                        <td class="ignorados" style="text-align:center; vertical-align: middle;" >2</td>
+                        <td class="ignorados" style="text-align:center; vertical-align: middle;" >0</td>
+                        <td style="text-align:center; vertical-align: middle;">
+                            <button type="button" class="button" (click)="abrirModal('sincronizarRecetasJson', item.id)" >
+                                <span class="icon"><i class="fa fa-upload"></i></span>
+                                <i class="fa fa-file-code-o" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="button" (click)="abrirModal('sincronizarRecetasImagenes', item.id)" >
+                                <span class="icon"><i class="fa fa-upload"></i></span>
+                                <i class="fa fa-file-image-o" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
 
@@ -161,18 +150,18 @@
                 <div class="container is-fluid"  style="width:100%;">
                     <h1 class="title" style="color:#FFF;">
                         <span class="icon is-medium"><i class="fa fa-file-code-o"></i></span> 
-                        Sincronizar recetas JSON
+                        Sincronizar recetas JSON {{pedido_id}}
                     </h1>
                 </div>     
             <button class="delete" (click)="cancelarModal('sincronizarRecetasJson')"></button>
         </header>
         <section class="modal-card-body">
             <div class="content">
-                <form name="form" novalidate [formGroup]="dato" (ngSubmit)="ctrl.enviar()" #mainScreen>
-                    <!-- Recetas JSON -->
+                <form name="form" novalidate [formGroup]="dato2" (ngSubmit)="enviarDatos('analizar-json-proveedor')" #mainScreen>
+                    
                     <div class="column">
                         <div style="background: #FFF; border-radius: 1em; ">
-                            <div class="is-fullwidth has-text-centered" *ngIf="!ctrl.datosCargados">
+                            <div class="is-fullwidth has-text-centered" *ngIf="!ctrl2.datosCargados">
                                 <br>
                                 <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>                    &nbsp;<span>Cargando...</span></span>
                             </div>
@@ -182,27 +171,27 @@
                                     <div class="field has-addons">
                                         <label class="label">Archivo JSON:</label>
                                         <div style="height:20px;"></div>
-                                        <p class="control is-expanded  has-icon has-icon-right" style="float:left; width: 95.1%;" >
-                                            <input class="input" type="file" (change)="ctrl.convertirJson($event, ctrl.dato.controls.json)" accept=".json, .txt">
+                                        <p class="control is-expanded  has-icon has-icon-right" style="float:left; width: 94.6%;" >
+                                            <input class="input" type="file" #json (change)="convertirJson($event, dato2?.controls?.json)" accept=".json, .txt">
                                             <input type="hidden" formControlName="json">
                                         </p>
                                         <p class="control" style="float:left">
-                                            <button class="button is-primary" type="submit" [ngClass]="{'is-loading': ctrl.cargando, 'is-disabled':ctrl.dato.controls.json.value == ''}" [disabled]="ctrl.error_json">Enviar</button>
+                                            <button class="button is-primary" type="submit" [ngClass]="{'is-loading': ctrl2.cargando,'is-disabled': dato2?.controls?.json.value == ''}" [disabled]="ctrl2.error_json">Validar</button>
                                         </p>
                                     </div>
                                     
                                 </div>
                                 <figure class="highlight" style="width: 100%; height: 300px; overflow: auto;">
                                     <pre>
-                                        <span class="help is-danger" *ngIf="ctrl.error_json">El archivo no es valido o no tiene el formato adecuado.</span>
-                                        <code class="language-json" data-lang="json">{{ ctrl.dato.controls.json.value | json }}</code>
+                                        <span class="help is-danger" *ngIf="ctrl2.error_json">El archivo no es valido o no tiene el formato adecuado.</span>
+                                        <code class="language-json" data-lang="json">{{ dato2?.controls?.json.value | json }}</code>
                                     </pre>                        
                                 </figure>
-                                <div class="box">
-                                    <span>Recetas aceptadas:</span> <span class="tag is-success">2</span>
-                                    &nbsp;&nbsp;&nbsp;<span>Colectivos aceptados:</span> <span class="tag is-success">2</span>
-                                    &nbsp;&nbsp;&nbsp;<span>Recetas ignoradas:</span> <span class="tag is-danger">2</span>
-                                    &nbsp;&nbsp;&nbsp;<span>Colectivos ignorados:</span> <span class="tag is-danger">0</span>
+                                <div class="box" *ngIf="recetas_resultado == true">
+                                    <span>Recetas aceptadas:</span> <span class="tag is-success">{{json_valido?.recetas_validas}}</span>
+                                    &nbsp;&nbsp;&nbsp;<span>Colectivos aceptados:</span> <span class="tag is-success">{{json_valido?.colectivos_validos}}</span>
+                                    &nbsp;&nbsp;&nbsp;<span>Recetas ignoradas:</span> <span class="tag is-danger">{{json_valido?.recetas_invalidas}}</span>
+                                    &nbsp;&nbsp;&nbsp;<span>Colectivos ignorados:</span> <span class="tag is-danger">{{json_valido?.colectivos_invalidos}}</span>
                                 </div>
                                 
                             </section>
@@ -212,12 +201,13 @@
             </div>
         </section>
         <footer class="modal-card-foot">
-            <a class="button is-success" [ngClass]="{'is-disabled':1==1}" (click)="agregarLoteIsumo(cantidad_solicitada.value)">Sincronizar recetas</a>
-            <a class="button" (click)="cancelarModal('sincronizarRecetasJson')">Cancelar</a>
+            <a class="button is-success" [ngClass]="{'is-disabled': !recetas_resultado}" (click)="sincronizarReceta('sincronizarRecetasJson'); ">Sincronizar recetas</a>
+            <a class="button" (click)="cancelarModal('sincronizarRecetasJson'); dato2.controls.json.value == '';">Cancelar</a>
         </footer>
+        <simple-notifications [options]="options"></simple-notifications>
     </div>
 </div>
-
+<!--
 <div class="modal" id="sincronizarRecetasImagenes">
     <div class="modal-background"></div>
     <div class="modal-card"  style="width:80%; height: 75%; overflow: hidden;">
@@ -232,7 +222,7 @@
         </header>
         <section class="modal-card-body">
             <form name="form" novalidate [formGroup]="dato" (ngSubmit)="ctrl.enviar()" #mainScreen>
-                <!-- Recetas JSON -->
+                
                 <div class="column">
                     <div style="background: #FFF; border-radius: 1em; ">
                         <div class="is-fullwidth has-text-centered" *ngIf="!ctrl.datosCargados">
@@ -272,4 +262,4 @@
             <a class="button" (click)="cancelarModal('sincronizarRecetasImagenes')">Cancelar</a>
         </footer>
     </div>
-</div>
+</div> -->
