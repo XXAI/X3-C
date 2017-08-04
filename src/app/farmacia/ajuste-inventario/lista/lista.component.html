@@ -1,4 +1,4 @@
-<listar #ctrl URL="inventario" titulo="Ajuste de Inventario"></listar>
+<listar #ctrl URL="ajustes-inventario" titulo="Ajuste de Inventario"></listar>
 <menu-farmacia [modulo]="'Ajuste de Inventario'" [icono]="'assets/icono-salidas.svg'" [url]="'/almacen/ajuste-inventario'"></menu-farmacia>
 <div style="height:50px;"></div>
 <div class="contenedor columns " style="height:100%; ">
@@ -26,7 +26,7 @@
                         <span></span>
                         <div class="is-hidden-desktop">
                             <h1 class="title" *ngIf="!ctrl.busquedaActivada">
-                                <span class="icon is-medium"><i class="fa fa-user"></i></span> Inventario
+                                <span class="icon is-medium"><i class="fa fa-user"></i></span> Ajuste de inventario
                             </h1>
                         </div>
                         <h1 class="title" *ngIf="ctrl.busquedaActivada">
@@ -50,31 +50,29 @@
             <table class="table" *ngIf="!ctrl.cargando" style="min-width:100%; font-size:1.2em;">
                 <thead>
                     <tr>
-                        <th style="text-align: center;">Clave</th>
-                        <th>Descripción</th>
-                        <th style="text-align: right;">Existencia</th>
-                        <th style="text-align: right;">Existencia Unidosis</th>
-                        <th style="text-align: center;">Actualizado</th>
+                        <th style="text-align: center;">Folio</th>
+                        <th>Fecha</th>
+                        <th style="text-align: right;">Usuario</th>
+                        <th style="text-align: right;">Tipo de ajuste</th>
                     </tr>
                 </thead>
                 <tbody *ngIf="!ctrl.busquedaActivada">
                     <tr *ngFor="let item of ctrl.dato; let i=index">
-                        <th style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)">{{ item.clave_insumo_medico }}</a></th>
+                        <th style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)">{{ item.folio }}</a></th>
                         <td style="vertical-align: middle;">
                             <a (click)="select_insumo_autocomplete(item)">
-                                <p class="title is-5"> <small>{{ item.descripcion }} </small></p>
-                                    <p class="subtitle is-6">
+                                <p class="title is-5"> <small>{{ item.created_at | date }} </small></p>
+                                    <!--<p class="subtitle is-6">
                                         <label *ngIf="item.es_causes==1" class="tag is-success" ><strong>Causes </strong></label>
                                         <label *ngIf="item.es_causes==0" class="tag" style="background: #B8FB7E; border-color: #B8FB7E; color: rgba(0,0,0,0.7);">
                                             <strong>No Causes </strong> 
                                         </label>
                                         <label *ngIf="item.es_unidosis==1" class="tag is-warning" ><strong>Unidosis</strong></label>
-                                    </p>
+                                    </p> -->
                             </a>
                         </td>
-                        <td style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)">{{ item.existencia }} </a></td>
-                        <td style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)">{{ item.existencia_unidosis }} </a></td>
-                        <td style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)">{{ item.updated_at | date}} </a></td>
+                        <td style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)">{{ item.user }} </a></td>
+                        <td style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)">{{ item.tipo_ajuste }} </a></td>
                     </tr>
                     <tr *ngIf="ctrl.dato.length == 0">
                         <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>

@@ -81,10 +81,10 @@ export class FormularioComponent {
       });
 
       FileSaver.saveAs( self.base64ToBlob( evt.data.base64, 'application/pdf' ), evt.data.fileName );
-      //open( 'data:application/pdf;base64,' + evt.data.base64 ); // Popup PDF
+      // open( 'data:application/pdf;base64,' + evt.data.base64 ); // Popup PDF
     };
 
-    //inicializar el formulario reactivo
+    // inicializar el formulario reactivo
     this.dato = this.fb.group({
       id: [''],
       tipo_movimiento_id: ['2', [Validators.required]],
@@ -94,10 +94,10 @@ export class FormularioComponent {
       cancelado: [''],
       observaciones_cancelacion: [''],
       movimiento_metadato: this.fb.group({
-        turno_id:['', [Validators.required]],
-        servicio_id:['', [Validators.required]],
-        persona_recibe:['', [Validators.required]],
-      }),      
+        turno_id: ['', [Validators.required]],
+        servicio_id: ['', [Validators.required]],
+        persona_recibe: ['', [Validators.required]],
+      }),
       insumos: this.fb.array([]),
       insumos_negados: this.fb.array([])
     });

@@ -20,7 +20,7 @@ export class ListaComponent implements OnInit {
     private crudService: CrudService){}
 
   ngOnInit() {
-      this.usuario = JSON.parse(localStorage.getItem("usuario"));
+      this.usuario = JSON.parse(localStorage.getItem('usuario'));
   }
 
   /**
@@ -30,15 +30,16 @@ export class ListaComponent implements OnInit {
      */
   select_insumo_autocomplete(data) {
 
-    var usuario = JSON.parse(localStorage.getItem("usuario"));
+    var usuario = JSON.parse(localStorage.getItem('usuario'));
     this.cargando = true;
     console.log(data);
-    //cargar los datos de los lotes del insumo seleccionado en el autocomplete
-    this.crudService.lista(0, 1000, 'comprobar-stock?almacen=' + usuario.almacen_activo.id + '&clave=' + data.clave_insumo_medico).subscribe(
+    // cargar los datos de los lotes del insumo seleccionado en el autocomplete
+    this.crudService.lista(0, 1000, 'comprobar-stock?almacen=' + usuario.almacen_activo.id + '&clave=' +
+      data.clave_insumo_medico).subscribe(
       resultado => {
-      
-        let unidosis_temporal: Number; 
-        let normal_temporal: Number; 
+
+        let unidosis_temporal: Number;
+        let normal_temporal: Number;
 
         this.lotes_insumo = resultado;
         console.log(data.es_unidosis);
@@ -46,8 +47,9 @@ export class ListaComponent implements OnInit {
         this.unidad_medida = data.unidad_medida;
 
         let html = ``;
-        if(data.es_causes == 1)
+        if(data.es_causes === 1) {
           html += `<label class="tag is-success" ><strong>Causes </strong></label>`;
+        }
         if(data.es_causes == 0)
           html += `<label class="tag" style="background: #B8FB7E; border-color: #B8FB7E; color: rgba(0,0,0,0.7);"><strong>No Causes </strong> </label>`; 
         if(data.es_unidosis == 1)                                                                 
@@ -56,7 +58,7 @@ export class ListaComponent implements OnInit {
         //poner el titulo a la modal                
         document.getElementById('tituloModal').innerHTML = ` ${data.descripcion} <br>
           <p aling="justify" style="font-size:14px">${data.clave_insumo_medico}</p> 
-          <p aling="justify" style="font-size:12px"> CANTIDAD POR ENVASE: ${data.cantidad_x_envase ? data.cantidad_x_envase : "Sin especificar" } </p>
+          <p aling="justify" style="font-size:12px"> CANTIDAD POR ENVASE: ${data.cantidad_x_envase ? data.cantidad_x_envase : 'Sin especificar' } </p>
           <br>
           `+html;
         

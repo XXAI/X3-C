@@ -12,17 +12,18 @@ export class ListaComponent implements OnInit {
   lista;
   lotes_insumo;
   cargando;
-  buscar_en = 'MC';
+  buscar_en = 'MIS_CLAVES';
   seleccionar = 'TODO';
   insumo;
+  tipo = 'TODO';
   es_unidosis;
   unidad_medida;
 
   constructor(
-    private crudService: CrudService){}
+    private crudService: CrudService) {}
 
   ngOnInit() {
-      this.usuario = JSON.parse(localStorage.getItem("usuario"));
+      this.usuario = JSON.parse(localStorage.getItem('usuario'));
   }
     
 
@@ -33,10 +34,10 @@ export class ListaComponent implements OnInit {
      */
   select_insumo_autocomplete(data) {
 
-    var usuario = JSON.parse(localStorage.getItem("usuario"));
+    var usuario = JSON.parse(localStorage.getItem('usuario'));
     this.cargando = true;
     console.log(data);
-    //cargar los datos de los lotes del insumo seleccionado en el autocomplete
+    // cargar los datos de los lotes del insumo seleccionado en el autocomplete
     this.crudService.lista(0, 1000, 'comprobar-stock?almacen=' + usuario.almacen_activo.id + '&clave=' + data.clave_insumo_medico).subscribe(
       resultado => {
       
@@ -59,7 +60,7 @@ export class ListaComponent implements OnInit {
         //poner el titulo a la modal                
         document.getElementById('tituloModal').innerHTML = ` ${data.descripcion} <br>
           <p aling="justify" style="font-size:14px">${data.clave_insumo_medico}</p> 
-          <p aling="justify" style="font-size:12px"> CANTIDAD POR ENVASE: ${data.cantidad_x_envase ? data.cantidad_x_envase : "Sin especificar" } </p>
+          <p aling="justify" style="font-size:12px"> CANTIDAD POR ENVASE: ${data.cantidad_x_envase ? data.cantidad_x_envase : 'Sin especificar' } </p>
           <br>
           `+html;
         
