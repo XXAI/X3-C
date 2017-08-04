@@ -76,10 +76,10 @@ export class FormularioComponent {
       });
 
       FileSaver.saveAs( self.base64ToBlob( evt.data.base64, 'application/pdf' ), evt.data.fileName );
-      //open( 'data:application/pdf;base64,' + evt.data.base64 ); // Popup PDF
+      // open( 'data:application/pdf;base64,' + evt.data.base64 ); // Popup PDF
     };
 
-    //inicializar el formulario reactivo
+    // inicializar el formulario reactivo
     this.dato = this.fb.group({
       id: [''],
       tipo_movimiento_id: ['1'],  

@@ -102,7 +102,10 @@
                     <hr id="catalogos" (click)="ctrl.cargarCatalogo('turnos', 'mis-turnos'); "> 
 
                     <div >
-                        <nav class="panel"  formGroupName="movimiento_metadato">
+                        <span class="icon is-small" *ngIf="!ctrl.dato.get('movimiento_metadato')">
+                            <i class="fa fa-warning"></i>
+                        </span>
+                        <nav class="panel"  formGroupName="movimiento_metadato" *ngIf="ctrl.dato.get('movimiento_metadato')">
 
                             <div class="field">
                                 <label class="label">Turno:</label>
@@ -341,9 +344,10 @@
                                     <nav class="level is-mobile">
                                         <div class="level-left">
                                             <a class="level-item" >
+                                                
                                                 <div class="field"  *ngIf="ctrl.dato.controls.insumos.controls[i].controls.modo_salida.value == 'N'">
-                                                    <!-- cambiar a formControlName="cantidad_solicitada"  -->
-                                                    <label class="label" *ngIf="tieneid">Cant. solicitada ({{ctrl.dato.get("insumos").value[i].detalles.informacion_ampliada.presentacion_nombre}}):</label>
+                                                    <label class="label" *ngIf="tieneid && ctrl.dato.get('insumos').value[i].detalles.informacion_ampliada">Cant. solicitada ({{ctrl.dato.get("insumos").value[i].detalles.informacion_ampliada.presentacion_nombre}}):</label>
+                                                    <label class="label" *ngIf="tieneid && !ctrl.dato.get('insumos').value[i].detalles.informacion_ampliada">Cant. solicitada (normal):</label>
                                                     <label class="label" *ngIf="!tieneid">Cant. solicitada ({{ctrl.dato.controls.insumos.controls[i].controls.presentacion_nombre.value}}):</label>
                                                     <p class="control is-expanded  has-icon has-icon-right">
                                                         <input *ngIf="!tieneid" style="background:aliceblue" type="text" class="input" formControlName="cantidad_solicitada" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad_solicitada.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad_solicitada.touched}">
@@ -351,8 +355,8 @@
                                                     </p>
                                                 </div>
                                                 <div class="field" *ngIf="ctrl.dato.controls.insumos.controls[i].controls.modo_salida.value == 'U'">
-                                                    <!-- cambiar a formControlName="cantidad_solicitada_unidosis"  -->
-                                                    <label class="label" *ngIf="tieneid">Cant. solicitada ({{ctrl.dato.get("insumos").value[i].detalles.informacion_ampliada.unidad_medida_nombre}}):</label>
+                                                    <label class="label" *ngIf="tieneid && ctrl.dato.get('insumos').value[i].detalles.informacion_ampliada">Cant. solicitada ({{ctrl.dato.get("insumos").value[i].detalles.informacion_ampliada.unidad_medida_nombre}}):</label>
+                                                    <label class="label" *ngIf="tieneid && !ctrl.dato.get('insumos').value[i].detalles.informacion_ampliada">Cant. solicitada (Unidosis):</label>
                                                     <label class="label" *ngIf="!tieneid">Cant. solicitada unidosis ({{ctrl.dato.controls.insumos.controls[i].controls.unidad_medida.value}}):</label>
                                                     <p class="control is-expanded  has-icon has-icon-right">
                                                         <input *ngIf="!tieneid" style="background:aliceblue" type="text" class="input" formControlName="cantidad_solicitada" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad_solicitada.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad_solicitada.touched}">
@@ -364,7 +368,8 @@
                                         <div class="level-right">
                                             <a class="level-item" >
                                                 <div class="field"  *ngIf="ctrl.dato.controls.insumos.controls[i].controls.modo_salida.value == 'N'">
-                                                    <label class="label" *ngIf="tieneid">Cant. surtida ({{ctrl.dato.get("insumos").value[i].detalles.informacion_ampliada.presentacion_nombre}}):</label>
+                                                    <label class="label" *ngIf="tieneid && ctrl.dato.get('insumos').value[i].detalles.informacion_ampliada">Cant. surtida ({{ctrl.dato.get("insumos").value[i].detalles.informacion_ampliada.presentacion_nombre}}):</label>
+                                                    <label class="label" *ngIf="tieneid && !ctrl.dato.get('insumos').value[i].detalles.informacion_ampliada">Cant. surtida (Normal):</label>
                                                     <label class="label" *ngIf="!tieneid">Cant. a surtir ({{ctrl.dato.controls.insumos.controls[i].controls.presentacion_nombre.value}}):</label>
                                                     <p class="control is-expanded  has-icon has-icon-right">
                                                         <input *ngIf="!tieneid" style="background:aliceblue" type="text" readonly class="input" formControlName="cantidad_surtida" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad_surtida.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad_surtida.touched}">
@@ -372,7 +377,8 @@
                                                     </p>
                                                 </div>
                                                 <div class="field"  *ngIf="ctrl.dato.controls.insumos.controls[i].controls.modo_salida.value == 'U'">
-                                                    <label class="label" *ngIf="tieneid">Cant. surtida ({{ctrl.dato.get("insumos").value[i].detalles.informacion_ampliada.unidad_medida_nombre}}):</label>
+                                                    <label class="label" *ngIf="tieneid && ctrl.dato.get('insumos').value[i].detalles.informacion_ampliada">Cant. surtida ({{ctrl.dato.get("insumos").value[i].detalles.informacion_ampliada.unidad_medida_nombre}}):</label>
+                                                    <label class="label" *ngIf="tieneid && !ctrl.dato.get('insumos').value[i].detalles.informacion_ampliada">Cant. surtida (Unidosis):</label>
                                                     <label class="label" *ngIf="!tieneid">Cant. a surtir unidosis ({{ctrl.dato.controls.insumos.controls[i].controls.unidad_medida.value}}):</label>
                                                     <p class="control is-expanded  has-icon has-icon-right">
                                                         <input *ngIf="!tieneid" style="background:aliceblue" type="text" readonly class="input" formControlName="cantidad_surtida" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad_surtida.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad_surtida.touched}">

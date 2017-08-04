@@ -1,4 +1,4 @@
-<listar #ctrl URL="inventario?buscar_en={{buscar_en}}&seleccionar={{seleccionar}}" titulo="Inventario"></listar>
+<listar #ctrl URL="inventario?buscar_en={{buscar_en}}&seleccionar={{seleccionar}}&tipo={{tipo}}" titulo="Inventario"></listar>
 <menu-farmacia [modulo]="'Inventario'" [icono]="'assets/icono-salidas.svg'" [url]="'/almacen/inventario'"></menu-farmacia>
 <div style="height:50px;"></div>
 <div class="contenedor columns " style="height:100%; ">
@@ -11,25 +11,37 @@
                         <div class="level-left">
                             <p class="level-item">&nbsp;</p>
                             <p class="level-item b-checkbox is-info is-circular">
-                                <input class="styled" type="radio" id="buscar_en_mis_claves" [checked]="buscar_en == 'MC'" (click)="buscar_en = 'MC'" [value]="'MC'" name="buscar_en">                                    
+                                <input class="styled" type="radio" id="buscar_en_mis_claves" [checked]="buscar_en == 'MIS_CLAVES'" (click)="buscar_en = 'MIS_CLAVES'" [value]="'MIS_CLAVES'" name="buscar_en">                                    
                                 <label for="buscar_en_mis_claves">
-                                    <span class="tag is-large" [ngClass]="{'is-dark':buscar_en == 'MC'}">Mis claves</span>
+                                    <span class="tag is-large" [ngClass]="{'is-dark':buscar_en == 'MIS_CLAVES'}">Mis claves</span>
                                 </label> 
                             </p>
                             <p class="level-item  b-checkbox is-circular">
-                                <input class="styled" type="radio" id="buscar_en_todas_claves" [checked]="buscar_en == 'TC'" (click)="buscar_en = 'TC'" [value]="'TC'" name="buscar_en">                                    
+                                <input class="styled" type="radio" id="buscar_en_todas_claves" [checked]="buscar_en == 'TODAS_LAS_CLAVES'" (click)="buscar_en = 'TODAS_LAS_CLAVES'" [value]="'TODAS_LAS_CLAVES'" name="buscar_en">                                    
                                 <label for="buscar_en_todas_claves">
-                                    <span class="tag is-large" [ngClass]="{'is-dark':buscar_en == 'TC'}">Todas las claves</span>
+                                    <span class="tag is-large" [ngClass]="{'is-dark':buscar_en == 'TODAS_LAS_CLAVES'}">Todas las claves</span>
                                 </label>    
                             </p>
                             <p class="level-item">&nbsp;</p>
                             <p class="level-item field">
                                 <span class="control">
                                     <span class="select is-medium">
-                                        <select name="seleccion" #t (change)="seleccionar = t.value">
+                                        <select name="seleccion" #s (change)="seleccionar = s.value">
                                             <option value="TODO" selected>Todo</option>
-                                            <option value="EXISTENTE">Existente</option>
-                                            <option value="NO_EXISTENTE">No existente</option>
+                                            <option value="EXISTENTE">Existentes</option>
+                                            <option value="NO_EXISTENTE">No existentes</option>
+                                        </select>
+                                    </span>
+                                </span>
+                            </p>
+                            <p class="level-item field">
+                                <span class="control">
+                                    <span class="select is-medium">
+                                        <select name="seleccion" #t (change)="tipo = t.value">
+                                            <option value="TODO" selected>Todos los insumos</option>
+                                            <option value="ME">Medicamentos</option>
+                                            <option value="MC">Material de curación</option>
+                                            <option value="AD">Auxiliar diagnóstico</option>
                                         </select>
                                     </span>
                                 </span>
@@ -103,8 +115,8 @@
                         <td>--</td>
                         <td>--</td>
                         <td>--</td>
-                        <td style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)">{{ item.existencia }} </a></td>
-                        <td style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)">{{ item.existencia_unidosis }} </a></td>
+                        <td style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)" style="font-size:1.2em;" class="help" [ngClass]="{'is-danger': item.existencia == 0}">{{ item.existencia }} </a></td>
+                        <td style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)" style="font-size:1.2em;" class="help" [ngClass]="{'is-danger': item.existencia_unidosis == 0}">{{ item.existencia_unidosis }} </a></td>
                         <td style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)">{{ item.updated_at | date}} </a></td>
                     </tr>
                     <tr *ngIf="ctrl.dato.length == 0">
@@ -126,8 +138,11 @@
                                     </p>
                             </a>
                         </td>
-                        <td style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)">{{ item.existencia }} </a></td>
-                        <td style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)">{{ item.existencia_unidosis }} </a></td>
+                        <td>--</td>
+                        <td>--</td>
+                        <td>--</td>
+                        <td style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)" style="font-size:1.2em;" class="help" [ngClass]="{'is-danger': item.existencia == 0}">{{ item.existencia }} </a></td>
+                        <td style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)" style="font-size:1.2em;" class="help" [ngClass]="{'is-danger': item.existencia_unidosis == 0}">{{ item.existencia_unidosis }} </a></td>
                         <td style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)">{{ item.updated_at | date}} </a></td>
                     </tr>
                     <tr *ngIf="ctrl.resultadosBusqueda.length == 0 && ctrl.busquedaActivada">
