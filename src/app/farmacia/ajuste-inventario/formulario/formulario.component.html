@@ -93,11 +93,6 @@
             </p>
         </div>
         <form [formGroup]="dato" novalidate (ngSubmit)="guardar_ajuste()">
-            <div class="form-group">
-                <label class="center-block">Clave:
-                <input class="form-control" formControlName="clave_insumo_medico">
-                </label>
-            </div>
             <section class="card-content" style="overflow: auto; height: 450px">
                 <table class="table is-narrow is-bordered is-striped">
                     <thead>
@@ -106,6 +101,7 @@
                             <th>Caducidad</th>
                             <th>Codigo de barras</th>
                             <th>Existencia</th>
+                            <th>Ajuste</th>
                             <th>Nueva existencia</th>
                             <th></th>
                         </tr>
@@ -120,10 +116,16 @@
                             <td *ngIf="item.value.nuevo"><input class="input has-text-centered " type="text" placeholder="Codigo de barras" formControlName="codigo_barras" [(ngModel)]="item.codigo_barras"></td>
                             <td *ngIf="!item.value.nuevo">{{item.value.existencia}}</td>
                             <td *ngIf="item.value.nuevo"></td>
-                            <td *ngIf="!item.value.nuevo">{{item.value.nueva_existencia}}</td>
-                            <td *ngIf="item.value.nuevo"><input class="input has-text-centered " type="text" placeholder="Nueva existencia" formControlName="nueva_existencia" [(ngModel)]="item.nueva_existencia"></td>
+                            <td *ngIf="!item.value.nuevo">
+                                <input type="checkbox" class="checkbox" formControlName="ajuste" (click)="check_option($event,i);" [(ngModel)]="item.ajuste">
+                                Realizar ajuste
+                                {{item.value.ajuste}}
+                            </td>
+                            <td *ngIf="item.value.nuevo"></td>
+                            <td *ngIf="!item.value.ajuste"></td>
+                            <td *ngIf="ajuste[i] || item.value.nuevo"><input class="input has-text-centered " type="text" placeholder="Nueva existencia" formControlName="nueva_existencia" [(ngModel)]="item.nueva_existencia"></td>
                             <td>
-                                <a class="delete" (click)=eliminarLote(i)></a>
+                                <a *ngIf="item.value.nuevo" class="delete" (click)=eliminarLote(i)></a>
                             </td>
                         </tr>
                     </tbody>

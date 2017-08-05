@@ -91,6 +91,7 @@ export class FormularioComponent {
   }
 
   guardar_ajuste() {
+
     console.log(this.dato.value);
   }
 
@@ -147,27 +148,24 @@ export class FormularioComponent {
     this.crudService.lista(0, 1000, 'comprobar-stock?almacen=' + usuario.almacen_activo.id + '&clave=' + data.clave).subscribe(
       resultado => {
 
-        console.log(resultado);
-
         const control =  <FormArray>this.dato.controls.lotes;
         for (let item of resultado){
           console.log(item);
+          item = {...item, ajuste: false, nueva_existencia: ''};
           control.controls.push(this.fb.group(item));
+          console.log(item);
         }
-         // control.patchValue('{clave_insumo_medico: data.clave}');
-        console.log(control);
-        console.log(control.value);
         this.lotes_insumo = resultado;
         this.insumo = data;
-
-        // limpiar el autocomplete
-        (<HTMLInputElement>document.getElementById('buscarInsumo')).value = '';
-
         this.descripcion_insumo = this.insumo.descripcion;
         this.cantidad_x_envase = this.insumo.cantidad_x_envase;
         this.es_unidosis = data.es_unidosis;
         this.unidad_medida = data.unidad_medida;
+        this.dato.patchValue({clave_insumo_medico: data.clave});
         this.clave = data.clave;
+
+        // limpiar el autocomplete
+        (<HTMLInputElement>document.getElementById('buscarInsumo')).value = '';
 
         this.cargando = false;
         this.activar_vista_lotes = true;
@@ -186,7 +184,7 @@ export class FormularioComponent {
           lote: [''],
           fecha_caducidad: [''],
           existencia: [''],
-          ajuste: [1],
+          ajuste: [true],
           nuevo: [1],
           nueva_existencia: ['']
       });
@@ -200,6 +198,16 @@ export class FormularioComponent {
     const control = <FormArray>this.dato.controls['lotes'];
     control.push(this.initLotes());
     console.log(this.dato.value);
+  }
+
+  /**
+     * Este método chequea la opción de ajuste
+     * @return void
+     */
+  check_option(event, i) {
+    this.ajuste[i] = event.srcElement.checked;
+    const control = <FormArray>this.dato.controls['lotes'];
+    control.controls[i].value.ajuste =  event.srcElement.checked;
   }
 
   /**
