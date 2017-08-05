@@ -7,10 +7,18 @@
             <section class="hero" [ngClass]=" {'is-dark': ctrl.busquedaActivada, 'is-primary': !ctrl.busquedaActivada } ">
 
                 <div class="hero-body" style="position:relative;">
-                    <a class="button  is-dark" *ngIf="ctrl.busquedaActivada" style="position:absolute; top:1em; right:1em;" (click)="ctrl.busquedaActivada=false;searchBox.value=''; ctrl.resultadosBusqueda=[]"><span class="icon "><i class="fa fa-close"></i></span></a>
-                    <a class="button  is-dark" *ngIf="ctrl.busquedaActivada" style="position:absolute; top:1em; right:3.5em;" (click)="ctrl.listarBusqueda(searchBox.value,1)"><span class="icon "><i class="fa fa-refresh"></i></span></a>
-                    <a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" style="position:absolute; top:1em; right:1em;" (click)="ctrl.listar(1)"><span class="icon "><i class="fa fa-refresh"></i></span></a>
-                    
+                    <nav class="level">
+                        <div class="level-left"></div>
+                        <!-- Right side -->
+                        <div class="level-right">
+                            <p class="level-item"><a class="button is-dark is-medium" routerLink="nuevo" *ngIf="ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva salida</span></a></p>
+                            <p class="level-item"><a class="button is-primary is-medium" routerLink="nuevo" *ngIf="!ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva salida</span></a></p>
+                            <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" (click)="ctrl.busquedaActivada=false;searchBox.value=''; ctrl.resultadosBusqueda=[]"><span class="icon "><i class="fa fa-close"></i></span></a></p>
+                            <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="Actualizar" (click)="ctrl.listarBusqueda(searchBox.value,1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
+                            <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="Actualizar" (click)="ctrl.listar(1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
+                            <p class="level-item">&nbsp;</p>
+                        </div>
+                    </nav> 
                     <div class="container is-fluid">
                         <span></span>
                         <div class="is-hidden-desktop">
@@ -24,11 +32,6 @@
                         <div class="control is-grouped">
                             <p class="control is-expanded">
                                 <input class="input is-medium" type="text" placeholder="Buscar" #searchBox id="search-box" (keyup)="ctrl.buscar(searchBox.value)">
-                            </p>
-                            <p class="control">
-                                <a class="button is-medium is-primary is-inverted " routerLink="/almacen/salidas-estandar/nuevo">
-                                    <span class="icon"><i class="fa fa-plus"></i></span><span>Nueva salida</span>
-                                </a>
                             </p>
                         </div>
                     </div>

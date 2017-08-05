@@ -138,7 +138,6 @@ export class FormularioComponent {
      */
   select_insumo_autocomplete(data) {
 
-    const control_lotes = <FormArray>this.dato.controls['lotes'];
     let usuario = JSON.parse(localStorage.getItem('usuario'));
     this.cargando = true;
 
@@ -148,9 +147,6 @@ export class FormularioComponent {
     this.crudService.lista(0, 1000, 'comprobar-stock?almacen=' + usuario.almacen_activo.id + '&clave=' + data.clave).subscribe(
       resultado => {
 
-        let unidosis_temporal: Number;
-        let normal_temporal: Number;
-
         console.log(resultado);
 
         const control =  <FormArray>this.dato.controls.lotes;
@@ -158,6 +154,7 @@ export class FormularioComponent {
           console.log(item);
           control.controls.push(this.fb.group(item));
         }
+         // control.patchValue('{clave_insumo_medico: data.clave}');
         console.log(control);
         console.log(control.value);
         this.lotes_insumo = resultado;

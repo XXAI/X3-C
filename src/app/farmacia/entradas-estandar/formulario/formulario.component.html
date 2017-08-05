@@ -21,26 +21,6 @@
                 </section>
                 
                 <div style="padding: 1em;">
-                    <nav class="nav">
-                        <div class="nav-right">
-                            <div class="nav-item">
-                                <div class="field is-grouped">
-                                    <p class="control" *ngIf="!tieneid" style="float:left">
-                                        <button class="button is-primary" type="submit" [ngClass]="{'is-loading': ctrl.cargando}" [disabled]="ctrl.dato.invalid">Guardar</button>
-                                    </p>
-                                    <p class="control" style="float:left">
-                                        <a *ngIf="tieneid" class="button is-primary is-inverted" (click)="imprimir()">
-                                            <span class="icon"><i class="fa fa-print"></i></span>
-                                        </a>
-                                        <a class="button" (click)="ctrl.regresar()">
-                                            Regresar
-                                        </a>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </nav>
-
                     <h3 class="title">
                         <i class="fa fa-file"></i>
                          Datos del movimiento
@@ -128,7 +108,19 @@
             <div style="background: #FFF; border-radius: 1em; ">
                 <section class="hero is-primary">
                     <div class="hero-body">
-                        <a class="button  is-primary" style="position:absolute; top:5em; right:3em;" (click)="ctrl.cargarDatos();  "><span class="icon "><i class="fa fa-refresh"></i></span></a>
+                        <nav class="level">
+                            <div class="level-left"></div>
+                            <!-- Right side -->
+                            <div class="level-right">
+                                <p class="level-item" *ngIf="tieneid"><a *ngIf="tieneid" class="button is-primary" (click)="imprimir()"><span class="icon"><i class="fa fa-print"></i></span></a></p>
+                                <p class="level-item" *ngIf="!tieneid">
+                                        <button class="button is-primary" type="submit" [ngClass]="{'is-loading': ctrl.cargando}" [disabled]="ctrl.dato.invalid"> <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar</button>
+                                </p>
+                                <p class="level-item"><a class="button is-primary" (click)="ctrl.regresar()">Regresar</a></p>
+                                <p class="level-item"><a class="button is-primary" title="Actualizar" (click)="ctrl.cargarDatos();"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
+                                <p class="level-item">&nbsp;</p>
+                            </div>
+                        </nav>
                         <div class="container is-fluid">
                             <h1 class="title">
                                 <span *ngIf="!ctrl.cargando || !cargando" class="icon is-medium"><i class="fa fa-edit"></i></span>
