@@ -26,6 +26,13 @@ export class MenuAsideComponent implements OnInit {
         ]
       },
       {
+        titulo: 'Opciones avanzadas',
+        modulos: [
+          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'fa-wrench', titulo:"Actualizar sistema", url:"/panel-control/opciones-avanzadas/actualizar-sistema" },          
+          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'fa-database', titulo:"Base de datos", url:"/panel-control/opciones-avanzadas/base-datos" },          
+        ]
+      },
+      {
         titulo: 'Usuarios y privilegios',
         modulos: [
           { permiso: 'mGKikN0aJaeF2XrHwwYK3XNw0f9CSZDe', icono: 'fa-user', titulo:"Usuarios", url:"/panel-control/usuarios" },

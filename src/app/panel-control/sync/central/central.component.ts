@@ -284,6 +284,7 @@ export class CentralComponent implements OnInit {
 			headers.delete('Content-Type');
 			headers.append('Authorization',  'Bearer ' + localStorage.getItem('token'));
 			let options = new RequestOptions({ headers: headers, responseType: ResponseContentType.Blob });
+			//let options = new RequestOptions({ headers: headers });
 
 			
 			var responseHeaders:any;

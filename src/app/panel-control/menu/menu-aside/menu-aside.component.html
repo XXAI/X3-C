@@ -1,5 +1,6 @@
 <aside class="menu" style="padding: 1em;">
     <div *ngFor="let item of menuAutorizado">
+        <br>
         <p class="menu-label">{{ item.titulo }}</p>
         <ul class="menu-list">
             <li *ngFor="let modulo of item.modulos">
