@@ -208,7 +208,7 @@
                         {{ item.proveedor }}</td>
                         
                         <td style="vertical-align: middle;" *ngIf="item.status!='EF' && item.status!='BR'"><b><a class="surtiendo" (click)='verInformacion(item)'>{{ (item.folio)?item.folio:'S/F' }}</a></b></td>
-                        <td style="vertical-align: middle;" *ngIf="item.status!='EX-CA' || item.status=='EF' || item.status=='BR'">{{ (item.folio)?item.folio:'S/F' }}</td>
+                        <td style="vertical-align: middle;" *ngIf="item.status=='EF' || item.status=='BR'">{{ (item.folio)?item.folio:'S/F' }}</td>
                         <td style="vertical-align: middle;">{{ item.descripcion }}</td>
                         <td style="vertical-align: middle;">{{ item.unidad_medica }}</td>
                         <td style="vertical-align: middle;">{{ item.fecha_concluido | date:'y-MM-dd' }}</td>
