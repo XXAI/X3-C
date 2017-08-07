@@ -28,8 +28,8 @@ export class HubComponent implements OnInit {
     { 
       title:'Almacén artículos', routerLink:'/almacen-articulos', icono:'assets/hub-almacen-articulos.svg',
       permisos: [
-        'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
-        'cuSmlV9lvABXzfjtLbzEe0VbI47Dh6Cv', // Ver catálogos
+        //'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
+        //'cuSmlV9lvABXzfjtLbzEe0VbI47Dh6Cv', // Ver catálogos
       ] 
     },
     { 
