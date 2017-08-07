@@ -165,7 +165,7 @@
                     <tr>
                         <th style="text-align:center;">Folio</th>
                         <th style="text-align:center;">Nombre del Pedido</th>
-                        <th style="text-align:center;">Fecha</th>
+                        <th style="text-align:center;">Fecha de Notificación</th>
                         <th style="text-align:center;">Surtidas/Solicitadas</th>
                         <th style="text-align:center;">% Acu</th>
                         <th style="text-align:center;">Surtidos/Solicitados</th>
@@ -179,7 +179,7 @@
                     <tr>
                         <td>{{pedido.folio}}</td>
                         <td>{{pedido.nombre_pedido}}</td>
-                        <td style="text-align:center;">{{pedido.fecha}}</td>
+                        <td style="text-align:center;">{{ pedido.fecha_concluido | date:'y-MM-dd' }}</td>
                         <td style="text-align:center;">{{pedido.total_claves_recibidas | number: '1.0-0'}} / {{pedido.total_claves_solicitadas | number: '1.0-0'}}</td>
                         <td style="text-align:center;">{{parseNaN((pedido.total_claves_recibidas * 100 /pedido.total_claves_solicitadas)) | number: '1.2-2'}}%</td>
                         <td style="text-align:center;">{{pedido.total_cantidad_recibida | number: '1.0-0'}} / {{pedido.total_cantidad_solicitada | number: '1.0-0'}}</td>

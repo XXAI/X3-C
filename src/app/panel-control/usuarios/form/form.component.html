@@ -25,7 +25,7 @@
                 </span>
                 <span class="help is-danger" *ngIf="usuario.get('id').hasError('required') && usuario.get('id').touched">Este campo es requerido.</span>
                 <span class="help is-danger" *ngIf="usuarioRepetido && usuario.get('id').touched">Este usuario ya fue utilizado.</span>
-                <span class="help is-danger" *ngIf="usuarioInvalido && usuario.get('id').touched">El usuario debe tener un formato de <b>email</b> válido.</span>
+                <!--span class="help is-danger" *ngIf="usuarioInvalido && usuario.get('id').touched">El usuario debe tener un formato de <b>email</b> válido.</span-->
               </p>
               <p class="control" *ngIf="mostrarCambiarPassword">
                   <label class="checkbox">
