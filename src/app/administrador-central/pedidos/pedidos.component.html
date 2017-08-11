@@ -298,7 +298,7 @@
                                 <button type="button" class="button is-warning"  *ngIf="!borrador_cancelado" [ngClass]="{'is-loading': cargaRecepciones}" [disabled]="borrador_cancelado" (click)='regresarBorradorCancelador(datos_pedido.pedido_id)'><i class="fa fa-exclamation-triangle"></i> REGRESAR A EXPIRADO</button>
                             </th>
                     </thead>
-                    <tbody>
+                    <tbody >
                         <tr>
                             <td>
                                 <b>CLUES</b> <br>{{ datos_pedido.clues }}
@@ -351,7 +351,7 @@
                        
                     </tbody>
                 </table>
-                <table class="table" >
+                <table class="table"   *ngIf="borrador_cancelado">
                     <thead>
                         <th>ACTUALIZADO</th>
                         <th>ESTATUS</th>
@@ -401,7 +401,43 @@
                             </td>
                         </tr>
                     </tbody>
-                </table>     
+                </table>
+                <table class="table"   *ngIf="!borrador_cancelado">
+                    <thead>
+                        
+                        <th>MES</th>
+                        <th>AÑO</th>
+                        <th>CAUSES</th> 
+                        <th>NO CAUSES</th> 
+                        <th>MATERIAL DE CURACIÓN</th> 
+                        <th>TOTAL TRANSACCIÓN</th> 
+                        
+                    </thead>
+                    <tbody *ngIf="!cargaRecepciones">
+                        
+                        <tr *ngFor="let item of transaccion; let i=index" >  
+                            <td >{{ item.mes_texto }}</td>
+                            <td >{{ item.anio_destino }}</td>
+                            <td >{{ item.causes | currency:'USD':true:'4.2-2'}}</td>
+                            <td >{{ item.no_causes | currency:'USD':true:'4.2-2'}}</td>
+                            <td >{{ item.material_curacion | currency:'USD':true:'4.2-2'}}</td>
+                            <td >{{ item.total_monto_restante | currency:'USD':true:'4.2-2'}}</td>
+                                                  
+                        </tr>
+                        <tr *ngIf="transaccion.length == 0">
+                        <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
+                    </tr>
+                    </tbody>
+                    <tbody>
+                        <tr *ngIf="cargaRecepciones">
+                            <td colspan="6" style="text-align: center;">
+                                <br>
+                                    <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
+                                <br>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>   
              
             </form>
         </section>

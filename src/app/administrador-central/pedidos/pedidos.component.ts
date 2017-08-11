@@ -56,6 +56,7 @@ export class PedidosComponent implements OnInit {
   showPedido:boolean = false;
   datos_pedido:any = {};
   recepciones:any[] = [];
+  transaccion:any[] = [];
   borrador:boolean = true;
   borrador_cancelado:boolean = true;
   cargaRecepciones:boolean = false;
@@ -102,15 +103,23 @@ export class PedidosComponent implements OnInit {
     this.apiService.verRecepciones(this.datos_pedido.pedido_id).subscribe(
       respuesta => {
           this.cargaRecepciones = false; 
-          this.recepciones = respuesta.recepciones;
+          if(respuesta.recepciones)
+            this.recepciones = respuesta.recepciones;
+          else
+            this.recepciones = [];
+
           if(respuesta.status != 'BR' && respuesta.status != 'EX-CA')
               this.borrador = false;
           if(respuesta.status == 'EX-CA')
+          {
               this.borrador_cancelado = false;  
+              //console.log(respuesta.log_pedido_cancelado);
+              this.transaccion = Array(respuesta.log_pedido_cancelado);
+          }
       }, error => {
         this.cargaRecepciones = false;
         this.mensajeError.mostrar = true;
-        this.mensajeError.texto = "Ocurrio uun error al ver la información por favor vuelva a intentarlo";
+        this.mensajeError.texto = "Ocurrio un error al ver la información por favor vuelva a intentarlo";
       }
     );
 
@@ -144,7 +153,7 @@ export class PedidosComponent implements OnInit {
 
   regresarBorradorCancelador(id:string)
   {
-    if(prompt("Para confirmar que desea regresar el pedido a borrador, ingrese PEDIDO BORRADOR ") == "PEDIDO BORRADOR")
+    if(prompt("Para confirmar que desea regresar el pedido a borrador, ingrese PEDIDO BORRADOR") == "PEDIDO BORRADOR")
     {
       this.cargaRecepciones = true;
       this.apiService.pedidoBorradorCancelado(id).subscribe(
@@ -162,6 +171,20 @@ export class PedidosComponent implements OnInit {
           this.mensajeError = new Mensaje(true);
           this.mensajeError.mostrar = true;
           this.mensajeError.texto = "Se ha encontrador un error al regresar a borrador el pedido, por favor vuelva a intentarlo ";
+          try {
+              let e = error.json();
+              if (error.status == 401 ){
+                this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+              }
+              if (error.status == 500 ){
+                this.mensajeError.texto = e.error;
+              } else {
+                this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+              }
+            } catch(e){
+                this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";           
+            }
+          
         }
       );
     }
