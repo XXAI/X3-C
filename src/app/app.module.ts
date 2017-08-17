@@ -75,9 +75,13 @@ import { IndexLaboratorioModule } from './laboratorio/index-laboratorio/index-la
 // # Hub equipamiento
 import { IndexEquipamientoModule } from './equipamiento/index-equipamiento/index-equipamiento.module';
 
+// # Hub avances
+import { AvancesModule } from './avances/avances.module';
+
 // #modulo de admisión de pacientes
 import { EgresoModule } from './admision/egreso/egreso.module';
 import { PacienteModule } from './admision/paciente/paciente.module';
+
 
 //import { CrudModule } from './crud/crud.module';
 
@@ -143,6 +147,7 @@ export function highchartsFactory() {
     //CrudModule,
     PacienteModule,
     EgresoModule,
+    AvancesModule,
     WildcardRoutingModule, // Este siempre debe ir al final para que no haga conflicto con otras rutas
     
   ],
