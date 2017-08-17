@@ -60,9 +60,10 @@
                         <td style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'><a>{{ item.created_at }} </a></td>
                         
                         <td style="vertical-align: middle;" class="has-text-centered">
-                            <!-- <a class="is-primary" style="margin-right: 5px"  (click)='view(item.id)'>
-                                <span class="icon"><i class="fa fa-eye"></i></span>
-                            </a>-->
+                            <button type="button" class="button  is-primary" style="margin-right: 5px;" (click)='view(item.id)'>
+                            	<span class="icon"><i class="fa fa-eye"></i></span>
+                            </button>
+
                             <button type="button" class="button  is-primary" (click)='descargar(item.id)'>
                             	<span class="icon"><i class="fa fa-download"></i></span>
                             </button>
@@ -82,9 +83,10 @@
                         <td style="vertical-align: middle;" (click)='view(item.id)'><a>{{ item.created_at }} </a></td>
                         
                         <td style="vertical-align: middle;" class="has-text-centered">
-                            <!-- <a class="is-primary" style="margin-right: 5px"  (click)='view(item.id)'>
-                                <span class="icon"><i class="fa fa-eye"></i></span>
-                            </a>-->
+                            <button type="button" class="button  is-primary" style="margin-right: 5px;" (click)='view(item.id)'>
+                            	<span class="icon"><i class="fa fa-eye"></i></span>
+                            </button>
+                            
                             <button type="button" class="button  is-primary" (click)='descargar(item.id)'>
                             	<span class="icon"><i class="fa fa-download"></i></span>
                             </button>
