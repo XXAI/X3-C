@@ -19,7 +19,7 @@ import  * as FileSaver    from 'file-saver';
 export class FormularioComponent {
   @ViewChildren('cantidad_solicitada') cantidad_solicitadaBoxViewChildren;
   @ViewChildren('cantidad_solicitada_unidosis') cantidad_solicitada_unidosisBoxViewChildren;
-  //@ViewChildren('modo') modoBoxViewChildren;
+
   dato: FormGroup;
   form_insumos: any;
   modo: string = "N";
@@ -52,10 +52,11 @@ export class FormularioComponent {
 
   ngOnInit() {
 
-    //obtener los datos del usiario logueado almacen y clues
+    // obtener los datos del usiario logueado almacen y clues
     var usuario = JSON.parse(localStorage.getItem("usuario"));
 
-    //Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
+    // Solo si se va a cargar catalogos poner un 
+    // <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
     document.getElementById("catalogos").click();
     document.getElementById("actualizar").click();
 
