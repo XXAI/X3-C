@@ -1,0 +1,319 @@
+import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
+import { Router } from '@angular/router';
+import { ActivatedRoute, Params }   from '@angular/router';
+import { Location}           from '@angular/common';
+
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { environment } from '../../../environments/environment';
+
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+
+import 'rxjs/add/observable/of';
+import 'rxjs/add/observable/throw';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/operator/catch';
+
+import { AvanceService } from '../avance.service';
+import { Detalle } from '../detalle';
+
+import { Mensaje } from '../../mensaje';
+
+
+@Component({
+  selector: 'app-detalle',
+  templateUrl: './detalle.component.html',
+  styleUrls: ['./detalle.component.css']
+})
+export class DetalleComponent implements OnInit {
+  	
+    cargando: boolean = false;
+    showAgregarAvance: boolean = false;
+	
+
+	// # SECCION: Esta sección es para mostrar mensajes
+    mensajeError: Mensaje = new Mensaje();
+	mensajeExito: Mensaje = new Mensaje();
+	ultimaPeticion:any;
+	id_avance_detalle:string = "0";
+	id_avance:string;
+	// # FIN SECCION
+
+	// # SECCION: Lista de pacinetes
+	private paginaActual = 1;
+	resultadosPorPagina = 25;
+	total = 0;
+	private paginasTotales = 0;
+	private indicePaginas:number[] = [];
+
+	detalles: Detalle[] = [];
+	// # FIN SECCION
+	
+	// # SECCION: Resultados de búsqueda
+	private ultimoTerminoBuscado = "";
+	private terminosBusqueda = new Subject<string>();
+	private resultadosBusqueda: Detalle[] = [];
+	busquedaActivada:boolean = false;
+	private paginaActualBusqueda = 1;
+	resultadosPorPaginaBusqueda = 25;
+	totalBusqueda = 0;
+	private paginasTotalesBusqueda = 0;
+	private indicePaginasBusqueda:number[] = [];
+
+  constructor(
+  	private router: Router,
+  	private location: Location,
+  	private route: ActivatedRoute,
+  	private title: Title, 
+	private avanceService: AvanceService,
+	private fb: FormBuilder
+  ) { }
+
+  ngOnInit() {
+  	this.title.setTitle("Temas / Avance");
+  		this.mensajeError = new Mensaje();
+	    this.mensajeExito = new Mensaje();
+
+	    var self = this;
+
+	    this.route.params.subscribe(params => {
+	      this.id_avance = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number
+	    });
+
+	    this.listar(1);
+	    
+
+	    var busquedaSubject = this.terminosBusqueda
+	    .debounceTime(300) // Esperamos 300 ms pausando eventos
+	    .distinctUntilChanged() // Ignorar si la busqueda es la misma que la ultima
+	    .switchMap((term:string)  =>  { 
+	      console.log("Cargando búsqueda."+term);
+	      this.busquedaActivada = term != "" ? true: false;
+
+	      this.ultimoTerminoBuscado = term;
+	      this.paginaActualBusqueda = 1;
+	      this.cargando = true;
+	      return term  ? this.avanceService.buscar(term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]}) 
+	    }
+	      
+	    
+	    ).catch( function handleError(error){ 
+	     
+	      self.cargando = false;      
+	      self.mensajeError.mostrar = true;
+	      self.ultimaPeticion = function(){self.listarBusqueda(self.ultimoTerminoBuscado,self.paginaActualBusqueda);};//OJO
+	      try {
+	        let e = error.json();
+	        if (error.status == 401 ){
+	          self.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+	        }
+	      } catch(e){
+	        console.log("No se puede interpretar el error");
+	        
+	        if (error.status == 500 ){
+	          self.mensajeError.texto = "500 (Error interno del servidor)";
+	        } else {
+	          self.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+	        }            
+	      }
+	      // Devolvemos el subject porque si no se detiene el funcionamiento del stream 
+	      return busquedaSubject
+	    
+	    });
+
+	    busquedaSubject.subscribe(
+	      resultado => {
+	        this.cargando = false;
+	        this.resultadosBusqueda = resultado.data as Detalle[];
+	        this.totalBusqueda = resultado.total | 0;
+	        this.paginasTotalesBusqueda = Math.ceil(this.totalBusqueda / this.resultadosPorPaginaBusqueda);
+
+	        this.indicePaginasBusqueda = [];
+	        for(let i=0; i< this.paginasTotalesBusqueda; i++){
+	          this.indicePaginasBusqueda.push(i+1);
+	        }
+	        
+	        console.log("Búsqueda cargada.");
+	      }
+
+	    );
+  }
+
+  listar(pagina:number): void {
+    this.paginaActual = pagina;
+    
+    this.cargando = true;
+    
+    this.avanceService.lista_detalles(this.id_avance, pagina,this.resultadosPorPagina).subscribe(
+        resultado => {
+
+          this.cargando = false;
+          this.detalles = resultado.data as Detalle[];
+
+          this.total = resultado.total | 0;
+          this.paginasTotales = Math.ceil(this.total / this.resultadosPorPagina);
+
+          this.indicePaginas = [];
+          for(let i=0; i< this.paginasTotales; i++){
+            this.indicePaginas.push(i+1);
+          }
+          
+        },
+        error => {
+          this.cargando = false;
+          this.mensajeError.mostrar = true;
+          this.ultimaPeticion = this.listar;
+          try {
+            let e = error.json();
+            if (error.status == 401 ){
+              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }
+          } catch(e){
+            console.log("No se puede interpretar el error");
+            
+            if (error.status == 500 ){
+              this.mensajeError.texto = "500 (Error interno del servidor)";
+            } else {
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }            
+          }
+
+        }
+      );
+    }
+
+    buscar(term: string): void {
+	    this.terminosBusqueda.next(term);
+	}
+
+  listarBusqueda(term:string ,pagina:number): void {
+    this.paginaActualBusqueda = pagina;
+    console.log("Cargando búsqueda.");
+   
+    this.cargando = true;
+    this.avanceService.buscar(term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
+        resultado => {
+          console.log(resultado);
+          this.cargando = false;
+
+          this.resultadosBusqueda = resultado.data as Detalle[];
+
+          this.totalBusqueda = resultado.total | 0;
+          this.paginasTotalesBusqueda = Math.ceil(this.totalBusqueda / this.resultadosPorPaginaBusqueda);
+
+          this.indicePaginasBusqueda = [];
+          for(let i=0; i< this.paginasTotalesBusqueda; i++){
+            this.indicePaginasBusqueda.push(i+1);
+          }
+          
+          
+          
+        },
+        error => {
+          this.cargando = false;
+          this.mensajeError.mostrar = true;
+          this.ultimaPeticion = function(){this.listarBusqueda(term,pagina);};
+          try {
+            let e = error.json();
+            if (error.status == 401 ){
+              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }
+          } catch(e){
+            console.log("No se puede interpretar el error");
+            
+            if (error.status == 500 ){
+              this.mensajeError.texto = "500 (Error interno del servidor)";
+            } else {
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }            
+          }
+
+        }
+      );
+  }
+
+  descargar(id){
+    let id_avance = id;
+    var query = "token="+localStorage.getItem('token');
+    var self = this;
+
+    var download = window.open(`${environment.API_URL}/download-file-avance/${id_avance}?${query}`);
+    var contador = 0;
+    /*var timer = setInterval(function ()
+    {
+       contador = contador + 1;
+        if (download.closed)
+        {
+            clearInterval(timer);
+            self.mostrarDialogoArchivos(self.datosPedido);
+             self.mensajeError.mostrar = false;
+             self.mensajeExito.mostrar = true;
+             self.mensajeExito.iniciarCuentaAtras();
+            self.mensajeExito.texto = "Se ha descargado correctamente el archivo";
+        }else{
+          if(contador == 5)
+          {
+            clearInterval(timer);
+            download.close();
+            self.mensajeError.mostrar = true;
+            self.mensajeError.iniciarCuentaAtras();
+            self.mensajeError.texto = "Ocurrio un error al intentar descargar el archivo.";
+          }
+        }
+    }, 1000);*/
+  }
+
+  view(id){
+    let id_avance = id;
+    var query = "token="+localStorage.getItem('token');
+    var self = this;
+
+    var download = window.open(`${environment.API_URL}/view-file-avance/${id_avance}?${query}`);
+    var contador = 0;
+    /*var timer = setInterval(function ()
+    {
+       contador = contador + 1;
+        if (download.closed)
+        {
+            clearInterval(timer);
+            self.mostrarDialogoArchivos(self.datosPedido);
+             self.mensajeError.mostrar = false;
+             self.mensajeExito.mostrar = true;
+             self.mensajeExito.iniciarCuentaAtras();
+            self.mensajeExito.texto = "Se ha descargado correctamente el archivo";
+        }else{
+          if(contador == 5)
+          {
+            clearInterval(timer);
+            download.close();
+            self.mensajeError.mostrar = true;
+            self.mensajeError.iniciarCuentaAtras();
+            self.mensajeError.texto = "Ocurrio un error al intentar descargar el archivo.";
+          }
+        }
+    }, 1000);*/
+  }
+
+ 	regresar(){
+    this.location.back();
+  }
+
+    paginaSiguiente():void {
+	    this.listar(this.paginaActual+1);
+	}
+	paginaAnterior():void {
+	    this.listar(this.paginaActual-1);
+	}
+
+	paginaSiguienteBusqueda(term:string):void {
+	    this.listarBusqueda(term,this.paginaActualBusqueda+1);
+	}
+	paginaAnteriorBusqueda(term:string):void {
+	    this.listarBusqueda(term,this.paginaActualBusqueda-1);
+	}
+
+}

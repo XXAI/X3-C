@@ -1,0 +1,200 @@
+<avance-menu></avance-menu>
+<div style="height:50px;"></div>
+<div class="contenedor columns " style="height:100%; ">
+    <div class="column" style="padding:2em;">
+        <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
+            <section class="hero" [ngClass] = " {'is-dark': busquedaActivada, 'is-primary': !busquedaActivada } " >                
+                <div class="hero-body" style="position:relative;">
+                    <a class="button  is-dark" *ngIf="busquedaActivada" style="position:absolute; top:1em; right:1em;" (click)="busquedaActivada=false;searchBox.value='';resultadosBusqueda=[]"><span class="icon "><i class="fa fa-close"></i></span></a>
+                    <a class="button  is-dark" *ngIf="busquedaActivada" style="position:absolute; top:1em; right:3.5em;" (click)="listarBusqueda(searchBox.value,1)"><span class="icon "><i class="fa fa-refresh"></i></span></a>
+                    <a class="button  is-primary" *ngIf="!busquedaActivada" style="position:absolute; top:1em; right:1em;" (click)="listar(1)"><span class="icon "><i class="fa fa-refresh"></i></span></a>
+                    <div class="container is-fluid">
+                        
+                        <h1 class="title" *ngIf="!busquedaActivada">
+                            <span class="icon is-medium"><i class="fa fa-user"></i></span> Lista de Temas / Avances
+                        </h1>
+                        <h1 class="title" *ngIf="busquedaActivada">
+                            <span class="icon is-medium"><i class="fa fa-search"></i></span> Búsqueda 
+                        </h1>
+                        <div class="control is-grouped">
+                        <p class="control is-expanded">
+                            <input class="input is-medium" type="text" placeholder="Buscar" #searchBox id="search-box" (keyup)="buscar(searchBox.value)">
+                        </p>
+                        <p class="control">
+                        	<a class="button is-medium is-primary is-inverted " (click)='regresar()'>
+                            <span>Regresar</span>
+                            </a>
+                        </p>
+                        <p class="control">
+                            
+                            <a class="button is-medium is-primary is-inverted " (click)='showAgregarAvance=!showAgregarAvance'>
+                            <span class="icon"><i class="fa fa-plus"></i></span><span>Nuevo Avance</span>
+                            </a>
+                        </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="is-fullwidth has-text-centered" *ngIf="cargando">
+                <br>
+                <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
+                <br>
+                <br>
+            </div>
+        
+            <table class="table" *ngIf="!cargando">
+                <thead>
+                    <tr>
+                    <th><abbr>NOMBRE</abbr></th>
+                    <th>COMENTARIO</th>
+                    <th>% DE AVANCE</th>
+                    <th>ACTUALIZADO</th>
+                    <th></th>
+                    </tr>
+                </thead>
+                <tbody  *ngIf="!busquedaActivada">
+                    <tr *ngFor="let item of detalles; let i=index">
+                        <th style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'><a>{{ item.nombre }}.{{ item.extension }}</a></th>
+                        <td style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'><a>{{ item.comentario }}</a></td>
+                        <td style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'><a>{{ item.porcentaje }} %</a></td>
+                        <td style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'><a>{{ item.created_at }} </a></td>
+                        
+                        <td style="vertical-align: middle;" class="has-text-centered">
+                            <!-- <a class="is-primary" style="margin-right: 5px"  (click)='view(item.id)'>
+                                <span class="icon"><i class="fa fa-eye"></i></span>
+                            </a>-->
+                            <button type="button" class="button  is-primary" (click)='descargar(item.id)'>
+                            	<span class="icon"><i class="fa fa-download"></i></span>
+                            </button>
+                            
+                        </td>
+                        
+                    </tr>
+                    <tr *ngIf="detalles.length == 0">
+                        <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
+                    </tr>
+                </tbody>
+                <tbody *ngIf="busquedaActivada">
+                     <tr *ngFor="let item of detalles; let i=index">
+                        <th style="vertical-align: middle;" (click)='view(item.id)'><a>{{ item.nombre }}.{{ item.extension }}</a></th>
+                        <td style="vertical-align: middle;" (click)='view(item.id)'><a>{{ item.comentario }}</a></td>
+                        <td style="vertical-align: middle;" (click)='view(item.id)'><a>{{ item.porcentaje }} %</a></td>
+                        <td style="vertical-align: middle;" (click)='view(item.id)'><a>{{ item.created_at }} </a></td>
+                        
+                        <td style="vertical-align: middle;" class="has-text-centered">
+                            <!-- <a class="is-primary" style="margin-right: 5px"  (click)='view(item.id)'>
+                                <span class="icon"><i class="fa fa-eye"></i></span>
+                            </a>-->
+                            <button type="button" class="button  is-primary" (click)='descargar(item.id)'>
+                            	<span class="icon"><i class="fa fa-download"></i></span>
+                            </button>
+                            
+                        </td>
+                        
+                    </tr>
+
+                    <tr *ngIf="resultadosBusqueda.length == 0 && busquedaActivada">
+                        <td colspan="5" style="vertical-align: middle; color:#888;">No se encontraron resultados.</td>                    
+                    </tr>
+                </tbody>
+            </table>
+            
+            <paginacion 
+                [total]="total" 
+                [paginasTotales]="paginasTotales" 
+                [resultadosPorPagina]="resultadosPorPagina" 
+                [paginaActual]="paginaActual" 
+                [indicePaginas]="indicePaginas"
+                (onSiguiente)="paginaSiguiente()" 
+                (onAnterior)="paginaAnterior()" 
+                (onListar)="listar($event)" 
+                *ngIf="total>0 && total > resultadosPorPagina && !busquedaActivada"></paginacion>
+            <paginacion 
+                [total]="totalBusqueda" 
+                [paginasTotales]="paginasTotalesBusqueda" 
+                [resultadosPorPagina]="resultadosPorPaginaBusqueda" 
+                [paginaActual]="paginaActualBusqueda" 
+                [indicePaginas]="indicePaginasBusqueda"
+                (onSiguiente)="paginaSiguienteBusqueda(searchBox.value)" 
+                (onAnterior)="paginaAnteriorBusqueda(searchBox.value)" 
+                (onListar)="listarBusqueda(searchBox.value,$event)" 
+                *ngIf="totalBusqueda > 0 && totalBusqueda > resultadosPorPaginaBusqueda && busquedaActivada"></paginacion>
+           
+           
+            
+        </div>
+    </div>        
+   
+</div>
+<div id="modal-temas" class="modal is-active" [ngClass]="{'is-active': showAgregarAvance}">
+  <div class="modal-background"  (click)="showDialog = !showAgregarAvance"></div>
+  <div class="modal-card" style="width:60%; height: auto;">
+    <header class="modal-card-head" style="background-color: #00d1b2" >
+      <div class="container is-fluid"  style="width:100%;">
+          <h1 class="title" style="color:#FFF;">
+            <span class="icon is-medium"><i class="fa fa-user"></i></span> Agregar Avance
+          </h1>
+      </div>            
+      <a class="button  is-primary" style="position:absolute; top:1em; right:1em;" (click)="showAgregarAvance = !showAgregarAvance"><span class="icon "><i class="fa fa-close"></i></span></a>
+    </header>
+    <section class="section">
+        
+        <!--<form name="form" [formGroup]="tema_avance"   (ngSubmit)="agregar_tema()" > -->  
+            <section class="section" style="padding: 1rem 1.5rem; background-color: #EFEFEF">
+                <div class="container">
+                  <div class="heading">
+                    <h1 class="title">Avances</h1>
+                  </div>
+                </div>
+            </section> 
+              <div class="control is-grouped">
+                <p class="control is-expanded  has-icon has-icon-right">
+                    <label class="label">Archivo</label>
+                  <input class="input" autofocus type="text"  placeholder="Archivo">
+                  
+                </p>
+                
+              </div>
+              <div class="control is-grouped">
+                <p class="control is-expanded  has-icon has-icon-right">
+                    <label class="label">Procentaje</label>
+                  <input class="input"  type="text"  placeholder="Porcentaje" >
+                  
+                </p>
+                
+              </div>
+              
+              <div class="control is-grouped">
+                <p class="control is-expanded  has-icon has-icon-right">
+                    <label class="label">Comentario</label>
+                  <textarea  class="textarea"  placeholder="Comentario"></textarea>
+                  
+                </p>
+                
+              </div>
+            
+          <br>
+          <div class="control is-grouped">
+            <p class="control">
+              <button class="button is-primary" [ngClass]="{'is-loading': cargando}">Guardar</button>
+            </p>
+          </div>
+      <!--</form>-->
+    </section>
+    <footer class="" style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em " >
+    </footer>
+  </div>
+</div>
+
+<div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeError.mostrar">
+    <button class="delete" (click)="mensajeError.mostrar = false"></button>        
+    <b>Error:</b> {{ mensajeError.texto }}<br><br>
+    <p style="text-align:center" ><a  class="button is-danger is-inverted" (click)="ultimaPeticion(); mensajeError.mostrar = false"> <span class="icon"><i class="fa fa-refresh"></i></span> <span>Volver a intentar</span></a></p>        
+</div>
+
+<div class="notification is-success" style="position:fixed; left:1em;  bottom:1em; width: auto" *ngIf="mensajeExito.mostrar">       
+    <button class="delete" (click)="mensajeExito.mostrar = false"></button>
+    <p><span class="icon" style="margin-right: 0.5em;"><i class="fa fa-check-circle"></i></span> <span>{{ mensajeExito.texto }}</span></p>
+    <br>
+    <p style="text-align: center;"><small >Este mensaje desaparecerá en {{ mensajeExito.cuentaAtras }} segundos.</small></p>       
+</div>

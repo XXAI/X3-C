@@ -92,6 +92,13 @@ export class HubComponent implements OnInit {
         'PpXKhxdG8dGheNKm1rRSCT4EXZYyhRMm', // Ver admision
       ] 
     }
+    ,
+    { 
+      title:'Avances', routerLink:'/temas', icono:'assets/hub-avance.svg',
+      permisos: [
+        'WbBYhMFZkGsAYeN13hY1hylZkNPJbHOE', // Ver Avances
+      ] 
+    }
   ]
   
   hubAutorizado = [ { title:'Dashboard', routerLink:'/dashboard', icono:'assets/hub-dashboard.svg' } ]
