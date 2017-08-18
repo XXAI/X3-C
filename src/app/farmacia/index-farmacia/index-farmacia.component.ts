@@ -26,7 +26,7 @@ export class IndexFarmaciaComponent implements OnInit {
 
     this.modulos = [
       { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-pagina-lista.svg', titulo: 'Pedidos', url: '/almacen/pedidos' },
-      { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk--', icono: 'assets/icono-pedidos-jurisdiccionales.svg', titulo: 'Pedidos jurisdiccionales', url:"/almacen/pedidos-jurisdiccionales" },
+      { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk--', icono: 'assets/icono-pedidos-jurisdiccionales.svg', titulo: 'Pedidos jurisdiccionales', url:'/almacen/pedidos-jurisdiccionales' },
       { permiso: 'iSxK0TpoYpnzf8KIQTWOq9Web7WnSKhz', icono: 'assets/icono-pedidos-alt.svg', titulo:'Entregas de pedidos', url:"/almacen/entregas" },
       
       { permiso: 'GPSDLmXckXcdfdj7lD4rdacwMivsTp9g', icono: 'assets/icono-recetas.svg', titulo:'Recetas', url:'/almacen/salidas-recetas' },
@@ -35,8 +35,8 @@ export class IndexFarmaciaComponent implements OnInit {
 
       { permiso: 'kWbg08UnfL8fHlOpcNmcTvVbGEU6L8Wz', icono: 'assets/icono-stock.svg', titulo: 'Inventario', url: '/almacen/inventario' },
       { permiso: 'g8YLm8F0e9Zokxq6iSJUndPYro5Ic6tQ', icono: 'assets/icono-stock-edit.svg', titulo: 'Ajuste de Inventario', url: '/almacen/ajuste-inventario' },
-      { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-stock.svg', titulo: 'Inventario', url: '/almacen/inventario' },//PRUEBA
-      { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-stock-edit.svg', titulo: 'Ajuste de Inventario', url: '/almacen/ajuste-inventario' },//PRUEBA
+      { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-stock.svg', titulo: 'Inventario', url: '/almacen/inventario' }, // PRUEBA
+      { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-stock-edit.svg', titulo: 'Ajuste de Inventario', url: '/almacen/ajuste-inventario' }, // PRUEBA
 
       //{ permiso: '', icono: 'assets/hub-almacen.svg', titulo:"Inventario", url:"/farmacia/inventario" },
       //{ permiso: '', icono: 'assets/icono-ajustes-inventario.svg', titulo:"Ajustes de inventario", url:"/farmacia/inventario/ajustes" },

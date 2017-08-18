@@ -8,7 +8,6 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
     onmessage = function(evt) {
         let data = JSON.parse(evt.data)
         pdf(data);
-        console.log(data);
     };
 
     function pdf(data) {
@@ -35,13 +34,50 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         ],
                         [{ text: 'ENTRADAS DE ALMACEN', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
+                        ],[
+                            { text: 'CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
+                            {},
+                            { text: data.usuario.clues_activa.clues, style: 'tableHeader', alignment: 'left' }, 
+                            { text: 'NOMBRE DE CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' }, 
+                            {},
+                            { text: data.usuario.clues_activa.nombre, style: 'tableHeader', colSpan: 2, alignment: 'left' }, 
+                            {}
+                        ],
+                        [
+                            { text: '', style: 'tableHeaderVerde', colSpan: 3, alignment: 'right' },
+                            {},{},
+                            { text: 'NOMBRE DE ALMACÉN', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
+                            {},
+                            { text: data.usuario.almacen_activo.nombre, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {}
+                        ],
+                        [{ text: ' ', style: 'celdaEspacio', colSpan: 7, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {}
+                        ],
+                        [{ text: 'DETALLES DE ENTRADAS', style: 'tableHeaderLeyenda', colSpan: 7, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {}
+                        ],
+                        [
+                            { text: 'DESDE:', style: 'tableHeaderVerde', alignment: 'right' }, 
+                            { text: data.fecha_desde == "" ? '- -' : data.fecha_desde.substr(0,10), 
+                              style: 'tableHeader', alignment: 'left' },
+                            { text: 'HASTA:', style: 'tableHeaderVerde', alignment: 'right' }, 
+                            { text: data.fecha_hasta == "" ? '- -' : data.fecha_hasta.substr(0,10), 
+                              style: 'tableHeader', alignment: 'left' },
+                            { text: 'RECIBE:', style: 'tableHeaderVerde',  alignment: 'right' },
+                            { text: data.recibe == "" ? 'TODOS' : data.recibe, style: 'tableHeader', colSpan: 2, alignment: 'left' },
+                            {}
+                        ],
+                        [{ text: ' ', style: 'celdaEspacio', colSpan: 7, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {}
                         ],
                         [
                             { text: 'FECHA', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'FOLIO', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'RECIBE', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },{},
+                            { text: 'INSUMOS', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'RECIBE', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'ENTREGÓ', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'CAPTURADO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },{}
+                            { text: 'CAPTURADO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
+                            {}
                         ]
                         //Body -> insumos
                     ]
@@ -155,16 +191,19 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
 
         for (var i in data.lista) {
             var movimiento = data.lista[i];
-            console.log(movimiento);
+            if(i == data.lista.length-1){
+                break;
+            }
                 dd.content[0].table.body.push([
                     { text: movimiento.fecha_movimiento ? movimiento.fecha_movimiento : 'No disponible' , style: 'tableRow', alignment: 'center' },
                     { text: movimiento.id ? movimiento.id : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.movimiento_metadato == null ? 'No disponible' :  movimiento.movimiento_metadato.persona_recibe, colSpan: 2, style: 'tableRow', alignment: 'center' },{},
+                    { text: movimiento.numero_claves == null || movimiento.numero_insumos == null ? 'No disponible' : 'Claves: ' + movimiento.numero_claves + '\n Insumos: ' + movimiento.numero_insumos, style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.movimiento_metadato == null ? 'No disponible' :  movimiento.movimiento_metadato.persona_recibe, style: 'tableRow', alignment: 'center' },
                     { text: movimiento.movimiento_usuario == null ? 'No disponible' : movimiento.movimiento_usuario.nombre + ' ' + movimiento.movimiento_usuario.apellidos, style: 'tableRow', alignment: 'center' },
                     { text: movimiento.created_at ? movimiento.created_at : 'No disponible', colSpan: 2, style: 'tableRow', alignment: 'center' },{}
                 ]);
         }
-
+/*
         dd.content[0].table.body.push(
             // Footer
             [
@@ -200,6 +239,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                 alignment: 'center',
             }, {}, {}, {}, {}, {}, {}]
         );
+        */
 
         pdfMake.createPdf(dd).getBase64(function(base64) {
             postMessage({ fileName: 'Entradas_estandar.pdf', base64: base64 });
