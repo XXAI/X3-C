@@ -52,6 +52,7 @@ import { SincronizarRecetasModule } from './farmacia-subrrogada/sincronizar-rece
 // # Hub Farmacia
 import { IndexFarmaciaModule    } from './farmacia/index-farmacia/index-farmacia.module';
 import { PedidosModule          } from './farmacia/pedidos/pedidos.module';
+import { InicializacionInventarioModule } from './farmacia/inicializacion-inventario/inicializacion-inventario.module';
 import { PedidosJurisdiccionalesModule  } from './farmacia/pedidos-jurisdiccionales/pedidos-jurisdiccionales.module';
 import { EntregasModule         } from './farmacia/entregas/entregas.module';
 import { EntradasEstandarModule } from './farmacia/entradas-estandar/entradas-estandar.module';
@@ -130,6 +131,7 @@ export function highchartsFactory() {
     IndexFarmaciaSubrrogadaModule,
     IndexFarmaciaModule,
     PedidosModule,
+    InicializacionInventarioModule,
     PedidosJurisdiccionalesModule,
     EntregasModule,
     EntradasEstandarModule,
