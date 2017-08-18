@@ -1,4 +1,4 @@
-<menu-farmacia [modulo]="'Inicialización de Inventario'" [icono]="'assets/icono-ajustes-inventario.svg'" [url]="'/almacen/inicializacion-inventario'"></menu-farmacia>
+<app-menu-inventario [modulo]="'Inicialización de Inventario'" [icono]="'assets/icono-ajustes-inventario.svg'" [url]="'/inventario/inicializacion-inventario'"></app-menu-inventario>
 
 <div style="height:50px;"></div>
 <div class="contenedor columns " style="height:100%; ">
@@ -23,7 +23,7 @@
                                 <input class="input is-medium" type="text" placeholder="Buscar" #searchBox id="search-box" (keyup)="buscar(searchBox.value)">
                             </p>
                             <p class="control">
-                                <a class="button is-medium is-primary is-inverted " routerLink="/almacen/inicializacion-inventario/inicializar">
+                                <a class="button is-medium is-primary is-inverted " routerLink="/inventario/inicializacion-inventario/inicializar">
                                 <span class="icon"><i class="fa fa-archive"></i></span><span>Inicializar</span>
                                 </a>
                             </p>

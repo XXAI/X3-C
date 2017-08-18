@@ -7,8 +7,8 @@ import { PerfilModule } from '../../perfil/perfil.module';
 import { BloquearPantallaModule } from '../../bloquear-pantalla/bloquear-pantalla.module';
 import { PaginacionModule } from '../../paginacion/paginacion.module';
 
-import { BuscarInsumosModule } from '../buscar-insumos/buscar-insumos.module';
-import { IndexFarmaciaModule } from '../index-farmacia/index-farmacia.module';
+//import { BuscarInsumosModule } from '../buscar-insumos/buscar-insumos.module';
+import { IndexInventarioModule } from '../index-inventario/index-inventario.module';
 
 import { InicializacionInventarioRoutingModule } from './inicializacion-inventario-routing.module';
 
@@ -26,9 +26,9 @@ import { VerComponent } from './ver/ver.component';
     PerfilModule,
     BloquearPantallaModule,
     PaginacionModule,
-    BuscarInsumosModule,
+    //BuscarInsumosModule,
     InicializacionInventarioRoutingModule,
-    IndexFarmaciaModule
+    IndexInventarioModule
   ],
   declarations: [ListaComponent, FormularioComponent, VerComponent],
   providers:[InicializacionInventarioService]

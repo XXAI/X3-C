@@ -20,7 +20,7 @@ import { CambiarEntornoService } from '../../../perfil/cambiar-entorno.service';
 import { Mensaje } from '../../../mensaje';
 
 @Component({
-  selector: 'almacen-inicializacion-inventario-lista',
+  selector: 'inventario-inicializacion-inventario-lista',
   templateUrl: './lista.component.html',
   styleUrls: ['./lista.component.css'],
   providers: [InicializacionInventarioService]
@@ -139,11 +139,12 @@ export class ListaComponent implements OnInit {
   }
 
   obtenerDireccion(id:string, status:string): string{
-    if(status == 'BR'){
+    return '/inventario/inicializacion-inventario/ver/'+id;
+    /*if(status == 'BR'){
       return '/almacen/pedidos/editar/'+id;
     }else{
       return '/almacen/pedidos/ver/'+id;
-    }
+    }*/
   }
   
   buscar(term: string): void {

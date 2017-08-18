@@ -27,8 +27,9 @@ export class IndexInventarioComponent implements OnInit {
     this.modulos = [
       { permiso: 'kWbg08UnfL8fHlOpcNmcTvVbGEU6L8Wz', icono: 'assets/icono-stock.svg', titulo: 'Existencias', url: '/inventario/existencias' },
       { permiso: 'g8YLm8F0e9Zokxq6iSJUndPYro5Ic6tQ', icono: 'assets/icono-stock-edit.svg', titulo: 'Ajuste de Inventario', url: '/almacen/ajuste-inventario' },
-      { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-stock.svg', titulo: 'Existencias', url: '/inventario/existencias' }, // PRUEBA
-      { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-stock-edit.svg', titulo: 'Ajuste de Inventario', url: '/almacen/ajuste-inventario' }, // PRUEBA
+      { permiso: '7KbTARF2kpnO4Lfqv8hmYP8QGMcgJBwU', icono: 'assets/icono-ajustes-inventario.svg', titulo: 'Inicialización Inventario', url: '/inventario/inicializacion-inventario' },
+      //{ permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-stock.svg', titulo: 'Existencias', url: '/inventario/existencias' }, // PRUEBA
+      //{ permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-stock-edit.svg', titulo: 'Ajuste de Inventario', url: '/almacen/ajuste-inventario' }, // PRUEBA
 
     ]
     this.accesosDirectos = [

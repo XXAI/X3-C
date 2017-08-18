@@ -17,8 +17,8 @@ import 'rxjs/add/operator/catch';
 
 import  * as FileSaver    from 'file-saver'; 
 
-import { PedidosService } from '../../pedidos/pedidos.service';
-import { StockService } from '../../stock/stock.service';
+//import { PedidosService } from '../../pedidos/pedidos.service';
+//import { StockService } from '../../stock/stock.service';
 
 import { CambiarEntornoService } from '../../../perfil/cambiar-entorno.service';
 
@@ -73,7 +73,7 @@ export class FormularioComponent implements OnInit {
 
   private cambiarEntornoSuscription: Subscription;
   
-  constructor(private title: Title, private route:ActivatedRoute, private pedidosService:PedidosService, private inicializacionInventarioService:InicializacionInventarioService, private stockService:StockService,private router: Router, private cambiarEntornoService:CambiarEntornoService) {
+  constructor(private title: Title, private route:ActivatedRoute, private inicializacionInventarioService:InicializacionInventarioService, private router: Router, private cambiarEntornoService:CambiarEntornoService) {
     /*this.fb  = new FormBuilder();
     let now = new Date();
     let day = ("0" + now.getDate()).slice(-2);
@@ -93,7 +93,7 @@ export class FormularioComponent implements OnInit {
     this.title.setTitle('Surtir pedido / Almacén');
 
     this.cambiarEntornoSuscription = this.cambiarEntornoService.entornoCambiado$.subscribe(evento => {
-      this.router.navigate(['/almacen/pedidos']);
+      //this.router.navigate(['/almacen/pedidos']);
     });
 
     this.route.params.subscribe(params => {

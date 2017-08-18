@@ -17,7 +17,7 @@ export class HubComponent implements OnInit {
       title:'Almacén', routerLink:'/almacen', icono:'assets/hub-farmacia.svg',
       permisos: [
         'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
-        'r6REUnVWlsQ00zVYXakLUxdKtGArcenY', // Ver pedidos jurisdiccionales
+        //'r6REUnVWlsQ00zVYXakLUxdKtGArcenY', // Ver pedidos jurisdiccionales
         'iSxK0TpoYpnzf8KIQTWOq9Web7WnSKhz', // Ver entregas
         'GPSDLmXckXcdfdj7lD4rdacwMivsTp9g', // Ver salidas recetas
         'qQvNeb1UFPOfVMKQnNkvxyqjCIUgFuEG', // Ver salidas de almacen
@@ -28,7 +28,9 @@ export class HubComponent implements OnInit {
     { 
       title:'Inventario', routerLink:'/inventario', icono:'assets/icono-stock.svg',
       permisos: [
-        'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk--', // Ver pedidos
+        'kWbg08UnfL8fHlOpcNmcTvVbGEU6L8Wz', //Existencias
+        'g8YLm8F0e9Zokxq6iSJUndPYro5Ic6tQ', //Ajuste de Inventario
+        '7KbTARF2kpnO4Lfqv8hmYP8QGMcgJBwU', //Inicialización Inventario
       ] 
     },
     { 
