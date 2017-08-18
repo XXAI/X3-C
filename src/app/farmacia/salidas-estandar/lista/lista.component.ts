@@ -9,15 +9,15 @@ import  * as FileSaver    from 'file-saver';
 
 export class ListaComponent implements OnInit {
   usuario;
-  fecha_desde = "";
-  fecha_hasta = "";
-  turno = "";
-  servicio = "";
-  recibe = "";
+  fecha_desde = '';
+  fecha_hasta = '';
+  turno = '';
+  servicio = '';
+  recibe = '';
   dato;
 
   // # SECCION: Reportes
-  pdfworker:Worker;
+  pdfworker: Worker;
   cargandoPdf = false;
   // # FIN SECCION
 
@@ -92,20 +92,30 @@ export class ListaComponent implements OnInit {
     turno = turno[turno.selectedIndex].text;
     servicio = servicio[servicio.selectedIndex].text;
     var exportData = "<table><tr><th colspan='7'><h1>" + titulo 
-    +"</h1></th></tr><tr><th>Desde: "+this.fecha_desde+"</th><th>Hasta: "+this.fecha_hasta+"</th>"
-    +"<th>Turno: "+turno+"</th><th>Servicio: "+servicio+"</th><th>Recibe: "+this.recibe+"</th></tr><tr><th colspan='7'></th></tr></table>";
+    +'</h1></th></tr><tr><th>Desde: '+this.fecha_desde+'</th><th>Hasta: '+this.fecha_hasta+'</th>'
+    +'<th>Turno: '+turno+'</th><th>Servicio: '+servicio+'</th><th>Recibe: '+this.recibe+'</th></tr><tr><th colspan=\'7\'></th></tr></table>';
 
     exportData += document.getElementById('exportable').innerHTML;
-    var blob = new Blob([exportData], { type: "text/comma-separated-values;charset=utf-8" });
-    saveAs(blob,  "salida_estandar.xls");
+    var blob = new Blob([exportData], { type: 'text/comma-separated-values;charset=utf-8' });
+    saveAs(blob,  'salida_estandar.xls');
   }
 
   imprimir() {
     try {
       this.cargandoPdf = true;
+      let turno = this.tr.first.nativeElement.options;
+      let servicio = this.sr.first.nativeElement.options;
+      turno = turno[turno.selectedIndex].text;
+      servicio = servicio[servicio.selectedIndex].text;
+
       let entrada_imprimir = {
         lista: this.dato,
-        usuario: this.usuario
+        usuario: this.usuario,
+        fecha_desde: this.fecha_desde,
+        fecha_hasta: this.fecha_hasta,
+        turno: turno,
+        servicio: servicio,
+        recibe: this.recibe
       };
       this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
     } catch (e) {

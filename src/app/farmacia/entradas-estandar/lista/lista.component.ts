@@ -103,7 +103,10 @@ export class ListaComponent {
       this.cargandoPdf = true;
       let entrada_imprimir = {
         lista: this.dato,
-        usuario: this.usuario
+        usuario: this.usuario,
+        fecha_desde: this.fecha_desde,
+        fecha_hasta: this.fecha_hasta,
+        recibe: this.recibe
       };
       this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
     } catch (e) {

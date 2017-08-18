@@ -12,7 +12,7 @@ export class ListaComponent implements OnInit {
   lista;
   lotes_insumo;
   cargando;
-  buscar_en = 'MIS_CLAVES';
+  buscar_en = 'TODAS_LAS_CLAVES';
   seleccionar = 'TODO';
   insumo;
   tipo = 'TODO';

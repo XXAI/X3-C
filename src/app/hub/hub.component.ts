@@ -26,6 +26,12 @@ export class HubComponent implements OnInit {
       ] 
     },
     { 
+      title:'Inventario', routerLink:'/inventario', icono:'assets/icono-stock.svg',
+      permisos: [
+        'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk--', // Ver pedidos
+      ] 
+    },
+    { 
       title:'Almacén artículos', routerLink:'/almacen-articulos', icono:'assets/hub-almacen-articulos.svg',
       permisos: [
         //'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
