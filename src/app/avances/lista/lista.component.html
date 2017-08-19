@@ -76,25 +76,26 @@
                     </tr>
                 </tbody>
                 <tbody *ngIf="busquedaActivada">
-                    <tr *ngFor="let item of temas; let i=index">
-                        <th style="vertical-align: middle;"><a routerLink="/temas/avances/{{item.id}}">{{ item.tema }}</a></th>
-                        <td style="vertical-align: middle;"><a routerLink="/temas/avances/{{item.id}}">{{ item.responsable }}</a></td>
-                        <td style="vertical-align: middle;"><a routerLink="/temas/avances/{{item.id}}">{{ item.area }}</a></td>
-                        <td style="vertical-align: middle;"><a routerLink="/temas/avances/{{item.id}}">{{ item.porcentaje }} %</a></td>
-                        <td style="vertical-align: middle;" *ngIf="item.creacion"><a routerLink="/temas/avances/{{item.id}}">{{ item.creacion.date }} </a></td>
-                        <td style="vertical-align: middle;" *ngIf="!item.creacion"><a routerLink="/temas/avances/{{item.id}}">{{ item.creacion }} </a></td>
+                    <tr *ngFor="let item of resultadosBusqueda; let i=index">
+                        <th style="vertical-align: middle; cursor:pointer;"><a routerLink="/temas/avances/{{item.id}}">{{ item.tema }}</a></th>
+                        <td style="vertical-align: middle; cursor:pointer;"><a routerLink="/temas/avances/{{item.id}}">{{ item.responsable }}</a></td>
+                        <td style="vertical-align: middle; cursor:pointer;"><a routerLink="/temas/avances/{{item.id}}">{{ item.area }}</a></td>
+                        <td style="vertical-align: middle; cursor:pointer;"><a routerLink="/temas/avances/{{item.id}}">{{ item.porcentaje }} %</a></td>
+                        <td style="vertical-align: middle; cursor:pointer;" *ngIf="item.creacion"><a routerLink="/temas/avances/{{item.id}}">{{ item.creacion.date }} </a></td>
+                        <td style="vertical-align: middle; cursor:pointer;" *ngIf="!item.creacion"><a routerLink="/temas/avances/{{item.id}}">{{ item.creacion }} </a></td>
                         
                         
                         <td style="vertical-align: middle;" class="has-text-centered">
                             
-                        <button type="button" class="button is-primary"  (click)='ver_tema(item.id)'><span class="icon"><i class="fa fa-edit"></i></span></button>
-                            
+                            <button type="button"  class="button is-primary"  (click)='ver_tema(item.id)'>
+                              <span class="icon"><i class="fa fa-edit"></i></span>
+                            </button>
+                           
                         </td>
                         
                     </tr>
-
-                    <tr *ngIf="resultadosBusqueda.length == 0 && busquedaActivada">
-                        <td colspan="5" style="vertical-align: middle; color:#888;">No se encontraron resultados.</td>                    
+                    <tr *ngIf="temas.length == 0">
+                        <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
                     </tr>
                 </tbody>
             </table>

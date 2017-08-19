@@ -45,30 +45,42 @@
             <table class="table" *ngIf="!cargando">
                 <thead>
                     <tr>
+                    <th>Visualizar</th>
                     <th><abbr>NOMBRE</abbr></th>
                     <th>COMENTARIO</th>
                     <th>% DE AVANCE</th>
-                    <th>ACTUALIZADO</th>
+                    <th>CREADO  </th>
+                    <th></th>
                     <th></th>
                     </tr>
                 </thead>
                 <tbody  *ngIf="!busquedaActivada">
                     <tr *ngFor="let item of detalles; let i=index">
+                        <td  class="has-text-centered">
+                            <button type="button" class="button  is-primary" style="margin-right: 5px;" (click)='view(item.id)'>
+                            	<span class="icon"><i class="fa fa-eye"></i></span>
+                            </button>
+                        </td>    
                         <th style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'><a>{{ item.nombre }}.{{ item.extension }}</a></th>
                         <td style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'><a>{{ item.comentario }}</a></td>
                         <td style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'><a>{{ item.porcentaje }} %</a></td>
                         <td style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'><a>{{ item.created_at }} </a></td>
                         
-                        <td style="vertical-align: middle;" class="has-text-centered">
-                            <button type="button" class="button  is-primary" style="margin-right: 5px;" (click)='view(item.id)'>
-                            	<span class="icon"><i class="fa fa-eye"></i></span>
-                            </button>
-
+                        <td style="vertical-align: middle;" class="has-text-centered" *ngIf="!item.deleted_at">
                             <button type="button" class="button  is-primary" (click)='descargar(item.id)'>
                             	<span class="icon"><i class="fa fa-download"></i></span>
                             </button>
                             
                         </td>
+                        <td style="vertical-align: middle;" class="has-text-centered"  *ngIf="!item.deleted_at">
+                            <button type="button" class="button  is-primary" (click)='eliminar_avance(item.id)'>
+                                <span class="icon"><i class="fa fa-close"></i></span>
+                            </button>
+                            
+                        </td>
+                        <td style="vertical-align: middle;" class="has-text-centered" *ngIf="item.deleted_at"></td>
+                        <td style="vertical-align: middle;" class="has-text-centered" *ngIf="item.deleted_at">{{ item.deleted_at }}</td>
+                        
                         
                     </tr>
                     <tr *ngIf="detalles.length == 0">
@@ -76,22 +88,31 @@
                     </tr>
                 </tbody>
                 <tbody *ngIf="busquedaActivada">
-                     <tr *ngFor="let item of detalles; let i=index">
-                        <th style="vertical-align: middle;" (click)='view(item.id)'><a>{{ item.nombre }}.{{ item.extension }}</a></th>
-                        <td style="vertical-align: middle;" (click)='view(item.id)'><a>{{ item.comentario }}</a></td>
-                        <td style="vertical-align: middle;" (click)='view(item.id)'><a>{{ item.porcentaje }} %</a></td>
-                        <td style="vertical-align: middle;" (click)='view(item.id)'><a>{{ item.created_at }} </a></td>
-                        
-                        <td style="vertical-align: middle;" class="has-text-centered">
+                     <tr *ngFor="let item of resultadosBusqueda; let i=index" id='escala'>
+                       <td  class="has-text-centered">
                             <button type="button" class="button  is-primary" style="margin-right: 5px;" (click)='view(item.id)'>
                             	<span class="icon"><i class="fa fa-eye"></i></span>
                             </button>
-                            
+                        </td>    
+                        <th style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'><a>{{ item.nombre }}.{{ item.extension }}</a></th>
+                        <td style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'><a>{{ item.comentario }}</a></td>
+                        <td style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'><a>{{ item.porcentaje }} %</a></td>
+                        <td style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'><a>{{ item.created_at }} </a></td>
+                        
+                        <td style="vertical-align: middle;" class="has-text-centered" *ngIf="!item.deleted_at">
                             <button type="button" class="button  is-primary" (click)='descargar(item.id)'>
-                            	<span class="icon"><i class="fa fa-download"></i></span>
+                                <span class="icon"><i class="fa fa-download"></i></span>
                             </button>
                             
                         </td>
+                        <td style="vertical-align: middle;" class="has-text-centered"  *ngIf="!item.deleted_at">
+                            <button type="button" class="button  is-primary" (click)='eliminar_avance(item.id)'>
+                                <span class="icon"><i class="fa fa-close"></i></span>
+                            </button>
+                            
+                        </td>
+                        <td style="vertical-align: middle;" class="has-text-centered" *ngIf="item.deleted_at"></td>
+                        <td style="vertical-align: middle;" class="has-text-centered" *ngIf="item.deleted_at">{{ item.deleted_at }}</td>
                         
                     </tr>
 
@@ -141,7 +162,7 @@
     </header>
     <section class="section">
         
-        <!--<form name="form" [formGroup]="tema_avance"   (ngSubmit)="agregar_tema()" > -->  
+        <form name="form" [formGroup]="avance"   (ngSubmit)="upload()" >  
             <section class="section" style="padding: 1rem 1.5rem; background-color: #EFEFEF">
                 <div class="container">
                   <div class="heading">
@@ -150,18 +171,23 @@
                 </div>
             </section> 
               <div class="control is-grouped">
-                <p class="control is-expanded  has-icon has-icon-right">
-                    <label class="label">Archivo</label>
-                  <input class="input" autofocus type="text"  placeholder="Archivo">
-                  
-                </p>
-                
+					<div class="control is-grouped">
+		                <p class="control is-expanded  has-icon has-icon-right">
+		                    <label class="label">Subir Archivo </label>
+		                  	<input type="file" (change)="fileChanged($event)" formControlName="archivo" accept="application/pdf">
+		                  	
+		                </p>
+	              </div>
+                      
               </div>
               <div class="control is-grouped">
                 <p class="control is-expanded  has-icon has-icon-right">
                     <label class="label">Procentaje</label>
-                  <input class="input"  type="text"  placeholder="Porcentaje" >
-                  
+                  	<input class="input"  type="text"  placeholder="Porcentaje"  formControlName="porcentaje">
+                  	<span class="icon is-small" *ngIf="avance.get('porcentaje').hasError('required') && avance.get('porcentaje').touched">
+	                    <i class="fa fa-warning"></i>
+	                </span>
+	                <span class="help is-danger" *ngIf="avance.get('porcentaje').hasError('required') && avance.get('porcentaje').touched">Este campo es requerido.</span>
                 </p>
                 
               </div>
@@ -169,8 +195,11 @@
               <div class="control is-grouped">
                 <p class="control is-expanded  has-icon has-icon-right">
                     <label class="label">Comentario</label>
-                  <textarea  class="textarea"  placeholder="Comentario"></textarea>
-                  
+                  	<textarea  class="textarea"  placeholder="Comentario" formControlName="comentario"></textarea>
+                  	<span class="icon is-small" *ngIf="avance.get('comentario').hasError('required') && avance.get('comentario').touched">
+	                    <i class="fa fa-warning"></i>
+	                </span>
+	                <span class="help is-danger" *ngIf="avance.get('comentario').hasError('required') && avance.get('comentario').touched">Este campo es requerido.</span>
                 </p>
                 
               </div>
@@ -178,10 +207,11 @@
           <br>
           <div class="control is-grouped">
             <p class="control">
-              <button class="button is-primary" [ngClass]="{'is-loading': cargando}">Guardar</button>
+            <button type="submit" class="button is-primary" name="enviar" [ngClass]="{'is-loading': cargando}"  [disabled]="avance.invalid">Subir Archivo</button>
+               
             </p>
           </div>
-      <!--</form>-->
+      </form>
     </section>
     <footer class="" style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em " >
     </footer>

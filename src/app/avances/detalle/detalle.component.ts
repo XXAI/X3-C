@@ -33,10 +33,11 @@ export class DetalleComponent implements OnInit {
   	
     cargando: boolean = false;
     showAgregarAvance: boolean = false;
+    avance: FormGroup;
 	
 
 	// # SECCION: Esta sección es para mostrar mensajes
-    mensajeError: Mensaje = new Mensaje();
+  mensajeError: Mensaje = new Mensaje();
 	mensajeExito: Mensaje = new Mensaje();
 	ultimaPeticion:any;
 	id_avance_detalle:string = "0";
@@ -64,16 +65,30 @@ export class DetalleComponent implements OnInit {
 	private paginasTotalesBusqueda = 0;
 	private indicePaginasBusqueda:number[] = [];
 
+  //Subir archivo
+  tag:any;
+  id_pedido:string;
+  nombre_pedido:string;
+  cargando_archivo:number = 0;
+  subir_archivo:boolean = true;
+
   constructor(
   	private router: Router,
   	private location: Location,
   	private route: ActivatedRoute,
   	private title: Title, 
-	private avanceService: AvanceService,
-	private fb: FormBuilder
+  	private avanceService: AvanceService,
+  	private fb: FormBuilder
   ) { }
 
   ngOnInit() {
+
+    this.avance = this.fb.group({
+           archivo: ['', []],
+           porcentaje: ['', [Validators.required]],
+           comentario: ['', [Validators.required]]
+       
+      });
   	this.title.setTitle("Temas / Avance");
   		this.mensajeError = new Mensaje();
 	    this.mensajeExito = new Mensaje();
@@ -97,7 +112,7 @@ export class DetalleComponent implements OnInit {
 	      this.ultimoTerminoBuscado = term;
 	      this.paginaActualBusqueda = 1;
 	      this.cargando = true;
-	      return term  ? this.avanceService.buscar(term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]}) 
+	      return term  ? this.avanceService.buscar_detalle(this.id_avance, term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]}) 
 	    }
 	      
 	    
@@ -192,10 +207,9 @@ export class DetalleComponent implements OnInit {
 
   listarBusqueda(term:string ,pagina:number): void {
     this.paginaActualBusqueda = pagina;
-    console.log("Cargando búsqueda.");
-   
+
     this.cargando = true;
-    this.avanceService.buscar(term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
+    this.avanceService.buscar_detalle(this.id_avance, term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
         resultado => {
           console.log(resultado);
           this.cargando = false;
@@ -235,6 +249,102 @@ export class DetalleComponent implements OnInit {
         }
       );
   }
+
+  fileChanged(e: Event) {
+    var element: HTMLInputElement = e.target as HTMLInputElement;
+    this.tag = element;    
+  }
+
+  upload() {
+        if(this.tag)
+        {
+
+          console.log(this.avance.value);
+          this.subir_archivo = false;
+          let img:any = this.tag.files[0];
+          var formData: FormData = new FormData();
+          formData.append("file", img, img.name);
+          formData.append("porcentaje", this.avance.value.porcentaje);
+          formData.append("comentario", this.avance.value.comentario);
+          formData.append("avance_id", this.id_avance);
+
+          var xhr = new XMLHttpRequest();
+          xhr.upload.addEventListener("progress", (ev: ProgressEvent) => {
+              
+          });
+          var self = this;
+          xhr.open("POST", environment.API_URL+"/avance_repository", true);
+          xhr.setRequestHeader("Authorization", "Bearer "+localStorage.getItem('token'));
+          var usuario = JSON.parse(localStorage.getItem("usuario"));
+
+          if(usuario.proveedor_activo){
+            xhr.setRequestHeader("X-Proveedor-Id", usuario.proveedor_activo.id);
+          }
+
+          xhr.onreadystatechange = function () {
+              if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                 self.mensajeExito = new Mensaje(true);
+                  self.mensajeExito.mostrar = true;
+                  self.mensajeExito.texto = "Se  guardo correctamente el avance";
+                 self.listar(1);
+                 self.showAgregarAvance = !self.showAgregarAvance;
+                 self.avance.patchValue({porcentaje:"", comentario:"",archivo:""});
+              }
+
+              if(xhr.readyState === XMLHttpRequest.DONE && xhr.status != 200) {
+                 self.error_envio();
+                 self.subir_archivo = true;        
+              }
+              self.cargando_archivo = xhr.readyState;
+          };        
+          xhr.send(formData);
+        }else{
+          alert("ES NECESARIO ELEGIR UN ARCHIVO A SUBIR, VUELVA A INTENTARLO POR FAVOR");
+        }
+    }
+
+    error_envio()
+    {
+      this.mensajeError = new Mensaje(true);
+      this.mensajeError.mostrar = true;
+      this.mensajeError.texto = "Ha ocurrido un error al enviar el archivo";
+    }
+
+  eliminar_avance(id)
+  {
+      if(confirm("¿Realmente desea eliminar este avance?"))
+      {
+        this.cargando = true;
+        this.avanceService.eliminar(id).subscribe(
+        resultado => {
+          this.cargando = false;
+          this.mensajeExito = new Mensaje(true);
+          this.mensajeExito.mostrar = true;
+          this.mensajeExito.texto = "Se ha eliminado satisfactoriamente el avance";
+        },
+        error => {
+          this.cargando = false;
+          this.mensajeError = new Mensaje(true);
+          this.mensajeError.mostrar = true;
+          try {
+            let e = error.json();
+            if (error.status == 401 ){
+              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }
+          } catch(e){
+            console.log("No se puede interpretar el error");
+            
+            if (error.status == 500 ){
+              this.mensajeError.texto = "500 (Error interno del servidor)";
+            } else {
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }            
+          }
+
+        }
+      );
+      }
+  } 
 
   descargar(id){
     let id_avance = id;
