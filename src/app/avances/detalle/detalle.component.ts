@@ -318,6 +318,7 @@ export class DetalleComponent implements OnInit {
         this.avanceService.eliminar(id).subscribe(
         resultado => {
           this.cargando = false;
+          this.listar(1);
           this.mensajeExito = new Mensaje(true);
           this.mensajeExito.mostrar = true;
           this.mensajeExito.texto = "Se ha eliminado satisfactoriamente el avance";

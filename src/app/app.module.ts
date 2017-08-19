@@ -87,6 +87,7 @@ import { EgresoModule } from './admision/egreso/egreso.module';
 import { PacienteModule } from './admision/paciente/paciente.module';
 
 
+
 //import { CrudModule } from './crud/crud.module';
 
 

@@ -54,20 +54,16 @@
                         <td style="vertical-align: middle; cursor:pointer;"><a routerLink="/temas/avances/{{item.id}}">{{ item.responsable }}</a></td>
                         <td style="vertical-align: middle; cursor:pointer;"><a routerLink="/temas/avances/{{item.id}}">{{ item.area }}</a></td>
                         <td style="vertical-align: middle; cursor:pointer;"><a routerLink="/temas/avances/{{item.id}}">{{ item.porcentaje }} %</a></td>
-                        <td style="vertical-align: middle; cursor:pointer;" *ngIf="item.creacion"><a routerLink="/temas/avances/{{item.id}}">{{ item.creacion.date }} </a></td>
-                        <td style="vertical-align: middle; cursor:pointer;" *ngIf="!item.creacion"><a routerLink="/temas/avances/{{item.id}}">{{ item.creacion }} </a></td>
+                        <td style="vertical-align: middle; cursor:pointer;" *ngIf="item.creacion>=0"><a routerLink="/temas/avances/{{item.id}}"><span *ngIf="item.creacion == 0">Hoy</span><span *ngIf="item.creacion > 0">Hace {{ item.creacion }} Día(s)</span> </a></td>
+                        <td style="vertical-align: middle; cursor:pointer;" *ngIf="item.creacion<0"><a routerLink="/temas/avances/{{item.id}}">SIN ACTUALIZAR </a></td>
                         
                         
                         <td style="vertical-align: middle;" class="has-text-centered">
-                             <!--<a class="is-primary" routerLink="/temas/avances/{{item.id}}" style="margin-right: 5px">
-                                <span class="icon"><i class="fa fa-line-chart"></i></span>
-                            </a>-->
+                             
                             <button type="button"  class="button is-primary"  (click)='ver_tema(item.id)'>
                               <span class="icon"><i class="fa fa-edit"></i></span>
                             </button>
-                            <!--<a class="is-primary">
-                                <span class="icon"><i class="fa fa-edit"></i></span>
-                            </a>-->
+                            
                         </td>
                         
                     </tr>
@@ -81,8 +77,8 @@
                         <td style="vertical-align: middle; cursor:pointer;"><a routerLink="/temas/avances/{{item.id}}">{{ item.responsable }}</a></td>
                         <td style="vertical-align: middle; cursor:pointer;"><a routerLink="/temas/avances/{{item.id}}">{{ item.area }}</a></td>
                         <td style="vertical-align: middle; cursor:pointer;"><a routerLink="/temas/avances/{{item.id}}">{{ item.porcentaje }} %</a></td>
-                        <td style="vertical-align: middle; cursor:pointer;" *ngIf="item.creacion"><a routerLink="/temas/avances/{{item.id}}">{{ item.creacion.date }} </a></td>
-                        <td style="vertical-align: middle; cursor:pointer;" *ngIf="!item.creacion"><a routerLink="/temas/avances/{{item.id}}">{{ item.creacion }} </a></td>
+                        <td style="vertical-align: middle; cursor:pointer;" *ngIf="item.creacion>=0"><a routerLink="/temas/avances/{{item.id}}"><span *ngIf="item.creacion == 0">Hoy</span><span *ngIf="item.creacion > 0">Hace {{ item.creacion }} Día(s)</span> </a></td>
+                        <td style="vertical-align: middle; cursor:pointer;" *ngIf="item.creacion"><a routerLink="/temas/avances/{{item.id}}">{{ item.creacion }} </a></td>
                         
                         
                         <td style="vertical-align: middle;" class="has-text-centered">

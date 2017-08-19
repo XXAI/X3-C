@@ -45,7 +45,7 @@
             <table class="table" *ngIf="!cargando">
                 <thead>
                     <tr>
-                    <th>Visualizar</th>
+                    <th>VISUALIZAR</th>
                     <th><abbr>NOMBRE</abbr></th>
                     <th>COMENTARIO</th>
                     <th>% DE AVANCE</th>
@@ -56,7 +56,7 @@
                 </thead>
                 <tbody  *ngIf="!busquedaActivada">
                     <tr *ngFor="let item of detalles; let i=index">
-                        <td  class="has-text-centered">
+                        <td >
                             <button type="button" class="button  is-primary" style="margin-right: 5px;" (click)='view(item.id)'>
                             	<span class="icon"><i class="fa fa-eye"></i></span>
                             </button>
@@ -89,7 +89,7 @@
                 </tbody>
                 <tbody *ngIf="busquedaActivada">
                      <tr *ngFor="let item of resultadosBusqueda; let i=index" id='escala'>
-                       <td  class="has-text-centered">
+                       <td >
                             <button type="button" class="button  is-primary" style="margin-right: 5px;" (click)='view(item.id)'>
                             	<span class="icon"><i class="fa fa-eye"></i></span>
                             </button>
