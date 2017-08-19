@@ -598,12 +598,8 @@ export class PedidosComponent implements OnInit {
     this.cargandoArchivos = true;
     this.tituloDialogoArchivos = 'Folio: ' + item.folio;
     this.datosPedido = {folio:item.folio,pedido_id:item.pedido_id};
-    /*
-    this.cargando_archivo = 0;
-    this.cargandoDatosArchivo = true;
-    this.nombre_pedido = nombre;
-    this.id_pedido = id;
-    */
+   
+   
     this.apiService.verArchivosPedidoProveedor(item.pedido_id).subscribe(
       repositorio => {
         this.lista_archivos_pedido = repositorio;
