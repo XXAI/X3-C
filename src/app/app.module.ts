@@ -57,13 +57,13 @@ import { EntregasModule         } from './farmacia/entregas/entregas.module';
 import { EntradasEstandarModule } from './farmacia/entradas-estandar/entradas-estandar.module';
 import { SalidasRecetasModule   } from './farmacia/salidas-recetas/salidas-recetas.module';
 import { SalidasEstandarModule  } from './farmacia/salidas-estandar/salidas-estandar.module';
-import { AjusteInventarioModule } from './farmacia/ajuste-inventario/ajuste-inventario.module';
 import { DashboardSalidasModule } from './farmacia/dashboard-salidas/dashboard-salidas.module';
 import { ClavesBasicasModule    } from './administrador-central/claves-basicas/claves-basicas.module';
 
 // # Hub Inventario
 import { IndexInventarioModule  } from './inventario/index-inventario/index-inventario.module';
 import { InventarioModule       } from './inventario/existencias/inventario.module';
+import { AjusteInventarioModule } from './inventario/ajuste-inventario/ajuste-inventario.module';
 
 // # Hub almacén artículos
 import { IndexAlmacenArticulosModule } from './almacen-articulos/index-almacen-articulos/index-almacen-articulos.module';

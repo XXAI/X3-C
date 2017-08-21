@@ -81,7 +81,7 @@ export class FormularioComponent implements OnInit {
                 this.cargarDatos();
         });
 
-        this.moduloTitulo = this.id ? "Modificar" : "Nuevo";
+        this.moduloTitulo = this.id ? 'Modificar' : 'Nuevo';
     }
 
     /**
@@ -110,15 +110,15 @@ export class FormularioComponent implements OnInit {
                 if(regresar)
                     this.location.back();
 
-                this.mensajeResponse.texto = "Se han guardado los cambios.";
+                this.mensajeResponse.texto = 'Se han guardado los cambios.';
                 this.mensajeResponse.mostrar = true;
-                this.mensajeResponse.clase = "success";
-                this.mensaje(2);                    
+                this.mensajeResponse.clase = 'success';
+                this.mensaje(2);
             },
             error => {
                 this.cargando = false;
 
-                this.mensajeResponse.texto = "No especificado.";
+                this.mensajeResponse.texto = 'No especificado.';
                 this.mensajeResponse.mostrar = true;
                 this.mensajeResponse.clase = 'error';
                 this.mensaje(3);
@@ -126,12 +126,12 @@ export class FormularioComponent implements OnInit {
                 try {
                     let e = error.json();
                     if (error.status == 401) {
-                        this.mensajeResponse.texto = "No tiene permiso para hacer esta operación.";
+                        this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
 
                     }
                     // Problema de validación
                     if (error.status == 409) {
-                        this.mensajeResponse.texto = "Por favor verfique los campos marcados en rojo.";
+                        this.mensajeResponse.texto = 'Por favor verfique los campos marcados en rojo.';
                         this.mensajeResponse.clase = 'warning';
                         this.mensaje(8);
                         for (var input in e.error) {
@@ -139,7 +139,7 @@ export class FormularioComponent implements OnInit {
                             for (var i in e.error[input]) {
                                 this.mensajeResponse.titulo = input;
                                 this.mensajeResponse.texto = e.error[input][i];
-                                this.mensajeResponse.clase = "error";
+                                this.mensajeResponse.clase = 'error';
                                 this.mensaje(3);
                             }
                         }
@@ -147,9 +147,9 @@ export class FormularioComponent implements OnInit {
                 } catch (e) {
 
                     if (error.status == 500) {
-                        this.mensajeResponse.texto = "500 (Error interno del servidor)";
+                        this.mensajeResponse.texto = '500 (Error interno del servidor)';
                     } else {
-                        this.mensajeResponse.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+                        this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
                     }
                 }
             }
@@ -171,47 +171,47 @@ export class FormularioComponent implements OnInit {
             resultado => {
                 this.cargando = false;
 
-                this.mensajeResponse.texto = "Se han guardado los cambios.";
+                this.mensajeResponse.texto = 'Se han guardado los cambios.';
                 this.mensajeResponse.mostrar = true;
-                this.mensajeResponse.clase = "success";
+                this.mensajeResponse.clase = 'success';
                 this.mensaje(2);
             },
             error => {
                 this.cargando = false;
 
-                this.mensajeResponse.texto = "No especificado.";
+                this.mensajeResponse.texto = 'No especificado.';
                 this.mensajeResponse.mostrar = true;
-                this.mensajeResponse.clase = "alert";
+                this.mensajeResponse.clase = 'alert';
                 this.mensaje(2);
                 try {
                     let e = error.json();
                     if (error.status == 401) {
-                        this.mensajeResponse.texto = "No tiene permiso para hacer esta operación.";
-                        this.mensajeResponse.clase = "error";
+                        this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
+                        this.mensajeResponse.clase = 'error';
                         this.mensaje(2);
                     }
                     // Problema de validación
                     if (error.status == 409) {
-                        this.mensajeResponse.texto = "Por favor verfique los campos marcados en rojo.";
-                        this.mensajeResponse.clase = "error";
+                        this.mensajeResponse.texto = 'Por favor verfique los campos marcados en rojo.';
+                        this.mensajeResponse.clase = 'error';
                         this.mensaje(8);
-                        for (var input in e.error) {
+                        for (let input in e.error) {
                             // Iteramos todos los errores
-                            for (var i in e.error[input]) {
+                            for (let i in e.error[input]) {
                                 this.mensajeResponse.titulo = input;
                                 this.mensajeResponse.texto = e.error[input][i];
-                                this.mensajeResponse.clase = "error";
+                                this.mensajeResponse.clase = 'error';
                                 this.mensaje(3);
                             }
                         }
                     }
                 } catch (e) {
                     if (error.status == 500) {
-                        this.mensajeResponse.texto = "500 (Error interno del servidor)";
+                        this.mensajeResponse.texto = '500 (Error interno del servidor)';
                     } else {
-                        this.mensajeResponse.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+                        this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
                     }
-                    this.mensajeResponse.clase = "error";
+                    this.mensajeResponse.clase = 'error';
                     this.mensaje(2);
                 }
 
@@ -234,7 +234,7 @@ export class FormularioComponent implements OnInit {
                     const valoresx = [];
 
                     resultado.forEach(ax => {
-                        if (typeof ax === "object") {
+                        if (typeof ax === 'object') {
 
                             var xx = {};
                             for (let key1x in ax) {
@@ -289,21 +289,23 @@ export class FormularioComponent implements OnInit {
             }
             else {
                 try {
-                    //recorrer los controles del formulario y agregar su respectivo valor
+                    //recorrer los controles del formulario y agregar su respectivo valor                    
                     for (let key in resultado) {
                         //validar que exista en la declaracion del fromulario
                         if (data.controls[key]) {
-                            //validar si es un array                        
+                            //validar si es un array    
+
                             if (Array.isArray(resultado[key])) {
-                                const valores = [];
+                                var valores = [];
                                 const control = <FormArray>data.controls[key];
                                 var posicion1 = 0, posicion2 = 0;
                                 //recorrer los items del array para validar si no hay mas array
                                 try {
                                     for (let a1 in resultado[key]) {
                                         var a = resultado[key][a1];
+
                                         //si es un objeto crear un fromgroup o un nuevo array                            
-                                        if (typeof a === "object") {
+                                        if (typeof a === 'object') {
                                             var x = {};
                                             for (let key1 in a) {
                                                 if (a[key1] || (key1 != 'created_at' && key1 != 'updated_at' && key1 != 'deleted_at')) {
@@ -351,18 +353,47 @@ export class FormularioComponent implements OnInit {
                                         }
                                         posicion1++;
                                     }
-                                    if (valores.length > 0)
+                                    if (valores.length > 0) {
                                         control.patchValue(valores);
+                                    }
                                 } catch (e) {
                                     console.log(4, e);
                                     return;
                                 }
                             }
                             else {
-                                /*if (!resultado[key]) {
-                                    resultado[key] = this.fb.group({});
-                                }*/
-                                data.controls[key].patchValue(resultado[key]);
+                                if (resultado[key]){
+                                    var tiene = 0; 
+                                    var tiene_array = 0;   
+                                    if(typeof resultado[key] == 'object'){
+                                       for (let a1 in resultado[key]){
+                                           if (Array.isArray(resultado[key][a1])) {
+                                               tiene_array++;
+                                           }
+                                        } 
+                                        if (tiene_array == 0)
+                                            data.controls[key].patchValue(resultado[key]);
+                                    }                                
+                                    if (tiene_array > 0 || Array.isArray(resultado[key])){
+                                        for (let a1 in resultado[key]){
+                                            const x1 = <FormArray>data.controls[key];
+                                            
+                                            if (Array.isArray(resultado[key][a1])) {
+                                                const x2 = <FormArray>x1.controls[a1];
+                                                //llamar el metodo recursivo para llegar al ultimo array en la lista
+                                                this.cargarDatosRecursivo(resultado[key][a1], x2);
+                                            }
+                                            else{
+                                                x1.controls[a1].patchValue(resultado[key][a1]);
+                                            }
+                                        }
+                                    }
+                                    if (tiene == 0)
+                                        data.controls[key].patchValue(resultado[key]);
+                                }
+                                else {
+                                    data.controls[key].patchValue('');
+                                }
                             }
                         }
                     }
@@ -392,6 +423,7 @@ export class FormularioComponent implements OnInit {
         }
         return true;
     }
+
     /**
      * Este método carga los datos de un elemento de la api con el id que se pase por la url
      * en la api, abre una ventana modal para confirmar la acción 
@@ -407,12 +439,12 @@ export class FormularioComponent implements OnInit {
                         this.cargando = false;
                         this.datosCargados = true;
 
-                        //validar todos los key que tengan el array  
+                        // validar todos los key que tengan el array  
                         this.dato.patchValue(this.cargarDatosRecursivo(resultado, this.dato));
 
-                        this.mensajeResponse.titulo = "Modificar";
-                        this.mensajeResponse.texto = "Los datos se cargaron";
-                        this.mensajeResponse.clase = "success";
+                        this.mensajeResponse.titulo = 'Modificar';
+                        this.mensajeResponse.texto = 'Los datos se cargaron';
+                        this.mensajeResponse.clase = 'success';
                         this.mensaje(2);
                     },
                     error => {
@@ -426,19 +458,19 @@ export class FormularioComponent implements OnInit {
                         try {
                             let e = error.json();
                             if (error.status == 401) {
-                                this.mensajeResponse.texto = "No tiene permiso para hacer esta operación.";
-                                this.mensajeResponse.clase = "success";
+                                this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
+                                this.mensajeResponse.clase = 'success';
                                 this.mensaje(2);
                             }
 
                         } catch (e) {
 
                             if (error.status == 500) {
-                                this.mensajeResponse.texto = "500 (Error interno del servidor)";
+                                this.mensajeResponse.texto = '500 (Error interno del servidor)';
                             } else {
-                                this.mensajeResponse.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+                                this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
                             }
-                            this.mensajeResponse.clase = "error";
+                            this.mensajeResponse.clase = 'error';
                             this.mensaje(2);
                         }
 
@@ -452,7 +484,7 @@ export class FormularioComponent implements OnInit {
 
 
     //abre una modal para confirmar la eliminacion
-    borrarItem = "";
+    borrarItem = '';
 
     /**
      * Este método es intermediario para la eliminación de un elemento 
@@ -463,7 +495,7 @@ export class FormularioComponent implements OnInit {
      */
     eliminar(item: any): void {
         this.borrarItem = item;
-        document.getElementById("confirmarEliminar").classList.add('is-active');
+        document.getElementById('confirmarEliminar').classList.add('is-active');
     }
 
     /**
@@ -471,7 +503,7 @@ export class FormularioComponent implements OnInit {
      * @return void
      */
     cancelarModal() {
-        document.getElementById("confirmarEliminar").classList.remove('is-active');
+        document.getElementById('confirmarEliminar').classList.remove('is-active');
     }
 
     /**
@@ -488,8 +520,8 @@ export class FormularioComponent implements OnInit {
                 this.borrarCargando = false;
 
                 this.mensajeResponse.mostrar = true;
-                this.mensajeResponse.texto = "Se eliminó el elemento de la lista.";
-                this.mensajeResponse.clase = "success";
+                this.mensajeResponse.texto = 'Se eliminó el elemento de la lista.';
+                this.mensajeResponse.clase = 'success';
                 this.mensaje(2);
 
                 this.cancelarModal();
@@ -505,17 +537,17 @@ export class FormularioComponent implements OnInit {
                 try {
                     let e = error.json();
                     if (error.status == 401) {
-                        this.mensajeResponse.texto = "No tiene permiso para hacer esta operación.";
-                        this.mensajeResponse.clase = "danger";
+                        this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
+                        this.mensajeResponse.clase = 'danger';
                         this.mensaje(2);
                     }
                 } catch (e) {
                     if (error.status == 500) {
-                        this.mensajeResponse.texto = "500 (Error interno del servidor)";
+                        this.mensajeResponse.texto = '500 (Error interno del servidor)';
                     } else {
-                        this.mensajeResponse.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+                        this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
                     }
-                    this.mensajeResponse.clase = "danger";
+                    this.mensajeResponse.clase = 'danger';
                     this.mensaje(2);
                 }
 
@@ -552,7 +584,7 @@ export class FormularioComponent implements OnInit {
             },
             error => {
                 this.mensajeResponse = new Mensaje(true);
-                this.mensajeResponse.texto = "No especificado.";
+                this.mensajeResponse.texto = 'No especificado.';
                 this.mensajeResponse.mostrar = true;
 
                 try {
@@ -560,20 +592,20 @@ export class FormularioComponent implements OnInit {
                     let e = error.json();
 
                     if (error.status == 401) {
-                        this.mensajeResponse.texto = "No tiene permiso para ver los roles.";
+                        this.mensajeResponse.texto = 'No tiene permiso para ver los roles.';
                     }
 
                     if (error.status == 500) {
 
-                        this.mensajeResponse.texto = "500 (Error interno del servidor). No se pudieron cargar los roles";
+                        this.mensajeResponse.texto = '500 (Error interno del servidor). No se pudieron cargar los roles';
                     }
                 } catch (e) {
 
                     if (error.status == 500) {
 
-                        this.mensajeResponse.texto = "500 (Error interno del servidor). No se pudieron cargar los roles";
+                        this.mensajeResponse.texto = '500 (Error interno del servidor). No se pudieron cargar los roles';
                     } else {
-                        this.mensajeResponse.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.  No se pudieron cargar los roles";
+                        this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.  No se pudieron cargar los roles';
                     }
                 }
                 this.cargarDatosCatalogo = false;
@@ -590,7 +622,7 @@ export class FormularioComponent implements OnInit {
      */
     catalogoDependiente = function (url, item, id) {
         this.cargarDatosCatalogo = true;
-        this.crudService.lista(0, 0, url + "?id=" + id).subscribe(
+        this.crudService.lista(0, 0, url + '?id=' + id).subscribe(
             resultado => {
                 this[item] = resultado;
                 if (resultado.length == 0) {
@@ -604,7 +636,7 @@ export class FormularioComponent implements OnInit {
             },
             error => {
                 this.mensajeResponse = new Mensaje(true);
-                this.mensajeResponse.texto = "No especificado.";
+                this.mensajeResponse.texto = 'No especificado.';
                 this.mensajeResponse.mostrar = true;
 
                 try {
@@ -612,20 +644,20 @@ export class FormularioComponent implements OnInit {
                     let e = error.json();
 
                     if (error.status == 401) {
-                        this.mensajeResponse.texto = "No tiene permiso para ver los roles.";
+                        this.mensajeResponse.texto = 'No tiene permiso para ver los roles.';
                     }
 
                     if (error.status == 500) {
 
-                        this.mensajeResponse.texto = "500 (Error interno del servidor). No se pudieron cargar los roles";
+                        this.mensajeResponse.texto = '500 (Error interno del servidor). No se pudieron cargar los roles';
                     }
                 } catch (e) {
 
                     if (error.status == 500) {
 
-                        this.mensajeResponse.texto = "500 (Error interno del servidor). No se pudieron cargar los roles";
+                        this.mensajeResponse.texto = '500 (Error interno del servidor). No se pudieron cargar los roles';
                     } else {
-                        this.mensajeResponse.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.  No se pudieron cargar los roles";
+                        this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.  No se pudieron cargar los roles';
                     }
                 }
                 this.cargarDatosCatalogo = false;
@@ -828,15 +860,15 @@ ofModelo
      * @return void
      */
     generarCadenaRandom(modelo, tamano, esmodelo: boolean = false) {
-        var cadena = "";
+        var cadena = '';
         var random = Math.floor(Math.random() * ((9999 * tamano) - 1111)) + tamano;
 
         for (var i = 0; i < tamano; i++) {
-            random += "" + Math.floor(Math.random() * ((9999 * tamano) - 1111)) + tamano;
+            random += '' + Math.floor(Math.random() * ((9999 * tamano) - 1111)) + tamano;
         }
         var tiempo = Math.round(new Date().getTime() / 1000);
 
-        cadena = "" + tiempo + random;
+        cadena = '' + tiempo + random;
         cadena = btoa(cadena);
         cadena = cadena.substr(0, cadena.length - 3);
         cadena = cadena.substr(Math.floor(Math.random() * (100 - 10)) + 1, tamano);
@@ -944,7 +976,7 @@ ofModelo
         var file = files[0];
         var esto = this;
         if (files && file) {
-            var json = "";
+            var json = '';
             var reader = new FileReader();
             reader.readAsBinaryString(file);
             reader.onload = (function (theFile) {
@@ -962,7 +994,7 @@ ofModelo
 
     //mostrar notificaciones configuracion default, posicion abajo izquierda, tiempo 2 segundos
     public options = {
-        position: ["bottom", "left"],
+        position: ['bottom', 'left'],
         timeOut: 2000,
         lastOnBottom: true
     };
@@ -972,7 +1004,7 @@ ofModelo
      * @param posicion  array de posicion [vertical, horizontal]
      * @return void
      */
-    mensaje(cuentaAtras: number = 6, posicion: any[] = ["bottom", "left"]): void {
+    mensaje(cuentaAtras: number = 6, posicion: any[] = ['bottom', 'left']): void {
         var objeto = {
             showProgressBar: true,
             pauseOnHover: false,

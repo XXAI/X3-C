@@ -7,15 +7,13 @@ import { AuthGuard } from '../../auth-guard.service';
 
 const routes: Routes = [
   {
-    path: 'almacen/ajuste-inventario',
+    path: 'inventario/ajuste-inventario',
     children: [
        { path: '', component: ListaComponent},
        { path: 'nuevo', component: FormularioComponent}
     ],
     canActivate: [AuthGuard]
   }
- 
-  
 ];
 
 @NgModule({

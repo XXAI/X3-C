@@ -1,5 +1,5 @@
 <formulario #ctrl URL="movimientos" titulo="Ajuste de inventario" [dato]="dato"></formulario>
-<menu-farmacia [modulo]="'Ajuste de inventario'" [icono]="'assets/icono-salidas.svg'" [url]="'/almacen/ajuste-inventario'"></menu-farmacia>
+<app-menu-inventario [modulo]="'Ajuste de inventario'" [icono]="'assets/icono-salidas.svg'" [url]="'/inventario/ajuste-inventario'"></app-menu-inventario>
 <div style="height:50px;"></div>
 
 <div class="contenedor columns">
@@ -109,21 +109,22 @@
                     <tbody formArrayName="lotes">
                         <tr *ngFor="let item of dato.controls.lotes.controls;  let i = index;" [formGroupName]="i">
                             <td *ngIf="!item.value.nuevo">{{item.value.lote}}</td>
-                            <td *ngIf="item.value.nuevo"><input class="input has-text-centered " type="text" placeholder="Lote" formControlName="lote" [(ngModel)]="item.lote"></td>
+                            <td *ngIf="item.value.nuevo"><input class="input has-text-centered " type="text" placeholder="Lote" formControlName="lote"></td>
                             <td *ngIf="!item.value.nuevo">{{item.value.fecha_caducidad}}</td>
-                            <td *ngIf="item.value.nuevo"><input class="input has-text-centered " type="date" placeholder="Fecha de caducidad" formControlName="fecha_caducidad" [(ngModel)]="item.fecha_caducidad"></td>
+                            <td *ngIf="item.value.nuevo"><input class="input has-text-centered " type="date" placeholder="Fecha de caducidad" formControlName="fecha_caducidad"></td>
                             <td *ngIf="!item.value.nuevo">{{item.value.codigo_barras}}</td>
-                            <td *ngIf="item.value.nuevo"><input class="input has-text-centered " type="text" placeholder="Codigo de barras" formControlName="codigo_barras" [(ngModel)]="item.codigo_barras"></td>
+                            <td *ngIf="item.value.nuevo"><input class="input has-text-centered " type="text" placeholder="Codigo de barras" formControlName="codigo_barras"></td>
                             <td *ngIf="!item.value.nuevo">{{item.value.existencia}}</td>
                             <td *ngIf="item.value.nuevo"></td>
                             <td *ngIf="!item.value.nuevo">
-                                <input type="checkbox" class="checkbox" formControlName="ajuste" (click)="check_option($event,i);" [(ngModel)]="item.ajuste">
-                                Realizar ajuste
-                                {{item.value.ajuste}}
+                                <input id="activar{{i}}" type="checkbox" class="checkbox" formControlName="ajuste" (click)="check_option($event,i);" >
+                                <label for="activar{{i}}">Realizar ajuste {{item.value.ajuste}}</label> 
                             </td>
                             <td *ngIf="item.value.nuevo"></td>
                             <td *ngIf="!item.value.ajuste"></td>
-                            <td *ngIf="ajuste[i] || item.value.nuevo"><input class="input has-text-centered " type="text" placeholder="Nueva existencia" formControlName="nueva_existencia" [(ngModel)]="item.nueva_existencia"></td>
+                            <td *ngIf="ajuste[i] || item.value.nuevo">
+                                <input class="input has-text-centered " type="text" placeholder="Nueva existencia" formControlName="nueva_existencia">
+                            </td>
                             <td>
                                 <a *ngIf="item.value.nuevo" class="delete" (click)=eliminarLote(i)></a>
                             </td>

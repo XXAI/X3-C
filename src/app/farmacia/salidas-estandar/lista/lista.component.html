@@ -121,8 +121,7 @@
                         <td *ngIf="!item.movimiento_metadato && (i+1)<ctrl.dato.length" style="vertical-align: middle;" >No disponible</td>
                         <td *ngIf="item.movimiento_metadato && (i+1)<ctrl.dato.length" style="vertical-align: middle;"><a *ngIf="item.movimiento_metadato.turno.nombre"  routerLink="/almacen/salidas-estandar/ver/{{item.id}}">{{ item.movimiento_metadato.turno.nombre }} </a></td>
                         <td *ngIf="!item.movimiento_metadato && (i+1)<ctrl.dato.length" style="vertical-align: middle;" >No disponible</td>
-                        <td *ngIf="item.numero_claves && item.numero_insumos && (i+1)<ctrl.dato.length"> <a routerLink="/almacen/salidas-estandar/ver/{{item.id}}"> <p> Claves: {{item.numero_claves}}</p> <p> Insumos: {{item.numero_insumos}}</p> </a> </td>
-                        <td *ngIf="!item.numero_claves && !item.numero_insumos && (i+1)<ctrl.dato.length"> No disponible</td>
+                        <td *ngIf="(i+1)<ctrl.dato.length"> <a routerLink="/almacen/salidas-estandar/ver/{{item.id}}"> <p> Claves: {{item.numero_claves}}</p> <p> Insumos: {{item.numero_insumos}}</p> </a> </td>
                         <td *ngIf="item.movimiento_metadato && (i+1)<ctrl.dato.length" style="vertical-align: middle;" ><a routerLink="/almacen/salidas-estandar/ver/{{item.id}}">{{ item.movimiento_metadato.persona_recibe }}</a></td>
                         <td *ngIf="!item.movimiento_metadato && (i+1)<ctrl.dato.length" style="vertical-align: middle;" >No disponible</td>
                         <td *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle;"><a routerLink="/almacen/salidas-estandar/ver/{{item.id}}">{{ item.movimiento_usuario.nombre }} {{ item.movimiento_usuario.apellidos }} </a></td>                        
@@ -155,6 +154,7 @@
                 </tbody>
             </table>
             </span>
+            <div *ngIf="!ctrl.dato" style="height:130px;"></div>
             <!-- Paginación para la lista  -->
             <paginacion [total]="ctrl.total" [paginasTotales]="ctrl.paginasTotales" [resultadosPorPagina]="ctrl.resultadosPorPagina"
                 [paginaActual]="ctrl.paginaActual" [indicePaginas]="ctrl.indicePaginas" (onSiguiente)="ctrl.paginaSiguiente()"
