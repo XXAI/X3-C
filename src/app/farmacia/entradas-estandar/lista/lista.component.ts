@@ -83,21 +83,21 @@ export class ListaComponent {
       document.body.removeChild(iframe);
     }, 2000);
   }
-  export_excel(){
-    var titulo = 'Entrada Estandar';
-    var turno = this.tr.first.nativeElement.options;
-    var servicio = this.sr.first.nativeElement.options;
-    turno = turno[turno.selectedIndex].text;
-    servicio = servicio[servicio.selectedIndex].text;
-    var exportData = '<table><tr><th colspan=\'7\'><h1>' + titulo 
-    +'</h1></th></tr><tr><th>Desde: '+this.fecha_desde+'</th><th>Hasta: '+this.fecha_hasta+'</th>'
-    +'</th><th>Recibe: '+this.recibe+'</th></tr><tr><th colspan=\'7\'></th></tr></table>';
+  export_excel() {
+    let titulo = 'Entrada Estandar';
+    let exportData = '<table><tr><th colspan=\'7\'><h1>' + titulo
+    + '</h1></th></tr><tr><th>Desde: ' + this.fecha_desde + '</th><th>Hasta: ' + this.fecha_hasta + '</th>'
+    + '</th><th>Recibe: ' + this.recibe + '</th></tr><tr><th colspan=\'7\'></th></tr></table>';
 
     exportData += document.getElementById('exportable').innerHTML;
-    var blob = new Blob([exportData], { type: 'text/comma-separated-values;charset=utf-8' });
-    saveAs(blob,  'entrada_estandar.xls');
+    let blob = new Blob([exportData], { type: 'text/comma-separated-values;charset=utf-8' });
+    try {
+        FileSaver.saveAs(blob,  'Listado_entrada_de_almacen.xls');
+    } catch (e) {
+      console.log(e);
+    }
   }
-  
+
   imprimir() {
     try {
       this.cargandoPdf = true;

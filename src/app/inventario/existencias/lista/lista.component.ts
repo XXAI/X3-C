@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChildren} from '@angular/core';
 import { CrudService } from '../../../crud/crud.service';
+import  * as FileSaver    from 'file-saver';
 
 @Component({
   selector: 'inventario-lista',
@@ -19,13 +20,38 @@ export class ListaComponent implements OnInit {
   es_unidosis;
   unidad_medida;
 
+  @ViewChildren('t') t;
+  @ViewChildren('s') s;
+  @ViewChildren('claves') claves;
+
+  // # SECCION: Reportes
+  pdfworker: Worker;
+  cargandoPdf = false;
+  // # FIN SECCION
   constructor(
-    private crudService: CrudService) {}
+    private crudService: CrudService,
+    private _ngZone: NgZone) {}
 
   ngOnInit() {
-      this.usuario = JSON.parse(localStorage.getItem('usuario'));
+    this.usuario = JSON.parse(localStorage.getItem('usuario'));
+    // Inicializamos el objeto para los reportes con web Webworkers
+    this.pdfworker = new Worker('web-workers/farmacia/inventario/lista-existencias.js');
+
+    // Este es un hack para poder usar variables del componente dentro de una funcion del worker
+    let self = this;
+    let $ngZone = this._ngZone;
+
+    this.pdfworker.onmessage = function( evt ) {
+      // Esto es un hack porque estamos fuera de contexto dentro del worker
+      // Y se usa esto para actualizar alginas variables
+      $ngZone.run(() => {
+         self.cargandoPdf = false;
+      });
+
+      FileSaver.saveAs( self.base64ToBlob( evt.data.base64, 'application/pdf' ), evt.data.fileName );
+      // open( 'data:application/pdf;base64,' + evt.data.base64 ); // Popup PDF
+    };
   }
-    
 
   /**
      * Este método carga los datos de un elemento de la api con el id que se pase por la url
@@ -89,5 +115,55 @@ export class ListaComponent implements OnInit {
      */
   cancelarModal(id) {
     document.getElementById(id).classList.remove('is-active');
+  }
+
+  export_excel() {
+    let titulo = 'Existencias';
+    let tipo_insumo = this.t.first.nativeElement.options;
+    let existencia = this.s.first.nativeElement.options;
+    let claves = this.buscar_en === 'TODAS_LAS_CLAVES' ? 'Todas las claves' : 'Mis claves';
+    tipo_insumo = tipo_insumo[tipo_insumo.selectedIndex].text;
+    existencia = existencia[existencia.selectedIndex].text;
+    let exportData = '<table><tr><th colspan=\'7\'><h1>' + titulo + '</h1></th></tr>'
+    + '<tr><th>Claves: ' + claves + '</th><th>Insumo: ' + tipo_insumo + '</th><th>Existencia: ' + existencia + '</th></tr>'
+    + '<tr><th colspan=\'7\'></th></tr></table>';
+
+    exportData += document.getElementById('exportable').innerHTML;
+    let blob = new Blob([exportData], { type: 'text/comma-separated-values;charset=utf-8' });
+    try {
+        FileSaver.saveAs(blob,  'salida_estandar.xls');
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  imprimir() {
+    let tipo_insumo = this.t.first.nativeElement.options;
+    let existencia = this.s.first.nativeElement.options;
+    tipo_insumo = tipo_insumo[tipo_insumo.selectedIndex].text;
+    existencia = existencia[existencia.selectedIndex].text;
+    try {
+      this.cargandoPdf = true;
+
+      let entrada_imprimir = {
+        lista: this.dato,
+        usuario: this.usuario,
+        buscar_en: this.buscar_en,
+        seleccionar: existencia,
+        tipo: tipo_insumo
+      };
+      this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
+    } catch (e) {
+      this.cargandoPdf = false;
+    }
+  }
+
+  base64ToBlob( base64, type ) {
+      let bytes = atob( base64 ), len = bytes.length;
+      let buffer = new ArrayBuffer( len ), view = new Uint8Array( buffer );
+      for ( let i = 0 ; i < len ; i++ ) {
+        view[i] = bytes.charCodeAt(i) & 0xff;
+      }
+      return new Blob( [ buffer ], { type: type } );
   }
 }

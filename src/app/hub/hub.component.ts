@@ -31,7 +31,7 @@ export class HubComponent implements OnInit {
         'kWbg08UnfL8fHlOpcNmcTvVbGEU6L8Wz', //Existencias
         'g8YLm8F0e9Zokxq6iSJUndPYro5Ic6tQ', //Ajuste de Inventario
         '7KbTARF2kpnO4Lfqv8hmYP8QGMcgJBwU', //Inicialización Inventario
-       // 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
+        'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
       ]
     },
     {
