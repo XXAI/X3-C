@@ -78,7 +78,7 @@
 
                         </div>
                     </div>
-                    <a id="actualizar" (click)="ctrl.cargarCatalogo('servicios','mis-servicios'); "></a>
+                    <a id="actualizar" (click)="ctrl.cargarCatalogo('servicios','mis-servicios');"></a>
                     <hr id="catalogos" (click)="ctrl.cargarCatalogo('turnos', 'mis-turnos'); "> 
 
                     <div >
@@ -158,7 +158,7 @@
                             <div class="level-right">
                                 <p class="level-item"><a class="button is-primary" (click)="ctrl.regresar()">Regresar</a></p>
                                 <p class="level-item" *ngIf="tieneid"><a class="button is-primary" routerLink="/almacen/salidas-estandar/nuevo" *ngIf="!ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva salida</span></a></p>
-                                <p class="level-item" *ngIf="tieneid"><a *ngIf="tieneid" class="button is-primary" (click)="imprimir()"><span class="icon"><i class="fa fa-print"></i></span></a></p>
+                                <p class="level-item" *ngIf="tieneid"><a *ngIf="tieneid" class="button is-primary" (click)="array_servicios = ctrl.servicios; array_turnos = ctrl.turnos; imprimir();"><span class="icon"><i class="fa fa-print"></i></span></a></p>
                                 <p class="level-item" *ngIf="!tieneid">
                                         <button class="button is-primary" type="submit" [ngClass]="{'is-loading': ctrl.cargando}" (click)="guardar_movimiento()" [disabled]="ctrl.dato.invalid"> <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar</button>
                                 </p>

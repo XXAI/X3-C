@@ -13,7 +13,6 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
     };
 
     function pdf(data) {
-        console.log(data);
         var contadorLineasHorizontalesV = 0;
         var dd = {
             content: [{

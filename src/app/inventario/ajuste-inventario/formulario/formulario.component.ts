@@ -91,8 +91,8 @@ export class FormularioComponent {
   }
 
   guardar_ajuste() {
-
-    console.log(this.dato.value);
+    const control = <FormArray>this.dato.controls['lotes'];
+    //console.log(this.dato.getRawValue());
   }
 
 
@@ -142,7 +142,6 @@ export class FormularioComponent {
     let usuario = JSON.parse(localStorage.getItem('usuario'));
     this.cargando = true;
 
-    console.log(data);
 
     // cargar los datos de los lotes del insumo seleccionado en el autocomplete
     this.crudService.lista(0, 1000, 'comprobar-stock?almacen=' + usuario.almacen_activo.id + '&clave=' + data.clave).subscribe(
@@ -150,10 +149,8 @@ export class FormularioComponent {
 
         const control =  <FormArray>this.dato.controls.lotes;
         for (let item of resultado){
-          console.log(item);
           item = {...item, ajuste: false, nueva_existencia: ''};
           control.controls.push(this.fb.group(item));
-          console.log(item);
         }
         this.lotes_insumo = resultado;
         this.insumo = data;
@@ -197,7 +194,6 @@ export class FormularioComponent {
   agregarNuevoLote() {
     const control = <FormArray>this.dato.controls['lotes'];
     control.push(this.initLotes());
-    console.log(this.dato.value);
   }
 
   /**
@@ -207,7 +203,9 @@ export class FormularioComponent {
   check_option(event, i) {
     this.ajuste[i] = event.srcElement.checked;
     const control = <FormArray>this.dato.controls['lotes'];
-    control.controls[i].value.ajuste =  event.srcElement.checked;
+    setTimeout(() => {
+      control.controls[i].value.ajuste =  event.srcElement.checked;
+    }, 1000);
   }
 
   /**

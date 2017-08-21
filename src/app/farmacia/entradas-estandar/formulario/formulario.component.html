@@ -45,7 +45,7 @@
                         <div class="field">
                             <label class="label">Observaciones:</label>
                             <p class="control is-expanded  has-icon has-icon-right">
-                                <textarea class="textarea" autofocus type="text" [ngClass]="{'is-danger': ctrl.dato.get('observaciones').hasError('required') && ctrl.dato.get('observaciones').touched}"
+                                <textarea class="textarea" type="text" [ngClass]="{'is-danger': ctrl.dato.get('observaciones').hasError('required') && ctrl.dato.get('observaciones').touched}"
                                     placeholder="Observaciones" formControlName="observaciones"></textarea>
                                 <span class="icon is-small" *ngIf="ctrl.dato.get('observaciones').hasError('required') && ctrl.dato.get('observaciones').touched">
                                     <i class="fa fa-warning"></i>
@@ -67,7 +67,7 @@
                             <div class="field">
                                 <label class="label">Observaciones de cancelación:</label>
                                 <p class="control is-expanded  has-icon has-icon-right">
-                                    <textarea class="textarea" autofocus type="text" [ngClass]="{'is-danger': ctrl.dato.get('observaciones_cancelacion').hasError('required') && ctrl.dato.get('observaciones_cancelacion').touched}"
+                                    <textarea class="textarea" type="text" [ngClass]="{'is-danger': ctrl.dato.get('observaciones_cancelacion').hasError('required') && ctrl.dato.get('observaciones_cancelacion').touched}"
                                         placeholder="Observaciones de cancelacion" formControlName="observaciones_cancelacion"></textarea>
                                     <span class="icon is-small" *ngIf="ctrl.dato.get('observaciones_cancelacion').hasError('required') && ctrl.dato.get('observaciones_cancelacion').touched">
                                         <i class="fa fa-warning"></i>

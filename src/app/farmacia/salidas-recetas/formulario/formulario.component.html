@@ -176,7 +176,7 @@
                                     <div class="field">
                                         <label class="label">Imagen:</label>
                                         <p class="control is-expanded  has-icon has-icon-right">
-                                            <input type="file" (change)="ctrl.seleccionarImagenBase64($event, ctrl.dato.controls.receta.controls.imagen_receta)">
+                                            <input type="file" (change)="ctrl.seleccionarImagenBase64($event, ctrl.dato.controls.receta.controls.imagen_receta)" accept="image/*" >
                                             <input type="hidden" placeholder="Imagen de la receta" formControlName="imagen_receta">
                                         </p>
                                     </div>
@@ -379,7 +379,7 @@
                                             </div>
                                             <div class="column is-2">
                                                 <p class="control is-expanded">
-                                                <label class="label">Duración:</label>
+                                                <label class="label">Duración (días):</label>
                                                     <input type="text" class="input" formControlName="duracion" (keypress)="quitar_punto($event)" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.controls.insumos.controls[i].controls.duracion.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.duracion.touched}">
                                                 </p>
                                             </div>

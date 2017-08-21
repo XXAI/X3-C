@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { ActivatedRoute, Params } from '@angular/router';
@@ -12,14 +12,18 @@ import  * as FileSaver    from 'file-saver';
 @Component({
   selector: 'salidas-estandar-formulario',
   templateUrl: './formulario.component.html',
-  styles: ['ngui-auto-complete {z-index: 999999 !important}']
+  styles: ['ngui-auto-complete {z-index: 999999 !important}'],
+  host: {
+        '(document:keydown)': 'handleKeyboardEvents($event)'
+    }
 })
 
 export class FormularioComponent {
   dato: FormGroup;
   form_insumos: any;
-  tab: number = 1;
+  tab = 1;
   cargando = false;
+  key;
   public insumos_term: string = `${environment.API_URL}/insumos-auto?term=:keyword`;
   constructor(
     private fb: FormBuilder, 
@@ -43,6 +47,7 @@ export class FormularioComponent {
   pdfworker:Worker;
   cargandoPdf:boolean = false;
   // # FIN SECCION
+
 
   ngOnInit() {
 
@@ -84,10 +89,10 @@ export class FormularioComponent {
       cancelado: [''],
       observaciones_cancelacion: [''],
       movimiento_metadato: this.fb.group({
-        persona_recibe:['', [Validators.required]],
-        servicio_id:[null],
-        turno_id:[null],
-      }),      
+        persona_recibe: ['', [Validators.required]],
+        servicio_id: [null],
+        turno_id: [null],
+      }),
       insumos: this.fb.array([])
     });
 
@@ -97,18 +102,18 @@ export class FormularioComponent {
       }
     });
 
-    //variable para crear el array del formulario reactivo
+    // variable para crear el array del formulario reactivo
     this.form_insumos = {
       tipo_movimiento_id: ['', [Validators.required]]
     };
 
-    //inicializar el data picker minimo y maximo
+    // inicializar el data picker minimo y maximo
     var date = new Date();
 
     this.MinDate = new Date(date.getFullYear() - 1, 0, 1);
     this.MaxDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
-    //si es nuevo poner la fecha actual si no poner la fecha con que se guardo
+    // si es nuevo poner la fecha actual si no poner la fecha con que se guardo
     if (!this.dato.get('fecha_movimiento').value) {
       this.fecha_actual = date.getFullYear() + '-' + ('00' + (date.getMonth() + 1)).slice(-2) + '-' + date.getDate();
       this.dato.get('fecha_movimiento').patchValue(this.fecha_actual);
@@ -116,8 +121,18 @@ export class FormularioComponent {
       this.fecha_actual = this.dato.get('fecha_movimiento').value;
     }
 
-    //Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
-    //document.getElementById("catalogos").click();  
+    // Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
+    // document.getElementById("catalogos").click();  
+  }
+
+  handleKeyboardEvents(event: KeyboardEvent) {
+    this.key = event.which || event.keyCode;
+    // console.log(this.key);
+    if (event.keyCode === 13) {
+      document.getElementById('buscarInsumo').focus();
+      event.preventDefault();
+      return false;
+    }
   }
 
   /**

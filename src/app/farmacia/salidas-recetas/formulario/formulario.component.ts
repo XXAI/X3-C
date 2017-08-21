@@ -99,7 +99,7 @@ export class FormularioComponent {
         doctor: ['', [Validators.required]],
         paciente: ['', [Validators.required]],
         diagnostico: ['', [Validators.required]],
-        imagen_receta: ['', [Validators.required]],
+        imagen_receta: [''],
       }),
       insumos: this.fb.array([])
     });
