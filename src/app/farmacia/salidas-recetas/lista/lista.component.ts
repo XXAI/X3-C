@@ -41,7 +41,23 @@ export class ListaComponent implements OnInit {
     };
   }
 
- 
+  export_excel() {
+    let titulo = 'Salida por Receta';
+    let exportData =  '<table>' +
+                        '<tr><th colspan=\'7\'><h1>' + titulo + '</h1></th></tr>' +
+                        '<tr><th></th></tr>' +
+                        '<tr><th colspan=\'7\'></th></tr>' +
+                      '</table>';
+
+    exportData += document.getElementById('exportable').innerHTML;
+    let blob = new Blob([exportData], { type: 'text/comma-separated-values;charset=utf-8' });
+    try {
+        FileSaver.saveAs(blob,  'Listado_salida_por_receta.xls');
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   imprimir() {
     try {
       this.cargandoPdf = true;

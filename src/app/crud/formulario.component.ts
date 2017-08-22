@@ -161,9 +161,13 @@ export class FormularioComponent implements OnInit {
      * @return void
      */
     actualizarDatos() {
-
         this.cargando = true;
-        let dato = this.dato.value;
+        let dato;
+        try {
+            dato = this.dato.getRawValue();
+        }catch (e) {
+            dato = this.dato.value;
+        }
         if (!this.cambiarPassword) {
             delete dato.cambiarPassword;
         }

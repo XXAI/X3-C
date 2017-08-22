@@ -92,7 +92,13 @@ export class FormularioComponent {
 
   guardar_ajuste() {
     const control = <FormArray>this.dato.controls['lotes'];
-    //console.log(this.dato.getRawValue());
+    let dato;
+    try {
+        dato = this.dato.getRawValue();
+    }catch (e) {
+        dato = this.dato.value;
+    }
+    console.log(dato);
   }
 
 

@@ -38,16 +38,20 @@ export class IndexInventarioComponent implements OnInit {
         titulo: 'Ajuste de Inventario', url: '/inventario/ajuste-inventario'
       },
       {
-        permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk--', icono: 'assets/icono-stock.svg',
+        permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-stock.svg',
         titulo: 'Existencia de insumos médicos', url: '/inventario/existencias'
       }, // PRUEBA
       {
-        permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk--', icono: 'assets/icono-ajuste-mas.svg',
+        permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-ajuste-mas.svg',
         titulo: 'Ajuste más de Inventario', url: '/inventario/ajuste-mas-inventario'
       }, // PRUEBA
       {
-        permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk--', icono: 'assets/icono-ajuste-menos.svg',
+        permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-ajuste-menos.svg',
         titulo: 'Ajuste menos de Inventario', url: '/inventario/ajuste-inventario'
+      }, // PRUEBA
+      {
+        permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-ajustes-inventario.svg',
+        titulo: 'Inicialización Inventario', url: '/inventario/inicializacion-inventario'
       }, // PRUEBA
 
     ];
