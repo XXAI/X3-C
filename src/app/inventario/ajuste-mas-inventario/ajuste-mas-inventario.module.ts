@@ -6,11 +6,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HubModule } from '../../hub/hub.module';
 import { PerfilModule } from '../../perfil/perfil.module';
 import { BloquearPantallaModule } from '../../bloquear-pantalla/bloquear-pantalla.module';
-import { AjusteInventarioRoutingModule } from './ajuste-inventario-routing.module';
+import { AjusteMasInventarioRoutingModule } from './ajuste-mas-inventario-routing.module';
 import { PaginacionModule } from '../../paginacion/paginacion.module';
 
-import { PipesModule         } from '../../pipes/pipes.module';
-import { ListaComponent      } from './lista/lista.component';
+import { PipesModule }             from '../../pipes/pipes.module';
+import { ListaComponent } from './lista/lista.component';
 import { FormularioComponent } from './formulario/formulario.component';
 
 import { AuthService } from '../../auth.service';
@@ -28,7 +28,7 @@ import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    AjusteInventarioRoutingModule,
+    AjusteMasInventarioRoutingModule,
     HubModule,
     PerfilModule,
     BloquearPantallaModule,
@@ -39,10 +39,10 @@ import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
     NguiAutoCompleteModule,
     NguiDatetimePickerModule
   ],
-  declarations: [ 
+  declarations: [
     ListaComponent,
     FormularioComponent
   ],
   providers: [ AuthService, CrudService ]
 })
-export class AjusteInventarioModule { }
+export class AjusteMasInventarioModule { }

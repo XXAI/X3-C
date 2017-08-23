@@ -47,7 +47,7 @@ export class IndexInventarioComponent implements OnInit {
       }, // PRUEBA
       {
         permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-ajuste-menos.svg',
-        titulo: 'Ajuste menos de Inventario', url: '/inventario/ajuste-inventario'
+        titulo: 'Ajuste menos de Inventario', url: '/inventario/ajuste-menos-inventario'
       }, // PRUEBA
       {
         permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-ajustes-inventario.svg',

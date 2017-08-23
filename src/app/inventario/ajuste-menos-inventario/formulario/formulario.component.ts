@@ -1,25 +1,23 @@
 import { Component, OnInit, NgZone, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Params } from '@angular/router';
 
 import { environment } from '../../../../environments/environment';
 import { CrudService } from '../../../crud/crud.service';
 import { NotificationsService } from 'angular2-notifications';
 
-import  * as FileSaver    from 'file-saver'; 
+import  * as FileSaver    from 'file-saver';
 
 @Component({
-  selector: 'salidas-estandar-formulario',
+  selector: 'app-ajuste-menos-formulario',
   templateUrl: './formulario.component.html',
   styleUrls: ['./../../../../../src/styles.css'],
   styles: ['ngui-auto-complete {z-index: 999999 !important}']
 })
 
 export class FormularioComponent {
-  @ViewChildren('cantidad_solicitada') cantidad_solicitadaBoxViewChildren;
-  @ViewChildren('cantidad_solicitada_unidosis') cantidad_solicitada_unidosisBoxViewChildren;
-
+  lotes_insumo;
   dato: FormGroup;
   form_insumos: any;
   modo = 'N';
@@ -29,6 +27,7 @@ export class FormularioComponent {
   array_turnos;
   array_servicios;
   sum_cant_lotes = false;
+  mostrar_lote = [];
   public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
 
   MinDate = new Date();
@@ -38,6 +37,18 @@ export class FormularioComponent {
   cargando = false;
   fecha_movimiento;
   mostrarCancelado;
+  insumo;
+  es_unidosis = false;
+  // # SECCION: Reportes
+    pdfworker: Worker;
+    cargandoPdf = false;
+  // # FIN SECCION
+
+  public options = {
+    position: ['top', 'right'],
+    timeOut: 5000,
+    lastOnBottom: true
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -47,22 +58,11 @@ export class FormularioComponent {
     private notificacion: NotificationsService,
     private _ngZone: NgZone) { }
 
-
-
-  // # SECCION: Reportes
-  pdfworker:Worker;
-   cargandoPdf:boolean = false;
-  // # FIN SECCION
-
   ngOnInit() {
 
     // obtener los datos del usiario logueado almacen y clues
-    var usuario = JSON.parse(localStorage.getItem("usuario"));
+    let usuario = JSON.parse(localStorage.getItem('usuario'));
 
-    // Solo si se va a cargar catalogos poner un 
-    // <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
-    document.getElementById("catalogos").click();
-    document.getElementById('actualizar').click();
 
     if (usuario.clues_activa) {
       this.insumos_term += '&clues=' + usuario.clues_activa.clues;
@@ -75,8 +75,8 @@ export class FormularioComponent {
     this.pdfworker = new Worker('web-workers/farmacia/movimientos/salida.js')
 
     // Este es un hack para poder usar variables del componente dentro de una funcion del worker
-    var self = this;
-    var $ngZone = this._ngZone;
+    let self = this;
+    let $ngZone = this._ngZone;
 
     this.pdfworker.onmessage = function( evt ) {
       // Esto es un hack porque estamos fuera de contexto dentro del worker
@@ -92,19 +92,8 @@ export class FormularioComponent {
     // inicializar el formulario reactivo
     this.dato = this.fb.group({
       id: [''],
-      tipo_movimiento_id: ['2', [Validators.required]],
-      status: ['FI'],
-      fecha_movimiento: ['', [Validators.required]],
-      observaciones: [''],
-      cancelado: [''],
-      observaciones_cancelacion: [''],
-      movimiento_metadato: this.fb.group({
-        turno_id: ['', [Validators.required]],
-        servicio_id: ['', [Validators.required]],
-        persona_recibe: ['', [Validators.required]],
-      }),
-      insumos: this.fb.array([]),
-      insumos_negados: this.fb.array([])
+      tipo_movimiento_id: ['6', [Validators.required]],
+      insumos: this.fb.array([])
     });
 
     this.route.params.subscribe(params => {
@@ -117,20 +106,6 @@ export class FormularioComponent {
     this.form_insumos = {
       tipo_movimiento_id: ['', [Validators.required]]
     };
-
-    // inicializar el data picker minimo y maximo
-    var date = new Date();
-
-    this.MinDate = new Date(date.getFullYear() - 1, 0, 1);
-    this.MaxDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-
-    // si es nuevo poner la fecha actual si no poner la fecha con que se guardo
-    if (!this.dato.get('fecha_movimiento').value) {
-      this.fecha_actual = date.getFullYear() + '-' + ('00' + (date.getMonth() + 1)).slice(-2) + '-' + date.getDate();
-      this.dato.get('fecha_movimiento').patchValue(this.fecha_actual);
-    } else {
-      this.fecha_actual = this.dato.get('fecha_movimiento').value;
-    }
 
   }
 
@@ -151,7 +126,6 @@ export class FormularioComponent {
   cancelarModal(id) {
     document.getElementById(id).classList.remove('is-active');
   }
-  lotes_insumo;
   /**
      * Este método formatea los resultados de la busqueda en el autocomplte
      * @param data resultados de la busqueda 
@@ -167,12 +141,12 @@ export class FormularioComponent {
             <p class="subtitle is-6">
               <strong>Clave: </strong> ${data.clave}) 
               `;
-    
+
               if(data.es_causes == 1)
               html += `<label class="tag is-success" ><strong>Cause </strong></label>`;
               if(data.es_causes == 0)
               html += `<label class="tag" style="background: #B8FB7E; border-color: #B8FB7E; color: rgba(0,0,0,0.7);"><strong>No Cause </strong> </label>`; 
-              if(data.es_unidosis == 1)                                                                 
+              if(data.es_unidosis == 1)
               html += `<label class="tag is-warning" ><strong>Unidosis</strong></label>`;
               
     html += `
@@ -183,8 +157,6 @@ export class FormularioComponent {
     </div>`;
     return this._sanitizer.bypassSecurityTrustHtml(html);
   }
-  insumo;
-  es_unidosis = false;
   /**
      * Este método carga los datos de un elemento de la api con el id que se pase por la url
      * @param data json con los datos del objetop seleccionado del autocomplete
@@ -192,54 +164,30 @@ export class FormularioComponent {
      */
   select_insumo_autocomplete(data) {
 
-    var usuario = JSON.parse(localStorage.getItem('usuario'));
+    let usuario = JSON.parse(localStorage.getItem('usuario'));
     this.cargando = true;
 
-    //cargar los datos de los lotes del insumo seleccionado en el autocomplete
+    // cargar los datos de los lotes del insumo seleccionado en el autocomplete
     this.crudService.lista(0, 1000, 'comprobar-stock?almacen=' + usuario.almacen_activo.id + '&clave=' + data.clave).subscribe(
       resultado => {
-      
-        let unidosis_temporal: Number; 
-        let normal_temporal: Number; 
-        for(let item of this.dato.get('insumos').value){
-          if(resultado.length == 0)
+        let unidosis_temporal: Number;
+        let normal_temporal: Number;
+        for (let item of this.dato.get('insumos').value){
+          if (resultado.length === 0) {
             break;
-          if(item.clave == resultado[0].clave_insumo_medico){
-            var existencia_unidosis = 0;
-            var existencia = 0;
-            for (let val of item.lotes){
-              for (let res of resultado){
-                if (val.id === res.id) {
-                 try {
-                   if (val.cantidad > 0) {
-                     if (item.modo_salida === 'U') {
-                       res.existencia = res.existencia - (val.cantidad / item.cantidad_x_envase);
-                     }
-                     if (item.modo_salida === 'N') {
-                       res.existencia = res.existencia - val.cantidad;
-                     }
-                       res.existencia_unidosis = (res.existencia * item.cantidad_x_envase);
-                   }
-                 }catch (e) {
-                   console.log(e);
-                 }
-                }
-              }
-            }
           }
         }
-
         this.lotes_insumo = resultado;
         this.insumo = data;
 
-        //limpiar el autocomplete
+        // limpiar el autocomplete
         (<HTMLInputElement>document.getElementById('buscarInsumo')).value = '';
 
-        //poner el titulo a la modal                ${data.presentacion}
-
+        // poner el titulo a la modal
         document.getElementById('tituloModal').innerHTML = ` ${data.descripcion} <br>
           <p aling="justify" style="font-size:12px">${data.descripcion}</p> 
-          <p aling="justify" style="font-size:16px"> CANTIDAD POR ENVASE: ${data.cantidad_x_envase ? data.cantidad_x_envase : 'Sin especificar' }</p>`;
+          <p aling="justify" style="font-size:16px"> CANTIDAD POR ENVASE: 
+          ${data.cantidad_x_envase ? data.cantidad_x_envase : 'Sin especificar' }</p>`;
         this.es_unidosis = data.es_unidosis;
         this.unidad_medida = data.unidad_medida;
 
@@ -248,29 +196,21 @@ export class FormularioComponent {
       },
       error => {
         this.cargando = false;
-      }
-    );
+      });
   }
 
 
-  public options = {
-    position: ['top', 'right'],
-    timeOut: 5000,
-    lastOnBottom: true
-  };
 
-  mostrar_lote = [];
-  
   /**
      * Este método agrega los lostes del modal a el modelo que se envia a la api
      * @return void
      */
-  agregarLoteIsumo(cantidad_solicitada:number) {
-    //obtener el formulario reactivo para agregar los elementos
+  agregarLoteIsumo() {
+    // obtener el formulario reactivo para agregar los elementos
     const control = <FormArray>this.dato.controls['insumos'];
 
-    //crear el json que se pasara al formulario reactivo tipo insumos
-    var lotes = {
+    // crear el json que se pasara al formulario reactivo tipo insumos
+    let lotes = {
       'clave': this.insumo.clave,
       'nombre': this.insumo.nombre,
       'descripcion': this.insumo.descripcion,
@@ -279,44 +219,38 @@ export class FormularioComponent {
       'cantidad': 1,
       'presentacion_nombre': this.insumo.presentacion_nombre,
       'unidad_medida': this.insumo.unidad_medida,
-      'cantidad_x_envase': this.insumo.cantidad_x_envase ? parseInt(this.insumo.cantidad_x_envase) : 1,     
+      'cantidad_x_envase': this.insumo.cantidad_x_envase ? parseInt(this.insumo.cantidad_x_envase) : 1,
       'cantidad_surtida': 1,
-      'modo_salida': this.modo,
-      'cantidad_solicitada': cantidad_solicitada, //this.modo == 'N' ? cantidad_solicitada : 0,
-      'cantidad_solicitada_unidosis': cantidad_solicitada,// this.modo == 'U' ? cantidad_solicitada : 0,
       'lotes': this.fb.array([])
     };
 
-    //comprobar que el isumo no este en la lista cargada
-    var existe = false;
-    var existe_clave = false;
-    var posicion_existe = 0;
+    // comprobar que el insumo no este en la lista cargada
+    let existe = false;
+    let existe_clave = false;
+    let posicion_existe = 0;
 
     for (let item of control.value) {
-      if (item.clave == this.insumo.clave) {
+      if (item.clave === this.insumo.clave) {
         existe_clave = true;
-        if(item.modo_salida == this.modo){
-          existe = true;
-          break;
-        }
+        existe = true;
+        break;
       }
       posicion_existe++;
     }
 
-
-
-    //si no esta en la lista agregarlo
-    if (!existe)
+    // si no existe el insumo en la lista agregarlo
+    if (!existe) {
       control.push(this.fb.group(lotes));
+    }
 
-    //obtener la ultima posicion para que en esa se agreguen los lotes
-    var posicion = posicion_existe;//control.length - 1;
-    //obtener el control del formulario en la posicion para agregar el nuevo form array que corresponde a los lotes
+    // obtener la ultima posicion para que en esa se agreguen los lotes
+    let posicion = posicion_existe; // control.length - 1;
+    // obtener el control del formulario en la posicion para agregar el nuevo form array que corresponde a los lotes
     const ctrlLotes = <FormArray>control.controls[posicion];
-    //Mostrar ocultar los lotes en la vista al hacer clic en el icono de plus
+    // Mostrar ocultar los lotes en la vista al hacer clic en el icono de plus
     this.mostrar_lote[posicion] = false;
 
-    var objeto = {
+    let objeto = {
       showProgressBar: true,
       pauseOnHover: true,
       clickToClose: true,
@@ -327,111 +261,85 @@ export class FormularioComponent {
       timeOut: 5000,
       lastOnBottom: true
     };
-    //recorrer la tabla de lotes del modal para obtener la cantidad 
+    let existencia_mayor_lote = false;
+    // recorrer la tabla de lotes del modal para obtener la cantidad
     for (let item of this.lotes_insumo) {
-      //agregar unicamente aquellos que tiene cantidad normal o unidosis
-      if (item.cantidad > 0) {
-        var existe_lote = false;
-
-        //si existe el insumo validar que el lote no exista
+      if (item.cantidad > item.existencia) {
+        existencia_mayor_lote = true;
+      }
+    }
+    for (let item of this.lotes_insumo) {
+      // agregar unicamente aquellos que tiene cantidad normal o unidosis
+      if (item.cantidad > 0 ) {
+        let existe_lote = false;
+        // si existe el insumo validar que el lote no exista
         if (existe) {
           for (let l of ctrlLotes.controls['lotes'].controls) {
-            //si el lote existe agregar unicamente la cantidad nueva
-            if (l.controls.id.value == item.id) {
+            // si el lote existe agregar unicamente la cantidad nueva
+            if (l.controls.id.value === item.id) {
               existe_lote = true;
-              //agregar la cantida nueva al lote
+              // agregar la cantida nueva al lote
               let cantidad_lote: number = l.controls.cantidad.value + item.cantidad;
-              //agregar la cantida nueva al lote
+              // agregar la cantida nueva al lote
               let cantidad_unidosis_lote: number = l.controls.cantidad.value + item.cantidad;
 
-              //validar que la cantidad escrita no sea mayor que la existencia si no poner la existencia como la cantidad maxima 
-              if(this.modo=='N'){
-                if (cantidad_lote > l.controls.existencia.value) {
-                  this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + l.controls.existencia.value, objeto);
-                  cantidad_lote = l.controls.existencia.value * 1;
-                }
-              }
-              if(this.modo=='U'){
-                if (cantidad_lote > l.controls.existencia_unidosis.value) {
-                  this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + l.controls.existencia_unidosis.value, objeto);
-                  cantidad_lote = l.controls.existencia_unidosis.value * 1;
-                }
+              // validar que la cantidad escrita no sea mayor que la existencia si no poner la existencia como la cantidad maxima
+              if (cantidad_lote < l.controls.existencia.value) {
+                this.notificacion.alert('Cantidad Inválida', 'La cantidad mínima es: ' + Number(l.controls.existencia.value) + 1, objeto);
+                cantidad_lote = Number(l.controls.existencia.value) + 1;
               }
               l.controls.cantidad.patchValue(cantidad_lote);
-              //l.controls.cantidad.patchValue(cantidad_unidosis_lote);
               break;
             }
           }
         }
-        //si el lote no existe agregarlo
+        // si el lote no existe agregarlo
         if (!existe_lote) {
-          //validar que la cantidad escrita no sea mayor que la existencia si no poner la existencia como la cantidad maxima
-          //Para Cantidad normal y unidosis        
-          if(item.nuevo){
-            item.existencia = item.cantidad * 1;
-          }
-          if(this.modo == 'N'){
-            if (item.cantidad > item.existencia) {
-              this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + item.existencia, objeto);
-              item.cantidad = item.existencia * 1;
+          if (item.cantidad > item.existencia) {
+            // validar que la cantidad escrita no sea mayor que la existencia si no poner la existencia como la cantidad maxima
+            // Para Cantidad normal
+            if (item.nuevo) {
+              item.existencia = item.cantidad * 1;
             }
-          }
-          if(this.modo == 'U'){
-            {
-              if (item.cantidad > item.existencia_unidosis) {
-                this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + item.existencia_unidosis, objeto);
-                item.cantidad = item.existencia_unidosis * 1;
-              }
-            }
-          }
 
-          //agregar al formulario reactivo de lote
-          ctrlLotes.controls['lotes'].push(this.fb.group(
-            {
-              id: item.id,
-              nuevo: item.nuevo | 0,
-              codigo_barras: item.codigo_barras,
-              lote: item.lote,
-              fecha_caducidad: item.fecha_caducidad,
-              existencia: item.nuevo ? item.cantidad : item.existencia,
-              cantidad: item.cantidad,
-              existencia_unidosis: item.nuevo ? item.cantidad : item.existencia_unidosis,
-              modo_salida: this.modo,
+            // agregar al formulario reactivo de lote
+            ctrlLotes.controls['lotes'].push(this.fb.group(
+              {
+                id: item.id,
+                ajuste: 1,
+                nueva_existencia: item.cantidad,
+                nuevo: item.nuevo | 0,
+                codigo_barras: item.codigo_barras,
+                lote: item.lote,
+                fecha_caducidad: item.fecha_caducidad,
+                cantidad: item.cantidad,
+                existencia: item.nuevo ? item.cantidad : item.existencia
+              }
+            ));
+          }else {
+            let existencia_minima = Number(item.existencia) + Number(1);
+            this.notificacion.alert('Cantidad Inválida', 'La cantidad mínima de ' + item.lote +
+            ' es: ' + existencia_minima, objeto);
+            if (!existe && !existencia_mayor_lote) {
+              control.removeAt(posicion);
             }
-          ));
+          }
         }
       }
     }
 
     // sumamos las cantidades de los lotes
-    let cantidad: number = 0;
-    let cantidad_unidosis: number = 0;
+    let cantidad = 0;
+    let cantidad_unidosis = 0;
     for (let l of ctrlLotes.controls['lotes'].value) {
       cantidad = cantidad + l.cantidad;
       cantidad_unidosis = cantidad_unidosis + l.cantidad;
     }
 
-    // agregar la cantidad surtida y cantidad solicitada
-    if (ctrlLotes.controls['modo_salida'].value == 'N') {
-      ctrlLotes.controls['cantidad_surtida'].patchValue(cantidad);
-      if (existe) {
-        let temp_cant_solicitada: number = ctrlLotes.controls['cantidad_solicitada'].value;
-        cantidad_solicitada = Number(temp_cant_solicitada) + Number(cantidad_solicitada);
-        ctrlLotes.controls['cantidad_solicitada'].patchValue(cantidad_solicitada);
-      }
-    }
-    if (ctrlLotes.controls['modo_salida'].value == 'U') {
-      ctrlLotes.controls['cantidad_surtida'].patchValue(cantidad);
-      if (existe) {
-        let temp_cant_solicitada: number = ctrlLotes.controls['cantidad_solicitada'].value;
-        cantidad_solicitada = Number(temp_cant_solicitada) + Number(cantidad_solicitada);
-        ctrlLotes.controls['cantidad_solicitada'].patchValue(cantidad_solicitada);
-      }
-    }
+    // agregar la cantidad surtida
+    ctrlLotes.controls['cantidad_surtida'].patchValue(cantidad);
     this.cancelarModal('verLotes');
     this.cancelarModal('negarExistencia');
-    this.cantidad_solicitadaBoxViewChildren.first.nativeElement.value = '';
-    this.cantidad_solicitadaBoxViewChildren.first.nativeElement.focus();
     this.cant_solicitada_valida = false;
     this.sum_cant_lotes = false;
     this.modo = 'N';
@@ -451,8 +359,9 @@ export class FormularioComponent {
   agregarNuevoLote() {
     this.lotes_insumo.push(
       { id: '' + Math.floor(Math.random() * (999)) + 1, codigo_barras: '', lote: '', fecha_caducidad: '',
-      existencia: '', cantidad: '', nuevo: 1, existencia_unidosis: '', cantidad_unidosis: '' });
-    // this.lotes_insumo.push({ id: "" + Math.floor(Math.random() * (999)) + 1, codigo_barras: "", lote: "", fecha_caducidad: "", existencia: '', cantidad: '', nuevo: 1});
+        existencia: '', cantidad: '', nuevo: 1, existencia_unidosis: '', cantidad_unidosis: '' });
+    // this.lotes_insumo.push({ id: "" + Math.floor(Math.random() * (999)) + 1, codigo_barras: "",
+    // lote: "", fecha_caducidad: "", existencia: '', cantidad: '', nuevo: 1});
   }
 
   /**
@@ -479,7 +388,7 @@ export class FormularioComponent {
 
     ctrlLotesLote.removeAt(i2);
 
-    var cantidad = ctrlLotes.controls['cantidad_surtida'].value - val.cantidad;
+    let cantidad = ctrlLotes.controls['cantidad_surtida'].value - val.cantidad;
     ctrlLotes.controls['cantidad_surtida'].patchValue(cantidad);
   }
 
@@ -491,28 +400,17 @@ export class FormularioComponent {
      * @return void
      */
   validar_cantidad_lote(i, val, i2, modo_salida) {
-    if(modo_salida == 'N'){
-      if (val.controls.cantidad.value > val.controls.existencia.value) {
-        var objeto = {
+    if (modo_salida === 'N') {
+      if (val.controls.cantidad.value < val.controls.existencia.value) {
+        let objeto = {
           showProgressBar: true,
           pauseOnHover: true,
           clickToClose: true,
           maxLength: 2000
         };
-        this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + val.controls.existencia.value, objeto);
-        val.controls.cantidad.patchValue(val.controls.existencia.value * 1);
-      }
-    }
-    if(modo_salida == 'U'){
-      if (val.controls.cantidad.value > val.controls.existencia_unidosis.value) {
-        var objeto = {
-          showProgressBar: true,
-          pauseOnHover: true,
-          clickToClose: true,
-          maxLength: 2000
-        };
-        this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + val.controls.existencia_unidosis.value, objeto);
-        val.controls.cantidad.patchValue(val.controls.existencia_unidosis.value * 1);
+        this.notificacion.alert('Cantidad Inválida', 'La cantidad mínima es: ' + Number(val.controls.existencia.value) + 1, objeto);
+        let cantidad_lote = Number(val.controls.existencia.value) + 1;
+        val.controls.cantidad.patchValue(cantidad_lote);
       }
     }
     // sumamos las cantidades de los lotes
@@ -528,26 +426,27 @@ export class FormularioComponent {
   comprobar_cant_lotes() {
     let cantidad = 0;
     for (let l of this.lotes_insumo) {
-      if(l.cantidad)
+      if (l.cantidad) {
         cantidad = Number(cantidad) + Number(l.cantidad);
+      }
     }
-    if(cantidad>0){
+    if (cantidad > 0) {
       this.sum_cant_lotes = true;
-    }else{
+    }else {
       this.sum_cant_lotes = false;
     }
   }
 
   comprobar_cant_solicitada(value) {
-    if (value>0) {
+    if (value > 0) {
       this.cant_solicitada_valida = true;
-    }else{
+    }else {
       this.cant_solicitada_valida = false;
     }
   }
 
-  quitar_punto(event){
-    if (this.is_numeric(event.key ) ){
+  quitar_punto(event) {
+    if (this.is_numeric(event.key)) {
       return true;
     }else {
       return false;
