@@ -207,21 +207,20 @@ export class FormularioComponent {
           if(item.clave == resultado[0].clave_insumo_medico){
             var existencia_unidosis = 0;
             var existencia = 0;
-            for(let val of item.lotes){
-              for(let res of resultado){
-                if(val.lote==res.lote){
-                 try{
-                   if(val.cantidad > 0){
-                     if(item.modo_salida == 'U'){
-                       //val.cantidad = val.cantidad / item.cantidad_x_envase;
+            for (let val of item.lotes){
+              for (let res of resultado){
+                if (val.id === res.id) {
+                 try {
+                   if (val.cantidad > 0) {
+                     if (item.modo_salida === 'U') {
                        res.existencia = res.existencia - (val.cantidad / item.cantidad_x_envase);
                      }
-                     if(item.modo_salida == 'N'){
+                     if (item.modo_salida === 'N') {
                        res.existencia = res.existencia - val.cantidad;
                      }
                        res.existencia_unidosis = (res.existencia * item.cantidad_x_envase);
                    }
-                 }catch(e){
+                 }catch (e) {
                    console.log(e);
                  }
                 }

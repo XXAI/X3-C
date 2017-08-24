@@ -35,7 +35,7 @@ export class ListaComponent implements OnInit {
   ngOnInit() {
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
     // Inicializamos el objeto para los reportes con web Webworkers
-    this.pdfworker = new Worker('web-workers/farmacia/inventario/lista-existencias.js');
+    this.pdfworker = new Worker('web-workers/inventario/lista-existencias.js');
 
     // Este es un hack para poder usar variables del componente dentro de una funcion del worker
     let self = this;

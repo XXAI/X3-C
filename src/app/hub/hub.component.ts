@@ -28,14 +28,15 @@ export class HubComponent implements OnInit {
     {
       title: 'Inventario', routerLink: '/inventario', icono: 'assets/icono-stock.svg',
       permisos: [
-        'kWbg08UnfL8fHlOpcNmcTvVbGEU6L8Wz', //Existencias
-        'g8YLm8F0e9Zokxq6iSJUndPYro5Ic6tQ', //Ajuste de Inventario
-        '7KbTARF2kpnO4Lfqv8hmYP8QGMcgJBwU', //Inicialización Inventario
-        'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
+        'H5IV7Z6CAj8V2CRIQ2wnbXrYhvjLsSBk', // Existencia de insumos médicos
+        'cE81erieaVjvmhcb9GCYI4doqYGtTcj1', // Ajuste menos
+        '0oADIo1ltfAl4VMDVbyWgLR3rAhYGjlY', // Ajuste mas
+        '7KbTARF2kpnO4Lfqv8hmYP8QGMcgJBwU', // Inicialización Inventario
+        // 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
       ]
     },
     {
-      title: 'Almacén artículos', routerLink:'/almacen-articulos', icono: 'assets/hub-almacen-articulos.svg',
+      title: 'Almacén artículos', routerLink: '/almacen-articulos', icono: 'assets/hub-almacen-articulos.svg',
       permisos: [
          'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
         // 'cuSmlV9lvABXzfjtLbzEe0VbI47Dh6Cv', // Ver catálogos
@@ -57,7 +58,7 @@ export class HubComponent implements OnInit {
       title: 'Farmacia Subrrogada', routerLink: '/farmacia-subrrogada', icono: 'assets/hub-farmacia-sub.svg',
       permisos: [
         'MrL06vIO12iNhchP14h57Puvg71eUmYb', // Ver FS proveedor pruebas
-        'RZsvMjtPtpLWC8afsAFZsNnD9iXtiZC3' // Ver sincronizar recetas
+        'RZsvMjtPtpLWC8afsAFZsNnD9iXtiZC3', // Ver sincronizar recetas
       ]
     },
     {

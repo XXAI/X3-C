@@ -30,30 +30,32 @@ export class IndexInventarioComponent implements OnInit {
         titulo: 'Inicialización Inventario', url: '/inventario/inicializacion-inventario'
       },
       {
-        permiso: 'kWbg08UnfL8fHlOpcNmcTvVbGEU6L8Wz', icono: 'assets/icono-stock.svg',
+        permiso: 'H5IV7Z6CAj8V2CRIQ2wnbXrYhvjLsSBk', icono: 'assets/icono-stock.svg',
         titulo: 'Existencia de insumos médicos', url: '/inventario/existencias'
       },
       {
-        permiso: 'g8YLm8F0e9Zokxq6iSJUndPYro5Ic6tQ', icono: 'assets/icono-stock-edit.svg',
-        titulo: 'Ajuste de Inventario', url: '/inventario/ajuste-inventario'
+        permiso: '0oADIo1ltfAl4VMDVbyWgLR3rAhYGjlY', icono: 'assets/icono-ajuste-mas.svg',
+        titulo: 'Ajuste más de Inventario', url: '/inventario/ajuste-mas-inventario'
       },
       {
+        permiso: 'cE81erieaVjvmhcb9GCYI4doqYGtTcj1', icono: 'assets/icono-ajuste-menos.svg',
+        titulo: 'Ajuste menos de Inventario', url: '/inventario/ajuste-menos-inventario'
+      },
+
+/*
+      { // PRUEBA
         permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-stock.svg',
         titulo: 'Existencia de insumos médicos', url: '/inventario/existencias'
-      }, // PRUEBA
-      {
+      },
+      { // PRUEBA
         permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-ajuste-mas.svg',
         titulo: 'Ajuste más de Inventario', url: '/inventario/ajuste-mas-inventario'
-      }, // PRUEBA
-      {
+      },
+      { // PRUEBA
         permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-ajuste-menos.svg',
-        titulo: 'Ajuste menos de Inventario', url: '/inventario/ajuste-inventario'
-      }, // PRUEBA
-      {
-        permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-ajustes-inventario.svg',
-        titulo: 'Inicialización Inventario', url: '/inventario/inicializacion-inventario'
-      }, // PRUEBA
-
+        titulo: 'Ajuste menos de Inventario', url: '/inventario/ajuste-menos-inventario'
+      }
+*/
     ];
     this.accesosDirectos = [
     ];

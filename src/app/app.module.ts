@@ -64,7 +64,8 @@ import { ClavesBasicasModule    } from './administrador-central/claves-basicas/c
 import { IndexInventarioModule          } from './inventario/index-inventario/index-inventario.module';
 import { InventarioModule               } from './inventario/existencias/inventario.module';
 import { InicializacionInventarioModule } from './inventario/inicializacion-inventario/inicializacion-inventario.module';
-import { AjusteInventarioModule         } from './inventario/ajuste-inventario/ajuste-inventario.module';
+import { AjusteMasInventarioModule         } from './inventario/ajuste-mas-inventario/ajuste-mas-inventario.module';
+import { AjusteMenosInventarioModule         } from './inventario/ajuste-menos-inventario/ajuste-menos-inventario.module';
 
 // # Hub almacén artículos
 import { IndexAlmacenArticulosModule } from './almacen-articulos/index-almacen-articulos/index-almacen-articulos.module';
@@ -138,7 +139,8 @@ export function highchartsFactory() {
     EntradasEstandarModule,
     SalidasEstandarModule,
     InventarioModule,
-    AjusteInventarioModule,
+    AjusteMasInventarioModule,
+    AjusteMenosInventarioModule,
     SalidasRecetasModule,
     DashboardSalidasModule,
     ClavesBasicasModule,
