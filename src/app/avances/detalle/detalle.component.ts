@@ -292,7 +292,7 @@ export class DetalleComponent implements OnInit {
               }
 
               if(xhr.readyState === XMLHttpRequest.DONE && xhr.status != 200) {
-                 self.error_envio();
+                 self.error_envio(xhr);
                  self.subir_archivo = true;        
               }
               self.cargando_archivo = xhr.readyState;
@@ -303,10 +303,15 @@ export class DetalleComponent implements OnInit {
         }
     }
 
-    error_envio()
+    error_envio(obj)
     {
+      console.log(obj);
       this.mensajeError = new Mensaje(true);
       this.mensajeError.mostrar = true;
+      
+      if(obj.status == 500)
+      this.mensajeError.texto = obj.responseText;
+        else
       this.mensajeError.texto = "Ha ocurrido un error al enviar el archivo";
     }
 
