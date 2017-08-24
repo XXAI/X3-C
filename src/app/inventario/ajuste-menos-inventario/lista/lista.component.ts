@@ -11,9 +11,7 @@ export class ListaComponent implements OnInit {
   usuario;
   fecha_desde = '';
   fecha_hasta = '';
-  turno = '';
-  servicio = '';
-  recibe = '';
+  usuario_lista = '';
   dato;
 
   // # SECCION: Reportes
@@ -30,7 +28,7 @@ export class ListaComponent implements OnInit {
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
 
     // Inicializamos el objeto para los reportes con web Webworkers
-    this.pdfworker = new Worker('web-workers/farmacia/movimientos/lista-salidas.js');
+    this.pdfworker = new Worker('web-workers/inventario/lista-ajuste-menos.js');
 
     // Este es un hack para poder usar variables del componente dentro de una funcion del worker
     let self = this;
@@ -49,20 +47,15 @@ export class ListaComponent implements OnInit {
   }
 
   export_excel() {
-    let titulo = 'Ajuste de inventario mas';
-    let turno = this.tr.first.nativeElement.options;
-    let servicio = this.sr.first.nativeElement.options;
-    turno = turno[turno.selectedIndex].text;
-    servicio = servicio[servicio.selectedIndex].text;
+    let titulo = 'Ajuste de inventario más';
     let exportData = '<table><tr><th colspan=\'7\'><h1>' + titulo
     + '</h1></th></tr><tr><th>Desde: ' + this.fecha_desde + '</th><th>Hasta: ' + this.fecha_hasta + '</th>'
-    + '<th>Turno: ' + turno + '</th><th>Servicio: ' + servicio + '</th><th>Recibe: '
-    + this.recibe + '</th></tr><tr><th colspan=\'7\'></th></tr></table>';
+    + '<th>Usuario: ' + this.usuario_lista + '</th></tr><tr><th colspan=\'7\'></th></tr></table>';
 
     exportData += document.getElementById('exportable').innerHTML;
     let blob = new Blob([exportData], { type: 'text/comma-separated-values;charset=utf-8' });
     try {
-        FileSaver.saveAs(blob,  'salida_estandar.xls');
+        FileSaver.saveAs(blob,  'LISTA_AJUSTE_MAS.xls');
     } catch (e) {
       console.log(e);
     }
@@ -70,20 +63,12 @@ export class ListaComponent implements OnInit {
 
   imprimir() {
     try {
-      this.cargandoPdf = true;
-      let turno = this.tr.first.nativeElement.options;
-      let servicio = this.sr.first.nativeElement.options;
-      turno = turno[turno.selectedIndex].text;
-      servicio = servicio[servicio.selectedIndex].text;
-
       let entrada_imprimir = {
         lista: this.dato,
         usuario: this.usuario,
         fecha_desde: this.fecha_desde,
         fecha_hasta: this.fecha_hasta,
-        turno: turno,
-        servicio: servicio,
-        recibe: this.recibe
+        usuario_lista: this.usuario_lista
       };
       this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
     } catch (e) {

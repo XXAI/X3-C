@@ -6,6 +6,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { CrudService } from '../../../crud/crud.service';
 import { NotificationsService } from 'angular2-notifications';
+import { Mensaje } from '../../../mensaje';
 
 import  * as FileSaver    from 'file-saver';
 
@@ -32,6 +33,7 @@ export class FormularioComponent {
   array_servicios;
   sum_cant_lotes = false;
   mostrar_lote = [];
+  cantidad_error = 0;
   public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
 
   MinDate = new Date();
@@ -48,9 +50,14 @@ export class FormularioComponent {
     cargandoPdf = false;
   // # FIN SECCION
 
+  // Crear la variable que mustra las notificaciones
+  mensajeResponse: Mensaje = new Mensaje();
+  titulo= 'Ajuste menos de inventario';
+
+  // mostrar notificaciones configuracion default, posicion abajo izquierda, tiempo 2 segundos
   public options = {
-    position: ['top', 'right'],
-    timeOut: 5000,
+    position: ['bottom', 'right'],
+    timeOut: 2000,
     lastOnBottom: true
   };
 
@@ -378,6 +385,74 @@ export class FormularioComponent {
     this.sum_cant_lotes = false;
     this.modo = 'N';
   }
+
+  /******************************************************************************************************************** */
+  /**
+     * Este método valida los lotes del modal antes de agregarlos
+     * @return void
+     */
+  validarLotesInsumo() {
+    this.options = {
+      position: ['bottom', 'left'],
+      timeOut: 5000,
+      lastOnBottom: true
+    };
+    this.cantidad_error = 0;
+    // obtener el formulario reactivo para agregar los elementos
+    const control = <FormArray>this.dato.controls['insumos'];
+
+    // crear el json que se pasara al formulario reactivo tipo insumos
+    let datos_insumo = {
+      'clave': this.insumo.clave,
+      'nombre': this.insumo.nombre,
+      'descripcion': this.insumo.descripcion,
+      'es_causes': this.insumo.es_causes,
+      'es_unidosis': this.insumo.es_unidosis,
+      'cantidad': 1,
+      'presentacion_nombre': this.insumo.presentacion_nombre,
+      'unidad_medida': this.insumo.unidad_medida,
+      'cantidad_x_envase': this.insumo.cantidad_x_envase ? parseInt(this.insumo.cantidad_x_envase) : 1,
+      'cantidad_surtida': 1,
+      'lotes': this.fb.array([])
+    };
+
+    // comprobar que el insumo no este en la lista cargada
+    let existe = false;
+    let existe_clave = false;
+    let posicion_existe = 0;
+    let existencia_minima_lote = true;
+
+    for (let item of control.value) {
+      if (item.clave === this.insumo.clave) {
+        existe_clave = true;
+        existe = true;
+        break;
+      }
+      posicion_existe++;
+    }
+
+    // si no existe el insumo en la lista agregarlo
+    if (!existe) {
+      control.push(this.fb.group(datos_insumo));
+    }
+
+    // recorrer la tabla de lotes del modal para obtener la cantidad
+    for (let item of this.lotes_insumo) {
+      if (item.cantidad < item.existencia) {
+        existencia_minima_lote = false;
+        if (!existe) {
+          control.removeAt(control.length - 1);
+        }
+      }
+    }
+    if (existencia_minima_lote) {
+      this.agregarLoteIsumo();
+    }else {
+      this.mensajeResponse.texto = 'Verificar las cantidades ingresadas';
+      this.mensajeResponse.clase = 'warning';
+      this.mensaje(8);
+    }
+  }
   /**
      * Este método agrega una nueva fila para los lotes nuevos
      * @param posicion Posicion a mostrar el detalle de lotes
@@ -531,4 +606,48 @@ export class FormularioComponent {
     }
   }
 
+  /**
+     * Este método muestra los mensajes resultantes de los llamados de la api
+     * @param cuentaAtras numero de segundo a esperar para que el mensaje desaparezca solo
+     * @param posicion  array de posicion [vertical, horizontal]
+     * @return void
+     */
+    mensaje(cuentaAtras: number = 6, posicion: any[] = ['bottom', 'left']): void {
+        let objeto = {
+            showProgressBar: true,
+            pauseOnHover: false,
+            clickToClose: true,
+            maxLength: this.mensajeResponse.texto.length
+        };
+
+        this.options = {
+            position: posicion,
+            timeOut: cuentaAtras * 1000,
+            lastOnBottom: true
+        };
+         if (this.mensajeResponse.titulo === '') {
+            this.mensajeResponse.titulo = this.titulo;
+          }
+
+        if (this.mensajeResponse.clase === 'alert') {
+            this.notificacion.alert(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+
+        if (this.mensajeResponse.clase === 'success') {
+            this.notificacion.success(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+
+        if (this.mensajeResponse.clase === 'info') {
+            this.notificacion.info(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+
+        if (this.mensajeResponse.clase === 'warning' || this.mensajeResponse.clase == 'warn') {
+            this.notificacion.warn(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+
+        if (this.mensajeResponse.clase === 'error' || this.mensajeResponse.clase == 'danger') {
+            this.notificacion.error(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+
+    }
 }

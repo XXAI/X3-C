@@ -57,7 +57,7 @@ export class HubComponent implements OnInit {
       title: 'Farmacia Subrrogada', routerLink: '/farmacia-subrrogada', icono: 'assets/hub-farmacia-sub.svg',
       permisos: [
         'MrL06vIO12iNhchP14h57Puvg71eUmYb', // Ver FS proveedor pruebas
-        'RZsvMjtPtpLWC8afsAFZsNnD9iXtiZC3' // Ver sincronizar recetas
+        'RZsvMjtPtpLWC8afsAFZsNnD9iXtiZC3', // Ver sincronizar recetas
       ]
     },
     {

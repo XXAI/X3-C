@@ -22,6 +22,7 @@ import { CrudModule } from '../../crud/crud.module';
 //fin crud
 import { NguiAutoCompleteModule } from '@ngui/auto-complete';
 import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
+import { SimpleNotificationsModule } from 'angular2-notifications';
 
 @NgModule({
   imports: [
@@ -37,7 +38,8 @@ import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
     IndexInventarioModule,
     CrudModule,
     NguiAutoCompleteModule,
-    NguiDatetimePickerModule
+    NguiDatetimePickerModule,
+    SimpleNotificationsModule
   ],
   declarations: [
     ListaComponent,

@@ -108,42 +108,42 @@ export class ListaComponent{
     */
     enviarDatos(url?) {
         this.cargando = true;
-        this.dato2.patchValue({pedido:this.pedido_id});
-        var json = this.dato2.getRawValue();
+        this.dato2.patchValue({pedido: this.pedido_id});
+        let json = this.dato2.getRawValue();
         this.crudService.crear(json, url).subscribe(
             resultado => {
-              this.cargando = false;   
-              if(resultado.data){
+              this.cargando = false;
+              if (resultado.data) {
                 this.json_valido = resultado.data;
               }
               this.recetas_resultado = true;
-              this.mensajeResponse.texto = "Validación realizada.";
+              this.mensajeResponse.texto = 'Validación realizada.';
               this.mensajeResponse.mostrar = true;
-              this.mensajeResponse.clase = "success";
-              this.mensaje(2);            
+              this.mensajeResponse.clase = 'success';
+              this.mensaje(2);
             },
             error => {
                 this.cargando = false;
 
                 try {
                     let e = error.json();
-                    if (error.status == 401) {
-                        this.mensajeResponse.texto = "No tiene permiso para hacer esta operación.";
+                    if (error.status === 401) {
+                        this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
 
                     }
                     // Problema de validación
-                    if (error.status == 409) {
-                        this.mensajeResponse.texto = "Por favor verfique los campos marcados en rojo.";
+                    if (error.status === 409) {
+                        this.mensajeResponse.texto = 'Por favor verfique los campos marcados en rojo.';
                         this.mensajeResponse.clase = 'warning';
                         this.mensaje(8);
-                                
+
                         for (var input in e.error) {
                             // Iteramos todos los errores
                             for (var i in e.error[input]) {
                                 for(var j in e.error[input][i]){
                                 this.mensajeResponse.titulo = input;
                                 this.mensajeResponse.texto = e.error[input][i][j];
-                                this.mensajeResponse.clase = "error";
+                                this.mensajeResponse.clase = 'error';
                                 this.mensaje(3);
                                 }
                             }
@@ -152,9 +152,9 @@ export class ListaComponent{
                 } catch (e) {
 
                     if (error.status == 500) {
-                        this.mensajeResponse.texto = "500 (Error interno del servidor)";
+                        this.mensajeResponse.texto = '500 (Error interno del servidor)';
                     } else {
-                        this.mensajeResponse.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+                        this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
                     }
                 }
             }
@@ -168,14 +168,14 @@ export class ListaComponent{
         this.cargando = true;
         this.dato2.patchValue({pedido:this.pedido_id});
         var json = this.dato2.getRawValue();
-        this.crudService.crear(json, "procesar-json-proveedor").subscribe(
+        this.crudService.crear(json, 'procesar-json-proveedor').subscribe(
             resultado => {
               this.cargando = false;   
               
               this.cancelarModal(modal);
-              this.mensajeResponse.texto = "Se han sincronizado las recetas.";
+              this.mensajeResponse.texto = 'Se han sincronizado las recetas.';
               this.mensajeResponse.mostrar = true;
-              this.mensajeResponse.clase = "success";
+              this.mensajeResponse.clase = 'success';
               this.mensaje(2);            
             },
             error => {
@@ -184,12 +184,12 @@ export class ListaComponent{
                 try {
                     let e = error.json();
                     if (error.status == 401) {
-                        this.mensajeResponse.texto = "No tiene permiso para hacer esta operación.";
+                        this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
 
                     }
                     // Problema de validación
                     if (error.status == 409) {
-                        this.mensajeResponse.texto = "Por favor verfique los campos marcados en rojo.";
+                        this.mensajeResponse.texto = 'Por favor verfique los campos marcados en rojo.';
                         this.mensajeResponse.clase = 'warning';
                         this.mensaje(8);
                         for (var input in e.error) {
@@ -197,7 +197,7 @@ export class ListaComponent{
                             for (var i in e.error[input]) {
                                 this.mensajeResponse.titulo = input;
                                 this.mensajeResponse.texto = e.error[input][i];
-                                this.mensajeResponse.clase = "error";
+                                this.mensajeResponse.clase = 'error';
                                 this.mensaje(3);
                             }
                         }
@@ -205,9 +205,9 @@ export class ListaComponent{
                 } catch (e) {
 
                     if (error.status == 500) {
-                        this.mensajeResponse.texto = "500 (Error interno del servidor)";
+                        this.mensajeResponse.texto = '500 (Error interno del servidor)';
                     } else {
-                        this.mensajeResponse.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+                        this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
                     }
                 }
             }
@@ -217,7 +217,7 @@ export class ListaComponent{
 
     //mostrar notificaciones configuracion default, posicion abajo izquierda, tiempo 2 segundos
     public options = {
-        position: ["bottom", "left"],
+        position: ['bottom', 'left'],
         timeOut: 2000,
         lastOnBottom: true
     };
@@ -227,7 +227,7 @@ export class ListaComponent{
      * @param posicion  array de posicion [vertical, horizontal]
      * @return void
      */
-    mensaje(cuentaAtras: number = 6, posicion: any[] = ["bottom", "left"]): void {
+    mensaje(cuentaAtras: number = 6, posicion: any[] = ['bottom', 'left']): void {
         var objeto = {
             showProgressBar: true,
             pauseOnHover: false,
