@@ -438,7 +438,7 @@ export class FormularioComponent {
 
     // recorrer la tabla de lotes del modal para obtener la cantidad
     for (let item of this.lotes_insumo) {
-      if (item.cantidad < item.existencia) {
+      if (item.cantidad <= item.existencia) {
         existencia_minima_lote = false;
         if (!existe) {
           control.removeAt(control.length - 1);
