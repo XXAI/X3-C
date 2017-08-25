@@ -11,6 +11,7 @@ export class AvanceService {
 
   static readonly URL: string = "avance";
   static readonly URL_DETALLE: string = "avance-detalle";
+  static readonly URL_USUARIOS: string = "avance-usuario-privilegio";
   	
   constructor(private http: Http,   private jwtRequest:JwtRequestService) { }
 
@@ -41,7 +42,7 @@ export class AvanceService {
       }) as Observable<Tema>;
   	}
 
-  	editar(id:any, tema: Tema): Observable<Tema> {
+   editar(id:any, tema: Tema): Observable<Tema> {
      return this.jwtRequest.put(AvanceService.URL,id, tema).map( (response: Response) => response.json().data) as Observable<Tema>;
    }
 
@@ -57,4 +58,21 @@ export class AvanceService {
         return avance;
       }) as Observable<any>;
   }
+
+  usuarios(id:any): Observable<any> {
+     return this.jwtRequest.get(AvanceService.URL_USUARIOS,null,{identificador: id}).map( (response: Response) => response.json().data);
+   }
+
+   crear_usuario(usuario:any): Observable<any> {
+     return this.jwtRequest.post(AvanceService.URL_USUARIOS,usuario).map( (response: Response) => response.json().data) as Observable<any>;
+   }
+
+   elimina_usuarios(id:string): Observable<any> {
+    return this.jwtRequest.delete(AvanceService.URL_USUARIOS,id,{}).map( (response: Response) => {
+       let jsonData = response.json().data;
+       var avance = jsonData as any;
+        
+        return avance;
+      }) as Observable<any>;
+   }
 }

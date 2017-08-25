@@ -25,6 +25,12 @@
                             <span>Regresar</span>
                             </a>
                         </p>
+                        
+                        <p class="control"  *ngIf="privilegio_usuario">
+                            <a class="button is-medium is-info"  (click)='showAgregarUsuario=!showAgregarUsuario'>
+                            <span>Agregar Usuario</span>
+                            </a>
+                        </p>
                         <p class="control">
                             
                             <a class="button is-medium is-primary is-inverted " (click)='showAgregarAvance=!showAgregarAvance'>
@@ -217,6 +223,94 @@
     </footer>
   </div>
 </div>
+
+<div id="modal-usuario" class="modal is-active" [ngClass]="{'is-active': showAgregarUsuario}">
+  <div class="modal-background"  (click)="showDialog = !showAgregarUsuario"></div>
+  <div class="modal-card" style="width:60%; height: auto;">
+    <header class="modal-card-head" style="background-color: #00d1b2" >
+      <div class="container is-fluid"  style="width:100%;">
+          <h1 class="title" style="color:#FFF;">
+            <span class="icon is-medium"><i class="fa fa-user"></i></span> Usuarios / Privilegios
+          </h1>
+      </div>            
+      <a class="button  is-primary" style="position:absolute; top:1em; right:1em;" (click)="showAgregarUsuario = !showAgregarUsuario"><span class="icon "><i class="fa fa-close"></i></span></a>
+    </header>
+
+      <div class="modal-content" style="background-color: #FFF; width: 101%">
+        <div class="is-fullwidth has-text-centered" *ngIf="cargando">
+            <br>
+            <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
+            <br>
+            <br>
+        </div>
+        <form name="form" [formGroup]="usuario_form"   (ngSubmit)="agregar_usuario()" >  
+            <div class="columns" style="width: 100%; background-color: #EFEFEF; padding: 10px">
+              <div class="column">
+                 <div class="control is-grouped">
+                  <select class="select" formControlName="usuario_id">
+                    <option  *ngFor="let item of usuarios; let i=index" value='{{item.id}}'>{{ item.nombre }} {{ item.apellidos }} - {{ item.id }}</option>
+                   </select>
+                    <span class="icon is-small" *ngIf="usuario_form.get('usuario_id').hasError('required') && usuario_form.get('usuario_id').touched">
+                        <i class="fa fa-warning"></i>
+                    </span>
+                    <span class="help is-danger" *ngIf="usuario_form.get('usuario_id').hasError('required') && usuario_form.get('usuario_id').touched">Este campo es requerido.</span>
+                  </div>  
+              </div>
+              <div class="column">
+                <label class="checkbox">
+                    <input type="checkbox"  formControlName="agregar">
+                    Agregar
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox"  formControlName="editar">
+                    Editar
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox"  formControlName="eliminar">
+                    Eliminar
+                </label>
+              </div>
+              <div class="column">
+                <button type="submit" class="button is-primary" name="enviar" [ngClass]="{'is-loading': cargando}"  [disabled]="usuario_form.invalid">Guardar</button>
+              </div>
+             
+            </div>
+        </form>
+        <table class="table" *ngIf="!cargando">
+                <thead>
+                    <tr>
+                    <th></th>
+                    <th>Usuario</th>
+                    <th><i class="fa fa-eye"></i></th>
+                    <th><i class="fa fa-edit"></i></th>
+                    <th><i class="fa fa-close"></i></th>
+                    <th></th>
+                    
+                    </tr>
+                </thead>
+                <tbody  >
+                    <tr *ngFor="let item of usuarios_privilegios; let i=index">
+                        <td><button type="button" class="button is-primary"><i class="fa fa-edit"></i></button></td>
+                        <td>{{ item.usuario_id }}</td>
+                        <td  *ngIf="item.agregar == 1"><i class="fa fa-check-circle"></i></td>
+                        <td  *ngIf="item.agregar == 0"><i class="fa fa-close"></i></td>
+                        <td  *ngIf="item.editar == 1"><i class="fa fa-check-circle"></i></td>
+                        <td  *ngIf="item.editar == 0"><i class="fa fa-close"></i></td>
+                        <td  *ngIf="item.eliminar == 1"><i class="fa fa-check-circle"></i></td>
+                        <td  *ngIf="item.eliminar == 0"><i class="fa fa-close"></i></td>
+                        <td><button type="button" class="button is-danger" (click)='eliminar_usuario_avance(item.id)'><i class="fa fa-close"></i></button></td>
+                    </tr>
+                   <tr *ngIf="usuarios_privilegios.length == 0">
+                        <td colspan="5" style="vertical-align: middle; color:#888;">Lista vacia.</td>                    
+                    </tr>
+                </tbody>    
+          </table>
+      </div>
+      <footer class="" style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em " ></footer>
+  </div>  
+  <button class="modal-close is-large" aria-label="close"></button>
+</div>
+
 
 <div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeError.mostrar">
     <button class="delete" (click)="mensajeError.mostrar = false"></button>        

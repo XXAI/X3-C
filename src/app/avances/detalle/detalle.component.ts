@@ -33,7 +33,9 @@ export class DetalleComponent implements OnInit {
   	
     cargando: boolean = false;
     showAgregarAvance: boolean = false;
+    privilegio_usuario: boolean = false;
     avance: FormGroup;
+    usuario_form: FormGroup;
 	
 
 	// # SECCION: Esta sección es para mostrar mensajes
@@ -51,7 +53,9 @@ export class DetalleComponent implements OnInit {
 	private paginasTotales = 0;
 	private indicePaginas:number[] = [];
 
-	detalles: Detalle[] = [];
+  detalles: Detalle[] = [];
+  usuarios:any = [];
+	usuarios_privilegios:any = [];
 	// # FIN SECCION
 	
 	// # SECCION: Resultados de búsqueda
@@ -88,7 +92,15 @@ export class DetalleComponent implements OnInit {
            porcentaje: ['', [Validators.required]],
            comentario: ['', [Validators.required]]
        
-      });
+    });
+
+    this.usuario_form = this.fb.group({
+           usuario_id: ['', [Validators.required]],
+           agregar: ['', []],
+           editar: ['', []],
+           eliminar: ['', []],
+           avance_id: ['', []]
+    });
   	this.title.setTitle("Temas / Avance");
   		this.mensajeError = new Mensaje();
 	    this.mensajeExito = new Mensaje();
@@ -100,7 +112,7 @@ export class DetalleComponent implements OnInit {
 	    });
 
 	    this.listar(1);
-	    
+	    this.cargar_usuarios();
 
 	    var busquedaSubject = this.terminosBusqueda
 	    .debounceTime(300) // Esperamos 300 ms pausando eventos
@@ -156,6 +168,116 @@ export class DetalleComponent implements OnInit {
 	      }
 
 	    );
+  }
+
+  cargar_usuarios():void
+  {
+    this.avanceService.usuarios(this.id_avance).subscribe(
+        resultado => {
+          console.log(resultado);
+
+          this.usuarios_privilegios = resultado.data_lista;
+          this.usuarios = resultado.usuarios;
+          this.privilegio_usuario = resultado.privilegio;
+        },
+        error => {
+          this.cargando = false;
+          this.mensajeError.mostrar = true;
+          this.ultimaPeticion = this.listar;
+          try {
+            let e = error.json();
+            if (error.status == 401 ){
+              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }
+          } catch(e){
+            console.log("No se puede interpretar el error");
+            
+            if (error.status == 500 ){
+              this.mensajeError.texto = "500 (Error interno del servidor)";
+            } else {
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }            
+          }
+
+        }
+      );
+  }
+
+  eliminar_usuario_avance(id:string): void
+  {
+    if(confirm("¿Realmente Desea eliminar"))
+    {
+    this.avanceService.elimina_usuarios(id).subscribe(
+        resultado => {
+          this.cargar_usuarios();
+        },
+        error => {
+          this.cargando = false;
+          this.mensajeError.mostrar = true;
+          this.ultimaPeticion = this.listar;
+          try {
+            let e = error.json();
+            if (error.status == 401 ){
+              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }
+          } catch(e){
+            console.log("No se puede interpretar el error");
+            
+            if (error.status == 500 ){
+              this.mensajeError.texto = "500 (Error interno del servidor)";
+            } else {
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }            
+          }
+
+        }
+      );
+    }
+  }
+
+  agregar_usuario(): void
+  {
+      this.cargando = true;
+      this.usuario_form.patchValue({avance_id: this.id_avance});
+      this.avanceService.crear_usuario(this.usuario_form.value).subscribe(
+          tema => {
+            this.cargando = false;
+
+            
+            this.mensajeExito = new Mensaje(true);
+            this.mensajeExito.texto = "Se han guardado los cambios.";
+            this.mensajeExito.mostrar = true;
+            this.cargar_usuarios();
+            this.usuario_form.patchValue({usuario_id:"", agregar:"",editar:"", eliminar:""});
+          },
+          error => {
+            this.cargando = false;
+            
+            this.mensajeError = new Mensaje(true);
+            this.mensajeError.texto = "No especificado.";
+            this.mensajeError.mostrar = true;      
+            
+            try {
+              let e = error.json();
+              if (error.status == 401 ){
+                this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+              }
+              // Problema de validación
+              if (error.status == 409){
+                this.mensajeError.texto = "Por favor verfique los campos marcados en rojo.";
+                
+              }
+            } catch(e){
+                          
+              if (error.status == 500 ){
+                this.mensajeError.texto = "500 (Error interno del servidor)";
+              } else {
+                this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+              }            
+            }
+
+          }
+        );
   }
 
   listar(pagina:number): void {
@@ -338,7 +460,7 @@ export class DetalleComponent implements OnInit {
               this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
             }
           } catch(e){
-            console.log("No se puede interpretar el error");
+            
             
             if (error.status == 500 ){
               this.mensajeError.texto = "500 (Error interno del servidor)";
