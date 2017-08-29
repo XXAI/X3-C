@@ -26,14 +26,14 @@ export class IndexFarmaciaComponent implements OnInit {
 
     this.modulos = [
       { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-pagina-lista.svg', titulo: 'Pedidos', url: '/almacen/pedidos' },
-      
+
       // { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk--', icono: 'assets/icono-pedidos-jurisdiccionales.svg', titulo: 'Pedidos jurisdiccionales', url:"/almacen/pedidos-jurisdiccionales" },
       { permiso: 'iSxK0TpoYpnzf8KIQTWOq9Web7WnSKhz', icono: 'assets/icono-pedidos-alt.svg', titulo:'Entregas de pedidos', url:"/almacen/entregas" },
 
       { permiso: 'GPSDLmXckXcdfdj7lD4rdacwMivsTp9g', icono: 'assets/icono-recetas.svg', titulo: 'Recetas', url: '/almacen/salidas-recetas' },
       { permiso: 'qQvNeb1UFPOfVMKQnNkvxyqjCIUgFuEG', icono: 'assets/icono-salidas.svg', titulo: 'Salida  de almacén', url:'/almacen/salidas-estandar' },
       { permiso: 'a1OMZVn7dveOf5aUK8V0VsvvSCxz8EMw', icono: 'assets/icono-entradas.svg', titulo: 'Entrada  de almacén', url:'/almacen/entradas-estandar' },
-
+      /*
       { // PRUEBA
         permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-recetas.svg',
         titulo: 'Recetas', url: '/almacen/salidas-recetas'
@@ -45,7 +45,7 @@ export class IndexFarmaciaComponent implements OnInit {
       { // PRUEBA
         permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-entradas.svg',
         titulo: 'Entrada  de almacén', url: '/almacen/entradas-estandar'
-      },
+      },*/
 
       // { permiso: '7KbTARF2kpnO4Lfqv8hmYP8QGMcgJBwU', icono: 'assets/icono-ajustes-inventario.svg', titulo: 'Inicialización Inventario', url: '/almacen/inicializacion-inventario' },
 
