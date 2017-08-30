@@ -216,7 +216,7 @@
                                             <div class="column is-4">
                                                 <p class="control is-expanded">
                                                     <label class="label">Caducidad:</label>                                                    
-                                                        <input class="input" formControlName="fecha_caducidad" ngui-datetime-picker
+                                                        <input class="input" [textMask]="{mask: mask, keepCharPositions: false}" formControlName="fecha_caducidad" ngui-datetime-picker
                                                             [min-date]="MinDateCaducidad" date-only="true" placeholder="YYYY-MM-DD"
                                                             [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.hasError('required') 
                                                             && ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.touched}">

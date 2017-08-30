@@ -22,6 +22,7 @@ import { CrudModule } from '../../crud/crud.module';
 //fin crud
 import { NguiAutoCompleteModule } from '@ngui/auto-complete';
 import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
+import { TextMaskModule } from 'angular2-text-mask';
 
 @NgModule({
   imports: [
@@ -37,11 +38,12 @@ import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
     IndexFarmaciaModule,
     CrudModule,
     NguiAutoCompleteModule,
-    NguiDatetimePickerModule
+    NguiDatetimePickerModule,
+    TextMaskModule
   ],
-  declarations: [ 
-    ListaComponent,   
-    FormularioComponent 
+  declarations: [
+    ListaComponent,
+    FormularioComponent
   ],
   providers: [ AuthService, CrudService ]
 })

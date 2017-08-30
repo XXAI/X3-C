@@ -1,6 +1,6 @@
 import { Component, OnInit, NgZone, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Params } from '@angular/router';
 
 import { environment } from '../../../../environments/environment';
@@ -24,52 +24,54 @@ export class FormularioComponent {
   tab = 1;
   cargando = false;
   key;
-  public insumos_term: string = `${environment.API_URL}/insumos-auto?term=:keyword`;
-  constructor(
-    private fb: FormBuilder, 
-    private crudService: CrudService, 
-    private route: ActivatedRoute, 
-    private _sanitizer: DomSanitizer, 
-    private notificacion: NotificationsService,
-    private _ngZone: NgZone
-    ) { }
-
 
   MinDate = new Date();
   MinDateCaducidad = new Date();
   MaxDate = new Date();
   fecha_actual;
-  tieneid: boolean = false;
+  tieneid = false;
 
   fecha_movimiento;
   mostrarCancelado;
 
   // # SECCION: Reportes
-  pdfworker:Worker;
-  cargandoPdf:boolean = false;
+  pdfworker: Worker;
+  cargandoPdf = false;
   // # FIN SECCION
+
+  mask = [/[2]/, /\d/, /\d/, /\d/, '-', /[0-1]/, /\d/, '-', /[0-3]/, /\d/];
+  public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
+  constructor(
+    private fb: FormBuilder,
+    private crudService: CrudService,
+    private route: ActivatedRoute,
+    private _sanitizer: DomSanitizer,
+    private notificacion: NotificationsService,
+    private _ngZone: NgZone
+    ) { }
+
 
 
   ngOnInit() {
 
-    //obtener los datos del usiario logueado almacen y clues
-    var usuario = JSON.parse(localStorage.getItem("usuario"));
+    // obtener los datos del usiario logueado almacen y clues
+    let usuario = JSON.parse(localStorage.getItem('usuario'));
 
     if (usuario.clues_activa) {
-      this.insumos_term += "&clues=" + usuario.clues_activa.clues;
+      this.insumos_term += '&clues=' + usuario.clues_activa.clues;
     }
     if (usuario.almacen_activo) {
-      this.insumos_term += "&almacen=" + usuario.almacen_activo.id;
+      this.insumos_term += '&almacen=' + usuario.almacen_activo.id;
     }
 
     // Inicializamos el objeto para los reportes con web Webworkers
-    this.pdfworker = new Worker("web-workers/farmacia/movimientos/imprimir-entrada.js")
+    this.pdfworker = new Worker('web-workers/farmacia/movimientos/imprimir-entrada.js')
 
     // Este es un hack para poder usar variables del componente dentro de una funcion del worker
-    var self = this;    
+    var self = this;
     var $ngZone = this._ngZone;
-    
-    this.pdfworker.onmessage = function( evt ) {       
+
+    this.pdfworker.onmessage = function( evt ) {
       // Esto es un hack porque estamos fuera de contexto dentro del worker
       // Y se usa esto para actualizar alginas variables
       $ngZone.run(() => {
@@ -195,7 +197,7 @@ export class FormularioComponent {
      */
   select_insumo_autocomplete(data) {
 
-    var usuario = JSON.parse(localStorage.getItem("usuario"));
+    var usuario = JSON.parse(localStorage.getItem('usuario'));
     this.cargando = true;
     this.insumo = data;
     this.agregarLoteIsumo();
@@ -226,7 +228,7 @@ export class FormularioComponent {
 
 
   public options = {
-    position: ["top", "right"],
+    position: ['top', 'right'],
     timeOut: 5000,
     lastOnBottom: true
   };
@@ -257,17 +259,17 @@ export class FormularioComponent {
       temporal_cantidad_x_envase = this.insumo.cantidad_x_envase;
     }
     var lotes = {
-      "clave": this.insumo.clave,
-      "nombre": this.insumo.nombre,
-      "descripcion": this.insumo.descripcion,
-      "es_causes": this.insumo.es_causes,
-      "es_unidosis": this.insumo.es_unidosis,
-      "lote": ['', [Validators.required]],
-      "codigo_barras": [''],
-      "fecha_caducidad": ['', [Validators.required]],
-      "cantidad": ['', [Validators.required]],
-      "cantidad_x_envase": parseInt(temporal_cantidad_x_envase),     
-      "cantidad_surtida": 1,
+      'clave': this.insumo.clave,
+      'nombre': this.insumo.nombre,
+      'descripcion': this.insumo.descripcion,
+      'es_causes': this.insumo.es_causes,
+      'es_unidosis': this.insumo.es_unidosis,
+      'lote': ['', [Validators.required]],
+      'codigo_barras': [''],
+      'fecha_caducidad': ['', [Validators.required]],
+      'cantidad': ['', [Validators.required]],
+      'cantidad_x_envase': parseInt(temporal_cantidad_x_envase),     
+      'cantidad_surtida': 1,
     };
 
     //si no esta en la lista agregarlo
@@ -289,7 +291,7 @@ export class FormularioComponent {
      * @return void
      */
   agregarNuevoLote() {
-    this.lotes_insumo.push({ id: "" + Math.floor(Math.random() * (999)) + 1, codigo_barras: "", lote: "", fecha_caducidad: "", existencia: '', cantidad: '', nuevo: 1, existencia_unidosis: '', cantidad_unidosis: '' });
+    this.lotes_insumo.push({ id: '' + Math.floor(Math.random() * (999)) + 1, codigo_barras: '', lote: '', fecha_caducidad: '', existencia: '', cantidad: '', nuevo: 1, existencia_unidosis: '', cantidad_unidosis: '' });
   }
 
   /**
@@ -322,7 +324,7 @@ export class FormularioComponent {
 
   imprimir() {
     
-    var usuario = JSON.parse(localStorage.getItem("usuario"));
+    var usuario = JSON.parse(localStorage.getItem('usuario'));
     try {
       this.cargandoPdf = true;
       var entrada_imprimir = {
