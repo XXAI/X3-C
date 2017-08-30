@@ -1,8 +1,8 @@
-<formulario #ctrl URL="movimientos" titulo="Salida  de almacén" [dato]="dato"></formulario>
-<menu-farmacia [modulo]="'Salida de almacén'" [icono]="'assets/icono-salidas.svg'" [url]="'/almacen/salidas-estandar'"></menu-farmacia>
+<formulario #ctrl URL="movimientos" titulo="Correcciones" [dato]="dato"></formulario>
+<app-menu-inventario [modulo]="'Correcciones'" [icono]="'assets/icono-correcciones.svg'" [url]="'/inventario/correcciones'"></app-menu-inventario>
 <div style="height:50px;"></div>
 <form name="form" novalidate [formGroup]="dato">
-    <div class="contenedor columns " style="height:100%">
+    <div class="contenedor columns " style="height:90%">
         <div class="column is-one-third" style="padding:1em;">
             <div style="background: #FFF; border-radius: 1em; ">
                 <section class="hero is-primary">
@@ -16,7 +16,6 @@
                             <i class="fa fa-file-text"></i>
                         </span> Folio {{ctrl.id}}
                     </h1>
-
 
                 </section>
                 <div style="padding: 1em;">
@@ -157,7 +156,6 @@
                             <!-- Right side -->
                             <div class="level-right">
                                 <p class="level-item"><a class="button is-primary" (click)="ctrl.regresar()">Regresar</a></p>
-                                <p class="level-item" *ngIf="tieneid"><a class="button is-primary" routerLink="/almacen/salidas-estandar/nuevo" *ngIf="!ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva salida</span></a></p>
                                 <p class="level-item" *ngIf="tieneid"><a *ngIf="tieneid" class="button is-primary" (click)="array_servicios = ctrl.servicios; array_turnos = ctrl.turnos; imprimir();"><span class="icon"><i class="fa fa-print"></i></span></a></p>
                                 <p class="level-item" *ngIf="!tieneid">
                                         <button class="button is-primary" type="submit" [ngClass]="{'is-loading': ctrl.cargando}" (click)="guardar_movimiento()" [disabled]="ctrl.dato.invalid"> <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar</button>
@@ -180,21 +178,9 @@
                     <br>
                     <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>                    &nbsp;<span>Cargando...</span></span>
                 </div>
+
                 <section class="section">
-
-                    <div class="field has-addons has-addons-centered" *ngIf="!tieneid">
-
-                        <p class="control">
-                            <input ngui-auto-complete [source]="insumos_term" [list-formatter]="autocompleListFormatter" id="buscarInsumo" value-property-name="clave"
-                                display-property-name="descripcion" path-to-data="" loading-text="Cargando..." no-match-found-text="No hay resultados."
-                                (valueChanged)="select_insumo_autocomplete($event)" min-chars="1" class="input is-success is-medium"
-                                type="text" placeholder="Escanea el codigo de barra, o empieza escribir el nombre del producto" >
-
-                        </p>
-
-                        <hr>
-                    </div>
-
+<!-- *******************************************************INSUMOS NEGADOS*****************************************************-->                
                     <div formArrayName="insumos_negados">
                         <div class="box" *ngFor="let item of ctrl.dato.controls.insumos_negados.controls; let i=index" [ngStyle]="{'background': i%2 == 0 ? 'rgba(231, 242, 22, 0.4)' :  'rgba(231, 242, 22, 0.4)'}">
                             <article class="media" [formGroupName]="i">
@@ -266,12 +252,13 @@
                             </article>
                         </div>
                     </div>
-
+<!-- *************************************************- - -FIN INSUMOS NEGADOS*****************************************************-->                
                     <div style="height:50px;"></div>
-
-                    <div formArrayName="insumos">
+<!-- *******************************************************- - INSUMOS - -*****************************************************-->                
+                    <div formArrayName="insumos" style="overflow: scroll; overflow-x: hidden; height: 530px;">
                         <div class="box" *ngFor="let item of ctrl.dato.controls.insumos.controls; let i=index" [ngStyle]="{'background': i%2 == 0 ? 'rgba(230, 230, 232, 0.44)' : ''}">
                             <article class="media" [formGroupName]="i">
+<!-- *******************************************************Insumo incorrecto*****************************************************-->                
                                 <div class="media-content">
                                     <div class="content">
                                         <a *ngIf="!tieneid" class="is-danger" title="Quitar este elemento de la lista" style="float:right" (click)="ctrl.quitar_form_array(ctrl.dato.controls.insumos,i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
@@ -287,6 +274,10 @@
                                                                                             
                                                 <label class="tag is-warning" *ngIf="ctrl.dato.controls.insumos.controls[i].controls.es_unidosis.value == 1
                                                 "><strong>Unidosis</strong> </label>
+
+                                                <a class="is-danger" title="Cambiar insumo" style="float:right" (click)="cambiarInsumos(item.value)">
+                                                    <span class="icon"><i class="fa fa-exchange"></i></span>
+                                                </a>
                                             </strong>
                                             <br> {{ctrl.dato.controls.insumos.controls[i].controls.descripcion.value}}
                                         </p>
@@ -340,12 +331,12 @@
                                             <a class="level-item" >
                                                 
                                                 <div class="field"  *ngIf="ctrl.dato.controls.insumos.controls[i].controls.modo_salida.value == 'N'">
-                                                    <label class="label" *ngIf="tieneid && ctrl.dato.get('insumos').value[i].detalles.informacion_ampliada">Cant. solicitada ({{ctrl.dato.get("insumos").value[i].detalles.informacion_ampliada.presentacion_nombre}}):</label>
-                                                    <label class="label" *ngIf="tieneid && !ctrl.dato.get('insumos').value[i].detalles.informacion_ampliada">Cant. solicitada (normal):</label>
+                                                    <!-- <label class="label" *ngIf="tieneid && ctrl.dato.get('insumos').value[i].detalles.informacion_ampliada">Cant. solicitada ({{ctrl.dato.get("insumos").value[i].detalles.informacion_ampliada.presentacion_nombre}}):</label> -->
+                                                    <!-- <label class="label" *ngIf="tieneid && !ctrl.dato.get('insumos').value[i].detalles.informacion_ampliada">Cant. solicitada (normal):</label> -->
                                                     <label class="label" *ngIf="!tieneid">Cant. solicitada ({{ctrl.dato.controls.insumos.controls[i].controls.presentacion_nombre.value}}):</label>
                                                     <p class="control is-expanded  has-icon has-icon-right">
                                                         <input *ngIf="!tieneid" style="background:aliceblue" type="text" class="input" formControlName="cantidad_solicitada" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad_solicitada.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad_solicitada.touched}">
-                                                        <input *ngIf="tieneid" style="background:aliceblue" type="text" readonly class="input" formControlName="cantidad_solicitada" >
+                                                        <!-- <input *ngIf="tieneid" style="background:aliceblue" type="text" readonly class="input" formControlName="cantidad_solicitada" > -->
                                                     </p>
                                                 </div>
                                                 <div class="field" *ngIf="ctrl.dato.controls.insumos.controls[i].controls.modo_salida.value == 'U'">
@@ -362,8 +353,85 @@
                                         <div class="level-right">
                                             <a class="level-item" >
                                                 <div class="field"  *ngIf="ctrl.dato.controls.insumos.controls[i].controls.modo_salida.value == 'N'">
-                                                    <label class="label" *ngIf="tieneid && ctrl.dato.get('insumos').value[i].detalles.informacion_ampliada">Cant. surtida ({{ctrl.dato.get("insumos").value[i].detalles.informacion_ampliada.presentacion_nombre}}):</label>
-                                                    <label class="label" *ngIf="tieneid && !ctrl.dato.get('insumos').value[i].detalles.informacion_ampliada">Cant. surtida (Normal):</label>
+                                                    <!-- <label class="label" *ngIf="tieneid && ctrl.dato.get('insumos').value[i].detalles.informacion_ampliada">Cant. surtida ({{ctrl.dato.get("insumos").value[i].detalles.informacion_ampliada.presentacion_nombre}}):</label> -->
+                                                    <!-- <label class="label" *ngIf="tieneid && !ctrl.dato.get('insumos').value[i].detalles.informacion_ampliada">Cant. surtida (Normal):</label> -->
+                                                    <label class="label" *ngIf="!tieneid">Cant. a surtir ({{ctrl.dato.controls.insumos.controls[i].controls.presentacion_nombre.value}}):</label>
+                                                    <p class="control is-expanded  has-icon has-icon-right">
+                                                        <input *ngIf="!tieneid" style="background:aliceblue" type="text" readonly class="input" formControlName="cantidad_surtida" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad_surtida.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad_surtida.touched}">
+                                                        <input *ngIf="tieneid" style="background:aliceblue" type="text" readonly class="input" formControlName="cantidad" >
+                                                    </p>
+                                                </div>
+                                                <div class="field"  *ngIf="ctrl.dato.controls.insumos.controls[i].controls.modo_salida.value == 'U'">
+                                                    <label class="label" *ngIf="tieneid && ctrl.dato.get('insumos').value[i].detalles.informacion_ampliada">Cant. surtida ({{ctrl.dato.get("insumos").value[i].detalles.informacion_ampliada.unidad_medida_nombre}}):</label>
+                                                    <label class="label" *ngIf="tieneid && !ctrl.dato.get('insumos').value[i].detalles.informacion_ampliada">Cant. surtida (Unidosis):</label>
+                                                    <label class="label" *ngIf="!tieneid">Cant. a surtir unidosis ({{ctrl.dato.controls.insumos.controls[i].controls.unidad_medida.value}}):</label>
+                                                    <p class="control is-expanded  has-icon has-icon-right">
+                                                        <input *ngIf="!tieneid" style="background:aliceblue" type="text" readonly class="input" formControlName="cantidad_surtida" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad_surtida.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad_surtida.touched}">
+                                                        <input *ngIf="tieneid" style="background:aliceblue" type="text" readonly class="input" formControlName="cantidad" >
+                                                    </p>
+                                                </div>
+                                            </a>
+
+                                        </div>
+                                    </nav>
+                                </div>
+<!-- *******************************************************Insumo Correcto*****************************************************-->                
+                                <div class="media-content" *ngIf="ctrl.dato.controls.insumos.controls[i].controls.lotes_correctos">
+                                    <div class="content">
+                                        <a *ngIf="!tieneid" class="is-danger" title="Quitar este elemento de la lista" style="float:right"
+                                        (click)="ctrl.quitar_form_array(ctrl.dato.controls.insumos,i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
+                                        <p>
+                                            <strong>
+                                                <span style="color:cornflowerblue">
+                                                Clave: {{ ctrl.dato.controls.insumos.controls[i].controls.clave_correcta.value }} 
+                                                </span>
+                                                Nombre: {{ctrl.dato.controls.insumos.controls[i].controls.descripcion_correcta.value}}
+                                            
+                                                <label class="tag is-success" *ngIf="ctrl.dato.controls.insumos.controls[i].controls.es_causes_correcta.value == 1"><strong>Cause </strong></label>
+                                                <label class="tag is-success" *ngIf="ctrl.dato.controls.insumos.controls[i].controls.es_causes_correcta.value == 0"><strong>No Cause </strong> </label>                                           
+                                                                                            
+                                                <label class="tag is-warning" *ngIf="ctrl.dato.controls.insumos.controls[i].controls.es_unidosis_correcta.value == 1
+                                                "><strong>Unidosis</strong> </label>
+
+                                            </strong>
+                                            <br> {{ctrl.dato.controls.insumos.controls[i].controls.descripcion_correcta.value}}
+                                        </p>
+                                        <a class="is-danger" title="Ver la lista de lotes de este articulo" style="float:right" (click)="ver_lotes_asignados(i)">
+                                            <span class="icon">
+                                                <i *ngIf="!mostrar_lote[i]" class="fa fa-plus"></i>
+                                                <i *ngIf="mostrar_lote[i]" class="fa fa-minus"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <nav class="level is-mobile">
+                                        <div class="level-left">
+                                            <a class="level-item" >
+                                                
+                                                <div class="field"  *ngIf="ctrl.dato.controls.insumos.controls[i].controls.modo_salida.value == 'N'">
+                                                    <!-- <label class="label" *ngIf="tieneid && ctrl.dato.get('insumos').value[i].detalles.informacion_ampliada">Cant. solicitada ({{ctrl.dato.get("insumos").value[i].detalles.informacion_ampliada.presentacion_nombre}}):</label> -->
+                                                    <!-- <label class="label" *ngIf="tieneid && !ctrl.dato.get('insumos').value[i].detalles.informacion_ampliada">Cant. solicitada (normal):</label> -->
+                                                    <label class="label" *ngIf="!tieneid">Cant. solicitada ({{ctrl.dato.controls.insumos.controls[i].controls.presentacion_nombre.value}}):</label>
+                                                    <p class="control is-expanded  has-icon has-icon-right">
+                                                        <input *ngIf="!tieneid" style="background:aliceblue" type="text" class="input" formControlName="cantidad_solicitada" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad_solicitada.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad_solicitada.touched}">
+                                                        <!-- <input *ngIf="tieneid" style="background:aliceblue" type="text" readonly class="input" formControlName="cantidad_solicitada" > -->
+                                                    </p>
+                                                </div>
+                                                <div class="field" *ngIf="ctrl.dato.controls.insumos.controls[i].controls.modo_salida.value == 'U'">
+                                                    <label class="label" *ngIf="tieneid && ctrl.dato.get('insumos').value[i].detalles.informacion_ampliada">Cant. solicitada ({{ctrl.dato.get("insumos").value[i].detalles.informacion_ampliada.unidad_medida_nombre}}):</label>
+                                                    <label class="label" *ngIf="tieneid && !ctrl.dato.get('insumos').value[i].detalles.informacion_ampliada">Cant. solicitada (Unidosis):</label>
+                                                    <label class="label" *ngIf="!tieneid">Cant. solicitada unidosis ({{ctrl.dato.controls.insumos.controls[i].controls.unidad_medida.value}}):</label>
+                                                    <p class="control is-expanded  has-icon has-icon-right">
+                                                        <input *ngIf="!tieneid" style="background:aliceblue" type="text" class="input" formControlName="cantidad_solicitada" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad_solicitada.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad_solicitada.touched}">
+                                                        <input *ngIf="tieneid" style="background:aliceblue" type="text" readonly class="input" formControlName="cantidad_solicitada" >
+                                                    </p>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div class="level-right">
+                                            <a class="level-item" >
+                                                <div class="field"  *ngIf="ctrl.dato.controls.insumos.controls[i].controls.modo_salida.value == 'N'">
+                                                    <!-- <label class="label" *ngIf="tieneid && ctrl.dato.get('insumos').value[i].detalles.informacion_ampliada">Cant. surtida ({{ctrl.dato.get("insumos").value[i].detalles.informacion_ampliada.presentacion_nombre}}):</label> -->
+                                                    <!-- <label class="label" *ngIf="tieneid && !ctrl.dato.get('insumos').value[i].detalles.informacion_ampliada">Cant. surtida (Normal):</label> -->
                                                     <label class="label" *ngIf="!tieneid">Cant. a surtir ({{ctrl.dato.controls.insumos.controls[i].controls.presentacion_nombre.value}}):</label>
                                                     <p class="control is-expanded  has-icon has-icon-right">
                                                         <input *ngIf="!tieneid" style="background:aliceblue" type="text" readonly class="input" formControlName="cantidad_surtida" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad_surtida.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad_surtida.touched}">
@@ -387,7 +455,7 @@
                             </article>
                         </div>
                     </div>
-
+<!-- *******************************************************- - FIN INSUMOS - -*****************************************************-->
                 </section>
             </div>
         </div>
@@ -453,10 +521,7 @@
                         <td *ngIf="!item.nuevo">{{item.lote}}</td>
                         <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Lote" [(ngModel)]="item.lote"></td>
                         <td *ngIf="!item.nuevo">{{item.fecha_caducidad}}</td>
-                        <td *ngIf="item.nuevo">
-                            <input class="input has-text-centered " type="date" placeholder="Fecha de caducidad" 
-                            [(ngModel)]="item.fecha_caducidad" min="MinDateCaducidad">
-                        </td>
+                        <td *ngIf="item.nuevo"><input class="input has-text-centered " type="date" placeholder="Fecha de caducidad" [(ngModel)]="item.fecha_caducidad"></td>
                         <td *ngIf="!item.nuevo">{{item.codigo_barras}}</td>
                         <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Codigo de barras" [(ngModel)]="item.codigo_barras"></td>
                         <td *ngIf="!item.nuevo && modo == 'N'">{{item.existencia}}</td>
@@ -474,7 +539,7 @@
         </section>
         <footer class="modal-card-foot">
             <a class="button is-dark" *ngIf="modo=='N'" (click)="agregarNuevoLote()">Agregar nuevo lote</a>                            
-            <a class="button is-success" [ngClass]="{'is-disabled':!cant_solicitada_valida || !sum_cant_lotes}" (click)="agregarLoteIsumo(cantidad_solicitada.value)">Aceptar</a>
+            <a class="button is-success" [ngClass]="{'is-disabled':!cant_solicitada_valida || !sum_cant_lotes}" (click)="agregarLoteInsumo(cantidad_solicitada.value)">Aceptar</a>
             <a class="button" (click)="cancelarModal('verLotes'); modo = 'N';">Cancelar</a>
             <div class="card-footer-item"></div>
             <a *ngIf="!sum_cant_lotes" class="card-footer-item button is-danger" [ngClass]="{'is-disabled':!cant_solicitada_valida}" (click)="abrirModal('negarExistencia')"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;
@@ -483,6 +548,115 @@
     </div>
 </div>
 
+<!-- ******************************** MODAL ACTUALIZAR INSUMO ********************************************* -->
+<div class="modal" id="actualizarInsumo">
+    <div class="modal-background"></div>
+    <div class="modal-card" style="width: 90%;">
+        <header class="modal-card-head">
+            <p class="modal-card-title" style="width: 200px"><i class="fa fa-exchange"></i> &nbsp; Cambio de insumo</p>
+            <button type="button" class="delete" (click)="cancelarModal('actualizarInsumo'); modo = 'N';"></button>
+        </header>
+        <section class="modal-card-body">
+            <div class="columns">
+                <div class="column" style="border: 2px solid lightpink; border-radius: 5px;">
+                    <h3 class="title is-2" id="tituloInsumo"></h3>
+                    <table class="table is-narrow is-bordered is-striped">
+                        <thead>
+                            <tr>
+                                <th>Lote</th>
+                                <th>Caducidad</th>
+                                <th>Codigo de barras</th>
+                                <th *ngIf="modo == 'N'">Existencia</th>
+                                <th *ngIf="modo == 'N'">Cantidad</th>
+                                <th *ngIf="modo == 'U'">Existencia Unidosis ({{insumo.unidad_medida}})</th> 
+                                <th *ngIf="modo == 'U'">Cantidad Unidosis ({{insumo.unidad_medida}})</th> 
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of lotes_a_cambiar;  let i = index;">
+                                <td *ngIf="!item.nuevo">{{item.lote}}</td>
+                                <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Lote" [(ngModel)]="item.lote"></td>
+                                <td *ngIf="!item.nuevo">{{item.fecha_caducidad}}</td>
+                                <td *ngIf="item.nuevo"><input class="input has-text-centered " type="date" placeholder="Fecha de caducidad" [(ngModel)]="item.fecha_caducidad"></td>
+                                <td *ngIf="!item.nuevo">{{item.codigo_barras}}</td>
+                                <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Codigo de barras" [(ngModel)]="item.codigo_barras"></td>
+                                <td *ngIf="!item.nuevo && modo == 'N'">{{item.existencia}}</td>
+                                <td *ngIf="!item.nuevo && modo == 'U'">{{item.existencia_unidosis}}</td>
+                                <td *ngIf="item.nuevo "></td>
+                                <td >
+                                    <input class="input has-text-centered" readonly type="number" step="1" min="0" (keypress)="quitar_punto($event)"
+                                    (change)="comprobar_cant_lotes()" max="{{item.existencia}}" placeholder="Cantidad" [(ngModel)]="item.cantidad">
+                                </td>
+                                <td *ngIf="item.nuevo">
+                                    <a class="delete" (click)=eliminarLote(i)></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- ******************************** INSUMO REEMPLAZANTE ******************************** -->
+                <div class="column">
+                    <h3 class="title is-2" id="tituloInsumoCorrecto"></h3>
+                    <p *ngIf="!cargando && lotes_insumo.length > 0" style="text-align: right; font-size: 16px">Cantidad a reemplazar: <strong>{{cantidad_total}}</strong> </p>
+                    <section class="section">
+                        <p class="control">
+                            <input ngui-auto-complete [source]="insumos_term" [list-formatter]="autocompleListFormatter" 
+                            id="buscarInsumo" value-property-name="clave" display-property-name="descripcion" path-to-data="" 
+                            loading-text="Cargando..." no-match-found-text="No hay resultados." (valueChanged)="select_insumo_autocomplete($event)" 
+                            min-chars="1" class="input is-medium" type="text" [ngClass]="{'is-loading': ctrl.cargando}"
+                            placeholder="Escanea el codigo de barra, o empieza escribir el nombre del producto">
+                        </p>
+                    </section>
+                    <div class="has-text-centered" *ngIf="cargando">
+                         <span *ngIf="ctrl.cargando || cargando" class="icon is-medium"><i class="fa fa-refresh fa-spin"></i></span>
+                         Cargando...
+                    </div>
+                    <table class="table is-narrow is-bordered is-striped" *ngIf="!cargando && lotes_insumo.length > 0">
+                        <thead>
+                            <tr>
+                                <th>Lote</th>
+                                <th>Caducidad</th>
+                                <th>Codigo de barras</th>
+                                <th *ngIf="modo == 'N'">Existencia</th>
+                                <th *ngIf="modo == 'N'">Cantidad</th>
+                                <th *ngIf="modo == 'U'">Existencia Unidosis ({{insumo.unidad_medida}})</th> 
+                                <th *ngIf="modo == 'U'">Cantidad Unidosis ({{insumo.unidad_medida}})</th> 
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of lotes_insumo;  let i = index;">
+                                <td *ngIf="!item.nuevo">{{item.lote}}</td>
+                                <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Lote" [(ngModel)]="item.lote"></td>
+                                <td *ngIf="!item.nuevo">{{item.fecha_caducidad}}</td>
+                                <td *ngIf="item.nuevo"><input class="input has-text-centered " type="date" placeholder="Fecha de caducidad" [(ngModel)]="item.fecha_caducidad"></td>
+                                <td *ngIf="!item.nuevo">{{item.codigo_barras}}</td>
+                                <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Codigo de barras" [(ngModel)]="item.codigo_barras"></td>
+                                <td *ngIf="!item.nuevo && modo == 'N'">{{item.existencia}}</td>
+                                <td *ngIf="!item.nuevo && modo == 'U'">{{item.existencia_unidosis}}</td>
+                                <td *ngIf="item.nuevo "></td>
+                                <td >
+                                    <input class="input has-text-centered" type="number" step="1" min="0" (keypress)="quitar_punto($event)"
+                                    (keyup)="comprobar_cant_lotes()" (change)="comprobar_cant_lotes()" max="{{item.existencia}}"
+                                    placeholder="Cantidad" [(ngModel)]="item.cantidad">
+                                </td>
+                                <td *ngIf="item.nuevo">
+                                    <a class="delete" (click)=eliminarLote(i)></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+        </section>
+        <footer class="modal-card-foot">
+            <a class="button is-success" [ngClass]="{'is-disabled':!sum_cant_lotes}" (click)="agregarLoteInsumo()">Aceptar</a>
+            <a class="button" (click)="cancelarModal('actualizarInsumo'); modo = 'N';">Cancelar</a>
+            <div class="card-footer-item"></div>
+        </footer>
+    </div>
+</div>
+<!-- **************************************************FIN actualizarInsumo********************************************************* -->
 <div class="modal" id="negarExistencia">
     <div class="modal-background"></div>
     <div class="modal-card">
@@ -497,7 +671,7 @@
             </div>
         </section>
         <footer class="modal-card-foot">
-            <a class="button is-success" (click)="agregarLoteIsumo(cantidad_solicitada.value)">Continuar</a>
+            <a class="button is-success" (click)="agregarLoteInsumo(cantidad_solicitada.value)">Continuar</a>
             <a class="button" (click)="cancelarModal('negarExistencia')">Cancelar</a>
         </footer>
     </div>

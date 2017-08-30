@@ -62,7 +62,6 @@ export class ListaComponent implements OnInit {
 
     var usuario = JSON.parse(localStorage.getItem('usuario'));
     this.cargando = true;
-    //console.log(data);
     // cargar los datos de los lotes del insumo seleccionado en el autocomplete
     this.crudService.lista(0, 1000, 'comprobar-stock?almacen=' + usuario.almacen_activo.id + '&clave=' + data.clave_insumo_medico).subscribe(
       resultado => {
@@ -71,7 +70,6 @@ export class ListaComponent implements OnInit {
         let normal_temporal: Number; 
 
         this.lotes_insumo = resultado;
-        //console.log(data.es_unidosis);
         this.es_unidosis = data.es_unidosis;
         this.unidad_medida = data.unidad_medida;
 
@@ -131,7 +129,7 @@ export class ListaComponent implements OnInit {
     exportData += document.getElementById('exportable').innerHTML;
     let blob = new Blob([exportData], { type: 'text/comma-separated-values;charset=utf-8' });
     try {
-        FileSaver.saveAs(blob,  'salida_estandar.xls');
+        FileSaver.saveAs(blob,  'Lista_existencias.xls');
     } catch (e) {
       console.log(e);
     }

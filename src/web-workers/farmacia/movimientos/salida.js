@@ -69,7 +69,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         ],
                         [
                             { text: 'CLAVE', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'NOMBRE', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'DESCRIPCION DEL INSUMO', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'NO. DE LOTE', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'FECHA DE CADUCIDAD', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'CODIGO DE BARRAS', style: 'tableHeaderVerde', alignment: 'center' },

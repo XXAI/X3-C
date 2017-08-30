@@ -164,7 +164,7 @@ export class FormularioComponent {
           <div class="media-content">
             <p class="title is-4">${data.descripcion}</p>
             <p class="subtitle is-6">
-              <strong>Clave: </strong> ${data.clave}) 
+              <strong>Clave: </strong> ${data.clave}
               `;
     
               if(data.es_causes == 1)

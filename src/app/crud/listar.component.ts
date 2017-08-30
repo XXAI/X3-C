@@ -244,6 +244,7 @@ export class ListarComponent implements OnInit {
                 this.dato = resultado.data as any[];
                 console.log(this.dato);
                 this.total = resultado.total | 0;
+                console.log(this.total);
                 this.paginasTotales = Math.ceil(this.total / this.resultadosPorPagina);
 
                 this.indicePaginas = [];

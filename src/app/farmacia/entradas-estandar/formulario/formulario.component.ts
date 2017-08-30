@@ -36,6 +36,7 @@ export class FormularioComponent {
 
 
   MinDate = new Date();
+  MinDateCaducidad = new Date();
   MaxDate = new Date();
   fecha_actual;
   tieneid: boolean = false;
@@ -108,10 +109,11 @@ export class FormularioComponent {
     };
 
     // inicializar el data picker minimo y maximo
-    var date = new Date();
+    let date = new Date();
 
     this.MinDate = new Date(date.getFullYear() - 1, 0, 1);
     this.MaxDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    this.MinDateCaducidad = new Date(date.getFullYear(), date.getMonth() + 6, date.getDate());
 
     // si es nuevo poner la fecha actual si no poner la fecha con que se guardo
     if (!this.dato.get('fecha_movimiento').value) {

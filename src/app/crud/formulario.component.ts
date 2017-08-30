@@ -443,7 +443,7 @@ export class FormularioComponent implements OnInit {
                         this.cargando = false;
                         this.datosCargados = true;
 
-                        // validar todos los key que tengan el array  
+                        // validar todos los key que tengan el array
                         this.dato.patchValue(this.cargarDatosRecursivo(resultado, this.dato));
 
                         this.mensajeResponse.titulo = 'Modificar';
