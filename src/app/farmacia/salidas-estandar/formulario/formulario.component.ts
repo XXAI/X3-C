@@ -1,13 +1,16 @@
 import { Component, OnInit, NgZone, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Params } from '@angular/router';
 
 import { environment } from '../../../../environments/environment';
 import { CrudService } from '../../../crud/crud.service';
 import { NotificationsService } from 'angular2-notifications';
+import { Mensaje } from '../../../mensaje';
+import { createAutoCorrectedDatePipe } from 'text-mask-addons';
 
-import  * as FileSaver    from 'file-saver'; 
+import * as moment from 'moment';
+import  * as FileSaver    from 'file-saver';
 
 @Component({
   selector: 'salidas-estandar-formulario',
@@ -24,21 +27,50 @@ export class FormularioComponent {
   form_insumos: any;
   modo = 'N';
   tab = 1;
+  fechas = [];
   cant_solicitada_valida = false;
   unidad_medida;
   array_turnos;
   array_servicios;
   sum_cant_lotes = false;
+
+  // Máscara para validar la entrada de la fecha de caducidad
+  mask = [/[2]/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/];
+  autoCorrectedDatePipe: any = createAutoCorrectedDatePipe('yyyy-mm-dd');
   public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
+
+  objeto = {
+    showProgressBar: true,
+    pauseOnHover: true,
+    clickToClose: true,
+    maxLength: 2000
+  };
 
   MinDate = new Date();
   MaxDate = new Date();
   MinDateCaducidad;
   fecha_actual;
+  fecha_invalida = true;
   tieneid = false;
   cargando = false;
   fecha_movimiento;
   mostrarCancelado;
+
+  // # SECCION: Reportes
+  pdfworker:Worker;
+   cargandoPdf:boolean = false;
+  // # FIN SECCION
+  
+  // Crear la variable que mustra las notificaciones
+  mensajeResponse: Mensaje = new Mensaje();
+  titulo= 'Salidas estándar';
+
+  // mostrar notificaciones configuracion default, posicion abajo izquierda, tiempo 2 segundos
+  public options = {
+    position: ['bottom', 'right'],
+    timeOut: 2000,
+    lastOnBottom: true
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -48,12 +80,6 @@ export class FormularioComponent {
     private notificacion: NotificationsService,
     private _ngZone: NgZone) { }
 
-
-
-  // # SECCION: Reportes
-  pdfworker:Worker;
-   cargandoPdf:boolean = false;
-  // # FIN SECCION
 
   ngOnInit() {
 
@@ -125,8 +151,6 @@ export class FormularioComponent {
     this.MinDate = new Date(date.getFullYear() - 1, 0, 1);
     this.MaxDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     this.MinDateCaducidad = date.getFullYear() + '-' + ('00' + (date.getMonth() + 1)).slice(-2) + '-' + date.getDate();
-    this.MinDateCaducidad = '2017-08-30';
-    console.log(this.MinDateCaducidad);
 
     // si es nuevo poner la fecha actual si no poner la fecha con que se guardo
     if (!this.dato.get('fecha_movimiento').value) {
@@ -236,10 +260,10 @@ export class FormularioComponent {
         this.lotes_insumo = resultado;
         this.insumo = data;
 
-        //limpiar el autocomplete
+        // limpiar el autocomplete
         (<HTMLInputElement>document.getElementById('buscarInsumo')).value = '';
 
-        //poner el titulo a la modal                ${data.presentacion}
+        // poner el titulo a la modal                ${data.presentacion}
 
         document.getElementById('tituloModal').innerHTML = ` ${data.descripcion} <br>
           <p aling="justify" style="font-size:12px">${data.descripcion}</p> 
@@ -256,12 +280,6 @@ export class FormularioComponent {
     );
   }
 
-
-  public options = {
-    position: ['top', 'right'],
-    timeOut: 5000,
-    lastOnBottom: true
-  };
 
   mostrar_lote = [];
   
@@ -562,9 +580,84 @@ export class FormularioComponent {
     return /^\d+$/.test(str);
   }
 
+  validar_fecha() {
+    let fecha_ingresada;
+    let fecha_hoy = moment();
+    let cont = 0;
+    for (let valor of this.lotes_insumo) {
+      fecha_ingresada = moment(valor.fecha_caducidad, 'YYYY-MM-DD');
+      if (valor.nuevo) {
+        if (!fecha_ingresada.isValid()) {
+          cont++;
+          this.mensajeResponse.texto = 'Debe ingresar una fecha válida';
+          this.mensajeResponse.clase = 'warning';
+          this.mensaje(8);
+        } else {
+          if (fecha_ingresada <= fecha_hoy) {
+            cont++;
+            this.mensajeResponse.texto = 'La fecha de caducidad debe ser mayor al día de hoy';
+            this.mensajeResponse.clase = 'warning';
+            this.mensaje(8);
+          }
+        }
+      }
+    }
+
+    if (cont > 0) {
+      this.fecha_invalida = false;
+    } else {
+      this.fecha_invalida = true;
+    }
+  }
   guardar_movimiento() {
     document.getElementById('guardarMovimiento').classList.add('is-active');
   }
+
+
+  /**
+     * Este método muestra los mensajes resultantes de los llamados de la api
+     * @param cuentaAtras numero de segundo a esperar para que el mensaje desaparezca solo
+     * @param posicion  array de posicion [vertical, horizontal]
+     * @return void
+     */
+    mensaje(cuentaAtras: number = 6, posicion: any[] = ['bottom', 'left']): void {
+        let objeto = {
+            showProgressBar: true,
+            pauseOnHover: false,
+            clickToClose: true,
+            maxLength: this.mensajeResponse.texto.length
+        };
+
+        this.options = {
+            position: posicion,
+            timeOut: cuentaAtras * 1000,
+            lastOnBottom: true
+        };
+         if (this.mensajeResponse.titulo === '') {
+            this.mensajeResponse.titulo = this.titulo;
+          }
+
+        if (this.mensajeResponse.clase === 'alert') {
+            this.notificacion.alert(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+
+        if (this.mensajeResponse.clase === 'success') {
+            this.notificacion.success(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+
+        if (this.mensajeResponse.clase === 'info') {
+            this.notificacion.info(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+
+        if (this.mensajeResponse.clase === 'warning' || this.mensajeResponse.clase === 'warn') {
+            this.notificacion.warn(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+
+        if (this.mensajeResponse.clase === 'error' || this.mensajeResponse.clase === 'danger') {
+            this.notificacion.error(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+
+    }
 
   /******************************* IMPRESION DE REPORTES *********************************** */
 

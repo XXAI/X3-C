@@ -454,8 +454,9 @@
                         <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Lote" [(ngModel)]="item.lote"></td>
                         <td *ngIf="!item.nuevo">{{item.fecha_caducidad}}</td>
                         <td *ngIf="item.nuevo">
-                            <input class="input has-text-centered " type="date" placeholder="Fecha de caducidad" 
-                            [(ngModel)]="item.fecha_caducidad" min="MinDateCaducidad">
+                            <input class="input has-text-centered" placeholder="Fecha de caducidad" 
+                            [(ngModel)]="item.fecha_caducidad" min="MinDateCaducidad" (blur)="validar_fecha()"
+                            placeholder="YYYY-MM-DD" [textMask]="{mask:mask, keepCharPositions: true, pipe: autoCorrectedDatePipe}"/>
                         </td>
                         <td *ngIf="!item.nuevo">{{item.codigo_barras}}</td>
                         <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Codigo de barras" [(ngModel)]="item.codigo_barras"></td>
@@ -474,12 +475,13 @@
         </section>
         <footer class="modal-card-foot">
             <a class="button is-dark" *ngIf="modo=='N'" (click)="agregarNuevoLote()">Agregar nuevo lote</a>                            
-            <a class="button is-success" [ngClass]="{'is-disabled':!cant_solicitada_valida || !sum_cant_lotes}" (click)="agregarLoteIsumo(cantidad_solicitada.value)">Aceptar</a>
+            <a class="button is-success" [ngClass]="{'is-disabled':!cant_solicitada_valida || !sum_cant_lotes || !fecha_invalida}" (click)="agregarLoteIsumo(cantidad_solicitada.value)">Aceptar</a>
             <a class="button" (click)="cancelarModal('verLotes'); modo = 'N';">Cancelar</a>
             <div class="card-footer-item"></div>
             <a *ngIf="!sum_cant_lotes" class="card-footer-item button is-danger" [ngClass]="{'is-disabled':!cant_solicitada_valida}" (click)="abrirModal('negarExistencia')"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;
  Negar existencia</a>
         </footer>
+        <simple-notifications [options]="options"></simple-notifications>
     </div>
 </div>
 

@@ -23,6 +23,7 @@ import { CrudModule } from '../../crud/crud.module';
 import { NguiAutoCompleteModule } from '@ngui/auto-complete';
 import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
 import { TextMaskModule } from 'angular2-text-mask';
+import { MomentModule   } from 'angular2-moment';
 
 @NgModule({
   imports: [
@@ -39,7 +40,8 @@ import { TextMaskModule } from 'angular2-text-mask';
     CrudModule,
     NguiAutoCompleteModule,
     NguiDatetimePickerModule,
-    TextMaskModule
+    TextMaskModule,
+    MomentModule
   ],
   declarations: [
     ListaComponent,
