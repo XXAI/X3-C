@@ -573,11 +573,11 @@ export class FormularioComponent implements OnInit {
         this.cargando = true;
         this.cargarDatosCatalogo = true;
         this.crudService.lista(0, 0, url).subscribe(
-            
+
             resultado => {
                 this[item] = resultado;
                 this.cargando = false;
-                if (resultado.length == 0) {
+                if (resultado.length === 0) {
                     this.mensajeResponse.titulo = item;
                     this.mensajeResponse.texto = `Esta vacio, póngase en contacto con un administrador.`;
                     this.mensajeResponse.mostrar = true;
@@ -799,12 +799,14 @@ ofModelo
      * @param ofModelo modelo de donde se quitan los valores
      * @return void
      */
-    initMover(toModelo, ofModelo, campo:string='id') {
+    initMover(toModelo, ofModelo, campo = 'id') {
+        let arreglo_temporal = [];
         for (let item of toModelo) {
-            var i = 0;
+            let i = 0;
             for (let val of ofModelo) {
-                if (item.value[campo] == val[campo]) {
+                if (item.value[campo] === val[campo]) {
                     ofModelo.splice(i, 1);
+                    break;
                 }
                 i++;
             }
