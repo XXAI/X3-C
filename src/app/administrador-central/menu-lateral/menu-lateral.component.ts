@@ -44,6 +44,13 @@ export class MenuLateralComponent implements OnInit {
         modulos: [
           { permiso: 'r1RX6Yq7fc4CRRI2OJXIPxeBLW3lFP59', icono: 'fa-check-square', titulo:"Claves básicas", url:"/administrador-central/claves-basicas" },
         ]
+      },
+      {
+        titulo: 'Pedidos alternos',
+        modulos: [
+          { permiso: 'r1RX6Yq7fc4CRRI2OJXIPxeBLW3lFP59', icono: 'fa-check-square-o', titulo:"Validación de pedidos alternos", url:"/administrador-central/validacion-pedidos-alternos" },
+          { permiso: 'r1RX6Yq7fc4CRRI2OJXIPxeBLW3lFP59', icono: 'fa-hand-pointer-o', titulo:"Asignación de proveedores a pedidos alternos", url:"/administrador-central/asignacion-proveedores-pedidos-alternos" },
+        ]
       }
       
     ],

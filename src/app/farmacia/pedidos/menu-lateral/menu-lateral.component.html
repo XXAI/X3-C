@@ -40,6 +40,13 @@
                 <span *ngIf="stats.por_surtir>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': porSurtir.className == 'is-active', 'is-primary': porSurtir.className != 'is-active' }">{{  stats.por_surtir }}</span>
             </a>
         </li>
+        <li>
+                <a routerLink="/almacen/pedidos/alternos" #porSurtir routerLinkActive="is-active">
+                    <span class="icon"><i class="fa fa-code-fork"></i></span> Alternos
+                    <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                    <span *ngIf="stats.por_surtir>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': porSurtir.className == 'is-active', 'is-primary': porSurtir.className != 'is-active' }">{{  stats.por_surtir }}</span>
+                </a>
+            </li>
         <hr>
         <li>
             <a routerLink="/almacen/pedidos/finalizados" #finalizados routerLinkActive="is-active">

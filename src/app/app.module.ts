@@ -25,10 +25,12 @@ import { HubModule } from './hub/hub.module';
 import { PerfilModule } from './perfil/perfil.module';
 import { BloquearPantallaModule } from './bloquear-pantalla/bloquear-pantalla.module';
 import { PipesModule }             from './pipes/pipes.module';
+import { CrudModule } from './crud/crud.module';
 
 // # Administrador central
 import { AdministradorCentralModule } from './administrador-central/administrador-central.module';
-import { CrudModule } from './crud/crud.module';
+import { AsignacionProveedoresPedidosAlternosModule } from './administrador-central/asignacion-proveedores-pedidos-alternos/asignacion-proveedores-pedidos-alternos.module';
+import { ValidacionPedidosAlternosModule } from './administrador-central/validacion-pedidos-alternos/validacion-pedidos-alternos.module';
 
 // # Administrador proveedores
 import { AdministradorProveedoresModule } from './administrador-proveedores/administrador-proveedores.module';
@@ -129,6 +131,8 @@ export function highchartsFactory() {
     MisClavesModule,
     MisServiciosModule,
     AdministradorCentralModule,
+    AsignacionProveedoresPedidosAlternosModule,
+    ValidacionPedidosAlternosModule,
     AdministradorProveedoresModule,
     IndexFarmaciaSubrrogadaModule,
     IndexFarmaciaModule,
