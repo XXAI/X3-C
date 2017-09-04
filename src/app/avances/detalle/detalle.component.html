@@ -279,9 +279,8 @@
         <table class="table" *ngIf="!cargando">
                 <thead>
                     <tr>
-                    <th></th>
                     <th>Usuario</th>
-                    <th><i class="fa fa-eye"></i></th>
+                    <th><i class="fa fa-pencil"></i></th>
                     <th><i class="fa fa-edit"></i></th>
                     <th><i class="fa fa-close"></i></th>
                     <th></th>
@@ -290,7 +289,6 @@
                 </thead>
                 <tbody  >
                     <tr *ngFor="let item of usuarios_privilegios; let i=index">
-                        <td><button type="button" class="button is-primary"><i class="fa fa-edit"></i></button></td>
                         <td>{{ item.usuario_id }}</td>
                         <td  *ngIf="item.agregar == 1"><i class="fa fa-check-circle"></i></td>
                         <td  *ngIf="item.agregar == 0"><i class="fa fa-close"></i></td>

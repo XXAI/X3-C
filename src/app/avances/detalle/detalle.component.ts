@@ -172,10 +172,10 @@ export class DetalleComponent implements OnInit {
 
   cargar_usuarios():void
   {
+    this.cargando = true;
     this.avanceService.usuarios(this.id_avance).subscribe(
         resultado => {
-          console.log(resultado);
-
+          this.cargando = false;
           this.usuarios_privilegios = resultado.data_lista;
           this.usuarios = resultado.usuarios;
           this.privilegio_usuario = resultado.privilegio;
@@ -207,6 +207,7 @@ export class DetalleComponent implements OnInit {
   {
     if(confirm("¿Realmente Desea eliminar"))
     {
+     this.cargando = true;
     this.avanceService.elimina_usuarios(id).subscribe(
         resultado => {
           this.cargar_usuarios();
