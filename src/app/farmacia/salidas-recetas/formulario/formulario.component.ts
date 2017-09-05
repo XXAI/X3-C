@@ -105,13 +105,22 @@ export class FormularioComponent {
         turno_id: ['', [Validators.required]]
       }),
       receta: this.fb.group({
+        id: [''],
         folio: ['', [Validators.required]],
-        tipo_receta: ['1', [Validators.required]],
+        tipo_receta: [''],
         fecha_receta: ['', [Validators.required]],
         doctor: ['', [Validators.required]],
         paciente: ['', [Validators.required]],
         diagnostico: ['', [Validators.required]],
         imagen_receta: [''],
+        servidor_id: [''],
+        movimiento_id: [''],
+        incremento: [''],
+        tipo_receta_id: ['1', [Validators.required]],
+        fecha_surtido: [''],
+        folio_receta: [''],
+        usuario_id: [''],
+        receta_detalles: this.fb.array([])
       }),
       insumos: this.fb.array([])
     });

@@ -83,12 +83,11 @@
                             </div><!-- SI carga los turnos -->
                                 <p  *ngIf="ctrl.turnos" class="control is-expanded  has-icon has-icon-right">
                                     <select class="select" name="turno" formControlName="turno_id" 
-                                        [ngClass]="{'is-hidden': tieneid,'is-danger': ctrl.dato.get('movimiento_metadato').get('turno_id').hasError('required') && 
+                                        [ngClass]="{'is-danger': ctrl.dato.get('movimiento_metadato').get('turno_id').hasError('required') && 
                                         ctrl.dato.get('movimiento_metadato').get('turno_id').touched}">
                                         <option *ngFor="let item of ctrl.turnos.clues_turnos" value="{{item.id}}" 
                                         [attr.selected]="ctrl.dato.get('movimiento_metadato').get('turno_id').value == item.id ">{{ item.nombre }}</option>
                                     </select>
-                                    <span *ngIf="tieneid && ctrl.resultado_general_consulta">{{ctrl.resultado_general_consulta.movimiento_metadato.turno.nombre}}</span>
                                     <span class="icon is-small" *ngIf="ctrl.dato.get('movimiento_metadato').get('turno_id').hasError('required') && ctrl.dato.get('movimiento_metadato').get('turno_id').touched">
                                         <i class="fa fa-warning"></i>
                                     </span>
@@ -127,14 +126,14 @@
                                         <label class="label">Tipo de receta:</label>
                                         <p class="control is-expanded  has-icon has-icon-right">
 
-                                                <select class="select" name="tipo_receta" formControlName="tipo_receta" [ngClass]="{'is-danger': ctrl.dato.get('receta').get('tipo_receta').hasError('required') && ctrl.dato.get('receta').get('tipo_receta').touched}">
+                                                <select class="select" name="tipo_receta_id" formControlName="tipo_receta_id" [ngClass]="{'is-danger': ctrl.dato.get('receta').get('tipo_receta_id').hasError('required') && ctrl.dato.get('receta').get('tipo_receta_id').touched}">
                                                     <option *ngFor="let item of tipos_recetas" value="{{item.id}}" >{{ item.nombre }}</option>
                                                 </select>
 
-                                            <span class="icon is-small" *ngIf="ctrl.dato.get('receta').get('tipo_receta').hasError('required') && ctrl.dato.get('receta').get('tipo_receta').touched">
+                                            <span class="icon is-small" *ngIf="ctrl.dato.get('receta').get('tipo_receta_id').hasError('required') && ctrl.dato.get('receta').get('tipo_receta_id').touched">
                                                 <i class="fa fa-warning"></i>
                                             </span>
-                                            <span class="help is-danger" *ngIf="ctrl.dato.get('receta').get('tipo_receta').hasError('required') && ctrl.dato.get('receta').get('tipo_receta').touched">Este campo es requerido.</span>
+                                            <span class="help is-danger" *ngIf="ctrl.dato.get('receta').get('tipo_receta_id').hasError('required') && ctrl.dato.get('receta').get('tipo_receta_id').touched">Este campo es requerido.</span>
                                         </p>
                                     </div>
 
@@ -355,7 +354,8 @@
                                         <div class="columns is-flex-desktop" style="width: 100%">
                                             <div class="column is-2">
                                                 <p class="control is-expanded">
-                                                <label class="label">Dosis ({{ ctrl.dato.controls.insumos.controls[i].controls.unidad_medida.value }}):</label>
+                                                <label *ngIf="!tieneid" class="label">Dosis ({{ ctrl.dato.controls.insumos.controls[i].controls.unidad_medida.value }}):</label>
+                                                <label *ngIf="tieneid" class="label">Dosis ():</label>
                                                     <input type="text" autofocus class="input" formControlName="dosis" (keypress)="quitar_punto($event)"  [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.controls.insumos.controls[i].controls.dosis.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.dosis.touched}">
                                                 </p>
                                             </div>
@@ -373,13 +373,15 @@
                                             </div>
                                             <div class="column  is-auto">
                                                 <p class="control is-expanded">
-                                                <label class="label">Cant. recetada ({{ ctrl.dato.controls.insumos.controls[i].controls.presentacion_nombre.value }}):</label>
+                                                <label *ngIf="!tieneid" class="label">Cant. recetada ({{ ctrl.dato.controls.insumos.controls[i].controls.presentacion_nombre.value }}):</label>
+                                                <label *ngIf="tieneid" class="label">Cant. recetada ():</label>
                                                     <input type="text" class="input" formControlName="cantidad_recetada" (keypress)="quitar_punto($event)" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad_recetada.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad_recetada.touched}">
                                                 </p>
                                             </div>
                                             <div class="column is-auto">
                                                 <p class="control is-expanded">
-                                                <label class="label">Cant. surtida ({{ ctrl.dato.controls.insumos.controls[i].controls.presentacion_nombre.value }}):</label>
+                                                <label *ngIf="!tieneid" class="label">Cant. surtida ({{ ctrl.dato.controls.insumos.controls[i].controls.presentacion_nombre.value }}):</label>
+                                                <label *ngIf="tieneid" class="label">Cant. surtida ():</label>
                                                     <input *ngIf="!tieneid" style="background:aliceblue" type="text" readonly class="input" formControlName="cantidad_surtida" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad_surtida.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad_surtida.touched}">
                                                     <input *ngIf="tieneid" style="background:aliceblue" type="text" readonly class="input" formControlName="cantidad" >
                                                 </p>
