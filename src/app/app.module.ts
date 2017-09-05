@@ -61,6 +61,7 @@ import { SalidasRecetasModule   } from './farmacia/salidas-recetas/salidas-recet
 import { SalidasEstandarModule  } from './farmacia/salidas-estandar/salidas-estandar.module';
 import { DashboardSalidasModule } from './farmacia/dashboard-salidas/dashboard-salidas.module';
 import { ClavesBasicasModule    } from './administrador-central/claves-basicas/claves-basicas.module';
+import { TransferenciaAlmacenModule  } from './farmacia/transferencia-almacen/transferencia-almacen.module';
 
 // # Hub Inventario
 import { IndexInventarioModule          } from './inventario/index-inventario/index-inventario.module';
@@ -142,6 +143,7 @@ export function highchartsFactory() {
     EntregasModule,
     EntradasEstandarModule,
     SalidasEstandarModule,
+    TransferenciaAlmacenModule,
     InventarioModule,
     AjusteMasInventarioModule,
     AjusteMenosInventarioModule,
