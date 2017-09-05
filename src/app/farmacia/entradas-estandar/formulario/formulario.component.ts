@@ -1,13 +1,15 @@
 import { Component, OnInit, NgZone, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Params } from '@angular/router';
 
 import { environment } from '../../../../environments/environment';
 import { CrudService } from '../../../crud/crud.service';
 import { NotificationsService } from 'angular2-notifications';
+import { createAutoCorrectedDatePipe } from 'text-mask-addons';
+import * as moment from 'moment';
+import  * as FileSaver    from 'file-saver';
 
-import  * as FileSaver    from 'file-saver'; 
 
 @Component({
   selector: 'salidas-estandar-formulario',
@@ -24,51 +26,63 @@ export class FormularioComponent {
   tab = 1;
   cargando = false;
   key;
-  public insumos_term: string = `${environment.API_URL}/insumos-auto?term=:keyword`;
-  constructor(
-    private fb: FormBuilder, 
-    private crudService: CrudService, 
-    private route: ActivatedRoute, 
-    private _sanitizer: DomSanitizer, 
-    private notificacion: NotificationsService,
-    private _ngZone: NgZone
-    ) { }
-
+  autoCorrectedDatePipe: any = createAutoCorrectedDatePipe('yyyy-mm-dd');
 
   MinDate = new Date();
+  MinDateCaducidad;
   MaxDate = new Date();
   fecha_actual;
-  tieneid: boolean = false;
+  tieneid = false;
 
   fecha_movimiento;
   mostrarCancelado;
 
   // # SECCION: Reportes
-  pdfworker:Worker;
-  cargandoPdf:boolean = false;
+  pdfworker: Worker;
+  cargandoPdf = false;
   // # FIN SECCION
+  insumo;
+  es_unidosis = false;
 
+  public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
+  // Máscara para validar la entrada de la fecha de caducidad
+  mask = [/[2]/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/];
+
+  objeto = {
+    showProgressBar: true,
+    pauseOnHover: true,
+    clickToClose: true,
+    maxLength: 2000
+  };
+  constructor(
+    private fb: FormBuilder,
+    private crudService: CrudService,
+    private route: ActivatedRoute,
+    private _sanitizer: DomSanitizer,
+    private notificacion: NotificationsService,
+    private _ngZone: NgZone
+    ) {}
 
   ngOnInit() {
 
-    //obtener los datos del usiario logueado almacen y clues
-    var usuario = JSON.parse(localStorage.getItem("usuario"));
+    // obtener los datos del usiario logueado almacen y clues
+    let usuario = JSON.parse(localStorage.getItem('usuario'));
 
     if (usuario.clues_activa) {
-      this.insumos_term += "&clues=" + usuario.clues_activa.clues;
+      this.insumos_term += '&clues=' + usuario.clues_activa.clues;
     }
     if (usuario.almacen_activo) {
-      this.insumos_term += "&almacen=" + usuario.almacen_activo.id;
+      this.insumos_term += '&almacen=' + usuario.almacen_activo.id;
     }
 
     // Inicializamos el objeto para los reportes con web Webworkers
-    this.pdfworker = new Worker("web-workers/farmacia/movimientos/imprimir-entrada.js")
+    this.pdfworker = new Worker('web-workers/farmacia/movimientos/imprimir-entrada.js');
 
     // Este es un hack para poder usar variables del componente dentro de una funcion del worker
-    var self = this;    
+    var self = this;
     var $ngZone = this._ngZone;
-    
-    this.pdfworker.onmessage = function( evt ) {       
+
+    this.pdfworker.onmessage = function( evt ) {
       // Esto es un hack porque estamos fuera de contexto dentro del worker
       // Y se usa esto para actualizar alginas variables
       $ngZone.run(() => {
@@ -108,10 +122,11 @@ export class FormularioComponent {
     };
 
     // inicializar el data picker minimo y maximo
-    var date = new Date();
+    let date = new Date();
 
     this.MinDate = new Date(date.getFullYear() - 1, 0, 1);
     this.MaxDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    this.MinDateCaducidad = date.getFullYear() + '-' + ('00' + (date.getMonth() + 1)).slice(-2) + '-' + date.getDate();
 
     // si es nuevo poner la fecha actual si no poner la fecha con que se guardo
     if (!this.dato.get('fecha_movimiento').value) {
@@ -120,9 +135,6 @@ export class FormularioComponent {
     } else {
       this.fecha_actual = this.dato.get('fecha_movimiento').value;
     }
-
-    // Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
-    // document.getElementById("catalogos").click();  
   }
 
   handleKeyboardEvents(event: KeyboardEvent) {
@@ -184,8 +196,6 @@ export class FormularioComponent {
     </div>`;
     return this._sanitizer.bypassSecurityTrustHtml(html);
   }
-  insumo;
-  es_unidosis = false;
   /**
      * Este método carga los datos de un elemento de la api con el id que se pase por la url
      * @param data json con los datos del objetop seleccionado del autocomplete
@@ -193,38 +203,18 @@ export class FormularioComponent {
      */
   select_insumo_autocomplete(data) {
 
-    var usuario = JSON.parse(localStorage.getItem("usuario"));
+    var usuario = JSON.parse(localStorage.getItem('usuario'));
     this.cargando = true;
     this.insumo = data;
     this.agregarLoteIsumo();
     (<HTMLInputElement>document.getElementById('buscarInsumo')).value = '';
     this.es_unidosis = data.es_unidosis;
     this.cargando = false;
-    //cargar los datos de los lotes del insumo seleccionado en el autocomplete
-    /*this.crudService.lista(0, 1000, 'comprobar-stock?almacen=' + usuario.almacen_activo.id + '&clave=' + data.clave).subscribe(
-      resultado => {
-
-        this.lotes_insumo = resultado;
-        this.insumo = data;
-
-        //limpiar el autocomplete
-        (<HTMLInputElement>document.getElementById('buscarInsumo')).value = '';
-
-        //poner el titulo a la modal
-        document.getElementById('tituloModal').innerHTML = ` ${data.nombre} <br><p aling="justify" style="font-size:12px">${data.descripcion}</p> `;
-        this.es_unidosis = data.es_unidosis;
-        this.cargando = false;
-        this.abrirModal('verLotes');
-      },
-      error => {
-        this.cargando = false;
-      }
-    );*/
   }
 
 
   public options = {
-    position: ["top", "right"],
+    position: ['top', 'right'],
     timeOut: 5000,
     lastOnBottom: true
   };
@@ -235,10 +225,10 @@ export class FormularioComponent {
      * @return void
      */
   agregarLoteIsumo() {
-    //obtener el formulario reactivo para agregar los elementos
+    // obtener el formulario reactivo para agregar los elementos
     const control = <FormArray>this.dato.controls['insumos'];
 
-    //comprobar que el isumo no este en la lista cargada
+    // comprobar que el isumo no este en la lista cargada
     var existe = false;
     /*comentamos esta comprobacion porque se pueden agregar más de un insumo con la misma clave
     for (let item of control.value) {
@@ -255,17 +245,17 @@ export class FormularioComponent {
       temporal_cantidad_x_envase = this.insumo.cantidad_x_envase;
     }
     var lotes = {
-      "clave": this.insumo.clave,
-      "nombre": this.insumo.nombre,
-      "descripcion": this.insumo.descripcion,
-      "es_causes": this.insumo.es_causes,
-      "es_unidosis": this.insumo.es_unidosis,
-      "lote": ['', [Validators.required]],
-      "codigo_barras": [''],
-      "fecha_caducidad": ['', [Validators.required]],
-      "cantidad": ['', [Validators.required]],
-      "cantidad_x_envase": parseInt(temporal_cantidad_x_envase),     
-      "cantidad_surtida": 1,
+      'clave': this.insumo.clave,
+      'nombre': this.insumo.nombre,
+      'descripcion': this.insumo.descripcion,
+      'es_causes': this.insumo.es_causes,
+      'es_unidosis': this.insumo.es_unidosis,
+      'lote': ['', [Validators.required]],
+      'codigo_barras': [''],
+      'fecha_caducidad': ['', [Validators.required]],
+      'cantidad': ['', [Validators.required]],
+      'cantidad_x_envase': parseInt(temporal_cantidad_x_envase),     
+      'cantidad_surtida': 1,
     };
 
     //si no esta en la lista agregarlo
@@ -287,7 +277,7 @@ export class FormularioComponent {
      * @return void
      */
   agregarNuevoLote() {
-    this.lotes_insumo.push({ id: "" + Math.floor(Math.random() * (999)) + 1, codigo_barras: "", lote: "", fecha_caducidad: "", existencia: '', cantidad: '', nuevo: 1, existencia_unidosis: '', cantidad_unidosis: '' });
+    this.lotes_insumo.push({ id: '' + Math.floor(Math.random() * (999)) + 1, codigo_barras: '', lote: '', fecha_caducidad: '', existencia: '', cantidad: '', nuevo: 1, existencia_unidosis: '', cantidad_unidosis: '' });
   }
 
   /**
@@ -318,9 +308,26 @@ export class FormularioComponent {
     ctrlLotes.controls['cantidad_surtida'].patchValue(cantidad);
   }
 
+  validar_fecha(fecha) {
+    let fecha_ingresada = moment(fecha, 'YYYY-MM-DD');
+    let fecha_hoy = moment();
+    if (!fecha_ingresada.isValid()) {
+      this.notificacion.alert('Fecha inválida', 'Debe ingresar una fecha válida', this.objeto);
+    } else {
+      if (fecha_ingresada <= fecha_hoy) {
+        this.notificacion.alert('Fecha inválida', 'La fecha de caducidad debe ser mayor al día de hoy', this.objeto);
+      }
+    }
+  }
+
+  guardar_movimiento() {
+    document.getElementById('guardarMovimiento').classList.add('is-active');
+  }
+
+/************************************ IMPRESION DE REPORTES ************************************** */
   imprimir() {
-    
-    var usuario = JSON.parse(localStorage.getItem("usuario"));
+
+    var usuario = JSON.parse(localStorage.getItem('usuario'));
     try {
       this.cargandoPdf = true;
       var entrada_imprimir = {

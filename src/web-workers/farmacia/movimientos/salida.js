@@ -60,16 +60,16 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         [
                             { text: 'TURNO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
                             {},
-                            { text: data.turno.nombre, style: 'tableHeader', colSpan: 3, alignment: 'left' }, {}, {},
+                            { text: data.turno.nombre ? data.turno.nombre : data.turno, style: 'tableHeader', colSpan: 3, alignment: 'left' }, {}, {},
                             { text: 'SERVICIO', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.servicio.nombre, style: 'tableHeader', alignment: 'left' }
+                            { text: data.servicio.nombre ? data.servicio.nombre : data.servicio, style: 'tableHeader', alignment: 'left' }
                         ],
                         [{ text: ' ', style: 'celdaEspacio', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],
                         [
                             { text: 'CLAVE', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'NOMBRE', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'DESCRIPCION DEL INSUMO', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'NO. DE LOTE', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'FECHA DE CADUCIDAD', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'CODIGO DE BARRAS', style: 'tableHeaderVerde', alignment: 'center' },

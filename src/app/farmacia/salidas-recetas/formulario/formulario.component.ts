@@ -1,6 +1,6 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Params } from '@angular/router';
 
 import { environment } from '../../../../environments/environment';
@@ -21,55 +21,67 @@ export class FormularioComponent {
   form_movimiento_metadato: any;
   tab: number = 1;
   cargando = false;
-  sum_cant_lotes: boolean = false;
-  public insumos_term: string = `${environment.API_URL}/insumos-auto?term=:keyword`;
-  constructor(
-    private fb: FormBuilder, 
-    private crudService: CrudService, 
-    private route: ActivatedRoute, 
-    private _sanitizer: DomSanitizer, 
-    private notificacion: NotificationsService,
-    private _ngZone: NgZone) { }
+  unidad_medida;
+  presentacion_nombre;
+  sum_cant_lotes = false;
+  public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
 
 
   MinDate = new Date();
   MaxDate = new Date();
   fecha_actual;
-  mostrarCancelado=false;
-  tieneid: boolean = false;
+  mostrarCancelado = false;
+  tieneid = false;
 
   fecha_receta;
   fecha_movimiento;
 
   // # SECCION: Reportes
-  pdfworker:Worker;
-  cargandoPdf:boolean = false;
-  // # FIN SECCION  
+  pdfworker: Worker;
+  cargandoPdf = false;
+  // # FIN SECCION
 
   tipos_recetas: any[] = [
-                              { id: 1, nombre: "Normal"},
-                              { id: 2, nombre: "Controlado"}
-                           ];
+                            { id: 1, nombre: 'Normal'},
+                            { id: 2, nombre: 'Controlado'}
+                          ];
+
+
+  public options = {
+    position: ['top', 'right'],
+    timeOut: 5000,
+    lastOnBottom: true
+  };
+  mostrar_lote = [];
+
+  constructor(
+    private fb: FormBuilder,
+    private crudService: CrudService,
+    private route: ActivatedRoute,
+    private _sanitizer: DomSanitizer,
+    private notificacion: NotificationsService,
+    private _ngZone: NgZone) { }
+
   ngOnInit() {
 
-    //obtener los datos del usiario logueado almacen y clues
-    var usuario = JSON.parse(localStorage.getItem("usuario"));
+    // obtener los datos del usiario logueado almacen y clues
+    var usuario = JSON.parse(localStorage.getItem('usuario'));
 
     if (usuario.clues_activa) {
-      this.insumos_term += "&clues=" + usuario.clues_activa.clues;
+      this.insumos_term += '&clues=' + usuario.clues_activa.clues;
     }
     if (usuario.almacen_activo) {
-      this.insumos_term += "&almacen=" + usuario.almacen_activo.id;
+      this.insumos_term += '&almacen=' + usuario.almacen_activo.id;
     }
 
     // Inicializamos el objeto para los reportes con web Webworkers
-    this.pdfworker = new Worker("web-workers/farmacia/movimientos/receta.js")
+    this.pdfworker = new Worker('web-workers/farmacia/movimientos/receta.js')
 
     // Este es un hack para poder usar variables del componente dentro de una funcion del worker
-    var self = this;    
+    var self = this;
     var $ngZone = this._ngZone;
-    
-    this.pdfworker.onmessage = function( evt ) {       
+
+    this.pdfworker.onmessage = function( evt ) {
       // Esto es un hack porque estamos fuera de contexto dentro del worker
       // Y se usa esto para actualizar alginas variables
       $ngZone.run(() => {
@@ -77,10 +89,10 @@ export class FormularioComponent {
       });
 
       FileSaver.saveAs( self.base64ToBlob( evt.data.base64, 'application/pdf' ), evt.data.fileName );
-      //open( 'data:application/pdf;base64,' + evt.data.base64 ); // Popup PDF
+      // open( 'data:application/pdf;base64,' + evt.data.base64 ); // Popup PDF
     };
 
-    //inicializar el formulario reactivo
+    // inicializar el formulario reactivo
     this.dato = this.fb.group({
       id: [''],
       tipo_movimiento_id: ['5', [Validators.required]],
@@ -90,7 +102,7 @@ export class FormularioComponent {
       cancelado: [''],
       observaciones_cancelacion: [''],
       movimiento_metadato: this.fb.group({
-        turno_id:['', [Validators.required]]
+        turno_id: ['', [Validators.required]]
       }),
       receta: this.fb.group({
         folio: ['', [Validators.required]],
@@ -110,18 +122,18 @@ export class FormularioComponent {
       }
     });
 
-    //variable para crear el array del formulario reactivo
+    // variable para crear el array del formulario reactivo
     this.form_insumos = {
       tipo_movimiento_id: ['', [Validators.required]]
     };
 
-    //inicializar el data picker minimo y maximo
+    // inicializar el data picker minimo y maximo
     var date = new Date();
 
     this.MinDate = new Date(date.getFullYear() - 1, 0, 1);
     this.MaxDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
-    //si es nuevo poner la fecha actual si no poner la fecha con que se guardo
+    // si es nuevo poner la fecha actual si no poner la fecha con que se guardo
     if (!this.dato.get('fecha_movimiento').value) {
       this.fecha_actual = date.getFullYear() + '-' + ('00' + (date.getMonth() + 1)).slice(-2) + '-' + date.getDate();
       this.dato.get('fecha_movimiento').patchValue(this.fecha_actual);
@@ -129,8 +141,8 @@ export class FormularioComponent {
       this.fecha_actual = this.dato.get('fecha_movimiento').value;
     }
 
-    //Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
-    document.getElementById("catalogos").click();  
+    // Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
+    document.getElementById('catalogos').click();
   }
 
   /**
@@ -164,7 +176,7 @@ export class FormularioComponent {
           <div class="media-content">
             <p class="title is-4">${data.descripcion}</p>
             <p class="subtitle is-6">
-              <strong>Clave: </strong> ${data.clave}) 
+              <strong>Clave: </strong> ${data.clave}
               `;
     
               if(data.es_causes == 1)
@@ -191,9 +203,9 @@ export class FormularioComponent {
      */
   select_insumo_autocomplete(data) {
 
-    var usuario = JSON.parse(localStorage.getItem("usuario"));
+    var usuario = JSON.parse(localStorage.getItem('usuario'));
     this.cargando = true;
-    //cargar los datos de los lotes del insumo seleccionado en el autocomplete
+    // cargar los datos de los lotes del insumo seleccionado en el autocomplete
     this.crudService.lista(0, 1000, 'comprobar-stock?almacen=' + usuario.almacen_activo.id + '&clave=' + data.clave).subscribe(
       resultado => {
 
@@ -207,6 +219,8 @@ export class FormularioComponent {
         document.getElementById('tituloModal').innerHTML = ` ${data.descripcion} <br>
           <p aling="justify" style="font-size:12px">CANTIDAD POR ENVASE: ${data.cantidad_x_envase}</p> `;
         this.es_unidosis = data.es_unidosis;
+        this.unidad_medida = data.unidad_medida;
+        this.presentacion_nombre = data.presentacion_nombre;
         this.cargando = false;
         this.abrirModal('verLotes');
       },
@@ -216,14 +230,6 @@ export class FormularioComponent {
     );
   }
 
-
-  public options = {
-    position: ["top", "right"],
-    timeOut: 5000,
-    lastOnBottom: true
-  };
-
-  mostrar_lote = [];
   /**
      * Este método agrega los lostes del modal a el modelo que se envia a la api
      * @return void
@@ -234,38 +240,41 @@ export class FormularioComponent {
     
     //crear el json que se pasara al formulario reactivo tipo insumos
     var lotes = {
-      "clave": this.insumo.clave,
-      "nombre": this.insumo.nombre,
-      "descripcion": this.insumo.descripcion,
-      "es_causes": this.insumo.es_causes,
-      "es_unidosis": this.insumo.es_unidosis,
-      "cantidad": 1,
-      "cantidad_x_envase": parseInt(this.insumo.cantidad_x_envase),
-      "dosis": ['', [Validators.required]],
-      "frecuencia": ['', [Validators.required]],
-      "duracion": ['', [Validators.required]],
-      "cantidad_recetada": ['', [Validators.required]],
-      "cantidad_surtida": 1,
-      "lotes": this.fb.array([])
+      'clave': this.insumo.clave,
+      'nombre': this.insumo.nombre,
+      'descripcion': this.insumo.descripcion,
+      'es_causes': this.insumo.es_causes,
+      'es_unidosis': this.insumo.es_unidosis,
+      'cantidad': 1,
+      'cantidad_x_envase': parseInt(this.insumo.cantidad_x_envase),
+      'dosis': ['', [Validators.required]],
+      'frecuencia': ['', [Validators.required]],
+      'duracion': ['', [Validators.required]],
+      'cantidad_recetada': ['', [Validators.required]],
+      'cantidad_surtida': 1,
+      'unidad_medida': this.unidad_medida,
+      'presentacion_nombre': this.presentacion_nombre,
+      'lotes': this.fb.array([])
     };
 
-    //comprobar que el isumo no este en la lista cargada
+    // comprobar que el isumo no este en la lista cargada
     var existe = false;
     for (let item of control.value) {
-      if (item.clave == this.insumo.clave) {
+      if (item.clave === this.insumo.clave) {
         existe = true;
         break;
       }
     }
-    //si no esta en la lista agregarlo
-    if (!existe)
+    // si no esta en la lista agregarlo
+    if (!existe) {
       control.push(this.fb.group(lotes));
+    }
 
-    //obtener la ultima posicion para que en esa se agreguen los lostes
+    // obtener la ultima posicion para que en esa se agreguen los lostes
     var posicion = control.length - 1;
-    //obtener el control del formulario en la posicion para agregar el nuevo form array que corresponde a los lotes
+    // obtener el control del formulario en la posicion para agregar el nuevo form array que corresponde a los lotes
     const ctrlLotes = <FormArray>control.controls[posicion];
-    //Mostrar ocultar los lotes en la vista al hacer clic en el icono de plus
+    // Mostrar ocultar los lotes en la vista al hacer clic en el icono de plus
     this.mostrar_lote[posicion] = false;
 
     var objeto = {
@@ -275,7 +284,7 @@ export class FormularioComponent {
       maxLength: 2000
     };
     this.options = {
-      position: ["top", "right"],
+      position: ['top', 'right'],
       timeOut: 5000,
       lastOnBottom: true
     };
@@ -301,7 +310,7 @@ export class FormularioComponent {
 
               //validar que la cantidad escrita no sea mayor que la existencia si no poner la existencia como la cantidad maxima      
               if (cantidad_lote > l.controls.existencia.value && item.nuevo == 0) {
-                this.notificacion.alert("Cantidad Excedida", "La cantidad maxima es: " + l.controls.existencia.value, objeto);
+                this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + l.controls.existencia.value, objeto);
                 cantidad_lote = l.controls.existencia.value * 1;
               }
               l.controls.cantidad.patchValue(cantidad_lote);
@@ -318,7 +327,7 @@ export class FormularioComponent {
 
           //validar que la cantidad escrita no sea mayor que la existencia si no poner la existencia como la cantidad maxima        
           if (item.cantidad > item.existencia) {
-            this.notificacion.alert("Cantidad Excedida", "La cantidad maxima es: " + item.existencia, objeto);
+            this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + item.existencia, objeto);
             item.cantidad = item.existencia * 1;
           }
 
@@ -327,7 +336,7 @@ export class FormularioComponent {
             {
               id: item.id,
               nuevo: item.nuevo | 0,
-              codigo_barras: item.codigo_barras ? item.codigo_barras : "" ,
+              codigo_barras: item.codigo_barras ? item.codigo_barras : '' ,
               lote: item.lote,
               fecha_caducidad: item.fecha_caducidad,
               existencia: item.nuevo ? item.cantidad : item.existencia,
@@ -361,8 +370,8 @@ export class FormularioComponent {
      */
   agregarNuevoLote() {
     this.lotes_insumo.push({ 
-      id: "" + Math.floor(Math.random() * (999)) + 1, 
-      codigo_barras: "", lote: "", fecha_caducidad: "", existencia: '', 
+      id: '' + Math.floor(Math.random() * (999)) + 1, 
+      codigo_barras: '', lote: '', fecha_caducidad: '', existencia: '', 
       cantidad: '', nuevo: 1, existencia_unidosis: '', cantidad_unidosis: '' });
   }
 
@@ -409,7 +418,7 @@ export class FormularioComponent {
         clickToClose: true,
         maxLength: 2000
       };
-      this.notificacion.alert("Cantidad Excedida", "La cantidad maxima es: " + val.controls.existencia.value, objeto);
+      this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + val.controls.existencia.value, objeto);
       val.controls.cantidad.patchValue(val.controls.existencia.value * 1);
     }
     //sumamos las cantidades de los lotes
@@ -448,7 +457,7 @@ export class FormularioComponent {
   }
   
   imprimir() {
-    var usuario = JSON.parse(localStorage.getItem("usuario"));
+    var usuario = JSON.parse(localStorage.getItem('usuario'));
     try {
       this.cargandoPdf = true;
       var entrada_imprimir = {

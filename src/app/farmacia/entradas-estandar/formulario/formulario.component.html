@@ -115,8 +115,13 @@
                                 <p class="level-item"><a class="button is-primary" (click)="ctrl.regresar()">Regresar</a></p>
                                 <p class="level-item" *ngIf="tieneid"><a class="button is-primary" routerLink="/almacen/entradas-estandar/nuevo" *ngIf="!ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva entrada</span></a></p>
                                 <p class="level-item" *ngIf="tieneid"><a *ngIf="tieneid" class="button is-primary" (click)="imprimir()"><span class="icon"><i class="fa fa-print"></i></span></a></p>
+                                <!--
                                 <p class="level-item" *ngIf="!tieneid">
-                                        <button class="button is-primary" type="submit" [ngClass]="{'is-loading': ctrl.cargando}" [disabled]="ctrl.dato.invalid"> <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar</button>
+                                    <button class="button is-primary" type="submit" [ngClass]="{'is-loading': ctrl.cargando}" [disabled]="ctrl.dato.invalid"> <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar</button>
+                                </p>
+                                -->
+                                <p class="level-item" *ngIf="!tieneid">
+                                    <button class="button is-primary" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="guardar_movimiento()" [disabled]="ctrl.dato.invalid"> <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar</button>
                                 </p>
                                 <p class="level-item"><a class="button is-primary" title="Actualizar" (click)="ctrl.cargarDatos();"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
                                 <p class="level-item">&nbsp;</p>
@@ -208,13 +213,24 @@
                                             <div class="column is-3">
                                                 <p class="control is-expanded">
                                                 <label class="label">Lote:</label>
-                                                    <input type="text" class="input" formControlName="lote" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.lote.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.lote.touched}">
+                                                    <input type="text" class="input" formControlName="lote" 
+                                                    [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.lote.hasError('required') && 
+                                                    ctrl.dato.controls.insumos.controls[i].controls.lote.touched}">
                                                 </p>
                                             </div>                       
                                             <div class="column is-4">
                                                 <p class="control is-expanded">
                                                     <label class="label">Caducidad:</label>
-                                                    <input type="date" class="input" formControlName="fecha_caducidad" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.touched}">
+<!--
+                                                        <input class="input" type="date" [textMask]="{mask:mask, keepCharPositions: true, pipe: autoCorrectedDatePipe}"
+                                                            formControlName="fecha_caducidad" ngui-datetime-picker (blur)="validar_fecha(ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.value)"
+                                                            [min-date]="MinDateCaducidad" date-only="true" placeholder="YYYY-MM-DD"
+                                                            [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.hasError('required') 
+                                                            && ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.touched}">
+-->
+                                                        <input class="input" formControlName="fecha_caducidad" (blur)="validar_fecha(ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.value)"
+                                                            min="MinDateCaducidad" date-only="true" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.touched}"
+                                                            placeholder="YYYY-MM-DD" [textMask]="{mask:mask, keepCharPositions: true, pipe: autoCorrectedDatePipe}"/>
                                                 </p>
                                             </div>                          
                                             <div class="column is-3">
@@ -242,3 +258,22 @@
     </div>
 </form>
 
+<div class="modal" id="guardarMovimiento">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title"><i class="fa fa-warning"></i> Alerta</p>
+            <button class="delete" (click)="cancelarModal('guardarMovimiento')"></button>
+        </header>
+        <section class="modal-card-body">
+            <div class="content">
+                <h1>¿Esta seguro de guardar la entrada?</h1>
+                <p>Ya no se podrá realizar cambios</p>
+            </div>
+        </section>
+        <footer class="modal-card-foot">
+            <a class="button is-success" (click)="ctrl.enviar(); cancelarModal('guardarMovimiento')">Continuar</a>
+            <a class="button" (click)="cancelarModal('guardarMovimiento')">Cancelar</a>
+        </footer>
+    </div>
+</div>

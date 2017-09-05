@@ -21,7 +21,7 @@ export class IndexInventarioComponent implements OnInit {
   constructor(private title: Title) { }
 
   ngOnInit() {
-    this.title.setTitle('Almacén');
+    this.title.setTitle('Inventario');
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
 
     this.modulos = [
@@ -42,7 +42,7 @@ export class IndexInventarioComponent implements OnInit {
         titulo: 'Ajuste menos de Inventario', url: '/inventario/ajuste-menos-inventario'
       },
 
-/*
+
       { // PRUEBA
         permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-stock.svg',
         titulo: 'Existencia de insumos médicos', url: '/inventario/existencias'
@@ -54,8 +54,12 @@ export class IndexInventarioComponent implements OnInit {
       { // PRUEBA
         permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-ajuste-menos.svg',
         titulo: 'Ajuste menos de Inventario', url: '/inventario/ajuste-menos-inventario'
+      },
+      { // PRUEBA
+        permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-correcciones.svg',
+        titulo: 'Correcciones de movimientos', url: '/inventario/correcciones'
       }
-*/
+
     ];
     this.accesosDirectos = [
     ];
