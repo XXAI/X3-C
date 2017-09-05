@@ -28,7 +28,10 @@ export class ListaComponent implements OnInit {
 
 	cargando: boolean = false;
 	showAgregarTema: boolean = false;
+	showInfo: boolean = false;
 	tema_avance: FormGroup;
+
+	informacion_tema: any = {};
 
 
 	// # SECCION: Esta sección es para mostrar mensajes
@@ -364,6 +367,50 @@ export class ListaComponent implements OnInit {
      	
      
      }
+
+     informacion(id:any, percent:any):void
+     {
+     	this.informacion_tema = {};
+     	this.showInfo = !this.showInfo;
+     	this.cargando = true;
+     	this.avanceService.ver_informacion(id).subscribe(
+	        info => {
+	           this.informacion_tema = info;
+	           this.informacion_tema.percent = percent;
+	           this.cargando = false;
+	          
+	        },
+	        error => {
+	          this.cargando = false;
+	          
+	          this.mensajeError = new Mensaje(true);
+	          this.mensajeError.texto = "No especificado.";
+	          this.mensajeError.mostrar = true;      
+	          
+	          try {
+	            let e = error.json();
+	            if (error.status == 401 ){
+	              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+	            }
+	            // Problema de validación
+	            if (error.status == 409){
+	              this.mensajeError.texto = "Por favor verfique los campos marcados en rojo.";
+	              
+	            }
+	          } catch(e){
+	                        
+	            if (error.status == 500 ){
+	              this.mensajeError.texto = "500 (Error interno del servidor)";
+	            } else {
+	              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+	            }            
+	          }
+
+	        }
+	      );
+     	
+     }
+
     paginaSiguiente():void {
 	    this.listar(this.paginaActual+1);
 	}

@@ -40,7 +40,13 @@ export class AvanceService {
       
         return tema;
       }) as Observable<Tema>;
+    }
+
+    ver_informacion(id:any): Observable<any>{
+      return this.jwtRequest.get(AvanceService.URL,id,{informacion:1}).map( (response: Response) => response.json().data);
   	}
+
+
 
    editar(id:any, tema: Tema): Observable<Tema> {
      return this.jwtRequest.put(AvanceService.URL,id, tema).map( (response: Response) => response.json().data) as Observable<Tema>;
