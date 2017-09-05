@@ -683,8 +683,8 @@ export class FormularioComponent {
       let entrada_imprimir = {
         datos: this.dato.value,
         lista: this.dato.value.insumos,
-        turno: turno,
-        servicio: servicio,
+        turno: turno ? turno : 'No disponible',
+        servicio: servicio ? servicio : 'No disponible',
         usuario: usuario
       };
       this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));

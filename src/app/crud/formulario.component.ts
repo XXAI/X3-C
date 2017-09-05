@@ -56,7 +56,7 @@ export class FormularioComponent implements OnInit {
     @Input() dato: FormGroup;
 
     /**
-     * Este método inicializa la carga de las dependencias 
+     * Este método inicializa la carga de las dependencias
      * que se necesitan para el funcionamiento del modulo
      */
     constructor(
@@ -85,8 +85,8 @@ export class FormularioComponent implements OnInit {
     }
 
     /**
-    * Este método envia es intermediario y determina si un elemento es nuevo 
-    * o solo se esta editando    
+    * Este método envia es intermediario y determina si un elemento es nuevo
+    * o solo se esta editando
     * @return void
     */
     enviar(regresar: boolean = true) {
@@ -97,7 +97,7 @@ export class FormularioComponent implements OnInit {
     }
 
     /**
-    * Este método envia los datos para agregar un elemento 
+    * Este método envia los datos para agregar un elemento
     * @return void
     */
     guardarDatos(regresar) {
@@ -156,8 +156,8 @@ export class FormularioComponent implements OnInit {
         );
     }
     /**
-     * Este método envia los datos para actualizar un elemento con el id 
-     * que se envia por la url     
+     * Este método envia los datos para actualizar un elemento con el id
+     * que se envia por la url
      * @return void
      */
     actualizarDatos() {
@@ -226,7 +226,7 @@ export class FormularioComponent implements OnInit {
     /**
      * Este método es recursivo y recorre todo el formulario reactivo para crear los que son de tipo array y agregar su respectivo valor
      * @param resultado json con los datos del objecto resultado de la consulta a la base de datos
-     * @param data formulario reactivo donde se guardaran los valores resultantes 
+     * @param data formulario reactivo donde se guardaran los valores resultantes
      * @return void
      */
     cargarDatosRecursivo(resultado, data) {
@@ -257,16 +257,16 @@ export class FormularioComponent implements OnInit {
                                 }
                             }
 
-                            //agregar todos los controles sin excepcion                            
+                            //agregar todos los controles sin excepcion
                             data.push(this.fb.group(xx));
                             //recorrer los controles en busca de los que son de tipo array
 
                             if (tieneDatosx) {
-                                //obtener el control para agregar un nuevo control                            
+                                //obtener el control para agregar un nuevo control
                                 const x2x = <FormArray>data.controls[posicionx];
                                 for (let xrx in xtx) {
                                     for (let x1x in xtx[xrx]) {
-                                        //crear el form array en caso de que el dato sea un array 
+                                        //crear el form array en caso de que el dato sea un array
                                         x2x.controls[x1x] = new FormArray([]);
                                         //obtener su control
                                         const x3x = <FormArray>x2x.controls[xrx];
@@ -293,11 +293,11 @@ export class FormularioComponent implements OnInit {
             }
             else {
                 try {
-                    //recorrer los controles del formulario y agregar su respectivo valor                    
+                    //recorrer los controles del formulario y agregar su respectivo valor
                     for (let key in resultado) {
                         //validar que exista en la declaracion del fromulario
                         if (data.controls[key]) {
-                            //validar si es un array    
+                            //validar si es un array
 
                             if (Array.isArray(resultado[key])) {
                                 var valores = [];
@@ -308,7 +308,7 @@ export class FormularioComponent implements OnInit {
                                     for (let a1 in resultado[key]) {
                                         var a = resultado[key][a1];
 
-                                        //si es un objeto crear un fromgroup o un nuevo array                            
+                                        //si es un objeto crear un fromgroup o un nuevo array
                                         if (typeof a === 'object') {
                                             var x = {};
                                             for (let key1 in a) {
@@ -332,12 +332,12 @@ export class FormularioComponent implements OnInit {
                                             //recorrer los controles en busca de los que son de tipo array
                                             try {
                                                 if (tieneDatos) {
-                                                    //obtener el control para agregar un nuevo control                            
+                                                    //obtener el control para agregar un nuevo control
                                                     const x2 = <FormArray>control.controls[posicion1];
 
                                                     for (let xr in xt) {
                                                         for (let x1 in xt[xr]) {
-                                                            //crear el form array en caso de que el dato sea un array 
+                                                            //crear el form array en caso de que el dato sea un array
                                                             x2.controls[x1] = new FormArray([]);
                                                             //obtener su control
                                                             const x3 = <FormArray>x2.controls[xr];
@@ -367,21 +367,21 @@ export class FormularioComponent implements OnInit {
                             }
                             else {
                                 if (resultado[key]){
-                                    var tiene = 0; 
-                                    var tiene_array = 0;   
+                                    var tiene = 0;
+                                    var tiene_array = 0;
                                     if(typeof resultado[key] == 'object'){
                                        for (let a1 in resultado[key]){
                                            if (Array.isArray(resultado[key][a1])) {
                                                tiene_array++;
                                            }
-                                        } 
+                                        }
                                         if (tiene_array == 0)
                                             data.controls[key].patchValue(resultado[key]);
-                                    }                                
+                                    }
                                     if (tiene_array > 0 || Array.isArray(resultado[key])){
                                         for (let a1 in resultado[key]){
                                             const x1 = <FormArray>data.controls[key];
-                                            
+
                                             if (Array.isArray(resultado[key][a1])) {
                                                 const x2 = <FormArray>x1.controls[a1];
                                                 //llamar el metodo recursivo para llegar al ultimo array en la lista
@@ -430,7 +430,7 @@ export class FormularioComponent implements OnInit {
 
     /**
      * Este método carga los datos de un elemento de la api con el id que se pase por la url
-     * en la api, abre una ventana modal para confirmar la acción 
+     * en la api, abre una ventana modal para confirmar la acción
      * @return void
      */
     cargarDatos() {
@@ -445,6 +445,8 @@ export class FormularioComponent implements OnInit {
 
                         // validar todos los key que tengan el array
                         this.dato.patchValue(this.cargarDatosRecursivo(resultado, this.dato));
+
+                        console.log(this.dato);
 
                         this.mensajeResponse.titulo = 'Modificar';
                         this.mensajeResponse.texto = 'Los datos se cargaron';
@@ -491,10 +493,10 @@ export class FormularioComponent implements OnInit {
     borrarItem = '';
 
     /**
-     * Este método es intermediario para la eliminación de un elemento 
+     * Este método es intermediario para la eliminación de un elemento
      * en la api, abre una ventana modal para confirmar la acción
      * @param item contiene el valor del elemento a eliminar
-     * @param index  indica la posicion del elemento en la lista cargada  
+     * @param index  indica la posicion del elemento en la lista cargada
      * @return void
      */
     eliminar(item: any): void {
@@ -503,7 +505,7 @@ export class FormularioComponent implements OnInit {
     }
 
     /**
-     * Este método cierra el modal de la de confirmación de eleimnación         
+     * Este método cierra el modal de la de confirmación de eleimnación
      * @return void
      */
     cancelarModal() {
@@ -511,10 +513,10 @@ export class FormularioComponent implements OnInit {
     }
 
     /**
-     * Este método se encarga de la eliminacion de un elemento 
+     * Este método se encarga de la eliminacion de un elemento
      * en la api
      * @param item contiene el valod del elemento a eliminar
-     * @param index  indica la posicion del elemento en la lista cargada  
+     * @param index  indica la posicion del elemento en la lista cargada
      * @return void
      */
     borrar(item: any): void {
@@ -577,7 +579,7 @@ export class FormularioComponent implements OnInit {
             resultado => {
                 this[item] = resultado;
                 this.cargando = false;
-                if (resultado.length === 0) {
+                if (resultado.length == 0) {
                     this.mensajeResponse.titulo = item;
                     this.mensajeResponse.texto = `Esta vacio, póngase en contacto con un administrador.`;
                     this.mensajeResponse.mostrar = true;
@@ -621,7 +623,7 @@ export class FormularioComponent implements OnInit {
      * Este metodo se encarga de cargar los datos de un catalogo que depende de otro
      * @param url  ruta de la pai donde se obtienen los valores
      * @param item nombre del modelo donde se guardaron los resultados
-     * @param id  id del catalogo del que depende 
+     * @param id  id del catalogo del que depende
      * @return voidofModelo
      */
     catalogoDependiente = function (url, item, id) {
@@ -684,8 +686,8 @@ export class FormularioComponent implements OnInit {
      * ejemplo <code>(click)="ctrl.addInFormArray(val.id, ctrl.dato.controls.permisos, true)"</code>
      * @param valor valor a agregar al array de datos
      * @param modelo  array de datos
-     * @param key nombre de la clave para guardar temporal 
-     * @param esmodelo Bandera que determina si el modelo es un formGroup 
+     * @param key nombre de la clave para guardar temporal
+     * @param esmodelo Bandera que determina si el modelo es un formGroup
      * @return void
      */
     private modelo = [];
@@ -714,7 +716,7 @@ export class FormularioComponent implements OnInit {
      * @param clave nombre para identificar en caso de que sean muchos
      * @param valores Valores a agregar en el modelo
      * @param modelo Nombre del modelo
-     * @param esmodelo Bandera que determina si el modelo es un formGroup 
+     * @param esmodelo Bandera que determina si el modelo es un formGroup
      * @return void
      */
     seleccionarTodos(clave, valores, modelo, esmodelo: boolean = false) {
@@ -793,20 +795,18 @@ ofModelo
 
     /**
      * Este método verifica que el modelo de mover datos no aparezca en la lista de seleccion si existe quitarlo de izquierda
-     * ejemplo 
+     * ejemplo
      * <code>(click)="ctrl.initMover(ctrl.dato.controls.almacen_tipos_movimientos.controls, ctrl.tipos_movimientos)"</code>
      * @param toModelo  modelo que corresponde al array a agregar los elementos
      * @param ofModelo modelo de donde se quitan los valores
      * @return void
      */
-    initMover(toModelo, ofModelo, campo = 'id') {
-        let arreglo_temporal = [];
+    initMover(toModelo, ofModelo, campo:string='id') {
         for (let item of toModelo) {
-            let i = 0;
+            var i = 0;
             for (let val of ofModelo) {
-                if (item.value[campo] === val[campo]) {
+                if (item.value[campo] == val[campo]) {
                     ofModelo.splice(i, 1);
-                    break;
                 }
                 i++;
             }
@@ -814,7 +814,7 @@ ofModelo
     }
     /**
      * Este método agrega un objeto a un array de elementos para mover
-     * ejemplo 
+     * ejemplo
      * <code>(click)="ctrl.iniciarMover('derecha', ctrl.tipos_movimientos, ctrl.dato.controls.almacen_tipos_movimientos.controls, false, campo)"</code>
      * <code>(click)="ctrl.iniciarMover('izquierda', ctrl.dato.controls.almacen_tipos_movimientos.controls, ctrl.tipos_movimientos, true, campo)"</code>
      * @param clave Posicion izquierda-derecha del movimiento de los datos
@@ -825,13 +825,13 @@ ofModelo
      * @return void
      */
     iniciarMover(clave, toModelo, ofModelo, esmodelo: boolean = false, campo:string='id') {
-        
+
              for (let item of this[clave]) {
                 if (esmodelo) {
                     toModelo.push(this.fb.group(item));
                     var i = 0;
-                    
-                    for (let val of ofModelo) {  
+
+                    for (let val of ofModelo) {
                         if (item[campo] == val[campo]) {
                             ofModelo.splice(i, 1);
                         }
@@ -860,9 +860,9 @@ ofModelo
     /**
      * Este método genera una cadena de longitud determinada y la agrega a un modelo
      * ejemplo <code>(click)="ctrl.generarCadenaRandom(ctrl.dato.controls.id, 32, true)"</code>
-     * @param modelo  Nombre del modelo donde se guarda la cadena 
+     * @param modelo  Nombre del modelo donde se guarda la cadena
      * @param tamano  longitud de la cadena
-     * @param esmodelo Bandera que determina si el modelo es un formGroup 
+     * @param esmodelo Bandera que determina si el modelo es un formGroup
      * @return void
      */
     generarCadenaRandom(modelo, tamano, esmodelo: boolean = false) {
@@ -885,12 +885,12 @@ ofModelo
     }
 
     /**
-     * Este método selecciona un item y lo pasa al modelo del autocomplete para no mandar el objeto si no se requiere y mandar unicamente el valor 
+     * Este método selecciona un item y lo pasa al modelo del autocomplete para no mandar el objeto si no se requiere y mandar unicamente el valor
      * ejemplo <code>(valueChanged)="ctrl.select_item_autocomplete(ctrl.dato.controls.clues, 'clues', $event, true)"</code>
      * @param modelo Nombre del modelo donde se guarda el dato obtenido
      * @param item nombre del item a extraer del objeto
      * @param datos objeto donde se busca el elemento para su extraccion
-     * @param esmodelo Bandera que determina si el modelo es un formGroup 
+     * @param esmodelo Bandera que determina si el modelo es un formGroup
      * @return void
      */
     select_item_autocomplete(modelo, item, datos, esmodelo: boolean = false) {
@@ -921,7 +921,7 @@ ofModelo
     quitar_form_array(modelo, i: number) {
         modelo.removeAt(i);
     }
-    
+
     private error_archivo = false;
     /**
      * Este método selecciona una imagen de un campo file <input type="file" (change)="seleccionarImagenBase64($event, 'modelo')">

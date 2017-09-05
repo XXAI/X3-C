@@ -14,39 +14,52 @@ import { NotificationsService } from 'angular2-notifications';
   styleUrls: ['./lista.component.css']
 })
 
-export class ListaComponent{
+export class ListaComponent {
   @ViewChildren('json') jsonBoxViewChildren;
   dato2: FormGroup;
   cargando = false;
-  tamano:number = 0;
+  tamano = 0;
   error_json = false;
   json_valido;
   pedido_id;
   recetas_resultado = false;
-    //Crear la variable que mustra las notificaciones
+  // Crear la variable que mustra las notificaciones
   mensajeResponse: Mensaje = new Mensaje();
-  titulo="Sincronizar recetas";
-  
-  constructor(private fb: FormBuilder,  
-    private crudService: CrudService, 
-    private route: ActivatedRoute, 
-    private _sanitizer: DomSanitizer, 
+  // mostrar notificaciones configuracion default, posicion abajo izquierda, tiempo 2 segundos
+  public options = {
+    position: ['bottom', 'left'],
+    timeOut: 2000,
+    lastOnBottom: true
+  };
+  titulo= 'Sincronizar recetas';
+  public clues_term = `${environment.API_URL}/clues-auto?term=:keyword`;
+  tieneid = false;
+  foto = '';
+  resultado_clues;
+  clues;
+  // Datos enviados en URL para filtros
+  clave_clues='';
+  fecha_desde = '';
+  fecha_hasta = '';
+
+  constructor(private fb: FormBuilder,
+    private crudService: CrudService,
+    private route: ActivatedRoute,
+    private _sanitizer: DomSanitizer,
     private notificacion: NotificationsService) { }
-  
-    tieneid: boolean = false;
+
   ngOnInit() {
 
-    //obtener los datos del usiario logueado almacen y clues
-    var usuario = JSON.parse(localStorage.getItem("usuario"));
-    //this.tamano = this.elementView.nativeElement.offsetHeight/2;
-    //inicializar el formulario reactivo
+    // obtener los datos del usiario logueado almacen y clues
+    var usuario = JSON.parse(localStorage.getItem('usuario'));
+    // this.tamano = this.elementView.nativeElement.offsetHeight/2;
+    // inicializar el formulario reactivo
     this.dato2 = this.fb.group({
       json: [''],
       archivos: [''],
-      pedido:['00011']
-    }); 
+      pedido: ['00011']
+    });
   }
-  foto = '';
   /**
      * Este método abre una modal
      * @param id identificador del elemento de la modal
@@ -56,7 +69,7 @@ export class ListaComponent{
   abrirModal(id, item_id) {
     document.getElementById(id).classList.add('is-active');
     this.pedido_id = item_id;
-  } 
+  }
 
   /**
      * Este método cierra una modal
@@ -65,12 +78,12 @@ export class ListaComponent{
      */
   cancelarModal(id) {
     document.getElementById(id).classList.remove('is-active');
-    this.dato2.patchValue({json:'',archivos:'' ,pedido:''});
+    this.dato2.patchValue({json:'',archivos:'' , pedido:''});
     this.jsonBoxViewChildren.first.nativeElement.value = "";
     this.pedido_id = "";
     this.recetas_resultado = false;
-    this.json_valido='';
-  }  
+    this.json_valido = '';
+  }
 
   /**
      * Este método selecciona un archivo txt con un json para subirlo <input type="file" (change)="seleccionarJson($event, 'modelo')">
@@ -101,9 +114,9 @@ export class ListaComponent{
       }
   }
 
-  
+
     /**
-    * Este método envia los datos para agregar un elemento 
+    * Este método envia los datos para agregar un elemento
     * @return void
     */
     enviarDatos(url?) {
@@ -140,7 +153,7 @@ export class ListaComponent{
                         for (var input in e.error) {
                             // Iteramos todos los errores
                             for (var i in e.error[input]) {
-                                for(var j in e.error[input][i]){
+                                for (var j in e.error[input][i]){
                                 this.mensajeResponse.titulo = input;
                                 this.mensajeResponse.texto = e.error[input][i][j];
                                 this.mensajeResponse.clase = 'error';
@@ -161,22 +174,22 @@ export class ListaComponent{
         );
     }
       /**
-    * Este método envia los datos para agregar un elemento 
+    * Este método envia los datos para agregar un elemento
     * @return void
     */
     sincronizarReceta(modal?) {
         this.cargando = true;
-        this.dato2.patchValue({pedido:this.pedido_id});
+        this.dato2.patchValue({pedido: this.pedido_id});
         var json = this.dato2.getRawValue();
         this.crudService.crear(json, 'procesar-json-proveedor').subscribe(
             resultado => {
-              this.cargando = false;   
-              
+              this.cargando = false;
+
               this.cancelarModal(modal);
               this.mensajeResponse.texto = 'Se han sincronizado las recetas.';
               this.mensajeResponse.mostrar = true;
               this.mensajeResponse.clase = 'success';
-              this.mensaje(2);            
+              this.mensaje(2);
             },
             error => {
                 this.cargando = false;
@@ -214,13 +227,58 @@ export class ListaComponent{
         );
     }
 
+    /**
+     * Este método formatea los resultados de la busqueda en el autocomplte
+     * @param data resultados de la busqueda
+     * @return void
+     */
+    autocompleListFormatter = (data: any) => {
+        let html = `
+        <div class="card">
+            <div class="card-content">
+                <div class="media">          
+                    <div class="media-content">
+                        <p class="title is-4" style="color: black;">
+                            <i class="fa fa-hospital-o" aria-hidden="true"></i> &nbsp; ${data.clues}
+                        </p>
+                        <p class="subtitle is-6" style="color: black;">
+                            <strong style="color: black;">Nombre: </strong> ${data.nombre}
+                            <strong style="color: black;">&nbsp; Jurisdicción: </strong> ${data.jurisdiccion.numero} -
+                            <span style="color: black;"> ${data.jurisdiccion.nombre}</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+        return this._sanitizer.bypassSecurityTrustHtml(html);
+    }
 
-    //mostrar notificaciones configuracion default, posicion abajo izquierda, tiempo 2 segundos
-    public options = {
-        position: ['bottom', 'left'],
-        timeOut: 2000,
-        lastOnBottom: true
-    };
+    /**
+     * Este método carga los datos de un elemento de la api con el id que se pase por la url
+     * @param data json con los datos del objetop seleccionado del autocomplete
+     * @return void
+     */
+  select_clues_autocomplete(data) {
+
+    let usuario = JSON.parse(localStorage.getItem('usuario'));
+    this.cargando = true;
+    // cargar los datos de los lotes del insumo seleccionado en el autocomplete
+    this.crudService.lista(0, 1000, 'listar-pedidos-proveedor?almacen=' + usuario.almacen_activo.id + '&clues=' + data.clues).subscribe(
+      resultado => {
+
+        this.resultado_clues = resultado;
+        this.clues = data;
+        this.clave_clues = this.clues.clues;
+        console.log(this.clues);
+        this.cargando = false;
+      },
+      error => {
+        this.cargando = false;
+      }
+    );
+  }
+    /*********************************************NOTIFICACIONES*************************************************** */
+
     /**
      * Este método muestra los mensajes resultantes de los llamados de la api
      * @param cuentaAtras numero de segundo a esperar para que el mensaje desaparezca solo

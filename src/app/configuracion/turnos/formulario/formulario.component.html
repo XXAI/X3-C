@@ -1,6 +1,7 @@
 <formulario #ctrl URL="mis-turnos" titulo="Turnos / Configuración" [dato]="dato"></formulario>
 <panel-control-menu></panel-control-menu>
 <div style="height:50px;"></div>
+<form name="dato" novalidate [formGroup]="dato" (ngSubmit)="ctrl.enviar(false)">
 <div class="contenedor columns " style="height:85%">
     <div class="column is-one-quarter is-hidden-mobile">
         <panel-control-menu-aside></panel-control-menu-aside>
@@ -45,7 +46,6 @@
             </div>
             <section class="section">
                 <!-- formulario -->
-                <form name="dato" novalidate [formGroup]="dato" (ngSubmit)="ctrl.enviar(false)">
                     <div class="tabs is-boxed">
                         <ul>
                             <li [ngClass]="{ 'is-active' : tab == 2}">
@@ -168,9 +168,9 @@
                             <a class="button is-white" (click)="ctrl.regresar()">Regresar</a>
                         </p>
                     </div>
-                    -->                    
-                </form>
+                    -->
             </section>
         </div>
     </div>
-</div>
+</div>          
+</form>
