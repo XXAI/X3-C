@@ -269,13 +269,17 @@
 
                     <div style="height:50px;"></div>
 
-                    <div formArrayName="insumos">
+                    <div formArrayName="insumos" style="overflow: scroll; overflow-x: hidden; height: 530px;">
                         <div class="box" *ngFor="let item of ctrl.dato.controls.insumos.controls; let i=index" [ngStyle]="{'background': i%2 == 0 ? 'rgba(230, 230, 232, 0.44)' : ''}">
                             <article class="media" [formGroupName]="i">
                                 <div class="media-content">
                                     <div class="content">
-                                        <a *ngIf="!tieneid" class="is-danger" title="Quitar este elemento de la lista" style="float:right" (click)="ctrl.quitar_form_array(ctrl.dato.controls.insumos,i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
-                                        <p>
+                                        <span style="float:right; padding-left: 15px;" >
+                                            <a *ngIf="!tieneid" class="button is-danger" title="Quitar este elemento de la lista" (click)="ctrl.quitar_form_array(ctrl.dato.controls.insumos,i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
+                                        </span>
+                                        <a *ngIf="!tieneid" class="button is-success" title="Agregar más lotes de este insumo" style="float:right" (click)="select_insumo_autocomplete(item.value)"><span class="icon"><i class="fa fa-plus-circle" aria-hidden="true"></i></span> </a>
+                                                                                
+                                        <p style="padding-right: 20px;">
                                             <strong>
                                                 <span style="color:cornflowerblue">
                                                     Clave: {{ ctrl.dato.controls.insumos.controls[i].controls.clave.value }} 
@@ -453,7 +457,11 @@
                         <td *ngIf="!item.nuevo">{{item.lote}}</td>
                         <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Lote" [(ngModel)]="item.lote"></td>
                         <td *ngIf="!item.nuevo">{{item.fecha_caducidad}}</td>
-                        <td *ngIf="item.nuevo"><input class="input has-text-centered " type="date" placeholder="Fecha de caducidad" [(ngModel)]="item.fecha_caducidad"></td>
+                        <td *ngIf="item.nuevo">
+                            <input class="input has-text-centered" placeholder="Fecha de caducidad" 
+                            [(ngModel)]="item.fecha_caducidad" min="MinDateCaducidad" (blur)="validar_fecha()"
+                            placeholder="YYYY-MM-DD" [textMask]="{mask:mask, keepCharPositions: true, pipe: autoCorrectedDatePipe}"/>
+                        </td>
                         <td *ngIf="!item.nuevo">{{item.codigo_barras}}</td>
                         <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Codigo de barras" [(ngModel)]="item.codigo_barras"></td>
                         <td *ngIf="!item.nuevo && modo == 'N'">{{item.existencia}}</td>
@@ -471,12 +479,13 @@
         </section>
         <footer class="modal-card-foot">
             <a class="button is-dark" *ngIf="modo=='N'" (click)="agregarNuevoLote()">Agregar nuevo lote</a>                            
-            <a class="button is-success" [ngClass]="{'is-disabled':!cant_solicitada_valida || !sum_cant_lotes}" (click)="agregarLoteIsumo(cantidad_solicitada.value)">Aceptar</a>
+            <a class="button is-success" [ngClass]="{'is-disabled':!cant_solicitada_valida || !sum_cant_lotes || !fecha_invalida}" (click)="agregarLoteIsumo(cantidad_solicitada.value)">Aceptar</a>
             <a class="button" (click)="cancelarModal('verLotes'); modo = 'N';">Cancelar</a>
             <div class="card-footer-item"></div>
             <a *ngIf="!sum_cant_lotes" class="card-footer-item button is-danger" [ngClass]="{'is-disabled':!cant_solicitada_valida}" (click)="abrirModal('negarExistencia')"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;
  Negar existencia</a>
         </footer>
+        <simple-notifications [options]="options"></simple-notifications>
     </div>
 </div>
 

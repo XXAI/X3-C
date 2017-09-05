@@ -43,7 +43,7 @@ import { OpcionesAvanzadasModule     } from './panel-control/opciones-avanzadas/
 
 // # Hub Configuracion
 import { MisAlmacenesModule} from './configuracion/almacenes/almacenes.module';
-import { MisServiciosModule } from './configuracion/servicios/servicios.module';
+import { MisServiciosModule} from './configuracion/servicios/servicios.module';
 import { MisTurnosModule   } from './configuracion/turnos/turnos.module';
 import { MisClavesModule   } from './configuracion/claves/claves.module';
 
@@ -61,13 +61,15 @@ import { SalidasRecetasModule   } from './farmacia/salidas-recetas/salidas-recet
 import { SalidasEstandarModule  } from './farmacia/salidas-estandar/salidas-estandar.module';
 import { DashboardSalidasModule } from './farmacia/dashboard-salidas/dashboard-salidas.module';
 import { ClavesBasicasModule    } from './administrador-central/claves-basicas/claves-basicas.module';
+import { TransferenciaAlmacenModule  } from './farmacia/transferencia-almacen/transferencia-almacen.module';
 
 // # Hub Inventario
 import { IndexInventarioModule          } from './inventario/index-inventario/index-inventario.module';
 import { InventarioModule               } from './inventario/existencias/inventario.module';
 import { InicializacionInventarioModule } from './inventario/inicializacion-inventario/inicializacion-inventario.module';
-import { AjusteMasInventarioModule         } from './inventario/ajuste-mas-inventario/ajuste-mas-inventario.module';
-import { AjusteMenosInventarioModule         } from './inventario/ajuste-menos-inventario/ajuste-menos-inventario.module';
+import { AjusteMasInventarioModule      } from './inventario/ajuste-mas-inventario/ajuste-mas-inventario.module';
+import { AjusteMenosInventarioModule    } from './inventario/ajuste-menos-inventario/ajuste-menos-inventario.module';
+import { CorreccionesModule             } from './inventario/correcciones/correcciones.module';
 
 // # Hub almacén artículos
 import { IndexAlmacenArticulosModule } from './almacen-articulos/index-almacen-articulos/index-almacen-articulos.module';
@@ -142,9 +144,11 @@ export function highchartsFactory() {
     EntregasModule,
     EntradasEstandarModule,
     SalidasEstandarModule,
+    TransferenciaAlmacenModule,
     InventarioModule,
     AjusteMasInventarioModule,
     AjusteMenosInventarioModule,
+    CorreccionesModule,
     SalidasRecetasModule,
     DashboardSalidasModule,
     ClavesBasicasModule,

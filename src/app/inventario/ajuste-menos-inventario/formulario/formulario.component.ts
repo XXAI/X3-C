@@ -154,7 +154,7 @@ export class FormularioComponent {
           <div class="media-content">
             <p class="title is-4"> <small>${data.descripcion}</small></p>
             <p class="subtitle is-6">
-              <strong>Clave: </strong> ${data.clave}) 
+              <strong>Clave: </strong> ${data.clave}
               `;
 
               if(data.es_causes == 1)
@@ -208,7 +208,6 @@ export class FormularioComponent {
               }
               if (val.nuevo === 1) {
                 array_temporal.push(val);
-                console.log('Insumo nuevo', val.id);
               }
             }
           }
@@ -219,8 +218,6 @@ export class FormularioComponent {
               resultado.push(item);
             }
           }
-          console.log(array_temporal);
-          console.log(resultado);
         }catch (e) {
           console.log(e);
         }
@@ -575,7 +572,6 @@ export class FormularioComponent {
 
   imprimir() {
     let usuario = JSON.parse(localStorage.getItem('usuario'));
-    console.log(this.dato.value);
     try {
       this.cargandoPdf = true;
       let entrada_imprimir = {
@@ -599,7 +595,6 @@ export class FormularioComponent {
 
   handleKeyboardEvents(event: KeyboardEvent) {
     this.key = event.which || event.keyCode;
-    // console.log(this.key);
     if (event.keyCode === 13) {
       document.getElementById('buscarInsumo').focus();
       event.preventDefault();
