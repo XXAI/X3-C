@@ -51,24 +51,32 @@
             <table class="table" *ngIf="!cargando">
                 <thead>
                     <tr>
-                    <th>VISUALIZAR</th>
-                    <th><abbr>NOMBRE</abbr></th>
+                    <th width="5%">VISUALIZAR</th>
+                    
                     <th>COMENTARIO</th>
-                    <th>% DE AVANCE</th>
-                    <th>CREADO  </th>
-                    <th></th>
-                    <th></th>
+                    <th width="5%">AVANCE</th>
+                    <th width="10%">CREADO</th>
+                    <th width="5%">DESCARGAR</th>
+                    <th width="5%">ELIMINAR</th>
                     </tr>
                 </thead>
                 <tbody  *ngIf="!busquedaActivada">
                     <tr *ngFor="let item of detalles; let i=index">
-                        <td >
+                        <td style="vertical-align: middle;" class="has-text-centered">
                             <button type="button" class="button  is-primary" style="margin-right: 5px;" (click)='view(item.id)'>
                             	<span class="icon"><i class="fa fa-eye"></i></span>
                             </button>
                         </td>    
-                        <th style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'><a>{{ item.nombre }}.{{ item.extension }}</a></th>
-                        <td style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'><a>{{ item.comentario }}</a></td>
+                        <!--<th style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'><a>{{ item.nombre }}.{{ item.extension }}</a></th>-->
+                        <td style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'>
+                            <div class="tags has-addons">
+                              <span class="tag">{{ item.nombre }}.{{ item.extension }}</span>
+                              <span class="tag is-primary"><i class="fa fa-file-pdf-o"></i></span>
+                            </div>
+                            <br>
+                            <a>{{ item.comentario }}</a>
+
+                        </td>
                         <td style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'><a>{{ item.porcentaje }} %</a></td>
                         <td style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'><a>{{ item.created_at }} </a></td>
                         
@@ -85,23 +93,36 @@
                             
                         </td>
                         <td style="vertical-align: middle;" class="has-text-centered" *ngIf="item.deleted_at"></td>
-                        <td style="vertical-align: middle;" class="has-text-centered" *ngIf="item.deleted_at">{{ item.deleted_at }}</td>
+                        <td style="vertical-align: middle;" class="has-text-centered" *ngIf="item.deleted_at">
+                            <span class="tag is-danger is-large">
+                              {{ item.deleted_at }}
+                              <button class="delete"></button>
+                            </span>
+                        </td>
                         
                         
                     </tr>
                     <tr *ngIf="detalles.length == 0">
-                        <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
+                        <td colspan="6" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
                     </tr>
                 </tbody>
                 <tbody *ngIf="busquedaActivada">
                      <tr *ngFor="let item of resultadosBusqueda; let i=index" id='escala'>
-                       <td >
+                       <td style="vertical-align: middle;" class="has-text-centered">
                             <button type="button" class="button  is-primary" style="margin-right: 5px;" (click)='view(item.id)'>
-                            	<span class="icon"><i class="fa fa-eye"></i></span>
+                                <span class="icon"><i class="fa fa-eye"></i></span>
                             </button>
                         </td>    
-                        <th style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'><a>{{ item.nombre }}.{{ item.extension }}</a></th>
-                        <td style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'><a>{{ item.comentario }}</a></td>
+                        <!--<th style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'><a>{{ item.nombre }}.{{ item.extension }}</a></th>-->
+                        <td style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'>
+                            <div class="tags has-addons">
+                              <span class="tag">{{ item.nombre }}.{{ item.extension }}</span>
+                              <span class="tag is-primary"><i class="fa fa-file-pdf-o"></i></span>
+                            </div>
+                            <br>
+                            <a>{{ item.comentario }}</a>
+
+                        </td>
                         <td style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'><a>{{ item.porcentaje }} %</a></td>
                         <td style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'><a>{{ item.created_at }} </a></td>
                         
@@ -118,7 +139,12 @@
                             
                         </td>
                         <td style="vertical-align: middle;" class="has-text-centered" *ngIf="item.deleted_at"></td>
-                        <td style="vertical-align: middle;" class="has-text-centered" *ngIf="item.deleted_at">{{ item.deleted_at }}</td>
+                        <td style="vertical-align: middle;" class="has-text-centered" *ngIf="item.deleted_at">
+                            <span class="tag is-danger is-large">
+                              {{ item.deleted_at }}
+                              <button class="delete"></button>
+                            </span>
+                        </td>
                         
                     </tr>
 
@@ -289,7 +315,7 @@
                 </thead>
                 <tbody  >
                     <tr *ngFor="let item of usuarios_privilegios; let i=index">
-                        <td>{{ item.usuario_id }}</td>
+                        <td>{{ item.usuario.nombre }} {{ item.usuario.apellidos }} - {{ item.usuario_id }}</td>
                         <td  *ngIf="item.agregar == 1"><i class="fa fa-check-circle"></i></td>
                         <td  *ngIf="item.agregar == 0"><i class="fa fa-close"></i></td>
                         <td  *ngIf="item.editar == 1"><i class="fa fa-check-circle"></i></td>
