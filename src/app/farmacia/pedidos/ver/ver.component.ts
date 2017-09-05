@@ -51,8 +51,10 @@ export class VerComponent implements OnInit {
 
   mostrarImprimirDialogo:boolean = false;
   mostrarCancelarDialogo:boolean = false;
+  mostrarPedidoAlternoDialogo:boolean = false;
   tiposSubPedidos:string[] = [];
   subPedidos:any = {};
+  listaInsumosPedidoAlterno:any=[];
 
   recepciones:any = {};
   tieneRecepcionIniciada:boolean = false;
@@ -482,6 +484,30 @@ export class VerComponent implements OnInit {
     this.mostrarCancelarDialogo = true;
   }
 
+  mostrarDialogoPedidoAlternoPedido(){
+    //
+    this.mostrarPedidoAlternoDialogo = true;
+    
+    for(let i in this.pedido.lista){
+      let insumo = this.pedido.lista[i];
+
+      let faltante = insumo.cantidad - insumo.cantidad_recibida;
+
+      if(faltante){
+        this.listaInsumosPedidoAlterno.push(
+          {
+            'clave':insumo.clave,
+            'descripcion':insumo.descripcion,
+            'cantidad_limite': faltante,
+            'cantidad':faltante,
+            'precio':insumo.precio
+          }
+        );
+      }
+    }
+  }
+  
+
   transferirRecurso(){
     var validacion_palabra = prompt("Para confirmar esta transacción, por favor escriba: CANCELAR PEDIDO");
     if(validacion_palabra == 'CANCELAR PEDIDO'){
@@ -541,6 +567,10 @@ export class VerComponent implements OnInit {
 
   cerrarDialogoCancelarPedido(){
     this.mostrarCancelarDialogo = false;
+  }
+
+  cerrarDialogoPedidoAlterno(){
+    this.mostrarPedidoAlternoDialogo = false;
   }
 
   base64ToBlob( base64, type ) {
