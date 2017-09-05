@@ -5,7 +5,6 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
 (function() {
     'use strict';
 
-
     onmessage = function(evt) {
         let data = JSON.parse(evt.data)
         pdf(data);
@@ -18,65 +17,68 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
             content: [{
                 style: 'Movimiento',
                 table: {
-                    headerRows: 5,
+                    headerRows: 10,
                     dontBreakRows: true,
                     //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
-                    widths: [80, 70, 'auto', 'auto', 'auto', 'auto','auto'],
+                    widths: [80, 70, 'auto', 'auto', 'auto', 'auto','auto', 'auto'],
                     body: [
                         [{
                             image: 'header',
                             width: 500,
                             style: 'tableHeaderTop',
-                            colSpan: 7,
+                            colSpan: 8,
                             alignment: 'center'
-                        }, {}, {}, {}, {}, {},{}],
-                        [{ text: 'SIAL', style: 'titulo', colSpan: 7, alignment: 'center' },
-                            {}, {}, {}, {}, {}, {}
+                        }, {}, {}, {}, {}, {},{},{}],
+                        [{ text: 'SIAL', style: 'titulo', colSpan: 8, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {},{}
                         ],
-                        [{ text: 'SALIDA ESTANDAR', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },
-                            {}, {}, {}, {}, {}, {}
-                        ],
-                        [
-                            { text: 'FOLIO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
-                            {},
-                            { text: data.datos.id, style: 'tableHeader', colSpan: 3, alignment: 'left' }, {}, {},
-                            { text: 'ALMACÉN', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.usuario.almacen_activo.nombre, style: 'tableHeader', alignment: 'left' }
-                        ],
-                        [
-                            { text: 'ENTREGÓ', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
-                            {},
-                            { text: data.usuario.nombre +' '+ data.usuario.apellidos, style: 'tableHeader', colSpan: 3, alignment: 'left' }, {}, {},
-                            { text: 'FECHA DE CREACION', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.datos.fecha_movimiento, style: 'tableHeader', alignment: 'left' }
+                        [{ text: 'LISTA DE EXISTENCIAS', style: 'tableHeaderTop', colSpan: 8, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {},{}
                         ],
                         [
                             { text: 'CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
                             {},
-                            { text: data.usuario.clues_activa.clues, style: 'tableHeader', colSpan: 3, alignment: 'left' }, {}, {},
-                            { text: 'NOMBRE DE CLUES', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.usuario.clues_activa.nombre, style: 'tableHeader', alignment: 'left' }
+                            { text: data.usuario.clues_activa.clues, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
+                            { text: 'NOMBRE DE CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' }, {},
+                            { text: data.usuario.clues_activa.nombre, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {}
                         ],
                         [
-                            { text: 'TURNO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
+                            { text: '', style: 'tableHeaderVerde', colSpan: 4, alignment: 'right' },
+                            {},{}, {},
+                            { text: 'NOMBRE DE ALMACÉN', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
                             {},
-                            { text: data.turno.nombre ? data.turno.nombre : data.turno, style: 'tableHeader', colSpan: 3, alignment: 'left' }, {}, {},
-                            { text: 'SERVICIO', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.servicio.nombre ? data.servicio.nombre : data.servicio, style: 'tableHeader', alignment: 'left' }
+                            { text: data.usuario.almacen_activo.nombre, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {}
                         ],
-                        [{ text: ' ', style: 'celdaEspacio', colSpan: 7, alignment: 'center' },
-                            {}, {}, {}, {}, {}, {}
+                        [{ text: ' ', style: 'celdaEspacio', colSpan: 8, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {}, {}
+                        ],
+                        [{ text: 'DETALLES DE EXISTENCIA', style: 'tableHeaderLeyenda', colSpan: 8, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {}, {}
+                        ],
+                        [ 
+                            { text: 'BUSCAR EN:', style: 'tableHeaderVerde', alignment: 'right' },
+                            { text: data.buscar_en == "TODAS_LAS_CLAVES" ? 'TODAS LAS CLAVES' : 'MIS CLAVES', style: 'tableHeader', colSpan: 2, alignment: 'left' },
+                            {},
+                            { text: 'EXISTENCIA:', style: 'tableHeaderVerde',    alignment: 'right' },
+                            { text: data.seleccionar == "TODO" ? 'TODO' : data.seleccionar, style: 'tableHeader', alignment: 'left' },
+                            { text: 'INSUMOS:', style: 'tableHeaderVerde',  alignment: 'right' },
+                            { text: data.tipo == "TODO" ? 'TODOS LOS INSUMOS' : data.tipo, style: 'tableHeader', colSpan: 2, alignment: 'left' },
+                            {}
+                        ],
+                        [{ text: ' ', style: 'celdaEspacio', colSpan: 8, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {}, {}
                         ],
                         [
                             { text: 'CLAVE', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'DESCRIPCION DEL INSUMO', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'NO. DE LOTE', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'FECHA DE CADUCIDAD', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'CODIGO DE BARRAS', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'CANTIDAD SURTIDA (Normal)', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'CANTIDAD SURTIDA (Unidosis)', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'DESCRIPCION', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
+                            {},
+                            { text: 'CPD', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'CPS', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'CPM', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'EXISTENCIA', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'EXISTENCIA UNIDOSIS', style: 'tableHeaderVerde', alignment: 'center' },
                         ]
-                        //Body -> insumos
+                        //Body -> Salidas estandar
                     ]
                 },
                 layout: {
@@ -186,72 +188,25 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
 
         var suma_total_insumos = 0;
 
-
         for (var i in data.lista) {
-            var insumo = data.lista[i];
-
-            for (var j in insumo.lotes) {
-                var lote = insumo.lotes[j];
+            var movimiento = data.lista[i];
+            /* Este if es cuando mandan en la última posicion datos que no son del listado]
+            if(i == data.lista.length-1){
+                break;
+            }*/
                 dd.content[0].table.body.push([
-                    { text: lote.clave_insumo_medico, style: 'tableRow', alignment: 'center' },
-                    { text: insumo.detalles.descripcion, style: 'tableRow', alignment: 'center' },
-                    { text: lote.lote, style: 'tableRow', alignment: 'center' },
-                    { text: lote.fecha_caducidad, style: 'tableRow', alignment: 'center' },
-                    { text: lote.codigo_barras, style: 'tableRow', alignment: 'center' },
-                    { text: lote.modo_salida == 'N' ? lote.cantidad : "--", style: 'tableRow', alignment: 'center' },
-                    { text: lote.modo_salida == 'U' ? lote.cantidad : "--", style: 'tableRow', alignment: 'center' }
+                    { text: movimiento.clave_insumo_medico ? movimiento.clave_insumo_medico : 'No disponible' , style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.descripcion ? movimiento.descripcion : 'No disponible', style: 'tableRow', colSpan:2, alignment: 'center' },
+                    {},
+                    { text: movimiento.movimiento_metadato == null ? 'No disponible' : movimiento.movimiento_metadato.turno.nombre, style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.numero_claves == null || movimiento.numero_insumos == null ? 'No disponible' : 'Claves: ' + movimiento.numero_claves + '\n Insumos: ' + movimiento.numero_insumos, style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.movimiento_metadato == null ? 'No disponible' :  movimiento.movimiento_metadato.persona_recibe, style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.existencia == null ? 'No disponible' : movimiento.existencia, style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.existencia_unidosis  != null ? movimiento.existencia_unidosis : 'No disponible', style: 'tableRow', alignment: 'center' }
                 ]);
-            }
-
         }
-
-
-        dd.content[0].table.body.push(
-            // Footer
-            [
-                { text: "", style: 'tableHeader', colSpan: 7, alignment: 'center' },
-                '', '', '', '', '', ''
-            ],
-
-            // Firmas
-            [{
-                table: {
-                    widths: ['*', '*'],
-                    body: [
-                        [
-                            { text: '\n\n\n\n'+ data.datos.movimiento_metadato.persona_recibe, rowSpan: 2, style: 'tableRow' }, 
-                            { text: "Observaciones", style: 'text' }
-                        ],
-                        [
-                            '', 
-                            { text: '\n' + data.datos.observaciones, rowSpan: 2, alignment: 'justify' }
-                        ],
-                        ['Persona que recibe ', '']
-                    ],
-                },
-                layout: {
-                    hLineWidth: function(i, node) {
-                        if (i == 0 || i == 3) {
-                            return 0;
-                        }
-                        return 0.5;
-                    },
-                    vLineWidth: function(i, node) {
-                        if (i == 0 || i == 3) {
-                            return 0;
-                        }
-                        return 0.5;
-                    },
-                },
-                style: 'tableHeader',
-                margin: [0, 0, 0, 0],
-                colSpan: 7,
-                alignment: 'center',
-            }, {}, {}, {}, {}, {}, {}]
-        );
-
         pdfMake.createPdf(dd).getBase64(function(base64) {
-            postMessage({ fileName: 'Salida' + data.datos.id + '.pdf', base64: base64 });
+            postMessage({ fileName: 'Existencia_insumos_medicos.pdf', base64: base64 });
         });
     }
 

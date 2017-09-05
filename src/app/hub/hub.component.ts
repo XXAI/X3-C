@@ -32,13 +32,13 @@ export class HubComponent implements OnInit {
         'cE81erieaVjvmhcb9GCYI4doqYGtTcj1', // Ajuste menos
         '0oADIo1ltfAl4VMDVbyWgLR3rAhYGjlY', // Ajuste mas
         '7KbTARF2kpnO4Lfqv8hmYP8QGMcgJBwU', // Inicialización Inventario
-        'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
+        'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk--', // Ver pedidos
       ]
     },
     {
       title: 'Almacén artículos', routerLink: '/almacen-articulos', icono: 'assets/hub-almacen-articulos.svg',
       permisos: [
-         'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
+         'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk--', // Ver pedidos
         // 'cuSmlV9lvABXzfjtLbzEe0VbI47Dh6Cv', // Ver catálogos
       ]
     },

@@ -201,21 +201,28 @@ export class FormularioComponent implements OnInit {
               let month = ("0" + mes_actual).slice(-2);
               this.fechasValidas.push({fecha:now.getFullYear() + "-" + (month) + "-" + (day),descripcion: this.meses[mes_actual] + " " + now.getFullYear()}); //fecha actual
             }
-            //Mes siguiente
+
+            //Meses siguientes
+            let mes_inicio = mes_actual+1;
             let day = '01';
             let anio = now.getFullYear();
-            mes_actual += 1;
-            if(mes_actual == 13){
-              mes_actual = 1;
+
+            if(mes_inicio == 13){
+              mes_inicio = 1;
               anio = now.getFullYear()+1;
             }
-            let month = ("0" + (mes_actual)).slice(-2);
-            
-            if(mes_pedido == mes_actual && fecha_pedido[0] == anio){
-              this.fechasValidas.push({fecha:fecha_pedido[0] + "-" + fecha_pedido[1] + "-" + fecha_pedido[2], descripcion: this.meses[mes_pedido] + " " + fecha_pedido[0]}); //fecha siguiente
-            }else{
-              this.fechasValidas.push({fecha:anio + "-" + (month) + "-" + (day),descripcion: this.meses[mes_actual] + " " + anio}); //fecha siguiente
+
+            for(let mes = mes_inicio; mes <= 12; mes++){
+              
+              let month = ("0" + (mes)).slice(-2);
+              
+              if(mes_pedido == mes && fecha_pedido[0] == anio){
+                this.fechasValidas.push({fecha:fecha_pedido[0] + "-" + fecha_pedido[1] + "-" + fecha_pedido[2], descripcion: this.meses[mes_pedido] + " " + fecha_pedido[0]}); //fecha siguiente
+              }else{
+                this.fechasValidas.push({fecha:anio + "-" + (month) + "-" + (day),descripcion: this.meses[mes] + " " + anio}); //fecha siguiente
+              }
             }
+            
 
             //Harima:cargamos presupuesto apartado, en caso de que el pedido se este editando despues de tener recepciones
             if(pedido.presupuesto_apartado){
@@ -315,17 +322,21 @@ export class FormularioComponent implements OnInit {
           let month = ("0" + mes).slice(-2);
           this.fechasValidas.push({fecha:now.getFullYear() + "-" + (month) + "-" + (day),descripcion: this.meses[mes] + " " + now.getFullYear()}); //fecha actual
         }
-        //Mes siguiente
+
+        //Meses siguientes
+        let mes_inicio = mes+1;
         let day = '01';
-        let month = ("0" + (mes+1)).slice(-2);
         let anio = now.getFullYear();
 
-        if(mes+1 == 13){
-          let month = '01';
-          let anio = now.getFullYear() + 1;
-          mes = 0;
+        if(mes_inicio == 13){
+          mes_inicio = 1;
+          anio = now.getFullYear()+1;
         }
-        this.fechasValidas.push({fecha:anio + "-" + (month) + "-" + (day),descripcion: this.meses[mes+1] + " " + now.getFullYear()}); //fecha actual
+        
+        for(let mes = mes_inicio; mes <= 12; mes++){
+          let month = ("0" + (mes)).slice(-2);
+          this.fechasValidas.push({fecha:anio + "-" + (month) + "-" + (day),descripcion: this.meses[mes] + " " + anio}); //fecha siguiente
+        }
 
         this.title.setTitle('Nuevo pedido');
         this.cargarPresupuesto();

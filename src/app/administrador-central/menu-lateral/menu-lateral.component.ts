@@ -48,8 +48,8 @@ export class MenuLateralComponent implements OnInit {
       {
         titulo: 'Pedidos alternos',
         modulos: [
-          { permiso: 'r1RX6Yq7fc4CRRI2OJXIPxeBLW3lFP59', icono: 'fa-check-square-o', titulo:"Validación de pedidos alternos", url:"/administrador-central/validacion-pedidos-alternos" },
-          { permiso: 'r1RX6Yq7fc4CRRI2OJXIPxeBLW3lFP59', icono: 'fa-hand-pointer-o', titulo:"Asignación de proveedores a pedidos alternos", url:"/administrador-central/asignacion-proveedores-pedidos-alternos" },
+          { permiso: 'oOrwXshMO4AItMZ3KZ1E7hQRtPS4Ubwp', icono: 'fa-check-square-o', titulo:"Validación de pedidos alternos", url:"/administrador-central/validacion-pedidos-alternos" },
+          { permiso: 'GEapnHhN0NtgZN6CVvfMAooY5lGEfChJ', icono: 'fa-hand-pointer-o', titulo:"Asignación de proveedores a pedidos alternos", url:"/administrador-central/asignacion-proveedores-pedidos-alternos" },
         ]
       }
       
