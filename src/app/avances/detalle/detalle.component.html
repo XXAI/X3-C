@@ -41,13 +41,38 @@
                     </div>
                 </div>
             </section>
+            
+            <div class="tabs is-boxed">
+              <ul>
+                <li [ngClass]="{'is-active': show_actual}" (click)='tab(1)'>
+                  <a>
+                    <span class="icon is-small"><i class="fa fa-check-circle"></i></span>
+                    <span>Ultima Actualización</span>
+                  </a>
+                </li>
+                <li [ngClass]="{'is-active': show_historico}"  (click)='tab(2)'>
+                  <a>
+                    <span class="icon is-small"><i class="fa fa-history"></i></span>
+                    <span>Historico</span>
+                    <span class="tag is-success">
+                      {{ datos_avance.historial }}
+                    </span>
+                  </a>
+                </li>
+                
+              </ul>
+            </div>
+            <div>
+              <div class="notification">
+                TEMA <strong>{{ datos_avance.tema | uppercase}}</strong>.
+              </div>
+            </div>
             <div class="is-fullwidth has-text-centered" *ngIf="cargando">
                 <br>
                 <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
                 <br>
                 <br>
             </div>
-        
             <table class="table" *ngIf="!cargando">
                 <thead>
                     <tr>

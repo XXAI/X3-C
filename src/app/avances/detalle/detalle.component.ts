@@ -33,6 +33,8 @@ export class DetalleComponent implements OnInit {
   	
     cargando: boolean = false;
     showAgregarAvance: boolean = false;
+    show_actual: boolean = true;
+    show_historico: boolean = false;
     privilegio_usuario: boolean = false;
     avance: FormGroup;
     usuario_form: FormGroup;
@@ -43,7 +45,8 @@ export class DetalleComponent implements OnInit {
 	mensajeExito: Mensaje = new Mensaje();
 	ultimaPeticion:any;
 	id_avance_detalle:string = "0";
-	id_avance:string;
+  id_avance:string;
+	id_tab:number = 1;
 	// # FIN SECCION
 
 	// # SECCION: Lista de pacinetes
@@ -55,7 +58,8 @@ export class DetalleComponent implements OnInit {
 
   detalles: Detalle[] = [];
   usuarios:any = [];
-	usuarios_privilegios:any = [];
+  usuarios_privilegios:any = [];
+	datos_avance:any = {};
 	// # FIN SECCION
 	
 	// # SECCION: Resultados de búsqueda
@@ -111,7 +115,7 @@ export class DetalleComponent implements OnInit {
 	      this.id_avance = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number
 	    });
 
-	    this.listar(1);
+	    this.listar(1, this.id_tab);
 	    this.cargar_usuarios();
 
 	    var busquedaSubject = this.terminosBusqueda
@@ -124,7 +128,7 @@ export class DetalleComponent implements OnInit {
 	      this.ultimoTerminoBuscado = term;
 	      this.paginaActualBusqueda = 1;
 	      this.cargando = true;
-	      return term  ? this.avanceService.buscar_detalle(this.id_avance, term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]}) 
+	      return term  ? this.avanceService.buscar_detalle(this.id_avance, this.id_tab, term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]}) 
 	    }
 	      
 	    
@@ -281,17 +285,20 @@ export class DetalleComponent implements OnInit {
         );
   }
 
-  listar(pagina:number): void {
+  listar(pagina:number, tipo_lista:number): void {
     this.paginaActual = pagina;
     
     this.cargando = true;
     
-    this.avanceService.lista_detalles(this.id_avance, pagina,this.resultadosPorPagina).subscribe(
+    this.avanceService.lista_detalles(this.id_avance, tipo_lista, pagina,this.resultadosPorPagina).subscribe(
         resultado => {
 
           this.cargando = false;
-          this.detalles = resultado.data as Detalle[];
+          this.detalles = resultado.registros.data as Detalle[];
 
+          this.datos_avance.tema = resultado.datos_tema.tema;
+          console.log(resultado);
+          this.datos_avance.historial = resultado.historial;
           this.total = resultado.total | 0;
           this.paginasTotales = Math.ceil(this.total / this.resultadosPorPagina);
 
@@ -332,7 +339,7 @@ export class DetalleComponent implements OnInit {
     this.paginaActualBusqueda = pagina;
 
     this.cargando = true;
-    this.avanceService.buscar_detalle(this.id_avance, term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
+    this.avanceService.buscar_detalle(this.id_avance, this.id_tab, term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
         resultado => {
           console.log(resultado);
           this.cargando = false;
@@ -409,7 +416,7 @@ export class DetalleComponent implements OnInit {
                  self.mensajeExito = new Mensaje(true);
                   self.mensajeExito.mostrar = true;
                   self.mensajeExito.texto = "Se  guardo correctamente el avance";
-                 self.listar(1);
+                 self.listar(1, self.id_tab);
                  self.showAgregarAvance = !self.showAgregarAvance;
                  self.avance.patchValue({porcentaje:"", comentario:"",archivo:""});
               }
@@ -446,7 +453,7 @@ export class DetalleComponent implements OnInit {
         this.avanceService.eliminar(id).subscribe(
         resultado => {
           this.cargando = false;
-          this.listar(1);
+          this.listar(1, this.id_tab);
           this.mensajeExito = new Mensaje(true);
           this.mensajeExito.mostrar = true;
           this.mensajeExito.texto = "Se ha eliminado satisfactoriamente el avance";
@@ -537,15 +544,31 @@ export class DetalleComponent implements OnInit {
     }, 1000);*/
   }
 
+  tab(id:number)
+  {
+    if(id == 1){
+      this.show_actual = true;
+      this.show_historico = false;
+      this.id_tab = 1;
+    }
+    else if(id == 2){
+      this.show_actual = false;
+      this.show_historico = true;
+      this.id_tab = 2;
+    }
+
+     this.listar(1, this.id_tab);
+  }
+
  	regresar(){
     this.location.back();
   }
 
-    paginaSiguiente():void {
-	    this.listar(this.paginaActual+1);
+  paginaSiguiente():void {
+	    this.listar(this.paginaActual+1, this.id_tab);
 	}
 	paginaAnterior():void {
-	    this.listar(this.paginaActual-1);
+	    this.listar(this.paginaActual-1, this.id_tab);
 	}
 
 	paginaSiguienteBusqueda(term:string):void {
