@@ -67,7 +67,6 @@
                             	<span class="icon"><i class="fa fa-eye"></i></span>
                             </button>
                         </td>    
-                        <!--<th style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'><a>{{ item.nombre }}.{{ item.extension }}</a></th>-->
                         <td style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'>
                             <div class="tags has-addons">
                               <span class="tag">{{ item.nombre }}.{{ item.extension }}</span>
@@ -92,8 +91,7 @@
                             </button>
                             
                         </td>
-                        <td style="vertical-align: middle;" class="has-text-centered" *ngIf="item.deleted_at"></td>
-                        <td style="vertical-align: middle;" class="has-text-centered" *ngIf="item.deleted_at">
+                        <td style="vertical-align: middle;" class="has-text-centered" colspan="2" *ngIf="item.deleted_at">
                             <span class="tag is-danger is-large">
                               {{ item.deleted_at }}
                               <button class="delete"></button>
@@ -138,8 +136,7 @@
                             </button>
                             
                         </td>
-                        <td style="vertical-align: middle;" class="has-text-centered" *ngIf="item.deleted_at"></td>
-                        <td style="vertical-align: middle;" class="has-text-centered" *ngIf="item.deleted_at">
+                        <td style="vertical-align: middle;" class="has-text-centered" colspan="2" *ngIf="item.deleted_at">
                             <span class="tag is-danger is-large">
                               {{ item.deleted_at }}
                               <button class="delete"></button>
