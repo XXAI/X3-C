@@ -253,8 +253,11 @@
                                 <p class="level-item"><a class="button is-primary" (click)="ctrl.regresar()">Regresar</a></p>
                                 <p class="level-item" *ngIf="tieneid"><a class="button is-primary" routerLink="/almacen/salidas-recetas/nuevo" *ngIf="!ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva receta</span></a></p>
                                 <p class="level-item" *ngIf="tieneid"><a *ngIf="tieneid" class="button is-primary" (click)="imprimir()"><span class="icon"><i class="fa fa-print"></i></span></a></p>
-                                <p class="level-item" *ngIf="!tieneid">
+                                <!-- <p class="level-item" *ngIf="!tieneid">
                                         <button class="button is-primary" type="submit" [ngClass]="{'is-loading': ctrl.cargando}" [disabled]="ctrl.dato.invalid"> <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar</button>
+                                </p> -->
+                                <p class="level-item" *ngIf="!tieneid">
+                                    <button class="button is-primary" type="submit" [ngClass]="{'is-loading': ctrl.cargando}" (click)="guardar_movimiento()" [disabled]="ctrl.dato.invalid"> <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar</button>
                                 </p>
                                 <p class="level-item"><a class="button is-primary" title="Actualizar" (click)="ctrl.cargarDatos(dato);"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
                                 <p class="level-item">&nbsp;</p>
@@ -457,6 +460,26 @@
             <a class="button is-dark" (click)="agregarNuevoLote()">Agregar nuevo lote</a>                            
             <a class="button is-success" [ngClass]="{'is-disabled':!sum_cant_lotes}"  (click)="agregarLoteIsumo()">Aceptar</a>
             <a class="button" (click)="cancelarModal('verLotes')">Cancelar</a>
+        </footer>
+    </div>
+</div>
+
+<div class="modal" id="guardarMovimiento">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title"><i class="fa fa-warning"></i> Alerta</p>
+            <button class="delete" (click)="cancelarModal('guardarMovimiento')"></button>
+        </header>
+        <section class="modal-card-body">
+            <div class="content">
+                <h1>¿Esta seguro de guardar la receta?</h1>
+                <p>Ya no se podrá realizar cambios</p>
+            </div>
+        </section>
+        <footer class="modal-card-foot">
+            <a class="button is-success" (click)="ctrl.enviar(); cancelarModal('guardarMovimiento')">Continuar</a>
+            <a class="button" (click)="cancelarModal('guardarMovimiento')">Cancelar</a>
         </footer>
     </div>
 </div>

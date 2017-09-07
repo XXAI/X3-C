@@ -165,14 +165,12 @@
                                 <p class="level-item"><a class="button is-primary" title="Actualizar" (click)="ctrl.cargarDatos();"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
                                 <p class="level-item">&nbsp;</p>
                             </div>
-                        </nav>
-                        
+                        </nav>                        
                         <div class="container is-fluid">
                             <h1 class="title">
                                 <span *ngIf="!ctrl.cargando || !cargando" class="icon is-medium"><i class="fa fa-edit"></i></span>
                                 <span *ngIf="ctrl.cargando || cargando" class="icon is-medium"><i class="fa fa-refresh fa-spin"></i></span>                                Insumos
                             </h1>
-
                         </div>
                     </div>
                 </section>
@@ -181,26 +179,20 @@
                     <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>                    &nbsp;<span>Cargando...</span></span>
                 </div>
                 <section class="section">
-
                     <div class="field has-addons has-addons-centered" *ngIf="!tieneid">
-
                         <p class="control">
                             <input ngui-auto-complete [source]="insumos_term" [list-formatter]="autocompleListFormatter" id="buscarInsumo" value-property-name="clave"
                                 display-property-name="descripcion" path-to-data="" loading-text="Cargando..." no-match-found-text="No hay resultados."
                                 (valueChanged)="select_insumo_autocomplete($event)" min-chars="1" class="input is-success is-medium"
                                 type="text" placeholder="Escanea el codigo de barra, o empieza escribir el nombre del producto" >
-
                         </p>
-
                         <hr>
                     </div>
-
                     <div formArrayName="insumos_negados">
                         <div class="box" *ngFor="let item of ctrl.dato.controls.insumos_negados.controls; let i=index" [ngStyle]="{'background': i%2 == 0 ? 'rgba(231, 242, 22, 0.4)' :  'rgba(231, 242, 22, 0.4)'}">
                             <article class="media" [formGroupName]="i">
                                 <div class="media-content">
                                     <div class="content">
-                                       
                                         <p>
                                             <strong>
                                                 <span style="color: red"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span>
@@ -273,7 +265,7 @@
                                 <div class="media-content">
                                     <div class="content">
                                         <span style="float:right; padding-left: 15px;" >
-                                            <a *ngIf="!tieneid" class="button is-danger" title="Quitar este elemento de la lista" (click)="ctrl.quitar_form_array(ctrl.dato.controls.insumos,i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
+                                            <a *ngIf="!tieneid" class="button is-danger" title="Quitar este elemento de la lista" (click)="abrirModal('borrarInsumo', i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
                                         </span>
                                         <a *ngIf="!tieneid" class="button is-success" title="Agregar más lotes de este insumo" style="float:right" (click)="select_insumo_autocomplete(item.value)"><span class="icon"><i class="fa fa-plus-circle" aria-hidden="true"></i></span> </a>
                                                                                 
@@ -322,9 +314,9 @@
                                                     <td *ngIf="ctrl.dato.controls.insumos.controls[i].controls.modo_salida.value == 'N'">{{val.value.existencia}}</td>
                                                     <td *ngIf="ctrl.dato.controls.insumos.controls[i].controls.modo_salida.value == 'U'">{{val.value.existencia_unidosis}}</td>
                                                     <td [formGroupName]="i2">
-                                                        <input  *ngIf="val.value.modo_salida == 'N'" class="input has-text-centered" (blur)="validar_cantidad_lote(i, val, i2, modo)" type="number" step="1" min="0" max="{{val.value.existencia}}"
+                                                        <input  *ngIf="val.value.modo_salida == 'N'" [ngClass]="{'is-disabled': tieneid}" class="input has-text-centered" (blur)="validar_cantidad_lote(i, val, i2, modo)" type="number" step="1" min="0" max="{{val.value.existencia}}"
                                                             placeholder="Cantidad" formControlName="cantidad">
-                                                        <input  *ngIf="val.value.modo_salida == 'U'" class="input has-text-centered" (blur)="validar_cantidad_lote(i, val, i2, modo)" type="number" step="1" min="0" max="{{val.value.existencia_unidosis}}"
+                                                        <input  *ngIf="val.value.modo_salida == 'U'" [ngClass]="{'is-disabled': tieneid}" class="input has-text-centered" (blur)="validar_cantidad_lote(i, val, i2, modo)" type="number" step="1" min="0" max="{{val.value.existencia_unidosis}}"
                                                             placeholder="Cantidad unidosis" formControlName="cantidad"></td>
                                                     <td *ngIf="!tieneid">
                                                         <a class="is-danger" title="Quitar este lote" (click)="quitar_lote_insumo(i, val.value, i2)">
@@ -523,6 +515,26 @@
         <footer class="modal-card-foot">
             <a class="button is-success" (click)="ctrl.enviar(); cancelarModal('guardarMovimiento')">Continuar</a>
             <a class="button" (click)="cancelarModal('guardarMovimiento')">Cancelar</a>
+        </footer>
+    </div>
+</div>
+
+<div class="modal" id="borrarInsumo">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title"><i class="fa fa-warning"></i> Alerta</p>
+            <button class="delete" (click)="cancelarModal('borrarInsumo')"></button>
+        </header>
+        <section class="modal-card-body">
+            <div class="content">
+                <h1>¿Esta seguro de eliminar el insumo?</h1>
+                <p>Se borrarán todos los lotes del insumo que se hayan agregado.</p>
+            </div>
+        </section>
+        <footer class="modal-card-foot">
+            <a class="button is-success" (click)="ctrl.quitar_form_array(ctrl.dato.controls.insumos, index_borrar); cancelarModal('borrarInsumo');">Continuar</a>
+            <a class="button" (click)="cancelarModal('borrarInsumo')">Cancelar</a>
         </footer>
     </div>
 </div>

@@ -1,13 +1,34 @@
 <listar #ctrl URL="inventario?buscar_en={{buscar_en}}&seleccionar={{seleccionar}}&tipo={{tipo}}" titulo="Inventario"></listar>
 <app-menu-inventario [modulo]="'Existencia de insumos médicos'" [icono]="'assets/icono-salidas.svg'" [url]="'/inventario'"></app-menu-inventario>
 <div style="height:50px;"></div>
-<div class="contenedor columns " style="height:80%; ">
+<div class="contenedor columns " style="height:80%;">
     <div class="column" style="padding:2em;">
         <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
             <section class="hero" [ngClass]=" {'is-dark': ctrl.busquedaActivada, 'is-primary': !ctrl.busquedaActivada } ">
 
                 <div class="hero-body" style="position:relative;">
                      <nav class="level">
+                        <div class="level-left">
+                            <div class="level-item is-hidden-desktop">
+                                <h1 class="title" *ngIf="!ctrl.busquedaActivada">
+                                    <span class="icon is-medium"><i class="fa fa-user"></i></span> Inventario
+                                </h1>
+                            </div>
+                        </div>
+                        <!-- Right side -->
+                        <div class="level-right">
+                            <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" (click)="ctrl.busquedaActivada=false;searchBox.value=''; ctrl.resultadosBusqueda=[]"><span class="icon "><i class="fa fa-close"></i></span></a></p>
+                            <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="Actualizar" (click)="ctrl.listarBusqueda(searchBox.value,1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
+                            <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="Actualizar" (click)="ctrl.listar(1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
+                            
+                            <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="PDF" (click)="dato = ctrl.dato; imprimir()"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
+                            <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="PDF" (click)="dato = ctrl.dato; imprimir()"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
+                            <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="Excel" (click)="export_excel()"><span class="icon "><i class="fa fa-file-excel-o"></i></span></a></p>
+                            <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="Excel" (click)="export_excel()"><span class="icon "><i class="fa fa-file-excel-o"></i></span></a></p>
+                            <p class="level-item">&nbsp;</p>
+                        </div>
+                    </nav>
+                    <nav class="level">
                         <div class="level-left">
                             <p class="level-item">&nbsp;</p>
                             <p class="level-item b-checkbox is-info is-circular">
@@ -52,35 +73,7 @@
                                 <button class="button is-medium" (click)="ctrl.listar(1)"><span class="icon"><i class="fa fa-filter"></i></span> <span>Filtrar</span></button>
                             </p> 
                         </div>
-                        <!-- Right side -->
-                        <div class="level-right">
-                            <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" (click)="ctrl.busquedaActivada=false;searchBox.value=''; ctrl.resultadosBusqueda=[]"><span class="icon "><i class="fa fa-close"></i></span></a></p>
-                            <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="Actualizar" (click)="ctrl.listarBusqueda(searchBox.value,1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
-                            <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="Actualizar" (click)="ctrl.listar(1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
-                            
-                            <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="PDF" (click)="dato = ctrl.dato; imprimir()"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
-                            <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="PDF" (click)="dato = ctrl.dato; imprimir()"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
-                            <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="Excel" (click)="export_excel()"><span class="icon "><i class="fa fa-file-excel-o"></i></span></a></p>
-                            <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="Excel" (click)="export_excel()"><span class="icon "><i class="fa fa-file-excel-o"></i></span></a></p>
-                            <p class="level-item">&nbsp;</p>
-                        </div>
                     </nav>
-                    <div class="container is-fluid">
-                        <span></span>
-                        <div class="is-hidden-desktop">
-                            <h1 class="title" *ngIf="!ctrl.busquedaActivada">
-                                <span class="icon is-medium"><i class="fa fa-user"></i></span> Inventario
-                            </h1>
-                        </div>
-                        <h1 class="title" *ngIf="ctrl.busquedaActivada">
-                            <span class="icon is-medium"><i class="fa fa-search"></i></span> Búsqueda
-                        </h1>
-                        <div class="control is-grouped">
-                            <p class="control is-expanded">
-                                <input class="input is-medium" type="text" placeholder="Buscar" #searchBox id="search-box" (keyup)="ctrl.buscar(searchBox.value)">
-                            </p>
-                        </div>
-                    </div>
                 </div>
             </section>
             <div class="is-fullwidth has-text-centered" *ngIf="ctrl.cargando">
@@ -90,7 +83,7 @@
                 <br>
             </div>
             <span id="exportable">
-                <div style="overflow: scroll; overflow-x: hidden; height: 650px;">
+                <div style="overflow: scroll; overflow-x: hidden; height: 630px;">
                     <table class="table" *ngIf="!ctrl.cargando" style="min-width:100%; font-size:1.2em;">
                         <thead>
                             <tr>

@@ -33,6 +33,7 @@ export class FormularioComponent {
   array_turnos;
   array_servicios;
   sum_cant_lotes = false;
+  index_borrar;
 
   // Máscara para validar la entrada de la fecha de caducidad
   mask = [/[2]/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/];
@@ -167,7 +168,10 @@ export class FormularioComponent {
      * @param id identificador del elemento de la modal
      * @return void
      */
-  abrirModal(id) {
+  abrirModal(id, index?) {
+    if (index) {
+      this.index_borrar = index;
+    }
     document.getElementById(id).classList.add('is-active');
   }
 
@@ -178,6 +182,10 @@ export class FormularioComponent {
      */
   cancelarModal(id) {
     document.getElementById(id).classList.remove('is-active');
+    if (id  === 'verLotes') {
+      this.cantidad_solicitadaBoxViewChildren.first.nativeElement.value = '';
+      this.cantidad_solicitadaBoxViewChildren.first.nativeElement.focus();
+    }
   }
   lotes_insumo;
   /**

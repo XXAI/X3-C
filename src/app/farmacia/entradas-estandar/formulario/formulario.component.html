@@ -32,7 +32,7 @@
 
 
                                 <input class="input" [value]="fecha_actual" [(ngModel)]='fecha_movimiento' formControlName="fecha_movimiento" ngui-datetime-picker
-                                    [min-date]="MinDate" [max-date]="MaxDate" date-only="true" [ngClass]="{'is-danger': ctrl.dato.get('fecha_movimiento').hasError('required') && ctrl.dato.get('fecha_movimiento').touched}"
+                                    [min-date]="MinDate" [max-date]="MaxDate" date-only="true" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('fecha_movimiento').hasError('required') && ctrl.dato.get('fecha_movimiento').touched}"
                                     placeholder="YYYY-MM-DD" />
 
                                 <span class="icon is-small" *ngIf="ctrl.dato.get('fecha_movimiento').hasError('required') && ctrl.dato.get('fecha_movimiento').touched">
@@ -45,7 +45,7 @@
                         <div class="field">
                             <label class="label">Observaciones:</label>
                             <p class="control is-expanded  has-icon has-icon-right">
-                                <textarea class="textarea" type="text" [ngClass]="{'is-danger': ctrl.dato.get('observaciones').hasError('required') && ctrl.dato.get('observaciones').touched}"
+                                <textarea class="textarea" type="text" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('observaciones').hasError('required') && ctrl.dato.get('observaciones').touched}"
                                     placeholder="Observaciones" formControlName="observaciones"></textarea>
                                 <span class="icon is-small" *ngIf="ctrl.dato.get('observaciones').hasError('required') && ctrl.dato.get('observaciones').touched">
                                     <i class="fa fa-warning"></i>
@@ -88,7 +88,7 @@
                             <div class="field">
                                 <label class="label">Persona que recibe:</label>
                                 <p class="control is-expanded  has-icon has-icon-right">
-                                    <input class="input" type="text" [ngClass]="{'is-danger': ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required') && ctrl.dato.get('movimiento_metadato').get('persona_recibe').touched}"
+                                    <input class="input" type="text" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required') && ctrl.dato.get('movimiento_metadato').get('persona_recibe').touched}"
                                         placeholder="Persona que recibe" formControlName="persona_recibe">
                                     <span class="icon is-small" *ngIf="ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required') && ctrl.dato.get('movimiento_metadato').get('persona_recibe').touched">
                                         <i class="fa fa-warning"></i>
@@ -121,7 +121,9 @@
                                 </p>
                                 -->
                                 <p class="level-item" *ngIf="!tieneid">
-                                    <button class="button is-primary" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="guardar_movimiento()" [disabled]="ctrl.dato.invalid"> <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar</button>
+                                    <button class="button is-primary" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="guardar_movimiento()" [disabled]="ctrl.dato.invalid">
+                                        <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar
+                                    </button>
                                 </p>
                                 <p class="level-item"><a class="button is-primary" title="Actualizar" (click)="ctrl.cargarDatos();"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
                                 <p class="level-item">&nbsp;</p>
@@ -155,18 +157,21 @@
                         <hr>
                     </div>
 
-                    <div formArrayName="insumos">
+                    <div formArrayName="insumos" style="overflow: scroll; overflow-x: hidden; height: 550px;">
                         <div class="box" *ngFor="let item of ctrl.dato.controls.insumos.controls; let i=index" [ngStyle]="{'background': i%2 == 0 ? 'rgba(230, 230, 232, 0.44)' : ''}">
                             <article class="media" [formGroupName]="i">
                                 <div class="media-content">
                                     <div class="content">
-                                        <a *ngIf="!tieneid" class="is-danger" title="Quitar este elemento de la lista" style="float:right" (click)="ctrl.quitar_form_array(ctrl.dato.controls.insumos,i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
+                                        <span style="float:right; padding-left: 15px;" >
+                                            <a *ngIf="!tieneid" class="button is-danger" title="Quitar este elemento de la lista" (click)="abrirModal('borrarInsumo', i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
+                                        </span>
+                                        <a *ngIf="!tieneid" class="button is-success" title="Agregar más insumos de esta clave" style="float:right" (click)="select_insumo_autocomplete(item.value)"><span class="icon"><i class="fa fa-plus-circle" aria-hidden="true"></i></span> </a>
                                         <p>
                                             <strong>
                                                 <span style="color:cornflowerblue">
                                                     Clave: {{ ctrl.dato.controls.insumos.controls[i].controls.clave.value }} 
                                                 </span>
-                                                Nombre: {{ctrl.dato.controls.insumos.controls[i].controls.nombre.value}}
+                                                Nombre: {{ctrl.dato.controls.insumos.controls[i].controls.descripcion.value}}
                                             
                                                 <label class="tag is-success" *ngIf="ctrl.dato.controls.insumos.controls[i].controls.es_causes.value == 1"><strong>Cause </strong></label>
                                                 <label class="tag is-success" *ngIf="ctrl.dato.controls.insumos.controls[i].controls.es_causes.value == 0"><strong>No Cause </strong> </label>                                           
@@ -228,7 +233,7 @@
                                                             [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.hasError('required') 
                                                             && ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.touched}">
 -->
-                                                        <input class="input" formControlName="fecha_caducidad" (blur)="validar_fecha(ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.value)"
+                                                        <input class="input" formControlName="fecha_caducidad" (blur)="validar_fecha(ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.value, i)"
                                                             min="MinDateCaducidad" date-only="true" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.touched}"
                                                             placeholder="YYYY-MM-DD" [textMask]="{mask:mask, keepCharPositions: true, pipe: autoCorrectedDatePipe}"/>
                                                 </p>
@@ -274,6 +279,27 @@
         <footer class="modal-card-foot">
             <a class="button is-success" (click)="ctrl.enviar(); cancelarModal('guardarMovimiento')">Continuar</a>
             <a class="button" (click)="cancelarModal('guardarMovimiento')">Cancelar</a>
+        </footer>
+    </div>
+</div>
+
+
+<div class="modal" id="borrarInsumo">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title"><i class="fa fa-warning"></i> Alerta</p>
+            <button class="delete" (click)="cancelarModal('borrarInsumo')"></button>
+        </header>
+        <section class="modal-card-body">
+            <div class="content">
+                <h1>¿Esta seguro de eliminar el insumo? {{i}}</h1>
+                <p>Se borrarán todos los lotes del insumo que se hayan agregado.</p>
+            </div>
+        </section>
+        <footer class="modal-card-foot">
+            <a class="button is-success" (click)="ctrl.quitar_form_array(ctrl.dato.controls.insumos, index_borrar); cancelarModal('borrarInsumo')">Continuar</a>
+            <a class="button" (click)="cancelarModal('borrarInsumo')">Cancelar</a>
         </footer>
     </div>
 </div>

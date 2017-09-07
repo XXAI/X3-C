@@ -52,7 +52,7 @@ export class FormularioComponent {
 
   // Crear la variable que mustra las notificaciones
   mensajeResponse: Mensaje = new Mensaje();
-  titulo= 'Ajuste menos de inventario';
+  titulo= 'Ajuste más de inventario';
 
   // mostrar notificaciones configuracion default, posicion abajo izquierda, tiempo 2 segundos
   public options = {
@@ -60,6 +60,13 @@ export class FormularioComponent {
     timeOut: 2000,
     lastOnBottom: true
   };
+
+  objeto = {
+            showProgressBar: true,
+            pauseOnHover: false,
+            clickToClose: true,
+            maxLength: this.mensajeResponse.texto.length
+        };
 
   constructor(
     private fb: FormBuilder,
@@ -435,7 +442,7 @@ export class FormularioComponent {
 
     // recorrer la tabla de lotes del modal para obtener la cantidad
     for (let item of this.lotes_insumo) {
-      if (item.cantidad <= item.existencia) {
+      if (item.cantidad <= item.existencia && item.cantidad !== null) {
         existencia_minima_lote = false;
         if (!existe) {
           control.removeAt(control.length - 1);
@@ -445,7 +452,8 @@ export class FormularioComponent {
     if (existencia_minima_lote) {
       this.agregarLoteIsumo();
     }else {
-      this.mensajeResponse.texto = 'Verificar las cantidades ingresadas';
+      this.mensajeResponse.titulo = 'Ajuste MÁS';
+      this.mensajeResponse.texto = 'Verificar que las cantidades ingresadas sean mayor a la existencia del lote.';
       this.mensajeResponse.clase = 'warning';
       this.mensaje(8);
     }
@@ -519,6 +527,9 @@ export class FormularioComponent {
         let cantidad_lote = Number(val.controls.existencia.value) + 1;
         val.controls.cantidad.patchValue(cantidad_lote);
         val.controls.nueva_existencia.patchValue(cantidad_lote);
+      } else {
+        val.controls.cantidad.patchValue(val.controls.cantidad.value);
+        val.controls.nueva_existencia.patchValue(val.controls.cantidad.value);
       }
     }
     // sumamos las cantidades de los lotes
@@ -566,7 +577,22 @@ export class FormularioComponent {
   }
 
   guardar_movimiento() {
-    document.getElementById('guardarMovimiento').classList.add('is-active');
+    // document.getElementById('guardarMovimiento').classList.add('is-active');
+    const control = <FormArray>this.dato.controls['insumos'];
+    let valido = true;
+    for (let item of control.value){
+      for (let lote of item.lotes){
+        console.log(lote.cantidad);
+        if (lote.cantidad == null) {
+          valido = false;
+        }
+      }
+    }
+    if (valido) {
+      document.getElementById('guardarMovimiento').classList.add('is-active');
+    }else {
+      this.notificacion.alert('Cantidad Inválida', 'Hay campos vacíos. Verifique las cantidades ingresadas.', this.objeto);
+    }
   }
 
   imprimir() {
