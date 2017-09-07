@@ -1,7 +1,7 @@
-<listar #ctrl URL="movimientos?tipo=5" titulo="Salida Receta"></listar>
+<listar #ctrl URL="movimientos?tipo=5&fecha_desde={{fecha_desde}}&fecha_hasta={{fecha_hasta}}&turno={{turno}}" titulo="Salida Receta"></listar>
 <menu-farmacia [modulo]="'Salidas por recetas'" [icono]="'assets/icono-salidas.svg'" [url]="'/almacen/salidas-recetas'"></menu-farmacia>
 <div style="height:50px;"></div>
-<div class="contenedor columns " style="height:100%; ">
+<div class="contenedor columns " style="height:85%; ">
     <div class="column" style="padding:2em;">
         <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
             <section class="hero" [ngClass]=" {'is-dark': ctrl.busquedaActivada, 'is-primary': !ctrl.busquedaActivada } ">
@@ -35,9 +35,45 @@
                             <span class="icon is-medium"><i class="fa fa-search"></i></span> Búsqueda
                         </h1>
                         <div class="control is-grouped">
-                            <p class="control is-expanded">
-                                <input class="input is-medium" type="text" placeholder="Buscar" #searchBox id="search-box" (keyup)="ctrl.buscar(searchBox.value)">
-                            </p>
+                            <div class="control">
+                                <div class="field">   
+                                    <label class="label">Desde:</label>                         
+                                    <input  style="width: 150px;" class="input is-medium" [(ngModel)]='fecha_desde' ngui-datetime-picker date-only="true" placeholder="YYYY-MM-DD" />
+                                </div>
+                            </div>
+                            <div class="control is-expanded" >
+                                <div class="field">   
+                                    <label class="label">Hasta:</label>                         
+                                    <input style="width: 150px;" class="input is-medium" [(ngModel)]='fecha_hasta' ngui-datetime-picker date-only="true" placeholder="YYYY-MM-DD" />
+                                </div>
+                            </div>
+                            <!-- /*******************************************/ -->
+                            <div class="control is-expanded" *ngIf="!ctrl.cargando">                                
+                                <div class="field">
+                                    <label class="label">Turno:</label>
+                                    <div class="select is-medium">
+                                        <select *ngIf="ctrl.dato" class="select is-medium" [(ngModel)]="turno" #tr>
+                                            <option value="">Todos</option>
+                                            <option *ngFor="let val of ctrl.dato[ctrl.dato.length-1].turnos_disponibles" value="{{val.id}}" >{{ val.nombre }}</option>
+                                        </select>
+                                        <select *ngIf="!ctrl.dato"  class="select is-medium" [(ngModel)]="turno" #tr>
+                                            <option value="">Todos</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="control">
+                                <div class="field">  
+                                <label class="label">&nbsp;</label>
+                                <button class="button is-default is-medium" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="turno=''; fecha_desde=''; fecha_hasta='';" >Limpiar</button>
+                                </div>
+                            </div>
+                            <div class="control">
+                                <div class="field">  
+                                <label class="label">&nbsp;</label>
+                                <button class="button is-info is-medium" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="ctrl.listar(1)" >Filtrar</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -50,47 +86,49 @@
             </div>
 
             <span id="exportable">
-                <table class="table is-responsive" *ngIf="!ctrl.cargando">
-                    <thead>
-                        <tr>
-                            <th><abbr title="Folio de receta">Folio</abbr></th>
-                            <th>Turno</th>
-                            <th>Usuario</th>
-                            <th>Estatus</th>
-                            <th style=" text-align: center;">Creado</th>
-                            <th style=" text-align: center;">Actualizado</th>
-                        </tr>
-                    </thead>
-                    <tbody *ngIf="!ctrl.busquedaActivada && ctrl.dato;">
-                        <tr *ngFor="let item of ctrl.dato; let i=index">
-                            <th *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.id }}</a></th>
-                            <td *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.movimiento_metadato.turno.nombre }} </a></td>
-                            <td *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle;"><a routerLink="/almacen/salidas-estandar/ver/{{item.id}}">{{ item.movimiento_usuario.nombre }} {{ item.movimiento_usuario.apellidos }} </a></td>
-                            <td *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.status }} </a></td>
-                            <td *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle; text-align: center;"><a routerLink="/almacen/salidas-estandar/ver/{{item.id}}">{{ item.created_at | date:'medium'}} </a></td>
-                            <td *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle; text-align: center;"><a routerLink="/almacen/salidas-estandar/ver/{{item.id}}">{{ item.updated_at | date:'medium'}} </a></td>
+                <div style="overflow: scroll; overflow-x: hidden; height: 650px;">
+                    <table class="table is-responsive" *ngIf="!ctrl.cargando">
+                        <thead>
+                            <tr>
+                                <th><abbr title="Folio de receta">Folio</abbr></th>
+                                <th>Turno</th>
+                                <th>Usuario</th>
+                                <th>Estatus</th>
+                                <th style=" text-align: center;">Creado</th>
+                                <th style=" text-align: center;">Actualizado</th>
+                            </tr>
+                        </thead>
+                        <tbody *ngIf="!ctrl.busquedaActivada && ctrl.dato;">
+                            <tr *ngFor="let item of ctrl.dato; let i=index">
+                                <th *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.id }}</a></th>
+                                <td *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.movimiento_metadato.turno.nombre }} </a></td>
+                                <td *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.movimiento_usuario.nombre }} {{ item.movimiento_usuario.apellidos }} </a></td>
+                                <td *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.status }} </a></td>
+                                <td *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle; text-align: center;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.created_at | date:'medium'}} </a></td>
+                                <td *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle; text-align: center;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.updated_at | date:'medium'}} </a></td>
 
-                        </tr>
-                        <tr *ngIf="ctrl.dato.length == 0">
-                            <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>
-                        </tr>
-                    </tbody>
-                    <tbody *ngIf="ctrl.busquedaActivada  && ctrl.dato">
-                        <tr *ngFor="let item of ctrl.resultadosBusqueda; let i=index">
-                            <th style="vertical-align: middle;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.id }}</a></th>
-                            <td style="vertical-align: middle;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.movimiento_metadato.turno.nombre }} </a></td>
-                            <td style="vertical-align: middle;"><a routerLink="/almacen/salidas-estandar/ver/{{item.id}}">{{ item.movimiento_usuario.nombre }} {{ item.movimiento_usuario.apellidos }} </a></td>
-                            <td style="vertical-align: middle;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.status }} </a></td>
-                            <td style="vertical-align: middle; text-align: center;"><a routerLink="/almacen/salidas-estandar/ver/{{item.id}}">{{ item.created_at | date:'medium'}} </a></td>
-                            <td style="vertical-align: middle; text-align: center;"><a routerLink="/almacen/salidas-estandar/ver/{{item.id}}">{{ item.updated_at | date:'medium'}} </a></td>
+                            </tr>
+                            <tr *ngIf="ctrl.dato.length == 0">
+                                <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>
+                            </tr>
+                        </tbody>
+                        <tbody *ngIf="ctrl.busquedaActivada  && ctrl.dato">
+                            <tr *ngFor="let item of ctrl.resultadosBusqueda; let i=index">
+                                <th style="vertical-align: middle;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.id }}</a></th>
+                                <td style="vertical-align: middle;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.movimiento_metadato.turno.nombre }} </a></td>
+                                <td style="vertical-align: middle;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.movimiento_usuario.nombre }} {{ item.movimiento_usuario.apellidos }} </a></td>
+                                <td style="vertical-align: middle;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.status }} </a></td>
+                                <td style="vertical-align: middle; text-align: center;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.created_at | date:'medium'}} </a></td>
+                                <td style="vertical-align: middle; text-align: center;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.updated_at | date:'medium'}} </a></td>
 
-                        </tr>
+                            </tr>
 
-                        <tr *ngIf="ctrl.resultadosBusqueda.length == 0 && ctrl.busquedaActivada">
-                            <td colspan="5" style="vertical-align: middle; color:#888;">No se encontraron resultados.</td>
-                        </tr>
-                    </tbody>
-                </table>
+                            <tr *ngIf="ctrl.resultadosBusqueda.length == 0 && ctrl.busquedaActivada">
+                                <td colspan="5" style="vertical-align: middle; color:#888;">No se encontraron resultados.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </span>
             <!-- Paginación para la lista  -->
             <paginacion [total]="ctrl.total" [paginasTotales]="ctrl.paginasTotales" [resultadosPorPagina]="ctrl.resultadosPorPagina"

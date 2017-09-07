@@ -10,6 +10,9 @@ export class ListaComponent implements OnInit {
   cargando;
   usuario;
   dato;
+  fecha_desde = '';
+  fecha_hasta = '';
+  turno = '';
 
   // # SECCION: Reportes
   pdfworker: Worker;

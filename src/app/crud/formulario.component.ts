@@ -47,7 +47,7 @@ export class FormularioComponent implements OnInit {
 
     private derecha: any[] = [];
     private izquierda: any[] = [];
-    //Crear la variable que mustra las notificaciones
+    // Crear la variable que mustra las notificaciones
     mensajeResponse: Mensaje = new Mensaje()
 
     //Varaibles de entrada se pasan los valores desde la vista
@@ -231,14 +231,14 @@ export class FormularioComponent implements OnInit {
      */
     cargarDatosRecursivo(resultado, data) {
         try {
-            //validar si el resultado es un array para recorrer de manera unica
+            // validar si el resultado es un array para recorrer de manera unica
             if (Array.isArray(resultado)) {
                 try {
                     var posicionx = 0;
                     const valoresx = [];
 
                     resultado.forEach(ax => {
-                        if (typeof ax === 'object') {
+                        if (typeof ax === "object") {
 
                             var xx = {};
                             for (let key1x in ax) {
@@ -257,29 +257,27 @@ export class FormularioComponent implements OnInit {
                                 }
                             }
 
-                            //agregar todos los controles sin excepcion
+                            // agregar todos los controles sin excepcion
                             data.push(this.fb.group(xx));
-                            //recorrer los controles en busca de los que son de tipo array
+                            // recorrer los controles en busca de los que son de tipo array
 
                             if (tieneDatosx) {
-                                //obtener el control para agregar un nuevo control
+                                // obtener el control para agregar un nuevo control
                                 const x2x = <FormArray>data.controls[posicionx];
                                 for (let xrx in xtx) {
                                     for (let x1x in xtx[xrx]) {
-                                        //crear el form array en caso de que el dato sea un array
+                                        // crear el form array en caso de que el dato sea un array
                                         x2x.controls[x1x] = new FormArray([]);
-                                        //obtener su control
+                                        // obtener su control
                                         const x3x = <FormArray>x2x.controls[xrx];
-                                        //llamar el metodo recursivo para llegar al ultimo array en la lista
+                                        // llamar el metodo recursivo para llegar al ultimo array en la lista
                                         this.cargarDatosRecursivo(xtx[xrx][x1x], x3x);
                                     }
                                 }
-                            }
-                            else {
+                            } else {
                                 return;
                             };
-                        }
-                        else {
+                        } else {
                             valoresx.push(ax);
                         }
                         posicionx++;
@@ -290,26 +288,24 @@ export class FormularioComponent implements OnInit {
                     console.log(2, e);
                     return;
                 }
-            }
-            else {
+            } else {
                 try {
-                    //recorrer los controles del formulario y agregar su respectivo valor
+                    // recorrer los controles del formulario y agregar su respectivo valor
                     for (let key in resultado) {
-                        //validar que exista en la declaracion del fromulario
+                        // validar que exista en la declaracion del fromulario
                         if (data.controls[key]) {
-                            //validar si es un array
+                            // validar si es un array
 
                             if (Array.isArray(resultado[key])) {
                                 var valores = [];
                                 const control = <FormArray>data.controls[key];
                                 var posicion1 = 0, posicion2 = 0;
-                                //recorrer los items del array para validar si no hay mas array
+                                // recorrer los items del array para validar si no hay mas array
                                 try {
                                     for (let a1 in resultado[key]) {
                                         var a = resultado[key][a1];
-
-                                        //si es un objeto crear un fromgroup o un nuevo array
-                                        if (typeof a === 'object') {
+                                        // si es un objeto crear un fromgroup o un nuevo array
+                                        if (typeof a === "object") {
                                             var x = {};
                                             for (let key1 in a) {
                                                 if (a[key1] || (key1 != 'created_at' && key1 != 'updated_at' && key1 != 'deleted_at')) {
@@ -327,22 +323,22 @@ export class FormularioComponent implements OnInit {
                                                 }
                                             }
 
-                                            //agregar todos los controles sin excepcion
+                                            // agregar todos los controles sin excepcion
                                             control.push(this.fb.group(x));
-                                            //recorrer los controles en busca de los que son de tipo array
+                                            // recorrer los controles en busca de los que son de tipo array
                                             try {
                                                 if (tieneDatos) {
-                                                    //obtener el control para agregar un nuevo control
+                                                    // obtener el control para agregar un nuevo control
                                                     const x2 = <FormArray>control.controls[posicion1];
 
                                                     for (let xr in xt) {
                                                         for (let x1 in xt[xr]) {
-                                                            //crear el form array en caso de que el dato sea un array
+                                                            // crear el form array en caso de que el dato sea un array
                                                             x2.controls[x1] = new FormArray([]);
-                                                            //obtener su control
+                                                            // obtener su control
                                                             const x3 = <FormArray>x2.controls[xr];
 
-                                                            //llamar el metodo recursivo para llegar al ultimo array en la lista
+                                                            // llamar el metodo recursivo para llegar al ultimo array en la lista
                                                             this.cargarDatosRecursivo(xt[xr][x1], x3);
                                                         }
                                                     }
@@ -364,18 +360,17 @@ export class FormularioComponent implements OnInit {
                                     console.log(4, e);
                                     return;
                                 }
-                            }
-                            else {
+                            } else {
                                 if (resultado[key]){
                                     var tiene = 0;
                                     var tiene_array = 0;
-                                    if(typeof resultado[key] == 'object'){
+                                    if(typeof resultado[key] == "object"){
                                        for (let a1 in resultado[key]){
                                            if (Array.isArray(resultado[key][a1])) {
                                                tiene_array++;
                                            }
                                         }
-                                        if (tiene_array == 0)
+                                        if(tiene_array == 0)
                                             data.controls[key].patchValue(resultado[key]);
                                     }
                                     if (tiene_array > 0 || Array.isArray(resultado[key])){
@@ -384,16 +379,18 @@ export class FormularioComponent implements OnInit {
 
                                             if (Array.isArray(resultado[key][a1])) {
                                                 const x2 = <FormArray>x1.controls[a1];
-                                                //llamar el metodo recursivo para llegar al ultimo array en la lista
+                                                // llamar el metodo recursivo para llegar al ultimo array en la lista
                                                 this.cargarDatosRecursivo(resultado[key][a1], x2);
                                             }
-                                            else{
-                                                x1.controls[a1].patchValue(resultado[key][a1]);
+                                            else {
+                                                if(a1 != 'created_at' && a1 != 'updated_at' && a1 != 'deleted_at')
+                                                    x1.controls[a1].patchValue(resultado[key][a1]);
                                             }
                                         }
                                     }
-                                    if (tiene == 0)
-                                        data.controls[key].patchValue(resultado[key]);
+                                    if(tiene == 0)
+                                        if(key != 'created_at' && key != 'updated_at' && key != 'deleted_at')
+                                            data.controls[key].patchValue(resultado[key]);
                                 }
                                 else {
                                     data.controls[key].patchValue('');
@@ -412,6 +409,7 @@ export class FormularioComponent implements OnInit {
             return;
         }
     }
+
     reset_form() {
         this.dato.reset();
         for (let item in this.dato.controls) {
@@ -445,8 +443,6 @@ export class FormularioComponent implements OnInit {
 
                         // validar todos los key que tengan el array
                         this.dato.patchValue(this.cargarDatosRecursivo(resultado, this.dato));
-
-                        console.log(this.dato);
 
                         this.mensajeResponse.titulo = 'Modificar';
                         this.mensajeResponse.texto = 'Los datos se cargaron';
@@ -489,7 +485,7 @@ export class FormularioComponent implements OnInit {
     }
 
 
-    //abre una modal para confirmar la eliminacion
+    // abre una modal para confirmar la eliminacion
     borrarItem = '';
 
     /**
@@ -998,7 +994,7 @@ ofModelo
         }
     }
 
-    //mostrar notificaciones configuracion default, posicion abajo izquierda, tiempo 2 segundos
+    // mostrar notificaciones configuracion default, posicion abajo izquierda, tiempo 2 segundos
     public options = {
         position: ['bottom', 'left'],
         timeOut: 2000,

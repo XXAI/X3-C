@@ -61,6 +61,13 @@ export class FormularioComponent {
     lastOnBottom: true
   };
 
+  objeto = {
+          showProgressBar: true,
+          pauseOnHover: true,
+          clickToClose: true,
+          maxLength: 2000
+        };
+
   constructor(
     private fb: FormBuilder,
     private crudService: CrudService,
@@ -290,8 +297,6 @@ export class FormularioComponent {
     let posicion = posicion_existe; // control.length - 1;
     // obtener el control del formulario en la posicion para agregar el nuevo form array que corresponde a los lotes
     const ctrlLotes = <FormArray>control.controls[posicion];
-    // Mostrar ocultar los lotes en la vista al hacer clic en el icono de plus
-    this.mostrar_lote[posicion] = false;
 
     let objeto = {
       showProgressBar: true,
@@ -307,13 +312,13 @@ export class FormularioComponent {
     let existencia_menor_lote = false;
     // recorrer la tabla de lotes del modal para obtener la cantidad
     for (let item of this.lotes_insumo) {
-      if (item.cantidad < item.existencia) {
+      if (item.cantidad < item.existencia && item.cantidad !== null) {
         existencia_menor_lote = true;
       }
     }
     for (let item of this.lotes_insumo) {
       // agregar unicamente aquellos que tiene cantidad normal
-      if (item.cantidad >= 0 ) {
+      if (item.cantidad >= 0 && item.cantidad !== null) {
         let existe_lote = false;
         // si existe el insumo validar que el lote no exista
         if (existe) {
@@ -441,13 +446,16 @@ export class FormularioComponent {
         if (!existe) {
           control.removeAt(control.length - 1);
         }
+        if (!existe && item.cantidad == null) {
+          item.cantidad = undefined;
+        }
       }
     }
     if (existencia_minima_lote) {
       this.agregarLoteIsumo();
     }else {
       this.mensajeResponse.titulo = 'Ajuste MENOS';
-      this.mensajeResponse.texto = 'Verificar las cantidades ingresadas';
+      this.mensajeResponse.texto = 'Verificar que las cantidades ingresadas sean menor a la existencia de su respectivo lote.';
       this.mensajeResponse.clase = 'warning';
       this.mensaje(8);
     }
@@ -509,19 +517,21 @@ export class FormularioComponent {
      * @return void
      */
   validar_cantidad_lote(i, val, i2, modo_salida) {
+    if (val.controls.cantidad.value == null) {
+        this.notificacion.alert('Cantidad Inválida', 'Verifique la cantidad ingresada en el lote: '
+          + val.controls.lote.value, this.objeto);
+    } else {
       if (val.controls.cantidad.value >= val.controls.existencia.value) {
-        let objeto = {
-          showProgressBar: true,
-          pauseOnHover: true,
-          clickToClose: true,
-          maxLength: 2000
-        };
         let existencia_maxima = Number(val.controls.existencia.value) - 1;
-        this.notificacion.alert('Cantidad Inválida', 'La cantidad máxima es: ' + existencia_maxima, objeto);
+        this.notificacion.alert('Cantidad Inválida', 'La cantidad máxima es: ' + existencia_maxima, this.objeto);
         let cantidad_lote = Number(val.controls.existencia.value) - 1;
         val.controls.cantidad.patchValue(cantidad_lote);
         val.controls.nueva_existencia.patchValue(cantidad_lote);
+      } else {
+        val.controls.cantidad.patchValue(val.controls.cantidad.value);
+        val.controls.nueva_existencia.patchValue(val.controls.cantidad.value);
       }
+    }
     // sumamos las cantidades de los lotes
     const control = <FormArray>this.dato.controls['insumos'];
     const ctrlLotes = <FormArray>control.controls[i];
@@ -567,9 +577,25 @@ export class FormularioComponent {
   }
 
   guardar_movimiento() {
-    document.getElementById('guardarMovimiento').classList.add('is-active');
+    const control = <FormArray>this.dato.controls['insumos'];
+    let valido = true;
+    for (let item of control.value){
+      for (let lote of item.lotes){
+        console.log(lote.cantidad);
+        if (lote.cantidad == null) {
+          valido = false;
+        }
+      }
+    }
+    if (valido) {
+      document.getElementById('guardarMovimiento').classList.add('is-active');
+    }else {
+      this.notificacion.alert('Cantidad Inválida', 'Hay campos vacíos. Verifique las cantidades ingresadas.', this.objeto);
+    }
   }
 
+
+/**********************************************IMPRESION DE REPORTES********************************************* */
   imprimir() {
     let usuario = JSON.parse(localStorage.getItem('usuario'));
     try {
@@ -601,6 +627,8 @@ export class FormularioComponent {
       return false;
     }
   }
+/**********************************************FIN IMPRESION DE REPORTES********************************************* */
+
 
   /**
      * Este método muestra los mensajes resultantes de los llamados de la api

@@ -154,7 +154,7 @@ export class ListaComponent {
                             // Iteramos todos los errores
                             for (var i in e.error[input]) {
                                 for (var j in e.error[input][i]){
-                                this.mensajeResponse.titulo = input;
+                                this.mensajeResponse.titulo = '¡Error!';
                                 this.mensajeResponse.texto = e.error[input][i][j];
                                 this.mensajeResponse.clase = 'error';
                                 this.mensaje(3);
@@ -208,7 +208,7 @@ export class ListaComponent {
                         for (var input in e.error) {
                             // Iteramos todos los errores
                             for (var i in e.error[input]) {
-                                this.mensajeResponse.titulo = input;
+                                this.mensajeResponse.titulo = '¡Error!';
                                 this.mensajeResponse.texto = e.error[input][i];
                                 this.mensajeResponse.clase = 'error';
                                 this.mensaje(3);
@@ -233,6 +233,7 @@ export class ListaComponent {
      * @return void
      */
     autocompleListFormatter = (data: any) => {
+        console.log(data);
         let html = `
         <div class="card">
             <div class="card-content">
@@ -243,8 +244,9 @@ export class ListaComponent {
                         </p>
                         <p class="subtitle is-6" style="color: black;">
                             <strong style="color: black;">Nombre: </strong> ${data.nombre}
-                            <strong style="color: black;">&nbsp; Jurisdicción: </strong> ${data.jurisdiccion.numero} -
-                            <span style="color: black;"> ${data.jurisdiccion.nombre}</span>
+                            <strong style="color: black;">&nbsp; Jurisdicción: </strong>
+                            <span style="color: black;"> ${data.jurisdiccion ? data.jurisdiccion.numero : 'No disponible'} -
+                             ${data.jurisdiccion ? data.jurisdiccion.nombre : 'No disponible'}</span>
                         </p>
                     </div>
                 </div>

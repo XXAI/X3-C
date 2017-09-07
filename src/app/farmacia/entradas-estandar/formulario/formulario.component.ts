@@ -23,6 +23,7 @@ import  * as FileSaver    from 'file-saver';
 export class FormularioComponent {
   dato: FormGroup;
   form_insumos: any;
+  index_borrar;
   tab = 1;
   cargando = false;
   key;
@@ -43,6 +44,8 @@ export class FormularioComponent {
   // # FIN SECCION
   insumo;
   es_unidosis = false;
+  lotes_insumo;
+  mostrar_lote = [];
 
   public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
   // Máscara para validar la entrada de la fecha de caducidad
@@ -54,6 +57,12 @@ export class FormularioComponent {
     clickToClose: true,
     maxLength: 2000
   };
+  public options = {
+    position: ['top', 'right'],
+    timeOut: 5000,
+    lastOnBottom: true
+  };
+
   constructor(
     private fb: FormBuilder,
     private crudService: CrudService,
@@ -90,10 +99,10 @@ export class FormularioComponent {
       });
 
       FileSaver.saveAs( self.base64ToBlob( evt.data.base64, 'application/pdf' ), evt.data.fileName );
-      //open( 'data:application/pdf;base64,' + evt.data.base64 ); // Popup PDF
+      // open( 'data:application/pdf;base64,' + evt.data.base64 ); // Popup PDF
     };
 
-    //inicializar el formulario reactivo
+    // inicializar el formulario reactivo
     this.dato = this.fb.group({
       id: [''],
       tipo_movimiento_id: ['1', [Validators.required]],
@@ -152,7 +161,10 @@ export class FormularioComponent {
      * @param id identificador del elemento de la modal
      * @return void
      */
-  abrirModal(id) {
+  abrirModal(id, index?) {
+    if (index) {
+      this.index_borrar = index;
+    }
     document.getElementById(id).classList.add('is-active');
   }
 
@@ -164,7 +176,6 @@ export class FormularioComponent {
   cancelarModal(id) {
     document.getElementById(id).classList.remove('is-active');
   }
-  lotes_insumo;
   /**
      * Este método formatea los resultados de la busqueda en el autocomplte
      * @param data resultados de la busqueda 
@@ -180,14 +191,14 @@ export class FormularioComponent {
             <p class="subtitle is-6">
               <strong>Clave: </strong> ${data.clave}) 
               `;
-    
+
               if(data.es_causes == 1)
                 html += `<label class="tag is-success" ><strong>Cause </strong></label>`;
               if(data.es_causes == 0)
                 html += `<label class="tag" style="background: #B8FB7E; border-color: #B8FB7E; color: rgba(0,0,0,0.7);"><strong>No Cause </strong> </label>`; 
-              if(data.es_unidosis == 1)                                                                 
+              if(data.es_unidosis == 1)
                 html += `<label class="tag is-warning" ><strong>Unidosis</strong> </label>`;
-              
+
     html += `
             </p>
           </div>
@@ -213,13 +224,6 @@ export class FormularioComponent {
   }
 
 
-  public options = {
-    position: ['top', 'right'],
-    timeOut: 5000,
-    lastOnBottom: true
-  };
-
-  mostrar_lote = [];
   /**
      * Este método agrega los lostes del modal a el modelo que se envia a la api
      * @return void
@@ -308,13 +312,17 @@ export class FormularioComponent {
     ctrlLotes.controls['cantidad_surtida'].patchValue(cantidad);
   }
 
-  validar_fecha(fecha) {
-    let fecha_ingresada = moment(fecha, 'YYYY-MM-DD');
+  validar_fecha(fecha, i) {
+    const control = <FormArray>this.dato.controls['insumos'];
+    const ctrlLotes = <FormArray>control.controls[i];
+
     let fecha_hoy = moment();
-    if (!fecha_ingresada.isValid()) {
+    if (!moment(fecha, 'YYYY-MM-DD', true).isValid()) {
       this.notificacion.alert('Fecha inválida', 'Debe ingresar una fecha válida', this.objeto);
+      ctrlLotes.controls['fecha_caducidad'].patchValue('');
     } else {
-      if (fecha_ingresada <= fecha_hoy) {
+      if (moment(fecha, 'YYYY-MM-DD', true) <= fecha_hoy) {
+        ctrlLotes.controls['fecha_caducidad'].patchValue('');
         this.notificacion.alert('Fecha inválida', 'La fecha de caducidad debe ser mayor al día de hoy', this.objeto);
       }
     }

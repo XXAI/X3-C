@@ -52,6 +52,13 @@ export class FormularioComponent {
     timeOut: 5000,
     lastOnBottom: true
   };
+
+  objeto = {
+    showProgressBar: true,
+    pauseOnHover: true,
+    clickToClose: true,
+    maxLength: 2000
+  };
   mostrar_lote = [];
 
   constructor(
@@ -105,13 +112,22 @@ export class FormularioComponent {
         turno_id: ['', [Validators.required]]
       }),
       receta: this.fb.group({
+        id: [''],
         folio: ['', [Validators.required]],
-        tipo_receta: ['1', [Validators.required]],
+        tipo_receta: [''],
         fecha_receta: ['', [Validators.required]],
         doctor: ['', [Validators.required]],
         paciente: ['', [Validators.required]],
         diagnostico: ['', [Validators.required]],
         imagen_receta: [''],
+        servidor_id: [''],
+        movimiento_id: [''],
+        incremento: [''],
+        tipo_receta_id: ['1', [Validators.required]],
+        fecha_surtido: [''],
+        folio_receta: [''],
+        usuario_id: [''],
+        receta_detalles: this.fb.array([])
       }),
       insumos: this.fb.array([])
     });
@@ -237,7 +253,7 @@ export class FormularioComponent {
   agregarLoteIsumo() {
     //obtener el formulario reactivo para agregar los elementos
     const control = <FormArray>this.dato.controls['insumos'];
-    
+
     //crear el json que se pasara al formulario reactivo tipo insumos
     var lotes = {
       'clave': this.insumo.clave,
@@ -431,31 +447,45 @@ export class FormularioComponent {
     ctrlLotes.controls['cantidad_surtida'].patchValue(cantidad);
   }
 
-  comprobar_cant_lotes(){
-    let cantidad: number = 0;
+  comprobar_cant_lotes() {
+    let cantidad = 0;
     for (let l of this.lotes_insumo) {
-      if(l.cantidad)
+      if (l.cantidad)
         cantidad = Number(cantidad) + Number(l.cantidad);
     }
-    if(cantidad>0){
+    if (cantidad > 0) {
       this.sum_cant_lotes = true;
-    }else{
+    }else {
       this.sum_cant_lotes = false;
     }
   }
 
-  quitar_punto(event){
-    if(this.is_numeric(event.key ) ){
+  quitar_punto(event) {
+    if (this.is_numeric(event.key )) {
       return true;
-    }else{
+    }else {
       return false;
     }
   }
 
-  is_numeric(str){
+  is_numeric(str) {
     return /^\d+$/.test(str);
   }
-  
+
+  guardar_movimiento() {
+    // obtener el formulario reactivo para agregar los elementos
+    const control = <FormArray>this.dato.controls['insumos'];
+    console.log(control.length);
+    if (control.length === 0) {
+      this.notificacion.alert('Insumos', 'Debe agregar por lo menos un insumo', this.objeto);
+    }else {
+      document.getElementById('guardarMovimiento').classList.add('is-active');
+    }
+  }
+
+
+  /***************************************IMPRESION DE REPORTES*************************************************/
+
   imprimir() {
     var usuario = JSON.parse(localStorage.getItem('usuario'));
     try {

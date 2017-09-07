@@ -44,7 +44,7 @@
                                         <input ngui-auto-complete [source]="clues_term" [list-formatter]="autocompleListFormatter" id="buscarClues" value-property-name="clues"
                                             display-property-name="clues" path-to-data="" loading-text="Cargando..." no-match-found-text="No hay resultados."
                                             (valueChanged)="select_clues_autocomplete($event)" min-chars="1" class="input is-success is-medium"
-                                            type="text" placeholder="Escribe la clave o nombre de la clues">
+                                            type="text" placeholder="Escribe la clave o nombre de la clues" [(ngModel)]='clave_clues'>
                                     </p>
                                 </div>
                             </div>
@@ -96,10 +96,14 @@
                             <td style="text-align:center; vertical-align: middle;">
                                 {{item.fecha | date}}<br>
                             </td>
-                            <td class="aceptados" style="text-align:center; vertical-align: middle;">3<a routerLink="/almacen/sincronizar-recetas/editar/{{item.id}}"></a></td>
-                            <td class="aceptados" style="text-align:center; vertical-align: middle;" >10</td>
-                            <td class="ignorados" style="text-align:center; vertical-align: middle;" >2</td>
-                            <td class="ignorados" style="text-align:center; vertical-align: middle;" >0</td>
+                            <td class="aceptados" *ngIf="item.metadatos_sincronizaciones" style="text-align:center; vertical-align: middle;" title="Recetas aceptadas">{{item.metadatos_sincronizaciones.total_recetas}}<a routerLink="/almacen/sincronizar-recetas/editar/{{item.id}}"></a></td>
+                            <td *ngIf="!item.metadatos_sincronizaciones" style="text-align:center; vertical-align: middle;" title="No disponible">N/D<a routerLink="/almacen/sincronizar-recetas/editar/{{item.id}}"></a></td>
+                            <td class="aceptados" *ngIf="item.metadatos_sincronizaciones" style="text-align:center; vertical-align: middle;" title="Recetas ignoradas">{{item.metadatos_sincronizaciones.total_recetas_repetidas}}</td>
+                            <td *ngIf="!item.metadatos_sincronizaciones" style="text-align:center; vertical-align: middle;" title="No disponible">N/D<a routerLink="/almacen/sincronizar-recetas/editar/{{item.id}}"></a></td>
+                            <td class="ignorados" *ngIf="item.metadatos_sincronizaciones" style="text-align:center; vertical-align: middle;"  title="Colectivos aceptados">{{item.metadatos_sincronizaciones.total_colectivos}}</td>
+                            <td *ngIf="!item.metadatos_sincronizaciones" style="text-align:center; vertical-align: middle;" title="No disponible">N/D<a routerLink="/almacen/sincronizar-recetas/editar/{{item.id}}"></a></td>
+                            <td class="ignorados" *ngIf="item.metadatos_sincronizaciones" style="text-align:center; vertical-align: middle;"  title="Colectivos ignorados">{{item.metadatos_sincronizaciones.total_colectivos_repetidos}}</td>
+                            <td *ngIf="!item.metadatos_sincronizaciones" style="text-align:center; vertical-align: middle;" title="No disponible">N/D<a routerLink="/almacen/sincronizar-recetas/editar/{{item.id}}"></a></td>
                             <td style="text-align:center; vertical-align: middle;">
                                 <button type="button" class="button" (click)="abrirModal('sincronizarRecetasJson', item.id)" >
                                     <span class="icon"><i class="fa fa-upload"></i></span>
