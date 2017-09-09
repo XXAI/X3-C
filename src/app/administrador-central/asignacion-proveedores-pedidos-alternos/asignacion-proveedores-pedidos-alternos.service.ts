@@ -28,11 +28,15 @@ export class AsignacionProveedoresPedidosAlternosService {
 			return pedido;
 		}) as Observable<any>;
 	}
-	asignar(id: any): Observable<any> {
-			return this.jwtRequest.put(AsignacionProveedoresPedidosAlternosService.URL+"/proveedor", id, null).map((response: Response) => response.json().data) as Observable<any>;
+	asignar(id: any, data: any): Observable<any> {
+			return this.jwtRequest.put(AsignacionProveedoresPedidosAlternosService.URL+"/proveedor", id, {data}).map((response: Response) => response.json().data) as Observable<any>;
 	}
 
 	proveedores(): Observable<any> {
-		return this.jwtRequest.get("proveedor", null, null).map((response: Response) => response.json().data);
+		return this.jwtRequest.get("proveedor", null, { alterno: 1 }).map((response: Response) => response.json().data);
+	}
+
+	firmantes(): Observable<any> {
+		return this.jwtRequest.get("personal-puesto", null, { clues: 'CSSSA017213', firmas: 1 }).map((response: Response) => response.json().data);
 	}
 }

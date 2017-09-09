@@ -48,64 +48,69 @@
 				</tbody>
 			</table>
 			<hr>
-			<table class="table"  *ngIf="!cargando">
-				<tbody>
-					<tr>
-						<th>Proveedor:</th>
-						<td colspan="2">
-							<div class="control is-expanded " [ngClass]="{ 'is-loading': cargandoProveedores }">
-								<div class="select is-fullwidth">
-									<select>
-										<option value ="-1">Selecciona un proveedor</option>
-										<option *ngFor="let item of proveedores" value="{{item.id}}">{{ item.nombre }}</option>									
-									</select>
+			<form name="form" [formGroup]="asignacion" (submit)='asignar()' > 
+				<table class="table"  *ngIf="!cargando">
+					<tbody>
+						<tr>
+							<th>Proveedor:</th>
+							<td colspan="2">
+								<div class="control is-expanded " [ngClass]="{ 'is-loading': cargandoProveedores }">
+									<div class="select is-fullwidth">
+										<select class="select"  formControlName="proveedor_id">
+											<option *ngFor="let item of proveedores" value="{{item.id}}">{{ item.nombre }}</option>									
+										</select>
+										<span class="icon is-small" *ngIf="asignacion.get('proveedor_id').hasError('required') && asignacion.get('proveedor_id').touched">
+					                        <i class="fa fa-warning"></i>
+					                    </span>
+					                    <span class="help is-danger" *ngIf="asignacion.get('proveedor_id').hasError('required') && asignacion.get('proveedor_id').touched">Este campo es requerido.</span>
+									</div>
 								</div>
-							</div>
-								
-						</td>
-					</tr>
-					<tr>
-						<th>Firma 1:</th>
-						<td>
-							<div class="field">
-								<div class="control">
-									<input class="input" type="text" placeholder="Nombre">
+									
+							</td>
+						</tr>
+						<tr>
+							<th>Firma 1:</th>
+							<td colspan="2">
+								<div class="control is-expanded " [ngClass]="{ 'is-loading': cargandoProveedores }">
+									<div class="select is-fullwidth">
+										<select  class="select" formControlName="asignacion_firmante_1">
+											<option *ngFor="let item of firmante_1" value="{{item.id}}">{{ item.nombre || uppercase  }} - {{ item.puesto || uppercase }}</option>									
+										</select>
+										<span class="icon is-small" *ngIf="asignacion.get('asignacion_firmante_1').hasError('required') && asignacion.get('asignacion_firmante_1').touched">
+					                        <i class="fa fa-warning"></i>
+					                    </span>
+					                    <span class="help is-danger" *ngIf="asignacion.get('asignacion_firmante_1').hasError('required') && asignacion.get('asignacion_firmante_1').touched">Este campo es requerido.</span>
+									</div>
 								</div>
-							</div>								
-						</td>
-						<td>
-							<div class="field">
-								<div class="control">
-									<input class="input" type="text" placeholder="Cargo">
+									
+							</td>
+							
+						</tr>
+						<tr>
+							<th>Firma 2:</th>
+							<td colspan="2">
+								<div class="control is-expanded " [ngClass]="{ 'is-loading': cargandoProveedores }">
+									<div class="select is-fullwidth">
+										<select  class="select" formControlName="asignacion_firmante_2">
+											<option *ngFor="let item of firmante_2" value="{{item.id}}">{{ item.nombre || uppercase  }} - {{ item.puesto || uppercase }}</option>									
+										</select>
+										<span class="icon is-small" *ngIf="asignacion.get('asignacion_firmante_2').hasError('required') && asignacion.get('asignacion_firmante_2').touched">
+					                        <i class="fa fa-warning"></i>
+					                    </span>
+					                    <span class="help is-danger" *ngIf="asignacion.get('asignacion_firmante_2').hasError('required') && asignacion.get('asignacion_firmante_2').touched">Este campo es requerido.</span>
+									</div>
 								</div>
-							</div>								
-						</td>
-					</tr>
-					<tr>
-						<th>Firma 2:</th>
-						<td>
-							<div class="field">
-								<div class="control">
-									<input class="input" type="text" placeholder="Nombre">
-								</div>
-							</div>								
-						</td>
-						<td>
-							<div class="field">
-								<div class="control">
-									<input class="input" type="text" placeholder="Cargo">
-								</div>
-							</div>								
-						</td>
-					</tr>
+									
+							</td>
+						</tr>
 
-				</tbody>	
-			</table>
+					</tbody>	
+				</table>
+			
 			<hr>
-			<div class="control " style="padding-left:10px;" *ngIf="!cargando">			
-					<a class="button is-success" *ngIf="pedido.proveedor_id == null" title="Asignar Proveedor" (click)="asignar(); " [ngClass]="{'is-loading': asignando}" >
-						<span class="icon"><i class="fa fa-check"></i></span> &nbsp; Asignar proveedor
-					</a>
+			<div class="control " style="padding-left:10px;" *ngIf="!cargando">	
+					<button type="submit" class="button is-primary" name="enviar"  *ngIf="asignado" [ngClass]="{'is-loading': cargando}"  [disabled]="asignacion.invalid"><span class="icon"><i class="fa fa-check"></i></span> &nbsp; Asignar proveedor</button>		
+					
 					<a class="button is-white" title="Imprimir Excel" (click)="imprimirExcel();" [ngClass]="{'is-disabled': asignando}">
 						<span class="icon"><i class="fa fa-file-excel-o"></i></span> &nbsp; Excel
 					</a>			
@@ -114,6 +119,7 @@
 					</a>				
 					<a class="button is-white" routerLink="/administrador-central/validacion-pedidos-alternos/" [ngClass]="{'is-disabled': asignando}" >Regresar</a>			                
 			</div>
+			</form>	
 			<section>
 				<div class="control is-grouped">
 					
