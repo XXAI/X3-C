@@ -6,7 +6,8 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
     'use strict';
 
     onmessage = function(evt) {
-        let data = JSON.parse(evt.data)
+        let data = JSON.parse(evt.data);
+        console.log(data);
         pdf(data);
     };
 
@@ -32,7 +33,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         [{ text: 'SIAL', style: 'titulo', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],
-                        [{ text: 'ENTRADAS DE ALMACEN', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },
+                        [{ text: 'LISTA DE RECETAS', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],[
                             { text: 'CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
@@ -63,7 +64,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                             { text: 'FECHA', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'FOLIO', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'INSUMOS', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'RECIBE', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'TURNO', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'ENTREGÓ', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'CAPTURADO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
                             {}
@@ -187,7 +188,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     { text: movimiento.fecha_movimiento ? movimiento.fecha_movimiento : 'No disponible' , style: 'tableRow', alignment: 'center' },
                     { text: movimiento.id ? movimiento.id : 'No disponible', style: 'tableRow', alignment: 'center' },
                     { text: movimiento.numero_claves == null || movimiento.numero_insumos == null ? 'No disponible' : 'Claves: ' + movimiento.numero_claves + '\n Insumos: ' + movimiento.numero_insumos, style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.movimiento_metadato == null ? 'No disponible' :  movimiento.movimiento_metadato.persona_recibe, style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.movimiento_metadato == null ? 'No disponible' :  movimiento.movimiento_metadato.turno.nombre, style: 'tableRow', alignment: 'center' },
                     { text: movimiento.movimiento_usuario == null ? 'No disponible' : movimiento.movimiento_usuario.nombre + ' ' + movimiento.movimiento_usuario.apellidos, style: 'tableRow', alignment: 'center' },
                     { text: movimiento.created_at ? movimiento.created_at : 'No disponible', colSpan: 2, style: 'tableRow', alignment: 'center' },{}
                 ]);
