@@ -581,6 +581,11 @@ export class VerComponent implements OnInit {
       return new Blob( [ buffer ], { type: type } );
   }
 
+  elaborarPedidoAlterno()
+  {
+    
+  }
+
   ngOnDestroy(){
     this.cambiarEntornoSuscription.unsubscribe();
   }

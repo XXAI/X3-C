@@ -38,12 +38,19 @@ import { Almacen } from '../../../catalogos/almacenes/almacen';
 export class AsignarComponent implements OnInit {
 
 	id:any;
-	cargando: boolean = false;
+  cargando: boolean = false;
+	asignado: boolean = true;
 	cargandoProveedores: boolean = false;
 	asignando: boolean = false;
 	cargandoInsumos: boolean = false;
 
-	proveedores: any[] = [];
+  proveedores: any[] = [];
+  firmante_1: any[] = [];
+	firmante_2: any[] = [];
+
+  // * Secccion para formularios
+  asignacion: FormGroup;
+
 
 	// # SECCION: Esta sección es para mostrar mensajes
 	mensajeError: Mensaje = new Mensaje();
@@ -104,6 +111,13 @@ export class AsignarComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
+    this.asignacion = this.fb.group({
+        proveedor_id: ['', [Validators.required]],
+        asignacion_firmante_1: ['', [Validators.required]],
+        asignacion_firmante_2: ['', [Validators.required]]
+    });
+
     this.title.setTitle('Asignar proveedor pedido alterno / Administrador central');
 
     this.cambiarEntornoSuscription = this.cambiarEntornoService.entornoCambiado$.subscribe(evento => {
@@ -149,6 +163,21 @@ export class AsignarComponent implements OnInit {
 		this.cargandoProveedores = false;
       }
     );
+
+     this.apiService.firmantes().subscribe(
+      respuesta => {
+        console.log(respuesta);
+        this.firmante_1 = respuesta;
+        this.firmante_2 = respuesta;
+      //this.cargandoProveedores = false;
+    
+      //this.proveedores = respuesta;
+      }, error => {
+        //this.cargandoProveedores = false;
+      }
+    );
+
+
     
     // Inicialicemos el pedido
     this.pedido = new Pedido(true);
@@ -445,13 +474,15 @@ export class AsignarComponent implements OnInit {
 	var validacion_palabra = prompt("Para asignar proveedor a este pedido alterno, por favor escriba: ASIGNAR");
     if(validacion_palabra == 'ASIGNAR'){
 		this.asignando = true;
-		this.apiService.asignar(this.id).subscribe(
+    this.apiService.asignar(this.id, this.asignacion.value).subscribe(
 			respuesta => {
 				this.asignando = false;
 				this.pedido.status = respuesta.status;
 				this.mensajeExito = new Mensaje(true);
 				this.mensajeExito.mostrar = true;
 				this.mensajeExito.texto = "Pedido validado";
+         this.asignado = false;
+
 			}, error => {
 				this.asignando = false;
 				this.mensajeError = new Mensaje(true);

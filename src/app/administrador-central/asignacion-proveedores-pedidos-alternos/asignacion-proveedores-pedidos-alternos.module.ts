@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 import { AdministradorCentralModule } from '../administrador-central.module';
@@ -24,7 +24,8 @@ import { AsignarComponent } from './asignar/asignar.component';
     BloquearPantallaModule,
     PaginacionModule,    
     AdministradorCentralModule,
-    AsignacionProveedoresPedidosAlternosRoutingModule
+    AsignacionProveedoresPedidosAlternosRoutingModule,
+    ReactiveFormsModule
   ],
   declarations: [ListaComponent, AsignarComponent]
 })

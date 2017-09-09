@@ -60,10 +60,12 @@ export class PedidosService {
 
   editar(id:any, pedido: Pedido[]): Observable<Pedido> {
     return this.jwtRequest.put(PedidosService.URL,id, pedido).map( (response: Response) => response.json().data) as Observable<Pedido>;
-  }
+  } 
+
+  
 
   eliminar(id:any): Observable<Pedido> {
-    return this.jwtRequest.delete(PedidosService.URL,id).map( (response: Response) => response.json().data) as Observable<Pedido>;
+    return this.jwtRequest.delete('pedido-alteno',id).map( (response: Response) => response.json().data) as Observable<Pedido>;
   }
 
   cancelarPedidoTransferir(id:any, parametros:any = {}): Observable<any>{

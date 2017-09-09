@@ -99,6 +99,7 @@
         </div>
       </div>
 
+      
       <div class="tile is-parent is-vertical">
         <div class="tile is-child" >
           <div class="contenedor-pedido" >
@@ -113,7 +114,10 @@
                     <span class="icon"><i class="fa fa-file"></i></span><span>Recepciones: {{pedido.datosImprimir.recepciones.length}}</span>
                 </a-->
                 <a *ngIf="pedido.status == 'EX' && pedido.datosImprimir.tipo_pedido_id == 'PA'" class="button is-danger is-pulled-right" (click)="mostrarDialogoCancelarPedido()"> <span class="icon"><i class="fa fa-ban"></i></span> <span>Cancelar Pedido</span></a>
-                <!--a *ngIf="pedido.status == 'EX' && pedido.datosImprimir.tipo_pedido_id == 'PA'" class="button is-warning is-pulled-right" (click)="mostrarDialogoPedidoAlternoPedido()"> <span class="icon"><i class="fa fa-retweet"></i></span> <span>Pedir a Empresa Alterna</span></a-->
+                <a *ngIf="pedido.status == 'EX' && pedido.datosImprimir.tipo_pedido_id == 'PA'" class="button is-warning is-pulled-right" (click)="mostrarDialogoPedidoAlternoPedido()"> <span class="icon"><i class="fa fa-retweet"></i></span> <span>Pedir a Empresa Alterna</span></a>
+
+
+
             </div> 
 
             <div class="is-fullwidth has-text-centered" *ngIf="cargando">
