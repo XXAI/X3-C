@@ -20,7 +20,8 @@ export class MenuLateralComponent implements OnInit {
     finalizados: 0,
     expirados: 0,
     expirados_cancelados: 0,
-    farmacia: 0
+    farmacia: 0,
+    alternos: 0,
   };
 
   private cambiarEntornoSuscription: Subscription;
@@ -37,7 +38,8 @@ export class MenuLateralComponent implements OnInit {
         finalizados: 0,
         expirados: 0,
         expirados_cancelados: 0,
-        farmacia: 0
+        farmacia: 0,
+        alternos: 0,
       };
       this.cargarStatsPedidos();
     });
