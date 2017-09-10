@@ -461,7 +461,7 @@
 </div>
 
 <div class="modal is-active" [ngClass]="{'is-active': mostrarPedidoAlternoDialogo}">
-    <div class="modal-background" (click)="cerrarDialogoPedidoAlterno()"></div>
+    <div class="modal-background" (click)="cerrarDialogoPedidoAlterno()" ></div>
     <div class="modal-card" style="width:95%; height: auto;">
       <header class="modal-card-head" style="background: #ffdd57;">
         <div class="container is-fluid"  style="width:100%;">
@@ -469,7 +469,7 @@
               <span class="icon is-medium"><i class="fa fa-retweet"></i></span> Pedido Alterno
             </h1>
         </div>            
-        <a class="button  is-warning" style="position:absolute; top:1em; right:1em;" (click)="cerrarDialogoPedidoAlterno()"><span class="icon "><i class="fa fa-close"></i></span></a>
+        <a class="button  is-warning" style="position:absolute; top:1em; right:1em;" (click)="cerrarDialogoPedidoAlterno()" [ngClass]="{'is-disabled': generandoPedidoAlterno}"><span class="icon "><i class="fa fa-close"></i></span></a>
       </header>
       <section class="modal-card-body" style="padding:0px; overflow:visible;" >
         <div style="padding: 1em;">
@@ -513,7 +513,7 @@
                             <td>{{insumo.descripcion}}</td>
                             <td style="width:100px !important;">
                                 <p class="control is-expanded">
-                                    <input class="input is-small has-text-centered" type="number" placeholder="Cant" max="{{insumo.cantidad_limite}}" [(ngModel)]="insumo.cantidad">
+                                    <input class="input is-small has-text-centered" type="number" placeholder="Cant" max="{{insumo.cantidad_limite}}" [(ngModel)]="insumo.cantidad" (keyup)="validarCantidad($event.target)">
                                     <small>Limite: <strong>{{insumo.cantidad_limite}}</strong></small>
                                 </p>
                             </td>
@@ -527,8 +527,8 @@
             </div>
       </section>
       <footer class="" style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em " >
-          <span *ngIf="errorCancelarPedido" class="notification is-small is-danger is-inverted">{{errorCancelarPedidoTexto}}</span>
-          <button class="button is-medium is-primary is-pulled-right" [ngClass]="{'is-loading': cancelandoPedido}"  (click)="elaborarPedidoAlterno()">
+          <span *ngIf="errorGenerarPedidoAlterno" class="notification is-small is-danger is-inverted">{{errorGenerarPedidoAlternoTexto}}</span>
+          <button class="button is-medium is-primary is-pulled-right" [ngClass]="{'is-loading': generandoPedidoAlterno}"  (click)="elaborarPedidoAlterno()">
               <span class="icon"><i class="fa fa-retweet"></i></span> &nbsp;Elaborar Pedido Alterno
           </button>
       </footer>
