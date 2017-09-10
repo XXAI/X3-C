@@ -32,12 +32,12 @@ export class PedidosService {
     return this.jwtRequest.get(PedidosService.URL_PRESUPUESTO,null,parametros).map( (response: Response) => response.json());
   }
 
-  buscar(status:string, term: string, pagina:number = 1, resultados_por_pagina:number =20 ): Observable<any>{
-    return this.jwtRequest.get(PedidosService.URL,null,{status: status, q: term, page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
+  buscar(status:string, term: string, pagina:number = 1, resultados_por_pagina:number =20, tipo:string = '' ): Observable<any>{
+    return this.jwtRequest.get(PedidosService.URL,null,{tipo:tipo, status: status, q: term, page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
   }
 
-  lista(status:string, pagina:number = 1, resultados_por_pagina:number =20 ): Observable<any>{
-    return this.jwtRequest.get(PedidosService.URL,null,{status:status, page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
+  lista(status:string, pagina:number = 1, resultados_por_pagina:number =20,tipo:string = '' ): Observable<any>{
+    return this.jwtRequest.get(PedidosService.URL,null,{tipo:tipo, status:status, page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
   }
 
   ver(id:any): Observable<any>{
