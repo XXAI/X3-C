@@ -106,6 +106,11 @@ export class AdministradorCentralService {
   pedidoBorrador(id:any): Observable<any>{    
     return this.jwtRequest.get("administrador-central/pedidos-borrador",id,null).map( (response: Response) => response.json().data);
   }
+
+  cambiarPermisoRecepcion(id:any,permitir:boolean): Observable<any>{    
+    return this.jwtRequest.put("administrador-central/pedidos-permitir-recepcion",id,{recepcion:permitir}).map( (response: Response) => response.json().data);
+  }
+  
   recepcionBorrador(id:any, type:any): Observable<any>{    
     return this.jwtRequest.get("administrador-central/recepcion-borrador",id,{type}).map( (response: Response) => response.json().data);
   }

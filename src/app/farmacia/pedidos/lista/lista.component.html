@@ -22,7 +22,7 @@
                         <th colspan="5" style="text-align:center"><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>&nbsp;Cargando Presupuesto...</th>
                     </tr>
                     <tr *ngIf="presupuesto">
-                        <th>Causes y Materia de Curación</th>
+                        <th>Causes y Material de Curación</th>
                         <td style="text-align:center"><span class="tag is-primary">$ {{ (presupuesto.causes_modificado + presupuesto.material_curacion_modificado) | number:'1.2-2' }}</span></td>
                         <td style="text-align:center"><span class="tag is-warning">$ {{ (presupuesto.causes_comprometido + presupuesto.material_curacion_comprometido) | number:'1.2-2' }}</span></td>
                         <td style="text-align:center"><span class="tag is-danger">$ {{ (presupuesto.causes_devengado + presupuesto.material_curacion_devengado) | number:'1.2-2' }}</span></td>

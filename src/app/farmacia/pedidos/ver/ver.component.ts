@@ -160,6 +160,7 @@ export class VerComponent implements OnInit {
             //this.pedidos[0].datos.patchValue(pedido);
             this.pedido.datosImprimir = pedido;
             this.pedido.status = pedido.status;
+            this.pedido.recepcionPermitida = pedido.recepcion_permitida;
             
 
             for(let i in pedido.insumos){
@@ -202,13 +203,15 @@ export class VerComponent implements OnInit {
               this.subPedidos[clave_tipo_insumo].lista.push(insumo);
             }
 
-            if(pedido.status != 'EF'){
+            //if(pedido.status != 'EF'){
               for(let i in pedido.recepciones){
-                if(pedido.recepciones[i].entrada.status == 'BR'){
-                  this.tieneRecepcionIniciada = true;
+                if(pedido.recepciones[i].entrada){
+                  if(pedido.recepciones[i].entrada.status == 'BR'){
+                    this.tieneRecepcionIniciada = true;
+                  }
                 }
               }
-            }
+            //}
             
             pedido.insumos = undefined;
             this.pedido.indexar();
