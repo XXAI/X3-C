@@ -8,6 +8,7 @@ class PedidoFiltro {
 export class Pedido {
   public id:String;
   public status: string;
+  public recepcionPermitida: boolean;
   public tipo_pedido: string;
   public datos: FormGroup; //Harima: Agregamos los datos para el formulario y la validación
   public datosImprimir?: any;
@@ -43,6 +44,7 @@ export class Pedido {
         });
         //Harima: Al crear el objeto, se crea como borrador
         this.status = 'BR';
+        this.recepcionPermitida = false;
     }
     this.paginacion.resultadosPorPagina = 10;
   }

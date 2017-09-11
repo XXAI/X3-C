@@ -82,7 +82,7 @@
                     </div>
                     <hr>
                     <div class="control is-grouped" style="padding-top:10px;" *ngIf="!cargando">
-                        <p class="control" *ngIf="pedido.status != 'FI' && pedido.datosImprimir.tipo_pedido_id == 'PA' && pedido.status != 'EX-CA'">
+                        <p class="control" *ngIf="pedido.recepcionPermitida">
                             <a class="button is-primary" routerLink="/almacen/pedidos/recepcion/{{pedido.id}}"> <span class="icon"><i class="fa fa-truck"></i></span> <span *ngIf="!tieneRecepcionIniciada">Recibir Pedido</span><span *ngIf="tieneRecepcionIniciada">Continuar Recepción</span></a>
                         </p>
 
@@ -113,11 +113,8 @@
                 <!--a class="button is-primary  is-pulled-right" [ngClass]="{ 'is-inverted': pedido.filtro.activo }" style="margin-top:-0.25em;" title="Recepciones" (click)="toggleModalRecepciones(); ">
                     <span class="icon"><i class="fa fa-file"></i></span><span>Recepciones: {{pedido.datosImprimir.recepciones.length}}</span>
                 </a-->
-                <a *ngIf="pedido.status == 'EX' && pedido.datosImprimir.tipo_pedido_id == 'PA'" class="button is-danger is-pulled-right" (click)="mostrarDialogoCancelarPedido()"> <span class="icon"><i class="fa fa-ban"></i></span> <span>Cancelar Pedido</span></a>
-                <a *ngIf="pedido.status == 'EX' && pedido.datosImprimir.tipo_pedido_id == 'PA'" class="button is-warning is-pulled-right" (click)="mostrarDialogoPedidoAlternoPedido()"> <span class="icon"><i class="fa fa-retweet"></i></span> <span>Pedir a Empresa Alterna</span></a>
-
-
-
+                <a *ngIf="pedido.status == 'EX'" class="button is-danger is-pulled-right" (click)="mostrarDialogoCancelarPedido()"> <span class="icon"><i class="fa fa-ban"></i></span> <span>Cancelar Pedido</span></a>
+                <a *ngIf="pedido.status == 'EX'" class="button is-warning is-pulled-right" (click)="mostrarDialogoPedidoAlternoPedido()"> <span class="icon"><i class="fa fa-retweet"></i></span> <span>Pedido Alterno</span></a>
             </div> 
 
             <div class="is-fullwidth has-text-centered" *ngIf="cargando">
