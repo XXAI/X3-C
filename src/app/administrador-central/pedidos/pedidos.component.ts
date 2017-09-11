@@ -693,13 +693,11 @@ export class PedidosComponent implements OnInit {
       
       this.apiService.cambiarPermisoRecepcion(pedido_id,permitir).subscribe(
         respuesta => {
-          console.log('envio');
           this.datos_pedido.recepcion_permitida = permitir;
           this.mensajeExito = new Mensaje(true);
           this.mensajeExito.mostrar = true;
           this.mensajeExito.texto = "Pedido actualizado";
         }, error => {
-          console.log('error');
           this.mensajeError = new Mensaje(true);
           this.mensajeError.mostrar = true;
           try {
@@ -722,7 +720,6 @@ export class PedidosComponent implements OnInit {
           }
         }
       );
-      console.log('puta madre');
 	  }else{
       console.log('palabra incorrecta.'+validacion_palabra);
     }

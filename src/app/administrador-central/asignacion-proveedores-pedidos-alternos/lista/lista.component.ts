@@ -200,7 +200,7 @@ export class ListaComponent implements OnInit {
 	
 		this.cargando = true;
 		var  payload = { 
-			status: 'VAL',
+			status: this.tab == 1 ? 'VAL' : 'PS',
 			sin_proveedor: this.tab == 1 ? true : false,
 			page: pagina, 
 			per_page: this.resultadosPorPagina 

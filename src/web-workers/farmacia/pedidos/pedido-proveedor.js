@@ -33,7 +33,16 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
                 });
             }
             
-            pedido.datos.fecha_concluido = pedido.datos.fecha_concluido.substring(0,10);
+            if(pedido.datos.fecha_concluido){
+                pedido.datos.fecha_concluido = pedido.datos.fecha_concluido.substring(0,10);
+            }else{
+                pedido.datos.fecha_concluido = 'Sin Concluir';
+            }
+
+            if(!pedido.datos.proveedor){
+                pedido.datos.proveedor = {nombre:'Sin Proveedor Asignado'};
+            }
+            
 
             var dd = {
                 content:[{

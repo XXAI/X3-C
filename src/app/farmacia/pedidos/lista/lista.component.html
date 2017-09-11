@@ -96,7 +96,9 @@
                 <tbody  *ngIf="!busquedaActivada">
                     <tr *ngFor="let item of pedidos; let i=index" [ngClass]="{'proyecto-estatus-normal':(item.status == 'BR' || item.status == 'PS'),'proyecto-estatus-azul':item.status == 'EF','proyecto-estatus-rojo':item.status == 'EX-CA','proyecto-estatus-amarillo':item.status == 'EX','proyecto-estatus-verde':item.status == 'FI'}">
                         <th style="vertical-align: middle;"><a routerLink="{{obtenerDireccion(item.id,item.status)}}">
-                            <span class="icon"><i class="fa fa-{{(item.tipo_pedido_id=='PFS')?'building':'hospital-o'}}"></i></span>
+                            <span class="icon" *ngIf="item.tipo_pedido_id=='PA'"><i class="fa fa-hospital-o"></i></span>
+                            <span class="icon" *ngIf="item.tipo_pedido_id=='FPS'"><i class="fa fa-building"></i></span>
+                            <span class="icon" *ngIf="item.tipo_pedido_id=='PALT'"><i class="fa fa-building-o"></i></span>
                             {{ item.folio?item.folio:'S/F' }}</a>
                         </th>
                         <td style="vertical-align: middle;"><a routerLink="{{obtenerDireccion(item.id,item.status)}}">{{ item.descripcion }}</a></td>
@@ -127,7 +129,9 @@
                 <tbody *ngIf="busquedaActivada">
                     <tr *ngFor="let item of resultadosBusqueda; let i=index" [ngClass]="{'proyecto-estatus-normal':item.status == 'BR','proyecto-estatus-azul':item.status == 'EF','proyecto-estatus-rojo':item.status == 'EX-CA','proyecto-estatus-amarillo':item.status == 'EX','proyecto-estatus-verde':item.status == 'FI'}">
                         <th style="vertical-align: middle;"><a routerLink="{{obtenerDireccion(item.id,item.status)}}">
-                            <span class="icon"><i class="fa fa-{{(item.tipo_pedido_id=='PA')?'hospital-o':'building'}}"></i></span>
+                            <span class="icon" *ngIf="item.tipo_pedido_id=='PA'"><i class="fa fa-hospital-o"></i></span>
+                            <span class="icon" *ngIf="item.tipo_pedido_id=='FPS'"><i class="fa fa-building"></i></span>
+                            <span class="icon" *ngIf="item.tipo_pedido_id=='PALT'"><i class="fa fa-building-o"></i></span>
                             {{ item.folio?item.folio:'S/F' }}</a>
                         </th>
                         <td style="vertical-align: middle;"><a routerLink="{{obtenerDireccion(item.id,item.status)}}">{{ item.descripcion }}</a></td>
