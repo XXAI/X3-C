@@ -1,7 +1,7 @@
 <formulario #ctrl URL="movimientos" titulo="Salida por receta" [dato]="dato"></formulario>
 <menu-farmacia [modulo]="'Salida por receta'" [icono]="'assets/icono-salidas.svg'" [url]="'/almacen/salidas-recetas'"></menu-farmacia>
 <div style="height:50px;"></div>
-<form name="form" novalidate [formGroup]="dato" (ngSubmit)="ctrl.enviar()">
+<form name="form" novalidate [formGroup]="dato">
     <div class="contenedor columns " style="height:90%">
         <div class="column is-one-third" style="padding:1em; height:90%">
             <div style="background: #FFF; border-radius: 1em; height:100%">
@@ -257,7 +257,7 @@
                                         <button class="button is-primary" type="submit" [ngClass]="{'is-loading': ctrl.cargando}" [disabled]="ctrl.dato.invalid"> <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar</button>
                                 </p> -->
                                 <p class="level-item" *ngIf="!tieneid">
-                                    <button class="button is-primary" type="submit" [ngClass]="{'is-loading': ctrl.cargando}" (click)="guardar_movimiento()" [disabled]="ctrl.dato.invalid"> <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar</button>
+                                    <button class="button is-primary" [ngClass]="{'is-loading': ctrl.cargando}" (click)="guardar_movimiento()" [disabled]="ctrl.dato.invalid"> <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar</button>
                                 </p>
                                 <p class="level-item"><a class="button is-primary" title="Actualizar" (click)="ctrl.cargarDatos(dato);"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
                                 <p class="level-item">&nbsp;</p>
@@ -405,56 +405,57 @@
 
 <div class="modal" id="verLotes">
     <div class="modal-background"></div>
-    <div class="modal-card" style="width: 60%;">
-        <header class="modal-card-head">
+    <div class="modal-card" style="width: 60%; height: 80%;">
+        <header class="modal-card-head" style="height: 10%;">
             <p class="modal-card-title" id="tituloModal"> </p>
             <button type="button" class="delete" (click)="cancelarModal('verLotes')"></button>
         </header>
-        <section class="modal-card-body">
-            <table class="table is-narrow is-bordered is-striped">
-                <thead>
-                    <tr>
-                        <th>Lote</th>
-                        <th>Caducidad</th>
-                        <th>Codigo de barras</th>
-                        <th>Existencia</th>
-                        <th>Cantidad (normal)</th>
-                        <!-- 
-                        <th *ngIf="es_unidosis">Existencia Unidosis</th>
-                        <th *ngIf="es_unidosis">Cantidad Unidosis</th>
-                        -->
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let item of lotes_insumo;  let i = index;">
-                        <td *ngIf="!item.nuevo">{{item.lote}}</td>
-                        <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Lote" [(ngModel)]="item.lote"></td>
-                        <td *ngIf="!item.nuevo">{{item.fecha_caducidad}}</td>
-                        <td *ngIf="item.nuevo"><input class="input has-text-centered " type="date" placeholder="Fecha de caducidad" [(ngModel)]="item.fecha_caducidad"></td>
-                        <td *ngIf="!item.nuevo">{{item.codigo_barras}}</td>
-                        <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Codigo de barras" [(ngModel)]="item.codigo_barras"></td>
-                        <td *ngIf="!item.nuevo">{{item.existencia}}</td>
-                        <td *ngIf="item.nuevo"></td>
-                        <td>
-                            <input class="input has-text-centered " type="number" step="1" min="0" max="{{item.existencia}}" (keyup)="comprobar_cant_lotes()" (keypress)="quitar_punto($event)" (change)="comprobar_cant_lotes()" placeholder="Cantidad" [(ngModel)]="item.cantidad">
-                        </td>
+        <section class="modal-card-body" style="height: 90%;">
+            <div style="padding: 1em; overflow: scroll; overflow-x: hidden; height: 100%;">
+                <table class="table is-narrow is-bordered is-striped">
+                    <thead>
+                        <tr>
+                            <th>Lote</th>
+                            <th>Caducidad</th>
+                            <th>Codigo de barras</th>
+                            <th>Existencia</th>
+                            <th>Cantidad (normal)</th>
+                            <!-- 
+                            <th *ngIf="es_unidosis">Existencia Unidosis</th>
+                            <th *ngIf="es_unidosis">Cantidad Unidosis</th>
+                            -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of lotes_insumo;  let i = index;">
+                            <td *ngIf="!item.nuevo">{{item.lote}}</td>
+                            <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Lote" [(ngModel)]="item.lote"></td>
+                            <td *ngIf="!item.nuevo">{{item.fecha_caducidad}}</td>
+                            <td *ngIf="item.nuevo"><input class="input has-text-centered " type="date" placeholder="Fecha de caducidad" [(ngModel)]="item.fecha_caducidad"></td>
+                            <td *ngIf="!item.nuevo">{{item.codigo_barras}}</td>
+                            <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Codigo de barras" [(ngModel)]="item.codigo_barras"></td>
+                            <td *ngIf="!item.nuevo">{{item.existencia}}</td>
+                            <td *ngIf="item.nuevo"></td>
+                            <td>
+                                <input class="input has-text-centered " type="number" step="1" min="0" max="{{item.existencia}}" (keyup)="comprobar_cant_lotes()" (keypress)="quitar_punto($event)" (change)="comprobar_cant_lotes()" placeholder="Cantidad" [(ngModel)]="item.cantidad">
+                            </td>
 
-                        <!-- <td *ngIf="!item.nuevo && es_unidosis">{{item.existencia_unidosis}}</td> -->
-                        <td *ngIf="item.nuevo && es_unidosis"></td>
+                            <!-- <td *ngIf="!item.nuevo && es_unidosis">{{item.existencia_unidosis}}</td> -->
+                            <td *ngIf="item.nuevo && es_unidosis"></td>
 
-                        <!-- 
-                        <td *ngIf="es_unidosis">
-                            <input class="input has-text-centered " type="number" step="1" min="0" max="{{item.cantidad_unidosis}}" placeholder="Cantidad Unidosis" [(ngModel)]="item.cantidad_unidosis">
-                        </td> 
-                        -->
+                            <!-- 
+                            <td *ngIf="es_unidosis">
+                                <input class="input has-text-centered " type="number" step="1" min="0" max="{{item.cantidad_unidosis}}" placeholder="Cantidad Unidosis" [(ngModel)]="item.cantidad_unidosis">
+                            </td> 
+                            -->
 
-                        <td *ngIf="item.nuevo">
-                            <a class="delete" (click)=eliminarLote(i)></a>
-                        </td>
-                    </tr>
-                </tbody>
-                
-            </table>
+                            <td *ngIf="item.nuevo">
+                                <a class="delete" (click)=eliminarLote(i)></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </section>
         <footer class="modal-card-foot">
             <a class="button is-dark" (click)="agregarNuevoLote()">Agregar nuevo lote</a>                            
@@ -475,6 +476,7 @@
             <div class="content">
                 <h1>¿Esta seguro de guardar la receta?</h1>
                 <p>Ya no se podrá realizar cambios</p>
+                <p class="modal-card-title" id="tituloGuardar"> </p>
             </div>
         </section>
         <footer class="modal-card-foot">

@@ -392,81 +392,87 @@
 
 <div class="modal" id="verLotes">
     <div class="modal-background"></div>
-    <div class="modal-card" style="width: 60%;">
-        <header class="modal-card-head">
+    <div class="modal-card" style="width: 60%; height: 90%;">
+        <header class="modal-card-head" style="height: 10%;">
             <p class="modal-card-title" id="tituloModal" style="width: 200px"> </p>
             <button type="button" class="delete" (click)="cancelarModal('verLotes'); modo = 'N';"></button>
         </header>
-        <section class="modal-card-body">
-            <div class="columns">
-                <div class="column is-two-thirds">
-                    <div class="columns">
-                        <div class="column is-4">
-                            <label class="label" style="font-size: large;float: left;margin-right: 6%;">Modo salida: </label>
-                        </div>
-                        <div class="b-checkbox is-info is-circular">
-                            <div class="column is-auto">
-                                <input class="styled" type="radio" id="modo_n" [checked]="modo == 'N'" (click)="modo = 'N'" [value]="'N'" name="modo">                                    
-                                <label for="modo_n">
-                                    <span class="tag is-large" [ngClass]="{'is-success':modo == 'N'}">Normal</span>
-                                </label>
+        <section class="modal-card-body" style="height: 90%;">
+            <div style="padding: 1em; overflow-x: hidden; height: 100%;">
+                <div style="padding: 1em; overflow: scroll; overflow-x: hidden; overflow-y: hidden; height: 20%;">
+                    <div class="columns" >
+                        <div class="column is-two-thirds">
+                            <div class="columns">
+                                <div class="column is-4">
+                                    <label class="label" style="font-size: large;float: left;margin-right: 6%;">Modo salida: </label>
+                                </div>
+                                <div class="b-checkbox is-info is-circular">
+                                    <div class="column is-auto">
+                                        <input class="styled" type="radio" id="modo_n" [checked]="modo == 'N'" (click)="modo = 'N'" [value]="'N'" name="modo">                                    
+                                        <label for="modo_n">
+                                            <span class="tag is-large" [ngClass]="{'is-success':modo == 'N'}">Normal</span>
+                                        </label>
+                                    </div>
+                                    <div *ngIf="es_unidosis == 1" class="column is-auto">
+                                        <input class="styled" type="radio" id="modo_u" [checked]="modo == 'U'" (click)="modo = 'U'" [value]="'U'" name="modo">                                    
+                                        <label for="modo_u">
+                                            <span class="tag is-large" [ngClass]="{'is-success':modo == 'U'}">Unidosis</span>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
-                            <div *ngIf="es_unidosis == 1" class="column is-auto">
-                                <input class="styled" type="radio" id="modo_u" [checked]="modo == 'U'" (click)="modo = 'U'" [value]="'U'" name="modo">                                    
-                                <label for="modo_u">
-                                    <span class="tag is-large" [ngClass]="{'is-success':modo == 'U'}">Unidosis</span>
-                                </label>
+                        </div>
+                        <div class="column">
+                            <div class="field is-horizontal">
+                                <label class="label" *ngIf="modo == 'N'">Cant. solicitada:</label>
+                                <label class="label" *ngIf="modo == 'U'">Cant. solicitada ({{insumo.unidad_medida}}):</label>
+                                <input class="input has-text-centered" (keypress)="quitar_punto($event)" (change)="comprobar_cant_solicitada(cantidad_solicitada.value)" type="number" step="1" min="0" 
+                                    placeholder="Cantidad" #cantidad_solicitada id="cantidad_solicitada" 
+                                    name="cantidad_solicitada" (keyup)="comprobar_cant_solicitada(cantidad_solicitada.value)">
+                            <!-- <input style="background:aliceblue" type="text" readonly class="input" formControlName="cantidad_surtida" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad_surtida.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad_surtida.touched}"> -->
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="column">
-                    <div class="field is-horizontal">
-                        <label class="label" *ngIf="modo == 'N'">Cant. solicitada:</label>
-                        <label class="label" *ngIf="modo == 'U'">Cant. solicitada ({{insumo.unidad_medida}}):</label>
-                        <input class="input has-text-centered" (keypress)="quitar_punto($event)" (change)="comprobar_cant_solicitada(cantidad_solicitada.value)" type="number" step="1" min="0" 
-                            placeholder="Cantidad" #cantidad_solicitada id="cantidad_solicitada" 
-                            name="cantidad_solicitada" (keyup)="comprobar_cant_solicitada(cantidad_solicitada.value)">
-                       <!-- <input style="background:aliceblue" type="text" readonly class="input" formControlName="cantidad_surtida" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad_surtida.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad_surtida.touched}"> -->
-                    </div>
+                <div style="padding: 1em; overflow: scroll; overflow-x: hidden; height: 80%;">
+                    <table class="table is-narrow is-bordered is-striped" >
+                        <thead>
+                            <tr>
+                                <th>Lote</th>
+                                <th>Caducidad</th>
+                                <th>Codigo de barras</th>
+                                <th *ngIf="modo == 'N'">Existencia</th>
+                                <th *ngIf="modo == 'N'">Cantidad</th>
+                                <th *ngIf="modo == 'U'">Existencia Unidosis ({{insumo.unidad_medida}})</th> 
+                                <th *ngIf="modo == 'U'">Cantidad Unidosis ({{insumo.unidad_medida}})</th> 
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of lotes_insumo;  let i = index;">
+                                <td *ngIf="!item.nuevo">{{item.lote}}</td>
+                                <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Lote" [(ngModel)]="item.lote"></td>
+                                <td *ngIf="!item.nuevo">{{item.fecha_caducidad}}</td>
+                                <td *ngIf="item.nuevo">
+                                    <input class="input has-text-centered" placeholder="Fecha de caducidad" 
+                                    [(ngModel)]="item.fecha_caducidad" min="MinDateCaducidad" (blur)="validar_fecha()"
+                                    placeholder="YYYY-MM-DD" [textMask]="{mask:mask, keepCharPositions: true, pipe: autoCorrectedDatePipe}"/>
+                                </td>
+                                <td *ngIf="!item.nuevo">{{item.codigo_barras}}</td>
+                                <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Codigo de barras" [(ngModel)]="item.codigo_barras"></td>
+                                <td *ngIf="!item.nuevo && modo == 'N'">{{item.existencia}}</td>
+                                <td *ngIf="!item.nuevo && modo == 'U'">{{item.existencia_unidosis}}</td>
+                                <td *ngIf="item.nuevo "></td>
+                                <td >
+                                    <input class="input has-text-centered" type="number" step="1" min="0" (keypress)="quitar_punto($event)"  (keyup)="comprobar_cant_lotes()" (change)="comprobar_cant_lotes()" max="{{item.existencia}}" placeholder="Cantidad" [(ngModel)]="item.cantidad">
+                                </td>
+                                <td *ngIf="item.nuevo">
+                                    <a class="delete" (click)=eliminarLote(i)></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <table class="table is-narrow is-bordered is-striped">
-                <thead>
-                    <tr>
-                        <th>Lote</th>
-                        <th>Caducidad</th>
-                        <th>Codigo de barras</th>
-                        <th *ngIf="modo == 'N'">Existencia</th>
-                        <th *ngIf="modo == 'N'">Cantidad</th>
-                        <th *ngIf="modo == 'U'">Existencia Unidosis ({{insumo.unidad_medida}})</th> 
-                        <th *ngIf="modo == 'U'">Cantidad Unidosis ({{insumo.unidad_medida}})</th> 
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let item of lotes_insumo;  let i = index;">
-                        <td *ngIf="!item.nuevo">{{item.lote}}</td>
-                        <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Lote" [(ngModel)]="item.lote"></td>
-                        <td *ngIf="!item.nuevo">{{item.fecha_caducidad}}</td>
-                        <td *ngIf="item.nuevo">
-                            <input class="input has-text-centered" placeholder="Fecha de caducidad" 
-                            [(ngModel)]="item.fecha_caducidad" min="MinDateCaducidad" (blur)="validar_fecha()"
-                            placeholder="YYYY-MM-DD" [textMask]="{mask:mask, keepCharPositions: true, pipe: autoCorrectedDatePipe}"/>
-                        </td>
-                        <td *ngIf="!item.nuevo">{{item.codigo_barras}}</td>
-                        <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Codigo de barras" [(ngModel)]="item.codigo_barras"></td>
-                        <td *ngIf="!item.nuevo && modo == 'N'">{{item.existencia}}</td>
-                        <td *ngIf="!item.nuevo && modo == 'U'">{{item.existencia_unidosis}}</td>
-                        <td *ngIf="item.nuevo "></td>
-                        <td >
-                            <input class="input has-text-centered" type="number" step="1" min="0" (keypress)="quitar_punto($event)"  (keyup)="comprobar_cant_lotes()" (change)="comprobar_cant_lotes()" max="{{item.existencia}}" placeholder="Cantidad" [(ngModel)]="item.cantidad">
-                        </td>
-                        <td *ngIf="item.nuevo">
-                            <a class="delete" (click)=eliminarLote(i)></a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
         </section>
         <footer class="modal-card-foot">
             <a class="button is-dark" *ngIf="modo=='N'" (click)="agregarNuevoLote()">Agregar nuevo lote</a>                            
