@@ -687,8 +687,8 @@ export class PedidosComponent implements OnInit {
   }
 
   permitirRecepcion(pedido_id,permitir){
-    var validacion_palabra = prompt("Para asignar proveedor a este pedido alterno, por favor escriba: PEDIDO RECEPCION");
-    if(validacion_palabra == 'PEDIDO RECEPCION'){
+    var validacion_palabra = prompt("Para permitir la recepcion en este pedido, por favor escriba: PERMITIR RECEPCION");
+    if(validacion_palabra == 'PERMITIR RECEPCION'){
       //let pedido_id = this.datos_pedido.id;
       
       this.apiService.cambiarPermisoRecepcion(pedido_id,permitir).subscribe(

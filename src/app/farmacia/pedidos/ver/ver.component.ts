@@ -165,7 +165,7 @@ export class VerComponent implements OnInit {
             this.pedido.datosImprimir = pedido;
             this.pedido.status = pedido.status;
             this.pedido.recepcionPermitida = pedido.recepcion_permitida;
-            
+            this.pedido.tipo_pedido = pedido.tipo_pedido_id;
 
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];
@@ -280,6 +280,8 @@ export class VerComponent implements OnInit {
         return '/almacen/pedidos/expirados';
       }else if(this.pedido.status == 'EX-CA'){
         return '/almacen/pedidos/expirados-cancelados';
+      }else if(this.pedido.status == 'PV' || this.pedido.status == 'VAL'){
+        return '/almacen/pedidos/alternos';
       }else{
         return '/almacen/pedidos/todos';
       }
