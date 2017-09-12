@@ -6,7 +6,7 @@
       <div class="tile is-4 is-parent is-vertical ">
         <div class="tile is-child">
             <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
-                <section class="hero is-primary" [ngClass]="{'is-primary':pedido.status=='PS','is-success':pedido.status=='FI','is-info':pedido.status=='EF','is-warning':pedido.status=='EX', 'is-danger': pedido.status=='EX-CA'}" >
+                <section class="hero is-primary" [ngClass]="{'is-primary':pedido.status=='PS','is-success':pedido.status=='FI','is-info':pedido.status=='EF','is-warning':pedido.status=='EX', 'is-danger': pedido.status=='EX-CA', 'is-primary':(pedido.status == 'VAL' || pedido.status == 'PV')}" >
                     <h1 *ngIf="pedido.status == 'PS'" class="title" style="margin:0.5em;" >
                         <span class="icon is-medium"><i class="fa fa-file-text"></i></span> Pedido Por Surtir <span class="is-pulled-right">{{porcentageTotalPedido | number:'1.0-2'}} %</span>
                     </h1>
@@ -22,6 +22,15 @@
                     <h1 *ngIf="pedido.status == 'EX-CA'" class="title" style="margin:0.5em;" >
                         <span class="icon is-medium"><i class="fa fa-exclamation-circle"></i></span> Pedido Cancelado <span class="is-pulled-right">{{porcentageTotalPedido | number:'1.0-2'}} %</span>
                     </h1>
+                    <h1 *ngIf="pedido.status == 'PV'" class="title" style="margin:0.5em;" >
+                        <span class="icon is-medium"><i class="fa fa-file-text"></i></span> Por Validar
+                    </h1>
+                    <h1 *ngIf="pedido.status == 'VAL'" class="title" style="margin:0.5em;" >
+                        <span class="icon is-medium"><i class="fa fa-file-text"></i></span> Validado
+                    </h1>
+                </section>
+                <section *ngIf="pedido.tipo_pedido == 'PALT'" class="hero is-warning" style="text-align:center;">
+                    Pedido Alterno
                 </section>
                 <section>
                     <div class="control is-grouped">
@@ -35,26 +44,6 @@
                 </section>
 
                 <div style="padding: 1em;">
-                    <!--label class="label">Folio:</label>
-                    <p class="control">
-                        <input type="text" class="input is-fullwidth" readonly="readonly" value="{{(pedido.datosImprimir)?pedido.datosImprimir.folio:'S/F'}}"/>
-                    </p>
-                    <label class="label">Almacén:</label>
-                    <p class="control">
-                        <input type="text" class="input is-fullwidth" readonly="readonly" value="{{(pedido.datosImprimir)?pedido.datosImprimir.almacen_solicitante.nombre:'Sin almacen asignado'}}"/>
-                    </p>
-                    <label class="label">Nombre del Pedido:</label>
-                    <p class="control">
-                        <input type="text" class="input is-fullwidth" readonly="readonly" value="{{(pedido.datosImprimir)?pedido.datosImprimir.descripcion:''}}"/>
-                    </p>
-                    <label class="label">Fecha:</label>
-                    <p class="control">
-                        <input type="text" class="input is-fullwidth" readonly="readonly" value="{{(pedido.datosImprimir)?pedido.datosImprimir.fecha:''}}"/>
-                    </p>
-                    <div class="control">
-                        <textarea name="observaciones" class="textarea" placeholder="Observaciones"  readonly="readonly">{{(pedido.datosImprimir)?pedido.datosImprimir.observaciones:''}}</textarea>
-                    </div-->
-
                     <label class="label">Datos del Pedido:</label>
                     <div *ngIf="pedido.datosImprimir" class="level-item">
                         <p class="subtitle is-5">
@@ -114,7 +103,7 @@
                     <span class="icon"><i class="fa fa-file"></i></span><span>Recepciones: {{pedido.datosImprimir.recepciones.length}}</span>
                 </a-->
                 <a *ngIf="pedido.status == 'EX'" class="button is-danger is-pulled-right" (click)="mostrarDialogoCancelarPedido()"> <span class="icon"><i class="fa fa-ban"></i></span> <span>Cancelar Pedido</span></a>
-                <a *ngIf="pedido.status == 'EX'" class="button is-warning is-pulled-right" (click)="mostrarDialogoPedidoAlternoPedido()"> <span class="icon"><i class="fa fa-retweet"></i></span> <span>Pedido Alterno</span></a>
+                <!--a *ngIf="pedido.status == 'EX'" class="button is-warning is-pulled-right" (click)="mostrarDialogoPedidoAlternoPedido()"> <span class="icon"><i class="fa fa-retweet"></i></span> <span>Pedido Alterno</span></a-->
             </div> 
 
             <div class="is-fullwidth has-text-centered" *ngIf="cargando">
