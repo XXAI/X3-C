@@ -110,7 +110,7 @@ export class FormularioComponent {
     // inicializar el formulario reactivo
     this.dato = this.fb.group({
       id: [''],
-      observaciones: [''],
+      observaciones: ['', [Validators.required]],
       tipo_movimiento_id: ['6', [Validators.required]],
       insumos: this.fb.array([])
     });
@@ -564,6 +564,11 @@ export class FormularioComponent {
     }
   }
 
+  /**
+     * Este método valida que en el campo de la cantidad no pueda escribir puntos o signo negativo
+     * @param event Parametro que contiene el valor de la tecla presionada
+     * @return void
+     */
   quitar_punto(event) {
     if (this.is_numeric(event.key)) {
       return true;

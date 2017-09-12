@@ -143,7 +143,7 @@
                                                     <td *ngIf="tieneid">{{val.value.existencia_anterior}}</td>
                                                     <td [formGroupName]="i2">
                                                         <input *ngIf="!tieneid" class="input has-text-centered" (blur)="validar_cantidad_lote(i, val, i2, modo)" type="number" step="1"
-                                                            min="0" max="{{item.existencia - 1}}" placeholder="Cantidad" formControlName="cantidad">
+                                                            (keypress)="quitar_punto($event)" min="0" max="{{item.existencia - 1}}" placeholder="Cantidad" formControlName="cantidad">
                                                         <input *ngIf="tieneid" class="input has-text-centered" type="number" step="1"  min="{{val.value.existencia + 1}}"
                                                             placeholder="Cantidad" formControlName="nueva_existencia" readonly>
                                                     </td>

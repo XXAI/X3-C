@@ -74,8 +74,8 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                             { text: 'FECHA', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'FOLIO', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'INSUMOS', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'RECIBE', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'ENTREGÓ', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'RECIBE', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'CAPTURADO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
                             {}
                         ]

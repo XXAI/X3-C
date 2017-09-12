@@ -48,6 +48,14 @@
                                     </p>
                                 </div>
                             </div>
+                            <div class="control">
+                                    <label class="label">&nbsp;</label> 
+                                    <button class="button is-default is-medium" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="fecha_desde='';fecha_hasta=''; tipo='TODO'; clave_clues=''" >Limpiar</button>
+                            </div>
+                            <div class="control">
+                                    <label class="label">&nbsp;</label> 
+                                <button class="button is-medium" (click)="ctrl.listar(1)"><span class="icon"><i class="fa fa-filter"></i></span> <span>Filtrar</span></button>
+                            </div> 
                         </div>
                     </div>
                 </div>
@@ -60,7 +68,7 @@
             </div>
 
             <div style="overflow: scroll; overflow-x: hidden; height: 650px;">
-                <table class="table" *ngIf="!cargando" style="min-width:100%; font-size:1em;">
+                <table class="table" *ngIf="!ctrl.cargando" style="min-width:100%; font-size:1em;">
                     <thead>
                         <tr>
                             <th></th>
@@ -202,7 +210,13 @@
                                     </div>
                                     
                                 </div>
-                                <figure class="highlight" style="width: 100%; height: 300px; overflow: auto;">
+                                <div class="is-fullwidth has-text-centered" *ngIf="cargando">
+                                    <br>
+                                    <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
+                                    <br>
+                                    <br>
+                                </div>
+                                <figure *ngIf="!cargando" class="highlight" style="width: 100%; height: 300px; overflow: auto;">
                                     <pre>
                                         <span class="help is-danger" *ngIf="ctrl2.error_json">El archivo no es valido o no tiene el formato adecuado.</span>
                                         <code class="language-json" data-lang="json">{{ dato2?.controls?.json.value | json }}</code>
