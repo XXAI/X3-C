@@ -1,5 +1,15 @@
 <avance-menu></avance-menu>
 <div style="height:50px;"></div>
+<div class="field">
+  <div class="control">
+    <div class="select is-primary">
+      <select>
+        <option>Select dropdown</option>
+        <option>With options</option>
+      </select>
+    </div>
+  </div>
+</div>
 <div class="contenedor columns " style="height:100%; ">
     <div class="column" style="padding:2em;">
         <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
@@ -65,6 +75,31 @@
             <div>
               <div class="notification">
                 TEMA <strong>{{ datos_avance.tema | uppercase}}</strong>.
+
+                <div class="is-pulled-right" style="padding-right: 1%">
+                    
+                    <button class="button is-primary">ACTUALIZAR</button>
+                  
+                </div>
+                <div class="is-pulled-right" style="padding-right: 1%">
+                    
+                    <select class="select">
+                      <option>PRIORIDAD</option>
+                      <option>NORMAL</option>
+                      <option>PRIORITARIO</option>
+                      <option>URGENTE</option>
+                    </select>
+                </div>
+                <div class="is-pulled-right" style="padding-right: 1%">
+                    
+                    <select class="select">
+                      <option>ESTATUS</option>
+                      <option>VIGENTE</option>
+                      <option>CONCLUIDO</option>
+                    </select>
+                  
+                </div>
+                
               </div>
             </div>
             <div class="is-fullwidth has-text-centered" *ngIf="cargando">
