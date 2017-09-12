@@ -35,19 +35,6 @@ export class IndexFarmaciaComponent implements OnInit {
       { permiso: 'a1OMZVn7dveOf5aUK8V0VsvvSCxz8EMw', icono: 'assets/icono-entradas.svg', titulo: 'Entrada de almacén', url:'/almacen/entradas-estandar' },
 
       { permiso: 'tTxAiFKSsx4xSvJjIv5jodZpliDxFe1y', icono: 'assets/icono-salidas.svg', titulo: 'Transferencia Almacen', url:'/almacen/transferencia-almacen' },
-      
-      { // PRUEBA
-        permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-recetas.svg',
-        titulo: 'Recetas', url: '/almacen/salidas-recetas'
-      },
-      { // PRUEBA
-        permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-salidas.svg',
-        titulo: 'Salida  de almacén', url: '/almacen/salidas-estandar'
-      },
-      { // PRUEBA
-        permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-entradas.svg',
-        titulo: 'Entrada  de almacén', url: '/almacen/entradas-estandar'
-      },
 
       // { permiso: '7KbTARF2kpnO4Lfqv8hmYP8QGMcgJBwU', icono: 'assets/icono-ajustes-inventario.svg', titulo: 'Inicialización Inventario', url: '/almacen/inicializacion-inventario' },
 
