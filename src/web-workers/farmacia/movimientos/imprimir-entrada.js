@@ -21,7 +21,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     headerRows: 5,
                     dontBreakRows: true,
                     //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
-                    widths: [80, 90, 'auto', 'auto', 'auto', 'auto'],
+                    widths: [70, 'auto', 'auto', 'auto', 50, 50],
                     body: [
                         [{
                             image: 'header',
@@ -37,25 +37,25 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                             {}, {}, {}, {}, {}
                         ],
                         [
-                            { text: 'FOLIO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
-                            {},
-                            { text: data.datos.id, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
+                            { text: 'FOLIO', style: 'tableHeaderVerde', alignment: 'right' },
+                            { text: data.datos.id, style: 'tableHeader', alignment: 'left' },
                             { text: 'ALMACÉN', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.usuario.almacen_activo.nombre, style: 'tableHeader', alignment: 'left' }
+                            { text: data.usuario.almacen_activo.nombre, style: 'tableHeader', colSpan: 3, alignment: 'left' },
+                            {}, {},
                         ],
                         [
-                            { text: 'USUARIO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
-                            {},
-                            { text: data.usuario.nombre +' '+ data.usuario.apellidos, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
-                            { text: 'FECHA DE CREACION', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.datos.fecha_movimiento, style: 'tableHeader', alignment: 'left' }
+                            { text: 'USUARIO', style: 'tableHeaderVerde', alignment: 'right' },
+                            { text: data.usuario.nombre +' '+ data.usuario.apellidos, style: 'tableHeader', alignment: 'left' },
+                            { text: 'FECHA DE ENTRADA', style: 'tableHeaderVerde', alignment: 'right' },
+                            { text: data.datos.fecha_movimiento, style: 'tableHeader', colSpan: 3, alignment: 'left' },
+                            {}, {}
                         ],
                         [
-                            { text: 'CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
-                            {},
-                            { text: data.usuario.clues_activa.clues, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
+                            { text: 'CLUES', style: 'tableHeaderVerde', alignment: 'right' },
+                            { text: data.usuario.clues_activa.clues, style: 'tableHeader', alignment: 'left' },
                             { text: 'NOMBRE DE CLUES', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.usuario.clues_activa.nombre, style: 'tableHeader', alignment: 'left' }
+                            { text: data.usuario.clues_activa.nombre, style: 'tableHeader', colSpan: 3, alignment: 'left' },
+                            {}, {}
                         ],
                         [{ text: ' ', style: 'celdaEspacio', colSpan: 6, alignment: 'center' },
                             {}, {}, {}, {}, {}
@@ -217,7 +217,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                             '', 
                             { text: '\n' + data.datos.observaciones, rowSpan: 2, alignment: 'justify' }
                         ],
-                        ['Persona que recibe ', '']
+                        ['Persona que entrega ', '']
                     ],
                 },
                 layout: {

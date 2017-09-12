@@ -233,7 +233,6 @@ export class ListaComponent {
      * @return void
      */
     autocompleListFormatter = (data: any) => {
-        console.log(data);
         let html = `
         <div class="card">
             <div class="card-content">
@@ -263,9 +262,10 @@ export class ListaComponent {
   select_clues_autocomplete(data) {
 
     let usuario = JSON.parse(localStorage.getItem('usuario'));
-    this.cargando = true;
+    this.clave_clues = data.clues;
+    // this.cargando = true;
     // cargar los datos de los lotes del insumo seleccionado en el autocomplete
-    this.crudService.lista(0, 1000, 'listar-pedidos-proveedor?almacen=' + usuario.almacen_activo.id + '&clues=' + data.clues).subscribe(
+    /*this.crudService.lista(0, 1000, 'listar-pedidos-proveedor?almacen=' + usuario.almacen_activo.id + '&clues=' + data.clues).subscribe(
       resultado => {
 
         this.resultado_clues = resultado;
@@ -277,7 +277,7 @@ export class ListaComponent {
       error => {
         this.cargando = false;
       }
-    );
+    );*/
   }
     /*********************************************NOTIFICACIONES*************************************************** */
 

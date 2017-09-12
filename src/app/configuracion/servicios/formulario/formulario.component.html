@@ -2,7 +2,7 @@
 <panel-control-menu></panel-control-menu>
 <div style="height:50px;"></div>
 
-<form name="dato" novalidate [formGroup]="dato" (ngSubmit)="ctrl.enviar(false)">
+<form name="dato" novalidate [formGroup]="dato" (ngSubmit)="ctrl.enviar(true)">
     <div class="contenedor columns " style="height:85%">
         <div class="column is-one-quarter is-hidden-mobile">
             <panel-control-menu-aside></panel-control-menu-aside>
@@ -20,11 +20,11 @@
                                         <!-- --> Mis servicios
                                     </h1>
                                     <span style="text-align: right">
-                                        Última actualización: <span *ngIf="!actualizado" class="icon is-small"><i class="fa fa-refresh fa-spin"></i></span>
-                                        <strong *ngIf="actualizado && !error_actualizacion" >{{actualizacion | date}}</strong>
-                                        <strong *ngIf="error_actualizacion" >No disponible</strong>
-                                        Por: <span *ngIf="!actualizado" class="icon is-small"><i class="fa fa-refresh fa-spin"></i></span>
-                                        <strong *ngIf="actualizado">{{actualizacion_usuario}} </strong> 
+                                        Última actualización: <span class="icon is-small"><i class="fa fa-refresh fa-spin"></i></span>
+                                        <!-- <strong *ngIf="actualizado" >{{actualizacion | date}}</strong> -->
+                                        
+                                        Por: <span class="icon is-small"><i class="fa fa-refresh fa-spin"></i></span>
+                                        <!-- <strong *ngIf="actualizado">{{actualizacion_usuario}} </strong> -->
                                     </span>
                                 </div>
                             </div>
@@ -35,7 +35,7 @@
                                     <button class="button is-primary" type="submit" [ngClass]="{'is-loading': ctrl.cargando}" [disabled]="ctrl.dato.invalid">Guardar</button>
                                 </p>
                                 <p class="level-item">
-                                    <a class="button  is-primary" (click)="ctrl.cargarDatos(); ctrl.cargarCatalogo('tipos_servicios', 'servicios'); cargarValidar();" id="actualizar"><span class="icon "><i class="fa fa-refresh"></i></span></a>
+                                    <a class="button  is-primary" (click)="ctrl.cargarDatos(); ctrl.cargarCatalogo('tipos_servicios', 'servicios?bid=1', 'initMover'); cargarValidar();" id="actualizar"><span class="icon "><i class="fa fa-refresh"></i></span></a>
                                 </p>
                                 <p class="level-item">&nbsp;</p>
                             </div>
@@ -62,7 +62,7 @@
 
                         <div [ngClass]="{ 'is-hidden': tab != 2}">
                             <div class="box">
-                                <a id="catalogos" (click)="ctrl.cargarCatalogo('tipos_servicios', 'servicios'); "></a>
+                                <a id="catalogos" (click)="ctrl.cargarCatalogo('tipos_servicios', 'servicios?bid=1', 'initMover'); "></a>
                                 <article class="media">
                                     <div class="media-content">
                                         <div class="content">
@@ -80,12 +80,12 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div *ngIf="cargando_servicios_disponibles || ctrl.cargando" class="has-text-centered" style="overflow: hidden; overflow-x: hidden; height: 450px;">
+                                                    <div *ngIf="ctrl.cargando" class="has-text-centered" style="overflow: hidden; overflow-x: hidden; height: 450px;">
                                                         <br>
                                                         <br>
                                                         <span class="tag is-primary is-large"><i class="fa fa-refresh fa-spin"></i>&nbsp; Cargando... </span>
                                                     </div>
-                                                    <div *ngIf="!cargando_servicios_disponibles && !ctrl.cargando" style="overflow: scroll; overflow-x: hidden; height: 450px;">
+                                                    <div *ngIf="!ctrl.cargando" style="overflow: scroll; overflow-x: hidden; height: 450px;">
                                                         <label class="panel-block" *ngFor="let val of ctrl.tipos_servicios; let i=index">          
                                                             <div class="field">
                                                                 <div class="b-checkbox">
@@ -131,12 +131,12 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div *ngIf="cargando_servicios_disponibles || ctrl.cargando" class="has-text-centered" style="overflow: hidden; overflow-x: hidden; height: 450px;">
+                                                    <div *ngIf="ctrl.cargando" class="has-text-centered" style="overflow: hidden; overflow-x: hidden; height: 450px;">
                                                         <br>
                                                         <br>
                                                         <span class="tag is-primary is-large"><i class="fa fa-refresh fa-spin"></i>&nbsp; Cargando... </span>
                                                     </div>
-                                                    <div *ngIf="!cargando_servicios_disponibles && !ctrl.cargando" style="overflow: scroll; overflow-x: hidden; height: 450px;">
+                                                    <div *ngIf="!ctrl.cargando" style="overflow: scroll; overflow-x: hidden; height: 450px;">
                                                         <label class="panel-block" *ngFor="let item of ctrl.dato.controls.clues_servicios.controls; let i2=index">          
                                                             <div class="field" [formGroupName]="i2">
                                                                 <div class="b-checkbox">
@@ -157,7 +157,7 @@
                                 </article>
                             </div>
                         </div>
-                        <a (click)="ctrl.initMover(ctrl.dato.controls.clues_servicios.controls, ctrl.tipos_servicios); " id="initMover"></a>
+                        <a (click)="ctrl.initMover(ctrl.dato.controls.clues_servicios.controls, ctrl.tipos_servicios, 'nombre');  cargarValidar();" id="initMover"></a>
                         <!--
                         <div class="control is-grouped" style="float:left; padding:10px;">
                             <p class="control">

@@ -86,10 +86,10 @@
                         <nav class="panel" formGroupName="movimiento_metadato">
 
                             <div class="field">
-                                <label class="label">Persona que recibe:</label>
+                                <label class="label">Persona que entrega:</label>
                                 <p class="control is-expanded  has-icon has-icon-right">
                                     <input class="input" type="text" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required') && ctrl.dato.get('movimiento_metadato').get('persona_recibe').touched}"
-                                        placeholder="Persona que recibe" formControlName="persona_recibe">
+                                        placeholder="Persona que entrega" formControlName="persona_recibe">
                                     <span class="icon is-small" *ngIf="ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required') && ctrl.dato.get('movimiento_metadato').get('persona_recibe').touched">
                                         <i class="fa fa-warning"></i>
                                     </span>
@@ -247,7 +247,8 @@
                                             <div class="column is-2">                                                
                                                 <p class="control is-expanded">
                                                     <label class="label">Cantidad:</label>
-                                                    <input type="number" class="input" formControlName="cantidad" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad.touched}">
+                                                    <input type="number" class="input" formControlName="cantidad" (keypress)="quitar_punto($event)"
+                                                    [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad.touched}">
                                                 </p>
                                             </div>
                                         </div>

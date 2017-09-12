@@ -576,8 +576,13 @@ export class FormularioComponent {
     }
   }
 
-  quitar_punto(event){
-    if (this.is_numeric(event.key ) ){
+  /**
+     * Este método valida que en el campo de la cantidad no pueda escribir puntos o signo negativo
+     * @param event Parametro que contiene el valor de la tecla presionada
+     * @return void
+     */
+  quitar_punto(event) {
+    if (this.is_numeric(event.key ) ) {
       return true;
     }else {
       return false;
@@ -618,7 +623,26 @@ export class FormularioComponent {
     }
   }
   guardar_movimiento() {
-    document.getElementById('guardarMovimiento').classList.add('is-active');
+    let lotes = true;
+    // obtener el formulario reactivo para agregar los elementos
+    const control = <FormArray>this.dato.controls['insumos'];
+    if (control.length === 0) {
+      this.notificacion.warn('Insumos', 'Debe agregar por lo menos un insumo', this.objeto);
+    }else {
+      for (let item of control.value) {
+        if (item.lotes.length === 0) {
+          lotes = false;
+        }
+      }
+      if (lotes) {
+        document.getElementById('guardarMovimiento').classList.add('is-active');
+      } else {
+        document.getElementById('tituloGuardar').innerHTML = ` <br>
+          <p aling="justify" style="font-size:12px; color: red"> Contiene insumos con existencia negada.</p>`;
+        document.getElementById('guardarMovimiento').classList.add('is-active');
+        this.notificacion.warn('Insumos', 'negarExistencia', this.objeto);
+      }
+    }
   }
 
 

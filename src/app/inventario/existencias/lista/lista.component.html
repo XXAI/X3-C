@@ -1,4 +1,4 @@
-<listar #ctrl URL="inventario?buscar_en={{buscar_en}}&seleccionar={{seleccionar}}&tipo={{tipo}}" titulo="Inventario"></listar>
+<listar #ctrl URL="inventario?buscar_en={{buscar_en}}&seleccionar={{seleccionar}}&tipo={{tipo}}&clave_insumo={{clave_insumo}}" titulo="Inventario"></listar>
 <app-menu-inventario [modulo]="'Existencia de insumos médicos'" [icono]="'assets/icono-salidas.svg'" [url]="'/inventario'"></app-menu-inventario>
 <div style="height:50px;"></div>
 <div class="contenedor columns " style="height:80%;">
@@ -23,8 +23,8 @@
                             
                             <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="PDF" (click)="dato = ctrl.dato; imprimir()"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
                             <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="PDF" (click)="dato = ctrl.dato; imprimir()"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
-                            <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="Excel" (click)="export_excel()"><span class="icon "><i class="fa fa-file-excel-o"></i></span></a></p>
-                            <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="Excel" (click)="export_excel()"><span class="icon "><i class="fa fa-file-excel-o"></i></span></a></p>
+                            <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="Excel" (click)="imprimirExcel()"><span class="icon "><i class="fa fa-file-excel-o"></i></span></a></p>
+                            <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="Excel" (click)="imprimirExcel()"><span class="icon "><i class="fa fa-file-excel-o"></i></span></a></p>
                             <p class="level-item">&nbsp;</p>
                         </div>
                     </nav>
@@ -70,10 +70,33 @@
                             </p>
                             <p class="level-item">&nbsp;</p>
                             <p class="level-item">
+                                <span class="field">     
+                                    <p class="control" style="color:black">
+                                        <input ngui-auto-complete [source]="insumos_term" [list-formatter]="autocompleListFormatter" 
+                                        id="buscarInsumo" value-property-name="clave" display-property-name="clave" path-to-data="" 
+                                        loading-text="Cargando..." no-match-found-text="No hay resultados." (valueChanged)="select_insumo_autocomplete($event)" 
+                                        min-chars="1" class="input is-medium" type="text" [ngClass]="{'is-loading': ctrl.cargando}"
+                                        placeholder="Escanea el codigo de barra, o empieza escribir el nombre del producto" [(ngModel)]='clave_insumo'>
+                                    </p>
+                                </span>
+                            </p>
+                            <p class="level-item">
+                                <button class="button is-default is-medium" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="buscar_en='TODAS_LAS_CLAVES';seleccionar='TODO'; tipo='TODO'; clave_insumo=''" >Limpiar</button>
+                                
+                            </p>
+                            <p class="level-item">
                                 <button class="button is-medium" (click)="ctrl.listar(1)"><span class="icon"><i class="fa fa-filter"></i></span> <span>Filtrar</span></button>
                             </p> 
                         </div>
                     </nav>
+                    <div class="container is-fluid" id="titulo">
+                        <span></span>
+                        <div class="is-hidden-desktop">
+                            <h1 class="title" *ngIf="!ctrl.busquedaActivada">
+                                <span class="icon is-medium"><i class="fa fa-user"></i></span> Correcciones de movimiento
+                            </h1>
+                        </div>
+                    </div>
                 </div>
             </section>
             <div class="is-fullwidth has-text-centered" *ngIf="ctrl.cargando">

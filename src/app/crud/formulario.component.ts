@@ -90,10 +90,14 @@ export class FormularioComponent implements OnInit {
     * @return void
     */
     enviar(regresar: boolean = true) {
-        if (this.id)
-            this.actualizarDatos();
-        else
-            this.guardarDatos(regresar);
+        try {
+            if (this.id)
+                this.actualizarDatos();
+            else
+                this.guardarDatos(regresar);
+        } catch (e){
+            console.log('Mal');
+        }
     }
 
     /**
@@ -118,33 +122,53 @@ export class FormularioComponent implements OnInit {
             error => {
                 this.cargando = false;
 
-                this.mensajeResponse.texto = 'No especificado.';
-                this.mensajeResponse.mostrar = true;
-                this.mensajeResponse.clase = 'error';
-                this.mensaje(3);
-
                 try {
                     let e = error.json();
                     if (error.status == 401) {
                         this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
-
                     }
                     // Problema de validación
                     if (error.status == 409) {
-                        this.mensajeResponse.texto = 'Por favor verfique los campos marcados en rojo.';
-                        this.mensajeResponse.clase = 'warning';
-                        this.mensaje(8);
-                        for (var input in e.error) {
-                            // Iteramos todos los errores
-                            for (var i in e.error[input]) {
-                                this.mensajeResponse.titulo = input;
-                                this.mensajeResponse.texto = e.error[input][i];
-                                this.mensajeResponse.clase = 'error';
-                                this.mensaje(3);
+                        try {
+                            for (var input in e.error) {
+                                if (e.error.hasOwnProperty(input)) {
+                                    for (let i in e.error[input]) {
+                                        if (e.error[input].hasOwnProperty(i)) {
+                                            for (let a in e.error[input][i]) {
+                                                if (e.error[input][i].hasOwnProperty(a)) {
+                                                    this.mensajeResponse.titulo = a;
+                                                    this.mensajeResponse.texto = e.error[input][i][a];
+                                                    this.mensajeResponse.clase = 'error';
+                                                    this.mensaje(3);
+                                                } else {
+                                                    this.mensajeResponse.titulo = input;
+                                                    this.mensajeResponse.texto = e.error[input][i];
+                                                    this.mensajeResponse.clase = 'error';
+                                                    this.mensaje(3);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                // Iteramos todos los errores
+                                /* for (var i in e.error[input]) {
+                                    this.mensajeResponse.titulo = input;
+                                    this.mensajeResponse.texto = e.error[input][i];
+                                    this.mensajeResponse.clase = 'error';
+                                    this.mensaje(3);
+                                }*/
                             }
+                        } catch (e) {
+                            this.mensajeResponse.texto = 'Por favor verfique los campos marcados en rojo.';
+                            this.mensajeResponse.clase = 'warning';
+                            this.mensaje(8);
                         }
                     }
                 } catch (e) {
+                    this.mensajeResponse.texto = 'No especificado.';
+                    this.mensajeResponse.mostrar = true;
+                    this.mensajeResponse.clase = 'error';
+                    this.mensaje(3);
 
                     if (error.status == 500) {
                         this.mensajeResponse.texto = '500 (Error interno del servidor)';
@@ -440,7 +464,6 @@ export class FormularioComponent implements OnInit {
                     resultado => {
                         this.cargando = false;
                         this.datosCargados = true;
-
                         // validar todos los key que tengan el array
                         this.dato.patchValue(this.cargarDatosRecursivo(resultado, this.dato));
 
@@ -559,15 +582,86 @@ export class FormularioComponent implements OnInit {
     }
 
 
+    private cargarDatosCatalogo: boolean = false;
+    private catalogo: any[] = []; roles: any[] = [];
     /**
      * Este metodo se encarga de cargar los datos de un catalogo para crear un select, grupos de radios o check
      * @param item nombre del modelo donde se guardaron los resultados
      * @param url  ruta de la pai donde se obtienen los valores
      * @return void
      */
-    private cargarDatosCatalogo: boolean = false;
-    private catalogo: any[] = []; roles: any[] = [];
-    cargarCatalogo(item, url) {
+    cargarCatalogo(item, url, id: string = "") {
+        this.cargando = true;
+        this.cargarDatosCatalogo = true;
+        this.crudService.lista(0, 0, url).subscribe(
+
+            resultado => {
+                if (resultado.data) {
+                    resultado.data.forEach(element => {
+                        if (!element.text) {
+                            element.text = element.nombre;
+                        }
+                    });
+                    this[item] = resultado.data;
+                }else {
+                    if (Array.isArray(resultado)) {
+                        resultado.forEach(element => {
+                            if (!element.text) {
+                                element.text = element.nombre;
+                            }
+                        });
+                    }
+                    this[item] = resultado;
+                }
+                this.cargando = false;
+                if (resultado.length == 0) {
+                    this.mensajeResponse.titulo = item;
+                    this.mensajeResponse.texto = 'Esta vacio, póngase en contacto con un administrador.';
+                    this.mensajeResponse.mostrar = true;
+                    this.mensajeResponse.clase = 'warning';
+                    this.mensaje(3);
+                }
+                this.cargarDatosCatalogo = false;
+                if (id != '') {
+                        setTimeout(() => {
+                            if (document.getElementById(id)) {
+                                document.getElementById(id).click();
+                            }
+                        }, 500);
+                }
+            },
+            error => {
+                this.mensajeResponse = new Mensaje(true);
+                this.mensajeResponse.texto = 'No especificado.';
+                this.mensajeResponse.mostrar = true;
+
+                try {
+
+                    let e = error.json();
+
+                    if (error.status == 401) {
+                        this.mensajeResponse.texto = "No tiene permiso para ver los roles.";
+                    }
+
+                    if (error.status == 500) {
+
+                        this.mensajeResponse.texto = "500 (Error interno del servidor). No se pudieron cargar los roles";
+                    }
+                } catch (e) {
+
+                    if (error.status == 500) {
+
+                        this.mensajeResponse.texto = "500 (Error interno del servidor). No se pudieron cargar los roles";
+                    } else {
+                        this.mensajeResponse.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.  No se pudieron cargar los roles";
+                    }
+                }
+                this.cargarDatosCatalogo = false;
+            }
+        );
+    }
+     
+    /* cargarCatalogo(item, url) {
         this.cargando = true;
         this.cargarDatosCatalogo = true;
         this.crudService.lista(0, 0, url).subscribe(
@@ -613,7 +707,7 @@ export class FormularioComponent implements OnInit {
                 this.cargarDatosCatalogo = false;
             }
         );
-    }
+    }*/
 
     /**
      * Este metodo se encarga de cargar los datos de un catalogo que depende de otro
@@ -798,6 +892,7 @@ ofModelo
      * @return void
      */
     initMover(toModelo, ofModelo, campo:string='id') {
+
         for (let item of toModelo) {
             var i = 0;
             for (let val of ofModelo) {
@@ -1000,6 +1095,7 @@ ofModelo
         timeOut: 2000,
         lastOnBottom: true
     };
+    
     /**
      * Este método muestra los mensajes resultantes de los llamados de la api
      * @param cuentaAtras numero de segundo a esperar para que el mensaje desaparezca solo

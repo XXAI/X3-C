@@ -475,9 +475,9 @@ export class FormularioComponent {
   guardar_movimiento() {
     // obtener el formulario reactivo para agregar los elementos
     const control = <FormArray>this.dato.controls['insumos'];
-    console.log(control.length);
+    console.log(control.value);
     if (control.length === 0) {
-      this.notificacion.alert('Insumos', 'Debe agregar por lo menos un insumo', this.objeto);
+      this.notificacion.warn('Insumos', 'Debe agregar por lo menos un insumo', this.objeto);
     }else {
       document.getElementById('guardarMovimiento').classList.add('is-active');
     }

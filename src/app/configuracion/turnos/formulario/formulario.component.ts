@@ -11,20 +11,17 @@ import { environment } from '../../../../environments/environment';
 
 export class FormularioComponent {
   dato: FormGroup;
-  cargando_turnos_disponibles = false;
-  actualizado;
+  actualizado: boolean = false;
   actualizacion;
   error_actualizacion;
   actualizacion_usuario;
   tieneid: boolean = false;
 
   tab: number = 2;
-  
 
   constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute, private _sanitizer: DomSanitizer) { }
 
   ngOnInit() {
-    this.cargando_turnos_disponibles = true;
 
     var usuario = JSON.parse(localStorage.getItem('usuario'));
 
@@ -47,43 +44,28 @@ export class FormularioComponent {
   }
 
   ngAfterViewInit() {
-    this.cargarCatalogos();
-    this.cargarValidar();
+    document.getElementById('actualizar').click();
   }
-  cargarCatalogos() {
-    setTimeout( () => {
-      document.getElementById('actualizar').click();
-    }, 8000);
-  }
+
   cargarValidar() {
-    setTimeout(() => {
-      this.cargando_turnos_disponibles = true;
       // obtener el formulario reactivo para agregar los elementos
       const control = <FormArray>this.dato.controls['clues_turnos'];
       let c = 0, c1;
       let tempUpdateAt = '';
       let temp_usuario_id = '';
 
-      // Solo si se tiene el control mover izquierda-derecha poner un 
-      // <a id="initMover" (click)="ctrl.initMover(ctrl.dato.controls.almacen_tipos_movimientos.controls, ctrl.tipos_movimientos)>
-      // refresh</a>
-      // incrementar el tiempo segun sea el caso para que cargue el catalogo en este caso va a acrgar 2 catalogos por eso pongo 5000
-      if (control) {
-        document.getElementById('initMover').click();
-        this.cargando_turnos_disponibles = false;
-      }
 
       // Comprobar si el arreglo no está vacío
       if (control.value.length != 0){
         // Comprobacion de la última fecha en la que se modificó y el usuario que lo hizo
         if (control.value[c].updated_at) {
           tempUpdateAt = control.value[c].updated_at;
-          this.error_actualizacion = false;
+          // this.error_actualizacion = false;
         } else if (control.value[c].created_at) {
           tempUpdateAt = control.value[c].created_at;
-          this.error_actualizacion = false;
+          // this.error_actualizacion = false;
         } else {
-          this.error_actualizacion = true;
+          // this.error_actualizacion = true;
         }
         temp_usuario_id = control.value[c].usuario_id;
         for (c = 0; c < control.length; ) {
@@ -95,11 +77,10 @@ export class FormularioComponent {
         }
         this.actualizacion = tempUpdateAt;
         this.actualizacion_usuario = temp_usuario_id;
-        this.actualizado = true;
+        // this.actualizado = true;
       }else {
-        this.error_actualizacion = true;
+        // this.error_actualizacion = true;
         this.actualizacion_usuario = 'Sin actualización';
       }
-    }, 12000);
   }
 }

@@ -11,11 +11,10 @@ import { environment } from '../../../../environments/environment';
 
 export class FormularioComponent {
   dato: FormGroup;
-  cargando_servicios_disponibles = false;
-  actualizado;
-  error_actualizacion;
-  actualizacion;
-  actualizacion_usuario;
+  // actualizado;
+  // error_actualizacion = false;
+  // actualizacion;
+  // actualizacion_usuario;
   tieneid;
 
   tab = 2;
@@ -29,7 +28,6 @@ export class FormularioComponent {
     private cdr: ChangeDetectorRef  ) { }
 
   ngOnInit() {
-    this.cargando_servicios_disponibles = true;
 
     let usuario = JSON.parse(localStorage.getItem('usuario'));
 
@@ -41,68 +39,61 @@ export class FormularioComponent {
       director_id:[usuario.clues_activa.director_id],
       clues_servicios: this.fb.array([])
     });
-
-    this.route.params.subscribe(params => {
-      if (params['clues']) {
-        this.tieneid = true;
-      }
-    });
+    try {
+      this.route.params.subscribe(params => {
+        if (params['clues']) {
+          this.tieneid = true;
+        }
+      });
+    } catch (e) {
+      console.log('Error');
+    }
     // Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
     document.getElementById('catalogos').click();
   }
 
   ngAfterViewInit() {
     this.cdr.detectChanges();
-    this.cargarCatalogos();
-    this.cargarValidar();
-  }
-  cargarCatalogos() {
-    setTimeout( () => { document.getElementById('actualizar').click(); }, 7000);
+    document.getElementById('actualizar').click();
   }
   cargarValidar() {
-    this.cargando_servicios_disponibles = true;
-    setTimeout(() => {
+    // setTimeout(() => {
       // obtener el formulario reactivo para agregar los elementos
+      try {
       const control = <FormArray>this.dato.controls['clues_servicios'];
-      let c = 0, c1;
+      let c = 0;
       let tempUpdateAt = '';
       let temp_usuario_id = '';
 
-      // Solo si se tiene el control mover izquierda-derecha poner un 
-      // <a id="initMover" (click)="ctrl.initMover(ctrl.dato.controls.almacen_tipos_movimientos.controls, ctrl.tipos_movimientos)>refresh</a>
-      // incrementar el tiempo segun sea el caso para que cargue el catalogo en este caso va a acrgar 2 catalogos por eso pongo 5000
-      if (control) {
-        document.getElementById('initMover').click();
-        this.cargando_servicios_disponibles = false;
-      }
-
-      // Comprobar si el arreglo no está vacío
-      if (control.value.length != 0){
-        // Comprobacion de la última fecha en la que se modificó y el usuario que lo hizo
-        if (control.value[c].updated_at) {
-          tempUpdateAt = control.value[c].updated_at;
-          this.error_actualizacion = false;
-        } else if (control.value[c].created_at) {
-          tempUpdateAt = control.value[c].created_at;
-          this.error_actualizacion = false;
-        } else {
-          this.error_actualizacion = true;
-        }
-        temp_usuario_id = control.value[c].usuario_id;
-        for (c = 0; c < control.length; ) {
-          if (control.value[c].updated_at > tempUpdateAt) {
+        // Comprobar si el arreglo no está vacío
+        if (control.value.length != 0){
+          // Comprobacion de la última fecha en la que se modificó y el usuario que lo hizo
+          if (control.value[c].updated_at) {
             tempUpdateAt = control.value[c].updated_at;
-            temp_usuario_id = control.value[c].usuario_id;
+            // this.error_actualizacion = false;
+          } else if (control.value[c].created_at) {
+            tempUpdateAt = control.value[c].created_at;
+            // this.error_actualizacion = false;
+          } else {
+            // this.error_actualizacion = true;
           }
-          c = c + 1;
+          temp_usuario_id = control.value[c].usuario_id;
+          for (c = 0; c < control.length; ) {
+            if (control.value[c].updated_at > tempUpdateAt) {
+              tempUpdateAt = control.value[c].updated_at;
+              temp_usuario_id = control.value[c].usuario_id;
+            }
+            c = c + 1;
+          }
+          // this.actualizacion = tempUpdateAt;
+          // this.actualizacion_usuario = temp_usuario_id;
+          // this.actualizado = true;
+        }else {
+          // this.error_actualizacion = true;
+          // this.actualizacion_usuario = 'Sin actualización';
         }
-        this.actualizacion = tempUpdateAt;
-        this.actualizacion_usuario = temp_usuario_id;
-        this.actualizado = true;
-      }else {
-        this.error_actualizacion = true;
-        this.actualizacion_usuario = 'Sin actualización';
+      } catch (e) {
+        console.log('Error cachado');
       }
-    }, 10000);
   }
 }
