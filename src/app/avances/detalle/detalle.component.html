@@ -1,23 +1,14 @@
 <avance-menu></avance-menu>
 <div style="height:50px;"></div>
-<div class="field">
-  <div class="control">
-    <div class="select is-primary">
-      <select>
-        <option>Select dropdown</option>
-        <option>With options</option>
-      </select>
-    </div>
-  </div>
-</div>
+
 <div class="contenedor columns " style="height:100%; ">
     <div class="column" style="padding:2em;">
         <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
             <section class="hero" [ngClass] = " {'is-dark': busquedaActivada, 'is-primary': !busquedaActivada } " >                
                 <div class="hero-body" style="position:relative;">
-                    <a class="button  is-dark" *ngIf="busquedaActivada" style="position:absolute; top:1em; right:1em;" (click)="busquedaActivada=false;searchBox.value='';resultadosBusqueda=[]"><span class="icon "><i class="fa fa-close"></i></span></a>
+                    <!--<a class="button  is-dark" *ngIf="busquedaActivada" style="position:absolute; top:1em; right:1em;" (click)="busquedaActivada=false;searchBox.value='';resultadosBusqueda=[]"><span class="icon "><i class="fa fa-close"></i></span></a>
                     <a class="button  is-dark" *ngIf="busquedaActivada" style="position:absolute; top:1em; right:3.5em;" (click)="listarBusqueda(searchBox.value,1)"><span class="icon "><i class="fa fa-refresh"></i></span></a>
-                    <a class="button  is-primary" *ngIf="!busquedaActivada" style="position:absolute; top:1em; right:1em;" (click)="listar(1)"><span class="icon "><i class="fa fa-refresh"></i></span></a>
+                    <a class="button  is-primary" *ngIf="!busquedaActivada" style="position:absolute; top:1em; right:1em;" (click)="listar(1)"><span class="icon "><i class="fa fa-refresh"></i></span></a>-->
                     <div class="container is-fluid">
                         
                         <h1 class="title" *ngIf="!busquedaActivada">
@@ -72,36 +63,45 @@
                 
               </ul>
             </div>
-            <div>
-              <div class="notification">
-                TEMA <strong>{{ datos_avance.tema | uppercase}}</strong>.
+            <form name="form" [formGroup]="avance_detalle"   (ngSubmit)="actualiza_avance()" > 
+              <div>
+                <div class="notification">
+                  TEMA <strong>{{ datos_avance.tema | uppercase}}</strong>.
 
-                <div class="is-pulled-right" style="padding-right: 1%">
-                    
-                    <button class="button is-primary">ACTUALIZAR</button>
+                  <div class="control is-grouped is-pulled-right" style="padding-right: 1%">
+                    <p class="control">
+                    <button type="submit" class="button is-primary" name="enviar" [ngClass]="{'is-loading': cargando}"  [disabled]="avance_detalle.invalid">Actualizar</button>
+                    </p>
+                  </div>
+                  <div class="is-pulled-right" style="padding-right: 1%"  *ngIf="administrador">
+                      
+                      <select class="select redondear"  formControlName="prioridad">
+                        <!--<option value="">PRIORIDAD</option>-->
+                        <option value="1">NORMAL</option>
+                        <option value="2">PRIORITARIO</option>
+                        <option value="3">URGENTE</option>
+                      </select>
+                      <span class="icon is-small" *ngIf="avance_detalle.get('prioridad').hasError('required') && avance_detalle.get('prioridad').touched">
+                        <i class="fa fa-warning"></i>
+                      </span>
+                      <span class="help is-danger" *ngIf="avance_detalle.get('prioridad').hasError('required') && avance_detalle.get('prioridad').touched">Este campo es requerido.</span>
+                  </div>
+                  <div class="is-pulled-right" style="padding-right: 1%">
+                      
+                      <select class="select redondear" formControlName="estatus">
+                        <!--<option value="">ESTATUS</option>-->
+                        <option value="0">VIGENTE</option>
+                        <option value="1">CONCLUIDO</option>
+                      </select>
+                      <span class="icon is-small" *ngIf="avance_detalle.get('estatus').hasError('required') && avance_detalle.get('estatus').touched">
+                        <i class="fa fa-warning"></i>
+                      </span>
+                      <span class="help is-danger" *ngIf="avance_detalle.get('estatus').hasError('required') && avance_detalle.get('estatus').touched">Este campo es requerido.</span>
+                  </div>
                   
                 </div>
-                <div class="is-pulled-right" style="padding-right: 1%">
-                    
-                    <select class="select">
-                      <option>PRIORIDAD</option>
-                      <option>NORMAL</option>
-                      <option>PRIORITARIO</option>
-                      <option>URGENTE</option>
-                    </select>
-                </div>
-                <div class="is-pulled-right" style="padding-right: 1%">
-                    
-                    <select class="select">
-                      <option>ESTATUS</option>
-                      <option>VIGENTE</option>
-                      <option>CONCLUIDO</option>
-                    </select>
-                  
-                </div>
-                
               </div>
-            </div>
+            </form>  
             <div class="is-fullwidth has-text-centered" *ngIf="cargando">
                 <br>
                 <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
@@ -275,8 +275,8 @@
                   	<input class="input"  type="text"  placeholder="Porcentaje"  formControlName="porcentaje">
                   	<span class="icon is-small" *ngIf="avance.get('porcentaje').hasError('required') && avance.get('porcentaje').touched">
 	                    <i class="fa fa-warning"></i>
-	                </span>
-	                <span class="help is-danger" *ngIf="avance.get('porcentaje').hasError('required') && avance.get('porcentaje').touched">Este campo es requerido.</span>
+  	                </span>
+  	                <span class="help is-danger" *ngIf="avance.get('porcentaje').hasError('required') && avance.get('porcentaje').touched">Este campo es requerido.</span>
                 </p>
                 
               </div>

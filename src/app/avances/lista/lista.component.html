@@ -6,27 +6,70 @@
             <section class="hero" [ngClass] = " {'is-dark': busquedaActivada, 'is-primary': !busquedaActivada } " >
                 
                 <div class="hero-body" style="position:relative;">
-                    <a class="button  is-dark" *ngIf="busquedaActivada" style="position:absolute; top:1em; right:1em;" (click)="busquedaActivada=false;searchBox.value='';resultadosBusqueda=[]"><span class="icon "><i class="fa fa-close"></i></span></a>
+                    <!--<a class="button  is-dark" *ngIf="busquedaActivada" style="position:absolute; top:1em; right:1em;" (click)="busquedaActivada=false;searchBox.value='';resultadosBusqueda=[]"><span class="icon "><i class="fa fa-close"></i></span></a>-->
                     <a class="button  is-dark" *ngIf="busquedaActivada" style="position:absolute; top:1em; right:3.5em;" (click)="listarBusqueda(searchBox.value,1)"><span class="icon "><i class="fa fa-refresh"></i></span></a>
                     <a class="button  is-primary" *ngIf="!busquedaActivada" style="position:absolute; top:1em; right:1em;" (click)="listar(1)"><span class="icon "><i class="fa fa-refresh"></i></span></a>
                     <div class="container is-fluid">
                         
                         <h1 class="title" *ngIf="!busquedaActivada">
-                            <span class="icon is-medium"><i class="fa fa-user"></i></span> Lista de Avances 
+                            <span class="icon is-medium"><i class="fa fa-user"></i></span> Lista de Temas 
                         </h1>
                         <h1 class="title" *ngIf="busquedaActivada">
                             <span class="icon is-medium"><i class="fa fa-search"></i></span> Búsqueda 
                         </h1>
-                        <div class="control is-grouped">
-                        <p class="control is-expanded">
+                        <div class="columns">
+                          <div class="column"  [ngClass]="{'is-three-quarters': filter }">
+                            <label class="label">Buscar Tema</label>
                             <input class="input is-medium" type="text" placeholder="Buscar" #searchBox id="search-box" (keyup)="buscar(searchBox.value)">
-                        </p>
-                        <p class="control">
+                          </div>
+                          <div class="column"  *ngIf="!filter">
+                            <label class="label">Prioridad</label>
+                              <select class="select redondear" #prioridad (change)='filtro(1, prioridad.value)'>
+                                <option value="">TODOS</option>
+                                <option value="1">NORMAL</option>
+                                <option value="2">PRIORITARIO</option>
+                                <option value="3">URGENTE</option>
+                            </select>
+                          </div>
+                          <div class="column" *ngIf="!filter">
+                            <label class="label">Estatus</label>
+                            <select class="select redondear" #estatus (change)='filtro(2, estatus.value)'>
+                                <option value="">TODOS</option>
+                                <option value="0">VIGENTES</option>
+                                <option value="1">FINALIZADOS</option>
+                            </select>
+                          </div>
+                          <div class="column" *ngIf="!filter">
+                            <label class="label">Vistos</label>
+                            <select class="select redondear" #vistos (change)='filtro(3, vistos.value)'>
+                                <option value="">TODOS</option>
+                                <option value="1">VISTOS</option>
+                                <option value="2">NO VISTOS</option>
+                            </select>
+                          </div>
+                          <div class="column" *ngIf="!filter">
+                          <label class="label">Área</label>
+                            <select class="select redondear" #area (change)='filtro(4, area.value)'>
+                                <option value="">TODOS</option>
+                                <option  *ngFor="let item of areas; let i=index" value="{{ item.area }}">{{ item.area }}</option>
+                            </select>
+                          </div>
+                          <div class="column">
                             <a class="button is-medium is-primary is-inverted " (click)='showAgregarTema=!showAgregarTema'>
                             <span class="icon"><i class="fa fa-plus"></i></span><span>Nuevo</span>
                             </a>
-                        </p>
+                            
+                          </div>
                         </div>
+                        <!--<div class="control is-grouped">
+                          
+                        <!--<p class="control is-expanded">
+                            
+                        </p>
+                        <p class="control">
+                            
+                        </p>
+                        </div>-->
                     </div>
                 </div>
             </section>
@@ -45,17 +88,24 @@
                     <th>RESPONSABLE</th>
                     <th>AREA</th>
                     <th>AVANCE</th>
+                    <th>ESTATUS</th>
                     <th>ACTUALIZADO</th>
                     <th></th>
                     </tr>
                 </thead>
                 <tbody  *ngIf="!busquedaActivada">
                     <tr *ngFor="let item of temas; let i=index">
-                        <th><a class='button is-info' (click)='informacion(item.id, item.porcentaje)'><i class='fa fa-info'></i></a></th>
+                        <th><a class='button is-info' (click)='informacion(item.id, item.porcentaje)'><i class='fa fa-info'></i></a><a class='button' [ngClass]="{'is-warning': item.visualizaciones > 0 }"> <span class="tag is-dark"><i class='fa'  [ngClass]="{'fa-envelope-open':item.visualizaciones == 0, 'fa-envelope': item.visualizaciones > 0 }"></i>&nbsp;{{ item.visualizaciones }}</span></a><a class='button'  [ngClass]="{'is-primary':item.prioridad == 1, 'is-warning': item.prioridad == 2, 'is-danger': item.prioridad == 3 }" (click)='informacion(item.id, item.porcentaje)'><i class='fa fa-info-circle'></i></a></th>
                         <th style="vertical-align: middle; cursor:pointer;"><a routerLink="/temas/avances/{{item.id}}">{{ item.tema }}</a></th>
                         <td style="vertical-align: middle; cursor:pointer;"><a routerLink="/temas/avances/{{item.id}}">{{ item.responsable }}</a></td>
                         <td style="vertical-align: middle; cursor:pointer;"><a routerLink="/temas/avances/{{item.id}}">{{ item.area }}</a></td>
                         <td style="vertical-align: middle; cursor:pointer;"><a routerLink="/temas/avances/{{item.id}}">{{ item.porcentaje }} %</a><progress class="progress is-info is-small" value="{{ item.porcentaje }}" max="100"></progress></td>
+                        
+
+                        <td style="vertical-align: middle; cursor:pointer;" *ngIf="item.estatus==0"><a routerLink="/temas/avances/{{item.id}}">VIGENTE </a></td>
+                        <td style="vertical-align: middle; cursor:pointer;" *ngIf="item.estatus == 1"><a routerLink="/temas/avances/{{item.id}}">CONCLUIDO </a></td>
+                        
+
                         <td style="vertical-align: middle; cursor:pointer;" *ngIf="item.creacion>=0"><a routerLink="/temas/avances/{{item.id}}"><span *ngIf="item.creacion == 0">Hoy</span><span *ngIf="item.creacion > 0">Hace {{ item.creacion }} Día(s)</span> </a></td>
                         <td style="vertical-align: middle; cursor:pointer;" *ngIf="item.creacion<0"><a routerLink="/temas/avances/{{item.id}}">SIN ACTUALIZAR </a></td>
                         
@@ -75,11 +125,15 @@
                 </tbody>
                 <tbody *ngIf="busquedaActivada">
                     <tr *ngFor="let item of resultadosBusqueda; let i=index">
-                        <th><a class='button is-info' (click)='informacion(item.id, item.porcentaje)'><i class='fa fa-info'></i></a></th>
+                        <th><a class='button is-info' (click)='informacion(item.id, item.porcentaje)'><i class='fa fa-info'></i></a><a class='button' [ngClass]="{'is-warning': item.visualizaciones > 0 }"> <span class="tag is-dark"><i class='fa'  [ngClass]="{'fa-envelope-open':item.visualizaciones == 0, 'fa-envelope': item.visualizaciones > 0 }"></i>&nbsp;{{ item.visualizaciones }}</span></a><a class='button'  [ngClass]="{'is-primary':item.prioridad == 1, 'is-warning': item.prioridad == 2, 'is-danger': item.prioridad == 3 }" (click)='informacion(item.id, item.porcentaje)'><i class='fa fa-info-circle'></i></a></th>
                         <th style="vertical-align: middle; cursor:pointer;"><a routerLink="/temas/avances/{{item.id}}">{{ item.tema }}</a></th>
                         <td style="vertical-align: middle; cursor:pointer;"><a routerLink="/temas/avances/{{item.id}}">{{ item.responsable }}</a></td>
                         <td style="vertical-align: middle; cursor:pointer;"><a routerLink="/temas/avances/{{item.id}}">{{ item.area }}</a></td>
                         <td style="vertical-align: middle; cursor:pointer;"><a routerLink="/temas/avances/{{item.id}}">{{ item.porcentaje }} %</a><progress class="progress is-info is-small" value="{{ item.porcentaje }}" max="100"></progress></td>
+                        
+                        <td style="vertical-align: middle; cursor:pointer;" *ngIf="item.estatus==0"><a routerLink="/temas/avances/{{item.id}}">VIGENTE </a></td>
+                        <td style="vertical-align: middle; cursor:pointer;" *ngIf="item.estatus == 1"><a routerLink="/temas/avances/{{item.id}}">CONCLUIDO </a></td>
+                        
                         <td style="vertical-align: middle; cursor:pointer;" *ngIf="item.creacion>=0"><a routerLink="/temas/avances/{{item.id}}"><span *ngIf="item.creacion == 0">Hoy</span><span *ngIf="item.creacion > 0">Hace {{ item.creacion }} Día(s)</span> </a></td>
                         <td style="vertical-align: middle; cursor:pointer;" *ngIf="item.creacion<0"><a routerLink="/temas/avances/{{item.id}}">SIN ACTUALIZAR </a></td>
                         
@@ -218,7 +272,18 @@
       </div>            
       <a class="button  is-primary" style="position:absolute; top:1em; right:1em;" (click)="showInfo = !showInfo"><span class="icon "><i class="fa fa-close"></i></span></a>
     </header>
-    <section class="section">  
+    <section class="section"  *ngIf="cargando_info">  
+      
+        <div class="is-fullwidth has-text-centered">
+          <br>
+          <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
+          <br>
+          <br>
+        </div>
+        
+    </section>  
+    <section class="section"  *ngIf="!cargando_info">  
+      
       <div class="columns">
         <div class="column is-one-third"><b>Tema</b></div>
         <div class="column">{{ informacion_tema.tema }}</div>
@@ -252,6 +317,11 @@
       <div class="columns">
         <div class="column is-one-third"><b>Comentario</b></div>
         <div class="column">{{ informacion_tema.comentario }} </div>
+      </div>
+
+      <div class="columns">
+        <div class="column is-one-third"><b>Prioridad</b></div>
+        <div class="column"><a class='button'  [ngClass]="{'is-primary':informacion_tema.prioridad == 1, 'is-warning': informacion_tema.prioridad == 2, 'is-danger': informacion_tema.prioridad == 3 }"><i class='fa fa-info-circle'></i> &nbsp;<span *ngIf='informacion_tema.prioridad == 1'>NORMAL</span> <span *ngIf='informacion_tema.prioridad == 2'>PRIORITARIO</span> <span *ngIf='informacion_tema.prioridad == 3'>URGENTE</span></a> </div>
       </div>
      
     </section>  
