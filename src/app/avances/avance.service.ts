@@ -47,6 +47,15 @@ export class AvanceService {
       }) as Observable<Tema>;
     }
 
+    eliminar_tema(id:any): Observable<any>{
+      return this.jwtRequest.delete(AvanceService.URL,id,{}).map( (response: Response) => {
+         let jsonData = response.json().data;
+         var avance = jsonData as any;
+          
+          return avance;
+        }) as Observable<any>;
+    }
+
     ver_informacion(id:any): Observable<any>{
       return this.jwtRequest.get(AvanceService.URL,id,{informacion:1}).map( (response: Response) => response.json().data);
   	}

@@ -408,6 +408,50 @@ export class ListaComponent implements OnInit {
      
      }
 
+     eliminar_tema(id:string)
+     {
+     	if(prompt("Si realmente desea eliminar este tema ingrese ELIMINAR TEMA") == 'ELIMINAR TEMA')
+     	{
+	     	this.avanceService.eliminar_tema(id).subscribe(
+		        tema => {
+		          this.cargando = false;
+		          this.listar(1);
+		          this.mensajeExito = new Mensaje(true);
+		          this.mensajeExito.texto = "Se ha eliminado correctamente el tema";
+		          this.mensajeExito.mostrar = true;      
+		          
+		        },
+		        error => {
+		          this.cargando = false;
+		          
+		          this.mensajeError = new Mensaje(true);
+		          this.mensajeError.texto = "No especificado.";
+		          this.mensajeError.mostrar = true;      
+		          
+		          try {
+		            let e = error.json();
+		            if (error.status == 401 ){
+		              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+		            }
+		            // Problema de validación
+		            if (error.status == 409){
+		              this.mensajeError.texto = "Por favor verfique los campos marcados en rojo.";
+		              
+		            }
+		          } catch(e){
+		                        
+		            if (error.status == 500 ){
+		              this.mensajeError.texto = "500 (Error interno del servidor)";
+		            } else {
+		              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+		            }            
+		          }
+
+		        }
+		      );
+	     }
+     }
+
      informacion(id:any, percent:any):void
      {
      	this.informacion_tema = {};
