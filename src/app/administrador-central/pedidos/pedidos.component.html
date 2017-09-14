@@ -283,7 +283,7 @@
     <header class="modal-card-head" style="background-color: #00d1b2" >
       <div class="container is-fluid"  style="width:100%;">
           <h1 class="title" style="color:#FFF;">
-            <span class="icon is-medium"><i class="fa fa-user"></i></span> PEDIDO
+            <span class="icon is-medium"><i class="fa fa-user"></i></span> PEDIDO <strong>[{{pedido_status}}]</strong>
           </h1>
       </div>            
       <a class="button  is-primary" style="position:absolute; top:1em; right:1em;" (click)="showPedido = !showPedido"><span class="icon "><i class="fa fa-close"></i></span></a>
@@ -442,6 +442,8 @@
             </form>
         </section>
     <footer class="" style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em " >
+        <button type="button" class="button is-info"  *ngIf="datos_pedido.status == 'EX' && !datos_pedido.recepcion_permitida" [ngClass]="{'is-loading': cargaRecepciones}" (click)='permitirRecepcion(datos_pedido.pedido_id,true)'><i class="fa fa-truck"></i>&nbsp;PERMITIR RECEPCIÓN</button>
+        <button type="button" class="button is-danger"  *ngIf="datos_pedido.status == 'EX' && datos_pedido.recepcion_permitida" [ngClass]="{'is-loading': cargaRecepciones}" (click)='permitirRecepcion(datos_pedido.pedido_id,false)'><i class="fa fa-ban"></i>&nbsp;NEGAR RECEPCIÓN</button>
     </footer>
   </div>
 </div>

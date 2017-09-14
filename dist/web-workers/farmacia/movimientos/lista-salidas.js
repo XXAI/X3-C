@@ -20,7 +20,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     headerRows: 5,
                     dontBreakRows: true,
                     //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
-                    widths: [80, 70, 'auto', 'auto', 'auto', 'auto','auto', 'auto'],
+                    widths: [60, 50, 'auto', 'auto', 60, 'auto','auto', 'auto'],
                     body: [
                         [{
                             image: 'header',

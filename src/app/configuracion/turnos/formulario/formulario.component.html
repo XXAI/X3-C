@@ -75,15 +75,15 @@
                                                             Turnos disponibles
                                                         </label>
                                                         </div>
-                                                        <a id="catalogos" (click)="ctrl.cargarCatalogo('tipos_turnos', 'turnos'); "></a>
+                                                        <a id="catalogos" (click)="ctrl.cargarCatalogo('tipos_turnos', 'turnos?bid=1', 'initMover'); "></a>
                                                     </div>
                                                 </div>
-                                                <div *ngIf="cargando_turnos_disponibles || ctrl.cargando" class="has-text-centered" style="overflow: hidden; overflow-x: hidden; height: 450px;">
+                                                <div *ngIf="ctrl.cargando" class="has-text-centered" style="overflow: hidden; overflow-x: hidden; height: 450px;">
                                                     <br>
                                                     <br>
                                                     <span class="tag is-primary is-large"><i class="fa fa-refresh fa-spin"></i> &nbsp; Cargando... </span>
                                                 </div>
-                                                <div *ngIf="!cargando_turnos_disponibles && !ctrl.cargando" style="overflow: scroll; overflow-x: hidden; height: 450px;">
+                                                <div *ngIf="!ctrl.cargando" style="overflow: scroll; overflow-x: hidden; height: 450px;">
                                                     <label class="panel-block" *ngFor="let val of ctrl.tipos_turnos; let i=index">          
                                                         <div class="field">
                                                             <div class="b-checkbox">
@@ -129,12 +129,12 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div *ngIf="cargando_turnos_disponibles || ctrl.cargando" class="has-text-centered" style="overflow: hidden; overflow-x: hidden; height: 450px;">
+                                                <div *ngIf="ctrl.cargando" class="has-text-centered" style="overflow: hidden; overflow-x: hidden; height: 450px;">
                                                     <br>
                                                     <br>
                                                     <span class="tag is-primary is-large"><i class="fa fa-refresh fa-spin"></i> &nbsp; Cargando... </span>
                                                 </div>
-                                                <div *ngIf="!cargando_turnos_disponibles && !ctrl.cargando" style="overflow: scroll; overflow-x: hidden; height: 450px;">
+                                                <div *ngIf="!ctrl.cargando" style="overflow: scroll; overflow-x: hidden; height: 450px;">
                                                     <label class="panel-block" *ngFor="let item of ctrl.dato.controls.clues_turnos.controls; let i2=index">          
                                                         <div class="field" [formGroupName]="i2">
                                                             <div class="b-checkbox">
@@ -155,7 +155,7 @@
                             </article>
                         </div>
                     </div>
-                    <a (click)="ctrl.initMover(ctrl.dato.controls.clues_turnos.controls, ctrl.tipos_turnos); " id="initMover"></a>
+                    <a (click)="ctrl.initMover(ctrl.dato.controls.clues_turnos.controls, ctrl.tipos_turnos); cargarValidar()" id="initMover"></a>
                     <!--
                     <div class="control is-grouped" style="float:left; padding:10px;">
                         <p class="control">

@@ -25,6 +25,7 @@ const routes: Routes = [
        { path: 'expirados', component: ListaComponent},
        { path: 'expirados-cancelados', component: ListaComponent},
        { path: 'farmacia-subrogada', component: ListaComponent},
+       { path: 'alternos', component: ListaComponent},
        { path: 'nuevo', component: FormularioComponent},
        { path: 'editar/:id', component: FormularioComponent},
        { path: 'ver/:id', component: VerComponent},

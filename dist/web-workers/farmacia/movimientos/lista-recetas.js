@@ -7,7 +7,6 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
 
     onmessage = function(evt) {
         let data = JSON.parse(evt.data);
-        console.log(data);
         pdf(data);
     };
 
@@ -188,14 +187,14 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     { text: movimiento.fecha_movimiento ? movimiento.fecha_movimiento : 'No disponible' , style: 'tableRow', alignment: 'center' },
                     { text: movimiento.id ? movimiento.id : 'No disponible', style: 'tableRow', alignment: 'center' },
                     { text: movimiento.numero_claves == null || movimiento.numero_insumos == null ? 'No disponible' : 'Claves: ' + movimiento.numero_claves + '\n Insumos: ' + movimiento.numero_insumos, style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.movimiento_metadato == null ? 'No disponible' :  movimiento.movimiento_metadato.turno.nombre, style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.movimiento_metadato == null ? 'No disponible' :  movimiento.movimiento_metadato.turno == null ? 'No disponible' : movimiento.movimiento_metadato.turno.nombre == null ? 'No disponible' : movimiento.movimiento_metadato.turno.nombre, style: 'tableRow', alignment: 'center' },
                     { text: movimiento.movimiento_usuario == null ? 'No disponible' : movimiento.movimiento_usuario.nombre + ' ' + movimiento.movimiento_usuario.apellidos, style: 'tableRow', alignment: 'center' },
                     { text: movimiento.created_at ? movimiento.created_at : 'No disponible', colSpan: 2, style: 'tableRow', alignment: 'center' },{}
                 ]);
         }
 
         pdfMake.createPdf(dd).getBase64(function(base64) {
-            postMessage({ fileName: 'Entradas_estandar.pdf', base64: base64 });
+            postMessage({ fileName: 'Lista_recetas.pdf', base64: base64 });
         });
     }
 

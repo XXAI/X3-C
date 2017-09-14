@@ -1,4 +1,5 @@
 import { Component, OnInit, NgZone } from '@angular/core';
+import { CrudService } from '../../../crud/crud.service';
 import  * as FileSaver    from 'file-saver';
 
 @Component({
@@ -8,6 +9,7 @@ import  * as FileSaver    from 'file-saver';
 
 export class ListaComponent implements OnInit {
   cargando;
+  lista_impresion;
   usuario;
   dato;
   fecha_desde = '';
@@ -20,7 +22,8 @@ export class ListaComponent implements OnInit {
   // # FIN SECCION
 
   constructor(
-    private _ngZone: NgZone) { }
+    private _ngZone: NgZone,
+    private crudService: CrudService) { }
 
   ngOnInit() {
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
@@ -60,19 +63,27 @@ export class ListaComponent implements OnInit {
       console.log(e);
     }
   }
+  
 
   imprimir() {
-    try {
-      this.cargandoPdf = true;
+    this.crudService.lista_general('movimientos?tipo=1&fecha_desde=' + this.fecha_desde
+    + '&fecha_hasta=' + this.fecha_hasta + '&turno=' + this.turno).subscribe(
+      resultado => {
+        this.cargando = false;
+        this.lista_impresion = resultado;
+        try {
+          this.cargandoPdf = true;
 
-      let entrada_imprimir = {
-        lista: this.dato,
-        usuario: this.usuario
-      };
-      this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
-    } catch (e) {
-      this.cargandoPdf = false;
-    }
+          let entrada_imprimir = {
+            lista: this.lista_impresion,
+            usuario: this.usuario
+          };
+          this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
+        } catch (e) {
+          this.cargandoPdf = false;
+        }
+      },
+      error => {});
   }
 
   base64ToBlob( base64, type ) {

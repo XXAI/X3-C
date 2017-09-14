@@ -332,6 +332,23 @@ export class FormularioComponent {
     document.getElementById('guardarMovimiento').classList.add('is-active');
   }
 
+  /**
+     * Este método valida que en el campo de la cantidad no pueda escribir puntos o signo negativo
+     * @param event Parametro que contiene el valor de la tecla presionada
+     * @return void
+     */
+  quitar_punto(event) {
+    if (this.is_numeric(event.key ) ) {
+      return true;
+    }else {
+      return false;
+    }
+  }
+
+  is_numeric(str) {
+    return /^\d+$/.test(str);
+  }
+
 /************************************ IMPRESION DE REPORTES ************************************** */
   imprimir() {
 

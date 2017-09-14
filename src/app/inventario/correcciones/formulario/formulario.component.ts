@@ -579,7 +579,6 @@ export class FormularioComponent {
     this.lotes_a_cambiar = item.lotes;
     this.clave_insumo_incorrecto = item.clave;
     this.cantidad_total = Number(item.cantidad);
-    console.log(item);
 
     document.getElementById('tituloInsumo').innerHTML = `<p aling="justify" style="font-size:18px"> 
       <strong> ${item.descripcion} </strong> </p>

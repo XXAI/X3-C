@@ -61,17 +61,14 @@ export class FormularioComponent {
 
   ngAfterViewInit() {
     this.cdr.detectChanges();
-    this.cargarCatalogos();
+    document.getElementById('actualizar').click();
     this.cargarValidar();
   }
 
-  cargarCatalogos() {
-    setTimeout( () => { document.getElementById('actualizar').click(); }, 7000);
-  }
 
   cargarValidar() {
     this.cargando_claves_disponibles = true;
-    setTimeout(() => {
+    
       // obtener el formulario reactivo para agregar los elementos
       const control = <FormArray>this.dato.controls['clues_claves'];
       let c = 0, c1;
@@ -82,7 +79,7 @@ export class FormularioComponent {
       // <a id="initMover" (click)="ctrl.initMover(ctrl.dato.controls.almacen_tipos_movimientos.controls, ctrl.tipos_movimientos)>refresh</a>
       // incrementar el tiempo segun sea el caso para que cargue el catalogo en este caso va a acrgar 2 catalogos por eso pongo 5000
       if (control) {
-        document.getElementById('catalogos').click();
+        // document.getElementById('catalogos').click();
         this.cargando_claves_disponibles = false;
       }
       // Comprobar si el arreglo no está vacío
@@ -112,7 +109,6 @@ export class FormularioComponent {
         this.error_actualizacion = true;
         this.actualizacion_usuario = 'Sin actualización';
       }
-    }, 10000);
   }
 
   /**

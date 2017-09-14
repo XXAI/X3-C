@@ -65,7 +65,11 @@ export class VerComponent implements OnInit {
   dialogCancelarMeses: any[] = [];
   errorCancelarPedido: boolean = false;
   errorCancelarPedidoTexto: string = '';
-  cancelandoPedido:boolean = false;
+	cancelandoPedido:boolean = false;
+	
+	errorGenerarPedidoAlterno: boolean = false;
+	errorGenerarPedidoAlternoTexto: string = '';
+	generandoPedidoAlterno:boolean = false;
 
   //Harima: para ver si el formulaior es para crear o para editar
   formularioTitulo:string = 'Nuevo';
@@ -160,7 +164,8 @@ export class VerComponent implements OnInit {
             //this.pedidos[0].datos.patchValue(pedido);
             this.pedido.datosImprimir = pedido;
             this.pedido.status = pedido.status;
-            
+            this.pedido.recepcionPermitida = pedido.recepcion_permitida;
+            this.pedido.tipo_pedido = pedido.tipo_pedido_id;
 
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];
@@ -169,7 +174,11 @@ export class VerComponent implements OnInit {
               insumo.cantidad_recibida = (+dato.cantidad_recibida||0);
               insumo.monto = +dato.monto_solicitado;
               insumo.monto_recibido = (+dato.monto_recibido||0);
-              insumo.precio = +dato.precio_unitario;
+							insumo.precio = +dato.precio_unitario;
+							
+							//Akira: Tuve que agregar el tipo_insumo_id para cuando se cree el pedido alterno
+							insumo.tipo_insumo_id = dato.tipo_insumo_id;
+
               this.pedido.lista.push(insumo);
               //this.listaClaveAgregadas.push(insumo.clave);
               //let tipo_insumo = 'ST';
@@ -202,13 +211,15 @@ export class VerComponent implements OnInit {
               this.subPedidos[clave_tipo_insumo].lista.push(insumo);
             }
 
-            if(pedido.status != 'EF'){
+            //if(pedido.status != 'EF'){
               for(let i in pedido.recepciones){
-                if(pedido.recepciones[i].entrada.status == 'BR'){
-                  this.tieneRecepcionIniciada = true;
+                if(pedido.recepciones[i].entrada){
+                  if(pedido.recepciones[i].entrada.status == 'BR'){
+                    this.tieneRecepcionIniciada = true;
+                  }
                 }
               }
-            }
+            //}
             
             pedido.insumos = undefined;
             this.pedido.indexar();
@@ -269,6 +280,8 @@ export class VerComponent implements OnInit {
         return '/almacen/pedidos/expirados';
       }else if(this.pedido.status == 'EX-CA'){
         return '/almacen/pedidos/expirados-cancelados';
+      }else if(this.pedido.status == 'PV' || this.pedido.status == 'VAL'){
+        return '/almacen/pedidos/alternos';
       }else{
         return '/almacen/pedidos/todos';
       }
@@ -500,7 +513,10 @@ export class VerComponent implements OnInit {
             'descripcion':insumo.descripcion,
             'cantidad_limite': faltante,
             'cantidad':faltante,
-            'precio':insumo.precio
+						'precio':insumo.precio,
+						'tipo':insumo.tipo,
+						'tipo_insumo_id':insumo.tipo_insumo_id,
+						'es_causes':insumo.es_causes 
           }
         );
       }
@@ -579,12 +595,59 @@ export class VerComponent implements OnInit {
       for ( var i=0 ; i < len ; i++ )
       view[i] = bytes.charCodeAt(i) & 0xff;
       return new Blob( [ buffer ], { type: type } );
-  }
+	}
+	
+	elaborarPedidoAlterno()
+	{
+		// Akira:
+		var validacion_palabra = prompt("Para confirmar esta transacción, por favor escriba: PEDIDO ALTERNO");
+		if(validacion_palabra == 'PEDIDO ALTERNO'){
+			this.generandoPedidoAlterno = true;
 
-  elaborarPedidoAlterno()
-  {
-    
-  }
+			let parametros = {
+				insumos: this.listaInsumosPedidoAlterno,
+			}
+			this.pedidosService.generarPedidoAlterno(this.pedido.datosImprimir.id, parametros).subscribe(
+				respuesta => {
+					this.generandoPedidoAlterno = false;
+					console.log(respuesta)
+				}, error => {
+					this.generandoPedidoAlterno = false;
+					this.errorGenerarPedidoAlterno = true;
+		
+					try {		
+						let e = error.json();		
+						if (error.status == 401 ){
+							this.errorGenerarPedidoAlternoTexto = "No tiene permiso para esta acción.";
+						}
+						if (error.status == 500 ){
+							this.errorGenerarPedidoAlternoTexto = "500 (Error interno del servidor)";
+						}
+		
+						if(e.error){
+							this.errorGenerarPedidoAlternoTexto = e.error;
+						}
+					} catch(e){		
+						if (error.status == 500 ){
+							this.errorGenerarPedidoAlternoTexto = "500 (Error interno del servidor)";
+						} else {
+							this.errorGenerarPedidoAlternoTexto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+						}          
+					}
+				}
+			);
+		} else {
+		if(validacion_palabra != null){
+			alert("Error al ingresar el texto para confirmar la generación del pedido alterno.");
+		}
+		return;
+		}    
+	}
+	validarCantidad(input){
+		if(input.value < 0 || isNaN(input.value) || Math.sign(input.value) == 0) {
+			input.value = 0;
+		}
+	}
 
   ngOnDestroy(){
     this.cambiarEntornoSuscription.unsubscribe();

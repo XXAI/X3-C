@@ -475,11 +475,23 @@ export class FormularioComponent {
   guardar_movimiento() {
     // obtener el formulario reactivo para agregar los elementos
     const control = <FormArray>this.dato.controls['insumos'];
-    console.log(control.length);
+    let lotes = true;
     if (control.length === 0) {
-      this.notificacion.alert('Insumos', 'Debe agregar por lo menos un insumo', this.objeto);
+      this.notificacion.warn('Insumos', 'Debe agregar por lo menos un insumo', this.objeto);
     }else {
-      document.getElementById('guardarMovimiento').classList.add('is-active');
+      for (let item of control.value) {
+        if (item.lotes.length === 0) {
+          lotes = false;
+        }
+      }
+      if (lotes) {
+        document.getElementById('guardarMovimiento').classList.add('is-active');
+      } else {
+        document.getElementById('tituloGuardar').innerHTML = ` <br>
+          <p aling="justify" style="font-size:12px; color: red"> Contiene insumos con existencia negada.</p>`;
+        document.getElementById('guardarMovimiento').classList.add('is-active');
+        this.notificacion.warn('Insumos', 'negarExistencia', this.objeto);
+      }
     }
   }
 

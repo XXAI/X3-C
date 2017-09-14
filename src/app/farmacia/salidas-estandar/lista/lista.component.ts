@@ -15,6 +15,8 @@ export class ListaComponent implements OnInit {
   servicio = '';
   recibe = '';
   dato;
+  cargando;
+  lista_impresion;
 
   // # SECCION: Reportes
   pdfworker: Worker;
@@ -24,7 +26,8 @@ export class ListaComponent implements OnInit {
   @ViewChildren('tr') tr;
   @ViewChildren('sr') sr;
   constructor(
-    private _ngZone: NgZone) { }
+    private _ngZone: NgZone,
+    private crudService: CrudService) { }
 
   ngOnInit() {
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
@@ -69,6 +72,7 @@ export class ListaComponent implements OnInit {
   }
 
   imprimir() {
+
     try {
       this.cargandoPdf = true;
       let turno = this.tr.first.nativeElement.options;
@@ -76,16 +80,25 @@ export class ListaComponent implements OnInit {
       turno = turno[turno.selectedIndex].text;
       servicio = servicio[servicio.selectedIndex].text;
 
-      let entrada_imprimir = {
-        lista: this.dato,
-        usuario: this.usuario,
-        fecha_desde: this.fecha_desde,
-        fecha_hasta: this.fecha_hasta,
-        turno: turno,
-        servicio: servicio,
-        recibe: this.recibe
-      };
-      this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
+      this.crudService.lista_general('movimientos?tipo=2&fecha_desde=' + this.fecha_desde
+      + '&fecha_hasta=' + this.fecha_hasta + '&turno=' + this.turno + '&servicio=' + this.servicio + '&recibe=' + this.recibe).subscribe(
+        resultado => {
+                this.cargando = false;
+                this.lista_impresion = resultado.data;
+                let entrada_imprimir = {
+                  lista: this.lista_impresion,
+                  usuario: this.usuario,
+                  fecha_desde: this.fecha_desde,
+                  fecha_hasta: this.fecha_hasta,
+                  turno: turno,
+                  servicio: servicio,
+                  recibe: this.recibe
+                };
+                this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
+              },
+              error => {
+              }
+      );
     } catch (e) {
       this.cargandoPdf = false;
     }

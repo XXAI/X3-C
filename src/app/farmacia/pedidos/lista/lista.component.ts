@@ -37,6 +37,7 @@ export class ListaComponent implements OnInit {
 
   // # SECCION: Lista
   status: string;
+  tipo:string = '';
   titulo: string = "Pedidos";
   icono = "fa-file";
   pedidos: Pedido[] = [];
@@ -90,6 +91,7 @@ export class ListaComponent implements OnInit {
             this.titulo = "Finalizados";
           }
       break;
+      case 'alternos': this.titulo = "Alternos"; this.tipo= 'PALT'; this.icono = "fa-code-fork"; break;
       default: this.titulo = "Pedidos"; this.icono = "fa-file"; break;
     }
     console.log('inicializar lista de pedidos');
@@ -119,7 +121,7 @@ export class ListaComponent implements OnInit {
       this.ultimoTerminoBuscado = term;
       this.paginaActualBusqueda = 1;
       this.cargando = true;
-      return term  ? this.pedidosService.buscar(this.status,term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]}) 
+      return term  ? this.pedidosService.buscar(this.status,term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda, this.tipo) : Observable.of<any>({data:[]}) 
     }
       
     
@@ -218,7 +220,7 @@ export class ListaComponent implements OnInit {
     console.log("Cargando búsqueda.");
    
     this.cargando = true;
-    this.pedidosService.buscar(this.status, term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
+    this.pedidosService.buscar(this.status, term, pagina, this.resultadosPorPaginaBusqueda, this.tipo).subscribe(
         resultado => {
           this.cargando = false;
 
@@ -269,7 +271,7 @@ export class ListaComponent implements OnInit {
     console.log("Cargando pedidos.");
    
     this.cargando = true;
-    this.pedidosService.lista(this.status, pagina,this.resultadosPorPagina).subscribe(
+    this.pedidosService.lista(this.status, pagina,this.resultadosPorPagina, this.tipo).subscribe(
         resultado => {
           this.cargando = false;
           this.pedidos = resultado.data as Pedido[];
