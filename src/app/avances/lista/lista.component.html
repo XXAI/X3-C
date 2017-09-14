@@ -19,11 +19,11 @@
                         </h1>
                         <div class="columns">
                           <div class="column"  [ngClass]="{'is-three-quarters': filter }">
-                            <label class="label">Buscar Tema</label>
+                            <label class="label" style="color: #FFF">Buscar Tema</label>
                             <input class="input is-medium" type="text" placeholder="Buscar" #searchBox id="search-box" (keyup)="buscar(searchBox.value)">
                           </div>
                           <div class="column"  *ngIf="!filter">
-                            <label class="label">Prioridad</label>
+                            <label class="label" style="color: #FFF">Prioridad</label>
                               <select class="select redondear" #prioridad (change)='filtro(1, prioridad.value)'>
                                 <option value="">TODOS</option>
                                 <option value="1">NORMAL</option>
@@ -32,7 +32,7 @@
                             </select>
                           </div>
                           <div class="column" *ngIf="!filter">
-                            <label class="label">Estatus</label>
+                            <label class="label" style="color: #FFF">Estatus</label>
                             <select class="select redondear" #estatus (change)='filtro(2, estatus.value)'>
                                 <option value="">TODOS</option>
                                 <option value="0">VIGENTES</option>
@@ -40,7 +40,7 @@
                             </select>
                           </div>
                           <div class="column" *ngIf="!filter">
-                            <label class="label">Vistos</label>
+                            <label class="label" style="color: #FFF">Vistos</label>
                             <select class="select redondear" #vistos (change)='filtro(3, vistos.value)'>
                                 <option value="">TODOS</option>
                                 <option value="1">VISTOS</option>
@@ -48,7 +48,7 @@
                             </select>
                           </div>
                           <div class="column" *ngIf="!filter">
-                          <label class="label">Área</label>
+                          <label class="label" style="color: #FFF">Área</label>
                             <select class="select redondear" #area (change)='filtro(4, area.value)'>
                                 <option value="">TODOS</option>
                                 <option  *ngFor="let item of areas; let i=index" value="{{ item.area }}">{{ item.area }}</option>
