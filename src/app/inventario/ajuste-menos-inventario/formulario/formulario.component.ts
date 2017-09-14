@@ -34,6 +34,11 @@ export class FormularioComponent {
   sum_cant_lotes = false;
   mostrar_lote = [];
   cantidad_error = 0;
+  tipos_ajustes: any[] = [
+                          { id: 1, nombre: 'Merma'},
+                          { id: 2, nombre: 'Caducidad'},
+                          { id: 3, nombre: 'Robo'}
+                        ];
   public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
 
   MinDate = new Date();
@@ -110,6 +115,7 @@ export class FormularioComponent {
     // inicializar el formulario reactivo
     this.dato = this.fb.group({
       id: [''],
+      tipo_ajuste: ['Merma', [Validators.required]],
       observaciones: ['', [Validators.required]],
       tipo_movimiento_id: ['7', [Validators.required]],
       insumos: this.fb.array([])

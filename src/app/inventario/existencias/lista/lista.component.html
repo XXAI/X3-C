@@ -21,7 +21,7 @@
                             <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="Actualizar" (click)="ctrl.listarBusqueda(searchBox.value,1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
                             <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="Actualizar" (click)="ctrl.listar(1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
                             
-                            <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="PDF" (click)="dato = ctrl.dato; imprimir()"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
+                            <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="PDF" (click)="dato = ctrl.dato; imprimir();"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
                             <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="PDF" (click)="dato = ctrl.dato; imprimir()"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
                             <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="Excel" (click)="imprimirExcel()"><span class="icon "><i class="fa fa-file-excel-o"></i></span></a></p>
                             <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="Excel" (click)="imprimirExcel()"><span class="icon "><i class="fa fa-file-excel-o"></i></span></a></p>
@@ -71,13 +71,18 @@
                             <p class="level-item">&nbsp;</p>
                             <p class="level-item">
                                 <span class="field">     
-                                    <p class="control" style="color:black">
-                                        <input ngui-auto-complete [source]="insumos_term" [list-formatter]="autocompleListFormatter" 
-                                        id="buscarInsumo" value-property-name="clave" display-property-name="clave" path-to-data="" 
-                                        loading-text="Cargando..." no-match-found-text="No hay resultados." (valueChanged)="select_insumo_autocomplete($event)" 
-                                        min-chars="1" class="input is-medium" type="text" [ngClass]="{'is-loading': ctrl.cargando}"
-                                        placeholder="Escanea el codigo de barra, o empieza escribir el nombre del producto" [(ngModel)]='clave_insumo'>
-                                    </p>
+                                    <!--
+                                        <p class="control" style="color:black">
+                                            <input ngui-auto-complete [source]="insumos_term" [list-formatter]="autocompleListFormatter" 
+                                            id="buscarInsumo" value-property-name="clave" display-property-name="clave" path-to-data="" 
+                                            loading-text="Cargando..." no-match-found-text="No hay resultados." (valueChanged)="select_insumo_autocomplete($event)" 
+                                            min-chars="1" class="input is-medium" type="text" [ngClass]="{'is-loading': ctrl.cargando}"
+                                            placeholder="Escanea el codigo de barra, o empieza escribir el nombre del producto" [(ngModel)]='clave_insumo'>
+                                        </p> 
+                                    -->
+                                    <p class="control">
+                                        <input class="input is-medium" type="text" placeholder="Insumo" [(ngModel)]='clave_insumo'>
+                                    </p> 
                                 </span>
                             </p>
                             <p class="level-item">
@@ -107,7 +112,13 @@
             </div>
             <span id="exportable">
                 <div style="overflow: scroll; overflow-x: hidden; height: 630px;">
-                    <table class="table" *ngIf="!ctrl.cargando" style="min-width:100%; font-size:1.2em;">
+                    <div class="is-fullwidth has-text-centered" *ngIf="cargandoPdf">
+                        <br>
+                        <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Generando PDF...</span></span>
+                        <br>
+                        <br>
+                    </div>
+                    <table class="table" *ngIf="!ctrl.cargando && !cargandoPdf" style="min-width:100%; font-size:1.2em;">
                         <thead>
                             <tr>
                                 <th style="text-align: center;">Clave</th>
@@ -131,6 +142,7 @@
                                                 <label *ngIf="item.es_causes==0" class="tag" style="background: #B8FB7E; border-color: #B8FB7E; color: rgba(0,0,0,0.7);">
                                                     <strong>No Causes </strong> 
                                                 </label>
+                                                <label *ngIf="item.tipo=='MC'" class="tag is-info" ><strong title="Material de curación">Mat. Curación </strong></label>
                                                 <label *ngIf="item.es_unidosis==1" class="tag is-warning" ><strong>Unidosis</strong></label>
                                             </p>
                                     </a>
@@ -230,6 +242,28 @@
         <footer class="modal-card-foot">
             <a class="button is-success" (click)="cancelarModal('verLotes');">Aceptar</a>
             <a class="button" (click)="cancelarModal('verLotes');">Cancelar</a>
+        </footer>
+    </div>
+</div>
+
+<div class="modal" id="imprimirModal">
+    <div class="modal-background"></div>
+    <div class="modal-card" style="width: 60%;">
+        <header class="modal-card-head" style="background: #00d1b2;">
+            <p class="modal-card-title" style="width: 200px; color:#FFF;">
+                <span class="icon is-medium"><i class="fa fa-medkit"></i></span> &nbsp; 
+                <span class="title" style="color:#FFF;">Imprimir</span> 
+            </p>
+            <button type="button" class="delete" (click)="cancelarModal('imprimirModal');"></button>
+        </header>
+        <header class="modal-card-head">
+        </header>
+        <section class="modal-card-body">
+           
+        </section>
+        <footer class="modal-card-foot">
+            <a class="button is-success" (click)="cancelarModal('imprimirModal');">Aceptar</a>
+            <a class="button" (click)="cancelarModal('imprimirModal');">Cancelar</a>
         </footer>
     </div>
 </div>

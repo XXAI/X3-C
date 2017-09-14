@@ -38,9 +38,11 @@ export class ListaComponent {
   resultado_clues;
   clues;
   // Datos enviados en URL para filtros
-  clave_clues='';
+  clave_clues = '';
   fecha_desde = '';
   fecha_hasta = '';
+  numero_sinc: number;
+  folio = '';
 
   constructor(private fb: FormBuilder,
     private crudService: CrudService,
@@ -263,22 +265,24 @@ export class ListaComponent {
 
     let usuario = JSON.parse(localStorage.getItem('usuario'));
     this.clave_clues = data.clues;
-    // this.cargando = true;
-    // cargar los datos de los lotes del insumo seleccionado en el autocomplete
-    /*this.crudService.lista(0, 1000, 'listar-pedidos-proveedor?almacen=' + usuario.almacen_activo.id + '&clues=' + data.clues).subscribe(
-      resultado => {
-
-        this.resultado_clues = resultado;
-        this.clues = data;
-        this.clave_clues = this.clues.clues;
-        console.log(this.clues);
-        this.cargando = false;
-      },
-      error => {
-        this.cargando = false;
-      }
-    );*/
   }
+
+    /**
+     * Este método valida que en el campo de la cantidad no pueda escribir puntos o signo negativo
+     * @param event Parametro que contiene el valor de la tecla presionada
+     * @return void
+     */
+    quitar_punto(event) {
+        if (this.is_numeric(event.key ) ) {
+        return true;
+        }else {
+        return false;
+        }
+    }
+
+    is_numeric(str) {
+        return /^\d+$/.test(str);
+    }
     /*********************************************NOTIFICACIONES*************************************************** */
 
     /**

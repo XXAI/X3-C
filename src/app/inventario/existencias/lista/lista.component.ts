@@ -195,6 +195,8 @@ export class ListaComponent implements OnInit {
   }
 
   imprimir() {
+    this.cargandoPdf = true;
+    // this.abrirModal('imprimirModal');
     this.crudService.lista_general( 'inventario?buscar_en=' + this.buscar_en
     + '&seleccionar=' + this.seleccionar + '&tipo=' + this.tipo).subscribe(
       resultado => {
@@ -205,7 +207,6 @@ export class ListaComponent implements OnInit {
                 tipo_insumo = tipo_insumo[tipo_insumo.selectedIndex].text;
                 existencia = existencia[existencia.selectedIndex].text;
                 try {
-                  this.cargandoPdf = true;
 
                   let entrada_imprimir = {
                     lista: this.lista_impresion,

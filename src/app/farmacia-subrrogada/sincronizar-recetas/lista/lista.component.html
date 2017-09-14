@@ -1,4 +1,4 @@
-<listar #ctrl URL="listar-pedidos-proveedor?fecha_desde={{fecha_desde}}&fecha_hasta={{fecha_hasta}}&clues={{clave_clues}}" titulo="Sincronizar Receta"></listar>
+<listar #ctrl URL="listar-pedidos-proveedor?fecha_desde={{fecha_desde}}&fecha_hasta={{fecha_hasta}}&clues={{clave_clues}}&numero_sinc={{numero_sinc}}&folio={{folio}}" titulo="Sincronizar Receta"></listar>
 <formulario #ctrl2 URL="analizar-json-proveedor" titulo="Sincronizar receta" [dato]="dato2"></formulario>
 <menu-farmacia [modulo]="'Sincronizar recetas'" [icono]="'assets/hub-farmacia-sub.svg'" [url]="'/farmacia-subrrogada/sincronizar-recetas'"></menu-farmacia>
 <div style="height:50px;"></div>
@@ -48,9 +48,26 @@
                                     </p>
                                 </div>
                             </div>
+                            <div class="control is-expanded">
+                                <span class="field">
+                                    <label class="label">FOLIO:</label>
+                                    <p class="control">
+                                        <input class="input is-medium" type="text" placeholder="Folio" [(ngModel)]='folio'>
+                                    </p> 
+                                </span>
+                            </div>
+                            <div class="control is-expanded">
+                                <span class="field">
+                                    <label class="label" title="Número de sincronizaciones">Num. sicronizaciones:</label>
+                                    <p class="control">
+                                        <input class="input is-medium" type="number" step="1" min="0" (keypress)="quitar_punto($event)" 
+                                            placeholder="Número de sincronizaciones" [(ngModel)]='numero_sinc'>
+                                    </p> 
+                                </span>
+                            </div>
                             <div class="control">
                                     <label class="label">&nbsp;</label> 
-                                    <button class="button is-default is-medium" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="fecha_desde='';fecha_hasta=''; tipo='TODO'; clave_clues=''" >Limpiar</button>
+                                    <button class="button is-default is-medium" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="fecha_desde='';fecha_hasta=''; tipo='TODO'; clave_clues=''; folio=''; numero_sinc ='';" >Limpiar</button>
                             </div>
                             <div class="control">
                                     <label class="label">&nbsp;</label> 
@@ -74,36 +91,41 @@
                             <th></th>
                             <th></th>
                             <th style="text-align:center;"></th>
+                            <th></th>
+                            <th></th>
                             <th colspan="2" style="text-align:center;">Aceptados</th>
                             <th class="causes" colspan="2" style="text-align:center;">Ignorados</th>
                             <th></th>
                         </tr>
-                        <tr>
-                            <th>Folio/Descripción del Pedido</th>
+                        <tr>                            
+                            <th>FECHA</th>
                             <th>CLUES</th>
-                            <th style="text-align:center;">Fecha</th>
+                            <th>FOLIO</th>
+                            <th>PROVEEDOR</th>
+                            <th>SINCRONIZACIONES</th>
                             
                             <th class="aceptados" style="text-align:center;">Recetas</th>
                             <th class="aceptados" style="text-align:center;">Colectivos</th>
-
                             <th class="ignorados" style="text-align:center;">Recetas</th>
                             <th class="ignorados" style="text-align:center;">Colectivos</th>
 
-                            <th style="text-align:center;">Opciones</th>
+                            <th style="text-align:center;">OPCIONES</th>
                         </tr>
                     </thead>
                     <tbody *ngIf="!ctrl.busquedaActivada">
                         <tr *ngFor="let item of ctrl.dato; let i=index">
                             <td style="vertical-align: middle;">
+                                {{item.fecha | date}}<br>
+                            </td>
+                            <td style="vertical-align: middle;">
                                 <strong>{{item.folio}}</strong>
-                                <br>{{item.descripcion}}<br>
+                                <!-- <br>{{item.descripcion}}<br> -->
                             </td>
                             <td style="vertical-align: middle;">
                                 {{item.clues}}
                             </td>
-                            <td style="text-align:center; vertical-align: middle;">
-                                {{item.fecha | date}}<br>
-                            </td>
+                            <td>PROVEEDOR</td>
+                            <td>SINCRONIZACIONES</td>
                             <td class="aceptados" *ngIf="item.metadatos_sincronizaciones" style="text-align:center; vertical-align: middle;" title="Recetas aceptadas">{{item.metadatos_sincronizaciones.total_recetas}}<a routerLink="/almacen/sincronizar-recetas/editar/{{item.id}}"></a></td>
                             <td *ngIf="!item.metadatos_sincronizaciones" style="text-align:center; vertical-align: middle;" title="No disponible">N/D<a routerLink="/almacen/sincronizar-recetas/editar/{{item.id}}"></a></td>
                             <td class="aceptados" *ngIf="item.metadatos_sincronizaciones" style="text-align:center; vertical-align: middle;" title="Recetas ignoradas">{{item.metadatos_sincronizaciones.total_recetas_repetidas}}</td>
