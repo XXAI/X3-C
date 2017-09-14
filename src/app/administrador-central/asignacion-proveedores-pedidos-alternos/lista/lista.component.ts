@@ -30,6 +30,7 @@ export class ListaComponent implements OnInit {
 
 	tab: number = 1;
   	cargando: boolean = false;
+
 	mostrarModalClues:boolean = false;
 	listaSeleccionada:any = null;
 

@@ -15,8 +15,8 @@ export class AvanceService {
   	
   constructor(private http: Http,   private jwtRequest:JwtRequestService) { }
 
-  buscar(term: string, pagina:number = 1, resultados_por_pagina:number =20 ): Observable<any>{
-		return this.jwtRequest.get(AvanceService.URL,null,{q: term, page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
+  buscar(term: string, obj:any, pagina:number = 1, resultados_por_pagina:number =20 ): Observable<any>{
+		return this.jwtRequest.get(AvanceService.URL,null,{q: term, page: pagina, per_page: resultados_por_pagina, prioridad: obj.prioridad, estatus: obj.estatus, visto:obj.vistos, area:obj.area}).map( (response: Response) => response.json().data);
 	}
 
   buscar_detalle(id:string, type:number, term: string, pagina:number = 1, resultados_por_pagina:number =20 ): Observable<any>{
@@ -29,7 +29,12 @@ export class AvanceService {
 
 	crear(avance: Tema): Observable<Tema> {
       return this.jwtRequest.post(AvanceService.URL,avance).map( (response: Response) => response.json().data) as Observable<Tema>;
-    }
+  }
+
+
+  carga_area(): Observable<any>{
+    return this.jwtRequest.get("avance_area",null, null).map( (response: Response) => response.json().data);
+  }
 
     ver_tema(id:any): Observable<Tema>{
     return this.jwtRequest.get(AvanceService.URL,id,{}).map( (response: Response) => {
@@ -46,10 +51,12 @@ export class AvanceService {
       return this.jwtRequest.get(AvanceService.URL,id,{informacion:1}).map( (response: Response) => response.json().data);
   	}
 
-
-
    editar(id:any, tema: Tema): Observable<Tema> {
      return this.jwtRequest.put(AvanceService.URL,id, tema).map( (response: Response) => response.json().data) as Observable<Tema>;
+   }
+
+   actualizar_avance(id:any, datos:any): Observable<any> {
+     return this.jwtRequest.put(AvanceService.URL,id, datos).map( (response: Response) => response.json().data) as Observable<any>;
    }
 
    lista_detalles(id:string, type:number, pagina:number = 1, resultados_por_pagina:number =20 ): Observable<any>{

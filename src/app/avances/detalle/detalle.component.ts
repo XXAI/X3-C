@@ -32,12 +32,14 @@ import { Mensaje } from '../../mensaje';
 export class DetalleComponent implements OnInit {
   	
     cargando: boolean = false;
+    administrador: boolean = false;
     showAgregarAvance: boolean = false;
     show_actual: boolean = true;
     show_historico: boolean = false;
     privilegio_usuario: boolean = false;
     avance: FormGroup;
     usuario_form: FormGroup;
+    avance_detalle: FormGroup;
 	
 
 	// # SECCION: Esta sección es para mostrar mensajes
@@ -95,6 +97,12 @@ export class DetalleComponent implements OnInit {
            archivo: ['', []],
            porcentaje: ['', [Validators.required]],
            comentario: ['', [Validators.required]]
+       
+    });
+
+    this.avance_detalle = this.fb.group({
+           prioridad: ['', [Validators.required]],
+           estatus: ['', [Validators.required]]
        
     });
 
@@ -242,22 +250,15 @@ export class DetalleComponent implements OnInit {
 
   agregar_usuario(): void
   {
-      this.cargando = true;
       this.usuario_form.patchValue({avance_id: this.id_avance});
       this.avanceService.crear_usuario(this.usuario_form.value).subscribe(
-          tema => {
-            this.cargando = false;
-
+          avance => {
             
             this.mensajeExito = new Mensaje(true);
             this.mensajeExito.texto = "Se han guardado los cambios.";
             this.mensajeExito.mostrar = true;
-            this.cargar_usuarios();
-            this.usuario_form.patchValue({usuario_id:"", agregar:"",editar:"", eliminar:""});
           },
           error => {
-            this.cargando = false;
-            
             this.mensajeError = new Mensaje(true);
             this.mensajeError.texto = "No especificado.";
             this.mensajeError.mostrar = true;      
@@ -297,7 +298,9 @@ export class DetalleComponent implements OnInit {
           this.detalles = resultado.registros.data as Detalle[];
 
           this.datos_avance.tema = resultado.datos_tema.tema;
-          console.log(resultado);
+          this.avance_detalle.patchValue({prioridad: resultado.datos_tema.prioridad, estatus: resultado.datos_tema.estatus});
+          
+          //this.administrador = resultado
           this.datos_avance.historial = resultado.historial;
           this.total = resultado.total | 0;
           this.paginasTotales = Math.ceil(this.total / this.resultadosPorPagina);
@@ -489,28 +492,7 @@ export class DetalleComponent implements OnInit {
 
     var download = window.open(`${environment.API_URL}/download-file-avance/${id_avance}?${query}`);
     var contador = 0;
-    /*var timer = setInterval(function ()
-    {
-       contador = contador + 1;
-        if (download.closed)
-        {
-            clearInterval(timer);
-            self.mostrarDialogoArchivos(self.datosPedido);
-             self.mensajeError.mostrar = false;
-             self.mensajeExito.mostrar = true;
-             self.mensajeExito.iniciarCuentaAtras();
-            self.mensajeExito.texto = "Se ha descargado correctamente el archivo";
-        }else{
-          if(contador == 5)
-          {
-            clearInterval(timer);
-            download.close();
-            self.mensajeError.mostrar = true;
-            self.mensajeError.iniciarCuentaAtras();
-            self.mensajeError.texto = "Ocurrio un error al intentar descargar el archivo.";
-          }
-        }
-    }, 1000);*/
+
   }
 
   view(id){
@@ -520,28 +502,7 @@ export class DetalleComponent implements OnInit {
 
     var download = window.open(`${environment.API_URL}/view-file-avance/${id_avance}?${query}`);
     var contador = 0;
-    /*var timer = setInterval(function ()
-    {
-       contador = contador + 1;
-        if (download.closed)
-        {
-            clearInterval(timer);
-            self.mostrarDialogoArchivos(self.datosPedido);
-             self.mensajeError.mostrar = false;
-             self.mensajeExito.mostrar = true;
-             self.mensajeExito.iniciarCuentaAtras();
-            self.mensajeExito.texto = "Se ha descargado correctamente el archivo";
-        }else{
-          if(contador == 5)
-          {
-            clearInterval(timer);
-            download.close();
-            self.mensajeError.mostrar = true;
-            self.mensajeError.iniciarCuentaAtras();
-            self.mensajeError.texto = "Ocurrio un error al intentar descargar el archivo.";
-          }
-        }
-    }, 1000);*/
+
   }
 
   tab(id:number)
@@ -558,6 +519,38 @@ export class DetalleComponent implements OnInit {
     }
 
      this.listar(1, this.id_tab);
+  }
+
+  actualiza_avance()
+  {
+      this.cargando = true;
+      this.avanceService.actualizar_avance(this.id_avance, this.avance_detalle.value).subscribe(
+      resultado => {
+        this.cargando = false;
+        this.mensajeExito = new Mensaje(true);
+        this.mensajeExito.mostrar = true;
+        this.mensajeExito.texto = "Se ha actualizado satisfactoriamente el avance";
+      },
+      error => {
+        this.cargando = false;
+        this.mensajeError = new Mensaje(true);
+        this.mensajeError.mostrar = true;
+        try {
+          let e = error.json();
+          if (error.status == 401 ){
+            this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+          }
+        } catch(e){
+          
+          
+          if (error.status == 500 ){
+            this.mensajeError.texto = "500 (Error interno del servidor)";
+          } else {
+            this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+          }            
+        }
+
+      });
   }
 
  	regresar(){

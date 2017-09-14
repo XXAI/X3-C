@@ -174,3 +174,15 @@ input[type="checkbox"] .styled:checked + label::before {
 input[type="checkbox"] .styled:checked + label::after {
   color: #fff;
 }
+
+.redondear
+{
+  -moz-border-radius: 7px 7px 7px 7px; /* Firefox */
+  -webkit-border-radius: 7px 7px 7px 7px; /* Google Chrome y Safari */
+  border-radius: 7px 7px 7px 7px; /* CSS3 (Opera 10.5 e Internet Explorer 9) */
+}
+
+.select
+{
+  min-width: 150px;
+}

@@ -40,7 +40,8 @@ export class AsignarComponent implements OnInit {
 	id:any;
   cargando: boolean = false;
 	asignado: boolean = true;
-	cargandoProveedores: boolean = false;
+  cargandoProveedores: boolean = false;
+
 	asignando: boolean = false;
 	cargandoInsumos: boolean = false;
 
