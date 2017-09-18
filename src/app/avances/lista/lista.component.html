@@ -54,6 +54,13 @@
                                 <option  *ngFor="let item of areas; let i=index" value="{{ item.area }}">{{ item.area }}</option>
                             </select>
                           </div>
+                          <div class="column" *ngIf="!filter">
+                          <label class="label" style="color: #FFF">Órden</label>
+                            <select class="select redondear" #orden (change)='filtro(5, orden.value)'>
+                                <option value="1" selected="selected">ÚLTIMA ACTUALIZACIÓN</option>
+                                <option value="2">PRIORIDAD</option>
+                            </select>
+                          </div>
                           <div class="column">
                             <a class="button is-medium is-primary is-inverted " (click)='showAgregarTema=!showAgregarTema'>
                             <span class="icon"><i class="fa fa-plus"></i></span><span>Nuevo</span>

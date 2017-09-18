@@ -34,7 +34,7 @@ export class ListaComponent implements OnInit {
 	tema_avance: FormGroup;
 
 	informacion_tema: any = {};
-	busqueda: any = {prioridad: '', estatus:'', visto:'', area:''};
+	busqueda: any = {prioridad: '', estatus:'', visto:'', area:'', orden :1};
 
 
 	// # SECCION: Esta sección es para mostrar mensajes
@@ -510,6 +510,8 @@ export class ListaComponent implements OnInit {
      		break;
      		case 4:
      			this.busqueda.area = value;
+     		case 5:
+     			this.busqueda.orden = value;
 
      		break;
      	}
@@ -521,7 +523,7 @@ export class ListaComponent implements OnInit {
      	//
      	
      	  
-     	if(this.busqueda.prioridad.length == 0 && this.busqueda.estatus.length == 0 && this.busqueda.area.length == 0 && this.busqueda.visto.length == 0 && this.ultimoTerminoBuscado == '')
+     	if(this.busqueda.prioridad.length == 0 && this.busqueda.estatus.length == 0 && this.busqueda.area.length == 0 && this.busqueda.visto.length == 0 && this.ultimoTerminoBuscado == '' && this.busqueda.orden == "1")
      	{
      		this.busquedaActivada = false;
      		this.cargando = false;
