@@ -26,7 +26,7 @@ export class IndexFarmaciaComponent implements OnInit {
 
     this.modulos = [
       { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-pagina-lista.svg', titulo: 'Pedidos', url: '/almacen/pedidos' },
-
+      
       // { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk--', icono: 'assets/icono-pedidos-jurisdiccionales.svg', titulo: 'Pedidos jurisdiccionales', url:"/almacen/pedidos-jurisdiccionales" },
       { permiso: 'iSxK0TpoYpnzf8KIQTWOq9Web7WnSKhz', icono: 'assets/icono-pedidos-alt.svg', titulo:'Entregas de pedidos', url:"/almacen/entregas" },
 
@@ -43,6 +43,7 @@ export class IndexFarmaciaComponent implements OnInit {
       // { permiso: '', icono: 'assets/icono-pagina-lista.svg', titulo:"Actas por desabasto", url:"/farmacia/actas" },
       // { permiso: '', icono: 'assets/icono-pagina-lista.svg', titulo:"Actas colectivas por desabasto", url:"/farmacia/actas-colectivas" },
     ];
+
     this.accesosDirectos = [
       { permiso: '2nC6GUf6E737QwZSxuLORT6rZUDy5YUO', icono: 'assets/icono-pagina-lista.svg', titulo:'Nuevo pedido', url:'/almacen/pedidos/nuevo' },
       { permiso: 'q9ppCvhWdeCJI85YtCrKvtHLaoPipeaT', icono: 'assets/icono-pedidos-alt.svg', titulo:'Recibir pedido', url:'/almacen/pedidos/por-surtir' },
