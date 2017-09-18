@@ -103,7 +103,8 @@ export class ListaComponent implements OnInit {
 
 	      this.cargando = true;
      	  
-     	  if(this.busqueda.prioridad != '' || this.busqueda.estatus != '' || this.busqueda.vistos != '' || this.busqueda.area != '')
+     	  if(this.busqueda.prioridad != '' || this.busqueda.estatus != '' || this.busqueda.visto != '' || this.busqueda.area != '')
+
      		this.busquedaActivada = true;
 
 	      return this.busquedaActivada  ? this.avanceService.buscar(term, this.busqueda, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]}) 
@@ -505,16 +506,22 @@ export class ListaComponent implements OnInit {
      			this.busqueda.estatus = value;
      		break;
      		case 3:
-     			this.busqueda.vistos = value;
+     			this.busqueda.visto = value;
      		break;
      		case 4:
      			this.busqueda.area = value;
+
      		break;
      	}
 
+     	console.log(this.busqueda);
+
+
      	this.cargando = true;
-     	//  
-     	if(this.busqueda.prioridad.length == 0 && this.busqueda.estatus.length == 0 && this.busqueda.area.length == 0 && this.busqueda.vistos.length == 0 && this.ultimoTerminoBuscado != '')
+     	//
+     	
+     	  
+     	if(this.busqueda.prioridad.length == 0 && this.busqueda.estatus.length == 0 && this.busqueda.area.length == 0 && this.busqueda.visto.length == 0 && this.ultimoTerminoBuscado == '')
      	{
      		this.busquedaActivada = false;
      		this.cargando = false;
