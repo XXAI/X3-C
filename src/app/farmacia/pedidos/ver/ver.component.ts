@@ -67,10 +67,25 @@ export class VerComponent implements OnInit {
   errorCancelarPedidoTexto: string = '';
 	cancelandoPedido:boolean = false;
 	
+
+	//Pedido alterno
 	errorGenerarPedidoAlterno: boolean = false;
 	errorGenerarPedidoAlternoTexto: string = '';
 	generandoPedidoAlterno:boolean = false;
-
+	acta:any = {
+		fecha: new Date(),
+		hora_inicio: new Date(),
+		hora_termino: new Date((new Date()).setHours( (new Date()).getHours() + 1 )),
+		ciudad: null,
+		lugar_reunion: null
+	}
+	errores_acta = {
+		fecha: null,
+		hora_inicio: null,
+		hora_termino: null,
+		ciudad: null,
+		lugar_reunion: null,
+	}
   //Harima: para ver si el formulaior es para crear o para editar
   formularioTitulo:string = 'Nuevo';
   private esEditar:boolean = false;
@@ -93,6 +108,9 @@ export class VerComponent implements OnInit {
   private pdfworker:Worker;
   cargandoPdf:any = {};
   errorEnPDF:boolean = false;
+  private pdfworkerActa:Worker;
+  cargandoActa:boolean = false;
+  errorPDFActa:boolean = false;
   // # FIN SECCION
 
   private cambiarEntornoSuscription: Subscription;
@@ -119,6 +137,7 @@ export class VerComponent implements OnInit {
     // Inicializamos el objeto para los reportes con web Webworkers
     //this.pdfworker = new Worker("web-workers/farmacia/pedidos/imprimir.js")
     this.pdfworker = new Worker("web-workers/farmacia/pedidos/pedido-proveedor.js")
+    this.pdfworkerActa = new Worker("web-workers/farmacia/actas/imprimir.js")
     
     // Este es un hack para poder usar variables del componente dentro de una funcion del worker
     var self = this;    
@@ -144,6 +163,27 @@ export class VerComponent implements OnInit {
       });
       //console.log(e)
     };
+    this.pdfworkerActa.onmessage = function( evt ) {       
+		// Esto es un hack porque estamos fuera de contexto dentro del worker
+		// Y se usa esto para actualizar alginas variables
+		$ngZone.run(() => {
+			console.log(evt);
+			self.cargandoActa = false;
+		});
+
+		FileSaver.saveAs( self.base64ToBlob( evt.data.base64, 'application/pdf' ), evt.data.fileName );
+		//open( 'data:application/pdf;base64,' + evt.data.base64 ); // Popup PDF
+	};
+
+	this.pdfworkerActa.onerror = function( e ) {
+		$ngZone.run(() => {
+			console.log(e);
+			self.errorPDFActa = true;
+			//self.cargandoPdf[error.tipoPedido] = false;
+		});
+	//console.log(e)
+	};
+
     
     // Inicialicemos el pedido
     this.pedido = new Pedido(true);
@@ -455,6 +495,17 @@ export class VerComponent implements OnInit {
     }
   }
 
+  imprimirActa() {
+		try {
+			this.cargandoActa = true;
+			
+			this.pdfworkerActa.postMessage(JSON.stringify(this.pedido.datosImprimir.acta));
+		} catch (e){
+			this.cargandoActa = false;
+			console.log(e);
+		}
+	}
+
   mostrarDialogo(){
     this.mostrarImprimirDialogo = true;
   }
@@ -600,17 +651,30 @@ export class VerComponent implements OnInit {
 	elaborarPedidoAlterno()
 	{
 		// Akira:
+		console.log(this.acta.hora_termino);
 		var validacion_palabra = prompt("Para confirmar esta transacción, por favor escriba: PEDIDO ALTERNO");
 		if(validacion_palabra == 'PEDIDO ALTERNO'){
 			this.generandoPedidoAlterno = true;
-
+			this.errores_acta = {
+				fecha: null,
+				hora_inicio: null,
+				hora_termino: null,
+				ciudad: null,
+				lugar_reunion: null,
+			}
 			let parametros = {
 				insumos: this.listaInsumosPedidoAlterno,
+				ciudad: this.acta.ciudad,
+				lugar_reunion: this.acta.lugar_reunion,
+				fecha: this.acta.fecha.getFullYear() + "-" + this.acta.fecha.getMonth() + "-" + this.acta.fecha.getDate(),
+				hora_inicio: this.acta.hora_inicio.getHours() + ":" + this.acta.hora_inicio.getMinutes() + ":00",
+				hora_termino: this.acta.hora_termino.getHours() + ":" + this.acta.hora_termino.getMinutes() + ":00"
 			}
 			this.pedidosService.generarPedidoAlterno(this.pedido.datosImprimir.id, parametros).subscribe(
 				respuesta => {
 					this.generandoPedidoAlterno = false;
-					console.log(respuesta)
+					//this.router.navigate(['/almacen/pedidos/alternos']);
+					window.location.reload();
 				}, error => {
 					this.generandoPedidoAlterno = false;
 					this.errorGenerarPedidoAlterno = true;
@@ -619,10 +683,20 @@ export class VerComponent implements OnInit {
 						let e = error.json();		
 						if (error.status == 401 ){
 							this.errorGenerarPedidoAlternoTexto = "No tiene permiso para esta acción.";
-						}
+						} else
+						if (error.status == 409 ){
+							this.errorGenerarPedidoAlternoTexto = "Verifique los campos marcados de color rojo.";
+
+							for (var input in e.error){
+								// Iteramos todos los errores
+								for (var i in e.error[input]){
+								  this.errores_acta[input] = e.error[input][i];
+								}                      
+							   }
+						} else
 						if (error.status == 500 ){
 							this.errorGenerarPedidoAlternoTexto = "500 (Error interno del servidor)";
-						}
+						} else
 		
 						if(e.error){
 							this.errorGenerarPedidoAlternoTexto = e.error;

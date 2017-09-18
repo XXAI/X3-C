@@ -32,13 +32,16 @@
                 <section *ngIf="pedido.tipo_pedido == 'PALT'" class="hero is-warning" style="text-align:center;">
                     Pedido Alterno
                 </section>
-                <section>
+                <section *ngIf="!cargando">
                     <div class="control is-grouped">
                         <a class="button is-success is-fullwidth is-outlined" title="Imprimir Excel" (click)="imprimirExcel(); " *ngIf="esEditar">
                             <span class="icon"><i class="fa fa-file-excel-o"></i></span> &nbsp; Excel
                         </a>
                         <a class="button is-info is-fullwidth is-outlined" title="Imprimir PDF" (click)="mostrarDialogo(); " *ngIf="esEditar">
                             <span class="icon"><i class="fa fa-print"></i></span> &nbsp; Pedido
+                        </a>
+                        <a class="button is-info is-fullwidth is-outlined" [ngClass]="{'is-loading': cargandoActa}" title="Imprimir Acta" (click)="imprimirActa(); " *ngIf="esEditar && pedido.datosImprimir.acta">
+                            <span class="icon"><i class="fa fa-print"></i></span> &nbsp; Acta
                         </a>
                     </div>
                 </section>
@@ -449,48 +452,96 @@
 <div class="modal is-active" [ngClass]="{'is-active': mostrarPedidoAlternoDialogo}">
     <div class="modal-background" (click)="cerrarDialogoPedidoAlterno()" ></div>
     <div class="modal-card" style="width:95%; height: auto;">
-      <header class="modal-card-head" style="background: #ffdd57;">
+        <header class="modal-card-head" style="background: #ffdd57;">
         <div class="container is-fluid"  style="width:100%;">
             <h1 class="title" style="color:#000;">
               <span class="icon is-medium"><i class="fa fa-retweet"></i></span> Pedido Alterno
             </h1>
         </div>            
         <a class="button  is-warning" style="position:absolute; top:1em; right:1em;" (click)="cerrarDialogoPedidoAlterno()" [ngClass]="{'is-disabled': generandoPedidoAlterno}"><span class="icon "><i class="fa fa-close"></i></span></a>
-      </header>
-      <section class="modal-card-body" style="padding:0px; overflow:visible;" >
-        <div style="padding: 1em;">
-            El pedido actual sera <strong>cancelado</strong>, y los insumos que no fueron recepcionados generarán otro pedido a un proveedor alterno, ya no se podrán hacer recepciones al pedido original:
-            <table class="table" *ngIf="pedido.datosImprimir">
-                <thead>
-                  <tr><th>Folio</th><th colspan="2">Nombre del Pedido</th><th>Fecha</th></tr>
-                </thead>
-                <tbody>
-                  <tr><td>{{pedido.datosImprimir.folio}}</td><td colspan="2">{{pedido.datosImprimir.descripcion}}</td><td>{{pedido.datosImprimir.fecha}}</td></tr>
-                </tbody>
-                <thead>
-                  <tr><th>Almacén</th><th colspan="3">Observaciones:</th></tr>
-                </thead>
-                <tbody>
-                  <tr><td>{{pedido.datosImprimir.almacen_solicitante.nombre}}</td><td colspan="3">{{pedido.datosImprimir.observaciones}}</td></tr>
-                </tbody>
-                <!--thead>
-                    <tr><th>Total Monto del Pedido</th><th>Monto Recibido</th><th>Monto Disponible</th><th></th></tr>
-                </thead>
-                <tbody>
-                  <tr>
-                      <td>$ {{pedido.datosImprimir.total_monto_solicitado | number:'1.2-2'}}</td>
-                      <td>$ {{(pedido.datosImprimir.total_monto_recibido||0) | number:'1.2-2'}}</td>
-                      <td>$ {{(pedido.datosImprimir.total_monto_solicitado - (pedido.datosImprimir.total_monto_recibido||0)) | number:'1.2-2'}}</td>
-                      <td>
-                      </td>
-                  </tr>
-                </tbody-->
-            </table>
-        </div>
-      </section>
-      <section class="modal-card-body" style="padding:0px;" >
-        <div style="padding: 1em;">
-            <table class="table">
+        </header>
+        <section class="modal-card-body" style="padding:0px; overflow:visible;" >
+            <div style="padding: 1em;">
+                El pedido actual sera <strong>cancelado</strong>, y los insumos que no fueron recepcionados generarán otro pedido a un proveedor alterno, ya no se podrán hacer recepciones al pedido original:
+                <table class="table" style="font-size:0.9em; margin:0px;" *ngIf="pedido.datosImprimir">
+                    <thead>
+                    <tr><th>Folio</th><th colspan="2">Nombre del Pedido</th><th>Fecha</th></tr>
+                    </thead>
+                    <tbody>
+                    <tr><td>{{pedido.datosImprimir.folio}}</td><td colspan="2">{{pedido.datosImprimir.descripcion}}</td><td>{{pedido.datosImprimir.fecha}}</td></tr>
+                    </tbody>
+                    <thead>
+                    <tr><th>Almacén</th><th colspan="3">Observaciones:</th></tr>
+                    </thead>
+                    <tbody>
+                    <tr><td>{{pedido.datosImprimir.almacen_solicitante.nombre}}</td><td colspan="3">{{pedido.datosImprimir.observaciones}}</td></tr>
+                    </tbody>
+                    <!--thead>
+                        <tr><th>Total Monto del Pedido</th><th>Monto Recibido</th><th>Monto Disponible</th><th></th></tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>$ {{pedido.datosImprimir.total_monto_solicitado | number:'1.2-2'}}</td>
+                        <td>$ {{(pedido.datosImprimir.total_monto_recibido||0) | number:'1.2-2'}}</td>
+                        <td>$ {{(pedido.datosImprimir.total_monto_solicitado - (pedido.datosImprimir.total_monto_recibido||0)) | number:'1.2-2'}}</td>
+                        <td>
+                        </td>
+                    </tr>
+                    </tbody-->
+                </table>
+            </div>
+        </section>
+      
+       
+        
+        <section class="modal-card-body" style="padding:0px;" >
+                <hr style="margin:0px;"/>
+                <div style="padding: 1em;">
+                        <h1 class="subtitle">Datos del Acta</h1>
+                        <div class="control is-grouped">
+                            <p class="control   has-icon has-icon-right">
+                                <label for="">Fecha</label>
+                                <input class="input" autofocus type="date" [ngClass]="{'is-danger': errores_acta.fecha != null}" [ngModel]="acta.fecha | date:'yyyy-MM-dd'" (ngModelChange)="acta.fecha  = $event" >
+                                <span class="icon is-small" *ngIf="errores_acta.fecha != null">
+                                <i class="fa fa-warning"></i>
+                                </span>
+                                <span class="help is-danger" *ngIf="errores_acta.fecha != null">Requerido.</span>
+                            </p>
+                            <p class="control  has-icon has-icon-right">
+                                <label for="">Hora inicio</label>
+                                <input class="input" type="time" [ngModel]="acta.hora_inicio | date:'HH:mm'" (ngModelChange)="acta.hora_inicio  = $event" [ngClass]="{'is-danger':  errores_acta.hora_inicio != null}" >
+                                <span class="icon is-small" *ngIf="errores_acta.hora_inicio != null">
+                                <i class="fa fa-warning"></i>
+                                </span>
+                                <span class="help is-danger" *ngIf="errores_acta.hora_inicio != null">Requerido.</span>
+                            </p>
+                            <p class="control  has-icon has-icon-right">
+                                <label for="">Hora termino</label>
+                                <input class="input" type="time" [ngModel]="acta.hora_termino | date:'HH:mm'" (ngModelChange)="acta.hora_termino  = $event" [ngClass]="{'is-danger':  errores_acta.hora_termino != null}" >
+                                <span class="icon is-small" *ngIf="errores_acta.hora_termino != null">
+                                <i class="fa fa-warning"></i>
+                                </span>
+                                <span class="help is-danger" *ngIf="errores_acta.hora_termino != null">Requerido.</span>
+                            </p>
+                        </div>
+                        <p class="control is-expanded  has-icon has-icon-right">
+                                <input type="text" class="input is-fullwidth" [(ngModel)]="acta.lugar_reunion" placeholder="Lugar de reunion" [ngClass]="{'is-danger':  errores_acta.lugar_reunion != null}" />
+                                <span class="icon is-small" *ngIf="errores_acta.lugar_reunion != null">
+                                    <i class="fa fa-warning"></i>
+                                </span>
+                                <span class="help is-danger" *ngIf="errores_acta.lugar_reunion != null">Este campo es requerido.</span>
+                            </p>
+                        <p class="control is-expanded  has-icon has-icon-right">
+                            <input type="text" class="input is-fullwidth" [(ngModel)]="acta.ciudad" placeholder="Ciudad" [ngClass]="{'is-danger':  errores_acta.ciudad != null}" />
+                            <span class="icon is-small" *ngIf="errores_acta.ciudad != null">
+                                <i class="fa fa-warning"></i>
+                            </span>
+                            <span class="help is-danger" *ngIf="errores_acta.ciudad != null">Este campo es requerido.</span>
+                        </p>
+                    </div>   
+             <hr style="margin:0px;"/>
+            <div style="padding: 1em;">
+                <table class="table">
                     <thead><tr><th>No.</th><th>Clave</th><th>Descripción</th><th>Cantidad</th><th>Monto</th></tr></thead>
                     <tbody>
                         <tr *ngFor="let insumo of listaInsumosPedidoAlterno; let i = index;">
@@ -511,12 +562,12 @@
                     </tbody>
                 </table>
             </div>
-      </section>
-      <footer class="" style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em " >
-          <span *ngIf="errorGenerarPedidoAlterno" class="notification is-small is-danger is-inverted">{{errorGenerarPedidoAlternoTexto}}</span>
-          <button class="button is-medium is-primary is-pulled-right" [ngClass]="{'is-loading': generandoPedidoAlterno}"  (click)="elaborarPedidoAlterno()">
-              <span class="icon"><i class="fa fa-retweet"></i></span> &nbsp;Elaborar Pedido Alterno
-          </button>
-      </footer>
+        </section>
+        <footer class="" style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em " >
+            <span *ngIf="errorGenerarPedidoAlterno" class="notification is-small is-danger is-inverted">{{errorGenerarPedidoAlternoTexto}}</span>
+            <button class="button is-medium is-primary is-pulled-right" [ngClass]="{'is-loading': generandoPedidoAlterno}"  (click)="elaborarPedidoAlterno()">
+                <span class="icon"><i class="fa fa-retweet"></i></span> &nbsp;Elaborar Pedido Alterno
+            </button>
+        </footer>
     </div>
   </div>
