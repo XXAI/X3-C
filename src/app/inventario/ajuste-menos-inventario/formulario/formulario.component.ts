@@ -115,7 +115,7 @@ export class FormularioComponent {
     // inicializar el formulario reactivo
     this.dato = this.fb.group({
       id: [''],
-      tipo_ajuste: ['Merma', [Validators.required]],
+      tipo_ajuste: ['1', [Validators.required]],
       observaciones: ['', [Validators.required]],
       tipo_movimiento_id: ['7', [Validators.required]],
       insumos: this.fb.array([])

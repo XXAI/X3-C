@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ElementRef, ViewChild, ViewChildren  } from '@angular/core';
+import { Component, OnInit, Input, NgZone, ElementRef, ViewChild, ViewChildren  } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { ActivatedRoute, Params } from '@angular/router';
@@ -7,6 +7,7 @@ import { environment } from '../../../../environments/environment';
 import { CrudService } from '../../../crud/crud.service';
 import { Mensaje } from '../../../mensaje';
 import { NotificationsService } from 'angular2-notifications';
+import  * as FileSaver    from 'file-saver';
 
 @Component({
   selector: 'sincronizar-recetas-lista',
@@ -23,6 +24,8 @@ export class ListaComponent {
   json_valido;
   pedido_id;
   recetas_resultado = false;
+  lista_impresion;
+  usuario;
   // Crear la variable que mustra las notificaciones
   mensajeResponse: Mensaje = new Mensaje();
   // mostrar notificaciones configuracion default, posicion abajo izquierda, tiempo 2 segundos
@@ -41,19 +44,25 @@ export class ListaComponent {
   clave_clues = '';
   fecha_desde = '';
   fecha_hasta = '';
-  numero_sinc: number;
+  numero_sinc;
   folio = '';
+
+  // # SECCION: Reportes
+  pdfworker: Worker;
+  cargandoPdf = false;
+  // # FIN SECCION
 
   constructor(private fb: FormBuilder,
     private crudService: CrudService,
     private route: ActivatedRoute,
     private _sanitizer: DomSanitizer,
+    private _ngZone: NgZone,
     private notificacion: NotificationsService) { }
 
   ngOnInit() {
 
     // obtener los datos del usiario logueado almacen y clues
-    var usuario = JSON.parse(localStorage.getItem('usuario'));
+    this.usuario = JSON.parse(localStorage.getItem('usuario'));
     // this.tamano = this.elementView.nativeElement.offsetHeight/2;
     // inicializar el formulario reactivo
     this.dato2 = this.fb.group({
@@ -61,6 +70,24 @@ export class ListaComponent {
       archivos: [''],
       pedido: ['00011']
     });
+
+    // Inicializamos el objeto para los reportes con web Webworkers
+    this.pdfworker = new Worker('web-workers/farmacia-subrrogada/lista-sincronizar-recetas.js');
+
+    // Este es un hack para poder usar variables del componente dentro de una funcion del worker
+    let self = this;
+    let $ngZone = this._ngZone;
+
+    this.pdfworker.onmessage = function( evt ) {
+      // Esto es un hack porque estamos fuera de contexto dentro del worker
+      // Y se usa esto para actualizar alginas variables
+      $ngZone.run(() => {
+         self.cargandoPdf = false;
+      });
+
+      FileSaver.saveAs( self.base64ToBlob( evt.data.base64, 'application/pdf' ), evt.data.fileName );
+      // open( 'data:application/pdf;base64,' + evt.data.base64 ); // Popup PDF
+    };
   }
   /**
      * Este método abre una modal
@@ -283,6 +310,51 @@ export class ListaComponent {
     is_numeric(str) {
         return /^\d+$/.test(str);
     }
+    /******************************************IMPRESION DE REPORTES************************************ */
+
+  imprimir() {
+
+    try {
+      this.cargandoPdf = true;
+      let temporal;
+      if (this.numero_sinc === undefined) {
+          this.numero_sinc = '';
+      }
+
+      this.crudService.lista_general('listar-pedidos-proveedor?fecha_desde=' + this.fecha_desde
+      + '&fecha_hasta=' + this.fecha_hasta + '&clues=' + this.clave_clues + '&numero_sinc='
+      + this.numero_sinc + '&folio=' + this.folio).subscribe(
+        resultado => {
+                this.cargando = false;
+                this.lista_impresion = resultado.data;
+                let entrada_imprimir = {
+                  lista: this.lista_impresion,
+                  usuario: this.usuario,
+                  fecha_desde: this.fecha_desde,
+                  fecha_hasta: this.fecha_hasta,
+                  clues: this.clave_clues,
+                  folio: this.folio,
+                  numero_sinc: this.numero_sinc
+                };
+                this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
+              },
+              error => {
+              }
+      );
+    } catch (e) {
+      this.cargandoPdf = false;
+    }
+  }
+
+  base64ToBlob( base64, type ) {
+      let bytes = atob( base64 ), len = bytes.length;
+      let buffer = new ArrayBuffer( len ), view = new Uint8Array( buffer );
+      for ( let i = 0 ; i < len ; i++ ) {
+        view[i] = bytes.charCodeAt(i) & 0xff;
+      }
+      return new Blob( [ buffer ], { type: type } );
+  }
+
     /*********************************************NOTIFICACIONES*************************************************** */
 
     /**

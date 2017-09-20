@@ -9,17 +9,24 @@
             <section class="hero" [ngClass]=" {'is-dark': ctrl.busquedaActivada, 'is-primary': !ctrl.busquedaActivada } ">
 
                 <div class="hero-body" style="position:relative;">
-                    <a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="Actualizar búsqueda" style="position:absolute; top:1em; right:3.5em;" (click)="ctrl.listarBusqueda(searchBox.value,1)"><span class="icon "><i class="fa fa-refresh"></i></span></a>
-                    <a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="Actualizar búsqueda" style="position:absolute; top:1em; right:1em;" (click)="ctrl.listar(1)"><span class="icon "><i class="fa fa-refresh"></i></span></a>
+                    <nav class="level">
+                        <div class="level-left"></div>
+                        <!-- Right side -->
+                        <div class="level-right">
+                            <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="Actualizar" (click)="ctrl.listarBusqueda(searchBox.value,1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
+                            <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="Actualizar" (click)="ctrl.listar(1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
+                            
+                            <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="PDF" (click)="imprimir()"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
+                            <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="PDF" (click)="imprimir()"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
+                            <p class="level-item">&nbsp;</p>
+                        </div>
+                    </nav>
                     <div class="container is-fluid">
 
                         <div class="is-hidden-desktop">
                             <h1 class="title" *ngIf="!ctrl.busquedaActivada">
                                 <span class="icon is-medium"><i class="fa fa-user"></i></span> Sincronizar recetas
                             </h1>
-                        </div>
-                        <div class="is-hidden-touch">
-                            <div style="height:30px;"></div>
                         </div>
                         <h1 class="title" *ngIf="ctrl.busquedaActivada">
                             <span class="icon is-medium"><i class="fa fa-search"></i></span> Búsqueda
@@ -58,7 +65,7 @@
                             </div>
                             <div class="control is-expanded">
                                 <span class="field">
-                                    <label class="label" title="Número de sincronizaciones">Num. sicronizaciones:</label>
+                                    <label class="label" title="Número de sincronizaciones">NUM. SINCRONIZACIONES:</label>
                                     <p class="control">
                                         <input class="input is-medium" type="number" step="1" min="0" (keypress)="quitar_punto($event)" 
                                             placeholder="Número de sincronizaciones" [(ngModel)]='numero_sinc'>
@@ -84,8 +91,14 @@
                 <br>
             </div>
 
-            <div style="overflow: scroll; overflow-x: hidden; height: 650px;">
-                <table class="table" *ngIf="!ctrl.cargando" style="min-width:100%; font-size:1em;">
+            <div style="overflow: scroll; overflow-x: hidden; height: 630px;">
+                <div class="is-fullwidth has-text-centered" *ngIf="cargandoPdf">
+                        <br>
+                        <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Generando PDF...</span></span>
+                        <br>
+                        <br>
+                    </div>
+                <table class="table" *ngIf="!ctrl.cargando && !cargandoPdf" style="min-width:100%; font-size:1em;">
                     <thead>
                         <tr>
                             <th></th>
@@ -118,14 +131,20 @@
                                 {{item.fecha | date}}<br>
                             </td>
                             <td style="vertical-align: middle;">
-                                <strong>{{item.folio}}</strong>
-                                <!-- <br>{{item.descripcion}}<br> -->
+                                <strong style="font-size: 14px">{{item.clues}}</strong>
+                                <p style="font-size: 12px">{{item.unidad_medica.nombre}}</p>
                             </td>
                             <td style="vertical-align: middle;">
-                                {{item.clues}}
+                                <strong style="font-size: 14px">{{item.folio}}</strong>
+                                <p style="font-size: 12px">{{item.descripcion}}</p>
                             </td>
-                            <td>PROVEEDOR</td>
-                            <td>SINCRONIZACIONES</td>
+                            <td>{{item.proveedor.nombre}}</td>
+                            <td *ngIf="!item.metadatos_sincronizaciones" style="text-align:center; vertical-align: middle;" title="No disponible">N/D<a routerLink="/almacen/sincronizar-recetas/editar/{{item.id}}"></a></td>
+                            <td *ngIf="item.metadatos_sincronizaciones" style="text-align:center; vertical-align: middle;" title="Número de sincronizaciones">
+                                <label *ngIf="item.metadatos_sincronizaciones.numero_sincronizaciones==0">{{item.metadatos_sincronizaciones.numero_sincronizaciones}}</label>
+                                <a *ngIf="item.metadatos_sincronizaciones.numero_sincronizaciones > 0" routerLink="/farmacia-subrrogada/sincronizar-recetas/lista-sincronizaciones/{{item.metadatos_sincronizaciones.pedido_id}}">{{item.metadatos_sincronizaciones.numero_sincronizaciones}} </a>
+                            </td>
+                            
                             <td class="aceptados" *ngIf="item.metadatos_sincronizaciones" style="text-align:center; vertical-align: middle;" title="Recetas aceptadas">{{item.metadatos_sincronizaciones.total_recetas}}<a routerLink="/almacen/sincronizar-recetas/editar/{{item.id}}"></a></td>
                             <td *ngIf="!item.metadatos_sincronizaciones" style="text-align:center; vertical-align: middle;" title="No disponible">N/D<a routerLink="/almacen/sincronizar-recetas/editar/{{item.id}}"></a></td>
                             <td class="aceptados" *ngIf="item.metadatos_sincronizaciones" style="text-align:center; vertical-align: middle;" title="Recetas ignoradas">{{item.metadatos_sincronizaciones.total_recetas_repetidas}}</td>

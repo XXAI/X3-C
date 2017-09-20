@@ -244,7 +244,7 @@
         <!-- apartado de insumos -->
         <div class="column" style="padding:1em; height:90%">
             <div style="background: #FFF; border-radius: 1em; height:100%">
-                <section class="hero is-primary">
+                <section class="hero is-primary is-small">
                     <div class="hero-body">
                         <nav class="level">
                             <div class="level-left"></div>
@@ -263,13 +263,11 @@
                                 <p class="level-item">&nbsp;</p>
                             </div>
                         </nav>
-                        
                         <div class="container is-fluid">
                             <h1 class="title">
                                 <span *ngIf="!ctrl.cargando || !cargando" class="icon is-medium"><i class="fa fa-edit"></i></span>
                                 <span *ngIf="ctrl.cargando || cargando" class="icon is-medium"><i class="fa fa-refresh fa-spin"></i></span>                                Insumos
                             </h1>
-
                         </div>
                     </div>
                 </section>
@@ -281,18 +279,77 @@
 
                     <div class="field has-addons has-addons-centered" *ngIf="!tieneid">
 
-                        <p class="control">
-                            <input ngui-auto-complete [source]="insumos_term" [list-formatter]="autocompleListFormatter" id="buscarInsumo" value-property-name="clave"
-                                display-property-name="descripcion" path-to-data="" loading-text="Cargando..." no-match-found-text="No hay resultados."
-                                (valueChanged)="select_insumo_autocomplete($event)" min-chars="1" class="input is-success is-medium"
-                                type="text" placeholder="Escanea el codigo de barra, o empieza escribir el nombre del producto" >
+                        <!-- <p class="control">
+                            <input ngui-auto-complete 
+                            [source]="insumos_term"
+                            [list-formatter]="autocompleListFormatter"
+                            id="buscarInsumo"  
+                            value-property-name="clave"
+                            display-property-name="descripcion" 
+                            path-to-data="" 
+                            loading-text="Cargando..." 
+                            no-match-found-text="No hay resultados."
+                            max-num-list="10" 
+                            (valueChanged)="select_insumo_autocomplete($event)"
+                            min-chars="7" 
+                            class="input is-success is-medium"
+                            type="text"
+                            placeholder="Escanea el codigo de barra, o empieza escribir el nombre del producto" >
+                        </p> -->
 
-                        </p>
-
-                        <hr>
+                        <!-- *****************     INPUT DE BUSQUEDA DE INSUMO     ****************** -->    
+                        <div class="control is-grouped">
+                            <div class="control is-expanded">
+                                <input 
+                                    (keyup.enter)="enviarAutocomplete(buscarInsumo.value)" 
+                                    id="buscarInsumo"
+                                    name="buscarInsumo"
+                                    #buscarInsumo
+                                    class="input is-success is-medium"
+                                    type="text"
+                                    placeholder="Escriba la clave o el nombre del insumo y presione la tecla ENTER"/>
+                            </div>
+                            <div class="control" *ngIf="buscarInsumo.value != ''">
+                                <a class="button is-info is-medium" (click)="res_busq_insumos=[]; buscarInsumo.value=''">
+                                    <i class="fa fa-times" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="is-fullwidth has-text-centered" *ngIf="cargando" style="height:100px;">
+                            <br>
+                            <span class="tag is-primary is-large">
+                                <span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span>
+                            </span>
+                        </div>
+                        <!-- *****************     RESULTADOS DE BUSQUEDA DE INSUMO     ****************** -->
+                        <div *ngIf="res_busq_insumos.length > 0 && !cargando" style="height: 200px;">
+                            <div *ngIf="res_busq_insumos.length > 0 && !cargando" style="overflow: scroll; overflow-x: hidden; height: 90%;">
+                                <div class="content" style="z-index: 1;" *ngFor="let item_insumo of res_busq_insumos; let c = index">
+                                    <div class="card" (click)="select_insumo_autocomplete(item_insumo)" style="background: rgba(242,248,253, 0.8)">
+                                        <div class="card-content">
+                                            <div class="media">          
+                                                <div class="media-content">
+                                                    <p class="title is-4">{{item_insumo.descripcion}}</p>
+                                                    <p class="subtitle is-6">
+                                                        <strong>Clave: </strong> {{item_insumo.clave}}
+                                                        <label class="tag is-success" *ngIf="item_insumo.es_causes == 1"><strong>Cause </strong></label>
+                                                        <label class="tag" *ngIf="item_insumo.es_causes == 0" style="background: #B8FB7E; border-color: #B8FB7E; color: rgba(0,0,0,0.7);" ><strong>No Cause </strong> </label>
+                                                        <label class="tag is-warning" *ngIf="item_insumo.es_unidosis == 1"><strong>Unidosis</strong> </label>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    
+                    <hr> <!-- Línea de division -->
 
-                    <div formArrayName="insumos" style="overflow: scroll; overflow-x: hidden; height: 550px;">
+                    <!-- *****************     INSUMOS AGREGADOS     ****************** -->
+                    <div formArrayName="insumos" style="overflow: scroll; overflow-x: hidden;" [ngStyle]="{'height': res_busq_insumos.length > 0 ? '350px' : '550px'}" >
                         <div class="box" *ngFor="let item of ctrl.dato.controls.insumos.controls; let i=index"  [ngStyle]="{'background': i%2 == 0 ? 'rgba(230, 230, 232, 0.44)' : ''}">
                             <article class="media" [formGroupName]="i">
                                 <div class="media-content">
@@ -364,7 +421,7 @@
                                             </div>
                                             <div class="column is-auto">
                                                     <p class="control is-expanded">
-                                                    <label class="label">Frecuencia (Hrs):</label>
+                                                    <label class="label">Frecuencia (hrs.):</label>
                                                         <input type="text" class="input" formControlName="frecuencia" (keypress)="quitar_punto($event)"  [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.controls.insumos.controls[i].controls.frecuencia.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.frecuencia.touched}">
                                                     </p>
                                             </div>
@@ -412,6 +469,46 @@
         </header>
         <section class="modal-card-body" style="height: 90%;">
             <div style="padding: 1em; overflow: scroll; overflow-x: hidden; height: 100%;">
+                
+                                    <div class="level-left">
+                                        <div class="columns is-flex-desktop" style="width: 100%">
+                                            <div class="column is-2">
+                                                <p class="control is-expanded">
+                                                <label *ngIf="!tieneid" class="label">Dosis ({{unidad_medida}}):</label>
+                                                <label *ngIf="tieneid" class="label">Dosis ():</label>
+                                                    <input type="text" autofocus class="input" #dosis id="dosis" name="dosis" (keypress)="quitar_punto($event)"  [ngClass]="{'is-disabled': tieneid}">
+                                                </p>
+                                            </div>
+                                            <div class="column is-auto">
+                                                    <p class="control is-expanded">
+                                                    <label class="label">Frecuencia (hrs.):</label>
+                                                        <input type="text" class="input" #frecuencia id="frecuencia" name="frecuencia" (keypress)="quitar_punto($event)"  [ngClass]="{'is-disabled': tieneid}">
+                                                    </p>
+                                            </div>
+                                            <div class="column is-2">
+                                                <p class="control is-expanded">
+                                                <label class="label">Duración (días):</label>
+                                                    <input type="text" class="input" #duracion id="duracion" name="duracion" (keypress)="quitar_punto($event)" [ngClass]="{'is-disabled': tieneid}">
+                                                </p>
+                                            </div>
+                                            <div class="column  is-auto">
+                                                <p class="control is-expanded">
+                                                <label *ngIf="!tieneid" class="label">Cant. recetada ({{presentacion_nombre}}):</label>
+                                                <label *ngIf="tieneid" class="label">Cant. recetada ():</label>
+                                                    <input type="text" class="input" #cant_recetada id="cant_recetada" name="cant_recetada" (keypress)="quitar_punto($event)" [ngClass]="{'is-disabled': tieneid}">
+                                                </p>
+                                            </div>
+                                            <div class="column is-auto">
+                                                <p class="control is-expanded">
+                                                <label *ngIf="!tieneid" class="label">Cant. surtida ({{presentacion_nombre}}):</label>
+                                                <label *ngIf="tieneid" class="label">Cant. surtida ():</label>
+                                                    <input *ngIf="!tieneid" style="background:aliceblue" type="text" readonly [(ngModel)]="cantidad_surtida">
+                                                    <input *ngIf="tieneid" style="background:aliceblue" type="text" readonly class="input" [(ngModel)]="cantidad" >
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                    </div>
                 <table class="table is-narrow is-bordered is-striped">
                     <thead>
                         <tr>
@@ -420,10 +517,6 @@
                             <th>Codigo de barras</th>
                             <th>Existencia</th>
                             <th>Cantidad (normal)</th>
-                            <!-- 
-                            <th *ngIf="es_unidosis">Existencia Unidosis</th>
-                            <th *ngIf="es_unidosis">Cantidad Unidosis</th>
-                            -->
                         </tr>
                     </thead>
                     <tbody>
@@ -439,16 +532,7 @@
                             <td>
                                 <input class="input has-text-centered " type="number" step="1" min="0" max="{{item.existencia}}" (keyup)="comprobar_cant_lotes()" (keypress)="quitar_punto($event)" (change)="comprobar_cant_lotes()" placeholder="Cantidad" [(ngModel)]="item.cantidad">
                             </td>
-
-                            <!-- <td *ngIf="!item.nuevo && es_unidosis">{{item.existencia_unidosis}}</td> -->
                             <td *ngIf="item.nuevo && es_unidosis"></td>
-
-                            <!-- 
-                            <td *ngIf="es_unidosis">
-                                <input class="input has-text-centered " type="number" step="1" min="0" max="{{item.cantidad_unidosis}}" placeholder="Cantidad Unidosis" [(ngModel)]="item.cantidad_unidosis">
-                            </td> 
-                            -->
-
                             <td *ngIf="item.nuevo">
                                 <a class="delete" (click)=eliminarLote(i)></a>
                             </td>
@@ -459,7 +543,7 @@
         </section>
         <footer class="modal-card-foot">
             <a class="button is-dark" (click)="agregarNuevoLote()">Agregar nuevo lote</a>                            
-            <a class="button is-success" [ngClass]="{'is-disabled':!sum_cant_lotes}"  (click)="agregarLoteIsumo()">Aceptar</a>
+            <a class="button is-success" [ngClass]="{'is-disabled':!sum_cant_lotes}"  (click)="agregarLoteIsumo(dosis.value, frecuencia.value, duracion.value, cant_recetada.value)">Aceptar</a>
             <a class="button" (click)="cancelarModal('verLotes')">Cancelar</a>
         </footer>
     </div>

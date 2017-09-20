@@ -28,7 +28,7 @@
                             <label class="label">Tipo de ajuste:</label>
                             <p class="control is-expanded  has-icon has-icon-right">
                                 <select class="select" name="tipo_ajuste" formControlName="tipo_ajuste" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('tipo_ajuste').hasError('required') && ctrl.dato.get('tipo_ajuste').touched}">
-                                    <option *ngFor="let item of tipos_ajustes" value="{{item.nombre}}" >{{ item.nombre }}</option>
+                                    <option *ngFor="let item of tipos_ajustes" value="{{item.id}}" >{{ item.nombre }}</option>
                                 </select>
                                 <span class="icon is-small" *ngIf="ctrl.dato.get('tipo_ajuste').hasError('required') && ctrl.dato.get('tipo_ajuste').touched">
                                     <i class="fa fa-warning"></i>

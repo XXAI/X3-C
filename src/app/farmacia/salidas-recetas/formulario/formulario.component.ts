@@ -1,7 +1,10 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Params } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
+import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import 'rxjs/add/observable/of';
 
 import { environment } from '../../../../environments/environment';
 import { CrudService } from '../../../crud/crud.service';
@@ -12,7 +15,10 @@ import  * as FileSaver    from 'file-saver';
 @Component({
   selector: 'salidas-recetas-formulario',
   templateUrl: './formulario.component.html',
-  styles: ['ngui-auto-complete {z-index: 999999 !important}']
+  styles: ['ngui-auto-complete {z-index: 999999 !important}'],
+  host: {
+        '(document:keydown)': 'handleKeyboardEvents($event)'
+    }
 })
 
 export class FormularioComponent {
@@ -22,7 +28,11 @@ export class FormularioComponent {
   tab: number = 1;
   cargando = false;
   unidad_medida;
+  usuario;
+  key;
   presentacion_nombre;
+  res_busq_insumos= [];
+  arrayOfStrings = [];
   sum_cant_lotes = false;
   public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
 
@@ -60,6 +70,10 @@ export class FormularioComponent {
     maxLength: 2000
   };
   mostrar_lote = [];
+  @ViewChildren('dosis') dosis;
+  @ViewChildren('frecuencia') frecuencia;
+  @ViewChildren('duracion') duracion;
+  @ViewChildren('cant_recetada') cant_recetada;
 
   constructor(
     private fb: FormBuilder,
@@ -67,18 +81,19 @@ export class FormularioComponent {
     private route: ActivatedRoute,
     private _sanitizer: DomSanitizer,
     private notificacion: NotificationsService,
-    private _ngZone: NgZone) { }
+    private _ngZone: NgZone,
+    public http: Http) { }
 
   ngOnInit() {
 
     // obtener los datos del usiario logueado almacen y clues
-    var usuario = JSON.parse(localStorage.getItem('usuario'));
+    this.usuario = JSON.parse(localStorage.getItem('usuario'));
 
-    if (usuario.clues_activa) {
-      this.insumos_term += '&clues=' + usuario.clues_activa.clues;
+    if (this.usuario.clues_activa) {
+      this.insumos_term += '&clues=' + this.usuario.clues_activa.clues;
     }
-    if (usuario.almacen_activo) {
-      this.insumos_term += '&almacen=' + usuario.almacen_activo.id;
+    if (this.usuario.almacen_activo) {
+      this.insumos_term += '&almacen=' + this.usuario.almacen_activo.id;
     }
 
     // Inicializamos el objeto para los reportes con web Webworkers
@@ -179,6 +194,57 @@ export class FormularioComponent {
     document.getElementById(id).classList.remove('is-active');
   }
   lotes_insumo;
+
+  /****************************************************************************************************** */
+
+  observableSource = (keyword: any): Observable<any[]> => {
+    //  'https://maps.googleapis.com/maps/api/geocode/json?address='+keyword
+    // let url: string = 'http://sialapi.yoursoft.com.mx/public/index.php/insumos-auto?term=:' + keyword;
+
+    let cabecera = '';
+    if (this.usuario.clues_activa) {
+      cabecera += '&clues=' + this.usuario.clues_activa.clues;
+    }
+    if (this.usuario.almacen_activo) {
+      cabecera += '&almacen=' + this.usuario.almacen_activo.id;
+    }
+    let url: string = '' + environment.API_URL + '/insumos-auto?term=' + keyword + cabecera;
+    console.log(url);
+    if (keyword) {
+      return this.http.get(url)
+        .map(res => {
+          let json = res.json();
+          console.log(json);
+          this.arrayOfStrings = json;
+          return json;
+        });
+    } else {
+      return Observable.of([]);
+    }
+  }
+
+  enviarAutocomplete(keyword: any) {
+    this.cargando = true;
+    let cabecera = '';
+    if (this.usuario.clues_activa) {
+      cabecera += '&clues=' + this.usuario.clues_activa.clues;
+    }
+    if (this.usuario.almacen_activo) {
+      cabecera += '&almacen=' + this.usuario.almacen_activo.id;
+    }
+    let url: string = '' + environment.API_URL + '/insumos-auto?term=' + keyword + cabecera;
+    this.crudService.busquedaInsumos(keyword, 'insumos-auto').subscribe(
+      resultado => {
+        this.cargando = false;
+        this.res_busq_insumos = resultado;
+        if (this.res_busq_insumos.length === 0) {
+          this.notificacion.warn('Insumos', 'No hay resultados que coincidan', this.objeto);
+        }
+      }
+    );
+  }
+
+  /********************************************************************************************* */
   /**
      * Este método formatea los resultados de la busqueda en el autocomplte
      * @param data resultados de la busqueda 
@@ -230,6 +296,7 @@ export class FormularioComponent {
 
         //limpiar el autocomplete
         (<HTMLInputElement>document.getElementById('buscarInsumo')).value = '';
+        this.res_busq_insumos = [];
 
         //poner el titulo a la modal
         document.getElementById('tituloModal').innerHTML = ` ${data.descripcion} <br>
@@ -250,9 +317,10 @@ export class FormularioComponent {
      * Este método agrega los lostes del modal a el modelo que se envia a la api
      * @return void
      */
-  agregarLoteIsumo() {
+  agregarLoteIsumo(dosis, frecuencia, duracion, cantidad_recetada) {
     //obtener el formulario reactivo para agregar los elementos
     const control = <FormArray>this.dato.controls['insumos'];
+    console.log(dosis);
 
     //crear el json que se pasara al formulario reactivo tipo insumos
     var lotes = {
@@ -263,10 +331,10 @@ export class FormularioComponent {
       'es_unidosis': this.insumo.es_unidosis,
       'cantidad': 1,
       'cantidad_x_envase': parseInt(this.insumo.cantidad_x_envase),
-      'dosis': ['', [Validators.required]],
-      'frecuencia': ['', [Validators.required]],
-      'duracion': ['', [Validators.required]],
-      'cantidad_recetada': ['', [Validators.required]],
+      'dosis': [dosis, [Validators.required]],
+      'frecuencia': [frecuencia, [Validators.required]],
+      'duracion': [duracion, [Validators.required]],
+      'cantidad_recetada': [cantidad_recetada, [Validators.required]],
       'cantidad_surtida': 1,
       'unidad_medida': this.unidad_medida,
       'presentacion_nombre': this.presentacion_nombre,
@@ -334,20 +402,20 @@ export class FormularioComponent {
             }
           }
         }
-        //si el lote no existe agregarlo
+        // si el lote no existe agregarlo
         if (!existe_lote) {
-          //Si es nuevo entonces igualar la cantidad a la existencia
-          if(item.nuevo){
+          // Si es nuevo entonces igualar la cantidad a la existencia
+          if (item.nuevo) {
             item.existencia = item.cantidad * 1;
           }
 
-          //validar que la cantidad escrita no sea mayor que la existencia si no poner la existencia como la cantidad maxima        
+          // validar que la cantidad escrita no sea mayor que la existencia si no poner la existencia como la cantidad maxima        
           if (item.cantidad > item.existencia) {
             this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + item.existencia, objeto);
             item.cantidad = item.existencia * 1;
           }
 
-          //agregar al formulario reactivo de lote
+          // agregar al formulario reactivo de lote
           ctrlLotes.controls['lotes'].push(this.fb.group(
             {
               id: item.id,
@@ -370,6 +438,10 @@ export class FormularioComponent {
     //agregar la cantidad surtida
     ctrlLotes.controls['cantidad_surtida'].patchValue(cantidad);
     this.cancelarModal('verLotes');
+    this.dosis.first.nativeElement.value = '';
+    this.duracion.first.nativeElement.value = '';
+    this.frecuencia.first.nativeElement.value = '';
+    this.cant_recetada.first.nativeElement.value = '';
     this.sum_cant_lotes = false;
   }
   /**
@@ -472,6 +544,21 @@ export class FormularioComponent {
     return /^\d+$/.test(str);
   }
 
+  /**
+     * Este método permite que el focus del cursor vuelva al buscador de insumos una vez presionada la tecla enter
+     * @param event Parametro que contiene el valor de la tecla presionada
+     * @return void
+     */
+  handleKeyboardEvents(event: KeyboardEvent) {
+    this.key = event.which || event.keyCode;
+    // console.log(this.key);
+    if (event.keyCode === 13) {
+      document.getElementById('buscarInsumo').focus();
+      event.preventDefault();
+      return false;
+    }
+  }
+
   guardar_movimiento() {
     // obtener el formulario reactivo para agregar los elementos
     const control = <FormArray>this.dato.controls['insumos'];
@@ -494,6 +581,7 @@ export class FormularioComponent {
       }
     }
   }
+
 
 
   /***************************************IMPRESION DE REPORTES*************************************************/
