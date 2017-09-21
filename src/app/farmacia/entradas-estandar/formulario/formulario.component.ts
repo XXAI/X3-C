@@ -145,7 +145,11 @@ export class FormularioComponent {
       this.fecha_actual = this.dato.get('fecha_movimiento').value;
     }
   }
-
+  /**
+     * Este método permite que el focus del cursor vuelva al buscador de insumos una vez presionada la tecla enter
+     * @param event Parametro que contiene el valor de la tecla presionada
+     * @return void
+     */
   handleKeyboardEvents(event: KeyboardEvent) {
     this.key = event.which || event.keyCode;
     // console.log(this.key);
