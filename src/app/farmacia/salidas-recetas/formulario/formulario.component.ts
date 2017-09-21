@@ -34,6 +34,8 @@ export class FormularioComponent {
   res_busq_insumos= [];
   arrayOfStrings = [];
   sum_cant_lotes = false;
+  cantidad_x_envase;
+  cantidad_recomendada;
   public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
 
 
@@ -74,6 +76,7 @@ export class FormularioComponent {
   @ViewChildren('frecuencia') frecuencia;
   @ViewChildren('duracion') duracion;
   @ViewChildren('cant_recetada') cant_recetada;
+  @ViewChildren('cant_surtida') cant_surtida;
 
   constructor(
     private fb: FormBuilder,
@@ -305,6 +308,7 @@ export class FormularioComponent {
         this.unidad_medida = data.unidad_medida;
         this.presentacion_nombre = data.presentacion_nombre;
         this.cargando = false;
+        this.cantidad_x_envase = data.cantidad_x_envase ? data.cantidad_x_envase : 1;
         this.abrirModal('verLotes');
       },
       error => {
@@ -442,6 +446,7 @@ export class FormularioComponent {
     this.duracion.first.nativeElement.value = '';
     this.frecuencia.first.nativeElement.value = '';
     this.cant_recetada.first.nativeElement.value = '';
+    this.cant_surtida.first.nativeElement.value = '';
     this.sum_cant_lotes = false;
   }
   /**
@@ -557,6 +562,26 @@ export class FormularioComponent {
       event.preventDefault();
       return false;
     }
+  }
+
+  calcularCantidadSugerida(dosis, frecuencia, duracion, cant_recetada) {
+    let veces_al_dia = 24 / frecuencia;
+    this.cantidad_recomendada  = veces_al_dia * dosis * Number(duracion);
+    this.cantidad_recomendada = this.cantidad_recomendada / this.cantidad_x_envase;
+    let temporal = '' + this.cantidad_recomendada;
+
+    if ( this.cantidad_recomendada > parseInt(temporal, 10)) {
+      this.cantidad_recomendada =  parseInt(temporal, 10) + 1;
+    }
+  }
+
+  calcularCantidadSurtida() {
+    let total_cantidad_surtida = 0;
+    for (let item of this.lotes_insumo) {
+      total_cantidad_surtida = item.cantidad ? total_cantidad_surtida + item.cantidad : total_cantidad_surtida + 0;
+      console.log(item.cantidad);
+    }
+    this.cant_surtida.first.nativeElement.value = total_cantidad_surtida;
   }
 
   guardar_movimiento() {

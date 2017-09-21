@@ -411,6 +411,8 @@
                                         </table>
                                     </section>
                                     <div class="level-left">
+
+                                        <hr>
                                         <div class="columns is-flex-desktop" style="width: 100%">
                                             <div class="column is-2">
                                                 <p class="control is-expanded">
@@ -462,83 +464,94 @@
 
 <div class="modal" id="verLotes">
     <div class="modal-background"></div>
-    <div class="modal-card" style="width: 60%; height: 80%;">
+    <div class="modal-card" style="width: 70%; height: 95%;">
         <header class="modal-card-head" style="height: 10%;">
             <p class="modal-card-title" id="tituloModal"> </p>
             <button type="button" class="delete" (click)="cancelarModal('verLotes')"></button>
         </header>
         <section class="modal-card-body" style="height: 90%;">
-            <div style="padding: 1em; overflow: scroll; overflow-x: hidden; height: 100%;">
+            <div style="padding: 1em; overflow-x: hidden; height: 100%;">
                 
-                                    <div class="level-left">
-                                        <div class="columns is-flex-desktop" style="width: 100%">
-                                            <div class="column is-2">
-                                                <p class="control is-expanded">
-                                                <label *ngIf="!tieneid" class="label">Dosis ({{unidad_medida}}):</label>
-                                                <label *ngIf="tieneid" class="label">Dosis ():</label>
-                                                    <input type="text" autofocus class="input" #dosis id="dosis" name="dosis" (keypress)="quitar_punto($event)"  [ngClass]="{'is-disabled': tieneid}">
-                                                </p>
-                                            </div>
-                                            <div class="column is-auto">
-                                                    <p class="control is-expanded">
-                                                    <label class="label">Frecuencia (hrs.):</label>
-                                                        <input type="text" class="input" #frecuencia id="frecuencia" name="frecuencia" (keypress)="quitar_punto($event)"  [ngClass]="{'is-disabled': tieneid}">
-                                                    </p>
-                                            </div>
-                                            <div class="column is-2">
-                                                <p class="control is-expanded">
-                                                <label class="label">Duración (días):</label>
-                                                    <input type="text" class="input" #duracion id="duracion" name="duracion" (keypress)="quitar_punto($event)" [ngClass]="{'is-disabled': tieneid}">
-                                                </p>
-                                            </div>
-                                            <div class="column  is-auto">
-                                                <p class="control is-expanded">
-                                                <label *ngIf="!tieneid" class="label">Cant. recetada ({{presentacion_nombre}}):</label>
-                                                <label *ngIf="tieneid" class="label">Cant. recetada ():</label>
-                                                    <input type="text" class="input" #cant_recetada id="cant_recetada" name="cant_recetada" (keypress)="quitar_punto($event)" [ngClass]="{'is-disabled': tieneid}">
-                                                </p>
-                                            </div>
-                                            <div class="column is-auto">
-                                                <p class="control is-expanded">
-                                                <label *ngIf="!tieneid" class="label">Cant. surtida ({{presentacion_nombre}}):</label>
-                                                <label *ngIf="tieneid" class="label">Cant. surtida ():</label>
-                                                    <input *ngIf="!tieneid" style="background:aliceblue" type="text" readonly [(ngModel)]="cantidad_surtida">
-                                                    <input *ngIf="tieneid" style="background:aliceblue" type="text" readonly class="input" [(ngModel)]="cantidad" >
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <hr>
-                                    </div>
-                <table class="table is-narrow is-bordered is-striped">
-                    <thead>
-                        <tr>
-                            <th>Lote</th>
-                            <th>Caducidad</th>
-                            <th>Codigo de barras</th>
-                            <th>Existencia</th>
-                            <th>Cantidad (normal)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let item of lotes_insumo;  let i = index;">
-                            <td *ngIf="!item.nuevo">{{item.lote}}</td>
-                            <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Lote" [(ngModel)]="item.lote"></td>
-                            <td *ngIf="!item.nuevo">{{item.fecha_caducidad}}</td>
-                            <td *ngIf="item.nuevo"><input class="input has-text-centered " type="date" placeholder="Fecha de caducidad" [(ngModel)]="item.fecha_caducidad"></td>
-                            <td *ngIf="!item.nuevo">{{item.codigo_barras}}</td>
-                            <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Codigo de barras" [(ngModel)]="item.codigo_barras"></td>
-                            <td *ngIf="!item.nuevo">{{item.existencia}}</td>
-                            <td *ngIf="item.nuevo"></td>
-                            <td>
-                                <input class="input has-text-centered " type="number" step="1" min="0" max="{{item.existencia}}" (keyup)="comprobar_cant_lotes()" (keypress)="quitar_punto($event)" (change)="comprobar_cant_lotes()" placeholder="Cantidad" [(ngModel)]="item.cantidad">
-                            </td>
-                            <td *ngIf="item.nuevo && es_unidosis"></td>
-                            <td *ngIf="item.nuevo">
-                                <a class="delete" (click)=eliminarLote(i)></a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div style="padding: 1em; overflow: scroll; overflow-x: hidden; height: 28%;">
+                    <p>
+                        <label class="title is-3">Cantidad sugerida a surtir: 
+                            <strong>{{cantidad_recomendada ? cantidad_recomendada : 0}}</strong>
+                             {{presentacion_nombre}}
+                        </label>                        
+                    </p>
+                    <hr>
+                    <div class="level-left">
+                        <div class="columns is-flex-desktop" style="width: 100%">
+                            <div class="column is-2">
+                                <p class="control is-expanded">
+                                <label *ngIf="!tieneid" class="label">Dosis ({{unidad_medida}}):</label>
+                                <label *ngIf="tieneid" class="label">Dosis ():</label>
+                                    <input type="number" autofocus class="input" #dosis id="dosis" min="1" name="dosis" (keypress)="quitar_punto($event)" (blur)="calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value, cant_recetada.value)" [ngClass]="{'is-disabled': tieneid}">
+                                </p>
+                            </div>
+                            <div class="column is-auto">
+                                    <p class="control is-expanded">
+                                    <label class="label">Frecuencia (hrs.):</label>
+                                        <input type="number" class="input" #frecuencia id="frecuencia" min="1" name="frecuencia" (blur)="calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value, cant_recetada.value)" (keypress)="quitar_punto($event)"  [ngClass]="{'is-disabled': tieneid}">
+                                    </p>
+                            </div>
+                            <div class="column is-2">
+                                <p class="control is-expanded">
+                                <label class="label">Duración (días):</label>
+                                    <input type="number" class="input" #duracion id="duracion" min="1" name="duracion" (blur)="calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value, cant_recetada.value)" (keypress)="quitar_punto($event)" [ngClass]="{'is-disabled': tieneid}">
+                                </p>
+                            </div>
+                            <div class="column  is-auto">
+                                <p class="control is-expanded">
+                                <label *ngIf="!tieneid" class="label">Cant. recetada ({{presentacion_nombre}}):</label>
+                                <label *ngIf="tieneid" class="label">Cant. recetada ():</label>
+                                    <input type="number" class="input" #cant_recetada id="cant_recetada" min="1" name="cant_recetada" (blur)="calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value, cant_recetada.value)" (keypress)="quitar_punto($event)" [ngClass]="{'is-disabled': tieneid}">
+                                </p>
+                            </div>
+                            <div class="column is-auto">
+                                <p class="control is-expanded">
+                                <label *ngIf="!tieneid" class="label">Cant. surtida ({{presentacion_nombre}}):</label>
+                                <label *ngIf="tieneid" class="label">Cant. surtida ():</label>
+                                    <input *ngIf="!tieneid" style="background:aliceblue" #cant_surtida name="cant_surtida" id="cant_surtida" type="text" class="input" readonly [(ngModel)]="cantidad_surtida">
+                                    <input *ngIf="tieneid" style="background:aliceblue" type="text" readonly class="input" [(ngModel)]="cantidad" >
+                                </p>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                </div>
+                <div style="padding: 1em; overflow: scroll; overflow-x: hidden; height: 72%;">
+                    <table class="table is-narrow is-bordered is-striped">
+                        <thead>
+                            <tr>
+                                <th>Lote</th>
+                                <th>Caducidad</th>
+                                <th>Codigo de barras</th>
+                                <th>Existencia</th>
+                                <th>Cantidad (normal)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of lotes_insumo;  let i = index;">
+                                <td *ngIf="!item.nuevo">{{item.lote}}</td>
+                                <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Lote" [(ngModel)]="item.lote"></td>
+                                <td *ngIf="!item.nuevo">{{item.fecha_caducidad}}</td>
+                                <td *ngIf="item.nuevo"><input class="input has-text-centered " type="date" placeholder="Fecha de caducidad" [(ngModel)]="item.fecha_caducidad"></td>
+                                <td *ngIf="!item.nuevo">{{item.codigo_barras}}</td>
+                                <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Codigo de barras" [(ngModel)]="item.codigo_barras"></td>
+                                <td *ngIf="!item.nuevo">{{item.existencia}}</td>
+                                <td *ngIf="item.nuevo"></td>
+                                <td>
+                                    <input class="input has-text-centered " type="number" step="1" min="0" max="{{item.existencia}}" (keyup)=" calcularCantidadSurtida(); comprobar_cant_lotes()" (keypress)="quitar_punto($event);" (change)="comprobar_cant_lotes(); calcularCantidadSurtida();" placeholder="Cantidad" [(ngModel)]="item.cantidad">
+                                </td>
+                                <td *ngIf="item.nuevo && es_unidosis"></td>
+                                <td *ngIf="item.nuevo">
+                                    <a class="delete" (click)=eliminarLote(i)></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
         <footer class="modal-card-foot">
