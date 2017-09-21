@@ -300,7 +300,7 @@ export class DetalleComponent implements OnInit {
           this.datos_avance.tema = resultado.datos_tema.tema;
           this.avance_detalle.patchValue({prioridad: resultado.datos_tema.prioridad, estatus: resultado.datos_tema.estatus});
           
-          //this.administrador = resultado
+          this.administrador = resultado.administrador;
           this.datos_avance.historial = resultado.historial;
           this.total = resultado.total | 0;
           this.paginasTotales = Math.ceil(this.total / this.resultadosPorPagina);
