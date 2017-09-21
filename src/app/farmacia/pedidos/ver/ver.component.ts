@@ -674,7 +674,7 @@ export class VerComponent implements OnInit {
 				respuesta => {
 					this.generandoPedidoAlterno = false;
 					//this.router.navigate(['/almacen/pedidos/alternos']);
-					window.location.reload();
+          window.location.reload();
 				}, error => {
 					this.generandoPedidoAlterno = false;
 					this.errorGenerarPedidoAlterno = true;
