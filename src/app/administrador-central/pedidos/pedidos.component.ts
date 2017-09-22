@@ -57,6 +57,7 @@ export class PedidosComponent implements OnInit {
   datos_pedido:any = {};
   recepciones:any[] = [];
   transaccion:any[] = [];
+  pedido_status:string = '';
   borrador:boolean = true;
   borrador_cancelado:boolean = true;
   cargaRecepciones:boolean = false;
@@ -100,6 +101,29 @@ export class PedidosComponent implements OnInit {
     this.showPedido = true;
     this.borrador = true;
     this.borrador_cancelado = true;
+    switch (this.datos_pedido.status) {
+      case 'BR':
+        this.pedido_status = 'Borrador';
+        break;
+      case 'FI':
+        this.pedido_status = 'Finalizado';
+        break;
+      case 'PS':
+        this.pedido_status = 'Por Surtir';
+        break;
+      case 'EX':
+        this.pedido_status = 'Expirado';
+        break;
+      case 'EX-CA':
+        this.pedido_status = 'Cancelado';
+        break;
+      case 'EF':
+        this.pedido_status = 'En Farmacia';
+        break;
+      default:
+        break;
+    }
+
     this.apiService.verRecepciones(this.datos_pedido.pedido_id).subscribe(
       respuesta => {
           this.cargaRecepciones = false; 
@@ -598,12 +622,8 @@ export class PedidosComponent implements OnInit {
     this.cargandoArchivos = true;
     this.tituloDialogoArchivos = 'Folio: ' + item.folio;
     this.datosPedido = {folio:item.folio,pedido_id:item.pedido_id};
-    /*
-    this.cargando_archivo = 0;
-    this.cargandoDatosArchivo = true;
-    this.nombre_pedido = nombre;
-    this.id_pedido = id;
-    */
+   
+   
     this.apiService.verArchivosPedidoProveedor(item.pedido_id).subscribe(
       repositorio => {
         this.lista_archivos_pedido = repositorio;
@@ -664,6 +684,45 @@ export class PedidosComponent implements OnInit {
           }
         }
     }, 1000);
+  }
+
+  permitirRecepcion(pedido_id,permitir){
+    var validacion_palabra = prompt("Para permitir la recepcion en este pedido, por favor escriba: PERMITIR RECEPCION");
+    if(validacion_palabra == 'PERMITIR RECEPCION'){
+      //let pedido_id = this.datos_pedido.id;
+      
+      this.apiService.cambiarPermisoRecepcion(pedido_id,permitir).subscribe(
+        respuesta => {
+          this.datos_pedido.recepcion_permitida = permitir;
+          this.mensajeExito = new Mensaje(true);
+          this.mensajeExito.mostrar = true;
+          this.mensajeExito.texto = "Pedido actualizado";
+        }, error => {
+          this.mensajeError = new Mensaje(true);
+          this.mensajeError.mostrar = true;
+          try {
+            let e = error.json();
+            if (error.status == 401 ){
+              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }
+            if (error.status == 500 ){
+              this.mensajeError.texto = e.error;
+            } else {
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            } 
+            
+          } catch(e){
+            if (error.status == 500 ){
+              this.mensajeError.texto = "500 (Error interno del servidor)";
+            } else {
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }            
+          }
+        }
+      );
+	  }else{
+      console.log('palabra incorrecta.'+validacion_palabra);
+    }
   }
 
   /*descargars(item){

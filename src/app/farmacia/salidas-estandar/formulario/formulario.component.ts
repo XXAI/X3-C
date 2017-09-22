@@ -1,13 +1,16 @@
 import { Component, OnInit, NgZone, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Params } from '@angular/router';
 
 import { environment } from '../../../../environments/environment';
 import { CrudService } from '../../../crud/crud.service';
 import { NotificationsService } from 'angular2-notifications';
+import { Mensaje } from '../../../mensaje';
+import { createAutoCorrectedDatePipe } from 'text-mask-addons';
 
-import  * as FileSaver    from 'file-saver'; 
+import * as moment from 'moment';
+import  * as FileSaver    from 'file-saver';
 
 @Component({
   selector: 'salidas-estandar-formulario',
@@ -22,25 +25,34 @@ export class FormularioComponent {
 
   dato: FormGroup;
   form_insumos: any;
-  modo: string = "N";
-  tab: number = 1;
+  modo = 'N';
+  tab = 1;
+  fechas = [];
   cant_solicitada_valida = false;
   unidad_medida;
-  sum_cant_lotes: boolean = false;
-  public insumos_term: string = `${environment.API_URL}/insumos-auto?term=:keyword`;
-  constructor(
-    private fb: FormBuilder, 
-    private crudService: CrudService, 
-    private route: ActivatedRoute, 
-    private _sanitizer: DomSanitizer, 
-    private notificacion: NotificationsService,
-    private _ngZone: NgZone) { }
+  array_turnos;
+  array_servicios;
+  sum_cant_lotes = false;
+  index_borrar;
 
+  // Máscara para validar la entrada de la fecha de caducidad
+  mask = [/[2]/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/];
+  autoCorrectedDatePipe: any = createAutoCorrectedDatePipe('yyyy-mm-dd');
+  public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
+
+  objeto = {
+    showProgressBar: true,
+    pauseOnHover: true,
+    clickToClose: true,
+    maxLength: 2000
+  };
 
   MinDate = new Date();
   MaxDate = new Date();
+  MinDateCaducidad;
   fecha_actual;
-  tieneid: boolean = false;
+  fecha_invalida = true;
+  tieneid = false;
   cargando = false;
   fecha_movimiento;
   mostrarCancelado;
@@ -49,6 +61,26 @@ export class FormularioComponent {
   pdfworker:Worker;
    cargandoPdf:boolean = false;
   // # FIN SECCION
+  
+  // Crear la variable que mustra las notificaciones
+  mensajeResponse: Mensaje = new Mensaje();
+  titulo= 'Salidas estándar';
+
+  // mostrar notificaciones configuracion default, posicion abajo izquierda, tiempo 2 segundos
+  public options = {
+    position: ['bottom', 'right'],
+    timeOut: 2000,
+    lastOnBottom: true
+  };
+
+  constructor(
+    private fb: FormBuilder,
+    private crudService: CrudService,
+    private route: ActivatedRoute,
+    private _sanitizer: DomSanitizer,
+    private notificacion: NotificationsService,
+    private _ngZone: NgZone) { }
+
 
   ngOnInit() {
 
@@ -58,23 +90,23 @@ export class FormularioComponent {
     // Solo si se va a cargar catalogos poner un 
     // <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
     document.getElementById("catalogos").click();
-    document.getElementById("actualizar").click();
+    document.getElementById('actualizar').click();
 
     if (usuario.clues_activa) {
-      this.insumos_term += "&clues=" + usuario.clues_activa.clues;
+      this.insumos_term += '&clues=' + usuario.clues_activa.clues;
     }
     if (usuario.almacen_activo) {
-      this.insumos_term += "&almacen=" + usuario.almacen_activo.id;
+      this.insumos_term += '&almacen=' + usuario.almacen_activo.id;
     }
 
     // Inicializamos el objeto para los reportes con web Webworkers
-    this.pdfworker = new Worker("web-workers/farmacia/movimientos/salida.js")
+    this.pdfworker = new Worker('web-workers/farmacia/movimientos/salida.js')
 
     // Este es un hack para poder usar variables del componente dentro de una funcion del worker
-    var self = this;    
+    var self = this;
     var $ngZone = this._ngZone;
-    
-    this.pdfworker.onmessage = function( evt ) {       
+
+    this.pdfworker.onmessage = function( evt ) {
       // Esto es un hack porque estamos fuera de contexto dentro del worker
       // Y se usa esto para actualizar alginas variables
       $ngZone.run(() => {
@@ -109,18 +141,19 @@ export class FormularioComponent {
       }
     });
 
-    //variable para crear el array del formulario reactivo
+    // variable para crear el array del formulario reactivo
     this.form_insumos = {
       tipo_movimiento_id: ['', [Validators.required]]
     };
 
-    //inicializar el data picker minimo y maximo
-    var date = new Date();
+    // inicializar el data picker minimo y maximo
+    let date = new Date();
 
     this.MinDate = new Date(date.getFullYear() - 1, 0, 1);
     this.MaxDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    this.MinDateCaducidad = date.getFullYear() + '-' + ('00' + (date.getMonth() + 1)).slice(-2) + '-' + date.getDate();
 
-    //si es nuevo poner la fecha actual si no poner la fecha con que se guardo
+    // si es nuevo poner la fecha actual si no poner la fecha con que se guardo
     if (!this.dato.get('fecha_movimiento').value) {
       this.fecha_actual = date.getFullYear() + '-' + ('00' + (date.getMonth() + 1)).slice(-2) + '-' + date.getDate();
       this.dato.get('fecha_movimiento').patchValue(this.fecha_actual);
@@ -128,7 +161,6 @@ export class FormularioComponent {
       this.fecha_actual = this.dato.get('fecha_movimiento').value;
     }
 
-      
   }
 
   /**
@@ -136,7 +168,10 @@ export class FormularioComponent {
      * @param id identificador del elemento de la modal
      * @return void
      */
-  abrirModal(id) {
+  abrirModal(id, index?) {
+    if (index) {
+      this.index_borrar = index;
+    }
     document.getElementById(id).classList.add('is-active');
   }
 
@@ -147,6 +182,10 @@ export class FormularioComponent {
      */
   cancelarModal(id) {
     document.getElementById(id).classList.remove('is-active');
+    if (id  === 'verLotes') {
+      this.cantidad_solicitadaBoxViewChildren.first.nativeElement.value = '';
+      this.cantidad_solicitadaBoxViewChildren.first.nativeElement.focus();
+    }
   }
   lotes_insumo;
   /**
@@ -189,7 +228,7 @@ export class FormularioComponent {
      */
   select_insumo_autocomplete(data) {
 
-    var usuario = JSON.parse(localStorage.getItem("usuario"));
+    var usuario = JSON.parse(localStorage.getItem('usuario'));
     this.cargando = true;
 
     //cargar los datos de los lotes del insumo seleccionado en el autocomplete
@@ -204,21 +243,20 @@ export class FormularioComponent {
           if(item.clave == resultado[0].clave_insumo_medico){
             var existencia_unidosis = 0;
             var existencia = 0;
-            for(let val of item.lotes){
-              for(let res of resultado){
-                if(val.lote==res.lote){
-                 try{
-                   if(val.cantidad > 0){
-                     if(item.modo_salida == 'U'){
-                       //val.cantidad = val.cantidad / item.cantidad_x_envase;
+            for (let val of item.lotes){
+              for (let res of resultado){
+                if (val.id === res.id) {
+                 try {
+                   if (val.cantidad > 0) {
+                     if (item.modo_salida === 'U') {
                        res.existencia = res.existencia - (val.cantidad / item.cantidad_x_envase);
                      }
-                     if(item.modo_salida == 'N'){
+                     if (item.modo_salida === 'N') {
                        res.existencia = res.existencia - val.cantidad;
                      }
                        res.existencia_unidosis = (res.existencia * item.cantidad_x_envase);
                    }
-                 }catch(e){
+                 }catch (e) {
                    console.log(e);
                  }
                 }
@@ -230,17 +268,17 @@ export class FormularioComponent {
         this.lotes_insumo = resultado;
         this.insumo = data;
 
-        //limpiar el autocomplete
+        // limpiar el autocomplete
         (<HTMLInputElement>document.getElementById('buscarInsumo')).value = '';
 
-        //poner el titulo a la modal                ${data.presentacion}
+        // poner el titulo a la modal                ${data.presentacion}
 
         document.getElementById('tituloModal').innerHTML = ` ${data.descripcion} <br>
           <p aling="justify" style="font-size:12px">${data.descripcion}</p> 
-          <p aling="justify" style="font-size:16px"> CANTIDAD POR ENVASE: ${data.cantidad_x_envase ? data.cantidad_x_envase : "Sin especificar" }</p>`;
+          <p aling="justify" style="font-size:16px"> CANTIDAD POR ENVASE: ${data.cantidad_x_envase ? data.cantidad_x_envase : 'Sin especificar' }</p>`;
         this.es_unidosis = data.es_unidosis;
         this.unidad_medida = data.unidad_medida;
-        
+
         this.cargando = false;
         this.abrirModal('verLotes');
       },
@@ -250,12 +288,6 @@ export class FormularioComponent {
     );
   }
 
-
-  public options = {
-    position: ["top", "right"],
-    timeOut: 5000,
-    lastOnBottom: true
-  };
 
   mostrar_lote = [];
   
@@ -269,20 +301,20 @@ export class FormularioComponent {
 
     //crear el json que se pasara al formulario reactivo tipo insumos
     var lotes = {
-      "clave": this.insumo.clave,
-      "nombre": this.insumo.nombre,
-      "descripcion": this.insumo.descripcion,
-      "es_causes": this.insumo.es_causes,
-      "es_unidosis": this.insumo.es_unidosis,
-      "cantidad": 1,
-      "presentacion_nombre": this.insumo.presentacion_nombre,
-      "unidad_medida": this.insumo.unidad_medida,
-      "cantidad_x_envase": this.insumo.cantidad_x_envase ? parseInt(this.insumo.cantidad_x_envase) : 1,     
-      "cantidad_surtida": 1,
-      "modo_salida": this.modo,
-      "cantidad_solicitada": cantidad_solicitada, //this.modo == 'N' ? cantidad_solicitada : 0,
-      "cantidad_solicitada_unidosis": cantidad_solicitada,// this.modo == 'U' ? cantidad_solicitada : 0,
-      "lotes": this.fb.array([])
+      'clave': this.insumo.clave,
+      'nombre': this.insumo.nombre,
+      'descripcion': this.insumo.descripcion,
+      'es_causes': this.insumo.es_causes,
+      'es_unidosis': this.insumo.es_unidosis,
+      'cantidad': 1,
+      'presentacion_nombre': this.insumo.presentacion_nombre,
+      'unidad_medida': this.insumo.unidad_medida,
+      'cantidad_x_envase': this.insumo.cantidad_x_envase ? parseInt(this.insumo.cantidad_x_envase) : 1,     
+      'cantidad_surtida': 1,
+      'modo_salida': this.modo,
+      'cantidad_solicitada': cantidad_solicitada, //this.modo == 'N' ? cantidad_solicitada : 0,
+      'cantidad_solicitada_unidosis': cantidad_solicitada,// this.modo == 'U' ? cantidad_solicitada : 0,
+      'lotes': this.fb.array([])
     };
 
     //comprobar que el isumo no este en la lista cargada
@@ -321,7 +353,7 @@ export class FormularioComponent {
       maxLength: 2000
     };
     this.options = {
-      position: ["top", "right"],
+      position: ['top', 'right'],
       timeOut: 5000,
       lastOnBottom: true
     };
@@ -345,13 +377,13 @@ export class FormularioComponent {
               //validar que la cantidad escrita no sea mayor que la existencia si no poner la existencia como la cantidad maxima 
               if(this.modo=='N'){
                 if (cantidad_lote > l.controls.existencia.value) {
-                  this.notificacion.alert("Cantidad Excedida", "La cantidad maxima es: " + l.controls.existencia.value, objeto);
+                  this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + l.controls.existencia.value, objeto);
                   cantidad_lote = l.controls.existencia.value * 1;
                 }
               }
               if(this.modo=='U'){
                 if (cantidad_lote > l.controls.existencia_unidosis.value) {
-                  this.notificacion.alert("Cantidad Excedida", "La cantidad maxima es: " + l.controls.existencia_unidosis.value, objeto);
+                  this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + l.controls.existencia_unidosis.value, objeto);
                   cantidad_lote = l.controls.existencia_unidosis.value * 1;
                 }
               }
@@ -370,14 +402,14 @@ export class FormularioComponent {
           }
           if(this.modo == 'N'){
             if (item.cantidad > item.existencia) {
-              this.notificacion.alert("Cantidad Excedida", "La cantidad maxima es: " + item.existencia, objeto);
+              this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + item.existencia, objeto);
               item.cantidad = item.existencia * 1;
             }
           }
           if(this.modo == 'U'){
             {
               if (item.cantidad > item.existencia_unidosis) {
-                this.notificacion.alert("Cantidad Excedida", "La cantidad maxima es: " + item.existencia_unidosis, objeto);
+                this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + item.existencia_unidosis, objeto);
                 item.cantidad = item.existencia_unidosis * 1;
               }
             }
@@ -394,33 +426,33 @@ export class FormularioComponent {
               existencia: item.nuevo ? item.cantidad : item.existencia,
               cantidad: item.cantidad,
               existencia_unidosis: item.nuevo ? item.cantidad : item.existencia_unidosis,
-              modo_salida:this.modo,
+              modo_salida: this.modo,
             }
           ));
         }
       }
     }
 
-    //sumamos las cantidades de los lotes
+    // sumamos las cantidades de los lotes
     let cantidad: number = 0;
     let cantidad_unidosis: number = 0;
     for (let l of ctrlLotes.controls['lotes'].value) {
       cantidad = cantidad + l.cantidad;
       cantidad_unidosis = cantidad_unidosis + l.cantidad;
     }
-    
-    //agregar la cantidad surtida y cantidad solicitada
-    if(ctrlLotes.controls['modo_salida'].value == 'N'){
+
+    // agregar la cantidad surtida y cantidad solicitada
+    if (ctrlLotes.controls['modo_salida'].value == 'N') {
       ctrlLotes.controls['cantidad_surtida'].patchValue(cantidad);
-      if(existe){
+      if (existe) {
         let temp_cant_solicitada: number = ctrlLotes.controls['cantidad_solicitada'].value;
         cantidad_solicitada = Number(temp_cant_solicitada) + Number(cantidad_solicitada);
         ctrlLotes.controls['cantidad_solicitada'].patchValue(cantidad_solicitada);
       }
     }
-    if(ctrlLotes.controls['modo_salida'].value == 'U'){
+    if (ctrlLotes.controls['modo_salida'].value == 'U') {
       ctrlLotes.controls['cantidad_surtida'].patchValue(cantidad);
-      if(existe){
+      if (existe) {
         let temp_cant_solicitada: number = ctrlLotes.controls['cantidad_solicitada'].value;
         cantidad_solicitada = Number(temp_cant_solicitada) + Number(cantidad_solicitada);
         ctrlLotes.controls['cantidad_solicitada'].patchValue(cantidad_solicitada);
@@ -428,7 +460,7 @@ export class FormularioComponent {
     }
     this.cancelarModal('verLotes');
     this.cancelarModal('negarExistencia');
-    this.cantidad_solicitadaBoxViewChildren.first.nativeElement.value = "";
+    this.cantidad_solicitadaBoxViewChildren.first.nativeElement.value = '';
     this.cantidad_solicitadaBoxViewChildren.first.nativeElement.focus();
     this.cant_solicitada_valida = false;
     this.sum_cant_lotes = false;
@@ -447,8 +479,10 @@ export class FormularioComponent {
      * @return void
      */
   agregarNuevoLote() {
-    this.lotes_insumo.push({ id: "" + Math.floor(Math.random() * (999)) + 1, codigo_barras: "", lote: "", fecha_caducidad: "", existencia: '', cantidad: '', nuevo: 1, existencia_unidosis: '', cantidad_unidosis: '' });
-    //this.lotes_insumo.push({ id: "" + Math.floor(Math.random() * (999)) + 1, codigo_barras: "", lote: "", fecha_caducidad: "", existencia: '', cantidad: '', nuevo: 1});
+    this.lotes_insumo.push(
+      { id: '' + Math.floor(Math.random() * (999)) + 1, codigo_barras: '', lote: '', fecha_caducidad: '',
+      existencia: '', cantidad: '', nuevo: 1, existencia_unidosis: '', cantidad_unidosis: '' });
+    // this.lotes_insumo.push({ id: "" + Math.floor(Math.random() * (999)) + 1, codigo_barras: "", lote: "", fecha_caducidad: "", existencia: '', cantidad: '', nuevo: 1});
   }
 
   /**
@@ -495,7 +529,7 @@ export class FormularioComponent {
           clickToClose: true,
           maxLength: 2000
         };
-        this.notificacion.alert("Cantidad Excedida", "La cantidad maxima es: " + val.controls.existencia.value, objeto);
+        this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + val.controls.existencia.value, objeto);
         val.controls.cantidad.patchValue(val.controls.existencia.value * 1);
       }
     }
@@ -507,22 +541,22 @@ export class FormularioComponent {
           clickToClose: true,
           maxLength: 2000
         };
-        this.notificacion.alert("Cantidad Excedida", "La cantidad maxima es: " + val.controls.existencia_unidosis.value, objeto);
+        this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + val.controls.existencia_unidosis.value, objeto);
         val.controls.cantidad.patchValue(val.controls.existencia_unidosis.value * 1);
       }
     }
-    //sumamos las cantidades de los lotes
+    // sumamos las cantidades de los lotes
     const control = <FormArray>this.dato.controls['insumos'];
     const ctrlLotes = <FormArray>control.controls[i];
-    let cantidad: number = 0;
+    let cantidad = 0;
     for (let l of ctrlLotes.controls['lotes'].value) {
       cantidad = cantidad + l.cantidad;
     }
     ctrlLotes.controls['cantidad_surtida'].patchValue(cantidad);
   }
 
-  comprobar_cant_lotes(){
-    let cantidad: number = 0;
+  comprobar_cant_lotes() {
+    let cantidad = 0;
     for (let l of this.lotes_insumo) {
       if(l.cantidad)
         cantidad = Number(cantidad) + Number(l.cantidad);
@@ -534,45 +568,161 @@ export class FormularioComponent {
     }
   }
 
-  comprobar_cant_solicitada(value){
-    if(value>0){
+  comprobar_cant_solicitada(value) {
+    if (value>0) {
       this.cant_solicitada_valida = true;
     }else{
       this.cant_solicitada_valida = false;
     }
   }
 
-  quitar_punto(event){
-    if(this.is_numeric(event.key ) ){
+  /**
+     * Este método valida que en el campo de la cantidad no pueda escribir puntos o signo negativo
+     * @param event Parametro que contiene el valor de la tecla presionada
+     * @return void
+     */
+  quitar_punto(event) {
+    if (this.is_numeric(event.key ) ) {
       return true;
-    }else{
+    }else {
       return false;
     }
   }
 
-  is_numeric(str){
+  is_numeric(str) {
     return /^\d+$/.test(str);
   }
 
-  guardar_movimiento(){
-    document.getElementById("guardarMovimiento").classList.add('is-active');
+  validar_fecha() {
+    let fecha_ingresada;
+    let fecha_hoy = moment();
+    let cont = 0;
+    for (let valor of this.lotes_insumo) {
+      fecha_ingresada = moment(valor.fecha_caducidad, 'YYYY-MM-DD');
+      if (valor.nuevo) {
+        if (!fecha_ingresada.isValid()) {
+          cont++;
+          this.mensajeResponse.texto = 'Debe ingresar una fecha válida';
+          this.mensajeResponse.clase = 'warning';
+          this.mensaje(8);
+        } else {
+          if (fecha_ingresada <= fecha_hoy) {
+            cont++;
+            this.mensajeResponse.texto = 'La fecha de caducidad debe ser mayor al día de hoy';
+            this.mensajeResponse.clase = 'warning';
+            this.mensaje(8);
+          }
+        }
+      }
+    }
+
+    if (cont > 0) {
+      this.fecha_invalida = false;
+    } else {
+      this.fecha_invalida = true;
+    }
+  }
+  guardar_movimiento() {
+    let lotes = true;
+    // obtener el formulario reactivo para agregar los elementos
+    const control = <FormArray>this.dato.controls['insumos'];
+    if (control.length === 0) {
+      this.notificacion.warn('Insumos', 'Debe agregar por lo menos un insumo', this.objeto);
+    }else {
+      for (let item of control.value) {
+        if (item.lotes.length === 0) {
+          lotes = false;
+        }
+      }
+      if (lotes) {
+        document.getElementById('guardarMovimiento').classList.add('is-active');
+      } else {
+        document.getElementById('tituloGuardar').innerHTML = ` <br>
+          <p aling="justify" style="font-size:12px; color: red"> Contiene insumos con existencia negada.</p>`;
+        document.getElementById('guardarMovimiento').classList.add('is-active');
+        this.notificacion.warn('Insumos', 'negarExistencia', this.objeto);
+      }
+    }
   }
 
+
+  /**
+     * Este método muestra los mensajes resultantes de los llamados de la api
+     * @param cuentaAtras numero de segundo a esperar para que el mensaje desaparezca solo
+     * @param posicion  array de posicion [vertical, horizontal]
+     * @return void
+     */
+    mensaje(cuentaAtras: number = 6, posicion: any[] = ['bottom', 'left']): void {
+        let objeto = {
+            showProgressBar: true,
+            pauseOnHover: false,
+            clickToClose: true,
+            maxLength: this.mensajeResponse.texto.length
+        };
+
+        this.options = {
+            position: posicion,
+            timeOut: cuentaAtras * 1000,
+            lastOnBottom: true
+        };
+         if (this.mensajeResponse.titulo === '') {
+            this.mensajeResponse.titulo = this.titulo;
+          }
+
+        if (this.mensajeResponse.clase === 'alert') {
+            this.notificacion.alert(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+
+        if (this.mensajeResponse.clase === 'success') {
+            this.notificacion.success(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+
+        if (this.mensajeResponse.clase === 'info') {
+            this.notificacion.info(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+
+        if (this.mensajeResponse.clase === 'warning' || this.mensajeResponse.clase === 'warn') {
+            this.notificacion.warn(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+
+        if (this.mensajeResponse.clase === 'error' || this.mensajeResponse.clase === 'danger') {
+            this.notificacion.error(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+
+    }
+
+  /******************************* IMPRESION DE REPORTES *********************************** */
+
   imprimir() {
-    
-    var usuario = JSON.parse(localStorage.getItem("usuario"));
+    let usuario = JSON.parse(localStorage.getItem('usuario'));
+
+    let turno;
+    for (let item of this.array_turnos.clues_turnos){
+      if (this.dato.value.movimiento_metadato.turno_id === item.id) {
+        turno = item;
+        break;
+      }
+    };
+    let servicio;
+    for (let item of this.array_servicios.clues_servicios){
+      if (this.dato.value.movimiento_metadato.servicio_id === item.id) {
+        servicio = item;
+        break;
+      }
+    };
     try {
       this.cargandoPdf = true;
-      var entrada_imprimir = {
+      let entrada_imprimir = {
         datos: this.dato.value,
         lista: this.dato.value.insumos,
+        turno: turno ? turno : 'No disponible',
+        servicio: servicio ? servicio : 'No disponible',
         usuario: usuario
       };
       this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
-    } catch (e){
+    } catch (e) {
       this.cargandoPdf = false;
     }
-   
   }
 
   base64ToBlob( base64, type ) {

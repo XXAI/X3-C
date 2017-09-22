@@ -42,6 +42,23 @@ export class CrudService {
     return this.jwtRequest.get(URL, null, { q: term, page: pagina, per_page: resultados_por_pagina }).map((response: Response) => response.json().data);
   }
 
+  /**
+   * Este método obtiene una lista de elementos de la
+   * api con los filtros que se especifiquen en la vista
+   * @param term contiene las palabras de busqueda
+   * @param pagina  inicio de la página para mostrar resultados
+   * @param resultados_por_pagina  número de resultados por página
+   * @param URL  ruta de la api donde se obtiene los valores
+   * @return Respuesta tipo object que obtiene de la api
+   */
+  busquedaInsumos(term: string, URL: string): Observable<any> {
+    return this.jwtRequest.get(URL, null,
+      {
+        term: term
+      }).map(
+        (response: Response) => response.json().data
+      );
+  }
 
   /**
    * Este método obtiene una lista de elementos de la
@@ -58,6 +75,15 @@ export class CrudService {
       return this.jwtRequest.get(URL, null).map((response: Response) => response.json().data);
   }
 
+  /**
+   * Este método obtiene una lista de elementos de la
+   * api con los parametros que se especifiquen en la vista
+   * @param URL  ruta de la api donde se obtiene los valores
+   * @return Respuesta tipo object que obtiene de la api
+   */
+  lista_general(URL: string): Observable<any> {
+      return this.jwtRequest.get(URL, null).map((response: Response) => response.json().data);
+  }
 
   /**
    * Este método obtiene el valor de un elementos de la

@@ -9,6 +9,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
     onmessage = function(evt) {
         let data = JSON.parse(evt.data)
         pdf(data);
+        console.log(data);
     };
 
     function pdf(data) {
@@ -41,7 +42,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                             {},
                             { text: data.datos.receta.folio, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
                             { text: 'TIPO', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.datos.receta.tipo_receta, style: 'tableHeader', alignment: 'left' }
+                            { text: data.datos.receta.tipo_receta_id == '1' ? 'Normal' : data.datos.receta.tipo_receta_id == '2' ? 'Controlado' : 'No disponible', style: 'tableHeader', alignment: 'left' }
                         ],
                         [
                             { text: 'PACIENTE', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
@@ -73,7 +74,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         
                         [
                             { text: 'CLAVE', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'NOMBRE', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'DESCRIPCION', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'DATOS INSUMO', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'INDICACIONES', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'CANTIDAD RECETADA', style: 'tableHeaderVerde',alignment: 'center' },
@@ -198,7 +199,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                 var lote = insumo.lotes[j];
                 dd.content[0].table.body.push([
                     { text: lote.clave_insumo_medico, style: 'tableRow', alignment: 'center' },
-                    { text: insumo.generico_nombre, style: 'tableRow', alignment: 'center' },
+                    { text: insumo.descripcion, style: 'tableRow', alignment: 'center' },
                     { text: "Lote:"+lote.lote + '\n' + "Caducidad:"+ lote.fecha_caducidad, style: 'tableRow', alignment: 'center' },
                     { text: "Dosis: "+insumo.dosis + '\n' + "Frecuencia: Cada "+insumo.frecuencia + " hrs.", style: 'tableRow', alignment: 'center' },
                     { text: insumo.cantidad_recetada, style: 'tableRow', alignment: 'center' },

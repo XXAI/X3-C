@@ -13,6 +13,7 @@ export class PedidosService {
   static readonly URL_STATS: string = "pedidos-stats";
   static readonly URL_PRESUPUESTO: string = "pedidos-presupuesto";
   static readonly URL_CANCELAR: string = "cancelar-pedido-transferir";
+  static readonly URL_GENERAR_ALTERNO: string = "generar-pedido-alterno";
   
   constructor(private http: Http,   private jwtRequest:JwtRequestService) { }
 
@@ -31,12 +32,12 @@ export class PedidosService {
     return this.jwtRequest.get(PedidosService.URL_PRESUPUESTO,null,parametros).map( (response: Response) => response.json());
   }
 
-  buscar(status:string, term: string, pagina:number = 1, resultados_por_pagina:number =20 ): Observable<any>{
-    return this.jwtRequest.get(PedidosService.URL,null,{status: status, q: term, page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
+  buscar(status:string, term: string, pagina:number = 1, resultados_por_pagina:number =20, tipo:string = '' ): Observable<any>{
+    return this.jwtRequest.get(PedidosService.URL,null,{tipo:tipo, status: status, q: term, page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
   }
 
-  lista(status:string, pagina:number = 1, resultados_por_pagina:number =20 ): Observable<any>{
-    return this.jwtRequest.get(PedidosService.URL,null,{status:status, page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
+  lista(status:string, pagina:number = 1, resultados_por_pagina:number =20,tipo:string = '' ): Observable<any>{
+    return this.jwtRequest.get(PedidosService.URL,null,{tipo:tipo, status:status, page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
   }
 
   ver(id:any): Observable<any>{
@@ -60,14 +61,20 @@ export class PedidosService {
 
   editar(id:any, pedido: Pedido[]): Observable<Pedido> {
     return this.jwtRequest.put(PedidosService.URL,id, pedido).map( (response: Response) => response.json().data) as Observable<Pedido>;
-  }
+  } 
+
+  
 
   eliminar(id:any): Observable<Pedido> {
-    return this.jwtRequest.delete(PedidosService.URL,id).map( (response: Response) => response.json().data) as Observable<Pedido>;
+    return this.jwtRequest.delete('pedido-alteno',id).map( (response: Response) => response.json().data) as Observable<Pedido>;
   }
 
   cancelarPedidoTransferir(id:any, parametros:any = {}): Observable<any>{
     return this.jwtRequest.put(PedidosService.URL_CANCELAR,id,parametros).map( (response: Response) => response.json().data) as Observable<any[]>;
+  }
+
+  generarPedidoAlterno(id:any, parametros:any = {}): Observable<any>{
+    return this.jwtRequest.put(PedidosService.URL_GENERAR_ALTERNO,id,parametros).map( (response: Response) => response.json().data) as Observable<any[]>;
   }
   
 }

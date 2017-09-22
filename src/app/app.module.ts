@@ -25,10 +25,12 @@ import { HubModule } from './hub/hub.module';
 import { PerfilModule } from './perfil/perfil.module';
 import { BloquearPantallaModule } from './bloquear-pantalla/bloquear-pantalla.module';
 import { PipesModule }             from './pipes/pipes.module';
+import { CrudModule } from './crud/crud.module';
 
 // # Administrador central
 import { AdministradorCentralModule } from './administrador-central/administrador-central.module';
-import { CrudModule } from './crud/crud.module';
+import { AsignacionProveedoresPedidosAlternosModule } from './administrador-central/asignacion-proveedores-pedidos-alternos/asignacion-proveedores-pedidos-alternos.module';
+import { ValidacionPedidosAlternosModule } from './administrador-central/validacion-pedidos-alternos/validacion-pedidos-alternos.module';
 
 // # Administrador proveedores
 import { AdministradorProveedoresModule } from './administrador-proveedores/administrador-proveedores.module';
@@ -41,7 +43,7 @@ import { OpcionesAvanzadasModule     } from './panel-control/opciones-avanzadas/
 
 // # Hub Configuracion
 import { MisAlmacenesModule} from './configuracion/almacenes/almacenes.module';
-import { MisServiciosModule } from './configuracion/servicios/servicios.module';
+import { MisServiciosModule} from './configuracion/servicios/servicios.module';
 import { MisTurnosModule   } from './configuracion/turnos/turnos.module';
 import { MisClavesModule   } from './configuracion/claves/claves.module';
 
@@ -52,25 +54,29 @@ import { SincronizarRecetasModule } from './farmacia-subrrogada/sincronizar-rece
 // # Hub Farmacia
 import { IndexFarmaciaModule    } from './farmacia/index-farmacia/index-farmacia.module';
 import { PedidosModule          } from './farmacia/pedidos/pedidos.module';
-import { PedidosJurisdiccionalesModule  } from './farmacia/pedidos-jurisdiccionales/pedidos-jurisdiccionales.module';
+//import { PedidosJurisdiccionalesModule  } from './farmacia/pedidos-jurisdiccionales/pedidos-jurisdiccionales.module';
 import { EntregasModule         } from './farmacia/entregas/entregas.module';
 import { EntradasEstandarModule } from './farmacia/entradas-estandar/entradas-estandar.module';
 import { SalidasRecetasModule   } from './farmacia/salidas-recetas/salidas-recetas.module';
 import { SalidasEstandarModule  } from './farmacia/salidas-estandar/salidas-estandar.module';
-import { AjusteInventarioModule } from './farmacia/ajuste-inventario/ajuste-inventario.module';
 import { DashboardSalidasModule } from './farmacia/dashboard-salidas/dashboard-salidas.module';
 import { ClavesBasicasModule    } from './administrador-central/claves-basicas/claves-basicas.module';
+import { TransferenciaAlmacenModule  } from './farmacia/transferencia-almacen/transferencia-almacen.module';
 
 // # Hub Inventario
-import { IndexInventarioModule  } from './inventario/index-inventario/index-inventario.module';
-import { InventarioModule       } from './inventario/existencias/inventario.module';
+import { IndexInventarioModule          } from './inventario/index-inventario/index-inventario.module';
+import { InventarioModule               } from './inventario/existencias/inventario.module';
+import { InicializacionInventarioModule } from './inventario/inicializacion-inventario/inicializacion-inventario.module';
+import { AjusteMasInventarioModule      } from './inventario/ajuste-mas-inventario/ajuste-mas-inventario.module';
+import { AjusteMenosInventarioModule    } from './inventario/ajuste-menos-inventario/ajuste-menos-inventario.module';
+import { CorreccionesModule             } from './inventario/correcciones/correcciones.module';
 
 // # Hub almacén artículos
 import { IndexAlmacenArticulosModule } from './almacen-articulos/index-almacen-articulos/index-almacen-articulos.module';
 import { IndexCatalogoModule      } from './almacen-articulos/catalogos/index-catalogo/index-catalogo.module';
 import { UnidadesMedicasModule    } from './almacen-articulos/catalogos/unidades-medicas/unidades-medicas.module';
 import { ViasAdministracionModule } from './almacen-articulos/catalogos/vias-administracion/vias-administracion.module';
-//import { ProveedoresModule } from './almacen-articulos/catalogos/proveedores/proveedores.module';
+// import { ProveedoresModule } from './almacen-articulos/catalogos/proveedores/proveedores.module';
 
 // # Hub laboratorio
 import { IndexLaboratorioModule } from './laboratorio/index-laboratorio/index-laboratorio.module';
@@ -147,16 +153,22 @@ export function highchartsFactory() {
     MisClavesModule,
     MisServiciosModule,
     AdministradorCentralModule,
+    AsignacionProveedoresPedidosAlternosModule,
+    ValidacionPedidosAlternosModule,
     AdministradorProveedoresModule,
     IndexFarmaciaSubrrogadaModule,
     IndexFarmaciaModule,
     PedidosModule,
-    PedidosJurisdiccionalesModule,
+    InicializacionInventarioModule,
+    //PedidosJurisdiccionalesModule,
     EntregasModule,
     EntradasEstandarModule,
     SalidasEstandarModule,
+    TransferenciaAlmacenModule,
     InventarioModule,
-    AjusteInventarioModule,
+    AjusteMasInventarioModule,
+    AjusteMenosInventarioModule,
+    CorreccionesModule,
     SalidasRecetasModule,
     DashboardSalidasModule,
     ClavesBasicasModule,
@@ -199,4 +211,3 @@ export function highchartsFactory() {
   bootstrap: [AppComponent]
 })
 export class AppModule { }
-

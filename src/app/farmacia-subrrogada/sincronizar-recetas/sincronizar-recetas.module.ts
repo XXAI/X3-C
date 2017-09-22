@@ -1,18 +1,19 @@
-import { NgModule } from '@angular/core';
+import { NgModule     } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterStateSnapshot } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { HubModule } from '../../hub/hub.module';
+import { HubModule    } from '../../hub/hub.module';
 import { PerfilModule } from '../../perfil/perfil.module';
 import { BloquearPantallaModule } from '../../bloquear-pantalla/bloquear-pantalla.module';
 import { SincronizarRecetasRoutingModule } from './sincronizar-recetas-routing.module';
 import { PaginacionModule } from '../../paginacion/paginacion.module';
 
-import { PipesModule }             from '../../pipes/pipes.module';
-import { ListaComponent } from './lista/lista.component';
+import { PipesModule         } from '../../pipes/pipes.module';
+import { ListaComponent      } from './lista/lista.component';
 import { FormularioComponent } from './formulario/formulario.component';
-import { CargarComponent } from './formulario/cargar.component';
+import { ListaSincronizacionesComponent }  from './lista-sincronizaciones/lista-sincronizaciones.component';
+import { CargarComponent     } from './formulario/cargar.component';
 
 import { AuthService } from '../../auth.service';
 
@@ -45,6 +46,7 @@ import { SimpleNotificationsModule } from 'angular2-notifications';
   declarations: [ 
     ListaComponent,   
     FormularioComponent,
+    ListaSincronizacionesComponent,
     CargarComponent
   ],
   providers: [ AuthService, CrudService ]

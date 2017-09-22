@@ -37,7 +37,8 @@
 							<th>NOMBRE</th>
 							<th>FECHA DE GENERACIÓN</th>
 							<th>FECHA DE SINCRONIZACIÓN</th>
-						</tr>
+                            <th>USUARIO</th>
+                        </tr>
                     </thead>
                     <tbody  *ngIf="!busquedaActivada">
                         <tr *ngFor="let item of lista; let i=index">  
@@ -45,7 +46,8 @@
                             <td>{{ item.servidor_id }}</td>                      
                             <td>{{ item.servidor_nombre }}</td> 
                             <td>{{ item.fecha_generacion }}</td>  
-                            <td>{{ item.created_at }}</td>                                                  
+                            <td>{{ item.created_at }}</td>    
+                            <td>{{ item.usuario_id }}</td>                                                  
                         </tr>
                         <tr *ngIf="lista.length == 0">
                             <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
@@ -58,6 +60,7 @@
                             <td>{{ item.servidor_nombre }}</td> 
                             <td>{{ item.fecha_generacion }}</td>  
                             <td>{{ item.created_at }}</td> 
+                            <td>{{ item.usuario_id }}</td>                                                  
                         </tr>
 
                         <tr *ngIf="resultadosBusqueda.length == 0 && busquedaActivada">

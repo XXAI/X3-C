@@ -69,6 +69,14 @@
         </li>
         <hr>
         <li>
+            <a routerLink="/almacen/pedidos/alternos" #alternos routerLinkActive="is-active">
+                <span class="icon"><i class="fa fa-code-fork"></i></span> Alternos
+                <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                <span *ngIf="stats.alternos>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': alternos.className == 'is-active', 'is-primary': alternos.className != 'is-active' }">{{  stats.alternos }}</span>
+            </a>
+        </li>        
+        <hr>
+        <li>
             <a routerLink="/almacen/pedidos/farmacia-subrogada" #farmacia routerLinkActive="is-active">
                 <span class="icon"><i class="fa fa-building"></i></span> Farmacia Subrogada
                 <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>

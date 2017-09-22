@@ -32,15 +32,23 @@ import { Mensaje } from '../../mensaje';
 export class DetalleComponent implements OnInit {
   	
     cargando: boolean = false;
+    administrador: boolean = false;
     showAgregarAvance: boolean = false;
+    show_actual: boolean = true;
+    show_historico: boolean = false;
+    privilegio_usuario: boolean = false;
+    avance: FormGroup;
+    usuario_form: FormGroup;
+    avance_detalle: FormGroup;
 	
 
 	// # SECCION: Esta sección es para mostrar mensajes
-    mensajeError: Mensaje = new Mensaje();
+  mensajeError: Mensaje = new Mensaje();
 	mensajeExito: Mensaje = new Mensaje();
 	ultimaPeticion:any;
 	id_avance_detalle:string = "0";
-	id_avance:string;
+  id_avance:string;
+	id_tab:number = 1;
 	// # FIN SECCION
 
 	// # SECCION: Lista de pacinetes
@@ -50,7 +58,10 @@ export class DetalleComponent implements OnInit {
 	private paginasTotales = 0;
 	private indicePaginas:number[] = [];
 
-	detalles: Detalle[] = [];
+  detalles: Detalle[] = [];
+  usuarios:any = [];
+  usuarios_privilegios:any = [];
+	datos_avance:any = {};
 	// # FIN SECCION
 	
 	// # SECCION: Resultados de búsqueda
@@ -64,16 +75,44 @@ export class DetalleComponent implements OnInit {
 	private paginasTotalesBusqueda = 0;
 	private indicePaginasBusqueda:number[] = [];
 
+  //Subir archivo
+  tag:any;
+  id_pedido:string;
+  nombre_pedido:string;
+  cargando_archivo:number = 0;
+  subir_archivo:boolean = true;
+
   constructor(
   	private router: Router,
   	private location: Location,
   	private route: ActivatedRoute,
   	private title: Title, 
-	private avanceService: AvanceService,
-	private fb: FormBuilder
+  	private avanceService: AvanceService,
+  	private fb: FormBuilder
   ) { }
 
   ngOnInit() {
+
+    this.avance = this.fb.group({
+           archivo: ['', []],
+           porcentaje: ['', [Validators.required]],
+           comentario: ['', [Validators.required]]
+       
+    });
+
+    this.avance_detalle = this.fb.group({
+           prioridad: ['', [Validators.required]],
+           estatus: ['', [Validators.required]]
+       
+    });
+
+    this.usuario_form = this.fb.group({
+           usuario_id: ['', [Validators.required]],
+           agregar: ['', []],
+           editar: ['', []],
+           eliminar: ['', []],
+           avance_id: ['', []]
+    });
   	this.title.setTitle("Temas / Avance");
   		this.mensajeError = new Mensaje();
 	    this.mensajeExito = new Mensaje();
@@ -84,8 +123,8 @@ export class DetalleComponent implements OnInit {
 	      this.id_avance = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number
 	    });
 
-	    this.listar(1);
-	    
+	    this.listar(1, this.id_tab);
+	    this.cargar_usuarios();
 
 	    var busquedaSubject = this.terminosBusqueda
 	    .debounceTime(300) // Esperamos 300 ms pausando eventos
@@ -97,7 +136,7 @@ export class DetalleComponent implements OnInit {
 	      this.ultimoTerminoBuscado = term;
 	      this.paginaActualBusqueda = 1;
 	      this.cargando = true;
-	      return term  ? this.avanceService.buscar(term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]}) 
+	      return term  ? this.avanceService.buscar_detalle(this.id_avance, this.id_tab, term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]}) 
 	    }
 	      
 	    
@@ -143,17 +182,126 @@ export class DetalleComponent implements OnInit {
 	    );
   }
 
-  listar(pagina:number): void {
+  cargar_usuarios():void
+  {
+    this.cargando = true;
+    this.avanceService.usuarios(this.id_avance).subscribe(
+        resultado => {
+          this.cargando = false;
+          this.usuarios_privilegios = resultado.data_lista;
+          this.usuarios = resultado.usuarios;
+          this.privilegio_usuario = resultado.privilegio;
+        },
+        error => {
+          this.cargando = false;
+          this.mensajeError.mostrar = true;
+          this.ultimaPeticion = this.listar;
+          try {
+            let e = error.json();
+            if (error.status == 401 ){
+              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }
+          } catch(e){
+            console.log("No se puede interpretar el error");
+            
+            if (error.status == 500 ){
+              this.mensajeError.texto = "500 (Error interno del servidor)";
+            } else {
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }            
+          }
+
+        }
+      );
+  }
+
+  eliminar_usuario_avance(id:string): void
+  {
+    if(confirm("¿Realmente Desea eliminar"))
+    {
+     this.cargando = true;
+    this.avanceService.elimina_usuarios(id).subscribe(
+        resultado => {
+          this.cargar_usuarios();
+        },
+        error => {
+          this.cargando = false;
+          this.mensajeError.mostrar = true;
+          this.ultimaPeticion = this.listar;
+          try {
+            let e = error.json();
+            if (error.status == 401 ){
+              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }
+          } catch(e){
+            console.log("No se puede interpretar el error");
+            
+            if (error.status == 500 ){
+              this.mensajeError.texto = "500 (Error interno del servidor)";
+            } else {
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }            
+          }
+
+        }
+      );
+    }
+  }
+
+  agregar_usuario(): void
+  {
+      this.usuario_form.patchValue({avance_id: this.id_avance});
+      this.avanceService.crear_usuario(this.usuario_form.value).subscribe(
+          avance => {
+            
+            this.mensajeExito = new Mensaje(true);
+            this.mensajeExito.texto = "Se han guardado los cambios.";
+            this.mensajeExito.mostrar = true;
+          },
+          error => {
+            this.mensajeError = new Mensaje(true);
+            this.mensajeError.texto = "No especificado.";
+            this.mensajeError.mostrar = true;      
+            
+            try {
+              let e = error.json();
+              if (error.status == 401 ){
+                this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+              }
+              // Problema de validación
+              if (error.status == 409){
+                this.mensajeError.texto = "Por favor verfique los campos marcados en rojo.";
+                
+              }
+            } catch(e){
+                          
+              if (error.status == 500 ){
+                this.mensajeError.texto = "500 (Error interno del servidor)";
+              } else {
+                this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+              }            
+            }
+
+          }
+        );
+  }
+
+  listar(pagina:number, tipo_lista:number): void {
     this.paginaActual = pagina;
     
     this.cargando = true;
     
-    this.avanceService.lista_detalles(this.id_avance, pagina,this.resultadosPorPagina).subscribe(
+    this.avanceService.lista_detalles(this.id_avance, tipo_lista, pagina,this.resultadosPorPagina).subscribe(
         resultado => {
 
           this.cargando = false;
-          this.detalles = resultado.data as Detalle[];
+          this.detalles = resultado.registros.data as Detalle[];
 
+          this.datos_avance.tema = resultado.datos_tema.tema;
+          this.avance_detalle.patchValue({prioridad: resultado.datos_tema.prioridad, estatus: resultado.datos_tema.estatus});
+          
+          this.administrador = resultado.administrador;
+          this.datos_avance.historial = resultado.historial;
           this.total = resultado.total | 0;
           this.paginasTotales = Math.ceil(this.total / this.resultadosPorPagina);
 
@@ -192,10 +340,9 @@ export class DetalleComponent implements OnInit {
 
   listarBusqueda(term:string ,pagina:number): void {
     this.paginaActualBusqueda = pagina;
-    console.log("Cargando búsqueda.");
-   
+
     this.cargando = true;
-    this.avanceService.buscar(term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
+    this.avanceService.buscar_detalle(this.id_avance, this.id_tab, term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
         resultado => {
           console.log(resultado);
           this.cargando = false;
@@ -236,6 +383,108 @@ export class DetalleComponent implements OnInit {
       );
   }
 
+  fileChanged(e: Event) {
+    var element: HTMLInputElement = e.target as HTMLInputElement;
+    this.tag = element;    
+  }
+
+  upload() {
+        if(this.tag)
+        {
+
+          console.log(this.avance.value);
+          this.subir_archivo = false;
+          let img:any = this.tag.files[0];
+          var formData: FormData = new FormData();
+          formData.append("file", img, img.name);
+          formData.append("porcentaje", this.avance.value.porcentaje);
+          formData.append("comentario", this.avance.value.comentario);
+          formData.append("avance_id", this.id_avance);
+
+          var xhr = new XMLHttpRequest();
+          xhr.upload.addEventListener("progress", (ev: ProgressEvent) => {
+              
+          });
+          var self = this;
+          xhr.open("POST", environment.API_URL+"/avance_repository", true);
+          xhr.setRequestHeader("Authorization", "Bearer "+localStorage.getItem('token'));
+          var usuario = JSON.parse(localStorage.getItem("usuario"));
+
+          if(usuario.proveedor_activo){
+            xhr.setRequestHeader("X-Proveedor-Id", usuario.proveedor_activo.id);
+          }
+
+          xhr.onreadystatechange = function () {
+              if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                 self.mensajeExito = new Mensaje(true);
+                  self.mensajeExito.mostrar = true;
+                  self.mensajeExito.texto = "Se  guardo correctamente el avance";
+                 self.listar(1, self.id_tab);
+                 self.showAgregarAvance = !self.showAgregarAvance;
+                 self.avance.patchValue({porcentaje:"", comentario:"",archivo:""});
+              }
+
+              if(xhr.readyState === XMLHttpRequest.DONE && xhr.status != 200) {
+                 self.error_envio(xhr);
+                 self.subir_archivo = true;        
+              }
+              self.cargando_archivo = xhr.readyState;
+          };        
+          xhr.send(formData);
+        }else{
+          alert("ES NECESARIO ELEGIR UN ARCHIVO A SUBIR, VUELVA A INTENTARLO POR FAVOR");
+        }
+    }
+
+    error_envio(obj)
+    {
+      console.log(obj);
+      this.mensajeError = new Mensaje(true);
+      this.mensajeError.mostrar = true;
+      
+      if(obj.status == 500)
+      this.mensajeError.texto = obj.responseText;
+        else
+      this.mensajeError.texto = "Ha ocurrido un error al enviar el archivo";
+    }
+
+  eliminar_avance(id)
+  {
+      if(confirm("¿Realmente desea eliminar este avance?"))
+      {
+        this.cargando = true;
+        this.avanceService.eliminar(id).subscribe(
+        resultado => {
+          this.cargando = false;
+          this.listar(1, this.id_tab);
+          this.mensajeExito = new Mensaje(true);
+          this.mensajeExito.mostrar = true;
+          this.mensajeExito.texto = "Se ha eliminado satisfactoriamente el avance";
+        },
+        error => {
+          this.cargando = false;
+          this.mensajeError = new Mensaje(true);
+          this.mensajeError.mostrar = true;
+          try {
+            let e = error.json();
+            if (error.status == 401 ){
+              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }
+          } catch(e){
+            
+            
+            if (error.status == 500 ){
+              this.mensajeError.texto = "500 (Error interno del servidor)";
+            } else {
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }            
+          }
+
+        }
+      );
+      }
+  } 
+
   descargar(id){
     let id_avance = id;
     var query = "token="+localStorage.getItem('token');
@@ -243,28 +492,7 @@ export class DetalleComponent implements OnInit {
 
     var download = window.open(`${environment.API_URL}/download-file-avance/${id_avance}?${query}`);
     var contador = 0;
-    /*var timer = setInterval(function ()
-    {
-       contador = contador + 1;
-        if (download.closed)
-        {
-            clearInterval(timer);
-            self.mostrarDialogoArchivos(self.datosPedido);
-             self.mensajeError.mostrar = false;
-             self.mensajeExito.mostrar = true;
-             self.mensajeExito.iniciarCuentaAtras();
-            self.mensajeExito.texto = "Se ha descargado correctamente el archivo";
-        }else{
-          if(contador == 5)
-          {
-            clearInterval(timer);
-            download.close();
-            self.mensajeError.mostrar = true;
-            self.mensajeError.iniciarCuentaAtras();
-            self.mensajeError.texto = "Ocurrio un error al intentar descargar el archivo.";
-          }
-        }
-    }, 1000);*/
+
   }
 
   view(id){
@@ -274,39 +502,66 @@ export class DetalleComponent implements OnInit {
 
     var download = window.open(`${environment.API_URL}/view-file-avance/${id_avance}?${query}`);
     var contador = 0;
-    /*var timer = setInterval(function ()
-    {
-       contador = contador + 1;
-        if (download.closed)
-        {
-            clearInterval(timer);
-            self.mostrarDialogoArchivos(self.datosPedido);
-             self.mensajeError.mostrar = false;
-             self.mensajeExito.mostrar = true;
-             self.mensajeExito.iniciarCuentaAtras();
-            self.mensajeExito.texto = "Se ha descargado correctamente el archivo";
-        }else{
-          if(contador == 5)
-          {
-            clearInterval(timer);
-            download.close();
-            self.mensajeError.mostrar = true;
-            self.mensajeError.iniciarCuentaAtras();
-            self.mensajeError.texto = "Ocurrio un error al intentar descargar el archivo.";
+
+  }
+
+  tab(id:number)
+  {
+    if(id == 1){
+      this.show_actual = true;
+      this.show_historico = false;
+      this.id_tab = 1;
+    }
+    else if(id == 2){
+      this.show_actual = false;
+      this.show_historico = true;
+      this.id_tab = 2;
+    }
+
+     this.listar(1, this.id_tab);
+  }
+
+  actualiza_avance()
+  {
+      this.cargando = true;
+      this.avanceService.actualizar_avance(this.id_avance, this.avance_detalle.value).subscribe(
+      resultado => {
+        this.cargando = false;
+        this.mensajeExito = new Mensaje(true);
+        this.mensajeExito.mostrar = true;
+        this.mensajeExito.texto = "Se ha actualizado satisfactoriamente el avance";
+      },
+      error => {
+        this.cargando = false;
+        this.mensajeError = new Mensaje(true);
+        this.mensajeError.mostrar = true;
+        try {
+          let e = error.json();
+          if (error.status == 401 ){
+            this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
           }
+        } catch(e){
+          
+          
+          if (error.status == 500 ){
+            this.mensajeError.texto = "500 (Error interno del servidor)";
+          } else {
+            this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+          }            
         }
-    }, 1000);*/
+
+      });
   }
 
  	regresar(){
     this.location.back();
   }
 
-    paginaSiguiente():void {
-	    this.listar(this.paginaActual+1);
+  paginaSiguiente():void {
+	    this.listar(this.paginaActual+1, this.id_tab);
 	}
 	paginaAnterior():void {
-	    this.listar(this.paginaActual-1);
+	    this.listar(this.paginaActual-1, this.id_tab);
 	}
 
 	paginaSiguienteBusqueda(term:string):void {

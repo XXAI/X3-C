@@ -212,16 +212,16 @@ export class ListarComponent implements OnInit {
                     let e = error.json();
                     if (error.status == 401) {
                         this.mensajeResponse.texto = "No tiene permiso para hacer esta operación.";
-                        this.mensajeResponse.clase = "danger";
+                        this.mensajeResponse.clase = 'danger';
                         this.mensaje(2);
                     }
                 } catch (e) {
                     if (error.status == 500) {
-                        this.mensajeResponse.texto = "500 (Error interno del servidor)";
+                        this.mensajeResponse.texto = '500 (Error interno del servidor)';
                     } else {
-                        this.mensajeResponse.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+                        this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
                     }
-                    this.mensajeResponse.clase = "danger";
+                    this.mensajeResponse.clase = 'danger';
                     this.mensaje(2);
                 }
 
@@ -230,8 +230,8 @@ export class ListarComponent implements OnInit {
     }
 
     /**
-     * Este método obtiene una lista de elementos de la api 
-     * @param pagina  inicio de la página para mostrar resultados   
+     * Este método obtiene una lista de elementos de la api
+     * @param pagina  inicio de la página para mostrar resultados
      * @return void
      */
     listar(pagina: number): void {
@@ -241,6 +241,7 @@ export class ListarComponent implements OnInit {
         this.crudService.lista(pagina, this.resultadosPorPagina, this.URL).subscribe(
             resultado => {
                 this.cargando = false;
+
                 if(resultado.data)
                     this.dato = resultado.data as any[];
                 else
@@ -254,8 +255,8 @@ export class ListarComponent implements OnInit {
                     this.indicePaginas.push(i + 1);
                 }
                 this.mensajeResponse.mostrar = true;
-                this.mensajeResponse.texto = "lista cargada";
-                this.mensajeResponse.clase = "success";
+                this.mensajeResponse.texto = 'lista cargada';
+                this.mensajeResponse.clase = 'success';
                 this.mensaje(2);
             },
             error => {
@@ -265,17 +266,17 @@ export class ListarComponent implements OnInit {
                 try {
                     let e = error.json();
                     if (error.status == 401) {
-                        this.mensajeResponse.texto = "No tiene permiso para hacer esta operación.";
-                        this.mensajeResponse.clase = "danger";
+                        this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
+                        this.mensajeResponse.clase = 'danger';
                         this.mensaje(2);
                     }
                 } catch (e) {
                     if (error.status == 500) {
-                        this.mensajeResponse.texto = "500 (Error interno del servidor)";
+                        this.mensajeResponse.texto = '500 (Error interno del servidor)';
                     } else {
-                        this.mensajeResponse.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+                        this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
                     }
-                    this.mensajeResponse.clase = "danger";
+                    this.mensajeResponse.clase = 'danger';
                     this.mensaje(2);
                 }
 
@@ -283,7 +284,7 @@ export class ListarComponent implements OnInit {
         );
     }
     //abre una modal para confirmar la eliminacion
-    borrarItem = ""; borrarIndex = "";
+    borrarItem = ''; borrarIndex = '';
 
     /**
      * Este método es intermediario para la eliminación de un elemento 
@@ -295,7 +296,7 @@ export class ListarComponent implements OnInit {
     eliminar(item: any, index): void {
         this.borrarItem = item;
         this.borrarIndex = index;
-        document.getElementById("confirmarEliminar").classList.add('is-active');
+        document.getElementById('confirmarEliminar').classList.add('is-active');
     }
 
     /**
@@ -303,7 +304,7 @@ export class ListarComponent implements OnInit {
      * @return void
      */
     cancelarModal() {
-        document.getElementById("confirmarEliminar").classList.remove('is-active');
+        document.getElementById('confirmarEliminar').classList.remove('is-active');
     }
     
     /**
@@ -324,8 +325,8 @@ export class ListarComponent implements OnInit {
                 this.dato.splice(index, 1);
 
                 this.mensajeResponse.mostrar = true;
-                this.mensajeResponse.texto = "Se eliminó el elemento de la lista.";
-                this.mensajeResponse.clase = "success";
+                this.mensajeResponse.texto = 'Se eliminó el elemento de la lista.';
+                this.mensajeResponse.clase = 'success';
                 this.mensaje(2);
 
                 this.cancelarModal();
@@ -343,17 +344,17 @@ export class ListarComponent implements OnInit {
                 try {
                     let e = error.json();
                     if (error.status == 401) {
-                        this.mensajeResponse.texto = "No tiene permiso para hacer esta operación.";
-                        this.mensajeResponse.clase = "danger";
+                        this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
+                        this.mensajeResponse.clase = 'danger';
                         this.mensaje(2);
                     }
                 } catch (e) {
                     if (error.status == 500) {
-                        this.mensajeResponse.texto = "500 (Error interno del servidor)";
+                        this.mensajeResponse.texto = '500 (Error interno del servidor)';
                     } else {
-                        this.mensajeResponse.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+                        this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
                     }
-                    this.mensajeResponse.clase = "danger";
+                    this.mensajeResponse.clase = 'danger';
                     this.mensaje(2);
                 }
 
@@ -399,7 +400,7 @@ export class ListarComponent implements OnInit {
 
     //mostrar notificaciones
     public options = {
-        position: ["bottom", "left"],
+        position: ['bottom', 'left'],
         timeOut: 2000,
         lastOnBottom: true
     };
@@ -421,7 +422,7 @@ export class ListarComponent implements OnInit {
      * @param posicion  array de posicion [vertical, horizontal]
      * @return void
      */
-    mensaje(cuentaAtras: number = 6, posicion: any[] = ["bottom", "left"]): void {
+    mensaje(cuentaAtras: number = 6, posicion: any[] = ['bottom', 'left']): void {
         var objeto = {
             showProgressBar: true,
             pauseOnHover: false,

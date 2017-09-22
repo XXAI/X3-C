@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChildren, NgZone } from '@angular/core';
+import { CrudService } from '../../../crud/crud.service';
 import  * as FileSaver    from 'file-saver';
 
 @Component({
@@ -15,6 +16,8 @@ export class ListaComponent {
   servicio = '';
   recibe = '';
   dato;
+  cargando;
+  lista_impresion;
 
   // # SECCION: Reportes
   pdfworker: Worker;
@@ -25,7 +28,8 @@ export class ListaComponent {
   @ViewChildren('sr') sr;
 
   constructor(
-    private _ngZone: NgZone) { }
+    private _ngZone: NgZone,
+    private crudService: CrudService) { }
 
   ngOnInit() {
       this.usuario = JSON.parse(localStorage.getItem('usuario'));
@@ -83,35 +87,44 @@ export class ListaComponent {
       document.body.removeChild(iframe);
     }, 2000);
   }
-  export_excel(){
-    var titulo = 'Entrada Estandar';
-    var turno = this.tr.first.nativeElement.options;
-    var servicio = this.sr.first.nativeElement.options;
-    turno = turno[turno.selectedIndex].text;
-    servicio = servicio[servicio.selectedIndex].text;
-    var exportData = '<table><tr><th colspan=\'7\'><h1>' + titulo 
-    +'</h1></th></tr><tr><th>Desde: '+this.fecha_desde+'</th><th>Hasta: '+this.fecha_hasta+'</th>'
-    +'</th><th>Recibe: '+this.recibe+'</th></tr><tr><th colspan=\'7\'></th></tr></table>';
+  export_excel() {
+    let titulo = 'Entrada Estandar';
+    let exportData = '<table><tr><th colspan=\'7\'><h1>' + titulo
+    + '</h1></th></tr><tr><th>Desde: ' + this.fecha_desde + '</th><th>Hasta: ' + this.fecha_hasta + '</th>'
+    + '</th><th>Recibe: ' + this.recibe + '</th></tr><tr><th colspan=\'7\'></th></tr></table>';
 
     exportData += document.getElementById('exportable').innerHTML;
-    var blob = new Blob([exportData], { type: 'text/comma-separated-values;charset=utf-8' });
-    saveAs(blob,  'entrada_estandar.xls');
-  }
-  
-  imprimir() {
+    let blob = new Blob([exportData], { type: 'text/comma-separated-values;charset=utf-8' });
     try {
-      this.cargandoPdf = true;
-      let entrada_imprimir = {
-        lista: this.dato,
-        usuario: this.usuario,
-        fecha_desde: this.fecha_desde,
-        fecha_hasta: this.fecha_hasta,
-        recibe: this.recibe
-      };
-      this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
+        FileSaver.saveAs(blob,  'Listado_entrada_de_almacen.xls');
     } catch (e) {
-      this.cargandoPdf = false;
+      console.log(e);
     }
+  }
+
+  imprimir() {
+    this.crudService.lista_general('movimientos?tipo=1&fecha_desde=' + this.fecha_desde
+    + '&fecha_hasta=' + this.fecha_hasta + '&recibe=' + this.recibe).subscribe(
+      resultado => {
+              this.cargando = false;
+              this.lista_impresion = resultado;
+              try {
+                this.cargandoPdf = true;
+                let entrada_imprimir = {
+                  lista: this.lista_impresion.data,
+                  usuario: this.usuario,
+                  fecha_desde: this.fecha_desde,
+                  fecha_hasta: this.fecha_hasta,
+                  recibe: this.recibe
+                };
+                this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
+              } catch (e) {
+                this.cargandoPdf = false;
+              }
+            },
+            error => {
+            }
+    );
   }
 
   base64ToBlob( base64, type ) {

@@ -21,48 +21,58 @@ export class IndexInventarioComponent implements OnInit {
   constructor(private title: Title) { }
 
   ngOnInit() {
-    this.title.setTitle('Almacén');
+    this.title.setTitle('Inventario');
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
 
     this.modulos = [
-      { permiso: 'kWbg08UnfL8fHlOpcNmcTvVbGEU6L8Wz', icono: 'assets/icono-stock.svg', titulo: 'Existencias', url: '/inventario/existencias' },
-      { permiso: 'g8YLm8F0e9Zokxq6iSJUndPYro5Ic6tQ', icono: 'assets/icono-stock-edit.svg', titulo: 'Ajuste de Inventario', url: '/almacen/ajuste-inventario' },
-      { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-stock.svg', titulo: 'Existencias', url: '/inventario/existencias' }, // PRUEBA
-      { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-stock-edit.svg', titulo: 'Ajuste de Inventario', url: '/almacen/ajuste-inventario' }, // PRUEBA
+      {
+        permiso: '7KbTARF2kpnO4Lfqv8hmYP8QGMcgJBwU', icono: 'assets/icono-ajustes-inventario.svg',
+        titulo: 'Inicialización Inventario', url: '/inventario/inicializacion-inventario'
+      },
+      {
+        permiso: 'H5IV7Z6CAj8V2CRIQ2wnbXrYhvjLsSBk', icono: 'assets/icono-stock.svg',
+        titulo: 'Existencia de insumos médicos', url: '/inventario/existencias'
+      },
+      {
+        permiso: '0oADIo1ltfAl4VMDVbyWgLR3rAhYGjlY', icono: 'assets/icono-ajuste-mas.svg',
+        titulo: 'Ajuste más de Inventario', url: '/inventario/ajuste-mas-inventario'
+      },
+      {
+        permiso: 'cE81erieaVjvmhcb9GCYI4doqYGtTcj1', icono: 'assets/icono-ajuste-menos.svg',
+        titulo: 'Ajuste menos de Inventario', url: '/inventario/ajuste-menos-inventario'
+      },
 
-    ]
+      // Para que tienen todas estas pruebas? R=Porque los permisos no están en la BD aún, entonces uso el permiso de pedidos
+      // Harima: voy a borrar las pruebas, si necesitas los permisos en la base de datos porfa dile a Joram que los agregue, asi como me mandan por correo la lista, Jomran puede hacer el insert manual en su base de datos
+    ];
     this.accesosDirectos = [
-    ]
+    ];
 
     let usuario = JSON.parse(localStorage.getItem('usuario'));
-    var permisos =  usuario.permisos.split('|')
+    let permisos =  usuario.permisos.split('|');
 
     if (permisos.length > 0) {
 
-      for (var i in this.modulos) {
+      for (let i in this.modulos) {
         siguienteItemProtegido:
         for(var j in permisos){
-
           if(permisos[j] == this.modulos[i].permiso){
-            
             this.modulosAutorizados.push(this.modulos[i]);
             break siguienteItemProtegido;
-          }           
+          }
         }
       }
 
       for(var i in this.accesosDirectos){
-        siguienteItemProtegido:             
+        siguienteItemProtegido:
         for(var j in permisos){
-          if(permisos[j] == this.accesosDirectos[i].permiso){
+          if(permisos[j] == this.accesosDirectos[i].permiso) {
             this.accesosDirectosAutorizados.push(this.accesosDirectos[i]);
             break siguienteItemProtegido;
-          }           
-        }        
+          }
+        }
       }
-      
+
     }
-
   }
-
 }

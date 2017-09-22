@@ -23,6 +23,7 @@ export class MenuAsideComponent implements OnInit {
         modulos: [
           { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'fa-cloud', titulo:"Servidor central", url:"/panel-control/sync/central" },          
           { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'fa-desktop', titulo:"Servidor local", url:"/panel-control/sync/local" },          
+          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'fa-server', titulo:"Servidores", url:"/panel-control/sync/servidores" },          
         ]
       },
       {
