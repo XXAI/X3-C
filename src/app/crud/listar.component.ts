@@ -241,7 +241,10 @@ export class ListarComponent implements OnInit {
         this.crudService.lista(pagina, this.resultadosPorPagina, this.URL).subscribe(
             resultado => {
                 this.cargando = false;
-                this.dato = resultado.data as any[];
+                if(resultado.data)
+                    this.dato = resultado.data as any[];
+                else
+                    this.dato = resultado as any[];
 
                 this.total = resultado.total | 0;
                 this.paginasTotales = Math.ceil(this.total / this.resultadosPorPagina);
@@ -310,10 +313,10 @@ export class ListarComponent implements OnInit {
      * @param index  indica la posicion del elemento en la lista cargada  
      * @return void
      */
-    borrar(item: any, index): void {
+    borrar(item: any, index, key: any = 'id'): void {
         item.cargando = true;
         this.borrarCargando = true;
-        this.crudService.eliminar(item.id, this.URL).subscribe(
+        this.crudService.eliminar(item[key], this.URL).subscribe(
             data => {
                 item.cargando = false;
                 this.borrarCargando = false;
@@ -400,6 +403,17 @@ export class ListarComponent implements OnInit {
         timeOut: 2000,
         lastOnBottom: true
     };
+
+    cambiar_filas_pagina(totalPorPagina: HTMLInputElement){
+        if(this.busquedaActivada){
+            this.resultadosPorPaginaBusqueda = parseInt(totalPorPagina.value);
+            var term = <HTMLInputElement> document.getElementById("search-box");
+            this.listarBusqueda(term.value, this.paginaActual);
+        }else{
+            this.resultadosPorPagina = parseInt(totalPorPagina.value);
+            this.listar(this.paginaActual);
+        }
+    }
 
     /**
      * Este método muestra los mensajes resultantes de los llamados de la api

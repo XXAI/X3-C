@@ -86,6 +86,27 @@ import { EgresoModule } from './admision/egreso/egreso.module';
 import { PacienteModule } from './admision/paciente/paciente.module';
 
 
+//catalogos
+import { UnidadesMedidaModule } from './almacen-articulos/catalogos/unidades-medida/unidades-medida.module';
+import { TipoPedidoModule } from './almacen-articulos/catalogos/tipo-pedido/tipo-pedido.module';
+import { TiposMovimientosModule } from './almacen-articulos/catalogos/tipos-movimientos/tipos-movimientos.module';
+import { TiposInsumosModule } from './almacen-articulos/catalogos/tipos-insumos/tipos-insumos.module';
+import { ServidoresModule } from './almacen-articulos/catalogos/servidores/servidores.module';
+import { GruposInsumosModule } from './almacen-articulos/catalogos/grupos-insumos/grupos-insumos.module';
+import { AlmacenesModule } from './almacen-articulos/catalogos/almacenes/almacenes.module';
+import { ProveedoresModule } from './almacen-articulos/catalogos/proveedores/proveedores.module';
+import { ServiciosModule } from './almacen-articulos/catalogos/servicios/servicios.module';
+import { MarcasModule } from './almacen-articulos/catalogos/marcas/marcas.module';
+import { PresentacionMedicamentoModule } from './almacen-articulos/catalogos/presentaciones-medicamentos/presentaciones-medicamentos.module';
+import { ProgramaModule } from './almacen-articulos/catalogos/programa/programa.module';
+import { MaterialCuracionModule } from './almacen-articulos/catalogos/material-curacion/material-curacion.module';
+import { MedicamentosModule } from './almacen-articulos/catalogos/medicamentos/medicamentos.module';
+import { FormaFarmaceuticaModule } from './almacen-articulos/catalogos/forma-farmaceutica/forma-farmaceutica.module';
+
+import { CategoriasModule } from './almacen-articulos/categoria/categorias.module';
+import { ArticulosModule } from './almacen-articulos/articulos/articulos.module';
+
+
 //import { CrudModule } from './crud/crud.module';
 
 
@@ -142,14 +163,33 @@ export function highchartsFactory() {
     IndexInventarioModule,
     IndexAlmacenArticulosModule,
     IndexCatalogoModule,
+    ViasAdministracionModule,    
+    ServiciosModule,
+    GruposInsumosModule,
+    PresentacionMedicamentoModule,
+    TipoPedidoModule,
+    TiposMovimientosModule,
+    TiposInsumosModule,
+    FormaFarmaceuticaModule,
+    ServidoresModule,
+    AlmacenesModule,
+    ProveedoresModule,
+    MarcasModule,
+    PacienteModule,
+    ProgramaModule,
+    UnidadesMedidaModule,
     UnidadesMedicasModule,
-    ViasAdministracionModule,
+    MaterialCuracionModule,
+    MedicamentosModule,
     //ProveedoresModule,
+    //
+    CategoriasModule,
+    ArticulosModule,
+    //
     IndexLaboratorioModule,
     IndexEquipamientoModule,
     SincronizarRecetasModule,
     //CrudModule,
-    PacienteModule,
     EgresoModule,
     AvancesModule,
     WildcardRoutingModule, // Este siempre debe ir al final para que no haga conflicto con otras rutas

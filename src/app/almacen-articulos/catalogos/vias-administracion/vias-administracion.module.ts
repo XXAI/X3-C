@@ -7,7 +7,7 @@ import { HubModule } from '../../../hub/hub.module';
 import { PerfilModule } from '../../../perfil/perfil.module';
 import { BloquearPantallaModule } from '../../../bloquear-pantalla/bloquear-pantalla.module';
 import { ViasAdministracionRoutingModule } from './vias-administracion-routing.module';
-import { PaginacionModule } from '../../../paginacion/paginacion.module';
+import { PaginacionModule } from '../../parcial/paginacion/paginacion.module';
 
 import { PipesModule }             from '../../../pipes/pipes.module';
 import { ListaComponent } from './lista/lista.component';
@@ -23,6 +23,7 @@ import { MenuAsidePanelModule } from '../menu-aside/menu-aside-panel.module';
 //crud
 import { CrudService } from '../../../crud/crud.service';
 import { CrudModule } from '../../../crud/crud.module';
+import { ParcialModule } from '../../parcial/parcial.module';
 //fin crud
 
 
@@ -40,7 +41,8 @@ import { CrudModule } from '../../../crud/crud.module';
     MenuPanelModule, 
     MenuAsidePanelModule,
     CrudModule,
-    IndexCatalogoModule
+    IndexCatalogoModule,
+    ParcialModule
   ],
   declarations: [ 
     ListaComponent,   

@@ -14,7 +14,7 @@ export class HubComponent implements OnInit {
   private itemsProtegidos = [
     
     { 
-      title:'Almacén', routerLink:'/almacen', icono:'assets/hub-farmacia.svg',
+      title:'Almacén de insumos medicos', routerLink:'/almacen', icono:'assets/hub-farmacia.svg',
       permisos: [
         'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
         'r6REUnVWlsQ00zVYXakLUxdKtGArcenY', // Ver pedidos jurisdiccionales
@@ -32,22 +32,22 @@ export class HubComponent implements OnInit {
       ] 
     },
     { 
-      title:'Almacén artículos', routerLink:'/almacen-articulos', icono:'assets/hub-almacen-articulos.svg',
+      title:'Almacén general', routerLink:'/almacen-articulos', icono:'assets/hub-almacen-articulos.svg',
       permisos: [
-        //'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
-        //'cuSmlV9lvABXzfjtLbzEe0VbI47Dh6Cv', // Ver catálogos
+        'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
+        'cuSmlV9lvABXzfjtLbzEe0VbI47Dh6Cv', // Ver catálogos
       ] 
     },
     { 
       title:'Laboratorio', routerLink:'/laboratorio', icono:'assets/hub-laboratorio.svg',
       permisos: [
-        //'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
+        'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
       ] 
     },
     { 
       title:'Equipamiento', routerLink:'/equipamiento', icono:'assets/hub-equipamiento.svg',
       permisos: [
-        //'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
+        'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
       ] 
     },
     { 

@@ -25,13 +25,14 @@ export class IndexCatalogoComponent implements OnInit {
     this.modulos = [
       { permiso: '', icono: 'assets/catalogo-grupo-insumos.svg', titulo:"Grupos de insumos", url:"/catalogos/grupos-insumos"}, 
       { permiso: '', icono: 'assets/catalogo-marcas.svg', titulo:"Marcas", url:"/catalogos/marcas"}, 
-      { permiso: '', icono: 'assets/catalogo-mc.svg', titulo:"Material de curación", url:"/catalogos/material-curacion"}, //
-      { permiso: '', icono: 'assets/catalogo-medicamento.svg', titulo:"Medicamentos", url:"/catalogos/medicamentos"}, //      
-      { permiso: '', icono: 'assets/catalogo-programas.svg', titulo:"Programas", url:"/catalogos/programas"}, //
+      { permiso: '', icono: 'assets/catalogo-mc.svg', titulo:"Material de curación", url:"/catalogos/material-curacion"}, 
+      { permiso: '', icono: 'assets/catalogo-medicamento.svg', titulo:"Medicamentos", url:"/catalogos/medicamentos"},       
+      { permiso: '', icono: 'assets/catalogo-programas.svg', titulo:"Programas", url:"/catalogos/programas"}, 
       { permiso: '', icono: 'assets/catalogo-presentacion.svg', titulo:"Presentaciones de medicamentos", url:"/catalogos/presentaciones-medicamentos"}, 
       { permiso: '', icono: 'assets/catalogo-administracion.svg', titulo:"Vias de administración", url:"vias-administracion" },
       { permiso: '', icono: 'assets/catalogo-unid-medida.svg', titulo:"Unidades de medida", url:"/almacen-articulos/catalogos/unidades-medida" },
       { permiso: '', icono: 'assets/catalogo-servicios.svg', titulo:"Servicios", url:"/catalogos/servicios"},
+      { permiso: '', icono: 'assets/catalogo-servicios.svg', titulo:"Forma Farmaceutica", url:"/catalogos/forma-farmaceutica"},
       { permiso: '', icono: 'assets/catalogo-pedido.svg', titulo:"Tipos de pedidos", url:"/catalogos/tipo-pedido" },
       { permiso: '', icono: 'assets/catalogo-tipo-movimiento.svg', titulo:"Tipos de movimientos", url:"/catalogos/tipos-movimientos" },
       { permiso: '', icono: 'assets/catalogo-tipo-insumos.svg', titulo:"Tipos de insumos", url:"/catalogos/tipos-insumos"},

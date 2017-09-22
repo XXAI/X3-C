@@ -163,11 +163,17 @@ export class FormularioComponent implements OnInit {
     actualizarDatos() {
 
         this.cargando = true;
-        let dato = this.dato.value;
+        let dato;
+        try{
+            dato = this.dato.getRawValue();
+        }catch(e){
+            dato = this.dato.value;
+        }
         if (!this.cambiarPassword) {
             delete dato.cambiarPassword;
         }
-        this.crudService.editar(this.id, this.dato.value, this.URL).subscribe(
+        
+        this.crudService.editar(this.id, dato, this.URL).subscribe(
             resultado => {
                 this.cargando = false;
 

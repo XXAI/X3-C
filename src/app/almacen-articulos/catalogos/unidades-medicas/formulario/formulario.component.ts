@@ -21,8 +21,13 @@ export class FormularioComponent {
     this.dato = this.fb.group({
       nombre: ['', [Validators.required]],     
       clues: ['', [Validators.required]]  ,
-      unidosis: [''] ,
-      clues_servicios: this.fb.array([])
+      activa:[''] ,
+      director:[''] ,
+      director_id:[''] ,
+      jurisdiccion_id:[''] ,
+      tipo:[''] ,
+      clues_servicios: this.fb.array([]),
+      almacenes: this.fb.array([]),
     });  
 
     this.form_clues_servicios = {

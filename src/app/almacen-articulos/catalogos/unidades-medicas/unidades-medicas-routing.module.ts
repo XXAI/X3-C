@@ -7,7 +7,7 @@ import { AuthGuard } from '../../../auth-guard.service';
 
 const routes: Routes = [
   {
-    path: 'almacen-articulos/catalogos/unidades-medicas',
+    path: 'catalogos/unidades-medicas',
     children: [
        { path: '', component: ListaComponent},
        { path: 'nuevo', component: FormularioComponent },

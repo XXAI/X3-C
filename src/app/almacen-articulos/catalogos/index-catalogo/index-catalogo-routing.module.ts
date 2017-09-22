@@ -7,7 +7,7 @@ import { AuthGuard } from '../../../auth-guard.service';
 
 const routes: Routes = [
   {
-    path: 'almacen-articulos/catalogos',
+    path: 'almacen-articulos/catalogos/index',
     component: IndexCatalogoComponent,
     canActivate: [AuthGuard]
   }  
