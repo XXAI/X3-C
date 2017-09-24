@@ -673,8 +673,8 @@ export class VerComponent implements OnInit {
 			this.pedidosService.generarPedidoAlterno(this.pedido.datosImprimir.id, parametros).subscribe(
 				respuesta => {
 					this.generandoPedidoAlterno = false;
-					//this.router.navigate(['/almacen/pedidos/alternos']);
-          window.location.reload();
+					this.router.navigate(['/almacen/pedidos/actas/'+ respuesta.id]);
+          //window.location.reload();
 				}, error => {
 					this.generandoPedidoAlterno = false;
 					this.errorGenerarPedidoAlterno = true;

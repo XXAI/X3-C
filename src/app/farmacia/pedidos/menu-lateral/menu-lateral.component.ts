@@ -40,6 +40,7 @@ export class MenuLateralComponent implements OnInit {
         expirados_cancelados: 0,
         farmacia: 0,
         alternos: 0,
+        actas:0
       };
       this.cargarStatsPedidos();
     });

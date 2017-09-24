@@ -69,6 +69,13 @@
         </li>
         <hr>
         <li>
+            <a routerLink="/almacen/pedidos/actas" #actas routerLinkActive="is-active">
+                <span class="icon"><i class="fa fa-gavel"></i></span> Actas
+                <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                <span *ngIf="stats.actas>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': actas.className == 'is-active', 'is-primary': actas.className != 'is-active' }">{{  stats.actas }}</span>
+            </a>
+        </li> 
+        <li>
             <a routerLink="/almacen/pedidos/alternos" #alternos routerLinkActive="is-active">
                 <span class="icon"><i class="fa fa-code-fork"></i></span> Alternos
                 <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
