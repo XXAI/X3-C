@@ -32,6 +32,7 @@ import { Mensaje } from '../../mensaje';
 export class DetalleComponent implements OnInit {
   	
     cargando: boolean = false;
+    cargando_datos: boolean = false;
     administrador: boolean = false;
     showAgregarAvance: boolean = false;
     show_actual: boolean = true;
@@ -391,6 +392,7 @@ export class DetalleComponent implements OnInit {
   upload() {
         if(this.tag)
         {
+          this.cargando_datos = true;
 
           console.log(this.avance.value);
           this.subir_archivo = false;
@@ -422,11 +424,13 @@ export class DetalleComponent implements OnInit {
                  self.listar(1, self.id_tab);
                  self.showAgregarAvance = !self.showAgregarAvance;
                  self.avance.patchValue({porcentaje:"", comentario:"",archivo:""});
+                 self.cargando_datos = false; 
               }
 
               if(xhr.readyState === XMLHttpRequest.DONE && xhr.status != 200) {
                  self.error_envio(xhr);
-                 self.subir_archivo = true;        
+                 self.subir_archivo = true; 
+                 self.cargando_datos = false;       
               }
               self.cargando_archivo = xhr.readyState;
           };        

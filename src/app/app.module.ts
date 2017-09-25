@@ -46,6 +46,7 @@ import { MisAlmacenesModule} from './configuracion/almacenes/almacenes.module';
 import { MisServiciosModule} from './configuracion/servicios/servicios.module';
 import { MisTurnosModule   } from './configuracion/turnos/turnos.module';
 import { MisClavesModule   } from './configuracion/claves/claves.module';
+import { MisFirmantesModule} from './configuracion/firmantes/firmantes.module';
 
 // # Hub Farmacia subrrogada
 import { IndexFarmaciaSubrrogadaModule } from './farmacia-subrrogada/index-farmacia-subrrogada/index-farmacia-subrrogada.module';
@@ -132,6 +133,7 @@ export function highchartsFactory() {
     MisTurnosModule,
     MisClavesModule,
     MisServiciosModule,
+    MisFirmantesModule,
     AdministradorCentralModule,
     AsignacionProveedoresPedidosAlternosModule,
     ValidacionPedidosAlternosModule,

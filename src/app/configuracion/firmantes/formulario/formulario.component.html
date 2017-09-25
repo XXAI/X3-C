@@ -1,0 +1,168 @@
+<panel-control-menu></panel-control-menu>
+<div style="height:50px;"></div>
+<div class="contenedor columns " style="height:85%">
+  <div class="column is-one-quarter is-hidden-mobile">
+    <panel-control-menu-aside></panel-control-menu-aside>
+  </div>
+  <div class="column" style="padding:2em;">
+    <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
+      <section class="hero is-primary" >
+          <h1 class="title" style="margin:0.5em;">
+            <span class="icon is-medium"><i class="fa fa-pencil"></i></span> Firmantes Asignados
+          </h1>
+      </section>
+      
+      <div class="is-fullwidth has-text-centered" *ngIf="cargando">
+          <br>
+          <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
+          <br>
+          <br>
+      </div>
+      <section class="section">
+        <form name="form" [formGroup]="firmantes" (submit)='asignar()' > 
+            <div class="control is-grouped">
+              <p class="control is-expanded  has-icon has-icon-right">
+                  <label class="label">Firma Director</label>
+                <input class="input" autofocus type="text"   placeholder="Firma Director" formControlName="firma_director" (keyup)='buscar_firmante()'>
+                <span class="icon is-small" *ngIf="firmantes.get('firma_director').hasError('required') && firmantes.get('firma_director').touched">
+                  <i class="fa fa-warning"></i>
+                </span>
+                <span class="help is-danger" *ngIf="firmantes.get('firma_director').hasError('required') && firmantes.get('firma_director').touched">Este campo es requerido.</span>
+              </p>
+              
+            </div>
+            <div class="control is-grouped">
+              <p class="control is-expanded  has-icon has-icon-right">
+                  <label class="label">Firma Almacén</label>
+                <input class="input"  type="text"  placeholder="Firma Almacén" formControlName="firma_almacen" (keyup)='buscar_firmante()'>
+                <span class="icon is-small" *ngIf="firmantes.get('firma_almacen').hasError('required') && firmantes.get('firma_almacen').touched">
+                  <i class="fa fa-warning"></i>
+                </span>
+                <span class="help is-danger" *ngIf="firmantes.get('firma_almacen').hasError('required') && firmantes.get('firma_almacen').touched">Este campo es requerido.</span>
+              </p>
+              
+            </div>          
+        </form>
+      </section>
+      <!--<section class="hero is-primary">
+          <form name="form" [formGroup]="firmantes" (submit)='asignar()' > 
+            <table class="table"  *ngIf="!cargando">
+              <tbody>
+                
+                <tr>
+                  <th>Firma Director:</th>
+                  <td colspan="2">
+                    <div class="control is-expanded">
+                      
+                    </div>
+                      
+                  </td>
+                  
+                </tr>
+                <tr>
+                  <th>Firma Almacén:</th>
+                  <td colspan="2">
+                    <div class="control is-expanded">
+                      
+                    </div>
+                      
+                  </td>
+                </tr>
+
+              </tbody>  
+            </table>
+    
+          <hr>
+          
+        </form>
+      </section>-->
+    </div>
+  </div>
+</div>
+
+<div id="modal-temas" class="modal is-active" [ngClass]="{'is-active': showFirmante}">
+  <div class="modal-background"  (click)="showDialog = !showFirmante"></div>
+  <div class="modal-card" style="width:60%; height: auto;">
+    <header class="modal-card-head" style="background-color: #00d1b2" >
+      <div class="container is-fluid"  style="width:100%;">
+          <h1 class="title" style="color:#FFF;">
+            <span class="icon is-medium"><i class="fa fa-user"></i></span> Buscar Firmante
+          </h1>
+      </div>            
+      <a class="button  is-primary" style="position:absolute; top:1em; right:1em;" (click)="showFirmante = !showFirmante"><span class="icon "><i class="fa fa-close"></i></span></a>
+    </header>
+    <section class="section">
+        <div class="columns">
+          <div class="column"  [ngClass]="{'is-three-quarters': filter }">
+            <label class="label" style="color: #FFF">Nombre</label>
+            <input class="input is-medium" type="text" placeholder="Buscar" #searchBoxFirmante id="search-box" (keyup)="buscar_personal(searchBoxFirmante.value)">
+          </div>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                  <th></th>
+                  <th>NOMBRE</th>
+                  <th>CLUES</th>
+                  <th>UNIDAD</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!--<tr *ngFor="let item of temas; let i=index">
+                    <th><a class='button is-info' (click)='informacion(item.id, item.porcentaje)'><i class='fa fa-info'></i></a><a class='button' [ngClass]="{'is-warning': item.visualizaciones > 0 }"> <span class="tag is-dark"><i class='fa'  [ngClass]="{'fa-envelope-open':item.visualizaciones == 0, 'fa-envelope': item.visualizaciones > 0 }"></i>&nbsp;{{ item.visualizaciones }}</span></a><a class='button'  [ngClass]="{'is-primary':item.prioridad == 1, 'is-warning': item.prioridad == 2, 'is-danger': item.prioridad == 3 }" (click)='informacion(item.id, item.porcentaje)'><i class='fa fa-info-circle'></i></a></th>
+                    <td style="vertical-align: middle; cursor:pointer;"><a routerLink="/temas/avances/{{item.id}}"><b>Tema: {{ item.tema }}</b><br> <b>Responsable:</b> {{ item.responsable }}<br><b>Área:</b> {{ item.area }}</a></td>
+                    <td style="vertical-align: middle; cursor:pointer;"><a routerLink="/temas/avances/{{item.id}}">{{ item.porcentaje }} %</a><progress class="progress is-info is-small" value="{{ item.porcentaje }}" max="100"></progress></td>
+                    
+
+                    <td style="vertical-align: middle; cursor:pointer;" *ngIf="item.estatus==0"><a routerLink="/temas/avances/{{item.id}}">VIGENTE </a></td>
+                    <td style="vertical-align: middle; cursor:pointer;" *ngIf="item.estatus == 1"><a routerLink="/temas/avances/{{item.id}}">CONCLUIDO </a></td>
+                    
+
+                    <td style="vertical-align: middle; cursor:pointer;" *ngIf="item.creacion>=0"><a routerLink="/temas/avances/{{item.id}}"><span *ngIf="item.creacion == 0">Hoy</span><span *ngIf="item.creacion > 0">Hace {{ item.creacion }} Día(s)</span> </a></td>
+                    <td style="vertical-align: middle; cursor:pointer;" *ngIf="item.creacion<0"><a routerLink="/temas/avances/{{item.id}}">SIN ACTUALIZAR </a></td>
+                    
+                    
+                    <td style="vertical-align: middle;" class="has-text-centered">
+                         
+                        <button type="button"  class="button is-primary"  (click)='ver_tema(item.id)'>
+                          <span class="icon"><i class="fa fa-edit"></i></span>
+                        </button>
+                        &nbsp;&nbsp;
+                        <button type="button"  class="button is-danger"  (click)='eliminar_tema(item.id)'>
+                          <span class="icon"><i class="fa fa-close"></i></span>
+                        </button>
+                        
+                    </td>
+                    
+                </tr>
+                <tr *ngIf="temas.length == 0">
+                    <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
+                </tr>-->
+            </tbody>
+            
+        </table>
+        
+        <!--<paginacion 
+            [total]="total" 
+            [paginasTotales]="paginasTotales" 
+            [resultadosPorPagina]="resultadosPorPagina" 
+            [paginaActual]="paginaActual" 
+            [indicePaginas]="indicePaginas"
+            (onSiguiente)="paginaSiguiente()" 
+            (onAnterior)="paginaAnterior()" 
+            (onListar)="listar($event)" 
+            *ngIf="total>0 && total > resultadosPorPagina && !busquedaActivada"></paginacion>
+        <paginacion 
+            [total]="totalBusqueda" 
+            [paginasTotales]="paginasTotalesBusqueda" 
+            [resultadosPorPagina]="resultadosPorPaginaBusqueda" 
+            [paginaActual]="paginaActualBusqueda" 
+            [indicePaginas]="indicePaginasBusqueda"
+            (onSiguiente)="paginaSiguienteBusqueda(searchBox.value)" 
+            (onAnterior)="paginaAnteriorBusqueda(searchBox.value)" 
+            (onListar)="listarBusqueda(searchBox.value,$event)" 
+            *ngIf="totalBusqueda > 0 && totalBusqueda > resultadosPorPaginaBusqueda && busquedaActivada"></paginacion>-->
+    </section>
+  </div>
+</div>
