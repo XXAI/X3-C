@@ -294,12 +294,15 @@
               </div>
             
           <br>
-          <div class="control is-grouped">
-            <p class="control">
-            <button type="submit" class="button is-primary" name="enviar" [ngClass]="{'is-loading': cargando}"  [disabled]="avance.invalid">Subir Archivo</button>
-               
-            </p>
-          </div>
+          <div class="columns">
+            <div class="column" *ngIf="!cargando_datos">
+              <button type="submit" class="button is-primary" name="enviar"  [disabled]="avance.invalid">Subir Archivo</button>
+            </div>
+            <div class="column" *ngIf="cargando_datos">
+              <button type="button" class="button is-primary is-loading" disabled="disabled">Loading</button>Cargando Archivo, Espere un momento por favor...
+            </div>
+          </div>  
+          
       </form>
     </section>
     <footer class="" style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em " >
