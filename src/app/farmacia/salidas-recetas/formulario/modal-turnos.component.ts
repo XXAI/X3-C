@@ -10,7 +10,7 @@ import { environment } from '../../../../environments/environment';
 })
 
 export class ModalTurnosComponent {
-  dato: FormGroup;
+  dato2: FormGroup;
   actualizacion;
   error_actualizacion;
   actualizacion_usuario;
@@ -24,12 +24,12 @@ export class ModalTurnosComponent {
 
     var usuario = JSON.parse(localStorage.getItem('usuario'));
 
-    this.dato = this.fb.group({
-      clues: [usuario.clues_activa.clues, [Validators.required]],
-      jurisdiccion_id: [usuario.clues_activa.jurisdiccion_id],
-      nombre: [usuario.clues_activa.nombre],
-      activa: [usuario.clues_activa.activa],
-      director_id: [usuario.clues_activa.director_id],
+    this.dato2 = this.fb.group({
+      clues: ['', [Validators.required]],
+      jurisdiccion_id: [''],
+      nombre: [''],
+      activa: [''],
+      director_id: [''],
       clues_turnos: this.fb.array([])
     });
 
@@ -39,7 +39,7 @@ export class ModalTurnosComponent {
       }
     });
     // Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
-    document.getElementById('catalogos').click();
+    document.getElementById('catalogoTurno').click();
   }
 
   ngAfterViewInit() {

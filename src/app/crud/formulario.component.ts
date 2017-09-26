@@ -50,7 +50,7 @@ export class FormularioComponent implements OnInit {
     // Crear la variable que mustra las notificaciones
     mensajeResponse: Mensaje = new Mensaje()
 
-    //Varaibles de entrada se pasan los valores desde la vista
+    // Varaibles de entrada se pasan los valores desde la vista
     @Input() URL: string;
     @Input() titulo: string;
     @Input() dato: FormGroup;

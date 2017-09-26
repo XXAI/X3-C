@@ -620,9 +620,9 @@
 <div class="modal" id="editar_turnos">
     <div class="modal-background"></div>
     <div class="modal-card" style="width: 90%; height: 90%;">
-        <header class="modal-card-head" style="height: 10%;">
-            <p class="modal-card-title"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp; Editar turnos</p>
-            <button type="button" class="delete" (click)="cancelarModal('editar_turnos')"></button>
+        <header class="modal-card-head is-primary" style="height: 10%;">
+            <p class="modal-card-title"><i class="fa fa-pencil is-succes" aria-hidden="true"></i>&nbsp; Editar turnos</p>
+            <button type="button" class="delete" (click)="cancelarModal('editar_turnos'); ctrl.cargarCatalogo('turnos', 'mis-turnos');"></button>
         </header>
         <section class="modal-card-body" style="height: 100%; padding: 1em; ">
             <div *ngIf="!tieneid" style="padding: 0.5em; overflow-x: hidden; overflow-y: hidden; height: 100%;">
@@ -632,7 +632,7 @@
             </div>
         </section>
         <footer class="modal-card-foot">
-            <a class="button" (click)="cancelarModal('editar_turnos'); ctrl.cargarCatalogo('turnos', 'mis-turnos');">Cerrar</a>
+            <button class="button" (click)="cancelarModal('editar_turnos'); ctrl.cargarCatalogo('turnos', 'mis-turnos');">Cerrar</button>
         </footer>
     </div>
 </div>
