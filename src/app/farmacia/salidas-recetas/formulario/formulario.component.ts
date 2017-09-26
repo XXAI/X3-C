@@ -23,6 +23,7 @@ import  * as FileSaver    from 'file-saver';
 
 export class FormularioComponent {
   dato: FormGroup;
+  dato2: FormGroup;
   form_insumos: any;
   form_movimiento_metadato: any;
   tab: number = 1;
@@ -36,7 +37,9 @@ export class FormularioComponent {
   sum_cant_lotes = false;
   cantidad_x_envase;
   cantidad_recomendada;
+  permisos: any = [];
   public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
+  public medicos_term = `${environment.API_URL}/personal-clues?tipo_personal=1&term=:keyword`;
 
 
   MinDate = new Date();
@@ -52,6 +55,7 @@ export class FormularioComponent {
   pdfworker: Worker;
   cargandoPdf = false;
   // # FIN SECCION
+  @ViewChildren('campoDr') campoDr;
 
   tipos_recetas: any[] = [
                             { id: 1, nombre: 'Normal'},
@@ -91,16 +95,19 @@ export class FormularioComponent {
 
     // obtener los datos del usiario logueado almacen y clues
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
+    this.permisos = this.usuario.permisos;
 
     if (this.usuario.clues_activa) {
       this.insumos_term += '&clues=' + this.usuario.clues_activa.clues;
+      this.medicos_term += '&clues=' + this.usuario.clues_activa.clues;
     }
     if (this.usuario.almacen_activo) {
       this.insumos_term += '&almacen=' + this.usuario.almacen_activo.id;
+      this.medicos_term += '&almacen=' + this.usuario.almacen_activo.id;
     }
 
     // Inicializamos el objeto para los reportes con web Webworkers
-    this.pdfworker = new Worker('web-workers/farmacia/movimientos/receta.js')
+    this.pdfworker = new Worker('web-workers/farmacia/movimientos/receta.js');
 
     // Este es un hack para poder usar variables del componente dentro de una funcion del worker
     var self = this;
@@ -135,6 +142,7 @@ export class FormularioComponent {
         tipo_receta: [''],
         fecha_receta: ['', [Validators.required]],
         doctor: ['', [Validators.required]],
+        personal_clues_id: [''],
         paciente: ['', [Validators.required]],
         diagnostico: ['', [Validators.required]],
         imagen_receta: [''],
@@ -148,6 +156,15 @@ export class FormularioComponent {
         receta_detalles: this.fb.array([])
       }),
       insumos: this.fb.array([])
+    });
+
+    this.dato2 = this.fb.group({
+      clues: [this.usuario.clues_activa.clues, [Validators.required]],
+      jurisdiccion_id: [this.usuario.clues_activa.jurisdiccion_id],
+      nombre: [this.usuario.clues_activa.nombre],
+      activa: [this.usuario.clues_activa.activa],
+      director_id: [this.usuario.clues_activa.director_id],
+      clues_turnos: this.fb.array([])
     });
 
     this.route.params.subscribe(params => {
@@ -195,6 +212,12 @@ export class FormularioComponent {
      */
   cancelarModal(id) {
     document.getElementById(id).classList.remove('is-active');
+    this.dosis.first.nativeElement.value = '';
+    this.duracion.first.nativeElement.value = '';
+    this.frecuencia.first.nativeElement.value = '';
+    this.cant_recetada.first.nativeElement.value = '';
+    this.cant_surtida.first.nativeElement.value = '';
+    this.sum_cant_lotes = false;
   }
   lotes_insumo;
 
@@ -212,12 +235,10 @@ export class FormularioComponent {
       cabecera += '&almacen=' + this.usuario.almacen_activo.id;
     }
     let url: string = '' + environment.API_URL + '/insumos-auto?term=' + keyword + cabecera;
-    console.log(url);
     if (keyword) {
       return this.http.get(url)
         .map(res => {
           let json = res.json();
-          console.log(json);
           this.arrayOfStrings = json;
           return json;
         });
@@ -248,6 +269,54 @@ export class FormularioComponent {
   }
 
   /********************************************************************************************* */
+  /**
+     * Este método formatea los resultados de la busqueda en el autocomplte
+     * @param data resultados de la busqueda
+     * @return void
+     */
+    autocompleListFormatMedico = (data: any) => {
+        let html = `
+        <div class="card">
+            <div class="card-content">
+                <div class="media">          
+                    <div class="media-content">
+                        <p class="title is-4" style="color: black;">
+                            <i class="fa fa-user-md" aria-hidden="true"></i> &nbsp; ${data.nombre}
+                        </p>
+                        <p class="subtitle is-6" style="color: black;">
+                            <strong style="color: black;">Título: </strong> Médico cirujano
+                            <strong style="color: black;">&nbsp; Cédula: </strong>
+                            <span style="color: black;"> ${data.cedula ? data.cedula : 'No disponible'} </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+        return this._sanitizer.bypassSecurityTrustHtml(html);
+    }
+
+  /**
+     * Este método carga los datos de un elemento de la api con el id que se pase por la url
+     * @param data json con los datos del objeto seleccionado del autocomplete
+     * @return void
+     */
+  select_medico_autocomplete(data) {
+    let usuario = JSON.parse(localStorage.getItem('usuario'));
+    const control_receta = <FormArray>this.dato.controls['receta'];
+    const ctrlDr = <FormArray>control_receta.controls['doctor'];
+    const ctrlPersonalClues = <FormArray>control_receta.controls['personal_clues_id'];
+    ctrlDr.patchValue(data.nombre);
+    ctrlPersonalClues.patchValue(data.id);
+  }
+
+  asignarDoctor() {
+    const control_receta = <FormArray>this.dato.controls['receta'];
+    const ctrlDr = <FormArray>control_receta.controls['doctor'];
+    const ctrlPersonalClues = <FormArray>control_receta.controls['personal_clues_id'];
+    ctrlDr.patchValue(this.campoDr.first.nativeElement.value);
+    ctrlPersonalClues.patchValue(null);
+  }
+
   /**
      * Este método formatea los resultados de la busqueda en el autocomplte
      * @param data resultados de la busqueda 
@@ -324,7 +393,6 @@ export class FormularioComponent {
   agregarLoteIsumo(dosis, frecuencia, duracion, cantidad_recetada) {
     //obtener el formulario reactivo para agregar los elementos
     const control = <FormArray>this.dato.controls['insumos'];
-    console.log(dosis);
 
     //crear el json que se pasara al formulario reactivo tipo insumos
     var lotes = {
@@ -442,11 +510,6 @@ export class FormularioComponent {
     //agregar la cantidad surtida
     ctrlLotes.controls['cantidad_surtida'].patchValue(cantidad);
     this.cancelarModal('verLotes');
-    this.dosis.first.nativeElement.value = '';
-    this.duracion.first.nativeElement.value = '';
-    this.frecuencia.first.nativeElement.value = '';
-    this.cant_recetada.first.nativeElement.value = '';
-    this.cant_surtida.first.nativeElement.value = '';
     this.sum_cant_lotes = false;
   }
   /**
@@ -579,9 +642,12 @@ export class FormularioComponent {
     let total_cantidad_surtida = 0;
     for (let item of this.lotes_insumo) {
       total_cantidad_surtida = item.cantidad ? total_cantidad_surtida + item.cantidad : total_cantidad_surtida + 0;
-      console.log(item.cantidad);
     }
     this.cant_surtida.first.nativeElement.value = total_cantidad_surtida;
+    if (this.dosis.first.nativeElement.value === '' || this.frecuencia.first.nativeElement.value === ''
+      || this.duracion.first.nativeElement.value === '' || this.cant_recetada.first.nativeElement.value === '') {
+      this.sum_cant_lotes = false;
+    }
   }
 
   guardar_movimiento() {

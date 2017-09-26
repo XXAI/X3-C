@@ -18,10 +18,12 @@
                                             <span *ngIf="ctrl.cargando" class="icon is-medium"><i class="fa fa-refresh fa-spin"></i></span>                            
                                             <!-- --> Mis turnos
                                         </h1>
-                                        <span style="text-align: right">Última actualización: <span *ngIf="!actualizado" class="icon is-small"><i class="fa fa-refresh fa-spin"></i></span>
+                                        <span style="text-align: right">Última actualización: <span *ngIf="!actualizado && ctrl.cargando" class="icon is-small"><i class="fa fa-refresh fa-spin"></i></span>
                                             <strong *ngIf="actualizado" >{{actualizacion | date}}</strong> 
-                                            Por: <span *ngIf="!actualizado" class="icon is-small"><i class="fa fa-refresh fa-spin"></i></span>
+                                            <strong *ngIf="!actualizado && !ctrl.cargando">No disponible </strong> 
+                                            Por: <span *ngIf="!actualizado && ctrl.cargando" class="icon is-small"><i class="fa fa-refresh fa-spin"></i></span>
                                             <strong *ngIf="actualizado">{{actualizacion_usuario}} </strong> 
+                                            <strong *ngIf="!actualizado && !ctrl.cargando">No disponible </strong> 
                                         </span>
                                     </div>
                                 </div>
@@ -43,7 +45,7 @@
             <div class="is-fullwidth has-text-centered" *ngIf="!ctrl.datosCargados">
                 <br>
                 <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
-            </div>
+            </div> 
             <section class="section">
                 <!-- formulario -->
                     <div class="tabs is-boxed">

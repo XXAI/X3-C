@@ -71,6 +71,7 @@ import { InicializacionInventarioModule } from './inventario/inicializacion-inve
 import { AjusteMasInventarioModule      } from './inventario/ajuste-mas-inventario/ajuste-mas-inventario.module';
 import { AjusteMenosInventarioModule    } from './inventario/ajuste-menos-inventario/ajuste-menos-inventario.module';
 import { CorreccionesModule             } from './inventario/correcciones/correcciones.module';
+import { MovimientosGeneralesModule     }  from './inventario/movimientos-generales/movimientos-generales.module';
 
 // # Hub almacén artículos
 import { IndexAlmacenArticulosModule } from './almacen-articulos/index-almacen-articulos/index-almacen-articulos.module';
@@ -171,6 +172,7 @@ export function highchartsFactory() {
     AjusteMasInventarioModule,
     AjusteMenosInventarioModule,
     CorreccionesModule,
+    MovimientosGeneralesModule,
     SalidasRecetasModule,
     DashboardSalidasModule,
     ClavesBasicasModule,
