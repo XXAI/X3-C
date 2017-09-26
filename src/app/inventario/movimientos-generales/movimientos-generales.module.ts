@@ -6,17 +6,15 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HubModule } from '../../hub/hub.module';
 import { PerfilModule } from '../../perfil/perfil.module';
 import { BloquearPantallaModule } from '../../bloquear-pantalla/bloquear-pantalla.module';
-import { SalidasRecetasRoutingModule } from './salidas-recetas-routing.module';
+import { MovimientosGeneralesRoutingModule } from './movimientos-generales-routing.module';
 import { PaginacionModule } from '../../paginacion/paginacion.module';
 
 import { PipesModule }             from '../../pipes/pipes.module';
 import { ListaComponent } from './lista/lista.component';
-import { FormularioComponent } from './formulario/formulario.component';
-import { ModalTurnosComponent}  from  './formulario/modal-turnos.component';
 
 import { AuthService } from '../../auth.service';
 
-import { IndexFarmaciaModule } from '../index-farmacia/index-farmacia.module';
+import { IndexInventarioModule } from '../index-inventario/index-inventario.module';
 //crud
 import { CrudService } from '../../crud/crud.service';
 import { CrudModule } from '../../crud/crud.module';
@@ -29,22 +27,20 @@ import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    SalidasRecetasRoutingModule,
+    MovimientosGeneralesRoutingModule,
     HubModule,
     PerfilModule,
     BloquearPantallaModule,
     PaginacionModule,
     PipesModule,
-    IndexFarmaciaModule,
+    IndexInventarioModule,
     CrudModule,
     NguiAutoCompleteModule,
     NguiDatetimePickerModule
   ],
-  declarations: [ 
-    ListaComponent,
-    FormularioComponent,
-    ModalTurnosComponent
+  declarations: [
+    ListaComponent
   ],
   providers: [ AuthService, CrudService ]
 })
-export class SalidasRecetasModule { }
+export class MovimientosGeneralesModule { }

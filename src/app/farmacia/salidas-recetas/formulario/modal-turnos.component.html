@@ -1,0 +1,137 @@
+<formulario #ctrl URL="mis-turnos" titulo="Turnos / Configuración" [dato]="dato"></formulario>
+<form name="dato" novalidate [formGroup]="dato" (ngSubmit)="ctrl.enviar(false)">
+<div *ngIf="!mostrar_pantalla" style="height: 100%; width: 100%">
+    <div class="tile is-info" style="text-align: center; vertical-align: center;">
+        <p class="level-item" style="text-align: center">
+            <a class="button"
+                (click)="ctrl.cargarDatos(); ctrl.cargarCatalogo('tipos_turnos', 'turnos?bid=1', 'initMover'); mostrar_pantalla=true">
+                <span class="icon "><i class="fa fa-refresh"></i> &nbsp; Cargar turnos</span>
+            </a>
+        </p>
+    </div>
+</div>
+<div [ngClass]="{'is-hidden':!mostrar_pantalla}" class="contenedor columns " style="height:100%">
+    <div class="column" style="padding:2em; height: 100%">
+        <div style="background: #FFF; border-radius: 1em; overflow: hidden; height: 100%">
+            <nav class="level" style="height: 10%">
+                <div class="level-left">
+                </div>
+                <!-- Right side -->
+                <div class="level-right">
+                    <p class="level-item">
+                        <button class="button is-primary is-medium" type="submit" [ngClass]="{'is-loading': ctrl.cargando}" [disabled]="ctrl.dato.invalid">Guardar</button>
+                    </p>
+                    <p class="level-item">
+                        <a class="button is-primary is-medium" 
+                        (click)="ctrl.cargarDatos(); ctrl.cargarCatalogo('tipos_turnos', 'turnos?bid=1', 'initMover')" id="actualizar"><span class="icon "><i class="fa fa-refresh"></i></span></a>
+                    </p>
+                    <p class="level-item">&nbsp;</p>
+                </div>
+            </nav>
+            <div class="is-fullwidth has-text-centered" *ngIf="!ctrl.datosCargados" style="height: 90%">
+                <br>
+                <span class="tag is-primary is-large"><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
+            </div> 
+            <section class="section" style="padding: 1em; height: 85%">
+                <!-- formulario -->
+                        <div class="box" style="height: 100%" >
+                            <article class="media" style="height: 100%">
+                                <div class="media-content" style="height: 100%">
+                                    <div class="content" style="height: 100%">
+                                        <div class="column is-5" style="float:left; height: 90%">
+                                            <nav class="panel" style="height: 100%">
+                                                <div class="panel-heading" style="height: 10%">
+                                                    <div class="field" style="height: 100%">
+                                                        <div class="b-checkbox is-info">
+                                                            <input id="Movimientos" class="styled" type="checkbox" 
+                                                                [checked]="ctrl.todosSeleccionados.izquierda"
+                                                                (click)="ctrl.seleccionarTodosMover('izquierda', ctrl.tipos_turnos)">
+                                                            <label for="Movimientos">
+                                                                Turnos disponibles
+                                                            </label>
+                                                        </div>
+                                                        <a id="catalogos" (click)="ctrl.cargarCatalogo('tipos_turnos', 'turnos?bid=1', 'initMover'); "></a>
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="ctrl.cargando" class="has-text-centered" style="overflow: hidden; overflow-x: hidden; height: 90%;">
+                                                    <br>
+                                                    <br>
+                                                    <span class="tag is-primary is-large"><i class="fa fa-refresh fa-spin"></i> &nbsp; Cargando... </span>
+                                                </div>
+                                                <div *ngIf="!ctrl.cargando" style="overflow: scroll; overflow-x: hidden; height: 90%;">
+                                                    <label class="panel-block" *ngFor="let val of ctrl.tipos_turnos; let i=index">          
+                                                        <div class="field">
+                                                            <div class="b-checkbox">
+                                                                <input id="{{val.id}}" class="styled" type="checkbox" 
+                                                                [checked]="ctrl.izquierda.indexOf(val) > -1"
+                                                                (click)="ctrl.agregarMover('izquierda', ctrl.tipos_turnos, val)">
+                                                                <label for="{{val.id}}">
+                                                                    {{val.nombre}} 
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </nav>
+                                        </div>
+                                        <div class="column is-2" style="float:left" >
+                                            
+                                            <p class="control">
+                                                <button class="button is-default" type="button" style="width:100%" 
+                                                [ngClass]="{'is-success': ctrl.izquierda.length > 0}" 
+                                                [disabled]="ctrl.izquierda.length <= 0"
+                                                (click)="ctrl.iniciarMover('izquierda', ctrl.dato.controls.clues_turnos.controls, ctrl.tipos_turnos, true)">></button>
+                                            </p>
+                                            <p class="control">
+                                                <button class="button is-default" type="button" style="width:100%" 
+                                                [ngClass]="{'is-success': ctrl.derecha.length > 0}" 
+                                                [disabled]="ctrl.derecha.length <= 0"
+                                                (click)="ctrl.iniciarMover('derecha', ctrl.tipos_turnos, ctrl.dato.controls.clues_turnos.controls, false)"><</button>
+                                            </p>
+                                            
+                                        </div>                        
+                                        <div class="column is-5" style="float:left; height: 100%" >
+                                            <nav class="panel" formGroupName="clues_turnos" style="height: 100%">
+                                                <div class="panel-heading" style="height: 10%">
+                                                    <div class="field">
+                                                        <div class="b-checkbox is-info">
+                                                            <input id="MisServicios" class="styled" type="checkbox" 
+                                                            [checked]="ctrl.todosSeleccionados.derecha"
+                                                            (click)="ctrl.seleccionarTodosMover('derecha', ctrl.dato.controls.clues_turnos.controls)">
+                                                            <label for="MisServicios">
+                                                            Mis turnos
+                                                        </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="ctrl.cargando" class="has-text-centered" style="overflow: hidden; overflow-x: hidden; height: 90%;">
+                                                    <br>
+                                                    <br>
+                                                    <span class="tag is-primary is-large"><i class="fa fa-refresh fa-spin"></i> &nbsp; Cargando... </span>
+                                                </div>
+                                                <div *ngIf="!ctrl.cargando" style="overflow: scroll; overflow-x: hidden; height: 90%;">
+                                                    <label class="panel-block" *ngFor="let item of ctrl.dato.controls.clues_turnos.controls; let i2=index">          
+                                                        <div class="field" [formGroupName]="i2">
+                                                            <div class="b-checkbox">
+                                                                <input id="{{item.value.id}}" class="styled" type="checkbox"
+                                                                [checked]="ctrl.derecha.indexOf(item) > -1"
+                                                                (click)="ctrl.agregarMover('derecha', ctrl.dato.controls.clues_turnos.controls, item)">
+                                                                <label for="{{item.value.id}}">
+                                                                    {{item.value.nombre}} 
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                    <a (click)="ctrl.initMover(ctrl.dato.controls.clues_turnos.controls, ctrl.tipos_turnos);" id="initMover"></a>
+            </section>
+        </div>
+    </div>
+</div>          
+</form>
