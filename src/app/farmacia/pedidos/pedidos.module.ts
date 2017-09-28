@@ -13,6 +13,8 @@ import { IndexFarmaciaModule } from '../index-farmacia/index-farmacia.module';
 
 import { PedidosRoutingModule } from './pedidos-routing.module';
 
+import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
+
 import { PedidosComponent } from './pedidos.component';
 import { MenuLateralComponent } from './menu-lateral/menu-lateral.component';
 import { ListaComponent } from './lista/lista.component';
@@ -41,6 +43,7 @@ import { VerComponent as VerActaComponent } from './actas/ver/ver.component';
     BloquearPantallaModule,
     PaginacionModule,
     BuscarInsumosModule,
+    NguiDatetimePickerModule,
     PedidosRoutingModule,
     IndexFarmaciaModule
   ],

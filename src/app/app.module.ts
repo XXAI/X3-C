@@ -116,8 +116,6 @@ import { ArticulosModule } from './almacen-articulos/articulos/articulos.module'
 
 
 //import { CrudModule } from './crud/crud.module';
-
-
 export function highchartsFactory() {
   const hc = require('highcharts');
   const dd = require('highcharts/modules/exporting');
@@ -211,7 +209,7 @@ export function highchartsFactory() {
     WildcardRoutingModule, // Este siempre debe ir al final para que no haga conflicto con otras rutas
     
   ],
-  providers: [ Title, AuthGuard, PermisosGuard, AuthService,JwtHelper, JwtRequestService,{provide: HighchartsStatic, useFactory:highchartsFactory}, Uploader],
+  providers: [ Title, AuthGuard, PermisosGuard, AuthService,JwtHelper, JwtRequestService, Uploader,{provide: HighchartsStatic, useFactory:highchartsFactory} ], //
   bootstrap: [AppComponent]
 })
 export class AppModule { }
