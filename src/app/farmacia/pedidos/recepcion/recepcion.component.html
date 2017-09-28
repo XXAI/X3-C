@@ -189,7 +189,8 @@
             </p>
             <p class="control is-expanded has-icon has-icon-right">
               <label class="label">Caducidad (aaaa-mm-dd)</label>
-              <input class="input" type="text" placeholder="aaaa-mm-dd" [(ngModel)]="formStock.fecha_caducidad">
+              <!--input class="input" type="text" placeholder="aaaa-mm-dd" [(ngModel)]="formStock.fecha_caducidad"-->
+              <input class="input" [(ngModel)]='formStock.fecha_caducidad' ngui-datetime-picker [min-date]="minDate" date-only="true" placeholder="aaaa-mm-dd" />
               <span *ngIf="erroresFormularioStock.fecha_caducidad.error" class="icon is-small" >
                 <i class="fa fa-warning"></i>
               </span>
@@ -313,9 +314,10 @@
             <span class="help is-danger" *ngIf="formularioTieneError('recibe','required')">Este campo es requerido.</span>
           </p>
 
-          <label class="label">Fecha (aaaa-mm-dd):</label>
+          <label class="label">Fecha de la remisión (aaaa-mm-dd):</label>
           <p class="control is-expanded  has-icon has-icon-right">
-            <input type="text" class="input is-fullwidth" placeholder="aaaa-mm-dd" [ngClass]="{'is-danger': formularioTieneError('fecha_movimiento','required')}" formControlName="fecha_movimiento" />
+            <!--input type="text" class="input is-fullwidth" placeholder="aaaa-mm-dd" [ngClass]="{'is-danger': formularioTieneError('fecha_movimiento','required')}" formControlName="fecha_movimiento" /-->
+            <input class="input is-fullwidth" formControlName="fecha_movimiento" ngui-datetime-picker [max-date]="maxDate" date-only="true" [ngClass]="{'is-danger': formularioTieneError('fecha_movimiento','required')}" placeholder="aaaa-mm-dd" />
             <span class="icon is-small" *ngIf="formularioTieneError('fecha_movimiento','required')">
               <i class="fa fa-warning"></i>
             </span>

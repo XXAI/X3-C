@@ -8,8 +8,8 @@ import { JwtRequestService } from '../../jwt-request.service';
 export class TransferenciaAlmacenService {
 
   static readonly URL: string = "almacen/transferencias";
+  static readonly URL_SURTIR: string = "almacen/surtir-transferencia";
   static readonly URL_STATS: string = "almacen/transferencias-stats";
-  static readonly URL_PRESUPUESTO: string = "pedidos-presupuesto";
   static readonly URL_CANCELAR: string = "cancelar-pedido-transferir";
   static readonly URL_GENERAR_ALTERNO: string = "generar-pedido-alterno";
   
@@ -19,17 +19,6 @@ export class TransferenciaAlmacenService {
     return this.jwtRequest.get(TransferenciaAlmacenService.URL_STATS,null,null).map( (response: Response) => response.json());
   }
 
-  presupuesto(mes:number = 0,almacen:string = ''): Observable<any>{
-    let parametros:any = {};
-    if(mes){
-      parametros.mes = mes;
-    }
-    if(almacen){
-      parametros.almacen = almacen;
-    }
-    return this.jwtRequest.get(TransferenciaAlmacenService.URL_PRESUPUESTO,null,parametros).map( (response: Response) => response.json());
-  }
-
   buscar(status:string, term: string, pagina:number = 1, resultados_por_pagina:number =20, tipo:string = '' ): Observable<any>{
     return this.jwtRequest.get(TransferenciaAlmacenService.URL,null,{tipo:tipo, status: status, q: term, page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
   }
@@ -37,6 +26,10 @@ export class TransferenciaAlmacenService {
   lista(status:string, pagina:number = 1, resultados_por_pagina:number =20,tipo:string = '' ): Observable<any>{
     return this.jwtRequest.get(TransferenciaAlmacenService.URL,null,{tipo:tipo, status:status, page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
   }
+
+  surtir(id:any, pedido:any): Observable<any> {
+    return this.jwtRequest.put(TransferenciaAlmacenService.URL_SURTIR,id, pedido).map( (response: Response) => response.json().data) as Observable<any>;
+  } 
 
   ver(id:any): Observable<any>{
     return this.jwtRequest.get(TransferenciaAlmacenService.URL,id,{}).map( (response: Response) => {

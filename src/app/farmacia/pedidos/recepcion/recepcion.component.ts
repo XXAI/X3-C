@@ -39,6 +39,9 @@ export class RecepcionComponent implements OnInit {
   cargandoStock: boolean = false;
   capturarStock: boolean = false;
 
+  minDate = new Date();
+  maxDate = new Date();
+
   mostrarDialogo: boolean = false;
 
   erroresFormularioStock:any = {cantidad:{error:false}, lote:{error:false}, fecha_caducidad:{error:false}};
@@ -90,6 +93,10 @@ export class RecepcionComponent implements OnInit {
     /*if(this.marcas.length == 1){
       this.formStock.marca = this.marcas[0];
     }*/
+
+    let date = new Date();    
+    this.minDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    this.maxDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
     this.route.params.subscribe(params => {
       this.id = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number
@@ -392,6 +399,7 @@ export class RecepcionComponent implements OnInit {
       //if(confirm('Atención la recepción ya no podra editarse, Esta seguro que desea concluir el movimiento?')){
       if(validacion_palabra == 'CONCLUIR RECEPCION'){
         guardar_recepcion = this.formularioRecepcion.value;
+        guardar_recepcion.fecha_movimiento = guardar_recepcion.fecha_movimiento.toString().substr(0,10);
         guardar_recepcion.status = 'FI';
         guardar_recepcion.stock = [];
       }else{
@@ -540,6 +548,8 @@ export class RecepcionComponent implements OnInit {
       errores++;
     //}else if(this.itemSeleccionado.tiene_fecha_caducidad){
     }else if(this.formStock.fecha_caducidad){
+      this.formStock.fecha_caducidad = this.formStock.fecha_caducidad.toString().substr(0,10);
+      //console.log(fecha_caducidad);
       let fecha = this.formStock.fecha_caducidad.split('-');
       let fecha_invalida = false;
       if(fecha.length != 3){

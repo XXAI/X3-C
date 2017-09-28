@@ -27,64 +27,63 @@
                 </table>
             </div>
 
-    <a routerLink="/almacen/transferencia-almacen/nuevo" routerLinkActive="is-active" class="button is-primary is-inverted is-medium is-fullwidth"><span class="icon"  ><i class="fa fa-plus"></i></span> <span>Nueva Transferencia</span></a>
+    <!--a routerLink="/almacen/transferencia-almacen/nuevo" routerLinkActive="is-active" class="button is-primary is-inverted is-medium is-fullwidth"><span class="icon"  ><i class="fa fa-plus"></i></span> <span>Nueva Transferencia</span></a-->
     <br>
   <!--  <p class="menu-label">
       Pedidos
   </p>-->
   <ul class="menu-list">
-      <li>
-          <a routerLink="/almacen/transferencia-almacen/todos" #todos routerLinkActive="is-active">
-              <span class="icon"><i class="fa fa-file"></i></span> Transferencias
-              <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
-              <span *ngIf="stats.todos>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': todos.className == 'is-active', 'is-primary': todos.className != 'is-active' }">{{  stats.todos }}</span>
-          </a>
-      </li>
-      <li>
-          <a routerLink="/almacen/transferencia-almacen/borradores" #borradores routerLinkActive="is-active">
-              <span class="icon"><i class="fa fa-pencil-square-o"></i></span> Borradores
-              <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
-              <span *ngIf="stats.borradores>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': borradores.className == 'is-active', 'is-primary': borradores.className != 'is-active' }">{{  stats.borradores }}</span>
-          </a>
-      </li>
-
-      <li>
-        <a routerLink="/almacen/transferencia-almacen/solicitudes" #solicitudes routerLinkActive="is-active">
-            <span class="icon"><i class="fa fa-inbox"></i></span> Solicitudes
+    <li>
+        <a routerLink="/almacen/transferencia-almacen/por-surtir" #porSurtir routerLinkActive="is-active">
+            <span class="icon"><i class="fa fa-inbox"></i></span> Solicitudes por surtir
             <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
-            <span *ngIf="stats.solicitudes>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': solicitudes.className == 'is-active', 'is-primary': solicitudes.className != 'is-active' }">{{  stats.solicitudes }}</span>
+            <span *ngIf="stats.por_surtir>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': porSurtir.className == 'is-active', 'is-primary': porSurtir.className != 'is-active' }">{{  stats.por_surtir }}</span>
         </a>
     </li>
-      
-      <li>
-          <a routerLink="/almacen/transferencia-almacen/en-transito" #enTransito routerLinkActive="is-active">
-              <span class="icon"><i class="fa fa-clock-o"></i></span> En transito
-              <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
-              <span *ngIf="stats.en_transito>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': enTransito.className == 'is-active', 'is-primary': enTransito.className != 'is-active' }">{{  stats.en_transito }}</span>
-          </a>
-      </li>
-      <li>
-          <a routerLink="/almacen/transferencia-almacen/por-finalizar" #porFinalizar routerLinkActive="is-active">
-              <span class="icon"><i class="fa fa-check"></i></span> Por finalizar
-              <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
-              <span *ngIf="stats.por_finalizar>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': porFinalizar.className == 'is-active', 'is-primary': porFinalizar.className != 'is-active' }">{{  stats.por_finalizar }}</span>
-          </a>
-      </li>
-      <hr>
-      <li>
-          <a routerLink="/almacen/transferencia-almacen/finalizados" #finalizados routerLinkActive="is-active">
-              <span class="icon"><i class="fa fa-check-circle"></i></span> Finalizados
-              <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
-              <span *ngIf="stats.finalizados>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': finalizados.className == 'is-active', 'is-success': finalizados.className != 'is-active' }">{{  stats.finalizados }}</span>
-          </a>
-      </li>
-      <li>
-          <a routerLink="/almacen/transferencia-almacen/cancelados" #cancelados routerLinkActive="is-active">
-              <span class="icon"><i class="fa fa-times-circle"></i></span> Cancelados
-              <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
-              <span *ngIf="stats.cancelados>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': cancelados.className == 'is-active', 'is-danger': cancelados.className != 'is-active' }">{{  stats.cancelados }}</span>
-          </a>
-      </li>
+    <hr>
+    <li>
+        <a routerLink="/almacen/transferencia-almacen/todos" #todos routerLinkActive="is-active">
+            <span class="icon"><i class="fa fa-file"></i></span> Todos
+            <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+            <span *ngIf="stats.todos>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': todos.className == 'is-active', 'is-primary': todos.className != 'is-active' }">{{  stats.todos }}</span>
+        </a>
+    </li>
+    <li>
+        <a routerLink="/almacen/transferencia-almacen/borradores" #borradores routerLinkActive="is-active">
+            <span class="icon"><i class="fa fa-pencil-square-o"></i></span> Borradores
+            <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+            <span *ngIf="stats.borradores>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': borradores.className == 'is-active', 'is-primary': borradores.className != 'is-active' }">{{  stats.borradores }}</span>
+        </a>
+    </li>
+    <li>
+        <a routerLink="/almacen/transferencia-almacen/en-transito" #enTransito routerLinkActive="is-active">
+            <span class="icon"><i class="fa fa-clock-o"></i></span> En transito
+            <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+            <span *ngIf="stats.en_transito>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': enTransito.className == 'is-active', 'is-primary': enTransito.className != 'is-active' }">{{  stats.en_transito }}</span>
+        </a>
+    </li>
+    <li>
+        <a routerLink="/almacen/transferencia-almacen/por-finalizar" #porFinalizar routerLinkActive="is-active">
+            <span class="icon"><i class="fa fa-check"></i></span> Por finalizar
+            <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+            <span *ngIf="stats.por_finalizar>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': porFinalizar.className == 'is-active', 'is-primary': porFinalizar.className != 'is-active' }">{{  stats.por_finalizar }}</span>
+        </a>
+    </li>
+    <hr>
+    <li>
+        <a routerLink="/almacen/transferencia-almacen/finalizados" #finalizados routerLinkActive="is-active">
+            <span class="icon"><i class="fa fa-check-circle"></i></span> Finalizados
+            <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+            <span *ngIf="stats.finalizados>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': finalizados.className == 'is-active', 'is-success': finalizados.className != 'is-active' }">{{  stats.finalizados }}</span>
+        </a>
+    </li>
+    <li>
+        <a routerLink="/almacen/transferencia-almacen/cancelados" #cancelados routerLinkActive="is-active">
+            <span class="icon"><i class="fa fa-times-circle"></i></span> Cancelados
+            <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+            <span *ngIf="stats.cancelados>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': cancelados.className == 'is-active', 'is-danger': cancelados.className != 'is-active' }">{{  stats.cancelados }}</span>
+        </a>
+    </li>
   </ul>
 
 </aside>

@@ -6,34 +6,6 @@
       <menu-lateral></menu-lateral>
     </div>
     <div class="column" style="padding:2em;">
-        <!--div style="background: #FFF; overflow:hidden; border-radius:1em; width:100%;margin-bottom:1em;">
-            <table class="table" style="min-width:100%; font-size:0.8em; margin-bottom:0.2em;margin-top:0.2em;">
-                <thead>
-                    <tr>
-                        <th>Tipo de insumo</th>
-                        <th style="text-align:center">Transferido</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngIf="!cargandoPresupuesto">
-                        <th colspan="5" style="text-align:center"><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>&nbsp;Cargando Presupuesto...</th>
-                    </tr>
-                    <tr *ngIf="cargandoPresupuesto">
-                        <th>Causes y Material de Curación</th>
-                        <td style="text-align:center"><span class="tag is-primary">$ {{ (presupuesto.causes_modificado + presupuesto.material_curacion_modificado) | number:'1.2-2' }}</span></td>
-                    </tr>
-                    <tr *ngIf="cargandoPresupuesto">
-                        <th>No causes</th>
-                        <td style="text-align:center"><span class="tag is-primary">$ {{ presupuesto.no_causes_modificado | number:'1.2-2' }}</span></td>
-                    </tr>
-                    <tr *ngIf="cargandoPresupuesto">
-                        <th>Total</th>
-                        <td style="text-align:center"><span class="tag is-primary">$ {{ ( presupuesto.no_causes_modificado + presupuesto.causes_modificado + presupuesto.material_curacion_modificado) | number:'1.2-2' }}</span></td>
-                    </tr>
-                </tbody>
-            </table>
-         </div-->
-
         <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
             <section class="hero" [ngClass] = " {'is-dark': busquedaActivada, 'is-primary': !busquedaActivada } " >
                 
@@ -101,13 +73,14 @@
                             $ {{ (item.total_monto_recibido || 0) | number:'1.2-2' }} / $ {{ item.total_monto_solicitado | number:'1.2-2' }} [{{(item.total_monto_recibido/item.total_monto_solicitado)*100 | number:'1.0-2'}}%]
                         </a></td>
                         <td style="vertical-align: middle;" class="has-text-centered">
-                            <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                            <a *ngIf="!item.cargando && item.status == 'SD'" routerLink="/almacen/transferencia-almacen/surtir/{{item.id}}" title="Surtir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
                             <a *ngIf="!item.cargando && item.status == 'BR'" class="status-rojo" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
-                            <a *ngIf="!item.cargando && item.status == 'PS' && item.expira_en_dias >= 0" routerLink="/almacen/pedidos/recepcion/{{item.id}}" title="Recibir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
+
+                            <!--span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
                             <span *ngIf="!item.cargando && item.status == 'PS' && item.expira_en_dias < 0" class="tag is-danger" title="Expirado"><span class="icon"><i class="fa fa-exclamation"></i></span></span>
                             <span *ngIf="!item.cargando && item.status == 'FI'" class="estatus-verde" title="Finalizado"><span class="icon"><i class="fa fa-check-circle"></i></span></span>
                             <span *ngIf="!item.cargando && item.status == 'EX-CA'" class="estatus-rojo" title="Expirado - Cancelado"><span class="icon"><i class="fa fa-times-circle"></i></span></span>
-                            <span *ngIf="!item.cargando && item.status == 'EX'" class="estatus-amarillo" title="Expirado"><span class="icon"><i class="fa fa-exclamation-circle"></i></span></span>
+                            <span *ngIf="!item.cargando && item.status == 'EX'" class="estatus-amarillo" title="Expirado"><span class="icon"><i class="fa fa-exclamation-circle"></i></span></span-->
                         </td>
                     </tr>
                     <tr *ngIf="pedidos.length == 0">
@@ -134,13 +107,8 @@
                             $ {{ (item.total_monto_recibido || 0) | number:'1.2-2' }} / $ {{ item.total_monto_solicitado | number:'1.2-2' }} [{{(item.total_monto_recibido/item.total_monto_solicitado)*100 | number:'1.0-2'}}%]
                         </a></td>
                         <td style="vertical-align: middle;" class="has-text-centered">
-                            <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                            <a *ngIf="!item.cargando && item.status == 'SD'" routerLink="/almacen/transferencia-almacen/surtir/{{item.id}}" title="Surtir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
                             <a *ngIf="!item.cargando && item.status == 'BR'" class="status-rojo" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
-                            <a *ngIf="!item.cargando && item.status == 'PS' && item.expira_en_dias >= 0" routerLink="/almacen/pedidos/recepcion/{{item.id}}" title="Recibir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
-                            <span *ngIf="!item.cargando && item.status == 'PS' && item.expira_en_dias < 0" class="tag is-danger" title="Expirado"><span class="icon"><i class="fa fa-exclamation"></i></span></span>
-                            <span *ngIf="!item.cargando && item.status == 'FI'" class="estatus-verde" title="Finalizado"><span class="icon"><i class="fa fa-check-circle"></i></span></span>
-                            <span *ngIf="!item.cargando && item.status == 'EX-CA'" class="estatus-rojo" title="Expirado - Cancelado"><span class="icon"><i class="fa fa-times-circle"></i></span></span>
-                            <span *ngIf="!item.cargando && item.status == 'EX'" class="estatus-amarillo" title="Expirado"><span class="icon"><i class="fa fa-exclamation-circle"></i></span></span>
                         </td>
                     </tr>
 

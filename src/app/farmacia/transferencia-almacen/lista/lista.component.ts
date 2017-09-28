@@ -40,7 +40,6 @@ export class ListaComponent implements OnInit {
   titulo: string = "Pedidos";
   icono = "fa-file";
   pedidos: any[] = [];
-  presupuesto:any = false;
   private paginaActual = 1;
   resultadosPorPagina = 10;
   total = 0;
@@ -68,7 +67,7 @@ export class ListaComponent implements OnInit {
     switch(this.route.snapshot.url[0].path){
       //case 'todos': this.status = "TODO"; this.titulo = "Todos"; this.icono = "fa-file"; break;
       case 'borradores': this.status = "BR"; this.titulo = "Borradores"; this.icono = "fa-pencil-square-o"; break;
-      case 'solicitudes': this.status = "SD"; this.titulo = "Solicitudes"; this.icono = "fa-inbox"; break;
+      case 'por-surtir': this.status = "SD"; this.titulo = "Solicitudes por surtir"; this.icono = "fa-inbox"; break;
       case 'en-transito': this.status = "ET"; this.titulo = "En transito"; this.icono = "fa-clock-o"; break;
       case 'por-finalizar': this.status = "PFI"; this.titulo = "Por finalizar"; this.icono = "fa-check"; break;
       case 'finalizados': this.status = "FI"; this.titulo = "Finalizados"; this.icono = "fa-check-circle"; break;
@@ -77,13 +76,10 @@ export class ListaComponent implements OnInit {
     }
     console.log('inicializar lista de pedidos');
     this.title.setTitle("Pedidos");
-
-    this.cargarPresupuestoAnual();
-
+    
     this.cambiarEntornoSuscription = this.cambiarEntornoService.entornoCambiado$.subscribe(evento => {
       console.log('subscripcion en lista de pedidos');
       this.listar(this.paginaActual);
-      this.cargarPresupuestoAnual();
     });
 
     this.listar(1);
@@ -155,40 +151,13 @@ export class ListaComponent implements OnInit {
     );
   }
 
-  cargarPresupuestoAnual(){
-    this.transferenciaAlmacenService.presupuesto().subscribe(
-      response => {
-        this.cargando = false;
-        //this.presupuesto = response.data;
-        this.presupuesto = {};
-        
-        this.presupuesto.causes_modificado = +response.data.causes_modificado;
-        this.presupuesto.causes_comprometido = +response.data.causes_comprometido;
-        this.presupuesto.causes_devengado = +response.data.causes_devengado;
-        this.presupuesto.causes_disponible = +response.data.causes_disponible;
-        
-        this.presupuesto.material_curacion_modificado = +response.data.material_curacion_modificado;
-        this.presupuesto.material_curacion_comprometido = +response.data.material_curacion_comprometido;
-        this.presupuesto.material_curacion_devengado = +response.data.material_curacion_devengado;
-        this.presupuesto.material_curacion_disponible = +response.data.material_curacion_disponible;
-        
-        this.presupuesto.no_causes_modificado = +response.data.no_causes_modificado;
-        this.presupuesto.no_causes_comprometido = +response.data.no_causes_comprometido;
-        this.presupuesto.no_causes_devengado = +response.data.no_causes_devengado;
-        this.presupuesto.no_causes_disponible = +response.data.no_causes_disponible;
-      },
-      error => {
-        this.cargando = false;
-        console.log(error);
-      }
-    );
-  }
-
   obtenerDireccion(id:string, status:string): string{
     if(status == 'BR'){
-      return '/almacen/pedidos/editar/'+id;
+      return '/almacen/transferencia-almacen/editar/'+id;
+    }else if(status == 'SD'){
+      return '/almacen/transferencia-almacen/surtir/'+id;
     }else{
-      return '/almacen/pedidos/ver/'+id;
+      return '/almacen/transferencia-almacen/ver/'+id;
     }
   }
   
