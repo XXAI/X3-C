@@ -42,7 +42,7 @@ export class IndexInventarioComponent implements OnInit {
         titulo: 'Ajuste menos de Inventario', url: '/inventario/ajuste-menos-inventario'
       },
       {
-        permiso: 'cE81erieaVjvmhcb9GCYI4doqYGtTcj1', icono: 'assets/icono-movimientos.svg',
+        permiso: '--cE81erieaVjvmhcb9GCYI4doqYGtTcj1', icono: 'assets/icono-movimientos.svg',
         titulo: 'Movimientos generales', url: '/inventario/movimientos-generales'
       },
 

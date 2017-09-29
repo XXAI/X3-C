@@ -18,7 +18,7 @@
                 <div style="padding: 1em;">
                 <form name="form" novalidate [formGroup]="pedido.datos">
                     <label class="label">Pedido para:</label>
-                    <p class="control">
+                    <p *ngIf="almacenDelUsuario.tipo_almacen == 'ALMPAL'" class="control">
                         <span class="select is-fullwidth">
                             <select name="almacen_solicitante" formControlName="almacen_solicitante" [ngClass]="{'is-warning': almacenes?.length == 0 }" (change)="cambioAlmacen()"> 
                                 <option *ngFor="let item of almacenes" value="{{item.id}}" [disabled]="deshabilitarAlmacen(item)">{{ item.nombre }}</option>
@@ -26,8 +26,21 @@
                         </span>
                         <span class="help is-danger" *ngIf="pedido.tieneError('almacen_solicitante','required')">Debe elegir el almacen solicitante.</span>
                     </p>
+                    <p *ngIf="almacenDelUsuario.tipo_almacen != 'ALMPAL'" class="is-6 is-info">
+                        {{almacenDelUsuario.nombre}}
+                    </p>
                     <p *ngIf="es_almacen_subrogado" class="subtitle is-6 is-info">
                         Al concluir el pedido, los insumos capturados serán  asignados al inventario de la farmacia subrogada.
+                    </p>
+
+                    <label *ngIf="almacenDelUsuario.tipo_almacen != 'ALMPAL'"  class="label">Solicitar a:</label>
+                    <p *ngIf="almacenDelUsuario.tipo_almacen != 'ALMPAL'"  class="control">
+                        <span class="select is-fullwidth">
+                            <select name="almacen_proveedor" formControlName="almacen_proveedor" [ngClass]="{'is-warning': almacenes?.length == 0 }"> 
+                                <option *ngFor="let item of almacenes" value="{{item.id}}">{{ item.nombre }}</option>
+                            </select>
+                        </span>
+                        <span class="help is-danger" *ngIf="pedido.tieneError('almacen_proveedor','required')">Debe elegir el almacen proveedor.</span>
                     </p>
 
                     <label class="label">Nombre del Pedido:</label>
@@ -58,17 +71,17 @@
                     </div>
                 </form>
 
-                <label *ngIf="pedido.tipo_pedido != 'PI' && esEditar" class="label">Datos del Proveedor:</label>
-                <div *ngIf="pedido.tipo_pedido != 'PI' && esEditar" class="level-item">
-                    <div *ngIf="esEditar" >
-                    <p class="subtitle is-5">
-                        {{proveedor.nombre}}<br>
-                        <small>
-                        {{proveedor.contacto}}<br>
-                        {{proveedor.email}}<br>
-                        Cel: {{proveedor.celular}}
-                        </small>
-                    </p>
+                <label *ngIf="pedido.tipo_pedido != 'PEA' && esEditar  && proveedor" class="label">Datos del Proveedor:</label>
+                <div *ngIf="pedido.tipo_pedido != 'PEA' && esEditar" class="level-item">
+                    <div *ngIf="esEditar && proveedor" >
+                        <p class="subtitle is-5">
+                            {{proveedor.nombre}}<br>
+                            <small>
+                            {{proveedor.contacto}}<br>
+                            {{proveedor.email}}<br>
+                            Cel: {{proveedor.celular}}
+                            </small>
+                        </p>
                     </div>
                 </div>
                 <hr>
@@ -97,12 +110,26 @@
             <br>
         </div>
         
-        <div class="tile is-child  notification is-white">
+        <div class="tile is-child">
+            <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
+                <table class="table is-unselectable" *ngIf="!cargando" style="font-size: 0.8em;">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Monto Solicitado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Causes</td><td>$ {{pedido.totalMontoCauses.toFixed(2) | number: '1.2-2'}}</td></tr>
+                        <tr><td>No Causes</td><td>$ {{pedido.totalMontoNoCauses.toFixed(2) | number: '1.2-2'}}</td></tr>
+                        <tr><td>Material de Curación</td><td>$ {{pedido.totalMontoMaterialCuracion.toFixed(2) | number: '1.2-2'}}</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
       </div>
 
       <div class="tile is-parent is-vertical">
-        <div class="tile is-child is-12" >
+        <div *ngIf="almacenDelUsuario.tipo_almacen == 'ALMPAL'" class="tile is-child is-12" >
             <div class="tile is-parent" style="padding:0px;">
                 <article class="tile is-child notification is-info has-text-centered" style="padding:0.5rem 0.5rem 0.5rem 0.5rem">
                     <div class="content" *ngIf="!cargandoPresupuestos">
@@ -148,7 +175,7 @@
                 <span *ngIf="pedido.filtro.activo">
                     <span class="icon"><i class="fa fa-search"></i></span> Resultados: {{ pedido.filtro.lista.length }}
                 </span>
-                <a class="button is-primary  is-pulled-right" *ngIf="almacenSeleccionado.id" [ngClass]="{ 'is-inverted': pedido.filtro.activo }" style="margin-top:-0.25em;" title="Ctrl + espacio" (click)="toggleModalInsumos(); ">
+                <a class="button is-primary  is-pulled-right" *ngIf="almacenSeleccionado.id || almacenDelUsuario.tipo_almacen != 'ALMPAL'" [ngClass]="{ 'is-inverted': pedido.filtro.activo }" style="margin-top:-0.25em;" title="Ctrl + espacio" (click)="toggleModalInsumos(); ">
                     <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar Clave</span>
                 </a>
             </div> 
@@ -169,7 +196,7 @@
 
             <table class="table is-unselectable" *ngIf="!cargando && !guardando" style="font-size: 0.8em;">
                 <thead>
-                    <tr  >
+                    <tr>
                         <th style="width:41px;vertical-align: middle;" class="has-text-centered" >Lote</th>
                         <th class="is-hidden-mobile" style="width:118px;">
                         <p class="control is-expanded" >

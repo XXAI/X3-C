@@ -32,14 +32,14 @@ export class HubComponent implements OnInit {
         'cE81erieaVjvmhcb9GCYI4doqYGtTcj1', // Ajuste menos
         '0oADIo1ltfAl4VMDVbyWgLR3rAhYGjlY', // Ajuste mas
         '7KbTARF2kpnO4Lfqv8hmYP8QGMcgJBwU', // Inicialización Inventario
-        'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
+        '--z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
       ]
     },
 
     { 
       title:'Almacén general', routerLink:'/almacen-articulos', icono:'assets/hub-almacen-articulos.svg',
       permisos: [
-        'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
+        '--z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
         'cuSmlV9lvABXzfjtLbzEe0VbI47Dh6Cv', // Ver catálogos
       ]
     },
@@ -58,7 +58,7 @@ export class HubComponent implements OnInit {
     {
       title: 'Farmacia Subrrogada', routerLink: '/farmacia-subrrogada', icono: 'assets/hub-farmacia-sub.svg',
       permisos: [
-        'MrL06vIO12iNhchP14h57Puvg71eUmYb', // Ver FS proveedor pruebas
+        '--MrL06vIO12iNhchP14h57Puvg71eUmYb', // Ver FS proveedor pruebas
         'RZsvMjtPtpLWC8afsAFZsNnD9iXtiZC3', // Ver sincronizar recetas
       ]
     },

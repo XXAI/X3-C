@@ -45,6 +45,8 @@ export class FormularioComponent implements OnInit {
   cargandoInsumos: boolean = false;
   cargandoPresupuestos: boolean = false;
 
+  almacenDelUsuario:any = {};
+
   erroresEnInsumos:any = {lista:{}, errores:0};
 
   esPedidoJurisdiccional: boolean = false;
@@ -130,6 +132,9 @@ export class FormularioComponent implements OnInit {
     // ############################################
     
     
+    //Harima: actualizacion para pedidos entre almacenes
+    this.almacenDelUsuario = usuario.almacen_activo;
+
     this.title.setTitle('Formulario pedido');
 
     // Inicializamos el objeto para los reportes con web Webworkers
@@ -186,6 +191,11 @@ export class FormularioComponent implements OnInit {
 
             let fecha_pedido = pedido.fecha.split('-');
             let mes_pedido = parseInt(fecha_pedido[1]);
+
+            if(mes_pedido != 9){
+              //Harima: Temporal para pedidos de septiembre
+              this.fechasValidas.push({fecha:'2017-09-29', descripcion: 'Septiembre 2017'});
+            }
 
             if(fecha_pedido[0] != now.getFullYear()){
               this.fechasValidas.push({fecha:fecha_pedido[0] + "-" + fecha_pedido[1] + "-" + fecha_pedido[2], descripcion: this.meses[mes_pedido] + " " + fecha_pedido[0]}); //fecha diferente año
@@ -311,6 +321,9 @@ export class FormularioComponent implements OnInit {
           }
         );
       }else{
+        //Harima: Temporal para pedidos de septiembre
+        this.fechasValidas.push({fecha:'2017-09-29', descripcion: 'Septiembre 2017'});
+
         //Harima:calcular fechas validas
         let now = new Date();
         let dia = now.getDate();
@@ -435,15 +448,16 @@ export class FormularioComponent implements OnInit {
     }
     // ############################################
 
-    this.pedido.indexar();
+    this.pedido.indexar();    
 
     if(this.pedido.paginacion.lista.length == this.pedido.paginacion.resultadosPorPagina
         && this.pedido.paginacion.paginaActual == auxPaginasTotales
         && !this.pedido.filtro.activo){
           this.pedido.listar(this.pedido.paginacion.paginaActual + 1);
-      } else {
-        this.pedido.listar(this.pedido.paginacion.paginaActual);
-      }
+    } else {
+      this.pedido.listar(this.pedido.paginacion.paginaActual);
+    }
+    console.log(this.pedido);
   }
   
   modificarItem(item:any = {}){
@@ -462,7 +476,7 @@ export class FormularioComponent implements OnInit {
       this.erroresEnInsumos.errores += 1;
     }
 
-    console.log(this.erroresEnInsumos);
+    //console.log(this.erroresEnInsumos);
   }
 
   buscar(e: KeyboardEvent, input:HTMLInputElement, inputAnterior: HTMLInputElement,  parametros:any[]){
@@ -622,9 +636,15 @@ export class FormularioComponent implements OnInit {
     for(var i in this.pedidos){
       guardar_pedidos.push(this.pedidos[i].obtenerDatosGuardar());
     }*/
+    if(this.almacenDelUsuario.tipo_almacen != 'ALMPAL'){
+      this.pedido.datos.controls['almacen_solicitante'].setValue(this.almacenDelUsuario.id);
+    }else{
+      this.pedido.datos.controls['almacen_proveedor'].setValue('SIN ALMACEN PROVEEDOR');
+    }
 
     if(this.pedido.datos.invalid){
       this.pedido.datos.get('almacen_solicitante').markAsTouched();
+      this.pedido.datos.get('almacen_proveedor').markAsTouched();
       this.pedido.datos.get('descripcion').markAsTouched();
       this.pedido.datos.get('fecha').markAsTouched();
       this.guardando = false;
@@ -648,17 +668,20 @@ export class FormularioComponent implements OnInit {
     if(finalizar){
       guardar_pedido.datos.status = 'CONCLUIR';
 
-      let causes_material_disponible = this.totalMontoComprometidoCausesMaterial + (this.presupuesto.causes_disponible - +this.pedido.totalMontoCauses.toFixed(2)) + (this.presupuesto.material_curacion_disponible - +this.pedido.totalMontoMaterialCuracion.toFixed(2));
-      let no_causes_disponible = this.totalMontoComprometidoNoCauses + this.presupuesto.no_causes_disponible - +this.pedido.totalMontoNoCauses.toFixed(2);
-
-      //if((this.presupuesto.causes_disponible - +this.pedido.totalMontoCauses.toFixed(2)) < 0 || (this.presupuesto.no_causes_disponible - +this.pedido.totalMontoNoCauses.toFixed(2)) < 0 || (this.presupuesto.material_curacion_disponible - +this.pedido.totalMontoMaterialCuracion.toFixed(2)) < 0){
-      if( causes_material_disponible < 0 || no_causes_disponible < 0){
-        this.guardando = false;
-        this.mensajeError = new Mensaje(true);
-        this.mensajeError.texto = 'Presupuesto insuficiente';
-        this.mensajeError.mostrar = true;
-        return false;
+      if(this.almacenDelUsuario.tipo_almacen == 'ALMPAL'){
+        let causes_material_disponible = this.totalMontoComprometidoCausesMaterial + (this.presupuesto.causes_disponible - +this.pedido.totalMontoCauses.toFixed(2)) + (this.presupuesto.material_curacion_disponible - +this.pedido.totalMontoMaterialCuracion.toFixed(2));
+        let no_causes_disponible = this.totalMontoComprometidoNoCauses + this.presupuesto.no_causes_disponible - +this.pedido.totalMontoNoCauses.toFixed(2);
+  
+        //if((this.presupuesto.causes_disponible - +this.pedido.totalMontoCauses.toFixed(2)) < 0 || (this.presupuesto.no_causes_disponible - +this.pedido.totalMontoNoCauses.toFixed(2)) < 0 || (this.presupuesto.material_curacion_disponible - +this.pedido.totalMontoMaterialCuracion.toFixed(2)) < 0){
+        if( causes_material_disponible < 0 || no_causes_disponible < 0){
+          this.guardando = false;
+          this.mensajeError = new Mensaje(true);
+          this.mensajeError.texto = 'Presupuesto insuficiente';
+          this.mensajeError.mostrar = true;
+          return false;
+        }
       }
+      
       /*for(var i in guardar_pedidos){
         guardar_pedidos[i].datos.status = 'ES';
       }*/
@@ -730,7 +753,7 @@ export class FormularioComponent implements OnInit {
     }else{
       this.pedidosService.crear(guardar_pedido).subscribe(
         pedido => {
-          this.guardando = false;
+          //this.guardando = false;
           //console.log('Pedido creado');
           //console.log(pedido);
           this.router.navigate(['/almacen/pedidos/editar/'+pedido.id]);
