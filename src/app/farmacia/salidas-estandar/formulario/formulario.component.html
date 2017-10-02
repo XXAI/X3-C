@@ -33,7 +33,7 @@
 
                                 <input class="input" [value]="fecha_actual" [(ngModel)]='fecha_movimiento' formControlName="fecha_movimiento" ngui-datetime-picker
                                     [min-date]="MinDate" [max-date]="MaxDate" date-only="true" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('fecha_movimiento').hasError('required') && ctrl.dato.get('fecha_movimiento').touched}"
-                                    placeholder="YYYY-MM-DD" />
+                                    placeholder="YYYY-MM-DD" readonly/>
 
                                 <span class="icon is-small" *ngIf="ctrl.dato.get('fecha_movimiento').hasError('required') && ctrl.dato.get('fecha_movimiento').touched">
                                     <i class="fa fa-warning"></i>
