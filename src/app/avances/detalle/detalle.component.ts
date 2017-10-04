@@ -109,6 +109,7 @@ export class DetalleComponent implements OnInit {
 
     this.usuario_form = this.fb.group({
            usuario_id: ['', [Validators.required]],
+           ver: ['', []],
            agregar: ['', []],
            editar: ['', []],
            eliminar: ['', []],
@@ -218,16 +219,21 @@ export class DetalleComponent implements OnInit {
 
   eliminar_usuario_avance(id:string): void
   {
-    if(confirm("¿Realmente Desea eliminar"))
+    if(confirm("¿Realmente Desea eliminar este avance?"))
     {
      this.cargando = true;
     this.avanceService.elimina_usuarios(id).subscribe(
         resultado => {
           this.cargar_usuarios();
+          this.mensajeExito = new Mensaje(true);
+          this.mensajeExito.texto = "Se ha eliminado correctamente el tema";
+          this.mensajeExito.mostrar = true;      
         },
         error => {
           this.cargando = false;
-          this.mensajeError.mostrar = true;
+           this.mensajeError = new Mensaje(true);
+           this.mensajeError.texto = "No especificado.";
+           this.mensajeError.mostrar = true;      
           this.ultimaPeticion = this.listar;
           try {
             let e = error.json();
@@ -254,7 +260,7 @@ export class DetalleComponent implements OnInit {
       this.usuario_form.patchValue({avance_id: this.id_avance});
       this.avanceService.crear_usuario(this.usuario_form.value).subscribe(
           avance => {
-            
+            this.cargar_usuarios();
             this.mensajeExito = new Mensaje(true);
             this.mensajeExito.texto = "Se han guardado los cambios.";
             this.mensajeExito.mostrar = true;

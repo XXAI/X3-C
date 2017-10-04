@@ -130,7 +130,7 @@
                         <td style="vertical-align: middle; cursor:pointer" (click)='view(item.id)'>
                             <div class="tags has-addons">
                               <span class="tag">{{ item.nombre }}.{{ item.extension }}</span>
-                              <span class="tag is-primary"><i class="fa fa-file-pdf-o"></i></span>
+                              <span class="tag is-primary"><i class="fa fa-file-pdf-o"> &nbsp; <b>{{ (item.peso / 1048576) | number : '1.2-2' }} Mb</b></i></span>
                             </div>
                             <br>
                             <a>{{ item.comentario }}</a>
@@ -342,7 +342,11 @@
                     <span class="help is-danger" *ngIf="usuario_form.get('usuario_id').hasError('required') && usuario_form.get('usuario_id').touched">Este campo es requerido.</span>
                   </div>  
               </div>
-              <div class="column">
+              <div class="column is-half">
+                <label class="checkbox">
+                    <input type="checkbox"  formControlName="ver">
+                    Ver
+                </label>
                 <label class="checkbox">
                     <input type="checkbox"  formControlName="agregar">
                     Agregar
@@ -356,7 +360,7 @@
                     Eliminar
                 </label>
               </div>
-              <div class="column">
+              <div class="column is-2">
                 <button type="submit" class="button is-primary" name="enviar" [ngClass]="{'is-loading': cargando}"  [disabled]="usuario_form.invalid">Guardar</button>
               </div>
              
@@ -366,6 +370,7 @@
                 <thead>
                     <tr>
                     <th>Usuario</th>
+                    <th><i class="fa fa-eye"></i></th>
                     <th><i class="fa fa-pencil"></i></th>
                     <th><i class="fa fa-edit"></i></th>
                     <th><i class="fa fa-close"></i></th>
@@ -376,6 +381,8 @@
                 <tbody  >
                     <tr *ngFor="let item of usuarios_privilegios; let i=index">
                         <td>{{ item.usuario.nombre }} {{ item.usuario.apellidos }} - {{ item.usuario_id }}</td>
+                        <td  *ngIf="item.ver == 1"><i class="fa fa-check-circle"></i></td>
+                        <td  *ngIf="item.ver == 0"><i class="fa fa-close"></i></td>
                         <td  *ngIf="item.agregar == 1"><i class="fa fa-check-circle"></i></td>
                         <td  *ngIf="item.agregar == 0"><i class="fa fa-close"></i></td>
                         <td  *ngIf="item.editar == 1"><i class="fa fa-check-circle"></i></td>
