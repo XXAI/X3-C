@@ -93,6 +93,8 @@ import { AvancesModule } from './avances/avances.module';
 import { EgresoModule } from './admision/egreso/egreso.module';
 import { PacienteModule } from './admision/paciente/paciente.module';
 
+// # Hub Receta Electronica
+import { IndexRecetaModule          } from './receta-electronica/index-receta/index-receta.module';
 
 //catalogos
 import { UnidadesMedidaModule } from './almacen-articulos/catalogos/unidades-medida/unidades-medida.module';
@@ -175,6 +177,7 @@ export function highchartsFactory() {
     DashboardSalidasModule,
     ClavesBasicasModule,
     IndexInventarioModule,
+    IndexRecetaModule,
     IndexAlmacenArticulosModule,
     IndexCatalogoModule,
     ViasAdministracionModule,    

@@ -35,6 +35,14 @@ export class HubComponent implements OnInit {
         '--z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
       ]
     },
+    {
+      title: 'Receta Electrónica', routerLink: '/receta-electronica', icono: 'assets/icono-recetas.svg',
+      permisos: [
+        'rEAgr2wrYx2AKLhIS7uLh7QIPJkmv4Jo', // Crear Recetas electronicas
+        'qbmHSezvoY8IROFk3CJ7XBuLzp9rRoo6', // Ver Recetas Electronicas
+        '7pFIrhuM3trSzo9nnIgeU7cMUArsukS8', // Dispensar Recetas Electronicas
+      ]
+    },
 
     { 
       title:'Almacén general', routerLink:'/almacen-articulos', icono:'assets/hub-almacen-articulos.svg',
