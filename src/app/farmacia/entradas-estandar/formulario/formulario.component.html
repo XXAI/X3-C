@@ -35,7 +35,7 @@
                                     [min-date]="MinDate" [max-date]="MaxDate" date-only="true" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('fecha_movimiento').hasError('required') && ctrl.dato.get('fecha_movimiento').touched}"
                                     placeholder="YYYY-MM-DD" readonly/>
 
-                                <span class="icon is-small" *ngIf="ctrl.dato.get('fecha_movimiento').hasError('required') && ctrl.dato.get('fecha_movimiento').touched">
+                                <span class="icon is-small" *ngIf="ctrl.dato.get('fecha_movimiento').hasError('required')">
                                     <i class="fa fa-warning"></i>
                                 </span>
                                 <span class="help is-danger" *ngIf="ctrl.dato.get('fecha_movimiento').hasError('required') && ctrl.dato.get('fecha_movimiento').touched">Este campo es requerido.</span>
@@ -88,12 +88,12 @@
                             <div class="field">
                                 <label class="label">Persona que entrega:</label>
                                 <p class="control is-expanded  has-icon has-icon-right">
-                                    <input class="input" type="text" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required') && ctrl.dato.get('movimiento_metadato').get('persona_recibe').touched}"
+                                    <input class="input" type="text" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required')}"
                                         placeholder="Persona que entrega" formControlName="persona_recibe">
-                                    <span class="icon is-small" *ngIf="ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required') && ctrl.dato.get('movimiento_metadato').get('persona_recibe').touched">
+                                    <span class="icon is-small" *ngIf="ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required')">
                                         <i class="fa fa-warning"></i>
                                     </span>
-                                    <span class="help is-danger" *ngIf="ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required') && ctrl.dato.get('movimiento_metadato').get('persona_recibe').touched">Este campo es requerido.</span>
+                                    <span class="help is-danger" *ngIf="ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required')">Este campo es requerido.</span>
                                 </p>
                             </div>
 
@@ -217,11 +217,12 @@
                                         <div class="columns is-flex-desktop" style="width: 100%">
                                             <div class="column is-3">
                                                 <p class="control is-expanded">
-                                                <label class="label">Lote:</label>
+                                                    <label class="label">Lote:</label>
                                                     <input type="text" class="input" formControlName="lote" 
-                                                    [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.lote.hasError('required') && 
-                                                    ctrl.dato.controls.insumos.controls[i].controls.lote.touched}">
+                                                    [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.lote.hasError('required')}">
                                                 </p>
+                                                <span class="help is-danger" 
+                                                *ngIf="ctrl.dato.controls.insumos.controls[i].controls.lote.hasError('required')">Este campo es requerido.</span>
                                             </div>                       
                                             <div class="column is-4">
                                                 <p class="control is-expanded">
@@ -233,10 +234,13 @@
                                                             [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.hasError('required') 
                                                             && ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.touched}">
 -->
-                                                        <input class="input" formControlName="fecha_caducidad" (blur)="validar_fecha(ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.value, i)"
-                                                            min="MinDateCaducidad" date-only="true" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.touched}"
-                                                            placeholder="YYYY-MM-DD" [textMask]="{mask:mask, keepCharPositions: true, pipe: autoCorrectedDatePipe}"/>
+                                                    <input class="input" formControlName="fecha_caducidad" (blur)="validar_fecha(ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.value, i)"
+                                                        min="MinDateCaducidad" date-only="true" 
+                                                        [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.hasError('required')}"
+                                                        placeholder="YYYY-MM-DD" [textMask]="{mask:mask, keepCharPositions: true, pipe: autoCorrectedDatePipe}"/>
                                                 </p>
+                                                <span class="help is-danger" 
+                                                *ngIf="ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.hasError('required')">Este campo es requerido.</span>
                                             </div>                          
                                             <div class="column is-3">
                                                 <p class="control is-expanded">
@@ -248,8 +252,10 @@
                                                 <p class="control is-expanded">
                                                     <label class="label">Cantidad:</label>
                                                     <input type="number" class="input" formControlName="cantidad" (keypress)="quitar_punto($event)"
-                                                    [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad.touched}">
+                                                    [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad.hasError('required')}">
                                                 </p>
+                                                <span class="help is-danger" 
+                                                *ngIf="ctrl.dato.controls.insumos.controls[i].controls.cantidad.hasError('required')">Este campo es requerido.</span>
                                             </div>
                                         </div>
                                     </div>

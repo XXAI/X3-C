@@ -10,7 +10,7 @@ import { EntradasEstandarRoutingModule } from './entradas-estandar-routing.modul
 import { PaginacionModule } from '../../paginacion/paginacion.module';
 
 import { PipesModule }             from '../../pipes/pipes.module';
-import { ListaComponent } from './lista/lista.component';
+import { ListaEntradasComponent } from './lista/lista.component';
 import { FormularioComponent } from './formulario/formulario.component';
 
 import { AuthService } from '../../auth.service';
@@ -44,7 +44,7 @@ import { MomentModule   } from 'angular2-moment';
     MomentModule
   ],
   declarations: [
-    ListaComponent,
+    ListaEntradasComponent,
     FormularioComponent
   ],
   providers: [ AuthService, CrudService ]

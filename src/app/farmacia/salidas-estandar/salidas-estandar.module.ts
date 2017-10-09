@@ -10,16 +10,16 @@ import { SalidasEstandarRoutingModule } from './salidas-estandar-routing.module'
 import { PaginacionModule } from '../../paginacion/paginacion.module';
 
 import { PipesModule }             from '../../pipes/pipes.module';
-import { ListaComponent } from './lista/lista.component';
+import { ListaComponent } from '../salidas-estandar/lista/lista.component';
 import { FormularioComponent } from './formulario/formulario.component';
 
 import { AuthService } from '../../auth.service';
 
 import { IndexFarmaciaModule } from '../index-farmacia/index-farmacia.module';
-//crud
+// crud
 import { CrudService } from '../../crud/crud.service';
 import { CrudModule } from '../../crud/crud.module';
-//fin crud
+// fin crud
 import { NguiAutoCompleteModule } from '@ngui/auto-complete';
 import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
 import { TextMaskModule } from 'angular2-text-mask';

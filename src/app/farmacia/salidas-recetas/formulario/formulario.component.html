@@ -512,7 +512,7 @@
                                 <label *ngIf="!tieneid" class="label">Dosis <br> ({{unidad_medida}}):</label>
                                 <label *ngIf="tieneid" class="label">Dosis ():</label>
                                     <input type="number" autofocus class="input" #dosis id="dosis" min="1" name="dosis" (keypress)="quitar_punto($event)" 
-                                    (blur)="calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value, cant_recetada.value)" 
+                                    (blur)="calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value)" 
                                     [ngClass]="{'is-disabled': tieneid, 'is-danger': dosis.value == ''}">
                                 </p>
                             </div>
@@ -520,7 +520,7 @@
                                     <p class="control is-expanded">
                                     <label class="label">Frecuencia <br> (hrs.):</label>
                                         <input type="number" class="input" #frecuencia id="frecuencia" min="1" name="frecuencia" (keypress)="quitar_punto($event)"
-                                        (blur)="calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value, cant_recetada.value)"
+                                        (blur)="calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value)"
                                         [ngClass]="{'is-disabled': tieneid, 'is-danger': frecuencia.value == ''}">
                                     </p>
                             </div>
@@ -528,7 +528,7 @@
                                 <p class="control is-expanded">
                                 <label class="label">Duración <br> (días):</label>
                                     <input type="number" class="input" #duracion id="duracion" min="1" name="duracion" (keypress)="quitar_punto($event)" 
-                                    (blur)="calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value, cant_recetada.value)"
+                                    (blur)="calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value)"
                                     [ngClass]="{'is-disabled': tieneid, 'is-danger': duracion.value == ''}">
                                 </p>
                             </div>
@@ -537,7 +537,7 @@
                                 <label *ngIf="!tieneid" class="label">Cant. recetada <br> ({{presentacion_nombre}}):</label>
                                 <label *ngIf="tieneid" class="label">Cant. recetada ():</label>
                                     <input type="number" class="input" #cant_recetada id="cant_recetada" min="1" name="cant_recetada" (keypress)="quitar_punto($event)"
-                                    (blur)="calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value, cant_recetada.value)"
+                                    (blur)="calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value)"
                                     [ngClass]="{'is-disabled': tieneid, 'is-danger': cant_recetada.value == ''}">
                                 </p>
                             </div>
@@ -575,7 +575,9 @@
                                 <td *ngIf="!item.nuevo">{{item.existencia}}</td>
                                 <td *ngIf="item.nuevo"></td>
                                 <td>
-                                    <input class="input has-text-centered " type="number" step="1" min="0" max="{{item.existencia}}" (keyup)=" calcularCantidadSurtida(); comprobar_cant_lotes()" (keypress)="quitar_punto($event);" (change)="comprobar_cant_lotes(); calcularCantidadSurtida();" placeholder="Cantidad" [(ngModel)]="item.cantidad">
+                                    <input class="input has-text-centered " type="number" step="1" min="0" max="{{item.existencia}}" 
+                                    (keyup)=" calcularCantidadSurtida(); comprobar_cant_lotes()" (keypress)="quitar_punto($event);" 
+                                    (change)="comprobar_cant_lotes(); calcularCantidadSurtida();" placeholder="Cantidad" [(ngModel)]="item.cantidad">
                                 </td>
                                 <td *ngIf="item.nuevo && es_unidosis"></td>
                                 <td *ngIf="item.nuevo">

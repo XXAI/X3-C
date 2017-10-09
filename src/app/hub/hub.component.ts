@@ -54,7 +54,7 @@ export class HubComponent implements OnInit {
     {
       title: 'Laboratorio', routerLink: '/laboratorio', icono: 'assets/hub-laboratorio.svg',
       permisos: [
-        // 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
+         'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk--', // Ver pedidos
       ]
     },
     {

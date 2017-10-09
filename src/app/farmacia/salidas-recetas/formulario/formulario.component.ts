@@ -10,8 +10,11 @@ import { environment } from '../../../../environments/environment';
 import { CrudService } from '../../../crud/crud.service';
 import { NotificationsService } from 'angular2-notifications';
 
-import  * as FileSaver    from 'file-saver'; 
-
+import  * as FileSaver    from 'file-saver';
+/**
+ * Componente que se encarga de crear el formulario para
+ * crear o ver una salida por receta.
+ */
 @Component({
   selector: 'salidas-recetas-formulario',
   templateUrl: './formulario.component.html',
@@ -22,41 +25,86 @@ import  * as FileSaver    from 'file-saver';
 })
 
 export class FormularioComponent {
+  /**
+   * Formulario reactivo que contiene los datos que se enviarán a la API
+   * y son los mismos datos que podemos ver al consultar una receta.
+   * @type {FormGroup} */
   dato: FormGroup;
-  dato2: FormGroup;
-  form_insumos: any;
-  form_movimiento_metadato: any;
-  tab: number = 1;
+  /**
+   * Varible que nos  muestra si está ocurriendo un proceso y ayuda a mostrar un gráfico en la vista como retroalimentación
+   * al usuario.
+   * @type {boolean} */
   cargando = false;
+  /**
+   * Varible que guarda el valor de la unidad de medida del insumo médico.
+   * @type {any} */
   unidad_medida;
-  usuario;
-  key;
-  presentacion_nombre;
-  res_busq_insumos= [];
-  arrayOfStrings = [];
-  sum_cant_lotes = false;
+  /**
+   * Varible que guarda el valor de la cantidad por envase del insumo médico.
+   * @type {any} */
   cantidad_x_envase;
+  /**
+   * Varible que guarda el valor de la presentación del insumo médico.
+   * @type {any} */
+  presentacion_nombre;
+  /**
+   * Guarda el resultado de la búsqueda de insumos médicos.
+   * @type {array} */
+  res_busq_insumos= [];
+  /**
+   * Variable que se le asigna el valor __false__ cuando la suma de las cantidades de los lotes del insumo médico
+   * NO es mayor a 0 ó algunos campos necesarios (dentro del modal) están vacíos, y se le asigna __true__ en caso contrario.
+   * @type {boolean} */
+  sum_cant_lotes = false;
+  /**
+   * Contiene la cantidad de medicamento recomendada a surtir calculada a partir de
+   *  la dosis, frecuencia (hrs.) y duración(días).
+   * @type {number} */
   cantidad_recomendada;
+  /**
+   * Contiene los datos de inicio de sesión del usuario.
+   * @type {any} */
+  usuario;
+  /**
+   * Contiene el valor de la tecla presionada por el usuario.
+   * @type {any} */
+  key;
+  /**
+   * Contiene los permisos del usuario, que posteriormente sirven para verificar si puede realizar o no
+   * algunas acciones en este módulo.
+   * @type {any} */
   permisos: any = [];
-  public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
-  public medicos_term = `${environment.API_URL}/personal-clues?tipo_personal=1&term=:keyword`;
-
-
+  /**
+   * Contiene la fecha MÍNIMA que puede ingresar el usuario para la fecha que fue hecha el movimiento.
+   * @type {Date} */
   MinDate = new Date();
+  /**
+   * Contiene la fecha MÁXIMA que puede ingresar el usuario para la fecha que fue hecha el movimiento.
+   * @type {Date} */
   MaxDate = new Date();
+  /**
+   * Contiene la fecha del día de hoy y es la que automáticamente se asigna a la fecha del movimiento, aunque el usuario puede
+   * cambiarla hay un límite de una fecha mínima [MinDate]{@link FormularioRecetaComponent#MinDate} y
+   * fecha máxima [MaxDate]{@link FormularioRecetaComponent#MaxDate}
+   * @type {Date} */
   fecha_actual;
   mostrarCancelado = false;
+  /**
+   * Contiene __true__ cuando el formulario recibe el parámetro id, lo que significa que ha de mostrarse una salida por receta
+   * existente. Cuando su valor es __false__ quiere decir que mostraremos la vista para crear una nueva salida.
+   * @type {Boolean} */
   tieneid = false;
 
-  fecha_receta;
-  fecha_movimiento;
-
   // # SECCION: Reportes
-  pdfworker: Worker;
-  cargandoPdf = false;
+    /**
+     * Objeto para los reportes con web Webworkers.
+     * @type {Worker} */
+    pdfworker: Worker;
+    /**
+     * Variable que vale true cuando se está cargando el PDF, false en caso contrario.
+     * @type {boolean} */
+    cargandoPdf = false;
   // # FIN SECCION
-  @ViewChildren('campoDr') campoDr;
-
   tipos_recetas: any[] = [
                             { id: 1, nombre: 'Normal'},
                             { id: 2, nombre: 'Controlado'}
@@ -68,6 +116,7 @@ export class FormularioComponent {
     timeOut: 5000,
     lastOnBottom: true
   };
+  lotes_insumo;
 
   objeto = {
     showProgressBar: true,
@@ -76,11 +125,21 @@ export class FormularioComponent {
     maxLength: 2000
   };
   mostrar_lote = [];
+  @ViewChildren('campoDr') campoDr;
   @ViewChildren('dosis') dosis;
   @ViewChildren('frecuencia') frecuencia;
   @ViewChildren('duracion') duracion;
   @ViewChildren('cant_recetada') cant_recetada;
   @ViewChildren('cant_surtida') cant_surtida;
+  /**
+   * Contiene la URL donde se hace la búsqueda de insumos médicos, cuyos resultados posteriormente
+   * se guarda en [res_busq_insumos]{@link FormularioRecetaComponent#res_busq_insumos}
+   * @type {string} */
+  public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
+  /**
+   * Contiene la URL donde se hace la búsqueda del personal médico.
+   * @type {string} */
+  public medicos_term = `${environment.API_URL}/personal-clues?tipo_personal=1&term=:keyword`;
 
   constructor(
     private fb: FormBuilder,
@@ -158,25 +217,12 @@ export class FormularioComponent {
       insumos: this.fb.array([])
     });
 
-    this.dato2 = this.fb.group({
-      clues: [this.usuario.clues_activa.clues, [Validators.required]],
-      jurisdiccion_id: [this.usuario.clues_activa.jurisdiccion_id],
-      nombre: [this.usuario.clues_activa.nombre],
-      activa: [this.usuario.clues_activa.activa],
-      director_id: [this.usuario.clues_activa.director_id],
-      clues_turnos: this.fb.array([])
-    });
-
     this.route.params.subscribe(params => {
       if (params['id']) {
         this.tieneid = true;
       }
     });
 
-    // variable para crear el array del formulario reactivo
-    this.form_insumos = {
-      tipo_movimiento_id: ['', [Validators.required]]
-    };
 
     // inicializar el data picker minimo y maximo
     var date = new Date();
@@ -219,33 +265,8 @@ export class FormularioComponent {
     this.cant_surtida.first.nativeElement.value = '';
     this.sum_cant_lotes = false;
   }
-  lotes_insumo;
 
   /****************************************************************************************************** */
-
-  observableSource = (keyword: any): Observable<any[]> => {
-    //  'https://maps.googleapis.com/maps/api/geocode/json?address='+keyword
-    // let url: string = 'http://sialapi.yoursoft.com.mx/public/index.php/insumos-auto?term=:' + keyword;
-
-    let cabecera = '';
-    if (this.usuario.clues_activa) {
-      cabecera += '&clues=' + this.usuario.clues_activa.clues;
-    }
-    if (this.usuario.almacen_activo) {
-      cabecera += '&almacen=' + this.usuario.almacen_activo.id;
-    }
-    let url: string = '' + environment.API_URL + '/insumos-auto?term=' + keyword + cabecera;
-    if (keyword) {
-      return this.http.get(url)
-        .map(res => {
-          let json = res.json();
-          this.arrayOfStrings = json;
-          return json;
-        });
-    } else {
-      return Observable.of([]);
-    }
-  }
 
   enviarAutocomplete(keyword: any) {
     this.cargando = true;
@@ -372,7 +393,9 @@ export class FormularioComponent {
 
         //poner el titulo a la modal
         document.getElementById('tituloModal').innerHTML = ` ${data.descripcion} <br>
-          <p aling="justify" style="font-size:12px">CANTIDAD POR ENVASE: ${data.cantidad_x_envase}</p> `;
+          <p aling="justify" style="font-size:12px">CANTIDAD POR ENVASE: 
+          ${data.cantidad_x_envase ? data.cantidad_x_envase : 'Sin especificar' }</p> `;
+
         this.es_unidosis = data.es_unidosis;
         this.unidad_medida = data.unidad_medida;
         this.presentacion_nombre = data.presentacion_nombre;
@@ -402,7 +425,7 @@ export class FormularioComponent {
       'es_causes': this.insumo.es_causes,
       'es_unidosis': this.insumo.es_unidosis,
       'cantidad': 1,
-      'cantidad_x_envase': parseInt(this.insumo.cantidad_x_envase),
+      'cantidad_x_envase': this.insumo.cantidad_x_envase ? parseInt(this.insumo.cantidad_x_envase) : 1,
       'dosis': [dosis, [Validators.required]],
       'frecuencia': [frecuencia, [Validators.required]],
       'duracion': [duracion, [Validators.required]],
@@ -619,15 +642,22 @@ export class FormularioComponent {
      */
   handleKeyboardEvents(event: KeyboardEvent) {
     this.key = event.which || event.keyCode;
-    // console.log(this.key);
     if (event.keyCode === 13) {
       document.getElementById('buscarInsumo').focus();
       event.preventDefault();
       return false;
     }
   }
-
-  calcularCantidadSugerida(dosis, frecuencia, duracion, cant_recetada) {
+  /**
+   * Este método calcula la cantidad sugerida a surtir a partir de
+   * la dosis, frecuencia (hrs.) y duración(días).
+   * @param dosis Contiene la dosis del médicamento indicado por el médico,
+   * el valor debe ser numérico sin decimales.
+   * @param frecuencia Es la frecuencia en horas en que debe tomar el paciente el medicamento,
+   * el valor debe ser numérico sin decimales.
+   * @param duracion Es la cantidad de días que debe tomar el medicamento, el valor debe ser numérico sin decimales.
+   */
+  calcularCantidadSugerida(dosis, frecuencia, duracion) {
     let veces_al_dia = 24 / frecuencia;
     this.cantidad_recomendada  = veces_al_dia * dosis * Number(duracion);
     this.cantidad_recomendada = this.cantidad_recomendada / this.cantidad_x_envase;
@@ -637,7 +667,10 @@ export class FormularioComponent {
       this.cantidad_recomendada =  parseInt(temporal, 10) + 1;
     }
   }
-
+  /**
+   * Calcula la cantidad surtida sumando las cantidades de los lotes del insumo médico.
+   * La suma se la asigna a la propiedad [cant_surtida]{@link FormularioRecetaComponent#cant_surtida}.
+   */
   calcularCantidadSurtida() {
     let total_cantidad_surtida = 0;
     for (let item of this.lotes_insumo) {
