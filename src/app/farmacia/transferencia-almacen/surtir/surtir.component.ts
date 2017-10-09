@@ -43,6 +43,8 @@ export class SurtirComponent implements OnInit {
   cargando: boolean = false;
   cargandoStock: boolean = false;
   
+  pedidoPorSurtir:boolean = false;
+
    // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
   mensajeAdvertencia: Mensaje = new Mensaje()
@@ -93,6 +95,29 @@ export class SurtirComponent implements OnInit {
              
             }
             pedido.insumos = undefined;
+
+            this.pedidoPorSurtir = true;
+
+            if(pedido.movimientos.length > 0){
+              let transferencia_recibida:boolean = false;
+              let transferencia_recibida_borrador:boolean = false;
+              let transferencia_surtida:boolean = false;
+
+              for(var i in pedido.movimientos){
+                if(pedido.movimientos[i].transferencia_recibida){
+                  transferencia_recibida = true;
+                }else if(pedido.movimientos[i].transferencia_recibida_borrador){
+                  transferencia_recibida_borrador = true;
+                }else if(pedido.movimientos[i].transferencia_surtida){
+                  transferencia_surtida = true;
+                }
+              }
+
+              if(transferencia_surtida){
+                this.pedidoPorSurtir = false;
+              }
+            }
+
             this.pedido.datosImprimir = pedido;
             this.pedido.indexar();
             this.pedido.listar(1);
@@ -125,8 +150,10 @@ export class SurtirComponent implements OnInit {
   
 
   seleccionarItem(item){  
-    this.itemSeleccionado = item; 
-    this.buscarStockApi(null,item.clave)
+    this.itemSeleccionado = item;
+    if(this.pedidoPorSurtir){
+      this.buscarStockApi(null,item.clave);
+    }
   }
 
   buscar(e: KeyboardEvent, input:HTMLInputElement, inputAnterior: HTMLInputElement,  parametros:any[]){
@@ -296,8 +323,15 @@ export class SurtirComponent implements OnInit {
   }
 
   surtir (){
-  
     //alert("Preguntar quién recibe, observaciones, etc. Y si quiere imprimir de una vez.")
+
+    var validacion_palabra = prompt("Al surtir el pedido se retirara la cantidad surtida del inventario del almacen actual, para confirmar que desea surtir el pedido por favor escriba: SURTIR PEDIDO");
+    if(validacion_palabra != 'SURTIR PEDIDO'){
+      if(validacion_palabra != null){
+        alert("Error al ingresar el texto para confirmar la acción.");
+      }
+      return false;
+    }
 
     var lista:any[] = [];
 
@@ -313,6 +347,14 @@ export class SurtirComponent implements OnInit {
       }
     }
 
+    if(lista.length == 0){
+      this.mensajeError = new Mensaje(true,5);
+      this.mensajeError.texto = 'No especificado';
+      this.mensajeError.mostrar = true;
+      this.mensajeError.texto = "No se ha seleccionado ningun insumo del inventario, para surtir este pedido";
+      return false;
+    }
+
     var entrega :any = {
       pedido_id: this.id,
       entrega: "",
@@ -323,9 +365,9 @@ export class SurtirComponent implements OnInit {
 
     this.transferenciaAlmacenService.surtir(this.id,entrega).subscribe(
         respuesta => {
-          this.cargando = false;
-          //this.router.navigate(['/farmacia/entregas/ver/'+respuesta.id]);
-          
+          //this.cargando = false;
+          ///this.router.navigate(['/farmacia/entregas/ver/'+respuesta.id]);
+          this.router.navigate(['/almacen/transferencia-almacen/en-transito']);
         },
         error => {
           this.cargando = false;

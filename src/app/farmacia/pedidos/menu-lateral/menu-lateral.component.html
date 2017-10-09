@@ -19,13 +19,13 @@
                 <span *ngIf="stats.borradores>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': borradores.className == 'is-active', 'is-primary': borradores.className != 'is-active' }">{{  stats.borradores }}</span>
             </a>
         </li>
-        <!--li>
-            <a routerLink="/almacen/pedidos/pendientes" #pendientes routerLinkActive="is-active">
-                <span class="icon"  ><i class="fa fa-minus-circle"></i></span> Pendientes
+        <li>
+            <a routerLink="/almacen/pedidos/solicitados" #solicitados routerLinkActive="is-active">
+                <span class="icon"  ><i class="fa fa-minus-circle"></i></span> Solicitudes de transferencia
                 <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
-                <span *ngIf="stats.pendientes>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': pendientes.className == 'is-active', 'is-warning': pendientes.className != 'is-active' }" >{{  stats.pendientes }}</span>
+                <span *ngIf="stats.solicitados>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': solicitados.className == 'is-active', 'is-primary': solicitados.className != 'is-active' }" >{{  stats.solicitados }}</span>
             </a>             
-        </li-->
+        </li>
         <li>
             <a routerLink="/almacen/pedidos/en-transito" #enTransito routerLinkActive="is-active">
                 <span class="icon"><i class="fa fa-clock-o"></i></span> En transito

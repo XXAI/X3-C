@@ -18,6 +18,7 @@ const routes: Routes = [
     children: [
        { path: 'todos', component: ListaComponent},
        { path: 'borradores', component: ListaComponent},
+       { path: 'solicitados', component: ListaComponent},
        { path: 'en-transito', component: ListaComponent},
        { path: 'por-surtir', component: ListaComponent},
        { path: 'finalizados', component: ListaComponent},

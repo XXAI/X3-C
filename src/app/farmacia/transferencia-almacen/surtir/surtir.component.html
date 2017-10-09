@@ -17,9 +17,9 @@
             <div style="padding:1em;">Folio: <strong style="color:#FFF;">{{ pedido.datosImprimir.folio }}</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Lotes: {{ lotesSurtidos.length  }} / {{ pedido.lista.length }}</div>
           </div>
           <div class="column is-4" style="text-align:center; ">
-            <div style="margin:1em;">
-            <a  class="button is-primary" style="width:45%; margin-right:5%;" (click)="surtir()"> <span class="icon"><i class="fa fa-check-circle"></i></span> <span>Surtir</span></a>
-            <a  class="button is-white"  style="width:45%"  routerLink="/almacen/transferencia-almacen/por-surtir"> Cancelar</a>
+            <div style="margin:1em;" *ngIf="pedidoPorSurtir">
+              <a  class="button is-primary" style="width:45%; margin-right:5%;" (click)="surtir()"> <span class="icon"><i class="fa fa-check-circle"></i></span> <span>Surtir</span></a>
+              <a  class="button is-white"  style="width:45%"  routerLink="/almacen/transferencia-almacen/por-surtir"> Cancelar</a>
             </div>
           </div>
         </div>       
@@ -160,7 +160,7 @@
         </div>
       </div>
       <div class="tile is-parent is-vertical ">
-        <div class="tile is-child notification" style="background:#CCC;">
+        <div class="tile is-child notification" style="background:#CCC;"  *ngIf="pedidoPorSurtir">
           <div class="contenedor-tabla">
             
             <table class="table" *ngIf="!cargando" style="font-size: 0.8em;" >
@@ -262,7 +262,7 @@
 <div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeError.mostrar">
     <button class="delete" (click)="mensajeError.mostrar = false"></button>        
     <b>Error:</b> {{ mensajeError.texto }}<br><br>
-    <p style="text-align:center" ><a  class="button is-danger is-inverted" (click)="ultimaPeticion(); mensajeError.mostrar = false"> <span class="icon"><i class="fa fa-refresh"></i></span> <span>Volver a intentar</span></a></p>        
+    <p style="text-align: center;"><small >Este mensaje desaparecerá en {{ mensajeError.cuentaAtras }} segundos.</small></p>       
 </div>
 
 <div class="notification is-success" style="position:fixed; left:1em;  bottom:1em; width: auto" *ngIf="mensajeExito.mostrar">       
