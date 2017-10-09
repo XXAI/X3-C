@@ -162,7 +162,7 @@
         </div>
       </div>
       <div class="tile is-parent is-vertical ">
-        <div *ngIf="(capturarStock && (itemSeleccionado.cantidad_recibida < itemSeleccionado.cantidad))" class="tile is-child notification">
+        <div *ngIf="(capturarStock && (itemSeleccionado.cantidad_recibida < itemSeleccionado.cantidad)) && pedido.datosImprimir.tipo_pedido_id != 'PEA'" class="tile is-child notification">
           <div class="control is-grouped">
             <p class="control is-expanded  has-icon has-icon-right">
               <label class="label">Código de Barras</label>
@@ -231,7 +231,8 @@
                     <!--th style="color:#FFF !important;">Marca</th-->
                     <th style="color:#FFF !important;">Lote</th>
                     <th style="color:#FFF !important;">Caducidad</th>
-                    <th style="color:#FFF !important;"><abbr title="Cantidad">Cant.</abbr></th>  
+                    <th *ngIf="pedido.tipo_pedido == 'PEA'" style="color:#FFF !important;"><abbr title="Cantidad Eviada">Enviado</abbr></th>
+                    <th style="color:#FFF !important;"><abbr title="Cantidad Recibida">Recibido</abbr></th>
                     <th></th>              
                   </tr>
               </thead>
@@ -249,12 +250,16 @@
                     <!--td>{{ item.marca.nombre }}</td-->
                     <td>{{ item.lote }}</td>
                     <td>{{ item.fecha_caducidad | date:'dd/MM/y' }}</td>
+                    <td *ngIf="pedido.tipo_pedido == 'PEA'" style="width:150px !important;">
+                      {{ item.cantidad_enviada | number }} / {{ item.cantidad | number }}
+                    </td> 
                     <td style="width:150px !important;">
                         <p class="control is-expanded">
-                        <input class="input is-small has-text-centered"  type="number" min="1" max="{{item.existencia}}" placeholder="Cant" [(ngModel)]="item.cantidad" (change)="validarItemStock(item, true)" (keyup)="validarItemStock(item)">
+                        <input *ngIf="pedido.tipo_pedido != 'PEA'" class="input is-small has-text-centered"  type="number" min="1" max="{{item.existencia}}" placeholder="Cant" [(ngModel)]="item.cantidad" (change)="validarItemStock(item, true)" (keyup)="validarItemStock(item)">
+                        <input *ngIf="pedido.tipo_pedido == 'PEA'" class="input is-small has-text-centered"  type="number" min="0" max="{{item.cantidad_enviada}}" placeholder="Cant" [(ngModel)]="item.cantidad_recibida" (change)="validarItemStock(item, true)" (keyup)="validarItemStock(item)">
                         </p>
                     </td> 
-                    <td style="vertical-align: middle;" class="has-text-centered"><a  class="is-danger" (click)="eliminarStock(item)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>                    
+                    <td style="vertical-align: middle;" class="has-text-centered"><a  *ngIf="puedeEliminarStock" class="is-danger" (click)="eliminarStock(item)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>
                   </tr>
               </tbody>  
             </table>

@@ -10,6 +10,12 @@
                     <h1 *ngIf="pedido.status == 'PS'" class="title" style="margin:0.5em;" >
                         <span class="icon is-medium"><i class="fa fa-file-text"></i></span> Pedido Por Surtir <span class="is-pulled-right">{{porcentageTotalPedido | number:'1.0-2'}} %</span>
                     </h1>
+                    <h1 *ngIf="pedido.status == 'SD'" class="title" style="margin:0.5em;" >
+                        <span class="icon is-medium"><i class="fa fa-minus-circle"></i></span> Solicitud de transferencia
+                    </h1>
+                    <h1 *ngIf="pedido.status == 'ET'" class="title" style="margin:0.5em;" >
+                        <span class="icon is-medium"><i class="fa fa-clock-o"></i></span> En Transito <span class="is-pulled-right">{{porcentageTotalPedido | number:'1.0-2'}} %</span>
+                    </h1>
                     <h1 *ngIf="pedido.status == 'FI'" class="title" style="margin:0.5em;" >
                         <span class="icon is-medium"><i class="fa fa-file-text"></i></span> Pedido Finalizado <span class="is-pulled-right">{{porcentageTotalPedido | number:'1.0-2'}} %</span>
                     </h1>
@@ -60,16 +66,20 @@
                     <hr>
                     <label class="label">Datos del Proveedor:</label>
                     <div *ngIf="pedido.datosImprimir" class="level-item">
-                        <input *ngIf="pedido.datosImprimir.almacen_proveedor" type="text" class="input is-fullwidth" readonly="readonly" value="{{pedido.datosImprimir.almacen_proveedor.nombre}}"/>
+                        <div *ngIf="pedido.datosImprimir.almacen_proveedor" >
+                            <p class="subtitle is-5">
+                                {{pedido.datosImprimir.almacen_proveedor.nombre}}
+                            </p>
+                        </div>
                         <div *ngIf="pedido.datosImprimir.proveedor" >
-                        <p class="subtitle is-5">
-                            {{pedido.datosImprimir.proveedor.nombre}}<br>
-                            <small>
-                            {{pedido.datosImprimir.proveedor.contacto}}<br>
-                            {{pedido.datosImprimir.proveedor.email}}<br>
-                            Cel: {{pedido.datosImprimir.proveedor.celular}}
-                            </small>
-                        </p>
+                            <p class="subtitle is-5">
+                                {{pedido.datosImprimir.proveedor.nombre}}<br>
+                                <small>
+                                {{pedido.datosImprimir.proveedor.contacto}}<br>
+                                {{pedido.datosImprimir.proveedor.email}}<br>
+                                Cel: {{pedido.datosImprimir.proveedor.celular}}
+                                </small>
+                            </p>
                         </div>
                     </div>
                     <hr>
