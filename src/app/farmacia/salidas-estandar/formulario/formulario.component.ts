@@ -11,7 +11,9 @@ import { createAutoCorrectedDatePipe } from 'text-mask-addons';
 
 import * as moment from 'moment';
 import  * as FileSaver    from 'file-saver';
-
+/**
+ * Formulario para crear o ver una salida estandar.
+ */
 @Component({
   selector: 'salidas-estandar-formulario',
   templateUrl: './formulario.component.html',
@@ -287,19 +289,17 @@ export class FormularioComponent {
       }
     );
   }
-
-
   mostrar_lote = [];
-  
+
   /**
-     * Este método agrega los lostes del modal a el modelo que se envia a la api
+     * Este método agrega los lotes del modal a el modelo que se envia a la api
      * @return void
      */
-  agregarLoteIsumo(cantidad_solicitada:number) {
-    //obtener el formulario reactivo para agregar los elementos
+  agregarLoteIsumo(cantidad_solicitada: number) {
+    // obtener el formulario reactivo para agregar los elementos
     const control = <FormArray>this.dato.controls['insumos'];
 
-    //crear el json que se pasara al formulario reactivo tipo insumos
+    // crear el json que se pasara al formulario reactivo tipo insumos
     var lotes = {
       'clave': this.insumo.clave,
       'nombre': this.insumo.nombre,
@@ -309,15 +309,15 @@ export class FormularioComponent {
       'cantidad': 1,
       'presentacion_nombre': this.insumo.presentacion_nombre,
       'unidad_medida': this.insumo.unidad_medida,
-      'cantidad_x_envase': this.insumo.cantidad_x_envase ? parseInt(this.insumo.cantidad_x_envase) : 1,     
+      'cantidad_x_envase': this.insumo.cantidad_x_envase ? parseInt(this.insumo.cantidad_x_envase) : 1,
       'cantidad_surtida': 1,
       'modo_salida': this.modo,
-      'cantidad_solicitada': cantidad_solicitada, //this.modo == 'N' ? cantidad_solicitada : 0,
+      'cantidad_solicitada': cantidad_solicitada, // this.modo == 'N' ? cantidad_solicitada : 0,
       'cantidad_solicitada_unidosis': cantidad_solicitada,// this.modo == 'U' ? cantidad_solicitada : 0,
       'lotes': this.fb.array([])
     };
 
-    //comprobar que el isumo no este en la lista cargada
+    // comprobar que el isumo no este en la lista cargada
     var existe = false;
     var existe_clave = false;
     var posicion_existe = 0;

@@ -81,7 +81,9 @@ import { ViasAdministracionModule } from './almacen-articulos/catalogos/vias-adm
 // import { ProveedoresModule } from './almacen-articulos/catalogos/proveedores/proveedores.module';
 
 // # Hub laboratorio
-import { IndexLaboratorioModule } from './laboratorio/index-laboratorio/index-laboratorio.module';
+import { IndexLaboratorioModule   } from './laboratorio/index-laboratorio/index-laboratorio.module';
+import { EntradasLaboratorioModule} from './laboratorio/entradas-laboratorio/entradas-laboratorio.module';
+import { SalidasLaboratorioModule} from './laboratorio/salidas-laboratorio/salidas-laboratorio.module';
 
 // # Hub equipamiento
 import { IndexEquipamientoModule } from './equipamiento/index-equipamiento/index-equipamiento.module';
@@ -201,6 +203,8 @@ export function highchartsFactory() {
     ArticulosModule,
     //
     IndexLaboratorioModule,
+    EntradasLaboratorioModule,
+    SalidasLaboratorioModule,
     IndexEquipamientoModule,
     SincronizarRecetasModule,
     //CrudModule,

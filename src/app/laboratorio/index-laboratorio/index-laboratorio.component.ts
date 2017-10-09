@@ -25,7 +25,8 @@ export class IndexLaboratorioComponent implements OnInit {
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
 
     this.modulos = [
-      
+      { permiso: 'a1OMZVn7dveOf5aUK8V0VsvvSCxz8EMw', icono: 'assets/icono-entradas-laboratorio.svg', titulo: 'Entrada de laboratorio', url:'/laboratorio/entradas-laboratorio' },
+      { permiso: 'a1OMZVn7dveOf5aUK8V0VsvvSCxz8EMw', icono: 'assets/icono-salidas-laboratorio.svg', titulo: 'Salidas de laboratorio', url:'/laboratorio/salidas-laboratorio' },
     ]
     this.accesosDirectos = [          
      // { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-catalogos.svg', titulo:"Catálogos", url:"/almacen-articulos/catalogos" },
