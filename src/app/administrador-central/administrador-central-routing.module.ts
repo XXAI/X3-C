@@ -6,6 +6,7 @@ import { PedidosComponent } from './pedidos/pedidos.component';
 import { TransferenciasRecursosComponent } from './transferencias-recursos/transferencias-recursos.component';
 import { EntregasMesComponent } from './entregas-mes/entregas-mes.component';
 import { CumplimientoComponent } from './cumplimiento/cumplimiento.component';
+import { ReporteFinancieroComponent } from './reporte-financiero/reporte-financiero.component';
 
 import { AuthGuard } from '../auth-guard.service';
 import { PermisosGuard } from '../permisos.guard';
@@ -20,6 +21,7 @@ const routes: Routes = [
        { path: 'transferencias-recursos', component: TransferenciasRecursosComponent, canActivate: [PermisosGuard], data: { key: 's8kSv2Gj9DZwRvClVRmZohp92Rtvi26i'}},
        { path: 'entregas-mes', component: EntregasMesComponent, canActivate: [PermisosGuard], data: { key: 'fWA5oDswZ2Ra4O8YaCy6nEY8OeCOxg9C'}},
        { path: 'cumplimiento', component: CumplimientoComponent, canActivate: [PermisosGuard], data: { key: 'BBg7HSOEmjjOsVl48s8wSz8AxXhmBXA1'}},
+       { path: 'reporte-financiero', component: ReporteFinancieroComponent, canActivate: [PermisosGuard], data: { key: 'BBg7HSOEmjjOsVl48s8wSz8AxXhmBXA1'}},
     ],
     canActivate: [AuthGuard]
   }

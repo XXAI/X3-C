@@ -270,7 +270,7 @@ export class AbastoComponent implements OnInit {
     if(lista_jurisdicciones != ""){
       query += "&jurisdicciones="+lista_jurisdicciones;
     }
-    window.open(`${environment.API_URL}/abasto-excel?${query}`);
+    window.open(`${environment.API_URL}/administrador-central/abasto-excel?${query}`);
    
     
     

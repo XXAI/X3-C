@@ -20,6 +20,10 @@ export class AdministradorCentralService {
     return this.jwtRequest.get("administrador-central/abasto",null,parametros).map( (response: Response) => response.json().data) as Observable<any[]>;
   }
 
+  reporteFinanciero(parametros:any = {}): Observable<any>{
+    return this.jwtRequest.get("administrador-central/reporte-financiero",null,parametros).map( (response: Response) => response.json()) as Observable<any[]>;
+  }
+
   pedidos(parametros:any = {}): Observable<any>{
     return this.jwtRequest.get("administrador-central/pedidos",null,parametros).map( (response: Response) => response.json().data) as Observable<any[]>;
   }
