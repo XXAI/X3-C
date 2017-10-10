@@ -162,7 +162,7 @@
         </div>
       </div>
       <div class="tile is-parent is-vertical ">
-        <div *ngIf="(capturarStock && (itemSeleccionado.cantidad_recibida < itemSeleccionado.cantidad)) && pedido.datosImprimir.tipo_pedido_id != 'PEA'" class="tile is-child notification">
+        <div *ngIf="(capturarStock && (itemSeleccionado.cantidad_recibida < itemSeleccionado.cantidad)) && pedido.datosImprimir.tipo_pedido_id != 'PEA' && statusRecepcion != 'FI'" class="tile is-child notification">
           <div class="control is-grouped">
             <p class="control is-expanded  has-icon has-icon-right">
               <label class="label">Código de Barras</label>
@@ -251,7 +251,7 @@
                     <td>{{ item.lote }}</td>
                     <td>{{ item.fecha_caducidad | date:'dd/MM/y' }}</td>
                     <td *ngIf="pedido.tipo_pedido == 'PEA'" style="width:150px !important;">
-                      {{ item.cantidad_enviada | number }} / {{ item.cantidad | number }}
+                      {{ item.cantidad_recibida | number }} / {{ item.cantidad | number }}
                     </td> 
                     <td style="width:150px !important;">
                         <p class="control is-expanded">
