@@ -218,7 +218,10 @@
                                         <span style="float:right; padding-left: 15px;" >
                                             <a *ngIf="!tieneid" class="button is-danger" title="Quitar este elemento de la lista" (click)="abrirModal('borrarInsumo', i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
                                         </span>
-                                        <a *ngIf="!tieneid" class="button is-success" [ngClass]="{'is-disabled':ctrl.dato.invalid}" title="Agregar más insumos de esta clave" style="float:right" (click)="select_insumo_autocomplete(item.value)"><span class="icon"><i class="fa fa-plus-circle" aria-hidden="true"></i></span> </a>
+                                        <a *ngIf="!tieneid" class="button is-success" 
+                                            [ngClass]="{'is-disabled': ctrl.dato.controls.insumos.invalid}" title="Agregar más insumos de esta clave" style="float:right" (click)="select_insumo_autocomplete(item.value)">
+                                            <span class="icon"><i class="fa fa-plus-circle" aria-hidden="true"></i></span>
+                                        </a>
                                         <p>
                                             <strong>
                                                 <span style="color:cornflowerblue">
