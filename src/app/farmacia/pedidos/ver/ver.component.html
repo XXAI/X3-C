@@ -84,7 +84,7 @@
                     </div>
                     <hr>
                     <div class="control is-grouped" style="padding-top:10px;" *ngIf="!cargando">
-                        <p class="control" *ngIf="pedido.recepcionPermitida">
+                        <p class="control" *ngIf="pedido.recepcionPermitida && pedido.status != 'FI'">
                             <a class="button is-primary" routerLink="/almacen/pedidos/recepcion/{{pedido.id}}"> <span class="icon"><i class="fa fa-truck"></i></span> <span *ngIf="!tieneRecepcionIniciada">Recibir Pedido</span><span *ngIf="tieneRecepcionIniciada">Continuar Recepción</span></a>
                         </p>
 

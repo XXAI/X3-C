@@ -139,25 +139,24 @@ export class RecepcionComponent implements OnInit {
               }
             }else if(pedido.tipo_pedido_id == 'PEA'){
               if(pedido.movimientos.length > 0){
-                let transferencia_recibida:boolean = false;
-                let transferencia_recibida_borrador:boolean = false;
-                let transferencia_surtida:boolean = false;
+                let transferencia_recibida:any = null;
+                let transferencia_recibida_borrador:any = null;
+                let transferencia_surtida:any = null;
 
                 for(var i in pedido.movimientos){
                   if(pedido.movimientos[i].transferencia_recibida){
-                    transferencia_recibida = true;
+                    transferencia_recibida = pedido.movimientos[i].transferencia_recibida;
                   }else if(pedido.movimientos[i].transferencia_recibida_borrador){
-                    transferencia_recibida_borrador = true;
+                    transferencia_recibida_borrador = pedido.movimientos[i].transferencia_recibida_borrador;
                   }else if(pedido.movimientos[i].transferencia_surtida){
-                    transferencia_surtida = true;
+                    transferencia_surtida = pedido.movimientos[i].transferencia_surtida;
                   }
                 }
+
                 if(transferencia_recibida){
                   //
-                }else if(transferencia_recibida_borrador){
-                  //
                 }else if(transferencia_surtida){
-                  let recepcion_insumos_guardados = pedido.movimientos[0].transferencia_surtida.insumos;
+                  let recepcion_insumos_guardados = transferencia_surtida.insumos;
                   for(var i in recepcion_insumos_guardados){
                     let insumo = recepcion_insumos_guardados[i];
                     if(!recepcion_insumos[insumo.stock.clave_insumo_medico]){
@@ -166,14 +165,45 @@ export class RecepcionComponent implements OnInit {
                         stock:[]
                       };
                     }
-                    recepcion_insumos[insumo.stock.clave_insumo_medico].cantidad += +insumo.cantidad;
-                    insumo.stock.cantidad = +insumo.cantidad;
-                    recepcion_insumos[insumo.stock.clave_insumo_medico].stock.push(insumo.stock);
+                    if(!transferencia_recibida_borrador){
+                      recepcion_insumos[insumo.stock.clave_insumo_medico].cantidad += +insumo.cantidad;
+                      insumo.stock.cantidad = +insumo.cantidad;
+                      recepcion_insumos[insumo.stock.clave_insumo_medico].stock.push(insumo.stock);
+                    }else{
+                      insumo.stock.cantidad_enviada = +insumo.cantidad;
+                      recepcion_insumos[insumo.stock.clave_insumo_medico].stock.push(insumo.stock);
+                    }
+                  }
+
+                  if(!transferencia_recibida_borrador){
+                    for(var clave in recepcion_insumos){
+                      this.lotesSurtidos.push({ clave: clave, cantidad: recepcion_insumos[clave].cantidad});
+                    }
+                    this.statusRecepcion = 'NV'; 
+                    this.puedeEliminarStock = false;
+                  }
+                }
+                
+                if(transferencia_recibida_borrador){
+                  let recepcion_insumos_guardados = transferencia_recibida_borrador.insumos;
+                  for(var i in recepcion_insumos_guardados){
+                    let insumo = recepcion_insumos_guardados[i];
+
+                    if(recepcion_insumos[insumo.stock.clave_insumo_medico]){
+                      console.log('asfasdfasdf');
+                      console.log(recepcion_insumos[insumo.stock.clave_insumo_medico].stock);
+                      for(var i in recepcion_insumos[insumo.stock.clave_insumo_medico].stock){
+                        if(recepcion_insumos[insumo.stock.clave_insumo_medico].stock[i].id == insumo.stock.id){
+                          recepcion_insumos[insumo.stock.clave_insumo_medico].stock[i].cantidad_recibida = +insumo.cantidad;
+                        }
+                      }
+                      recepcion_insumos[insumo.stock.clave_insumo_medico].cantidad += +insumo.cantidad;
+                    }
                   }
                   for(var clave in recepcion_insumos){
                     this.lotesSurtidos.push({ clave: clave, cantidad: recepcion_insumos[clave].cantidad});
                   }
-                  this.statusRecepcion = 'NV'; 
+                  this.statusRecepcion = 'BR'; 
                   this.puedeEliminarStock = false;
                 }
               }
@@ -203,8 +233,8 @@ export class RecepcionComponent implements OnInit {
                     //marca: stock.marca,
                     lote: stock.lote,
                     fecha_caducidad: stock.fecha_caducidad,
-                    cantidad_enviada: stock.cantidad,
-                    cantidad_recibida: stock.cantidad,
+                    cantidad_enviada: stock.cantidad_enviada,
+                    cantidad_recibida: stock.cantidad_recibida,
                     cantidad: stock.cantidad
                   });
                 }
