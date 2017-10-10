@@ -27,6 +27,7 @@ export class FormularioComponent {
   tab = 1;
   cargando = false;
   key;
+  usuario;
   autoCorrectedDatePipe: any = createAutoCorrectedDatePipe('yyyy-mm-dd');
 
   MinDate = new Date();
@@ -46,6 +47,10 @@ export class FormularioComponent {
   es_unidosis = false;
   lotes_insumo;
   mostrar_lote = [];
+  /**
+   * Guarda el resultado de la búsqueda de insumos médicos.
+   * @type {array} */
+  res_busq_insumos= [];
 
   public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
   // Máscara para validar la entrada de la fecha de caducidad
@@ -75,13 +80,13 @@ export class FormularioComponent {
   ngOnInit() {
 
     // obtener los datos del usiario logueado almacen y clues
-    let usuario = JSON.parse(localStorage.getItem('usuario'));
+    this.usuario = JSON.parse(localStorage.getItem('usuario'));
 
-    if (usuario.clues_activa) {
-      this.insumos_term += '&clues=' + usuario.clues_activa.clues;
+    if (this.usuario.clues_activa) {
+      this.insumos_term += '&clues=' + this.usuario.clues_activa.clues;
     }
-    if (usuario.almacen_activo) {
-      this.insumos_term += '&almacen=' + usuario.almacen_activo.id;
+    if (this.usuario.almacen_activo) {
+      this.insumos_term += '&almacen=' + this.usuario.almacen_activo.id;
     }
 
     // Inicializamos el objeto para los reportes con web Webworkers
@@ -180,6 +185,32 @@ export class FormularioComponent {
   cancelarModal(id) {
     document.getElementById(id).classList.remove('is-active');
   }
+
+  /**
+   * Método de búsqueda de insumos en la API.
+   * @param keyword Contiene la palabra que va a buscar.
+   */
+  enviarAutocomplete(keyword: any) {
+    this.cargando = true;
+    let cabecera = '';
+    if (this.usuario.clues_activa) {
+      cabecera += '&clues=' + this.usuario.clues_activa.clues;
+    }
+    if (this.usuario.almacen_activo) {
+      cabecera += '&almacen=' + this.usuario.almacen_activo.id;
+    }
+    let url: string = '' + environment.API_URL + '/insumos-auto?term=' + keyword + cabecera;
+    this.crudService.busquedaInsumos(keyword, 'insumos-auto').subscribe(
+      resultado => {
+        this.cargando = false;
+        this.res_busq_insumos = resultado;
+        if (this.res_busq_insumos.length === 0) {
+          this.notificacion.warn('Insumos', 'No hay resultados que coincidan', this.objeto);
+        }
+      }
+    );
+  }
+
   /**
      * Este método formatea los resultados de la busqueda en el autocomplte
      * @param data resultados de la busqueda 
@@ -218,11 +249,12 @@ export class FormularioComponent {
      */
   select_insumo_autocomplete(data) {
 
-    var usuario = JSON.parse(localStorage.getItem('usuario'));
+    // usuario = JSON.parse(localStorage.getItem('usuario'));
     this.cargando = true;
     this.insumo = data;
     this.agregarLoteIsumo();
     (<HTMLInputElement>document.getElementById('buscarInsumo')).value = '';
+    this.res_busq_insumos = [];
     this.es_unidosis = data.es_unidosis;
     this.cargando = false;
   }
@@ -356,13 +388,13 @@ export class FormularioComponent {
 /************************************ IMPRESION DE REPORTES ************************************** */
   imprimir() {
 
-    var usuario = JSON.parse(localStorage.getItem('usuario'));
+    // var usuario = JSON.parse(localStorage.getItem('usuario'));
     try {
       this.cargandoPdf = true;
       var entrada_imprimir = {
         datos: this.dato.value,
         lista: this.dato.value.insumos,
-        usuario: usuario
+        usuario: this.usuario
       };
       this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
     } catch (e){

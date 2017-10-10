@@ -98,13 +98,13 @@
                                 </div>
                                 <!-- SI carga los turnos -->
                                 <p  *ngIf="ctrl.turnos" class="control is-expanded  has-icon has-icon-right">
-                                    <select class="select" name="turno" formControlName="turno_id" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('movimiento_metadato').get('turno_id').hasError('required') && ctrl.dato.get('movimiento_metadato').get('turno_id').touched}">
+                                    <select class="select" name="turno" formControlName="turno_id" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('movimiento_metadato').get('turno_id').hasError('required')}">
                                         <option *ngFor="let item of ctrl.turnos.clues_turnos" value="{{item.id}}" [attr.selected]="ctrl.dato.get('movimiento_metadato').get('turno_id').value == item.id ">{{ item.nombre }}</option>
                                     </select>
-                                    <span class="icon is-small" *ngIf="ctrl.dato.get('movimiento_metadato').get('turno_id').hasError('required') && ctrl.dato.get('movimiento_metadato').get('turno_id').touched">
+                                    <span class="icon is-small" *ngIf="ctrl.dato.get('movimiento_metadato').get('turno_id').hasError('required')">
                                         <i class="fa fa-warning"></i>
                                     </span>
-                                    <span class="help is-danger" *ngIf="ctrl.dato.get('movimiento_metadato').get('turno_id').hasError('required') && ctrl.dato.get('movimiento_metadato').get('turno_id').touched">Este campo es requerido.</span>
+                                    <span class="help is-danger" *ngIf="ctrl.dato.get('movimiento_metadato').get('turno_id').hasError('required')">Este campo es requerido.</span>
                                 </p>
                             </div>
                             <!-- SERVICIOS -->
@@ -118,13 +118,13 @@
                                 </div>
                                 <!-- SI carga los SERVICIOS -->
                                 <p class="control is-expanded  has-icon has-icon-right">
-                                    <select *ngIf="ctrl.servicios" class="select" name="servicio_id" formControlName="servicio_id" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('movimiento_metadato').get('servicio_id').hasError('required') && ctrl.dato.get('movimiento_metadato').get('servicio_id').touched}">
+                                    <select *ngIf="ctrl.servicios" class="select" name="servicio_id" formControlName="servicio_id" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('movimiento_metadato').get('servicio_id').hasError('required')}">
                                         <option *ngFor="let item of ctrl.servicios.clues_servicios" value="{{item.id}}" [attr.selected]="ctrl.dato.get('movimiento_metadato').get('servicio_id').value == item.id ">{{ item.nombre }}</option>
                                     </select>
-                                    <span class="icon is-small" *ngIf="ctrl.dato.get('movimiento_metadato').get('servicio_id').hasError('required') && ctrl.dato.get('movimiento_metadato').get('servicio_id').touched">
+                                    <span class="icon is-small" *ngIf="ctrl.dato.get('movimiento_metadato').get('servicio_id').hasError('required')">
                                         <i class="fa fa-warning"></i>
                                     </span>
-                                    <span class="help is-danger" *ngIf="ctrl.dato.get('movimiento_metadato').get('servicio_id').hasError('required') && ctrl.dato.get('movimiento_metadato').get('servicio_id').touched">Este campo es requerido.</span>
+                                    <span class="help is-danger" *ngIf="ctrl.dato.get('movimiento_metadato').get('servicio_id').hasError('required')">Este campo es requerido.</span>
                                 </p>
                             </div>
 
@@ -132,12 +132,12 @@
                             <div class="field">
                                 <label class="label">Persona que recibe:</label>
                                 <p class="control is-expanded  has-icon has-icon-right">
-                                    <input class="input" type="text" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required') && ctrl.dato.get('movimiento_metadato').get('persona_recibe').touched}"
+                                    <input class="input" type="text" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required')}"
                                         placeholder="Persona que recibe" formControlName="persona_recibe">
-                                    <span class="icon is-small" *ngIf="ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required') && ctrl.dato.get('movimiento_metadato').get('persona_recibe').touched">
+                                    <span class="icon is-small" *ngIf="ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required')">
                                         <i class="fa fa-warning"></i>
                                     </span>
-                                    <span class="help is-danger" *ngIf="ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required') && ctrl.dato.get('movimiento_metadato').get('persona_recibe').touched">Este campo es requerido.</span>
+                                    <span class="help is-danger" *ngIf="ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required')">Este campo es requerido.</span>
                                 </p>
                             </div>
 
@@ -180,14 +180,68 @@
                 </div>
                 <section class="section">
                     <div class="field has-addons has-addons-centered" *ngIf="!tieneid">
+<!-- ******************************************* AUTOCOMPLETE *********************************************                         
                         <p class="control">
                             <input ngui-auto-complete [source]="insumos_term" [list-formatter]="autocompleListFormatter" id="buscarInsumo" value-property-name="clave"
                                 display-property-name="descripcion" path-to-data="" loading-text="Cargando..." no-match-found-text="No hay resultados."
                                 (valueChanged)="select_insumo_autocomplete($event)" min-chars="1" class="input is-success is-medium"
                                 type="text" placeholder="Escanea el codigo de barra, o empieza escribir el nombre del producto" >
                         </p>
-                        <hr>
+******************************************* AUTOCOMPLETE ********************************************* -->
+
+                        <!-- *****************     INPUT DE BUSQUEDA DE INSUMO     ****************** -->   
+                        <div class="control is-grouped">
+                            <div class="control is-expanded">
+                                <input 
+                                    (keyup.enter)="buscarInsumo.value != '' ?  enviarAutocomplete(buscarInsumo.value) : buscarInsumo.value = ''" 
+                                    id="buscarInsumo"
+                                    name="buscarInsumo"
+                                    #buscarInsumo
+                                    class="input is-success is-medium"
+                                    type="text"
+                                    placeholder="Escriba la clave o el nombre del insumo y presione la tecla ENTER"/>
+                            </div>
+                            <div class="control">
+                                <a class="button is-success is-medium" title="Buscar insumo" (click)="buscarInsumo.value != '' ?  enviarAutocomplete(buscarInsumo.value) : buscarInsumo.value = ''">
+                                    <i class="fa fa-search" aria-hidden="true"></i> &nbsp; Buscar
+                                </a>
+                            </div>
+                            <div class="control" *ngIf="buscarInsumo.value != ''">
+                                <a class="button is-info is-medium" title="Borrar texto" (click)="res_busq_insumos=[]; buscarInsumo.value=''">
+                                    <i class="fa fa-times" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="is-fullwidth has-text-centered" *ngIf="cargando" style="height:100px;">
+                            <br>
+                            <span class="tag is-primary is-large">
+                                <span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span>
+                            </span>
+                        </div>
+                        <!-- *****************     RESULTADOS DE BUSQUEDA DE INSUMO     ****************** -->
+                        <div *ngIf="res_busq_insumos.length > 0 && !cargando" style="height: 200px;">
+                            <div *ngIf="res_busq_insumos.length > 0 && !cargando" style="overflow: scroll; overflow-x: hidden; height: 90%;">
+                                <div class="content" style="z-index: 1;" *ngFor="let item_insumo of res_busq_insumos; let c = index">
+                                    <div class="card" (click)="select_insumo_autocomplete(item_insumo)" style="background: rgba(242,248,253, 0.8)">
+                                        <div class="card-content">
+                                            <div class="media">          
+                                                <div class="media-content">
+                                                    <p class="title is-4">{{item_insumo.descripcion}}</p>
+                                                    <p class="subtitle is-6">
+                                                        <strong>Clave: </strong> {{item_insumo.clave}}
+                                                        <label class="tag is-success" *ngIf="item_insumo.es_causes == 1"><strong>Cause </strong></label>
+                                                        <label class="tag" *ngIf="item_insumo.es_causes == 0" style="background: #B8FB7E; border-color: #B8FB7E; color: rgba(0,0,0,0.7);" ><strong>No Cause </strong> </label>
+                                                        <label class="tag is-warning" *ngIf="item_insumo.es_unidosis == 1"><strong>Unidosis</strong> </label>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    <hr> <!-- Línea de division -->
                     <div formArrayName="insumos_negados">
                         <div class="box" *ngFor="let item of ctrl.dato.controls.insumos_negados.controls; let i=index" [ngStyle]="{'background': i%2 == 0 ? 'rgba(231, 242, 22, 0.4)' :  'rgba(231, 242, 22, 0.4)'}">
                             <article class="media" [formGroupName]="i">

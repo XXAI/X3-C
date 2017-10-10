@@ -328,8 +328,13 @@
                                     type="text"
                                     placeholder="Escriba la clave o el nombre del insumo y presione la tecla ENTER"/>
                             </div>
+                            <div class="control">
+                                <a class="button is-success is-medium" title="Buscar insumo" (click)="buscarInsumo.value != '' ?  enviarAutocomplete(buscarInsumo.value) : buscarInsumo.value = ''">
+                                    <i class="fa fa-search" aria-hidden="true"></i> &nbsp; Buscar
+                                </a>
+                            </div>
                             <div class="control" *ngIf="buscarInsumo.value != ''">
-                                <a class="button is-info is-medium" (click)="res_busq_insumos=[]; buscarInsumo.value=''">
+                                <a class="button is-info is-medium" title="Borrar texto" (click)="res_busq_insumos=[]; buscarInsumo.value=''">
                                     <i class="fa fa-times" aria-hidden="true"></i>
                                 </a>
                             </div>
