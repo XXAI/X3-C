@@ -173,7 +173,7 @@
                                         <p class="control is-expanded  has-icon has-icon-right">
                                             <input type="file" [ngClass]="{'is-disabled': tieneid}" (change)="ctrl.seleccionarImagenBase64($event, ctrl.dato.controls.receta.controls.imagen_receta)" accept="image/*" >
                                             <br>
-                                            <input type="hidden" placeholder="Imagen de la receta" formControlName="imagen_receta">
+                                            <input type="hidden" placeholder="Imagen de la receta" formControlName="imagen_receta" id="imagen_receta">
                                         </p>
                                     </div>
                                 </div>
@@ -186,7 +186,7 @@
                                         <p class="control is-expanded  has-icon has-icon-right">
                                             <input class="input" type="text" *ngIf="tieneid"
                                                 [ngClass]="{'is-hidden':!tieneid, 'is-disabled': tieneid, 'is-danger': ctrl.dato.get('receta').get('doctor').hasError('required')}"
-                                                placeholder="Doctor" formControlName="doctor">
+                                                placeholder="Doctor" formControlName="doctor" id="doctor">
 
                                             <input #campoDr *ngIf="!tieneid" ngui-auto-complete [source]="medicos_term" [list-formatter]="autocompleListFormatMedico"
                                                 display-property-name="nombre" path-to-data="" loading-text="Cargando..." no-match-found-text="No hay resultados."
@@ -210,7 +210,7 @@
                                         <label class="label">Paciente:</label>
                                         <p class="control is-expanded  has-icon has-icon-right">
                                             <input class="input" type="text" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('receta').get('paciente').hasError('required')}"
-                                                placeholder="Paciente" formControlName="paciente">
+                                                placeholder="Paciente" formControlName="paciente" id="paciente">
                                             <span class="icon is-small" *ngIf="ctrl.dato.get('receta').get('paciente').hasError('required')">
                                                 <i class="fa fa-warning"></i>
                                             </span>
@@ -225,8 +225,9 @@
                                     <div class="field">
                                         <label class="label">Diagnostico:</label>
                                         <p class="control is-expanded  has-icon has-icon-right">
-                                            <textarea class="textarea" autofocus type="text" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('receta').get('diagnostico').hasError('required')}"
-                                                placeholder="Diagnostico" formControlName="diagnostico"></textarea>
+                                            <textarea class="textarea" autofocus type="text" 
+                                                [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('receta').get('diagnostico').hasError('required')}"
+                                                placeholder="Diagnostico" formControlName="diagnostico" id="diagnostico"></textarea>
                                             <span class="icon is-small" *ngIf="ctrl.dato.get('receta').get('diagnostico').hasError('required')">
                                                 <i class="fa fa-warning"></i>
                                             </span>
@@ -512,7 +513,7 @@
                                 <label *ngIf="!tieneid" class="label">Dosis <br> ({{unidad_medida}}):</label>
                                 <label *ngIf="tieneid" class="label">Dosis ():</label>
                                     <input type="number" autofocus class="input" #dosis id="dosis" min="1" name="dosis" (keypress)="quitar_punto($event)" 
-                                    (blur)="calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value)" 
+                                    (blur)="calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value); calcularCantidadSurtida(); comprobar_cant_lotes()" 
                                     [ngClass]="{'is-disabled': tieneid, 'is-danger': dosis.value == ''}">
                                 </p>
                             </div>
@@ -520,7 +521,7 @@
                                     <p class="control is-expanded">
                                     <label class="label">Frecuencia <br> (hrs.):</label>
                                         <input type="number" class="input" #frecuencia id="frecuencia" min="1" name="frecuencia" (keypress)="quitar_punto($event)"
-                                        (blur)="calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value)"
+                                        (blur)="calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value); calcularCantidadSurtida(); comprobar_cant_lotes()"
                                         [ngClass]="{'is-disabled': tieneid, 'is-danger': frecuencia.value == ''}">
                                     </p>
                             </div>
@@ -528,7 +529,7 @@
                                 <p class="control is-expanded">
                                 <label class="label">Duración <br> (días):</label>
                                     <input type="number" class="input" #duracion id="duracion" min="1" name="duracion" (keypress)="quitar_punto($event)" 
-                                    (blur)="calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value)"
+                                    (blur)="calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value); calcularCantidadSurtida(); comprobar_cant_lotes()"
                                     [ngClass]="{'is-disabled': tieneid, 'is-danger': duracion.value == ''}">
                                 </p>
                             </div>
@@ -536,8 +537,9 @@
                                 <p class="control is-expanded">
                                 <label *ngIf="!tieneid" class="label">Cant. recetada <br> ({{presentacion_nombre}}):</label>
                                 <label *ngIf="tieneid" class="label">Cant. recetada ():</label>
-                                    <input type="number" class="input" #cant_recetada id="cant_recetada" min="1" name="cant_recetada" (keypress)="quitar_punto($event)"
-                                    (blur)="calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value)"
+                                    <input type="number" class="input" #cant_recetada id="cant_recetada" min="1" name="cant_recetada"
+                                    (keypress)="quitar_punto($event)" (change)="comprobar_cant_lotes(); calcularCantidadSurtida();"
+                                    (blur)="calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value); calcularCantidadSurtida(); comprobar_cant_lotes()"
                                     [ngClass]="{'is-disabled': tieneid, 'is-danger': cant_recetada.value == ''}">
                                 </p>
                             </div>
@@ -576,7 +578,7 @@
                                 <td *ngIf="item.nuevo"></td>
                                 <td>
                                     <input class="input has-text-centered " type="number" step="1" min="0" max="{{item.existencia}}" 
-                                    (keyup)=" calcularCantidadSurtida(); comprobar_cant_lotes()" (keypress)="quitar_punto($event);" 
+                                    (keyup)="calcularCantidadSurtida(); comprobar_cant_lotes()" (keypress)="quitar_punto($event);" 
                                     (change)="comprobar_cant_lotes(); calcularCantidadSurtida();" placeholder="Cantidad" [(ngModel)]="item.cantidad">
                                 </td>
                                 <td *ngIf="item.nuevo && es_unidosis"></td>
