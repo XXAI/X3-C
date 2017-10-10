@@ -96,15 +96,22 @@ export class FormularioComponent {
   tieneid = false;
 
   // # SECCION: Reportes
-    /**
-     * Objeto para los reportes con web Webworkers.
-     * @type {Worker} */
-    pdfworker: Worker;
-    /**
-     * Variable que vale true cuando se está cargando el PDF, false en caso contrario.
-     * @type {boolean} */
-    cargandoPdf = false;
+      /**
+       * Objeto para los reportes con web Webworkers.
+       * @type {Worker} */
+      pdfworker: Worker;
+      /**
+       * Variable que vale true cuando se está cargando el PDF, false en caso contrario.
+       * @type {boolean} */
+      cargandoPdf = false;
   // # FIN SECCION
+  /**
+   * Contiene un array con los tipos de receta disponibles.
+   *  * | id | nombre |
+   * | --- | --- |
+   * | 1 | Normal |
+   * | 2 | controlado |
+   * @type {any[]} */
   tipos_recetas: any[] = [
                             { id: 1, nombre: 'Normal'},
                             { id: 2, nombre: 'Controlado'}
@@ -462,11 +469,6 @@ export class FormularioComponent {
       clickToClose: true,
       maxLength: 2000
     };
-    this.options = {
-      position: ['top', 'right'],
-      timeOut: 5000,
-      lastOnBottom: true
-    };
     //recorrer la tabla de lotes del modal para obtener la cantidad 
     for (let item of this.lotes_insumo) {
       //agregar unicamente aquellos que tiene cantidad
@@ -616,7 +618,8 @@ export class FormularioComponent {
       if (l.cantidad)
         cantidad = Number(cantidad) + Number(l.cantidad);
     }
-    if (cantidad > 0) {
+    if (cantidad > 0 && this.dosis.first.nativeElement.value !== '' && this.frecuencia.first.nativeElement.value !== ''
+      && this.duracion.first.nativeElement.value !== '' && this.cant_recetada.first.nativeElement.value !== '') {
       this.sum_cant_lotes = true;
     }else {
       this.sum_cant_lotes = false;
@@ -636,16 +639,21 @@ export class FormularioComponent {
   }
 
   /**
-     * Este método permite que el focus del cursor vuelva al buscador de insumos una vez presionada la tecla enter
+     * Este método permite que colocar el cursor en el campo deseado
+     * o al buscador de insumos una vez presionada la tecla enter.
      * @param event Parametro que contiene el valor de la tecla presionada
      * @return void
      */
   handleKeyboardEvents(event: KeyboardEvent) {
-    this.key = event.which || event.keyCode;
-    if (event.keyCode === 13) {
-      document.getElementById('buscarInsumo').focus();
-      event.preventDefault();
-      return false;
+    if (document.activeElement.id === 'buscarMedico') {
+      document.getElementById('buscarMedico').focus();
+    } else {
+      this.key = event.which || event.keyCode;
+        if (event.keyCode === 13) {
+          document.getElementById('buscarInsumo').focus();
+          event.preventDefault();
+          return false;
+        }
     }
   }
   /**

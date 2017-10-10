@@ -10,19 +10,31 @@ import { environment } from '../../../../environments/environment';
 })
 
 export class ModalTurnosComponent {
+  /**
+   * Formulario reactivo que contiene los datos referente a los turnos que se enviarán a la API
+   * y son los mismos datos que podemos ver al consultar los turnos.
+   * @type {FormGroup} */
   dato2: FormGroup;
-  actualizacion;
-  error_actualizacion;
-  actualizacion_usuario;
+  /**
+   * Contiene __true__ cuando el formulario recibe el parámetro clues, lo que significa que ha de mostrar 'Mis turnos'
+   * de la CLUES correspondiente y los turnos disponibles.
+   * @type {Boolean} */
   tieneid = false;
+  /**
+   * Contiene __false__ como valor inicial para poder mostrar el botón de cargar turnos.
+   * Cuando su valor es __false__ quiere decir que los turnos ya se cargaron.
+   * @type {Boolean} */
   mostrar_pantalla= false;
-  tab = 2;
 
-  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute, private _sanitizer: DomSanitizer) { }
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private route: ActivatedRoute,
+    private _sanitizer: DomSanitizer) { }
 
   ngOnInit() {
 
-    var usuario = JSON.parse(localStorage.getItem('usuario'));
+    let usuario = JSON.parse(localStorage.getItem('usuario'));
 
     this.dato2 = this.fb.group({
       clues: ['', [Validators.required]],
