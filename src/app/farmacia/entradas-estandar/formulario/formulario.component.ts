@@ -300,9 +300,7 @@ export class FormularioComponent {
 
     //si no esta en la lista agregarlo
     if (!existe)
-      control.push(this.fb.group(lotes));
-
-    
+      control.insert(0, this.fb.group(lotes));
   }
   /**
      * Este método agrega una nueva fila para los lotes nuevos
