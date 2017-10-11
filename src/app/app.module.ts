@@ -39,7 +39,8 @@ import { AdministradorProveedoresModule } from './administrador-proveedores/admi
 import { UsuariosModule } from './panel-control/usuarios/usuarios.module';
 import { RolesModule    } from './panel-control/roles/roles.module';
 import { SyncModule     } from './panel-control/sync/sync.module';
-import { OpcionesAvanzadasModule     } from './panel-control/opciones-avanzadas/opciones-avanzadas.module';
+import { OpcionesAvanzadasModule  } from './panel-control/opciones-avanzadas/opciones-avanzadas.module';
+import { ProgramaPanelModule      } from './panel-control/programa/programa.module';
 
 // # Hub Configuracion
 import { MisAlmacenesModule} from './configuracion/almacenes/almacenes.module';
@@ -55,7 +56,7 @@ import { SincronizarRecetasModule } from './farmacia-subrrogada/sincronizar-rece
 // # Hub Farmacia
 import { IndexFarmaciaModule    } from './farmacia/index-farmacia/index-farmacia.module';
 import { PedidosModule          } from './farmacia/pedidos/pedidos.module';
-//import { PedidosJurisdiccionalesModule  } from './farmacia/pedidos-jurisdiccionales/pedidos-jurisdiccionales.module';
+// import { PedidosJurisdiccionalesModule  } from './farmacia/pedidos-jurisdiccionales/pedidos-jurisdiccionales.module';
 import { EntregasModule         } from './farmacia/entregas/entregas.module';
 import { EntradasEstandarModule } from './farmacia/entradas-estandar/entradas-estandar.module';
 import { SalidasRecetasModule   } from './farmacia/salidas-recetas/salidas-recetas.module';
@@ -98,7 +99,7 @@ import { PacienteModule } from './admision/paciente/paciente.module';
 // # Hub Receta Electronica
 import { IndexRecetaModule          } from './receta-electronica/index-receta/index-receta.module';
 
-//catalogos
+// Catálogos
 import { UnidadesMedidaModule } from './almacen-articulos/catalogos/unidades-medida/unidades-medida.module';
 import { TipoPedidoModule } from './almacen-articulos/catalogos/tipo-pedido/tipo-pedido.module';
 import { TiposMovimientosModule } from './almacen-articulos/catalogos/tipos-movimientos/tipos-movimientos.module';
@@ -119,12 +120,12 @@ import { CategoriasModule } from './almacen-articulos/categoria/categorias.modul
 import { ArticulosModule } from './almacen-articulos/articulos/articulos.module';
 
 
-//import { CrudModule } from './crud/crud.module';
+// import { CrudModule } from './crud/crud.module';
 export function highchartsFactory() {
   const hc = require('highcharts');
   const dd = require('highcharts/modules/exporting');
   dd(hc);
-  //return require('highcharts'),require('highcharts/modules/exporting');
+  // return require('highcharts'),require('highcharts/modules/exporting');
   return hc;
 }
 
@@ -150,6 +151,7 @@ export function highchartsFactory() {
     PipesModule,
     SyncModule,
     OpcionesAvanzadasModule,
+    ProgramaPanelModule,
     RolesModule,
     UsuariosModule,
     MisAlmacenesModule,
@@ -182,7 +184,7 @@ export function highchartsFactory() {
     IndexRecetaModule,
     IndexAlmacenArticulosModule,
     IndexCatalogoModule,
-    ViasAdministracionModule,    
+    ViasAdministracionModule,
     ServiciosModule,
     GruposInsumosModule,
     PresentacionMedicamentoModule,

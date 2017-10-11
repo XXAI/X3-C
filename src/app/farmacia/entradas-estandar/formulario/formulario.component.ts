@@ -55,6 +55,11 @@ export class FormularioComponent {
   public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
   // Máscara para validar la entrada de la fecha de caducidad
   mask = [/[2]/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/];
+  /**
+   * Contiene los permisos del usuario, que posteriormente sirven para verificar si puede realizar o no
+   * algunas acciones en este módulo.
+   * @type {any} */
+  permisos: any = [];
 
   objeto = {
     showProgressBar: true,
@@ -81,6 +86,7 @@ export class FormularioComponent {
 
     // obtener los datos del usiario logueado almacen y clues
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
+    this.permisos = this.usuario.permisos;
 
     if (this.usuario.clues_activa) {
       this.insumos_term += '&clues=' + this.usuario.clues_activa.clues;
@@ -114,6 +120,7 @@ export class FormularioComponent {
       status: ['FI'],
       fecha_movimiento: ['', [Validators.required]],
       observaciones: [''],
+      turno_id: [''],
       cancelado: [''],
       observaciones_cancelacion: [''],
       movimiento_metadato: this.fb.group({
@@ -149,6 +156,8 @@ export class FormularioComponent {
     } else {
       this.fecha_actual = this.dato.get('fecha_movimiento').value;
     }
+    // Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
+    document.getElementById('catalogos').click();
   }
   /**
      * Este método permite que el focus del cursor vuelva al buscador de insumos una vez presionada la tecla enter

@@ -12,9 +12,8 @@ export class HubComponent implements OnInit {
   // Se debe indicar los permisos para que el usuario tenga al menos uno para mostrar el item
 
   private itemsProtegidos = [
-    
-    { 
-      title:'Almacén de insumos medicos', routerLink:'/almacen', icono:'assets/hub-farmacia.svg',
+    {
+      title: 'Almacén de insumos medicos', routerLink: '/almacen', icono: 'assets/hub-farmacia.svg',
       permisos: [
         'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
         //'r6REUnVWlsQ00zVYXakLUxdKtGArcenY', // Ver pedidos jurisdiccionales
@@ -44,17 +43,19 @@ export class HubComponent implements OnInit {
       ]
     },
 
-    { 
-      title:'Almacén general', routerLink:'/almacen-articulos', icono:'assets/hub-almacen-articulos.svg',
+    {
+      title: 'Almacén general', routerLink: '/almacen-articulos', icono: 'assets/hub-almacen-articulos.svg',
       permisos: [
-        '--z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
+        'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Permiso de prueba
         'cuSmlV9lvABXzfjtLbzEe0VbI47Dh6Cv', // Ver catálogos
       ]
     },
     {
       title: 'Laboratorio', routerLink: '/laboratorio', icono: 'assets/hub-laboratorio.svg',
       permisos: [
-         'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk--', // Ver pedidos
+         'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos - Prueba
+         'PzmTtCd1MbMWVBPwVmttQQWdNfqwzp7p', // Entradas laboratorio
+         '7GkcqRllVy4Z371KMLPsX0d04dqv3vBE', // Salidas laboratorio
       ]
     },
     {
@@ -81,18 +82,17 @@ export class HubComponent implements OnInit {
       ]
     },
     {
-      title: 'Administrador proveedores', routerLink: '/administrador-proveedores', icono:'assets/hub-administrador-proveedores.svg',
+      title: 'Administrador proveedores', routerLink: '/administrador-proveedores', icono: 'assets/hub-administrador-proveedores.svg',
       permisos: [
         'MrL06vIO12iNhchP14h57Puvg71eUmYb' // Ver pedidos
       ]
     },
     {
-      title: 'Panel de control', routerLink: '/panel-control', icono: 'assets/hub-panel-control.svg', 
+      title: 'Panel de control', routerLink: '/panel-control', icono: 'assets/hub-panel-control.svg',
       permisos: [
         'mGKikN0aJaeF2XrHwwYK3XNw0f9CSZDe', // Ver usuarios
         'ICmOKw3HxhgRna4a78OP0QmKrIX0bNsp', // Ver roles
         'DYwQAxJbpHWw07zT09scEogUeFKFdGSu' // Ver permisos
-
       ]
     },
     {
@@ -103,33 +103,31 @@ export class HubComponent implements OnInit {
         '9dKCEyujSdLQF2CbpjXiWKeap0NlJCzw', // Ver mis turnos
         'Ki9kBghgqYsY17kqL620GWYl0bpeU6TB', // Ver mis servicios
         'BnB3LhrDbKNBrbQaeB2BPXKGrLEYrEw7' // Ver mis claves
-      ] 
+      ]
     },
-    { 
-      title:'Pacientes', routerLink:'/paciente', icono:'assets/avatar-enfermero.svg',
+    {
+      title: 'Pacientes', routerLink: '/paciente', icono: 'assets/avatar-enfermero.svg',
       permisos: [
         'PpXKhxdG8dGheNKm1rRSCT4EXZYyhRMm', // Ver admision
-      ] 
+      ]
     }
     ,
-    { 
-      title:'Avances', routerLink:'/temas', icono:'assets/hub-avance.svg',
+    {
+      title: 'Avances', routerLink: '/temas', icono: 'assets/hub-avance.svg',
       permisos: [
         'WbBYhMFZkGsAYeN13hY1hylZkNPJbHOE', // Ver Avances
-      ] 
+      ]
     }
   ]
-  
-  hubAutorizado = [ { title:'Dashboard', routerLink:'/dashboard', icono:'assets/hub-dashboard.svg' } ]
+  hubAutorizado = [ { title: 'Dashboard', routerLink: '/dashboard', icono: 'assets/hub-dashboard.svg' } ]
 
   constructor() { }
 
   ngOnInit() {
-    let usuario = JSON.parse(localStorage.getItem("usuario"));
-    var permisos =  usuario.permisos.split("|")
+    let usuario = JSON.parse(localStorage.getItem('usuario'));
+    var permisos =  usuario.permisos.split('|')
 
-    if(permisos.length > 0){      
-        
+    if(permisos.length > 0) {
       for(var i in this.itemsProtegidos){
         siguienteItemProtegido:     
         for(var j in this.itemsProtegidos[i].permisos){
