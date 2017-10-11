@@ -78,10 +78,38 @@
 
                         </div>
                     </div>
-
-
-                   <!-- <hr id="catalogos" (click)="ctrl.cargarCatalogo('servicios', 'servicios'); "> -->
-
+                    <br>
+                    <div>
+                        <div class="field">
+                            <label class="label">Programa:</label>
+                        </div><!-- SI carga los turnos -->
+                        <div class="control is-grouped">
+                            <span *ngIf="ctrl.cargando" class="tag is-primary is-medium">Cargando programas. 
+                                <i class="fa fa-refresh fa-spin" aria-hidden="true"></i>
+                            </span>
+                            <div  *ngIf="!ctrl.cargando" class="control is-expanded  has-icon has-icon-right">
+                                <select class="select" name="programa" formControlName="turno_id" 
+                                    [ngClass]="{'is-disabled': tieneid}">
+                                    <option *ngFor="let item of ctrl.turnos.clues_turnos" value="{{item.id}}" 
+                                    [attr.selected]="ctrl.dato.get('turno_id').value == item.id ">{{ item.nombre }}</option>
+                                    <option value="" selected>Seleccione un turno</option>
+                                </select>
+                                <span class="icon is-small" *ngIf="ctrl.dato.get('turno_id').hasError('required')">
+                                    <i class="fa fa-warning"></i>
+                                </span>
+                                <span class="help is-danger" *ngIf="ctrl.dato.get('turno_id').hasError('required')">Este campo es requerido.</span>
+                                <span class="help is-danger" *ngIf="ctrl.turnos['clues_turnos'].length == 0"> No se cargaron turnos, contacte al administrador.</span>
+                            </div>
+                            <!-- Botón para agregar turnos -->
+                            <div class="control">
+                                <a class="button" *ngIf="permisos.indexOf('ygwsEwz3cUw4yVMCeaQ9hVMCFXUHri5q') > -1 && !tieneid" 
+                                    (click)="abrirModal('editar_turnos')" title="Agregar turno">
+                                    <i class="fa fa-plus fa-fw" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <hr id="catalogos" (click)="ctrl.cargarCatalogo('turnos', 'mis-turnos');">
                     <div >
                         <nav class="panel" formGroupName="movimiento_metadato">
 

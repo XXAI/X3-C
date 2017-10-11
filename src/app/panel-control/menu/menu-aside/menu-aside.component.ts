@@ -14,8 +14,8 @@ export class MenuAsideComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    let usuario = JSON.parse(localStorage.getItem("usuario"));
-    var permisos =  usuario.permisos.split("|");
+    let usuario = JSON.parse(localStorage.getItem('usuario'));
+    var permisos =  usuario.permisos.split('|');
 
     this.menu = [
       {
@@ -39,6 +39,15 @@ export class MenuAsideComponent implements OnInit {
           { permiso: 'mGKikN0aJaeF2XrHwwYK3XNw0f9CSZDe', icono: 'fa-user', titulo:"Usuarios", url:"/panel-control/usuarios" },
           { permiso: 'ICmOKw3HxhgRna4a78OP0QmKrIX0bNsp', icono: 'fa-users', titulo:"Roles", url:"/panel-control/roles" },
           { permiso: 'DYwQAxJbpHWw07zT09scEogUeFKFdGSu', icono: 'fa-shield', titulo:"Permisos", url:"/panel-control/permisos" }          
+        ]
+      },
+      {
+        titulo: 'Catálogos de sistema',
+        modulos: [
+          { permiso: 'ygwsEwz3cUw4yVMCeaQ9hVMCFXUHri5q', icono: 'fa-user', titulo:"Programas", url:"/panel-control/programas" },
+          { /**
+           * Prueba de permisos para ver este menu
+           */permiso: 'mGKikN0aJaeF2XrHwwYK3XNw0f9CSZDe', icono: 'fa-user', titulo:"Programas", url:"/panel-control/programas" },
         ]
       },
       
