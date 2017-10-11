@@ -9,9 +9,22 @@
         <div style="background: #FFF; border-radius: 1em; " style="height: 100%">
 
             <!-- Opciones y busqueda -->
-            <tabla-opciones [ctrl]="ctrl" [nombre]="'Programas'"></tabla-opciones>
-
-            <table class="table" *ngIf="!ctrl.cargando" style="height: 100%">
+            <tabla-opciones 
+                #opciones
+                [ctrl]="ctrl"
+                [nombre]="'Programas'"
+                [ruta]="'movimientos?tipo=1'"
+                [ruta_pdf]="'panel-control/lista-programas.js'"
+                style="height: 20%">
+            </tabla-opciones>
+            
+            <div class="is-fullwidth has-text-centered" *ngIf="opciones.cargandoPdf" style="height: 75%">
+                <br>
+                <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Generando PDF...</span></span>
+                <br>
+                <br>
+            </div>
+            <table class="table" *ngIf="!ctrl.cargando && !opciones.cargandoPdf" style="height: 75%">
                 <thead>
                     <tr>
                         <th><abbr title="Usuario ID">ID</abbr></th>
@@ -46,7 +59,7 @@
                 </tbody>
             </table>
             <!-- Paginación para la lista  -->
-            <paginacion [ctrl]="ctrl"></paginacion>
+            <paginacion [ctrl]="ctrl" style="height: 5%"></paginacion>
 
         </div>
 

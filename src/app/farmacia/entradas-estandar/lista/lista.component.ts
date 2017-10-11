@@ -33,7 +33,14 @@ export class ListaEntradasComponent {
     recibe = '';
   usuario;
   dato;
-  cargando;
+  /**
+   * Variable que contiene un valor __true__ cuando está ocurriendo un proceso,
+   * y __false__ cuando no hay procesos realizándose.
+   * @type {boolean} */
+    cargando;
+  /**
+   * Contiene el resultado de la consulta de la lista general de programas.
+   * @type {any} */
   lista_impresion;
 
   // # SECCION: Reportes
