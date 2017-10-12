@@ -111,8 +111,10 @@ import { FormaFarmaceuticaModule } from './almacen-articulos/catalogos/forma-far
 
 import { CategoriasModule } from './almacen-articulos/categoria/categorias.module';
 import { ArticulosModule } from './almacen-articulos/articulos/articulos.module';
+import { InventariosModule } from './almacen-articulos/inventarios/inventarios.module';
 
-
+import { TipoPersonalModule } from './almacen-articulos/catalogos/tipo-personal/tipo-personal.module';
+import { PersonalCluesModule } from './configuracion/personal-clues/personal-clues.module';
 //import { CrudModule } from './crud/crud.module';
 
 
@@ -197,6 +199,9 @@ export function highchartsFactory() {
     //
     CategoriasModule,
     ArticulosModule,
+    InventariosModule,
+    TipoPersonalModule,
+    PersonalCluesModule,
     //
     IndexLaboratorioModule,
     IndexEquipamientoModule,

@@ -23,19 +23,22 @@ export class MenuAsideComponent implements OnInit {
         modulos: [
           { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-servidor.svg', titulo:"Categorias", url:"/almacen-articulos/categoria" },
           { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-servidor.svg', titulo:"Articulos", url:"/almacen-articulos/articulos" },
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-servidor.svg', titulo:"Servidores", url:"/catalogos/servidores" },
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-almacenes.svg', titulo:"Almacenes", url:"/catalogos/almacenes" },
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-proveedores.svg', titulo:"Proveedores", url:"/catalogos/proveedores"}, 
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-um.svg', titulo:"Unidades Médicas", url:"/catalogos/unidades-medicas"},         
+          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-servidor.svg', titulo:"Inventario", url:"/almacen-articulos/inventarios" },
+          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-servidor.svg', titulo:"Entradas", url:"/almacen-articulos/entradas" },
+          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-servidor.svg', titulo:"Salidas", url:"/almacen-articulos/salidas" },        
         ]
       },
       {
         titulo: 'Catalogos',
         modulos: [
+          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-um.svg', titulo:"Unidades Médicas", url:"/catalogos/unidades-medicas"}, 
+          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-servidor.svg', titulo:"Servidores", url:"/catalogos/servidores" },
+          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-almacenes.svg', titulo:"Almacenes", url:"/catalogos/almacenes" },
+          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-proveedores.svg', titulo:"Proveedores", url:"/catalogos/proveedores"}, 
           { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-grupo-insumos.svg', titulo:"Grupos de insumos", url:"/catalogos/grupos-insumos"}, 
           { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-marcas.svg', titulo:"Marcas", url:"/catalogos/marcas"}, 
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-mc.svg', titulo:"Material de curación", url:"/catalogos/material-curacion"}, //
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-medicamento.svg', titulo:"Medicamentos", url:"/catalogos/medicamentos"}, //      
+          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-mc.svg', titulo:"Material de curación", url:"/catalogos/material-curacion"}, 
+          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-medicamento.svg', titulo:"Medicamentos", url:"/catalogos/medicamentos"},     
           { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-programas.svg', titulo:"Programas", url:"/catalogos/programas"}, 
           { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-presentacion.svg', titulo:"Presentaciones de medicamentos", url:"/catalogos/presentaciones-medicamentos"}, 
           { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-administracion.svg', titulo:"Vias de administración", url:"/catalogos/vias-administracion" },

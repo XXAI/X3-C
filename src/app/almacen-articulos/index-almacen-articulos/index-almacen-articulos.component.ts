@@ -25,7 +25,7 @@ export class IndexAlmacenArticulosComponent implements OnInit {
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
 
     this.modulos = [
-      { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-catalogos.svg', titulo:"Inventario", url:"/almacen-articulos/inventario"},
+      { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-catalogos.svg', titulo:"Inventario", url:"/almacen-articulos/inventarios"},
       { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-catalogos.svg', titulo:"Entradas", url:"/almacen-articulos/entradas"},
       { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-catalogos.svg', titulo:"Salidas", url:"/almacen-articulos/salidas"}
     ]

@@ -189,4 +189,5 @@ input[type="checkbox"] .styled:checked + label::after {
 .select
 {
   min-width: 150px;
+  margin-bottom: 6px;
 }
