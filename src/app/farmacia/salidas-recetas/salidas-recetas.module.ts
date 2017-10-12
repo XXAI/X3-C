@@ -12,6 +12,7 @@ import { PaginacionModule } from '../../paginacion/paginacion.module';
 import { PipesModule }             from '../../pipes/pipes.module';
 import { ListaComponent } from './lista/lista.component';
 import { FormularioComponent } from './formulario/formulario.component';
+import { ModalTurnosComponent}  from  './formulario/modal-turnos.component';
 
 import { AuthService } from '../../auth.service';
 
@@ -40,8 +41,9 @@ import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
     NguiDatetimePickerModule
   ],
   declarations: [ 
-    ListaComponent,   
-    FormularioComponent 
+    ListaComponent,
+    FormularioComponent,
+    ModalTurnosComponent
   ],
   providers: [ AuthService, CrudService ]
 })

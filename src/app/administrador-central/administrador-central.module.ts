@@ -21,6 +21,7 @@ import { MenuLateralComponent } from './menu-lateral/menu-lateral.component';
 import { AdministradorCentralService } from './administrador-central.service';
 import { EntregasMesComponent } from './entregas-mes/entregas-mes.component';
 import { CumplimientoComponent } from './cumplimiento/cumplimiento.component';
+import { ReporteFinancieroComponent } from './reporte-financiero/reporte-financiero.component';
 
 
 
@@ -39,7 +40,7 @@ import { CumplimientoComponent } from './cumplimiento/cumplimiento.component';
   exports: [
     MenuLateralComponent, MenuComponent
   ],
-  declarations: [PedidosComponent, AbastoComponent, TransferenciasRecursosComponent, MenuComponent, MenuLateralComponent, EntregasMesComponent, CumplimientoComponent],
+  declarations: [PedidosComponent, AbastoComponent, TransferenciasRecursosComponent, MenuComponent, MenuLateralComponent, EntregasMesComponent, CumplimientoComponent, ReporteFinancieroComponent],
   providers: [ AdministradorCentralService ]
 })
 export class AdministradorCentralModule { }

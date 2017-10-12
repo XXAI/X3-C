@@ -11,7 +11,9 @@ import { createAutoCorrectedDatePipe } from 'text-mask-addons';
 
 import * as moment from 'moment';
 import  * as FileSaver    from 'file-saver';
-
+/**
+ * Formulario para crear o ver una salida estandar.
+ */
 @Component({
   selector: 'salidas-estandar-formulario',
   templateUrl: './formulario.component.html',
@@ -34,6 +36,10 @@ export class FormularioComponent {
   array_servicios;
   sum_cant_lotes = false;
   index_borrar;
+  /**
+   * Contiene los datos de inicio de sesión del usuario.
+   * @type {any} */
+  usuario;
 
   // Máscara para validar la entrada de la fecha de caducidad
   mask = [/[2]/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/];
@@ -56,6 +62,11 @@ export class FormularioComponent {
   cargando = false;
   fecha_movimiento;
   mostrarCancelado;
+  lotes_insumo;
+  /**
+   * Guarda el resultado de la búsqueda de insumos médicos.
+   * @type {array} */
+  res_busq_insumos= [];
 
   // # SECCION: Reportes
   pdfworker:Worker;
@@ -85,18 +96,18 @@ export class FormularioComponent {
   ngOnInit() {
 
     // obtener los datos del usiario logueado almacen y clues
-    var usuario = JSON.parse(localStorage.getItem("usuario"));
+    this.usuario = JSON.parse(localStorage.getItem("usuario"));
 
     // Solo si se va a cargar catalogos poner un 
     // <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
     document.getElementById("catalogos").click();
     document.getElementById('actualizar').click();
 
-    if (usuario.clues_activa) {
-      this.insumos_term += '&clues=' + usuario.clues_activa.clues;
+    if (this.usuario.clues_activa) {
+      this.insumos_term += '&clues=' + this.usuario.clues_activa.clues;
     }
-    if (usuario.almacen_activo) {
-      this.insumos_term += '&almacen=' + usuario.almacen_activo.id;
+    if (this.usuario.almacen_activo) {
+      this.insumos_term += '&almacen=' + this.usuario.almacen_activo.id;
     }
 
     // Inicializamos el objeto para los reportes con web Webworkers
@@ -187,7 +198,31 @@ export class FormularioComponent {
       this.cantidad_solicitadaBoxViewChildren.first.nativeElement.focus();
     }
   }
-  lotes_insumo;
+
+  /**
+   * Método de búsqueda de insumos en la API.
+   * @param keyword Contiene la palabra que va a buscar.
+   */
+  enviarAutocomplete(keyword: any) {
+    this.cargando = true;
+    let cabecera = '';
+    if (this.usuario.clues_activa) {
+      cabecera += '&clues=' + this.usuario.clues_activa.clues;
+    }
+    if (this.usuario.almacen_activo) {
+      cabecera += '&almacen=' + this.usuario.almacen_activo.id;
+    }
+    let url: string = '' + environment.API_URL + '/insumos-auto?term=' + keyword + cabecera;
+    this.crudService.busquedaInsumos(keyword, 'insumos-auto').subscribe(
+      resultado => {
+        this.cargando = false;
+        this.res_busq_insumos = resultado;
+        if (this.res_busq_insumos.length === 0) {
+          this.notificacion.warn('Insumos', 'No hay resultados que coincidan', this.objeto);
+        }
+      }
+    );
+  }
   /**
      * Este método formatea los resultados de la busqueda en el autocomplte
      * @param data resultados de la busqueda 
@@ -270,12 +305,13 @@ export class FormularioComponent {
 
         // limpiar el autocomplete
         (<HTMLInputElement>document.getElementById('buscarInsumo')).value = '';
+        this.res_busq_insumos = [];
 
-        // poner el titulo a la modal                ${data.presentacion}
-
+        // poner el titulo a la modal
         document.getElementById('tituloModal').innerHTML = ` ${data.descripcion} <br>
           <p aling="justify" style="font-size:12px">${data.descripcion}</p> 
-          <p aling="justify" style="font-size:16px"> CANTIDAD POR ENVASE: ${data.cantidad_x_envase ? data.cantidad_x_envase : 'Sin especificar' }</p>`;
+          <p aling="justify" style="font-size:16px"> CANTIDAD POR ENVASE: 
+          ${data.cantidad_x_envase ? data.cantidad_x_envase : 'Sin especificar' }</p>`;
         this.es_unidosis = data.es_unidosis;
         this.unidad_medida = data.unidad_medida;
 
@@ -287,19 +323,17 @@ export class FormularioComponent {
       }
     );
   }
-
-
   mostrar_lote = [];
-  
+
   /**
-     * Este método agrega los lostes del modal a el modelo que se envia a la api
+     * Este método agrega los lotes del modal a el modelo que se envia a la api
      * @return void
      */
-  agregarLoteIsumo(cantidad_solicitada:number) {
-    //obtener el formulario reactivo para agregar los elementos
+  agregarLoteIsumo(cantidad_solicitada: number) {
+    // obtener el formulario reactivo para agregar los elementos
     const control = <FormArray>this.dato.controls['insumos'];
 
-    //crear el json que se pasara al formulario reactivo tipo insumos
+    // crear el json que se pasara al formulario reactivo tipo insumos
     var lotes = {
       'clave': this.insumo.clave,
       'nombre': this.insumo.nombre,
@@ -309,15 +343,15 @@ export class FormularioComponent {
       'cantidad': 1,
       'presentacion_nombre': this.insumo.presentacion_nombre,
       'unidad_medida': this.insumo.unidad_medida,
-      'cantidad_x_envase': this.insumo.cantidad_x_envase ? parseInt(this.insumo.cantidad_x_envase) : 1,     
+      'cantidad_x_envase': this.insumo.cantidad_x_envase ? parseInt(this.insumo.cantidad_x_envase) : 1,
       'cantidad_surtida': 1,
       'modo_salida': this.modo,
-      'cantidad_solicitada': cantidad_solicitada, //this.modo == 'N' ? cantidad_solicitada : 0,
+      'cantidad_solicitada': cantidad_solicitada, // this.modo == 'N' ? cantidad_solicitada : 0,
       'cantidad_solicitada_unidosis': cantidad_solicitada,// this.modo == 'U' ? cantidad_solicitada : 0,
       'lotes': this.fb.array([])
     };
 
-    //comprobar que el isumo no este en la lista cargada
+    // comprobar que el isumo no este en la lista cargada
     var existe = false;
     var existe_clave = false;
     var posicion_existe = 0;

@@ -14,10 +14,10 @@ export class FormularioComponent {
   es_causes=1;
   dato: FormGroup;
   cargando_claves_disponibles = false;
-  actualizado;
   cargando = true;
   insumo;
   es_unidosis;
+  actualizado;
   error_actualizacion;
   actualizacion;
   actualizacion_usuario;
@@ -37,19 +37,23 @@ export class FormularioComponent {
     let usuario = JSON.parse(localStorage.getItem('usuario'));
 
     this.dato = this.fb.group({
-      clues: [usuario.clues_activa.clues, [Validators.required]],
-      jurisdiccion_id: [usuario.clues_activa.jurisdiccion_id],
-      nombre: [usuario.clues_activa.nombre],
-      activa: [usuario.clues_activa.activa],
-      director_id: [usuario.clues_activa.director_id],
+      clues: ['', [Validators.required]],
+      jurisdiccion_id: [''],
+      nombre: [''],
+      activa: [''],
+      director_id: [''],
       clues_claves: this.fb.array([])
     });
 
-    this.route.params.subscribe(params => {
-      if (params['clues']) {
-        this.tieneid = true;
-      }
-    });
+    try {
+      this.route.params.subscribe(params => {
+        if (params['clues']) {
+          this.tieneid = true;
+        }
+      });
+    } catch (e) {
+      console.log('Error');
+    }
 
     if (usuario.clues_activa) {
       this.insumos_term += '&clues=' + usuario.clues_activa.clues;
@@ -57,12 +61,12 @@ export class FormularioComponent {
     if (usuario.almacen_activo) {
       this.insumos_term += '&almacen=' + usuario.almacen_activo.id;
     }
+    document.getElementById('catalogos').click();
   }
 
   ngAfterViewInit() {
     this.cdr.detectChanges();
     document.getElementById('actualizar').click();
-    this.cargarValidar();
   }
 
 
@@ -76,7 +80,8 @@ export class FormularioComponent {
       let temp_usuario_id = '';
 
       // Solo si se tiene el control mover izquierda-derecha poner un 
-      // <a id="initMover" (click)="ctrl.initMover(ctrl.dato.controls.almacen_tipos_movimientos.controls, ctrl.tipos_movimientos)>refresh</a>
+      // <a id="initMover" 
+      // (click)="ctrl.initMover(ctrl.dato.controls.almacen_tipos_movimientos.controls, ctrl.tipos_movimientos)>refresh</a>
       // incrementar el tiempo segun sea el caso para que cargue el catalogo en este caso va a acrgar 2 catalogos por eso pongo 5000
       if (control) {
         // document.getElementById('catalogos').click();

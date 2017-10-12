@@ -27,6 +27,7 @@ export class MenuAsideComponent implements OnInit {
           { permiso: 'BnB3LhrDbKNBrbQaeB2BPXKGrLEYrEw7', icono: 'fa-medkit', titulo:"Mis claves", url:"/configuracion/claves" },
           { permiso: 'BnB3LhrDbKNBrbQaeB2BPXKGrLEYrEw7', icono: 'fa-medkit', titulo:"Personal", url:"/configuracion/personal-clues" },
           /*{ permiso: 'BnB3LhrDbKNBrbQaeB2BPXKGrLEYrEw7', icono: 'fa-medkit', titulo:"Responsables", url:"/configuracion/claves" },*/
+          { permiso: 'BnB3LhrDbKNBrbQaeB2BPXKGrLEYrEw7', icono: 'fa-pencil', titulo:"Firmantes", url:"/configuracion/firmantes" },
         ]
       },
       

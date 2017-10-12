@@ -5,16 +5,16 @@ import { Router } from '@angular/router';
 import { ActivatedRoute, Params } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 @Component({
-  selector: 'almacenes-formulario',
+  selector: 'app-servicios-formulario',
   templateUrl: './formulario.component.html'
 })
 
 export class FormularioComponent {
   dato: FormGroup;
-  // actualizado;
-  // error_actualizacion = false;
-  // actualizacion;
-  // actualizacion_usuario;
+  actualizado;
+  error_actualizacion = false;
+  actualizacion;
+  actualizacion_usuario;
   tieneid;
 
   tab = 2;
@@ -32,11 +32,11 @@ export class FormularioComponent {
     let usuario = JSON.parse(localStorage.getItem('usuario'));
 
     this.dato = this.fb.group({
-      clues: [usuario.clues_activa.clues, [Validators.required]],
-      jurisdiccion_id:[usuario.clues_activa.jurisdiccion_id],
-      nombre:[usuario.clues_activa.nombre],
-      activa:[usuario.clues_activa.activa],
-      director_id:[usuario.clues_activa.director_id],
+      clues: ['', [Validators.required]],
+      jurisdiccion_id: [''],
+      nombre: [''],
+      activa: [''],
+      director_id: [''],
       clues_servicios: this.fb.array([])
     });
     try {
@@ -57,9 +57,8 @@ export class FormularioComponent {
     document.getElementById('actualizar').click();
   }
   cargarValidar() {
-    // setTimeout(() => {
-      // obtener el formulario reactivo para agregar los elementos
       try {
+      // obtener el formulario reactivo para agregar los elementos
       const control = <FormArray>this.dato.controls['clues_servicios'];
       let c = 0;
       let tempUpdateAt = '';
@@ -70,12 +69,12 @@ export class FormularioComponent {
           // Comprobacion de la última fecha en la que se modificó y el usuario que lo hizo
           if (control.value[c].updated_at) {
             tempUpdateAt = control.value[c].updated_at;
-            // this.error_actualizacion = false;
+             this.error_actualizacion = false;
           } else if (control.value[c].created_at) {
             tempUpdateAt = control.value[c].created_at;
-            // this.error_actualizacion = false;
+             this.error_actualizacion = false;
           } else {
-            // this.error_actualizacion = true;
+             this.error_actualizacion = true;
           }
           temp_usuario_id = control.value[c].usuario_id;
           for (c = 0; c < control.length; ) {
@@ -85,12 +84,12 @@ export class FormularioComponent {
             }
             c = c + 1;
           }
-          // this.actualizacion = tempUpdateAt;
-          // this.actualizacion_usuario = temp_usuario_id;
-          // this.actualizado = true;
+           this.actualizacion = tempUpdateAt;
+           this.actualizacion_usuario = temp_usuario_id;
+           this.actualizado = true;
         }else {
-          // this.error_actualizacion = true;
-          // this.actualizacion_usuario = 'Sin actualización';
+           this.error_actualizacion = true;
+           this.actualizacion_usuario = 'Sin actualización';
         }
       } catch (e) {
         console.log('Error cachado');

@@ -33,9 +33,9 @@
 
                                 <input class="input" [value]="fecha_actual" [(ngModel)]='fecha_movimiento' formControlName="fecha_movimiento" ngui-datetime-picker
                                     [min-date]="MinDate" [max-date]="MaxDate" date-only="true" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('fecha_movimiento').hasError('required') && ctrl.dato.get('fecha_movimiento').touched}"
-                                    placeholder="YYYY-MM-DD" />
+                                    placeholder="YYYY-MM-DD" readonly/>
 
-                                <span class="icon is-small" *ngIf="ctrl.dato.get('fecha_movimiento').hasError('required') && ctrl.dato.get('fecha_movimiento').touched">
+                                <span class="icon is-small" *ngIf="ctrl.dato.get('fecha_movimiento').hasError('required')">
                                     <i class="fa fa-warning"></i>
                                 </span>
                                 <span class="help is-danger" *ngIf="ctrl.dato.get('fecha_movimiento').hasError('required') && ctrl.dato.get('fecha_movimiento').touched">Este campo es requerido.</span>
@@ -88,12 +88,12 @@
                             <div class="field">
                                 <label class="label">Persona que entrega:</label>
                                 <p class="control is-expanded  has-icon has-icon-right">
-                                    <input class="input" type="text" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required') && ctrl.dato.get('movimiento_metadato').get('persona_recibe').touched}"
+                                    <input class="input" type="text" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required')}"
                                         placeholder="Persona que entrega" formControlName="persona_recibe">
-                                    <span class="icon is-small" *ngIf="ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required') && ctrl.dato.get('movimiento_metadato').get('persona_recibe').touched">
+                                    <span class="icon is-small" *ngIf="ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required')">
                                         <i class="fa fa-warning"></i>
                                     </span>
-                                    <span class="help is-danger" *ngIf="ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required') && ctrl.dato.get('movimiento_metadato').get('persona_recibe').touched">Este campo es requerido.</span>
+                                    <span class="help is-danger" *ngIf="ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required')">Este campo es requerido.</span>
                                 </p>
                             </div>
 
@@ -146,6 +146,7 @@
 
                     <div class="field has-addons has-addons-centered" *ngIf="!tieneid">
 
+<!-- ******************************************* AUTOCOMPLETE ********************************************* 
                         <p class="control">
                             <input ngui-auto-complete [source]="insumos_term" [list-formatter]="autocompleListFormatter" id="buscarInsumo" value-property-name="clave"
                                 display-property-name="nombre" path-to-data="" loading-text="Cargando..." no-match-found-text="No hay resultados."
@@ -153,9 +154,61 @@
                                 type="text" placeholder="Escanea el codigo de barra, o empieza escribir el nombre del producto" >
 
                         </p>
+******************************************* AUTOCOMPLETE ********************************************* -->
 
-                        <hr>
+                        <!-- *****************     INPUT DE BUSQUEDA DE INSUMO     ****************** -->    
+                        <div class="control is-grouped">
+                            <div class="control is-expanded">
+                                <input 
+                                    (keyup.enter)="buscarInsumo.value != '' ?  enviarAutocomplete(buscarInsumo.value) : buscarInsumo.value = ''" 
+                                    id="buscarInsumo"
+                                    name="buscarInsumo"
+                                    #buscarInsumo
+                                    class="input is-success is-medium"
+                                    type="text"
+                                    placeholder="Escriba la clave o el nombre del insumo y presione la tecla ENTER"/>
+                            </div>
+                            <div class="control">
+                                <a class="button is-success is-medium" title="Buscar insumo" (click)="buscarInsumo.value != '' ?  enviarAutocomplete(buscarInsumo.value) : buscarInsumo.value = ''">
+                                    <i class="fa fa-search" aria-hidden="true"></i> &nbsp; Buscar
+                                </a>
+                            </div>
+                            <div class="control" *ngIf="buscarInsumo.value != ''">
+                                <a class="button is-info is-medium" title="Borrar texto" (click)="res_busq_insumos=[]; buscarInsumo.value=''">
+                                    <i class="fa fa-times" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="is-fullwidth has-text-centered" *ngIf="cargando" style="height:100px;">
+                            <br>
+                            <span class="tag is-primary is-large">
+                                <span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span>
+                            </span>
+                        </div>
+                        <!-- *****************     RESULTADOS DE BUSQUEDA DE INSUMO     ****************** -->
+                        <div *ngIf="res_busq_insumos.length > 0 && !cargando" style="height: 200px;">
+                            <div *ngIf="res_busq_insumos.length > 0 && !cargando" style="overflow: scroll; overflow-x: hidden; height: 90%;">
+                                <div class="content" style="z-index: 1;" *ngFor="let item_insumo of res_busq_insumos; let c = index">
+                                    <div class="card" (click)="select_insumo_autocomplete(item_insumo)" style="background: rgba(242,248,253, 0.8)">
+                                        <div class="card-content">
+                                            <div class="media">          
+                                                <div class="media-content">
+                                                    <p class="title is-4">{{item_insumo.descripcion}}</p>
+                                                    <p class="subtitle is-6">
+                                                        <strong>Clave: </strong> {{item_insumo.clave}}
+                                                        <label class="tag is-success" *ngIf="item_insumo.es_causes == 1"><strong>Cause </strong></label>
+                                                        <label class="tag" *ngIf="item_insumo.es_causes == 0" style="background: #B8FB7E; border-color: #B8FB7E; color: rgba(0,0,0,0.7);" ><strong>No Cause </strong> </label>
+                                                        <label class="tag is-warning" *ngIf="item_insumo.es_unidosis == 1"><strong>Unidosis</strong> </label>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    <hr> <!-- Línea de division -->
 
                     <div formArrayName="insumos" style="overflow: scroll; overflow-x: hidden; height: 550px;">
                         <div class="box" *ngFor="let item of ctrl.dato.controls.insumos.controls; let i=index" [ngStyle]="{'background': i%2 == 0 ? 'rgba(230, 230, 232, 0.44)' : ''}">
@@ -165,7 +218,10 @@
                                         <span style="float:right; padding-left: 15px;" >
                                             <a *ngIf="!tieneid" class="button is-danger" title="Quitar este elemento de la lista" (click)="abrirModal('borrarInsumo', i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
                                         </span>
-                                        <a *ngIf="!tieneid" class="button is-success" [ngClass]="{'is-disabled':ctrl.dato.invalid}" title="Agregar más insumos de esta clave" style="float:right" (click)="select_insumo_autocomplete(item.value)"><span class="icon"><i class="fa fa-plus-circle" aria-hidden="true"></i></span> </a>
+                                        <a *ngIf="!tieneid" class="button is-success" 
+                                            [ngClass]="{'is-disabled': ctrl.dato.controls.insumos.invalid}" title="Agregar más insumos de esta clave" style="float:right" (click)="select_insumo_autocomplete(item.value)">
+                                            <span class="icon"><i class="fa fa-plus-circle" aria-hidden="true"></i></span>
+                                        </a>
                                         <p>
                                             <strong>
                                                 <span style="color:cornflowerblue">
@@ -217,11 +273,12 @@
                                         <div class="columns is-flex-desktop" style="width: 100%">
                                             <div class="column is-3">
                                                 <p class="control is-expanded">
-                                                <label class="label">Lote:</label>
+                                                    <label class="label">Lote:</label>
                                                     <input type="text" class="input" formControlName="lote" 
-                                                    [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.lote.hasError('required') && 
-                                                    ctrl.dato.controls.insumos.controls[i].controls.lote.touched}">
+                                                    [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.lote.hasError('required')}">
                                                 </p>
+                                                <span class="help is-danger" 
+                                                *ngIf="ctrl.dato.controls.insumos.controls[i].controls.lote.hasError('required')">Este campo es requerido.</span>
                                             </div>                       
                                             <div class="column is-4">
                                                 <p class="control is-expanded">
@@ -233,10 +290,13 @@
                                                             [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.hasError('required') 
                                                             && ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.touched}">
 -->
-                                                        <input class="input" formControlName="fecha_caducidad" (blur)="validar_fecha(ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.value, i)"
-                                                            min="MinDateCaducidad" date-only="true" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.touched}"
-                                                            placeholder="YYYY-MM-DD" [textMask]="{mask:mask, keepCharPositions: true, pipe: autoCorrectedDatePipe}"/>
+                                                    <input class="input" formControlName="fecha_caducidad" (blur)="validar_fecha(ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.value, i)"
+                                                        min="MinDateCaducidad" date-only="true" 
+                                                        [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.hasError('required')}"
+                                                        placeholder="YYYY-MM-DD" [textMask]="{mask:mask, keepCharPositions: true, pipe: autoCorrectedDatePipe}"/>
                                                 </p>
+                                                <span class="help is-danger" 
+                                                *ngIf="ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.hasError('required')">Este campo es requerido.</span>
                                             </div>                          
                                             <div class="column is-3">
                                                 <p class="control is-expanded">
@@ -248,8 +308,10 @@
                                                 <p class="control is-expanded">
                                                     <label class="label">Cantidad:</label>
                                                     <input type="number" class="input" formControlName="cantidad" (keypress)="quitar_punto($event)"
-                                                    [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad.touched}">
+                                                    [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad.hasError('required')}">
                                                 </p>
+                                                <span class="help is-danger" 
+                                                *ngIf="ctrl.dato.controls.insumos.controls[i].controls.cantidad.hasError('required')">Este campo es requerido.</span>
                                             </div>
                                         </div>
                                     </div>

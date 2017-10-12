@@ -3,30 +3,56 @@ import { CrudService } from '../../../crud/crud.service';
 import  * as FileSaver    from 'file-saver';
 
 @Component({
-  selector: 'salidas-recetas-lista',
+  selector: 'app-entradas-lista',
   templateUrl: './lista.component.html'
 })
+/**
+ * @class ListaComponent que pertenece a Entradas Estandar
+ */
+export class ListaEntradasComponent {
 
-export class ListaComponent {
-
+  /**
+   * Fecha inicial de periodo de tiempo para filtro.
+   * @type {string} */
+    fecha_desde = '';
+  /**
+   * Fecha final de periodo de tiempo de filtro.
+   * @type {string} */
+    fecha_hasta = '';
+  /**
+   * Nombre o id de turno para filtro.
+   * @type {string} */
+    turno = '';
+  /**
+   * Nombre o id de servicio para filtro.
+   * @type {string} */
+    servicio = '';
+  /**
+   * Nombre de quien recibe para aplicarlo al filtro.
+   * @type {string} */
+    recibe = '';
   usuario;
-  fecha_desde = '';
-  fecha_hasta = '';
-  turno = '';
-  servicio = '';
-  recibe = '';
   dato;
   cargando;
   lista_impresion;
 
   // # SECCION: Reportes
-  pdfworker: Worker;
-  cargandoPdf = false;
+    /**
+     * Variable para la seccion de reportes.
+     * @type {Worker} */
+      pdfworker: Worker;
+    /**
+     * Identifica su el archivo se está cargando.
+     * @type {boolean} */
+    cargandoPdf = false;
   // # FIN SECCION
 
   @ViewChildren('tr') tr;
   @ViewChildren('sr') sr;
-
+  /**
+   * Este método inicializa la carga de las dependencias
+   * que se necesitan para el funcionamiento del modulo
+   */
   constructor(
     private _ngZone: NgZone,
     private crudService: CrudService) { }
@@ -52,41 +78,10 @@ export class ListaComponent {
       // open( 'data:application/pdf;base64,' + evt.data.base64 ); // Popup PDF
     };
   }
-
-  export_pdf(){
-    // crear el contenedor para guardar el elemento a imprimir
-    var titulo = 'Entrada Estandar';
-    var turno = this.tr.first.nativeElement.options;
-    var servicio = this.sr.first.nativeElement.options;
-    turno = turno[turno.selectedIndex].text;
-    servicio = servicio[servicio.selectedIndex].text;
-    var exportData = "<table><tr><th colspan='7'><h1>" + titulo 
-    +"</h1></th></tr><tr><th>Desde: "+this.fecha_desde+"</th><th>Hasta: "+this.fecha_hasta+"</th>"
-    +"</th><th>Recibe: "+this.recibe+"</th></tr><tr><th colspan='7'></th></tr></table>";
-
-    var exportData = exportData + document.getElementById("exportable").innerHTML;
-
-    exportData = '<html lang="es">' + ' <head>' + ' <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />' 
-    + ' <meta name="charset" content="UTF-8">' + ' <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">' 
-    + ' <meta name="apple-mobile-web-app-capable" content="yes">' + ' <title>PDF</title> <meta name="viewport" content="initial-scale=1" />' 
-    + ' <style>html { font-size: .9em;} body{font-size: .9em;} select::-ms-expand {display: none;}</style>' + ' </head>' + ' <body>'  + exportData + ' </body>' + ' </html>';
-   
-    var iframe = document.createElement('iframe');
-    iframe.setAttribute("id", 'printf');
-    iframe.setAttribute('style', 'display:none');
-    document.body.appendChild(iframe);
-
-    var mywindow = <HTMLSelectElement>document.getElementById('printf');
-    mywindow.contentWindow.document.write(exportData);
-    setTimeout(function () {
-      // lanzar la sentencia imprimir
-      mywindow.contentWindow.print();
-    }, 500);
-    setTimeout(function () {
-      // remover el contenedor de impresión
-      document.body.removeChild(iframe);
-    }, 2000);
-  }
+  /**
+   * Método que genera una lista general de los registros en formato EXCEL, con los filtros correspondientes
+   * @returns archivo en formato EXCEL
+   */
   export_excel() {
     let titulo = 'Entrada Estandar';
     let exportData = '<table><tr><th colspan=\'7\'><h1>' + titulo
@@ -101,7 +96,10 @@ export class ListaComponent {
       console.log(e);
     }
   }
-
+  /**
+   * Método que genera una lista general de los registros en formato PDF, con los filtros correspondientes
+   * @returns archivo en formato PDF
+   */
   imprimir() {
     this.crudService.lista_general('movimientos?tipo=1&fecha_desde=' + this.fecha_desde
     + '&fecha_hasta=' + this.fecha_hasta + '&recibe=' + this.recibe).subscribe(
@@ -126,7 +124,11 @@ export class ListaComponent {
             }
     );
   }
-
+/**
+ * Método que nos ayuda a convertir un archivo para poder guardarlo
+ * @param base64 pendiente
+ * @param type pendiente
+ */
   base64ToBlob( base64, type ) {
       let bytes = atob( base64 ), len = bytes.length;
       let buffer = new ArrayBuffer( len ), view = new Uint8Array( buffer );

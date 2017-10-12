@@ -46,6 +46,7 @@ import { MisAlmacenesModule} from './configuracion/almacenes/almacenes.module';
 import { MisServiciosModule} from './configuracion/servicios/servicios.module';
 import { MisTurnosModule   } from './configuracion/turnos/turnos.module';
 import { MisClavesModule   } from './configuracion/claves/claves.module';
+import { MisFirmantesModule} from './configuracion/firmantes/firmantes.module';
 
 // # Hub Farmacia subrrogada
 import { IndexFarmaciaSubrrogadaModule } from './farmacia-subrrogada/index-farmacia-subrrogada/index-farmacia-subrrogada.module';
@@ -70,6 +71,7 @@ import { InicializacionInventarioModule } from './inventario/inicializacion-inve
 import { AjusteMasInventarioModule      } from './inventario/ajuste-mas-inventario/ajuste-mas-inventario.module';
 import { AjusteMenosInventarioModule    } from './inventario/ajuste-menos-inventario/ajuste-menos-inventario.module';
 import { CorreccionesModule             } from './inventario/correcciones/correcciones.module';
+import { MovimientosGeneralesModule     }  from './inventario/movimientos-generales/movimientos-generales.module';
 
 // # Hub almacén artículos
 import { IndexAlmacenArticulosModule } from './almacen-articulos/index-almacen-articulos/index-almacen-articulos.module';
@@ -79,7 +81,9 @@ import { ViasAdministracionModule } from './almacen-articulos/catalogos/vias-adm
 // import { ProveedoresModule } from './almacen-articulos/catalogos/proveedores/proveedores.module';
 
 // # Hub laboratorio
-import { IndexLaboratorioModule } from './laboratorio/index-laboratorio/index-laboratorio.module';
+import { IndexLaboratorioModule   } from './laboratorio/index-laboratorio/index-laboratorio.module';
+import { EntradasLaboratorioModule} from './laboratorio/entradas-laboratorio/entradas-laboratorio.module';
+import { SalidasLaboratorioModule} from './laboratorio/salidas-laboratorio/salidas-laboratorio.module';
 
 // # Hub equipamiento
 import { IndexEquipamientoModule } from './equipamiento/index-equipamiento/index-equipamiento.module';
@@ -91,6 +95,8 @@ import { AvancesModule } from './avances/avances.module';
 import { EgresoModule } from './admision/egreso/egreso.module';
 import { PacienteModule } from './admision/paciente/paciente.module';
 
+// # Hub Receta Electronica
+import { IndexRecetaModule          } from './receta-electronica/index-receta/index-receta.module';
 
 //catalogos
 import { UnidadesMedidaModule } from './almacen-articulos/catalogos/unidades-medida/unidades-medida.module';
@@ -116,8 +122,6 @@ import { InventariosModule } from './almacen-articulos/inventarios/inventarios.m
 import { TipoPersonalModule } from './almacen-articulos/catalogos/tipo-personal/tipo-personal.module';
 import { PersonalCluesModule } from './configuracion/personal-clues/personal-clues.module';
 //import { CrudModule } from './crud/crud.module';
-
-
 export function highchartsFactory() {
   const hc = require('highcharts');
   const dd = require('highcharts/modules/exporting');
@@ -154,6 +158,7 @@ export function highchartsFactory() {
     MisTurnosModule,
     MisClavesModule,
     MisServiciosModule,
+    MisFirmantesModule,
     AdministradorCentralModule,
     AsignacionProveedoresPedidosAlternosModule,
     ValidacionPedidosAlternosModule,
@@ -171,10 +176,12 @@ export function highchartsFactory() {
     AjusteMasInventarioModule,
     AjusteMenosInventarioModule,
     CorreccionesModule,
+    MovimientosGeneralesModule,
     SalidasRecetasModule,
     DashboardSalidasModule,
     ClavesBasicasModule,
     IndexInventarioModule,
+    IndexRecetaModule,
     IndexAlmacenArticulosModule,
     IndexCatalogoModule,
     ViasAdministracionModule,    
@@ -204,6 +211,8 @@ export function highchartsFactory() {
     PersonalCluesModule,
     //
     IndexLaboratorioModule,
+    EntradasLaboratorioModule,
+    SalidasLaboratorioModule,
     IndexEquipamientoModule,
     SincronizarRecetasModule,
     //CrudModule,
@@ -212,7 +221,7 @@ export function highchartsFactory() {
     WildcardRoutingModule, // Este siempre debe ir al final para que no haga conflicto con otras rutas
     
   ],
-  providers: [ Title, AuthGuard, PermisosGuard, AuthService,JwtHelper, JwtRequestService,{provide: HighchartsStatic, useFactory:highchartsFactory}, Uploader],
+  providers: [ Title, AuthGuard, PermisosGuard, AuthService,JwtHelper, JwtRequestService, Uploader,{provide: HighchartsStatic, useFactory:highchartsFactory} ], //
   bootstrap: [AppComponent]
 })
 export class AppModule { }

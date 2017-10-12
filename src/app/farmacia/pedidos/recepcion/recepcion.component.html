@@ -162,7 +162,7 @@
         </div>
       </div>
       <div class="tile is-parent is-vertical ">
-        <div *ngIf="(capturarStock && (itemSeleccionado.cantidad_recibida < itemSeleccionado.cantidad))" class="tile is-child notification">
+        <div *ngIf="(capturarStock && (itemSeleccionado.cantidad_recibida < itemSeleccionado.cantidad)) && pedido.datosImprimir.tipo_pedido_id != 'PEA' && statusRecepcion != 'FI'" class="tile is-child notification">
           <div class="control is-grouped">
             <p class="control is-expanded  has-icon has-icon-right">
               <label class="label">Código de Barras</label>
@@ -189,7 +189,8 @@
             </p>
             <p class="control is-expanded has-icon has-icon-right">
               <label class="label">Caducidad (aaaa-mm-dd)</label>
-              <input class="input" type="text" placeholder="aaaa-mm-dd" [(ngModel)]="formStock.fecha_caducidad">
+              <!--input class="input" type="text" placeholder="aaaa-mm-dd" [(ngModel)]="formStock.fecha_caducidad"-->
+              <input class="input" [(ngModel)]='formStock.fecha_caducidad' ngui-datetime-picker [min-date]="minDate" date-only="true" placeholder="aaaa-mm-dd" />
               <span *ngIf="erroresFormularioStock.fecha_caducidad.error" class="icon is-small" >
                 <i class="fa fa-warning"></i>
               </span>
@@ -230,7 +231,8 @@
                     <!--th style="color:#FFF !important;">Marca</th-->
                     <th style="color:#FFF !important;">Lote</th>
                     <th style="color:#FFF !important;">Caducidad</th>
-                    <th style="color:#FFF !important;"><abbr title="Cantidad">Cant.</abbr></th>  
+                    <th *ngIf="pedido.tipo_pedido == 'PEA'" style="color:#FFF !important;"><abbr title="Cantidad Eviada">Enviado</abbr></th>
+                    <th style="color:#FFF !important;"><abbr title="Cantidad Recibida">Recibido</abbr></th>
                     <th></th>              
                   </tr>
               </thead>
@@ -248,12 +250,16 @@
                     <!--td>{{ item.marca.nombre }}</td-->
                     <td>{{ item.lote }}</td>
                     <td>{{ item.fecha_caducidad | date:'dd/MM/y' }}</td>
+                    <td *ngIf="pedido.tipo_pedido == 'PEA'" style="width:150px !important;">
+                      {{ item.cantidad_recibida | number }} / {{ item.cantidad | number }}
+                    </td> 
                     <td style="width:150px !important;">
                         <p class="control is-expanded">
-                        <input class="input is-small has-text-centered"  type="number" min="1" max="{{item.existencia}}" placeholder="Cant" [(ngModel)]="item.cantidad" (change)="validarItemStock(item, true)" (keyup)="validarItemStock(item)">
+                        <input *ngIf="pedido.tipo_pedido != 'PEA'" class="input is-small has-text-centered"  type="number" min="1" max="{{item.existencia}}" placeholder="Cant" [(ngModel)]="item.cantidad" (change)="validarItemStock(item, true)" (keyup)="validarItemStock(item)">
+                        <input *ngIf="pedido.tipo_pedido == 'PEA'" class="input is-small has-text-centered"  type="number" min="0" max="{{item.cantidad_enviada}}" placeholder="Cant" [(ngModel)]="item.cantidad_recibida" (change)="validarItemStock(item, true)" (keyup)="validarItemStock(item)">
                         </p>
                     </td> 
-                    <td style="vertical-align: middle;" class="has-text-centered"><a  class="is-danger" (click)="eliminarStock(item)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>                    
+                    <td style="vertical-align: middle;" class="has-text-centered"><a  *ngIf="puedeEliminarStock" class="is-danger" (click)="eliminarStock(item)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>
                   </tr>
               </tbody>  
             </table>
@@ -313,9 +319,10 @@
             <span class="help is-danger" *ngIf="formularioTieneError('recibe','required')">Este campo es requerido.</span>
           </p>
 
-          <label class="label">Fecha (aaaa-mm-dd):</label>
+          <label class="label">Fecha de la remisión (aaaa-mm-dd):</label>
           <p class="control is-expanded  has-icon has-icon-right">
-            <input type="text" class="input is-fullwidth" placeholder="aaaa-mm-dd" [ngClass]="{'is-danger': formularioTieneError('fecha_movimiento','required')}" formControlName="fecha_movimiento" />
+            <!--input type="text" class="input is-fullwidth" placeholder="aaaa-mm-dd" [ngClass]="{'is-danger': formularioTieneError('fecha_movimiento','required')}" formControlName="fecha_movimiento" /-->
+            <input class="input is-fullwidth" formControlName="fecha_movimiento" ngui-datetime-picker [max-date]="maxDate" date-only="true" [ngClass]="{'is-danger': formularioTieneError('fecha_movimiento','required')}" placeholder="aaaa-mm-dd" />
             <span class="icon is-small" *ngIf="formularioTieneError('fecha_movimiento','required')">
               <i class="fa fa-warning"></i>
             </span>

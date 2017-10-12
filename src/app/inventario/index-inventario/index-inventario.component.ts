@@ -41,6 +41,10 @@ export class IndexInventarioComponent implements OnInit {
         permiso: 'cE81erieaVjvmhcb9GCYI4doqYGtTcj1', icono: 'assets/icono-ajuste-menos.svg',
         titulo: 'Ajuste menos de Inventario', url: '/inventario/ajuste-menos-inventario'
       },
+      {
+        permiso: '--cE81erieaVjvmhcb9GCYI4doqYGtTcj1', icono: 'assets/icono-movimientos.svg',
+        titulo: 'Movimientos generales', url: '/inventario/movimientos-generales'
+      },
 
       // Para que tienen todas estas pruebas? R=Porque los permisos no están en la BD aún, entonces uso el permiso de pedidos
       // Harima: voy a borrar las pruebas, si necesitas los permisos en la base de datos porfa dile a Joram que los agregue, asi como me mandan por correo la lista, Jomran puede hacer el insert manual en su base de datos

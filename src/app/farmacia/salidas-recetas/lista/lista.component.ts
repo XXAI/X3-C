@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChildren } from '@angular/core';
 import { CrudService } from '../../../crud/crud.service';
 import  * as FileSaver    from 'file-saver';
 
@@ -20,6 +20,7 @@ export class ListaComponent implements OnInit {
   pdfworker: Worker;
   cargandoPdf = false;
   // # FIN SECCION
+  @ViewChildren('tr') tr;
 
   constructor(
     private _ngZone: NgZone,
@@ -63,20 +64,26 @@ export class ListaComponent implements OnInit {
       console.log(e);
     }
   }
-  
+
+  /***************************************IMPRESION DE REPORTES*************************************************/
 
   imprimir() {
-    this.crudService.lista_general('movimientos?tipo=1&fecha_desde=' + this.fecha_desde
+    this.cargandoPdf = true;
+    let turno = this.tr.first.nativeElement.options;
+    turno = turno[turno.selectedIndex].text;
+
+    this.crudService.lista_general('movimientos?tipo=5&fecha_desde=' + this.fecha_desde
     + '&fecha_hasta=' + this.fecha_hasta + '&turno=' + this.turno).subscribe(
       resultado => {
         this.cargando = false;
         this.lista_impresion = resultado;
         try {
-          this.cargandoPdf = true;
-
           let entrada_imprimir = {
             lista: this.lista_impresion,
-            usuario: this.usuario
+            usuario: this.usuario,
+            turno: turno,
+            fecha_desde: this.fecha_desde,
+            fecha_hasta: this.fecha_hasta,
           };
           this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
         } catch (e) {

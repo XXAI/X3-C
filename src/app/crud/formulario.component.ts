@@ -50,7 +50,7 @@ export class FormularioComponent implements OnInit {
     // Crear la variable que mustra las notificaciones
     mensajeResponse: Mensaje = new Mensaje()
 
-    //Varaibles de entrada se pasan los valores desde la vista
+    // Varaibles de entrada se pasan los valores desde la vista
     @Input() URL: string;
     @Input() titulo: string;
     @Input() dato: FormGroup;
@@ -121,6 +121,12 @@ export class FormularioComponent implements OnInit {
             },
             error => {
                 this.cargando = false;
+                if (error.status === 500) {
+                    this.mensajeResponse.texto = '500 (Error interno del servidor)';
+                    this.mensajeResponse.mostrar = true;
+                    this.mensajeResponse.clase = 'error';
+                    this.mensaje(3);
+                }
 
                 try {
                     let e = error.json();
@@ -169,6 +175,7 @@ export class FormularioComponent implements OnInit {
                     this.mensajeResponse.mostrar = true;
                     this.mensajeResponse.clase = 'error';
                     this.mensaje(3);
+                    console.log(e);
 
                     if (error.status == 500) {
                         this.mensajeResponse.texto = '500 (Error interno del servidor)';

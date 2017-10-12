@@ -15,6 +15,7 @@ export class MenuLateralComponent implements OnInit {
   stats: any = {
     todos: 0, 
     borradores: 0,
+    solicitados: 0,
     en_transito: 0,
     por_surtir: 0,
     finalizados: 0,
@@ -33,6 +34,7 @@ export class MenuLateralComponent implements OnInit {
       this.stats = {
         todos: 0, 
         borradores: 0,
+        solicitados: 0,
         en_transito: 0,
         por_surtir: 0,
         finalizados: 0,
@@ -40,6 +42,7 @@ export class MenuLateralComponent implements OnInit {
         expirados_cancelados: 0,
         farmacia: 0,
         alternos: 0,
+        actas:0
       };
       this.cargarStatsPedidos();
     });

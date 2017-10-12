@@ -32,21 +32,29 @@ export class HubComponent implements OnInit {
         'cE81erieaVjvmhcb9GCYI4doqYGtTcj1', // Ajuste menos
         '0oADIo1ltfAl4VMDVbyWgLR3rAhYGjlY', // Ajuste mas
         '7KbTARF2kpnO4Lfqv8hmYP8QGMcgJBwU', // Inicialización Inventario
-        'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
+        '--z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
+      ]
+    },
+    {
+      title: 'Receta Electrónica', routerLink: '/receta-electronica', icono: 'assets/icono-recetas.svg',
+      permisos: [
+        'rEAgr2wrYx2AKLhIS7uLh7QIPJkmv4Jo', // Crear Recetas electronicas
+        'qbmHSezvoY8IROFk3CJ7XBuLzp9rRoo6', // Ver Recetas Electronicas
+        '7pFIrhuM3trSzo9nnIgeU7cMUArsukS8', // Dispensar Recetas Electronicas
       ]
     },
 
     { 
       title:'Almacén general', routerLink:'/almacen-articulos', icono:'assets/hub-almacen-articulos.svg',
       permisos: [
-        'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
+        '--z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
         'cuSmlV9lvABXzfjtLbzEe0VbI47Dh6Cv', // Ver catálogos
       ]
     },
     {
       title: 'Laboratorio', routerLink: '/laboratorio', icono: 'assets/hub-laboratorio.svg',
       permisos: [
-        // 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
+         'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk--', // Ver pedidos
       ]
     },
     {
@@ -58,7 +66,7 @@ export class HubComponent implements OnInit {
     {
       title: 'Farmacia Subrrogada', routerLink: '/farmacia-subrrogada', icono: 'assets/hub-farmacia-sub.svg',
       permisos: [
-        'MrL06vIO12iNhchP14h57Puvg71eUmYb', // Ver FS proveedor pruebas
+        '--MrL06vIO12iNhchP14h57Puvg71eUmYb', // Ver FS proveedor pruebas
         'RZsvMjtPtpLWC8afsAFZsNnD9iXtiZC3', // Ver sincronizar recetas
       ]
     },

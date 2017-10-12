@@ -6,6 +6,8 @@ import { ListaComponent } from './lista/lista.component';
 import { FormularioComponent } from './formulario/formulario.component';
 import { VerComponent } from './ver/ver.component';
 import { RecepcionComponent } from './recepcion/recepcion.component';
+import { ListaComponent as ListaActasComponent } from './actas/lista/lista.component';
+import { VerComponent as VerActaComponent } from './actas/ver/ver.component';
 
 import { AuthGuard } from '../../auth-guard.service';
 
@@ -16,6 +18,7 @@ const routes: Routes = [
     children: [
        { path: 'todos', component: ListaComponent},
        { path: 'borradores', component: ListaComponent},
+       { path: 'solicitados', component: ListaComponent},
        { path: 'en-transito', component: ListaComponent},
        { path: 'por-surtir', component: ListaComponent},
        { path: 'finalizados', component: ListaComponent},
@@ -30,6 +33,8 @@ const routes: Routes = [
        { path: 'editar/:id', component: FormularioComponent},
        { path: 'ver/:id', component: VerComponent},
        { path: 'recepcion/:id', component: RecepcionComponent},
+       { path: 'actas', component: ListaActasComponent},
+       { path: 'actas/:id', component: VerActaComponent},
     ],
     canActivate: [AuthGuard]
   }

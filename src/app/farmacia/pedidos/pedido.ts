@@ -40,6 +40,7 @@ export class Pedido {
           descripcion: ['', [Validators.required]],
           fecha: ['',[Validators.required]],
           almacen_solicitante: ['',[Validators.required]],
+          almacen_proveedor: ['',[Validators.required]],
           observaciones: ''
         });
         //Harima: Al crear el objeto, se crea como borrador
@@ -56,6 +57,8 @@ export class Pedido {
   public inicializarDatos = function(datos:any={}){
     let today = datos.fecha;
     let almacen_solicitante = '';
+    let almacen_proveedor = '';
+
     if(!datos.fecha){
       //Harima:obtenemos la fecha actual
       let now = new Date();
@@ -68,7 +71,11 @@ export class Pedido {
       almacen_solicitante = datos.almacen_solicitante;
     }
 
-    this.datos.setValue({almacen_solicitante: almacen_solicitante,descripcion:'',observaciones:'',fecha:today});
+    if(datos.almacen_proveedor){
+      almacen_proveedor = datos.almacen_proveedor;
+    }
+
+    this.datos.setValue({almacen_solicitante: almacen_solicitante, almacen_proveedor: almacen_proveedor,descripcion:'',observaciones:'',fecha:today});
   }
 
   //Harima: es necesario para evitar un error al enviar los datos al servidor

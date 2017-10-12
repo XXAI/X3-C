@@ -3,7 +3,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { BuscarModuloPipe } from '../../pipes/buscar-modulo.pipe';
 
 @Component({
-  selector: 'menu-laboratorio',
+  selector: 'app-menu-laboratorio',
   templateUrl: './menu-index-laboratorio.component.html',
   styleUrls: ['./menu-index-laboratorio.component.css']
 })

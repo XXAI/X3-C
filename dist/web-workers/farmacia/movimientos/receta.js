@@ -22,7 +22,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     headerRows: 5,
                     dontBreakRows: true,
                     //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
-                    widths: [80, 70, 'auto', 'auto', 'auto', 'auto'],
+                    widths: [80, 'auto', 'auto', 'auto', 50, 50],
                     body: [
                         [{
                             image: 'header',
@@ -38,35 +38,34 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                             {}, {}, {}, {}, {}
                         ],
                         [
-                            { text: 'FOLIO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
-                            {},
+                            { text: 'FOLIO', style: 'tableHeaderVerde', alignment: 'right' },
                             { text: data.datos.receta.folio, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
                             { text: 'TIPO', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.datos.receta.tipo_receta_id == '1' ? 'Normal' : data.datos.receta.tipo_receta_id == '2' ? 'Controlado' : 'No disponible', style: 'tableHeader', alignment: 'left' }
+                            { text: data.datos.receta.tipo_receta_id == '1' ? 'Normal' : data.datos.receta.tipo_receta_id == '2' ? 'Controlado' : 'No disponible', style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
                         ],
                         [
-                            { text: 'PACIENTE', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
-                            {},
+                            { text: 'PACIENTE', style: 'tableHeaderVerde', alignment: 'right' },
                             { text: data.datos.receta.paciente, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
                             { text: 'DIAGNOSTICO', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.datos.receta.diagnostico, style: 'tableHeader', alignment: 'left' }
+                            { text: data.datos.receta.diagnostico, style: 'tableHeader', colSpan: 2, alignment: 'left' },
+                            {}
                         ],
                         [{ text: ' ', style: 'celdaEspacio', colSpan: 6, alignment: 'center' },
                             {}, {}, {}, {}, {}
                         ],
                         [
-                            { text: 'USUARIO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
-                            {},
+                            { text: 'USUARIO', style: 'tableHeaderVerde', alignment: 'right' },
                             { text: data.usuario.nombre +' '+ data.usuario.apellidos, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
                             { text: 'FECHA', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.datos.receta.fecha_receta, style: 'tableHeader', alignment: 'left' }
+                            { text: data.datos.receta.fecha_receta, style: 'tableHeader',  colSpan: 2, alignment: 'left' },
+                            {}
                         ],
                         [
-                            { text: 'CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
-                            {},
+                            { text: 'CLUES', style: 'tableHeaderVerde', alignment: 'right' },
                             { text: data.usuario.clues_activa.clues, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
                             { text: 'NOMBRE DE CLUES', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.usuario.clues_activa.nombre, style: 'tableHeader', alignment: 'left' }
+                            { text: data.usuario.clues_activa.nombre, style: 'tableHeader', colSpan: 2, alignment: 'left' },
+                            {}
                         ],
                         [{ text: ' ', style: 'celdaEspacio', colSpan: 6, alignment: 'center' },
                             {}, {}, {}, {}, {}
@@ -223,7 +222,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     widths: ['*', '*'],
                     body: [
                         [
-                            { text: '\n\n\n\n' + 'DR.' + data.datos.receta.doctor, rowSpan: 2, style: 'tableRow' }, 
+                            { text: '\n\n\n\n' + '' + data.datos.receta.doctor, rowSpan: 2, style: 'tableRow' }, 
                             { text: "Observaciones", style: 'text' }
                         ],
                         [

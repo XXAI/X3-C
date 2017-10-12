@@ -39,6 +39,11 @@ export class RecepcionComponent implements OnInit {
   cargandoStock: boolean = false;
   capturarStock: boolean = false;
 
+  minDate = new Date();
+  maxDate = new Date();
+
+  puedeEliminarStock: boolean = true;
+
   mostrarDialogo: boolean = false;
 
   erroresFormularioStock:any = {cantidad:{error:false}, lote:{error:false}, fecha_caducidad:{error:false}};
@@ -91,6 +96,10 @@ export class RecepcionComponent implements OnInit {
       this.formStock.marca = this.marcas[0];
     }*/
 
+    let date = new Date();    
+    this.minDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    this.maxDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
     this.route.params.subscribe(params => {
       this.id = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number
       //this.cargarDatos();
@@ -108,24 +117,96 @@ export class RecepcionComponent implements OnInit {
 
             let recepcion_insumos = {};
 
-            if(pedido.recepciones.length == 1){
-              let recepcion_insumos_guardados = pedido.recepciones[0].entrada_abierta.insumos;
-              for(var i in recepcion_insumos_guardados){
-                let insumo = recepcion_insumos_guardados[i];
-                if(!recepcion_insumos[insumo.stock.clave_insumo_medico]){
-                  recepcion_insumos[insumo.stock.clave_insumo_medico] = {
-                    cantidad:0,
-                    stock:[]
-                  };
+            if(pedido.tipo_pedido_id == 'PA' || pedido.tipo_pedido_id == 'PJS' || pedido.tipo_pedido_id == 'PFS'){
+              if(pedido.recepciones.length == 1){
+                let recepcion_insumos_guardados = pedido.recepciones[0].entrada_abierta.insumos;
+                for(var i in recepcion_insumos_guardados){
+                  let insumo = recepcion_insumos_guardados[i];
+                  if(!recepcion_insumos[insumo.stock.clave_insumo_medico]){
+                    recepcion_insumos[insumo.stock.clave_insumo_medico] = {
+                      cantidad:0,
+                      stock:[]
+                    };
+                  }
+                  recepcion_insumos[insumo.stock.clave_insumo_medico].cantidad += +insumo.cantidad;
+                  insumo.stock.cantidad = +insumo.cantidad;
+                  recepcion_insumos[insumo.stock.clave_insumo_medico].stock.push(insumo.stock);
                 }
-                recepcion_insumos[insumo.stock.clave_insumo_medico].cantidad += +insumo.cantidad;
-                insumo.stock.cantidad = +insumo.cantidad;
-                recepcion_insumos[insumo.stock.clave_insumo_medico].stock.push(insumo.stock);
+                for(var clave in recepcion_insumos){
+                  this.lotesSurtidos.push({ clave: clave, cantidad: recepcion_insumos[clave].cantidad});
+                }
+                this.statusRecepcion = 'BR';              
               }
-              for(var clave in recepcion_insumos){
-                this.lotesSurtidos.push({ clave: clave, cantidad: recepcion_insumos[clave].cantidad});
+            }else if(pedido.tipo_pedido_id == 'PEA'){
+              if(pedido.movimientos.length > 0){
+                let transferencia_recibida:any = null;
+                let transferencia_recibida_borrador:any = null;
+                let transferencia_surtida:any = null;
+
+                for(var i in pedido.movimientos){
+                  if(pedido.movimientos[i].transferencia_recibida){
+                    transferencia_recibida = pedido.movimientos[i].transferencia_recibida;
+                  }else if(pedido.movimientos[i].transferencia_recibida_borrador){
+                    transferencia_recibida_borrador = pedido.movimientos[i].transferencia_recibida_borrador;
+                  }else if(pedido.movimientos[i].transferencia_surtida){
+                    transferencia_surtida = pedido.movimientos[i].transferencia_surtida;
+                  }
+                }
+
+                if(transferencia_recibida){
+                  //
+                }else if(transferencia_surtida){
+                  let recepcion_insumos_guardados = transferencia_surtida.insumos;
+                  for(var i in recepcion_insumos_guardados){
+                    let insumo = recepcion_insumos_guardados[i];
+                    if(!recepcion_insumos[insumo.stock.clave_insumo_medico]){
+                      recepcion_insumos[insumo.stock.clave_insumo_medico] = {
+                        cantidad:0,
+                        stock:[]
+                      };
+                    }
+                    if(!transferencia_recibida_borrador){
+                      recepcion_insumos[insumo.stock.clave_insumo_medico].cantidad += +insumo.cantidad;
+                      insumo.stock.cantidad = +insumo.cantidad;
+                      recepcion_insumos[insumo.stock.clave_insumo_medico].stock.push(insumo.stock);
+                    }else{
+                      insumo.stock.cantidad_enviada = +insumo.cantidad;
+                      recepcion_insumos[insumo.stock.clave_insumo_medico].stock.push(insumo.stock);
+                    }
+                  }
+
+                  if(!transferencia_recibida_borrador){
+                    for(var clave in recepcion_insumos){
+                      this.lotesSurtidos.push({ clave: clave, cantidad: recepcion_insumos[clave].cantidad});
+                    }
+                    this.statusRecepcion = 'NV'; 
+                    this.puedeEliminarStock = false;
+                  }
+                }
+                
+                if(transferencia_recibida_borrador){
+                  let recepcion_insumos_guardados = transferencia_recibida_borrador.insumos;
+                  for(var i in recepcion_insumos_guardados){
+                    let insumo = recepcion_insumos_guardados[i];
+
+                    if(recepcion_insumos[insumo.stock.clave_insumo_medico]){
+                      console.log('asfasdfasdf');
+                      console.log(recepcion_insumos[insumo.stock.clave_insumo_medico].stock);
+                      for(var i in recepcion_insumos[insumo.stock.clave_insumo_medico].stock){
+                        if(recepcion_insumos[insumo.stock.clave_insumo_medico].stock[i].id == insumo.stock.id){
+                          recepcion_insumos[insumo.stock.clave_insumo_medico].stock[i].cantidad_recibida = +insumo.cantidad;
+                        }
+                      }
+                      recepcion_insumos[insumo.stock.clave_insumo_medico].cantidad += +insumo.cantidad;
+                    }
+                  }
+                  for(var clave in recepcion_insumos){
+                    this.lotesSurtidos.push({ clave: clave, cantidad: recepcion_insumos[clave].cantidad});
+                  }
+                  this.statusRecepcion = 'BR'; 
+                  this.puedeEliminarStock = false;
+                }
               }
-              this.statusRecepcion = 'BR';              
             }
 
             if(pedido.status == 'FI'){
@@ -152,7 +233,9 @@ export class RecepcionComponent implements OnInit {
                     //marca: stock.marca,
                     lote: stock.lote,
                     fecha_caducidad: stock.fecha_caducidad,
-                    cantidad: stock.cantidad,
+                    cantidad_enviada: stock.cantidad_enviada,
+                    cantidad_recibida: stock.cantidad_recibida,
+                    cantidad: stock.cantidad
                   });
                 }
               }
@@ -162,6 +245,7 @@ export class RecepcionComponent implements OnInit {
 
             pedido.insumos = undefined;
 
+            this.pedido.tipo_pedido = pedido.tipo_pedido_id;
             this.pedido.datosImprimir = pedido;
             this.pedido.indexar();
             this.pedido.listar(1);
@@ -392,6 +476,7 @@ export class RecepcionComponent implements OnInit {
       //if(confirm('Atención la recepción ya no podra editarse, Esta seguro que desea concluir el movimiento?')){
       if(validacion_palabra == 'CONCLUIR RECEPCION'){
         guardar_recepcion = this.formularioRecepcion.value;
+        guardar_recepcion.fecha_movimiento = guardar_recepcion.fecha_movimiento.toString().substr(0,10);
         guardar_recepcion.status = 'FI';
         guardar_recepcion.stock = [];
       }else{
@@ -414,11 +499,16 @@ export class RecepcionComponent implements OnInit {
             lote: item.listaStockAsignado[j].lote,
             fecha_caducidad: item.listaStockAsignado[j].fecha_caducidad,
             cantidad: item.listaStockAsignado[j].cantidad,
-            existencia: item.listaStockAsignado[j].cantidad,
+            existencia:0,
             codigo_barras: item.listaStockAsignado[j].codigo_barras,
             precio_unitario: 0,
             precio_total: 0
           };
+          if(this.pedido.tipo_pedido != 'PEA'){
+            stock.existencia = item.listaStockAsignado[j].cantidad;
+          }else{
+            stock.existencia = item.listaStockAsignado[j].cantidad_recibida;
+          }
           guardar_recepcion.stock.push(stock);
         }
       }
@@ -540,6 +630,8 @@ export class RecepcionComponent implements OnInit {
       errores++;
     //}else if(this.itemSeleccionado.tiene_fecha_caducidad){
     }else if(this.formStock.fecha_caducidad){
+      this.formStock.fecha_caducidad = this.formStock.fecha_caducidad.toString().substr(0,10);
+      //console.log(fecha_caducidad);
       let fecha = this.formStock.fecha_caducidad.split('-');
       let fecha_invalida = false;
       if(fecha.length != 3){
@@ -624,42 +716,60 @@ export class RecepcionComponent implements OnInit {
   }
 
   validarItemStock(item:any, setMaxVal:boolean = false){
+    
+    if(this.pedido.tipo_pedido != 'PEA'){
+      if(item.cantidad == null){
+        if(setMaxVal){
+          this.asignarMaximoPosible(item)
+        }
+        this.calcularTotalStockItem();
+        return;
+      }
+      
+      var cantidad = parseInt(item.cantidad);
+      
+      if(isNaN(cantidad)){
+        this.asignarMaximoPosible(item)
+        this.calcularTotalStockItem();
+        return;
+      }
+      
+      if(cantidad <= 0){
+        this.asignarMaximoPosible(item)
+        this.calcularTotalStockItem();
+        return;
+      }
+      
+      if( cantidad > item.existencia){
+        item.cantidad = item.existencia;
+      }
 
-   
-    if(item.cantidad == null){
-      if(setMaxVal){
+      if(!this.verificarTotalStockItem()){
         this.asignarMaximoPosible(item)
       }
+
       this.calcularTotalStockItem();
-      return;
-    }
+    }else{
+      if(item.cantidad_recibida == null){
+        item.cantidad_recibida = 0;
+        this.calcularTotalStockItem();
+        return;
+      }
+      
+      var cantidad = parseInt(item.cantidad_recibida);
+      
+      if(isNaN(cantidad) || cantidad <= 0){
+        item.cantidad_recibida = 0;
+        this.calcularTotalStockItem();
+        return;
+      }
 
-    var cantidad = parseInt(item.cantidad);
+      if( cantidad > item.cantidad_enviada){
+        item.cantidad_recibida = item.cantidad_enviada;
+      }
 
-    if(isNaN(cantidad)){
-      this.asignarMaximoPosible(item)
       this.calcularTotalStockItem();
-      return;
     }
-
-    if(cantidad <= 0){
-      this.asignarMaximoPosible(item)
-      this.calcularTotalStockItem();
-      return;
-    }
-
-    
-
-    if( cantidad > item.existencia){
-      item.cantidad = item.existencia;
-    }
-
-    if(!this.verificarTotalStockItem()){
-      this.asignarMaximoPosible(item)
-    }
-
-    this.calcularTotalStockItem();
-    
   }
 
   asignarMaximoPosible(item:any){
@@ -706,7 +816,12 @@ export class RecepcionComponent implements OnInit {
   calcularTotalStockItem(){  
     var acumulado = this.itemSeleccionado.cantidad_recibida;
     for(var i in this.itemSeleccionado.listaStockAsignado) {
-      acumulado += this.itemSeleccionado.listaStockAsignado[i].cantidad;
+      if(this.pedido.tipo_pedido != 'PEA'){
+        acumulado += this.itemSeleccionado.listaStockAsignado[i].cantidad;
+      }else{
+        acumulado += this.itemSeleccionado.listaStockAsignado[i].cantidad_recibida;
+      }
+      
     }
     if (acumulado == 0){
       var indice = 0;
