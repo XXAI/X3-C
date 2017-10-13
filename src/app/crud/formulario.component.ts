@@ -532,13 +532,21 @@ export class FormularioComponent implements OnInit {
     }
 
     /**
-     * Este método cierra el modal de la de confirmación de eleimnación
+     * Este método abre una modal
+     * @param id identificador del elemento de la modal
      * @return void
      */
-    cancelarModal() {
-        document.getElementById('confirmarEliminar').classList.remove('is-active');
+    abrirModal(id) {
+        document.getElementById(id).classList.add('is-active');
     }
 
+    /**
+     * Este método cierra el modal de la de confirmación de eleimnación         
+     * @return void
+     */
+    cancelarModal(id: string = 'confirmarEliminar') {
+        document.getElementById(id).classList.remove('is-active');
+    }
     /**
      * Este método se encarga de la eliminacion de un elemento
      * en la api
@@ -1006,8 +1014,8 @@ ofModelo
      * @param formulario Nombre del modelo donde se guarda el dato obtenido
      * @return void
      */
-    agregar_form_array(modelo, formulario) {
-        modelo.push(this.fb.group(formulario));
+    agregar_form_array(modelo: FormArray, formulario) {
+        (<FormArray>modelo).push(this.fb.group(formulario));
     }
 
     /**
