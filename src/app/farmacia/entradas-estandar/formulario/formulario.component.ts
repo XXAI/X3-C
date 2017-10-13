@@ -51,6 +51,15 @@ export class FormularioComponent {
    * Guarda el resultado de la búsqueda de insumos médicos.
    * @type {array} */
   res_busq_insumos= [];
+  /**
+   * Contiene la lista de programas
+   * @type {any} */
+  lista_programas= [];
+  /**
+   * Contiene un valor __true__ cuando estamos llenando el formulario del borrador de una entrada
+   * en caso de tener una entrada nueva o finalizada el valor es __false__.
+   * @type {boolean} */
+  llenando_formulario = true;
 
   public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
   // Máscara para validar la entrada de la fecha de caducidad
@@ -120,7 +129,7 @@ export class FormularioComponent {
       status: ['FI'],
       fecha_movimiento: ['', [Validators.required]],
       observaciones: [''],
-      turno_id: [''],
+      programa_id: [''],
       cancelado: [''],
       observaciones_cancelacion: [''],
       movimiento_metadato: this.fb.group({
@@ -137,6 +146,23 @@ export class FormularioComponent {
       }
     });
 
+    // nos suscribimos para saber si es un borrador, nueva entrada o una entrada finalizada
+    this.dato.controls.id.valueChanges.subscribe(
+      val => {
+          if (val) {
+            setTimeout(() => {
+              if (this.dato.controls.status.value === 'BR') {
+                this.llenarFormulario();
+              }else {
+                this.llenando_formulario = false;
+              }
+            }, 500);
+          }
+      }
+    );
+    if (!this.tieneid) {
+      this.llenando_formulario = false;
+    }
     // variable para crear el array del formulario reactivo
     this.form_insumos = {
       tipo_movimiento_id: ['', [Validators.required]]
@@ -156,8 +182,55 @@ export class FormularioComponent {
     } else {
       this.fecha_actual = this.dato.get('fecha_movimiento').value;
     }
-    // Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
-    document.getElementById('catalogos').click();
+    this.crudService.lista_general('programa').subscribe(
+      resultado => {
+        this.lista_programas = resultado;
+      }
+    );
+  }
+
+  /**
+   * Método que nos sirve para reacomodar los elementos en el formulario
+   * para editarlos, en el avance de una entrada.
+   * Se reordena el json recibido al formulario reactivo, los insumos que contienen un
+   * array de lotes se reordenan colocando los campos para el formulario reactivo y cada
+   * lote es parte de un solo insumo.
+   */
+  llenarFormulario() {
+    const insumos_temporal = this.fb.array([]);
+    const control_insumos = <FormArray>this.dato.controls['insumos'];
+
+    let lotes;
+    for ( let item of control_insumos.value) {
+      if (item.lotes) {
+        for (let lotes_item of item.lotes) {
+          lotes = {
+            'clave': item.clave,
+            'nombre': item.nombre,
+            'descripcion': item.descripcion,
+            'es_causes': item.es_causes,
+            'es_unidosis': item.es_unidosis,
+            'lote': [lotes_item.lote, [Validators.required]],
+            'id': lotes_item.id,
+            'codigo_barras': [lotes_item.codigo_barras, [Validators.required]],
+            'fecha_caducidad': [lotes_item.fecha_caducidad, [Validators.required]],
+            'cantidad': [lotes_item.cantidad, [Validators.required]],
+            'cantidad_x_envase': item.detalles.informacion_ampliada.cantidad_x_envase,
+            'cantidad_surtida': 1,
+            'movimiento_insumo_id': [lotes_item.movimiento_insumo_id],
+            'stock_id': [lotes_item.stock_id],
+          };
+          insumos_temporal.insert(0, this.fb.group(lotes));
+        }
+      }
+    }
+    this.dato.controls['insumos'] = this.fb.array([]);
+
+    const control_insumos2 = <FormArray>this.dato.controls['insumos'];
+    for (let item of insumos_temporal.value) {
+      control_insumos2.insert(0, this.fb.group(item));
+    }
+    this.llenando_formulario = false;
   }
   /**
      * Este método permite que el focus del cursor vuelva al buscador de insumos una vez presionada la tecla enter
@@ -193,6 +266,9 @@ export class FormularioComponent {
      */
   cancelarModal(id) {
     document.getElementById(id).classList.remove('is-active');
+    if (id === 'guardarMovimiento') {
+      this.dato.controls.status.patchValue('BR');
+    }
   }
 
   /**
@@ -286,8 +362,8 @@ export class FormularioComponent {
         break;
       }
     }*/
-    //crear el json que se pasara al formulario reactivo tipo insumos
-    var temporal_cantidad_x_envase;
+    // crear el json que se pasara al formulario reactivo tipo insumos
+    let temporal_cantidad_x_envase;
     if(this.insumo.cantidad_x_envase == null){
       temporal_cantidad_x_envase = 1;
     }else{
@@ -300,16 +376,20 @@ export class FormularioComponent {
       'es_causes': this.insumo.es_causes,
       'es_unidosis': this.insumo.es_unidosis,
       'lote': ['', [Validators.required]],
+      'id': null,
       'codigo_barras': [''],
       'fecha_caducidad': ['', [Validators.required]],
       'cantidad': ['', [Validators.required]],
-      'cantidad_x_envase': parseInt(temporal_cantidad_x_envase),     
+      'cantidad_x_envase': parseInt(temporal_cantidad_x_envase),
       'cantidad_surtida': 1,
+      'movimiento_insumo_id': null,
+      'stock_id': null,
     };
 
-    //si no esta en la lista agregarlo
-    if (!existe)
+    // si no esta en la lista agregarlo
+    if (!existe) {
       control.insert(0, this.fb.group(lotes));
+    }
   }
   /**
      * Este método agrega una nueva fila para los lotes nuevos
@@ -371,9 +451,6 @@ export class FormularioComponent {
     }
   }
 
-  guardar_movimiento() {
-    document.getElementById('guardarMovimiento').classList.add('is-active');
-  }
 
   /**
      * Este método valida que en el campo de la cantidad no pueda escribir puntos o signo negativo
@@ -392,6 +469,28 @@ export class FormularioComponent {
     return /^\d+$/.test(str);
   }
 
+  /**
+   * Compureba que los insumos de la entrada sean mayores a 0.
+   * Abre el modal 'guardarMovimiento' para confirmar que guarda la entrada como finalizada,
+   * sin poder hacer cambios después.
+   */
+  guardar_movimiento() {
+    // document.getElementById('guardarMovimiento').classList.add('is-active');
+    // obtener el formulario reactivo para agregar los elementos
+    const control = <FormArray>this.dato.controls['insumos'];
+    let lotes = true;
+    if (control.length === 0) {
+      this.notificacion.warn('Insumos', 'Debe agregar por lo menos un insumo', this.objeto);
+    }else {
+      this.dato.controls.status.patchValue('FI');
+      document.getElementById('guardarMovimiento').classList.add('is-active');
+    }
+  }
+
+  guardarBorrador() {
+    this.dato.controls.status.patchValue('BR');
+    document.getElementById('borrador').click();
+  }
 /************************************ IMPRESION DE REPORTES ************************************** */
   imprimir() {
 

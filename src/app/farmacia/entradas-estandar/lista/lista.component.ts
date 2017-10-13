@@ -33,7 +33,14 @@ export class ListaEntradasComponent {
     recibe = '';
   usuario;
   dato;
-  cargando;
+  /**
+   * Variable que contiene un valor __true__ cuando está ocurriendo un proceso,
+   * y __false__ cuando no hay procesos realizándose.
+   * @type {boolean} */
+    cargando;
+  /**
+   * Contiene el resultado de la consulta de la lista general de programas.
+   * @type {any} */
   lista_impresion;
 
   // # SECCION: Reportes
@@ -101,7 +108,7 @@ export class ListaEntradasComponent {
    * @returns archivo en formato PDF
    */
   imprimir() {
-    this.crudService.lista_general('movimientos?tipo=1&fecha_desde=' + this.fecha_desde
+    this.crudService.lista_general('entrada-almacen?fecha_desde=' + this.fecha_desde
     + '&fecha_hasta=' + this.fecha_hasta + '&recibe=' + this.recibe).subscribe(
       resultado => {
               this.cargando = false;
@@ -109,7 +116,7 @@ export class ListaEntradasComponent {
               try {
                 this.cargandoPdf = true;
                 let entrada_imprimir = {
-                  lista: this.lista_impresion.data,
+                  lista: this.lista_impresion,
                   usuario: this.usuario,
                   fecha_desde: this.fecha_desde,
                   fecha_hasta: this.fecha_hasta,

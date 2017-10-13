@@ -1,7 +1,7 @@
 <formulario #ctrl URL="programa" titulo="Programa / Catalogo" [dato]="dato"></formulario>
 <panel-control-menu></panel-control-menu>
 <div style="height:50px;"></div>
-<div class="contenedor columns " style="height:100%">
+<div class="contenedor columns " style="height:90%">
     <div class="column is-one-quarter is-hidden-mobile">
         <panel-control-menu-aside></panel-control-menu-aside>
     </div>
@@ -29,7 +29,17 @@
                 </div>
                 <section class="section">
 
-
+                    <div class="field" *ngIf="tieneid">
+                        <label class="label">ID:</label>
+                        <p class="control is-expanded  has-icon has-icon-right">
+                            <input class="input" type="text" [ngClass]="{'is-danger': ctrl.dato.get('id').hasError('required') && ctrl.dato.get('id').touched}"
+                                placeholder="id" formControlName="id" readonly>
+                            <span class="icon is-small" *ngIf="ctrl.dato.get('id').hasError('required') && ctrl.dato.get('id').touched">
+                                <i class="fa fa-warning"></i>
+                            </span>
+                            <span class="help is-danger" *ngIf="ctrl.dato.get('id').hasError('required') && ctrl.dato.get('id').touched">Este campo es requerido.</span>
+                        </p>
+                    </div>
 
                     <div class="field">
                         <label class="label">Clave:</label>
@@ -60,7 +70,7 @@
                         <p class="b-checkbox control is-expanded  has-icon has-icon-right">
                             <input type="checkbox" id="status" class="styled" formControlName="status" [checked]="ctrl.dato.get('status').value ? 1 : 0">
                             <label for="status">  
-                                <strong> &nbsp; Programa activo {{ctrl.dato.get('status').value}} </strong>
+                                <strong> &nbsp; Programa activo</strong>
                             </label>
                         </p>
                     </div>

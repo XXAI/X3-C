@@ -40,7 +40,7 @@
             </p>
 
             <p class="control">
-                <a class="button is-{{ctrl.busquedaActivada ? 'dark' : 'primary'}} tooltip"  routerLink="{{url_imprimir}}">
+                <a class="button is-{{ctrl.busquedaActivada ? 'dark' : 'primary'}} tooltip" (click)="imprimir()">
                     <span class="icon ">
                         <i class="fa fa-print"></i>
                     </span>
