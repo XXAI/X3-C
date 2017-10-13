@@ -20,7 +20,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     headerRows: 5,
                     dontBreakRows: true,
                     //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
-                    widths: [80, 70, 'auto', 'auto', 'auto', 'auto','auto'],
+                    widths: [50, 50, 'auto', 'auto', 'auto', 45,'auto'],
                     body: [
                         [{
                             image: 'header',
@@ -63,7 +63,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                             { text: 'HASTA:', style: 'tableHeaderVerde', alignment: 'right' }, 
                             { text: data.fecha_hasta == "" ? '- -' : data.fecha_hasta.substr(0,10), 
                               style: 'tableHeader', alignment: 'left' },
-                            { text: 'RECIBE:', style: 'tableHeaderVerde',  alignment: 'right' },
+                            { text: 'ENTREGA:', style: 'tableHeaderVerde',  alignment: 'right' },
                             { text: data.recibe == "" ? 'TODOS' : data.recibe, style: 'tableHeader', colSpan: 2, alignment: 'left' },
                             {}
                         ],
@@ -76,8 +76,8 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                             { text: 'INSUMOS', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'ENTREGÓ', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'RECIBE', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'CAPTURADO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
-                            {}
+                            { text: 'ESTATUS', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'CAPTURADO', style: 'tableHeaderVerde', alignment: 'center' }
                         ]
                         //Body -> insumos
                     ]
@@ -200,46 +200,10 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     { text: movimiento.numero_claves == null || movimiento.numero_insumos == null ? 'No disponible' : 'Claves: ' + movimiento.numero_claves + '\n Insumos: ' + movimiento.numero_insumos, style: 'tableRow', alignment: 'center' },
                     { text: movimiento.movimiento_metadato == null ? 'No disponible' :  movimiento.movimiento_metadato.persona_recibe, style: 'tableRow', alignment: 'center' },
                     { text: movimiento.movimiento_usuario == null ? 'No disponible' : movimiento.movimiento_usuario.nombre + ' ' + movimiento.movimiento_usuario.apellidos, style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.created_at ? movimiento.created_at : 'No disponible', colSpan: 2, style: 'tableRow', alignment: 'center' },{}
+                    { text: !movimiento.status ? 'No disponible' : movimiento.status == 'FI' ? 'Finalizado' : movimiento.status == 'BR' ? 'Borrador' : 'No disponible', style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.created_at ? movimiento.created_at : 'No disponible', style: 'tableRow', alignment: 'center' }
                 ]);
         }
-/*
-        dd.content[0].table.body.push(
-            // Footer
-            [
-                { text: "", style: 'tableHeader', colSpan: 7, alignment: 'center' },
-                '', '', '', '', '', ''
-            ],
-
-            // Firmas
-            [{
-                table: {
-                    widths: ['*', '*'],
-                    body: [
-                        ['', '']
-                    ],
-                },
-                layout: {
-                    hLineWidth: function(i, node) {
-                        if (i == 0 || i == 3) {
-                            return 0;
-                        }
-                        return 0.5;
-                    },
-                    vLineWidth: function(i, node) {
-                        if (i == 0 || i == 3) {
-                            return 0;
-                        }
-                        return 0.5;
-                    },
-                },
-                style: 'tableHeader',
-                margin: [0, 0, 0, 0],
-                colSpan: 7,
-                alignment: 'center',
-            }, {}, {}, {}, {}, {}, {}]
-        );
-        */
 
         pdfMake.createPdf(dd).getBase64(function(base64) {
             postMessage({ fileName: 'Entradas_estandar.pdf', base64: base64 });

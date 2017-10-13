@@ -42,12 +42,25 @@ export class IndexInventarioComponent implements OnInit {
         titulo: 'Ajuste menos de Inventario', url: '/inventario/ajuste-menos-inventario'
       },
       {
+        permiso: 'arxliSoSCp1HEYcgr2pEeyeHP0u4TbWd', icono: 'assets/icono-movimientos.svg',
+        titulo: 'Movimientos generales', url: '/inventario/movimientos-generales'
+      },
+      {
+        permiso: 'IVgehpUXTeMa5k9BT8uqfEyayEVyxJuD', icono: 'assets/icono-correcciones.svg',
+        titulo: 'Correcciones', url: '/inventario/correcciones'
+      },
+      /**
+       * Temporales
+       */
+      {
         permiso: '--cE81erieaVjvmhcb9GCYI4doqYGtTcj1', icono: 'assets/icono-movimientos.svg',
         titulo: 'Movimientos generales', url: '/inventario/movimientos-generales'
       },
+      {
+        permiso: '--cE81erieaVjvmhcb9GCYI4doqYGtTcj1', icono: 'assets/icono-correcciones.svg',
+        titulo: 'Correcciones', url: '/inventario/correcciones'
+      },
 
-      // Para que tienen todas estas pruebas? R=Porque los permisos no están en la BD aún, entonces uso el permiso de pedidos
-      // Harima: voy a borrar las pruebas, si necesitas los permisos en la base de datos porfa dile a Joram que los agregue, asi como me mandan por correo la lista, Jomran puede hacer el insert manual en su base de datos
     ];
     this.accesosDirectos = [
     ];

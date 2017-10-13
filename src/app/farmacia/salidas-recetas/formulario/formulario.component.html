@@ -502,13 +502,6 @@
                                 <strong>Indicaciones del medicamento</strong>
                             </label>
                         </div>
-                        <div class="column is-auto" style="padding: 0; margin-top: 0.5em; vertical-align: bottom; margin-bottom: 1em; margin-right: 25px; text-align: right;">
-                            <label class="title is-5" style="color: orangered; text-align: right;">Cantidad sugerida a surtir: 
-                                <strong style="color: orangered; text-align: right;">
-                                    {{cantidad_recomendada ? cantidad_recomendada : 0}} 
-                                </strong> {{presentacion_nombre}}
-                            </label> 
-                        </div>
                     </div>
                     <hr style="margin-top: 0.5em; margin-bottom: 1em; margin-right: 15px;">
                     <div class="level-left">
@@ -546,6 +539,14 @@
                                     (keypress)="quitar_punto($event)" (change)="comprobar_cant_lotes(); calcularCantidadSurtida();"
                                     (blur)="calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value); calcularCantidadSurtida(); comprobar_cant_lotes()"
                                     [ngClass]="{'is-disabled': tieneid, 'is-danger': cant_recetada.value == ''}">
+                                </p>
+                            </div>
+                            <div class="column  is-auto">
+                                <p class="control is-expanded">
+                                    <label *ngIf="!tieneid" class="label">Cant. sugerida <br> a surtir</label>
+                                    <strong style="text-align: center;">
+                                        {{cantidad_recomendada ? cantidad_recomendada : 0}}  {{presentacion_nombre}}
+                                    </strong>
                                 </p>
                             </div>
                             <div class="column is-auto">

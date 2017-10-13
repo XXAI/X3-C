@@ -1,11 +1,12 @@
-<listar #ctrl URL="movimientos?tipo=1&fecha_desde={{fecha_desde}}&fecha_hasta={{fecha_hasta}}&recibe={{recibe}}" titulo="Entrada  de almacén"></listar>
+<listar #ctrl URL="entrada-almacen?fecha_desde={{fecha_desde}}&fecha_hasta={{fecha_hasta}}&recibe={{recibe}}&status={{status}}" titulo="Entrada  de almacén"></listar>
 <menu-farmacia [modulo]="'Entradas  de almacén'" [icono]="'assets/icono-entradas.svg'" [url]="'/almacen/entradas-estandar'"></menu-farmacia>
-<div style="height:50px;"></div>
-<div class="contenedor columns " style="height:80%;">
-    <div class="column" style="padding:2em;  z-index: initial;">
-        <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
-            <section class="hero" [ngClass]=" {'is-dark': ctrl.busquedaActivada, 'is-primary': !ctrl.busquedaActivada}">
-                <div class="hero-body" style="position:relative;">
+<div style="height:40px;"></div>
+<div class="contenedor columns " style="height:95%;">
+    <div class="column" style="padding:2em;  z-index: initial; height:100%;">
+        <div style="background: #FFF; border-radius: 1em; overflow: hidden; height:100%; ">
+            <section class="hero" [ngClass]=" {'is-dark': ctrl.busquedaActivada, 'is-primary': !ctrl.busquedaActivada}"
+                    style="height:25%; overflow: auto;">
+                <div class="hero-body" style="position:relative; height: 90%">
                     <nav class="level">
                         <div class="level-left"></div>
                         <!-- Right side -->
@@ -68,17 +69,23 @@
                         </div>
                     </div>
                 </div>
-            </section>
+            </section><!-- 25/100% height -->
             
-        <div class="is-fullwidth has-text-centered" *ngIf="ctrl.cargando">
+        <div class="is-fullwidth has-text-centered" *ngIf="ctrl.cargando" style="height:75%;"> <!-- 75/100% height -->
             <br>
             <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
             <br>
             <br>
         </div>
-        <span id="exportable">
-            <div style="overflow: scroll; overflow-x: hidden; height: 650px;">
-                <table class="table" *ngIf="!ctrl.cargando">
+        <span id="exportable" style="height:70%;"><!-- 75/100% height -->
+            <div style="overflow: scroll; overflow-x: hidden; height: 70%;">
+                <div class="is-fullwidth has-text-centered" *ngIf="cargandoPdf">
+                    <br>
+                    <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Generando PDF...</span></span>
+                    <br>
+                    <br>
+                </div>
+                <table class="table" *ngIf="!ctrl.cargando && !cargandoPdf">
                     <thead>
                         <tr>
                             <th style=" text-align: center;"><abbr title="Folio">Fecha</abbr></th>
@@ -86,6 +93,7 @@
                             <th>Insumos</th>
                             <th>Entrega</th>
                             <th>Usuario</th>
+                            <th>Estatus</th>
                             <th style=" text-align: center;">Capturado</th>
                         </tr>
                     </thead>
@@ -99,6 +107,10 @@
                             <td *ngIf="!item.movimiento_metadato && (i+1)<ctrl.dato.length" style="vertical-align: middle;" >No disponible</td>
                             <td *ngIf="!item.movimiento_metadato && (i+1)<ctrl.dato.length" style="vertical-align: middle;" >No disponible</td>
                             <td *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle;"><a routerLink="/almacen/entradas-estandar/ver/{{item.id}}">{{ item.movimiento_usuario.nombre }} {{ item.movimiento_usuario.apellidos }} </a></td>                        
+                            <td *ngIf="(i+1)<ctrl.dato.length">
+                                <span class="tag is-success is-medium" *ngIf="item.status == 'FI'">Finalizado</span>
+                                <span class="tag is-warning is-medium" *ngIf="item.status == 'BR'">Borrador</span>
+                            </td>
                             <td *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle; text-align: center;"><a routerLink="/almacen/entradas-estandar/ver/{{item.id}}">{{ item.created_at | date:'medium'}} </a></td>
                         </tr>
                         <tr *ngIf="!ctrl.dato">

@@ -108,7 +108,7 @@ export class ListaEntradasComponent {
    * @returns archivo en formato PDF
    */
   imprimir() {
-    this.crudService.lista_general('movimientos?tipo=1&fecha_desde=' + this.fecha_desde
+    this.crudService.lista_general('entrada-almacen?fecha_desde=' + this.fecha_desde
     + '&fecha_hasta=' + this.fecha_hasta + '&recibe=' + this.recibe).subscribe(
       resultado => {
               this.cargando = false;
@@ -116,7 +116,7 @@ export class ListaEntradasComponent {
               try {
                 this.cargandoPdf = true;
                 let entrada_imprimir = {
-                  lista: this.lista_impresion.data,
+                  lista: this.lista_impresion,
                   usuario: this.usuario,
                   fecha_desde: this.fecha_desde,
                   fecha_hasta: this.fecha_hasta,

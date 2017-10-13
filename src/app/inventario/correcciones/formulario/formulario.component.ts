@@ -57,6 +57,25 @@ export class FormularioComponent {
   pdfworker: Worker;
   cargandoPdf = false;
   // # FIN SECCION
+  /**
+   * Contiene los datos de inicio de sesión del usuario.
+   * @type {any} */
+  usuario;
+  /**
+   * Guarda el resultado de la búsqueda de insumos médicos.
+   * @type {array} */
+  res_busq_insumos= [];
+  /**
+   * Objeto que contiene propiedades de los mensajes 
+   * (showProgressBar, pauseOnHover, clickToClose, maxLength)
+   * @type {Object}
+   */
+  objeto = {
+          showProgressBar: true,
+          pauseOnHover: true,
+          clickToClose: true,
+          maxLength: 3000
+        };
 
   constructor(
     private fb: FormBuilder,
@@ -69,18 +88,18 @@ export class FormularioComponent {
   ngOnInit() {
 
     // obtener los datos del usiario logueado almacen y clues
-    let usuario = JSON.parse(localStorage.getItem('usuario'));
+    this.usuario = JSON.parse(localStorage.getItem('usuario'));
 
     // Solo si se va a cargar catalogos poner un 
     // <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
     document.getElementById('catalogos').click();
     document.getElementById('actualizar').click();
 
-    if (usuario.clues_activa) {
-      this.insumos_term += '&clues=' + usuario.clues_activa.clues;
+    if (this.usuario.clues_activa) {
+      this.insumos_term += '&clues=' + this.usuario.clues_activa.clues;
     }
-    if (usuario.almacen_activo) {
-      this.insumos_term += '&almacen=' + usuario.almacen_activo.id;
+    if (this.usuario.almacen_activo) {
+      this.insumos_term += '&almacen=' + this.usuario.almacen_activo.id;
     }
 
     // Inicializamos el objeto para los reportes con web Webworkers
@@ -168,6 +187,30 @@ export class FormularioComponent {
     document.getElementById('tituloInsumoCorrecto').innerHTML = ``;
   }
   /**
+   * Método de búsqueda de insumos en la API.
+   * @param keyword Contiene la palabra que va a buscar.
+   */
+  enviarAutocomplete(keyword: any) {
+    this.cargando = true;
+    let cabecera = '';
+    if (this.usuario.clues_activa) {
+      cabecera += '&clues=' + this.usuario.clues_activa.clues;
+    }
+    if (this.usuario.almacen_activo) {
+      cabecera += '&almacen=' + this.usuario.almacen_activo.id;
+    }
+    let url: string = '' + environment.API_URL + '/insumos-auto?term=' + keyword + cabecera;
+    this.crudService.busquedaInsumos(keyword, 'insumos-auto').subscribe(
+      resultado => {
+        this.cargando = false;
+        this.res_busq_insumos = resultado;
+        if (this.res_busq_insumos.length === 0) {
+          this.notificacion.warn('Insumos', 'No hay resultados que coincidan', this.objeto);
+        }
+      }
+    );
+  }
+  /**
      * Este método formatea los resultados de la busqueda en el autocomplte
      * @param data resultados de la busqueda 
      * @return void
@@ -205,7 +248,6 @@ export class FormularioComponent {
      */
   select_insumo_autocomplete(data) {
 
-    let usuario = JSON.parse(localStorage.getItem('usuario'));
     // Inicializamos variables, por si cambia de insumo en el autocomplete
     this.lotes_insumo = [];
     this.cargando = true;
@@ -213,9 +255,8 @@ export class FormularioComponent {
     this.cant_solicitada_valida = false;
 
     // cargar los datos de los lotes del insumo seleccionado en el autocomplete
-    this.crudService.lista(0, 1000, 'comprobar-stock?almacen=' + usuario.almacen_activo.id + '&clave=' + data.clave).subscribe(
+    this.crudService.lista(0, 1000, 'comprobar-stock?almacen=' + this.usuario.almacen_activo.id + '&clave=' + data.clave).subscribe(
       resultado => {
-
         let unidosis_temporal: Number;
         let normal_temporal: Number;
         if (resultado.length > 0) {
@@ -246,6 +287,7 @@ export class FormularioComponent {
 
         // limpiar el autocomplete
         (<HTMLInputElement>document.getElementById('buscarInsumo')).value = '';
+        this.res_busq_insumos = [];
 
         this.es_unidosis = data.es_unidosis;
         this.unidad_medida = data.unidad_medida;
@@ -278,7 +320,7 @@ export class FormularioComponent {
       'cantidad': 1,
       'presentacion_nombre': this.insumo.presentacion_nombre,
       'unidad_medida': this.insumo.unidad_medida,
-      'cantidad_x_envase': this.insumo.cantidad_x_envase ? parseInt(this.insumo.cantidad_x_envase) : 1,
+      'cantidad_x_envase': this.insumo.cantidad_x_envase ? Number(this.insumo.cantidad_x_envase) : 1,
       'cantidad_surtida': 1,
       'modo_salida': this.modo,
       'lotes': this.fb.array([]),
@@ -291,7 +333,7 @@ export class FormularioComponent {
       'cantidad_correcta': 1,
       'presentacion_nombre_correcta': this.insumo_a_cambiar.presentacion_nombre,
       'unidad_medida_correcta': this.insumo_a_cambiar.unidad_medida,
-      'cantidad_x_envase_correcta': this.insumo_a_cambiar.cantidad_x_envase ? parseInt(this.insumo_a_cambiar.cantidad_x_envase) : 1,
+      'cantidad_x_envase_correcta': this.insumo_a_cambiar.cantidad_x_envase ? Number(this.insumo_a_cambiar.cantidad_x_envase) : 1,
       'cantidad_surtida_correcta': 1,
       'modo_salida_correcta': this.modo,
       'lotes_correctos': this.fb.array([])
@@ -324,12 +366,6 @@ export class FormularioComponent {
     // Mostrar ocultar los lotes en la vista al hacer clic en el icono de plus
     this.mostrar_lote[posicion] = false;
 
-    let objeto = {
-      showProgressBar: true,
-      pauseOnHover: true,
-      clickToClose: true,
-      maxLength: 2000
-    };
     // recorrer la tabla de lotes del modal para obtener la cantidad
     for (let item of this.lotes_insumo) {
       // agregar unicamente aquellos que tiene cantidad normal o unidosis
@@ -350,13 +386,14 @@ export class FormularioComponent {
               // validar que la cantidad escrita no sea mayor que la existencia si no poner la existencia como la cantidad maxima 
               if (this.modo === 'N') {
                 if (cantidad_lote > l.controls.existencia.value) {
-                  this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + l.controls.existencia.value, objeto);
+                  this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + l.controls.existencia.value, this.objeto);
                   cantidad_lote = l.controls.existencia.value * 1;
                 }
               }
               if (this.modo === 'U') {
                 if (cantidad_lote > l.controls.existencia_unidosis.value) {
-                  this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + l.controls.existencia_unidosis.value, objeto);
+                  this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: '
+                  + l.controls.existencia_unidosis.value, this.objeto);
                   cantidad_lote = l.controls.existencia_unidosis.value * 1;
                 }
               }
@@ -375,14 +412,14 @@ export class FormularioComponent {
           }
           if (this.modo === 'N') {
             if (item.cantidad > item.existencia) {
-              this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + item.existencia, objeto);
+              this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + item.existencia, this.objeto);
               item.cantidad = item.existencia * 1;
             }
           }
           if (this.modo === 'U') {
             {
               if (item.cantidad > item.existencia_unidosis) {
-                this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + item.existencia_unidosis, objeto);
+                this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + item.existencia_unidosis, this.objeto);
                 item.cantidad = item.existencia_unidosis * 1;
               }
             }
@@ -490,25 +527,13 @@ export class FormularioComponent {
   validar_cantidad_lote(i, val, i2, modo_salida) {
     if (modo_salida === 'N') {
       if (val.controls.cantidad.value > val.controls.existencia.value) {
-        let objeto = {
-          showProgressBar: true,
-          pauseOnHover: true,
-          clickToClose: true,
-          maxLength: 2000
-        };
-        this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + val.controls.existencia.value, objeto);
+        this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + val.controls.existencia.value, this.objeto);
         val.controls.cantidad.patchValue(val.controls.existencia.value * 1);
       }
     }
     if (modo_salida === 'U') {
       if (val.controls.cantidad.value > val.controls.existencia_unidosis.value) {
-        let objeto = {
-          showProgressBar: true,
-          pauseOnHover: true,
-          clickToClose: true,
-          maxLength: 2000
-        };
-        this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + val.controls.existencia_unidosis.value, objeto);
+        this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + val.controls.existencia_unidosis.value, this.objeto);
         val.controls.cantidad.patchValue(val.controls.existencia_unidosis.value * 1);
       }
     }
@@ -584,7 +609,9 @@ export class FormularioComponent {
       <strong> ${item.descripcion} </strong> </p>
       <p aling="justify" style="font-size:12px">${item.descripcion}</p> 
       <p aling="justify" style="font-size:16px"> CANTIDAD POR ENVASE:
-      ${item.cantidad_x_envase ? item.cantidad_x_envase : 'Sin especificar' }</p>`;
+      ${item.detalles == null ? 'Sin especificar' : item.detalles.informacion_ampliada = null ?  'Sin especificar' :
+        item.detalles.informacion_ampliada.cantidad_x_envase == null
+        ? item.detalles.informacion_ampliada.cantidad_x_envase : 'Sin especificar' }</p>`;
 
     this.abrirModal('actualizarInsumo');
   }
@@ -592,8 +619,6 @@ export class FormularioComponent {
   /************************************************IMPRESION DE REPORTES********************************************* */
 
   imprimir() {
-    let usuario = JSON.parse(localStorage.getItem('usuario'));
-
     let turno;
     for (let item of this.array_turnos.clues_turnos){
       if (this.dato.value.movimiento_metadato.turno_id === item.id) {
@@ -615,7 +640,7 @@ export class FormularioComponent {
         lista: this.dato.value.insumos,
         turno: turno,
         servicio: servicio,
-        usuario: usuario
+        usuario: this.usuario
       };
       this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
     } catch (e) {

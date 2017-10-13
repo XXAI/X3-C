@@ -89,13 +89,14 @@ export class FormularioComponent implements OnInit {
     * o solo se esta editando
     * @return void
     */
-    enviar(regresar: boolean = true) {
+    enviar(regresar: boolean = true, editar: string = '') {
         try {
-            if (this.id)
+            if (this.id) {
                 this.actualizarDatos();
-            else
-                this.guardarDatos(regresar);
-        } catch (e){
+            } else {
+                this.guardarDatos(regresar, editar);
+            }
+        } catch (e) {
             console.log('Mal');
         }
     }
@@ -104,15 +105,19 @@ export class FormularioComponent implements OnInit {
     * Este método envia los datos para agregar un elemento
     * @return void
     */
-    guardarDatos(regresar) {
+    guardarDatos(regresar, editar) {
 
         this.cargando = true;
         var json = this.dato.getRawValue();
         this.crudService.crear(json, this.URL).subscribe(
             resultado => {
                 this.cargando = false;
-                if(regresar)
+                if (regresar) {
                     this.location.back();
+                }
+                if (editar) {
+                    this.router.navigate([editar, resultado.id]);
+                }
 
                 this.mensajeResponse.texto = 'Se han guardado los cambios.';
                 this.mensajeResponse.mostrar = true;
@@ -134,9 +139,9 @@ export class FormularioComponent implements OnInit {
                         this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
                     }
                     // Problema de validación
-                    if (error.status == 409) {
+                    if (error.status === 409) {
                         try {
-                            for (var input in e.error) {
+                            for (let input in e.error) {
                                 if (e.error.hasOwnProperty(input)) {
                                     for (let i in e.error[input]) {
                                         if (e.error[input].hasOwnProperty(i)) {

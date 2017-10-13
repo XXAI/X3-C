@@ -253,7 +253,7 @@
                         </div>
                     </div>
 <!-- *************************************************- - -FIN INSUMOS NEGADOS*****************************************************-->                
-                    <div style="height:50px;"></div>
+                    <div style="height:30px;"></div>
 <!-- *******************************************************- - INSUMOS - -*****************************************************-->                
                     <div formArrayName="insumos" style="overflow: scroll; overflow-x: hidden; height: 530px;">
                         <div class="box" *ngFor="let item of ctrl.dato.controls.insumos.controls; let i=index" [ngStyle]="{'background': i%2 == 0 ? 'rgba(230, 230, 232, 0.44)' : ''}">
@@ -551,13 +551,13 @@
 <!-- ******************************** MODAL ACTUALIZAR INSUMO ********************************************* -->
 <div class="modal" id="actualizarInsumo">
     <div class="modal-background"></div>
-    <div class="modal-card" style="width: 90%;">
+    <div class="modal-card" style="width: 90%; height: 80%">
         <header class="modal-card-head">
             <p class="modal-card-title" style="width: 200px"><i class="fa fa-exchange"></i> &nbsp; Cambio de insumo</p>
             <button type="button" class="delete" (click)="cancelarModal('actualizarInsumo'); modo = 'N';"></button>
         </header>
-        <section class="modal-card-body">
-            <div class="columns">
+        <section class="modal-card-body" style=" height: 80%">
+            <div class="columns" style="height: 100%">
                 <div class="column" style="border: 2px solid lightpink; border-radius: 5px;">
                     <h3 class="title is-2" id="tituloInsumo"></h3>
                     <table class="table is-narrow is-bordered is-striped">
@@ -596,16 +596,64 @@
                 </div>
                 <!-- ******************************** INSUMO REEMPLAZANTE ******************************** -->
                 <div class="column">
-                    <h3 class="title is-2" id="tituloInsumoCorrecto"></h3>
-                    <p *ngIf="!cargando && lotes_insumo.length > 0" style="text-align: right; font-size: 16px">Cantidad a reemplazar: <strong>{{cantidad_total}}</strong> </p>
-                    <section class="section">
-                        <p class="control">
-                            <input ngui-auto-complete [source]="insumos_term" [list-formatter]="autocompleListFormatter" 
+                    <section class="section" style="padding:1em;">
+                        <div class="control">
+                            <!--
+                                <input ngui-auto-complete [source]="insumos_term" [list-formatter]="autocompleListFormatter" 
                             id="buscarInsumo" value-property-name="clave" display-property-name="descripcion" path-to-data="" 
                             loading-text="Cargando..." no-match-found-text="No hay resultados." (valueChanged)="select_insumo_autocomplete($event)" 
                             min-chars="1" class="input is-medium" type="text" [ngClass]="{'is-loading': ctrl.cargando}"
                             placeholder="Escanea el codigo de barra, o empieza escribir el nombre del producto">
-                        </p>
+                            -->
+                            <div class="control is-grouped">
+                                <div class="control is-expanded">
+                                    <input 
+                                        (keyup.enter)="buscarInsumo.value != '' ?  enviarAutocomplete(buscarInsumo.value) : buscarInsumo.value = ''" 
+                                        id="buscarInsumo"
+                                        name="buscarInsumo"
+                                        #buscarInsumo
+                                        class="input is-success is-medium"
+                                        type="text"
+                                        placeholder="Escriba la clave o el nombre del insumo y presione la tecla ENTER"/>
+                                </div>
+                                <div class="control">
+                                    <a class="button is-success is-medium" title="Buscar insumo" (click)="buscarInsumo.value != '' ?  enviarAutocomplete(buscarInsumo.value) : buscarInsumo.value = ''">
+                                        <i class="fa fa-search" aria-hidden="true"></i> &nbsp; Buscar
+                                    </a>
+                                </div>
+                                <div class="control" *ngIf="buscarInsumo.value != ''">
+                                    <a class="button is-info is-medium" title="Borrar texto" (click)="res_busq_insumos=[]; buscarInsumo.value=''">
+                                        <i class="fa fa-times" aria-hidden="true"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div *ngIf="res_busq_insumos.length > 0 && !cargando" style="height: 200px;">
+                                <div *ngIf="res_busq_insumos.length > 0 && !cargando" style="overflow: scroll; overflow-x: hidden; height: 90%;">
+                                    <div class="content" style="z-index: 1;" *ngFor="let item_insumo of res_busq_insumos; let c = index">
+                                        <div class="card" (click)="select_insumo_autocomplete(item_insumo)" style="background: rgba(242,248,253, 0.8)">
+                                            <div class="card-content">
+                                                <div class="media">          
+                                                    <div class="media-content">
+                                                        <p class="title is-4">{{item_insumo.descripcion}}</p>
+                                                        <p class="subtitle is-6">
+                                                            <strong>Clave: </strong> {{item_insumo.clave}}
+                                                            <label class="tag is-success" *ngIf="item_insumo.es_causes == 1"><strong>Cause </strong></label>
+                                                            <label class="tag" *ngIf="item_insumo.es_causes == 0" style="background: #B8FB7E; border-color: #B8FB7E; color: rgba(0,0,0,0.7);" ><strong>No Cause </strong> </label>
+                                                            <label class="tag is-warning" *ngIf="item_insumo.es_unidosis == 1"><strong>Unidosis</strong> </label>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr> <!-- Línea de division -->
+                        <h3 class="title is-2" id="tituloInsumoCorrecto"></h3>
+                        <p *ngIf="!cargando && lotes_insumo.length > 0" style="text-align: right; font-size: 16px">
+                            Cantidad a reemplazar: <strong>{{cantidad_total}}</strong>
+                        </p>                    
                     </section>
                     <div class="has-text-centered" *ngIf="cargando">
                          <span *ngIf="ctrl.cargando || cargando" class="icon is-medium"><i class="fa fa-refresh fa-spin"></i></span>
