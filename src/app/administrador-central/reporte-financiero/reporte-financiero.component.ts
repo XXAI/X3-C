@@ -54,6 +54,11 @@ export class ReporteFinancieroComponent implements OnInit {
 	totalComprometido = 0;
 	totalDevengado = 0;
 	totalDisponible = 0;
+	totalMontoSolicitado = 0;
+	totalMontoRecibido = 0;
+	totalCantidadSolicitada = 0;
+	totalCantidadRecibida = 0;
+
 	// # FIN SECCION
 
 
@@ -250,6 +255,15 @@ export class ReporteFinancieroComponent implements OnInit {
 			anio_fin: fechaFinSeleccionada != -1 ? fechaFinSeleccionada[1] : null
 		}
 		//var parametros = JSON.stringify(parametrosObj);
+
+		this.totalCantidadRecibida = 0;
+		this.totalCantidadSolicitada = 0;
+		this.totalMontoRecibido = 0;
+		this.totalMontoSolicitado = 0;
+		this.totalModificado  = 0;
+		this.totalComprometido = 0;
+		this.totalDevengado = 0;
+		this.totalDisponible = 0;
 		this.apiService.reporteFinanciero(parametros).subscribe(
 		  respuesta => {
 				this.cargando = false;
@@ -261,6 +275,10 @@ export class ReporteFinancieroComponent implements OnInit {
 					this.totalComprometido += +this.lista[x].comprometido;
 					this.totalDevengado += +this.lista[x].devengado;
 					this.totalDisponible += +this.lista[x].disponible;
+					this.totalMontoSolicitado += +this.lista[x].monto_solicitado;
+					this.totalMontoRecibido += +this.lista[x].monto_recibido;
+					this.totalCantidadSolicitada += +this.lista[x].cantidad_solicitada;
+					this.totalCantidadRecibida += +this.lista[x].cantidad_recibida;
 				}
 	
 			  console.log("Items cargados.");
