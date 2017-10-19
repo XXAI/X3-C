@@ -85,15 +85,14 @@
                             <label class="label">Programa:</label>
                         </div><!-- SI carga los turnos -->
                         <div class="control is-grouped">
-                            <span *ngIf="ctrl.cargando || cargando" class="tag is-primary is-medium">Cargando programas. 
+                            <span *ngIf="ctrl.cargando || cargandoProgramas" class="tag is-primary is-medium">Cargando programas. 
                                 <i class="fa fa-refresh fa-spin" aria-hidden="true"></i>
                             </span>
-                            <div  *ngIf="!ctrl.cargando && !cargando" class="control is-expanded  has-icon has-icon-right">
+                            <div  *ngIf="!ctrl.cargando && !cargandoProgramas" class="control is-expanded  has-icon has-icon-right">
                                 <select class="select" name="programa" formControlName="programa_id" 
                                     [ngClass]="{'is-disabled': tieneid && ctrl.dato.get('status').value == 'FI'}">
-                                    <option *ngFor="let item of lista_programas" value="{{item.id}}" 
-                                    [attr.selected]="ctrl.dato.get('programa_id').value == item.id">{{ item.nombre }}</option>
-                                    <option value="" selected>Seleccione un programa</option>
+                                    <option value="">Seleccione un programa</option>
+                                    <option *ngFor="let item of lista_programas" value="{{item.id}}">{{ item.nombre }}</option>
                                 </select>
                                 <span class="icon is-small" *ngIf="ctrl.dato.get('programa_id').hasError('required')">
                                     <i class="fa fa-warning"></i>
@@ -161,7 +160,12 @@
                                     </button>
                                 </p>
                                 <p class="level-item" *ngIf="tieneid"><a class="button is-primary" title="Actualizar" (click)="ctrl.cargarDatos();"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
-                                <p class="level-item" *ngIf="!tieneid"><a class="button is-primary" title="Actualizar" (click)="cargarCatalogo('programa');"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
+                                <p class="level-item" *ngIf="!tieneid">
+                                    <a class="button is-primary" title="Actualizar" (click)="cargarCatalogo('programa');">
+                                        <span class="icon "><i class="fa fa-refresh"></i>
+                                        </span>
+                                    </a>
+                                </p>
                                 <p class="level-item">&nbsp;</p>
                             </div>
                         </nav>
@@ -210,7 +214,7 @@
                                 </a>
                             </div>
                             <div class="control" *ngIf="buscarInsumo.value != ''">
-                                <a class="button is-info is-medium" title="Borrar texto" (click)="res_busq_insumos=[]; buscarInsumo.value=''">
+                                <a class="button is-info is-medium" title="Borrar texto" (click)="res_busq_insumos=[]; buscarInsumo.value='';">
                                     <i class="fa fa-times" aria-hidden="true"></i>
                                 </a>
                             </div>

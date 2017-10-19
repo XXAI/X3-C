@@ -46,6 +46,11 @@ export class FormularioComponent {
    * @type {boolean}
    */
   estoymodificando = false;
+  /**
+   * Se tuvo que crear la variable debido a que se debe hacer referencia únicamente cuando se esté actualizando
+   * el catálogo de programas y no cada vez que se esté cargando otros elementos.
+   */
+  cargandoProgramas = false;
 
   fecha_movimiento;
   mostrarCancelado;
@@ -203,10 +208,10 @@ export class FormularioComponent {
    * @param url Contiene la cadena con la URL de la API a consultar para cargar el catalogo del select.
    */
   cargarCatalogo(url) {
-    this.cargando = true;
+    this.cargandoProgramas = true;
     this.crudService.lista_general(url).subscribe(
       resultado => {
-        this.cargando = false;
+        this.cargandoProgramas = false;
         // this.lista_programas = resultado;
         let contador = 0;
         for (let item of resultado) {

@@ -92,19 +92,27 @@
                                 <!-- NO carga los turnos -->
                                 <div class="field" *ngIf="!ctrl.turnos || ctrl.cargando || cargando">
                                     <span *ngIf="ctrl.cargando" class="tag is-primary is-medium">Cargando turnos. <i class="fa fa-refresh fa-spin" aria-hidden="true"></i></span>
-                                    <span *ngIf="!ctrl.cargando"class="tag is-medium"><a id="actualizar"  *ngIf="!ctrl.cargando" (click)="ctrl.cargarCatalogo('turnos', 'mis-turnos'); ">No se pudieron cargar los turnos. <i class="fa fa-refresh" aria-hidden="true"></i></a></span>
-                                    
+                                    <span *ngIf="!ctrl.cargando"class="tag is-medium">
+                                        <a class="has-icon" id="actualizar"  *ngIf="!ctrl.cargando" (click)="ctrl.cargarCatalogo('turnos', 'mis-turnos'); ">
+                                            No se pudieron cargar los turnos. &nbsp; <i class="fa fa-refresh" aria-hidden="true"></i>
+                                        </a>
+                                    </span>                                    
                                     <p></p>
                                 </div>
                                 <!-- SI carga los turnos -->
                                 <p  *ngIf="ctrl.turnos && !ctrl.cargando && !cargando" class="control is-expanded  has-icon has-icon-right">
-                                    <select class="select" name="turno" formControlName="turno_id" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('movimiento_metadato').get('turno_id').hasError('required')}">
-                                        <option *ngFor="let item of ctrl.turnos.clues_turnos" value="{{item.id}}" [attr.selected]="ctrl.dato.get('movimiento_metadato').get('turno_id').value == item.id ">{{ item.nombre }}</option>
+                                    <select class="select" name="turno" formControlName="turno_id" 
+                                    [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('movimiento_metadato').get('turno_id').hasError('required')}">
+                                        <option value="">Seleccione un turno.</option>
+                                        <option *ngFor="let item of ctrl.turnos.clues_turnos" value="{{item.id}}">{{ item.nombre }}</option>
                                     </select>
+                                    <span class="help is-danger" *ngIf="ctrl.turnos.clues_turnos.length == 0">Contacte al administrador. No hay turnos disponibles.</span>
                                     <span class="icon is-small" *ngIf="ctrl.dato.get('movimiento_metadato').get('turno_id').hasError('required')">
                                         <i class="fa fa-warning"></i>
                                     </span>
-                                    <span class="help is-danger" *ngIf="ctrl.dato.get('movimiento_metadato').get('turno_id').hasError('required')">Este campo es requerido.</span>
+                                    <span class="help is-danger" *ngIf="ctrl.dato.get('movimiento_metadato').get('turno_id').hasError('required') &&  ctrl.turnos.clues_turnos.length > 0">
+                                        Este campo es requerido.
+                                    </span>
                                 </p>
                             </div>
                             <!-- SERVICIOS -->
@@ -113,18 +121,23 @@
                                 <!-- NO carga los SERVICIOS -->
                                 <div class="field" *ngIf="!ctrl.servicios || ctrl.cargando || cargando">
                                     <span *ngIf="ctrl.cargando" class="tag is-primary is-medium">Cargando servicios. <i class="fa fa-refresh fa-spin" aria-hidden="true"></i></span>
-                                    <span *ngIf="!ctrl.cargando"class="tag is-medium">No se pudieron cargar los servicios.</span>
-                                    <a id="actualizar" *ngIf="!ctrl.cargando" (click)="ctrl.cargarCatalogo('servicios', 'mis-servicios'); "><i class="fa fa-refresh is-medium" aria-hidden="true"></i></a>
+                                    <span *ngIf="!ctrl.cargando"class="tag is-medium">
+                                        <a id="actualizar" *ngIf="!ctrl.cargando" (click)="ctrl.cargarCatalogo('servicios', 'mis-servicios'); ">
+                                            No se pudieron cargar los servicios. &nbsp; <i class="fa fa-refresh is-medium" aria-hidden="true"></i>
+                                        </a>
+                                    </span>
                                 </div>
                                 <!-- SI carga los SERVICIOS -->
-                                <p class="control is-expanded  has-icon has-icon-right" *ngIf="!ctrl.cargando && !cargando">
-                                    <select *ngIf="ctrl.servicios" class="select" name="servicio_id" formControlName="servicio_id" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('movimiento_metadato').get('servicio_id').hasError('required')}">
-                                        <option *ngFor="let item of ctrl.servicios.clues_servicios" value="{{item.id}}" [attr.selected]="ctrl.dato.get('movimiento_metadato').get('servicio_id').value == item.id ">{{ item.nombre }}</option>
+                                <p *ngIf="ctrl.servicios &&!ctrl.cargando && !cargando" class="control is-expanded  has-icon has-icon-right">
+                                    <select class="select" name="servicio_id" formControlName="servicio_id" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('movimiento_metadato').get('servicio_id').hasError('required')}">
+                                        <option value="">Seleccione un servicio.</option>
+                                        <option *ngFor="let item of ctrl.servicios.clues_servicios" value="{{item.id}}">{{ item.nombre }}</option>
                                     </select>
+                                    <span class="help is-danger" *ngIf="ctrl.servicios.clues_servicios.length == 0">Contacte al administrador. No hay servicios disponibles.</span>
                                     <span class="icon is-small" *ngIf="ctrl.dato.get('movimiento_metadato').get('servicio_id').hasError('required')">
                                         <i class="fa fa-warning"></i>
                                     </span>
-                                    <span class="help is-danger" *ngIf="ctrl.dato.get('movimiento_metadato').get('servicio_id').hasError('required')">Este campo es requerido.</span>
+                                    <span class="help is-danger" *ngIf="ctrl.dato.get('movimiento_metadato').get('servicio_id').hasError('required') && ctrl.servicios.clues_servicios.length > 0">Este campo es requerido.</span>
                                 </p>
                             </div>
 
