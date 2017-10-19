@@ -3,13 +3,15 @@
 <div class="contenedor columns " style="height:85%">
     <a id="actualizar" (click)="ctrl.cargarDatos();"></a>
     <a id="catalogoTurno" (click)="ctrl.cargarCatalogo('tipos_turnos', 'turnos?bid=1', 'initMover'); "></a>
-    <div *ngIf="!mostrar_pantalla" style="width: 100%; height: 500px; vertical-align: middle; text-align: center;">        
+    <!--
+        <div *ngIf="!mostrar_pantalla" style="width: 100%; height: 500px; vertical-align: middle; text-align: center;">        
         <a class="button is-warning is-large" style="width: 100%; height: 100%"
         (click)="ctrl.cargarCatalogo('tipos_turnos', 'turnos?bid=1', 'initMover'); mostrar_pantalla=true">
             <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> &nbsp; Cargar turnos
         </a>
     </div>
-    <div *ngIf="mostrar_pantalla" class="column" style="padding:2em;">
+     -->
+    <div class="column" style="padding:2em;">
         <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
             <nav class="level">
                 <div class="level-left">

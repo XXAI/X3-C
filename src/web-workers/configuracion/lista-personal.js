@@ -20,7 +20,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     headerRows: 5,
                     dontBreakRows: true,
                     //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
-                    widths: [80, 70, 'auto', 'auto', 'auto', 'auto','auto'],
+                    widths: [60, 70, 'auto', 'auto', 'auto', 'auto','auto'],
                     body: [
                         [{
                             image: 'header',
@@ -32,7 +32,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         [{ text: 'SIAL', style: 'titulo', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],
-                        [{ text: 'PROGRAMAS', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },
+                        [{ text: 'LISTA DE PERSONAL', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],[
                             { text: 'CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
@@ -46,20 +46,20 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         [
                             { text: '', style: 'tableHeaderVerde', colSpan: 3, alignment: 'right' },
                             {},{},
-                            { text: 'NOMBRE DE ALMACÉN', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
-                            {},
-                            { text: data.usuario.almacen_activo.nombre, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {}
+                            { text: 'NOMBRE DE ALMACÉN', style: 'tableHeaderVerde', alignment: 'right' },
+                            { text: data.usuario.almacen_activo.nombre, style: 'tableHeader', colSpan: 3, alignment: 'left' }, {},
+                            {}
                         ],
                         [{ text: ' ', style: 'celdaEspacio', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],
                         [
-                            { text: 'ID', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
-                            {},
-                            { text: 'NOMBRE', style: 'tableHeaderVerde', colSpan: 3, alignment: 'center' },
-                            {},
-                            {},
-                            { text: 'Estatus', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
+                            { text: 'ID', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'TIPO PERSONAL', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'CLUES', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'NOMBRE', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'CELULAR', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'EMAIL', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
                             {}
                         ]
                         //Body -> insumos
@@ -174,19 +174,21 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
 
         for (var i in data.lista) {
             var movimiento = data.lista[i];
+            if(i == data.lista.length){
+                break;
+            }
                 dd.content[0].table.body.push([
-                    { text: movimiento.id ? movimiento.id : 'No disponible', colSpan: 2, style: 'tableRow', alignment: 'center' },
-                    {},
-                    { text: movimiento.nombre == null ? 'No disponible' : movimiento.nombre, colSpan: 3, style: 'tableRow', alignment: 'center' },
-                    {},
-                    {},
-                    { text: movimiento.status == null ? 'No disponible' : movimiento.status == 1 ? 'Activo' : 'Inactivo', colSpan: 2, style: 'tableRow', alignment: 'center' },
-                    {}
+                    { text: movimiento.id ? movimiento.id : 'No disponible', style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.tipo_personal_id ? movimiento.tipo_personal_id : 'No disponible' , style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.clues == null ? 'No disponible' : movimiento.clues, style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.nombre == null ? 'No disponible' :  movimiento.nombre, style: 'tableRow', alignment: 'left' },
+                    { text: movimiento.celular == null ? 'No disponible' : movimiento.celular, style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.email ? movimiento.email : 'No disponible', colSpan: 2, style: 'tableRow', alignment: 'center' },{}
                 ]);
         }
 
         pdfMake.createPdf(dd).getBase64(function(base64) {
-            postMessage({ fileName: 'Programas.pdf', base64: base64 });
+            postMessage({ fileName: 'LISTA_PERSONAL.pdf', base64: base64 });
         });
     }
 

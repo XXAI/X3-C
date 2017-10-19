@@ -85,14 +85,14 @@
                             <label class="label">Programa:</label>
                         </div><!-- SI carga los turnos -->
                         <div class="control is-grouped">
-                            <span *ngIf="ctrl.cargando" class="tag is-primary is-medium">Cargando programas. 
+                            <span *ngIf="ctrl.cargando || cargando" class="tag is-primary is-medium">Cargando programas. 
                                 <i class="fa fa-refresh fa-spin" aria-hidden="true"></i>
                             </span>
-                            <div  *ngIf="!ctrl.cargando" class="control is-expanded  has-icon has-icon-right">
+                            <div  *ngIf="!ctrl.cargando && !cargando" class="control is-expanded  has-icon has-icon-right">
                                 <select class="select" name="programa" formControlName="programa_id" 
                                     [ngClass]="{'is-disabled': tieneid && ctrl.dato.get('status').value == 'FI'}">
                                     <option *ngFor="let item of lista_programas" value="{{item.id}}" 
-                                    [attr.selected]="ctrl.dato.get('programa_id').value == item.id ">{{ item.nombre }}</option>
+                                    [attr.selected]="ctrl.dato.get('programa_id').value == item.id">{{ item.nombre }}</option>
                                     <option value="" selected>Seleccione un programa</option>
                                 </select>
                                 <span class="icon is-small" *ngIf="ctrl.dato.get('programa_id').hasError('required')">
@@ -101,19 +101,18 @@
                                 <span class="help is-danger" *ngIf="ctrl.dato.get('programa_id').hasError('required')">Este campo es requerido.</span>
                                 <span class="help is-danger" *ngIf="lista_programas.length == 0"> No se cargaron programas, contacte al administrador.</span>
                             </div>
-                            <!-- Botón para agregar turnos -->
+                            <!-- Botón para agregar turnos 
                             <div class="control">
                                 <a class="button" *ngIf="permisos.indexOf('ygwsEwz3cUw4yVMCeaQ9hVMCFXUHri5q') > -1 && !tieneid" 
                                     (click)="abrirModal('editar_turnos')" title="Agregar turno">
                                     <i class="fa fa-plus fa-fw" aria-hidden="true"></i>
                                 </a>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     <hr>
                     <div >
                         <nav class="panel" formGroupName="movimiento_metadato">
-
                             <div class="field">
                                 <label class="label">Persona que entrega:</label>
                                 <p class="control is-expanded  has-icon has-icon-right">
@@ -140,8 +139,8 @@
                         <nav class="level">
                             <div class="level-left"></div>
                             <!-- Right side -->
-                            <div class="level-right">
-                                <p class="level-item"><a class="button is-primary" (click)="ctrl.regresar()">Regresar</a></p>
+                            <div class="level-right"> <!-- (click)="ctrl.regresar()" -->
+                                <p class="level-item"><a class="button is-primary" routerLink="/almacen/entradas-estandar">Regresar</a></p>
                                 <p class="level-item" *ngIf="tieneid && ctrl.dato.get('status').value == 'FI'"><a class="button is-primary" routerLink="/almacen/entradas-estandar/nuevo" *ngIf="!ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva entrada</span></a></p>
                                 <p class="level-item" *ngIf="tieneid && ctrl.dato.get('status').value == 'FI'"><a *ngIf="tieneid" class="button is-primary" (click)="imprimir()"><span class="icon"><i class="fa fa-print"></i></span></a></p>
                                 <!--
@@ -157,10 +156,11 @@
                                 <p class="level-item" *ngIf="!tieneid || ctrl.dato.get('status').value == 'BR'">
                                     <button class="button is-primary" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="guardarBorrador();">
                                         <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar avance
-                                        <span id="borrador" (click)="ctrl.enviar(false, '/almacen/entradas-estandar/editar');"></span>
+                                        <span id="borrador" (click)="ctrl.enviar(false, '/almacen/entradas-estandar/editar'); tieneid ? ctrl.cargarDatos() : '';"></span>
                                     </button>
                                 </p>
-                                <p class="level-item"><a class="button is-primary" title="Actualizar" (click)="ctrl.cargarDatos();"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
+                                <p class="level-item" *ngIf="tieneid"><a class="button is-primary" title="Actualizar" (click)="ctrl.cargarDatos();"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
+                                <p class="level-item" *ngIf="!tieneid"><a class="button is-primary" title="Actualizar" (click)="cargarCatalogo('programa');"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
                                 <p class="level-item">&nbsp;</p>
                             </div>
                         </nav>

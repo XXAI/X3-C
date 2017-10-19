@@ -32,7 +32,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         [{ text: 'SIAL', style: 'titulo', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],
-                        [{ text: 'PROGRAMAS', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },
+                        [{ text: 'TIPO DE PERSONAL', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],[
                             { text: 'CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
@@ -56,10 +56,10 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         [
                             { text: 'ID', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
                             {},
-                            { text: 'NOMBRE', style: 'tableHeaderVerde', colSpan: 3, alignment: 'center' },
+                            { text: 'NOMBRE', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
                             {},
+                            { text: 'METADATOS', style: 'tableHeaderVerde', colSpan: 3, alignment: 'center' },
                             {},
-                            { text: 'Estatus', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
                             {}
                         ]
                         //Body -> insumos
@@ -174,19 +174,34 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
 
         for (var i in data.lista) {
             var movimiento = data.lista[i];
-                dd.content[0].table.body.push([
+            let longitud = movimiento.tipos_personal_metadatos.length;
+            
+            var metadatos = [];
+            metadatos.push([
+                    { text: 'Campo', style: 'tableHeaderVerde', alignment: 'right' },
+                    { text: 'Descripción', style: 'tableHeaderVerde', alignment: 'left' }
+                ])
+            for(let personal_metadatos of movimiento.tipos_personal_metadatos) {
+                metadatos.push([
+                    { text: personal_metadatos.campo == null ? 'No disponible' : personal_metadatos.campo, alignment: 'right' },
+                    { text: personal_metadatos.descripcion == null ? 'No disponible' : personal_metadatos.descripcion, alignment: 'left' }
+                ])
+            }
+            dd.content[0].table.body.push([
                     { text: movimiento.id ? movimiento.id : 'No disponible', colSpan: 2, style: 'tableRow', alignment: 'center' },
                     {},
-                    { text: movimiento.nombre == null ? 'No disponible' : movimiento.nombre, colSpan: 3, style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.nombre == null ? 'No disponible' : movimiento.nombre, colSpan: 2, style: 'tableRow', alignment: 'center' },
                     {},
+                    { layout: 'lightHorizontalLines', table: {dontBreakRows: true, body: metadatos, widths: ['*','*']}, colSpan: 3, style: 'tableRow', alignment: 'center' },
                     {},
-                    { text: movimiento.status == null ? 'No disponible' : movimiento.status == 1 ? 'Activo' : 'Inactivo', colSpan: 2, style: 'tableRow', alignment: 'center' },
                     {}
+                    /*{ text: personal_metadatos.campo == null ? 'No disponible' : personal_metadatos.campo, style: 'tableRow', alignment: 'center' },
+                    { text: personal_metadatos.descripcion == null ? 'No disponible' : personal_metadatos.descripcion, style: 'tableRow', alignment: 'center' }*/
                 ]);
         }
 
         pdfMake.createPdf(dd).getBase64(function(base64) {
-            postMessage({ fileName: 'Programas.pdf', base64: base64 });
+            postMessage({ fileName: 'Lista_tipo_personal.pdf', base64: base64 });
         });
     }
 

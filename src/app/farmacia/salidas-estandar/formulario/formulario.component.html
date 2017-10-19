@@ -90,14 +90,14 @@
                             <div class="field">
                                 <label class="label">Turno:</label>
                                 <!-- NO carga los turnos -->
-                                <div class="field" *ngIf="!ctrl.turnos">
+                                <div class="field" *ngIf="!ctrl.turnos || ctrl.cargando || cargando">
                                     <span *ngIf="ctrl.cargando" class="tag is-primary is-medium">Cargando turnos. <i class="fa fa-refresh fa-spin" aria-hidden="true"></i></span>
                                     <span *ngIf="!ctrl.cargando"class="tag is-medium"><a id="actualizar"  *ngIf="!ctrl.cargando" (click)="ctrl.cargarCatalogo('turnos', 'mis-turnos'); ">No se pudieron cargar los turnos. <i class="fa fa-refresh" aria-hidden="true"></i></a></span>
                                     
                                     <p></p>
                                 </div>
                                 <!-- SI carga los turnos -->
-                                <p  *ngIf="ctrl.turnos" class="control is-expanded  has-icon has-icon-right">
+                                <p  *ngIf="ctrl.turnos && !ctrl.cargando && !cargando" class="control is-expanded  has-icon has-icon-right">
                                     <select class="select" name="turno" formControlName="turno_id" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('movimiento_metadato').get('turno_id').hasError('required')}">
                                         <option *ngFor="let item of ctrl.turnos.clues_turnos" value="{{item.id}}" [attr.selected]="ctrl.dato.get('movimiento_metadato').get('turno_id').value == item.id ">{{ item.nombre }}</option>
                                     </select>
@@ -111,13 +111,13 @@
                             <div class="field">
                                 <label class="label">Servicio que recibe:</label>
                                 <!-- NO carga los SERVICIOS -->
-                                <div class="field" *ngIf="!ctrl.servicios">
+                                <div class="field" *ngIf="!ctrl.servicios || ctrl.cargando || cargando">
                                     <span *ngIf="ctrl.cargando" class="tag is-primary is-medium">Cargando servicios. <i class="fa fa-refresh fa-spin" aria-hidden="true"></i></span>
                                     <span *ngIf="!ctrl.cargando"class="tag is-medium">No se pudieron cargar los servicios.</span>
                                     <a id="actualizar" *ngIf="!ctrl.cargando" (click)="ctrl.cargarCatalogo('servicios', 'mis-servicios'); "><i class="fa fa-refresh is-medium" aria-hidden="true"></i></a>
                                 </div>
                                 <!-- SI carga los SERVICIOS -->
-                                <p class="control is-expanded  has-icon has-icon-right">
+                                <p class="control is-expanded  has-icon has-icon-right" *ngIf="!ctrl.cargando && !cargando">
                                     <select *ngIf="ctrl.servicios" class="select" name="servicio_id" formControlName="servicio_id" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('movimiento_metadato').get('servicio_id').hasError('required')}">
                                         <option *ngFor="let item of ctrl.servicios.clues_servicios" value="{{item.id}}" [attr.selected]="ctrl.dato.get('movimiento_metadato').get('servicio_id').value == item.id ">{{ item.nombre }}</option>
                                     </select>
@@ -162,7 +162,8 @@
                                 <p class="level-item" *ngIf="!tieneid">
                                         <button class="button is-primary" type="submit" [ngClass]="{'is-loading': ctrl.cargando}" (click)="guardar_movimiento()" [disabled]="ctrl.dato.invalid"> <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar</button>
                                 </p>
-                                <p class="level-item"><a class="button is-primary" title="Actualizar" (click)="ctrl.cargarDatos();"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
+                                <p *ngIf="tieneid" class="level-item"><a class="button is-primary" title="Actualizar" (click)="ctrl.cargarDatos();"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
+                                <p *ngIf="!tieneid" class="level-item"><a class="button is-primary" title="Actualizar" (click)="ctrl.cargarCatalogo('turnos', 'mis-turnos'); ctrl.cargarCatalogo('servicios','mis-servicios');"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
                                 <p class="level-item">&nbsp;</p>
                             </div>
                         </nav>                        

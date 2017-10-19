@@ -32,20 +32,21 @@ export class MenuAsideComponent implements OnInit {
       {
         titulo: 'Catalogos',
         modulos: [
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-grupo-insumos.svg', titulo:"Grupos de insumos", url:"/catalogos/grupos-insumos"}, 
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-marcas.svg', titulo:"Marcas", url:"/catalogos/marcas"}, 
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-mc.svg', titulo:"Material de curación", url:"/catalogos/material-curacion"}, //
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-medicamento.svg', titulo:"Medicamentos", url:"/catalogos/medicamentos"}, //      
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-programas.svg', titulo:"Programas", url:"/catalogos/programas"}, 
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-presentacion.svg', titulo:"Presentaciones de medicamentos", url:"/catalogos/presentaciones-medicamentos"}, 
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-administracion.svg', titulo:"Vias de administración", url:"/catalogos/vias-administracion" },
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-unid-medida.svg', titulo:"Unidades de medida", url:"/catalogos/unidades-medida" },
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-servicios.svg', titulo:"Servicios", url:"/catalogos/servicios"},
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-servicios.svg', titulo:"Forma Farmaceutica", url:"/catalogos/forma-farmaceutica"},
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-pedido.svg', titulo:"Tipos de pedidos", url:"/catalogos/tipo-pedido" },
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-tipo-movimiento.svg', titulo:"Tipos de movimientos", url:"/catalogos/tipos-movimientos" },
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-tipo-insumos.svg', titulo:"Tipos de insumos", url:"/catalogos/tipos-insumos"},
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-tipo-insumos.svg', titulo:"Tipos de personal", url:"/catalogos/tipos-personal"},
+          { permiso: 'l9PXPHg1MMJYMKTlzXeEHNIsgw9d5oty', icono: 'assets/catalogo-grupo-insumos.svg', titulo:"Grupos de insumos", url:"/catalogos/grupos-insumos"}, 
+          { permiso: 'KbzwkJtDcLGcaNhbuYd24bhdDMGaKXod', icono: 'assets/catalogo-marcas.svg', titulo:"Marcas", url:"/catalogos/marcas"}, 
+          { permiso: 'JDAc3VaD3TbCIu0cUIYxZ6gG6QG32I3y', icono: 'assets/catalogo-mc.svg', titulo:"Material de curación", url:"/catalogos/material-curacion"}, //
+          { permiso: 'xSSmZGx6xgw4Qd4MQKlcDwxE1iD4QvxZ', icono: 'assets/catalogo-medicamento.svg', titulo:"Medicamentos", url:"/catalogos/medicamentos"}, //      
+          { permiso: 'ygwsEwz3cUw4yVMCeaQ9hVMCFXUHri5q', icono: 'assets/catalogo-programas.svg', titulo:"Programas", url:"/catalogos/programas"}, 
+          { permiso: 'PtTJ9g7WGYcyuPjTxe5iaJILVzQedccG', icono: 'assets/catalogo-presentacion.svg', titulo:"Presentaciones de medicamentos", url:"/catalogos/presentaciones-medicamentos"}, 
+          { permiso: 'EBQdToSqWCpu1TJTDWBibcuGOpO97ucT', icono: 'assets/catalogo-administracion.svg', titulo:"Vias de administración", url:"/catalogos/vias-administracion" },
+          { permiso: 'ouIq0jdKpmTNYG1f2MRjMmlKvXmSviPd', icono: 'assets/catalogo-unid-medida.svg', titulo:"Unidades de medida", url:"/catalogos/unidades-medida" },
+          { permiso: 'OhAoehuuORlLObNSrzy4qpRYE89VfUdt', icono: 'assets/catalogo-servicios.svg', titulo:"Servicios", url:"/catalogos/servicios"},
+          { permiso: 'Npmc6C155PMjnkPKWUFXcIF3NcegAzIE', icono: 'assets/catalogo-servicios.svg', titulo:"Forma Farmaceutica", url:"/catalogos/forma-farmaceutica"},
+          { permiso: '2CGoJAwDzH2JGpaPVUz3Vakcge5ReO9F', icono: 'assets/catalogo-pedido.svg', titulo:"Tipos de pedidos", url:"/catalogos/tipo-pedido" },
+          { permiso: 'S1Yv83vAhv2o7xzq5ur37bmbfHvsomJf', icono: 'assets/catalogo-tipo-movimiento.svg', titulo:"Tipos de movimientos", url:"/catalogos/tipos-movimientos" },
+          { permiso: 'd1V2FX6TNxO6cCSXaAZQfLiAnDoL6rnO', icono: 'assets/catalogo-tipo-insumos.svg', titulo:"Tipos de insumos", url:"/catalogos/tipos-insumos"},
+          { permiso: 'JHUfLL82Cp1pUI7tTKaWuCfVIaeKZk5z', icono: 'assets/catalogo-tipo-insumos.svg', titulo:"Tipos de personal", url:"/catalogos/tipos-personal"},
+
         ]
       },
       

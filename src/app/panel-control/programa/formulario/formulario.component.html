@@ -65,15 +65,24 @@
                         </p>
                     </div>
 
-                    <div class="field">
-                        <label class="label"></label>
+                     <div class="field">
+                        <!--<label class="label"></label>
                         <p class="b-checkbox control is-expanded  has-icon has-icon-right">
-                            <input type="checkbox" id="status" class="styled" formControlName="status" [checked]="ctrl.dato.get('status').value ? 1 : 0">
+                            <input type="checkbox" id="status" name="status" class="styled" formControlName="status" [checked]="ctrl.dato.get('status').value == '0' ? false : false">
                             <label for="status">  
                                 <strong> &nbsp; Programa activo</strong>
                             </label>
                         </p>
-                    </div>
+                    -->
+                    <br>
+                        <p class="b-checkbox control is-expanded  has-icon has-icon-right">
+                            <input type="checkbox" id="status" class="styled" [checked]="ctrl.dato.get('status').value == '1' ? true : false"
+                                (change)="ctrl.dato.get('status').patchValue(ctrl.dato.get('status').value == '1' ? '0' : '1')">
+                            <label for="status"> 
+                                <strong> &nbsp; Programa activo</strong>
+                            </label>
+                        </p>
+                    </div> 
 
                 </section>
             </div>

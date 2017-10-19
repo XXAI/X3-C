@@ -74,7 +74,7 @@ export class FormularioComponent {
     showProgressBar: true,
     pauseOnHover: true,
     clickToClose: true,
-    maxLength: 2000
+    maxLength: 3000
   };
   public options = {
     position: ['top', 'right'],
@@ -150,6 +150,7 @@ export class FormularioComponent {
     this.dato.controls.id.valueChanges.subscribe(
       val => {
           if (val) {
+            this.llenando_formulario = true;
             setTimeout(() => {
               if (this.dato.controls.status.value === 'BR') {
                 this.llenarFormulario();
@@ -182,13 +183,24 @@ export class FormularioComponent {
     } else {
       this.fecha_actual = this.dato.get('fecha_movimiento').value;
     }
-    this.crudService.lista_general('programa').subscribe(
+    this.cargarCatalogo('programa');
+  }
+
+  cargarCatalogo(url) {
+    this.cargando = true;
+    this.crudService.lista_general(url).subscribe(
       resultado => {
-        this.lista_programas = resultado;
+        this.cargando = false
+        // this.lista_programas = resultado;
+        let contador = 0;
+        for (let item of resultado) {
+          if (item.status === '1') {
+            this.lista_programas.push(item);
+          }
+        }
       }
     );
   }
-
   /**
    * Método que nos sirve para reacomodar los elementos en el formulario
    * para editarlos, en el avance de una entrada.
@@ -444,9 +456,10 @@ export class FormularioComponent {
       this.notificacion.alert('Fecha inválida', 'Debe ingresar una fecha válida', this.objeto);
       ctrlLotes.controls['fecha_caducidad'].patchValue('');
     } else {
-      if (moment(fecha, 'YYYY-MM-DD', true) <= fecha_hoy) {
+      if (moment(fecha, 'YYYY-MM-DD', true) <= fecha_hoy.add(14, 'days')) {
         ctrlLotes.controls['fecha_caducidad'].patchValue('');
-        this.notificacion.alert('Fecha inválida', 'La fecha de caducidad debe ser mayor al día de hoy', this.objeto);
+        this.notificacion.alert('Fecha inválida', 'La fecha de caducidad debe ser mayor al ' +
+         fecha_hoy.format('YYYY-MM-DD'), this.objeto);
       }
     }
   }

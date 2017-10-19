@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewChildren, NgZone } from '@angular/core';
 import { CrudService } from '../../../crud/crud.service';
+import { Mensaje } from '../../../mensaje';
+import { NotificationsService } from 'angular2-notifications';
 import  * as FileSaver    from 'file-saver';
 
 @Component({
@@ -53,6 +55,20 @@ export class ListaEntradasComponent {
      * @type {boolean} */
     cargandoPdf = false;
   // # FIN SECCION
+  /**
+   * Variable que muestra las notificaciones.
+   * @type {Mensaje}
+   */
+  mensajeResponse: Mensaje = new Mensaje();
+  /**
+   * Variable que contiene la configuracion default para mostrar las notificaciones.
+   * Posición abajo izquierda, tiempo 2 segundos
+   */
+  public options = {
+    position: ['bottom', 'right'],
+    timeOut: 2000,
+    lastOnBottom: true
+  };
 
   @ViewChildren('tr') tr;
   @ViewChildren('sr') sr;
@@ -62,7 +78,8 @@ export class ListaEntradasComponent {
    */
   constructor(
     private _ngZone: NgZone,
-    private crudService: CrudService) { }
+    private crudService: CrudService,
+    private notificacion: NotificationsService) { }
 
   ngOnInit() {
       this.usuario = JSON.parse(localStorage.getItem('usuario'));
@@ -108,13 +125,13 @@ export class ListaEntradasComponent {
    * @returns archivo en formato PDF
    */
   imprimir() {
+    this.cargandoPdf = true;
     this.crudService.lista_general('entrada-almacen?fecha_desde=' + this.fecha_desde
     + '&fecha_hasta=' + this.fecha_hasta + '&recibe=' + this.recibe).subscribe(
       resultado => {
               this.cargando = false;
               this.lista_impresion = resultado;
               try {
-                this.cargandoPdf = true;
                 let entrada_imprimir = {
                   lista: this.lista_impresion,
                   usuario: this.usuario,
@@ -128,6 +145,25 @@ export class ListaEntradasComponent {
               }
             },
             error => {
+              this.cargandoPdf = false;
+              this.mensajeResponse.mostrar = true;
+              try {
+                  let e = error.json();
+                  if (error.status === 401) {
+                      this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
+                      this.mensajeResponse.clase = 'danger';
+                      this.mensaje(2);
+                  }
+              } catch (e) {
+                  if (error.status === 500) {
+                      this.mensajeResponse.texto = '500 (Error interno del servidor)';
+                  } else {
+                      this.mensajeResponse.texto =
+                        'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
+                  }
+                  this.mensajeResponse.clase = 'danger';
+                  this.mensaje(2);
+              }
             }
     );
   }
@@ -144,4 +180,43 @@ export class ListaEntradasComponent {
       }
       return new Blob( [ buffer ], { type: type } );
   }
+
+  /**
+     * Este método muestra los mensajes resultantes de los llamados de la api
+     * @param cuentaAtras numero de segundo a esperar para que el mensaje desaparezca solo
+     * @param posicion  array de posicion [vertical, horizontal]
+     * @return void
+     */
+    mensaje(cuentaAtras: number = 6, posicion: any[] = ['bottom', 'left']): void {
+        var objeto = {
+            showProgressBar: true,
+            pauseOnHover: false,
+            clickToClose: true,
+            maxLength: this.mensajeResponse.texto.length
+        };
+
+        this.options = {
+            position: posicion,
+            timeOut: cuentaAtras * 1000,
+            lastOnBottom: true
+        };
+        if (this.mensajeResponse.titulo === '') {
+            this.mensajeResponse.titulo = 'Entradas de almacén';
+          }
+        if (this.mensajeResponse.clase === 'alert') {
+            this.notificacion.alert(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+        if (this.mensajeResponse.clase === 'success') {
+            this.notificacion.success(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+        if (this.mensajeResponse.clase === 'info') {
+            this.notificacion.info(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+        if (this.mensajeResponse.clase === 'warning' || this.mensajeResponse.clase === 'warn') {
+            this.notificacion.warn(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+        if (this.mensajeResponse.clase === 'error' || this.mensajeResponse.clase === 'danger') {
+            this.notificacion.error(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+    }
 }

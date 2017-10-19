@@ -41,6 +41,7 @@ import { RolesModule    } from './panel-control/roles/roles.module';
 import { SyncModule     } from './panel-control/sync/sync.module';
 import { OpcionesAvanzadasModule  } from './panel-control/opciones-avanzadas/opciones-avanzadas.module';
 import { ProgramaPanelModule      } from './panel-control/programa/programa.module';
+import { TiposPersonalModule       } from './panel-control/tipo-personal/tipo-personal.module';
 
 // # Hub Configuracion
 import { MisAlmacenesModule} from './configuracion/almacenes/almacenes.module';
@@ -154,6 +155,7 @@ export function highchartsFactory() {
     SyncModule,
     OpcionesAvanzadasModule,
     ProgramaPanelModule,
+    TiposPersonalModule,
     RolesModule,
     UsuariosModule,
     MisAlmacenesModule,
@@ -204,8 +206,7 @@ export function highchartsFactory() {
     UnidadesMedicasModule,
     MaterialCuracionModule,
     MedicamentosModule,
-    //ProveedoresModule,
-    //
+    // ProveedoresModule,
     CategoriasModule,
     ArticulosModule,
     InventariosModule,

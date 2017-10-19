@@ -25,12 +25,12 @@ export function highchartsFactory() {
 @NgModule({
   imports: [
     CommonModule,
-    ChartModule,  
+    ChartModule,
     IndexFarmaciaModule,
     NguiDatetimePickerModule
   ],
   providers: [
-      AuthService, 
+      AuthService,
       GraficasService,
     { //Propiedad de la gráfica
       provide: HighchartsStatic,
@@ -40,7 +40,7 @@ export function highchartsFactory() {
   declarations: [
     GraficasComponent
   ],
-  exports:[
+  exports: [
     GraficasComponent
   ]
 })
