@@ -207,7 +207,7 @@ export class FormularioComponent implements OnInit {
         if (!this.cambiarPassword) {
             delete dato.cambiarPassword;
         }
-        
+
         this.crudService.editar(this.id, dato, this.URL).subscribe(
             resultado => {
                 this.cargando = false;

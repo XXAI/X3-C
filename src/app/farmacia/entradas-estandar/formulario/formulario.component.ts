@@ -35,6 +35,17 @@ export class FormularioComponent {
   MaxDate = new Date();
   fecha_actual;
   tieneid = false;
+  /**
+   * Variable que nos sirve para identificar si estamos editando una entrada. Debido a
+   * que la estructura del JSON de una entrada finalizada y un borrador son diferentes,
+   * es necesario la variable. Cuando se intenta finalizar la entrada a partir de un borrador
+   * si no se tiene la variable marca error porque al actualizar el valor del __status__ intenta mostrar la sección.
+   * ```html
+   * <section *ngIf="tieneid && ctrl.dato.get('status').value == 'FI' && estoymodificando == false">
+   * ```
+   * @type {boolean}
+   */
+  estoymodificando = false;
 
   fecha_movimiento;
   mostrarCancelado;
@@ -185,12 +196,17 @@ export class FormularioComponent {
     }
     this.cargarCatalogo('programa');
   }
-
+  /**
+   * Función local para cargar el catalogo de programas, no se utilizó el cargarCatalogo del CRUD,
+   * debido a que este catálogo no existen 'mis-programas', sino que es un catálogo general y se agregan
+   * al arreglo únicamente aquellos programas que se encuentran activos (status = 1).
+   * @param url Contiene la cadena con la URL de la API a consultar para cargar el catalogo del select.
+   */
   cargarCatalogo(url) {
     this.cargando = true;
     this.crudService.lista_general(url).subscribe(
       resultado => {
-        this.cargando = false
+        this.cargando = false;
         // this.lista_programas = resultado;
         let contador = 0;
         for (let item of resultado) {
@@ -226,8 +242,8 @@ export class FormularioComponent {
             'id': lotes_item.id,
             'codigo_barras': [lotes_item.codigo_barras, [Validators.required]],
             'fecha_caducidad': [lotes_item.fecha_caducidad, [Validators.required]],
-            'cantidad': [lotes_item.cantidad, [Validators.required]],
-            'cantidad_x_envase': item.detalles.informacion_ampliada.cantidad_x_envase,
+            'cantidad': [Number(lotes_item.cantidad), [Validators.required]],
+            'cantidad_x_envase': Number(item.detalles.informacion_ampliada.cantidad_x_envase),
             'cantidad_surtida': 1,
             'movimiento_insumo_id': [lotes_item.movimiento_insumo_id],
             'stock_id': [lotes_item.stock_id],
@@ -491,11 +507,14 @@ export class FormularioComponent {
     // document.getElementById('guardarMovimiento').classList.add('is-active');
     // obtener el formulario reactivo para agregar los elementos
     const control = <FormArray>this.dato.controls['insumos'];
-    let lotes = true;
+    // let lotes = true;
     if (control.length === 0) {
       this.notificacion.warn('Insumos', 'Debe agregar por lo menos un insumo', this.objeto);
     }else {
-      this.dato.controls.status.patchValue('FI');
+      this.estoymodificando = true;
+      this.dato.controls['status'].patchValue('FI');
+      // patchValue({status: 'FI'});
+      // this.dato.controls.status.setValue('FI');
       document.getElementById('guardarMovimiento').classList.add('is-active');
     }
   }

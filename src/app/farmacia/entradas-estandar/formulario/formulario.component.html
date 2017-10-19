@@ -149,7 +149,8 @@
                                 </p>
                                 -->
                                 <p class="level-item" *ngIf="!tieneid || ctrl.dato.get('status').value == 'BR'">
-                                    <button class="button is-primary" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="guardar_movimiento()" [disabled]="ctrl.dato.invalid">
+                                    <button class="button is-primary" type="button" [ngClass]="{'is-loading': ctrl.cargando}" 
+                                    (click)="guardar_movimiento()" [disabled]="ctrl.dato.invalid">
                                         <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Finalizar entrada
                                     </button>
                                 </p>
@@ -274,16 +275,16 @@
                                             <br> {{ctrl.dato.controls.insumos.controls[i].controls.descripcion.value}}
                                         </p>
                                     </div>
-                                   <section >
+                                   <section *ngIf="tieneid && ctrl.dato.get('status').value == 'FI' && estoymodificando == false">
                                         <table *ngIf="tieneid && ctrl.dato.get('status').value == 'FI'" class="table is-narrow is-bordered is-striped">
                                             <thead>
                                                 <tr>
                                                     <th>Lote</th>
                                                     <th>Caducidad</th>
                                                     <th>Codigo de barras</th>
-                                                    <th *ngIf="!tieneid">Existencia</th>
+                                                    <!-- <th *ngIf="!tieneid || ctrl.dato.get('status').value == 'BR'">Existencia</th> -->
                                                     <th>Cantidad</th>
-                                                    <th *ngIf="!tieneid"></th>
+                                                    <!-- <th *ngIf="!tieneid || ctrl.dato.get('status').value == 'BR'"></th> -->
                                                 </tr>
                                             </thead>
                                             <tbody formArrayName="lotes">
@@ -291,17 +292,17 @@
                                                     <td>{{val.value.lote}}</td>
                                                     <td>{{val.value.fecha_caducidad}}</td>
                                                     <td>{{val.value.codigo_barras}}</td>
-                                                    <td *ngIf="!tieneid">{{val.value.existencia}}</td>
+                                                    <!-- <td *ngIf="!tieneid">{{val.value.existencia}}</td> -->
                                                     <td [formGroupName]="i2">
                                                         {{val.value.cantidad}}
                                                     </td>
-                                                    <td *ngIf="!tieneid">
+                                                    <!-- <td *ngIf="!tieneid">
                                                         <a class="is-danger" title="Quitar este lote" (click)="quitar_lote_insumo(i, val.value, i2)">
                                                             <span class="icon">
                                                                 <i class="fa fa-trash-o"></i>
                                                             </span>
                                                         </a>
-                                                    </td>
+                                                    </td> -->
                                                 </tr>
                                             </tbody>
                                         </table>
