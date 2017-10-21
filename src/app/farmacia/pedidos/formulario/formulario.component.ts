@@ -191,12 +191,7 @@ export class FormularioComponent implements OnInit {
 
             let fecha_pedido = pedido.fecha.split('-');
             let mes_pedido = parseInt(fecha_pedido[1]);
-
-            if(mes_pedido != 9){
-              //Harima: Temporal para pedidos de septiembre
-              this.fechasValidas.push({fecha:'2017-09-29', descripcion: 'Septiembre 2017'});
-            }
-
+            
             if(fecha_pedido[0] != now.getFullYear()){
               this.fechasValidas.push({fecha:fecha_pedido[0] + "-" + fecha_pedido[1] + "-" + fecha_pedido[2], descripcion: this.meses[mes_pedido] + " " + fecha_pedido[0]}); //fecha diferente año
             }else if(mes_pedido < mes_actual){
@@ -205,7 +200,7 @@ export class FormularioComponent implements OnInit {
 
             if(mes_pedido == mes_actual && fecha_pedido[0] == now.getFullYear()){
               this.fechasValidas.push({fecha:fecha_pedido[0] + "-" + fecha_pedido[1] + "-" + fecha_pedido[2], descripcion: this.meses[mes_pedido] + " " + fecha_pedido[0]}); //fecha actual
-            }else if(dia < 20){
+            }else{ // if(dia < 20)
               //Mes actual y siguiente, se agrega mes actual
               let day = ("0" + dia).slice(-2);
               let month = ("0" + mes_actual).slice(-2);
@@ -321,24 +316,21 @@ export class FormularioComponent implements OnInit {
           }
         );
       }else{
-        //Harima: Temporal para pedidos de septiembre
-        this.fechasValidas.push({fecha:'2017-09-29', descripcion: 'Septiembre 2017'});
-
         //Harima:calcular fechas validas
         let now = new Date();
         let dia = now.getDate();
         let mes = now.getMonth()+1;
 
-        if(dia < 20){
+        //if(dia < 20){
           //Mes actual y siguiente, se agrega mes actual
-          let day = ("0" + dia).slice(-2);
-          let month = ("0" + mes).slice(-2);
-          this.fechasValidas.push({fecha:now.getFullYear() + "-" + (month) + "-" + (day),descripcion: this.meses[mes] + " " + now.getFullYear()}); //fecha actual
-        }
+        let day = ("0" + dia).slice(-2);
+        let month = ("0" + mes).slice(-2);
+        this.fechasValidas.push({fecha:now.getFullYear() + "-" + (month) + "-" + (day),descripcion: this.meses[mes] + " " + now.getFullYear()}); //fecha actual
+        //}
 
         //Meses siguientes
         let mes_inicio = mes+1;
-        let day = '01';
+        day = '01';
         let anio = now.getFullYear();
 
         if(mes_inicio == 13){

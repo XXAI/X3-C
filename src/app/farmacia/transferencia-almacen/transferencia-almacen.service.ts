@@ -9,6 +9,7 @@ export class TransferenciaAlmacenService {
 
   static readonly URL: string = "almacen/transferencias";
   static readonly URL_SURTIR: string = "almacen/surtir-transferencia";
+  static readonly URL_ACTUALIZAR: string = "almacen/actualizar-transferencia";
   static readonly URL_STATS: string = "almacen/transferencias-stats";
   static readonly URL_CANCELAR: string = "cancelar-pedido-transferir";
   static readonly URL_GENERAR_ALTERNO: string = "generar-pedido-alterno";
@@ -31,19 +32,16 @@ export class TransferenciaAlmacenService {
     return this.jwtRequest.put(TransferenciaAlmacenService.URL_SURTIR,id, pedido).map( (response: Response) => response.json().data) as Observable<any>;
   } 
 
+  actualizarTransferencia(id:any, stock:any): Observable<any> {
+    return this.jwtRequest.put(TransferenciaAlmacenService.URL_ACTUALIZAR,id, stock).map( (response: Response) => response.json().data) as Observable<any>;
+  } 
+
   ver(id:any): Observable<any>{
     return this.jwtRequest.get(TransferenciaAlmacenService.URL,id,{}).map( (response: Response) => {
-     
-       let jsonData = response.json().data;
-       /* var roles:string[] = []
-        jsonData.roles.map(item => {
-          roles.push(""+item.id)
-        })*/
-
-        var pedido = jsonData as any;
-        //usuario.roles = roles;
-        return pedido;
-      }) as Observable<any>;
+      let jsonData = response.json().data;
+      var pedido = jsonData as any;
+      return pedido;
+    }) as Observable<any>;
   }
 
   crear(pedido: any[]): Observable<any> {
@@ -53,8 +51,6 @@ export class TransferenciaAlmacenService {
   editar(id:any, pedido: any[]): Observable<any> {
     return this.jwtRequest.put(TransferenciaAlmacenService.URL,id, pedido).map( (response: Response) => response.json().data) as Observable<any>;
   } 
-
-  
 
   eliminar(id:any): Observable<any> {
     return this.jwtRequest.delete('pedido-alteno',id).map( (response: Response) => response.json().data) as Observable<any>;

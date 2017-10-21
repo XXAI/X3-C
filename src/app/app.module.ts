@@ -201,10 +201,8 @@ export function highchartsFactory() {
     MaterialCuracionModule,
     MedicamentosModule,
     //ProveedoresModule,
-    //
     CategoriasModule,
     ArticulosModule,
-    //
     IndexLaboratorioModule,
     EntradasLaboratorioModule,
     SalidasLaboratorioModule,

@@ -251,7 +251,7 @@
                     <td>{{ item.lote }}</td>
                     <td>{{ item.fecha_caducidad | date:'dd/MM/y' }}</td>
                     <td *ngIf="pedido.tipo_pedido == 'PEA'" style="width:150px !important;">
-                      {{ item.cantidad_recibida | number }} / {{ item.cantidad | number }}
+                      {{ item.cantidad_recibida | number }} / {{ item.cantidad_enviada | number }}
                     </td> 
                     <td style="width:150px !important;">
                         <p class="control is-expanded">
