@@ -205,13 +205,11 @@ export function highchartsFactory() {
     MaterialCuracionModule,
     MedicamentosModule,
     //ProveedoresModule,
-    //
     CategoriasModule,
     ArticulosModule,
     InventariosModule,
     TipoPersonalModule,
     PersonalCluesModule,
-    //
     IndexLaboratorioModule,
     EntradasLaboratorioModule,
     SalidasLaboratorioModule,

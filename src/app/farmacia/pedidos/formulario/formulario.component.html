@@ -52,7 +52,7 @@
                         <span class="help is-danger" *ngIf="pedido.tieneError('descripcion','required')">Este campo es requerido.</span>
                     </p>
 
-                    <label class="label">Fecha (aaaa-mm-dd):</label>
+                    <label class="label">Fecha:</label>
                     <p class="control is-expanded  has-icon has-icon-right">
                         <!--input type="text" class="input is-fullwidth" placeholder="aaaa-mm-dd" [ngClass]="{'is-danger': pedido.tieneError('fecha','required')}" formControlName="fecha" #fecha id="fecha" (keyup)="recargarPresupuesto(fecha.value)"/-->
                         <span class="icon is-small" *ngIf="pedido.tieneError('fecha','required')">

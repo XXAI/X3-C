@@ -16,8 +16,6 @@ import 'rxjs/add/operator/catch';
 
 import  * as FileSaver    from 'file-saver'; 
 
-
-import { PedidosService } from '../../pedidos/pedidos.service';
 import { TransferenciaAlmacenService } from '../transferencia-almacen.service';
 import { StockService } from '../../stock/stock.service';
 
@@ -44,6 +42,10 @@ export class SurtirComponent implements OnInit {
   cargandoStock: boolean = false;
   
   pedidoPorSurtir:boolean = false;
+  pedidoSurtido:boolean = false;
+  pedidoEntregado:boolean = false;
+
+  marcarTodosStatus:boolean = false;
 
    // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
@@ -59,9 +61,9 @@ export class SurtirComponent implements OnInit {
   private claveNoSolicitada:boolean = false;
   private itemSeleccionado: any = null;
   
-
+  itemsDevueltos: any = null;
   
-  constructor(private title: Title, private route:ActivatedRoute, private router: Router,private transferenciaAlmacenService:TransferenciaAlmacenService, private pedidosService:PedidosService, private stockService:StockService) { }
+  constructor(private title: Title, private route:ActivatedRoute, private router: Router,private transferenciaAlmacenService:TransferenciaAlmacenService, private stockService:StockService) { }
 
   ngOnInit() {
     this.title.setTitle('Surtir pedido / Farmacia');
@@ -74,7 +76,7 @@ export class SurtirComponent implements OnInit {
       this.id = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number      
     });
     this.cargando = true;
-    this.pedidosService.ver(this.id).subscribe(
+    this.transferenciaAlmacenService.ver(this.id).subscribe(
           pedido => {
             this.cargando = false;
             this.pedido = new Pedido(true);
@@ -85,38 +87,197 @@ export class SurtirComponent implements OnInit {
               let insumo = dato.insumos_con_descripcion;
              
               if (insumo != null){
-                insumo.cantidad = +dato.cantidad_solicitada;              
+                //insumo.cantidad = +dato.cantidad_solicitada;
+                insumo.cantidad = +dato.cantidad_solicitada - +dato.cantidad_enviada;
+                insumo.cantidad_a_surtir = (+dato.cantidad_solicitada - +dato.cantidad_enviada) + (+dato.cantidad_enviada - +dato.cantidad_recibida);
+                insumo.cantidad_solicitada = +dato.cantidad_solicitada;
+                insumo.cantidad_enviada = +dato.cantidad_enviada;
+                insumo.cantidad_recibida = +dato.cantidad_recibida;
+                insumo.marcados = false;
                 this.pedido.lista.push(insumo);
-              } else {
-                // OJO:
-                //¿Qué hacemos con las claves que no existan? y porque puedo agregar claves que no existen a un pedido
-                // No hay llave Foránea??
               }
-             
             }
             pedido.insumos = undefined;
 
             this.pedidoPorSurtir = true;
 
-            if(pedido.movimientos.length > 0){
-              let transferencia_recibida:boolean = false;
-              let transferencia_recibida_borrador:boolean = false;
-              let transferencia_surtida:boolean = false;
+            if(pedido.movimientos_transferencias_completo.length > 0){
+              let entrega_pedido:any;
+              let entrega_pedido_borrador:any;
+              let pedido_surtido:any;
+              let lotes_eliminados:any = {};
+              let lotes_reintegrados:any = {};
 
-              for(var i in pedido.movimientos){
-                if(pedido.movimientos[i].transferencia_recibida){
-                  transferencia_recibida = true;
-                }else if(pedido.movimientos[i].transferencia_recibida_borrador){
-                  transferencia_recibida_borrador = true;
-                }else if(pedido.movimientos[i].transferencia_surtida){
-                  transferencia_surtida = true;
+              for(var i in pedido.movimientos_transferencias_completo){
+                let movimiento = pedido.movimientos_transferencias_completo[i];
+
+                if(movimiento.tipo_movimiento_id == 9){ //Recepcion pedido de almacen
+                  if(movimiento.status == 'BR'){
+                    entrega_pedido_borrador = movimiento;
+                  }else{
+                    entrega_pedido = movimiento;
+                  }
+                }else if(movimiento.tipo_movimiento_id == 3){ //Entrega pedido -> Surtir Pedido
+                  pedido_surtido = movimiento;
+                }else if(movimiento.tipo_movimiento_id == 1){ //Entrada manual
+                  for(var i in movimiento.insumos){
+                    if(lotes_reintegrados[movimiento.insumos[i].stock_id]){
+                      lotes_reintegrados[movimiento.insumos[i].stock_id] += +movimiento.insumos[i].cantidad;
+                    }else{
+                      lotes_reintegrados[movimiento.insumos[i].stock_id] = +movimiento.insumos[i].cantidad;
+                    }
+                  }
+                }else if(movimiento.tipo_movimiento_id == 7){ //ajuste menos
+                  for(var i in movimiento.insumos){
+                    if(lotes_eliminados[movimiento.insumos[i].stock_id]){
+                      lotes_eliminados[movimiento.insumos[i].stock_id] += +movimiento.insumos[i].cantidad;
+                    }else{
+                      lotes_eliminados[movimiento.insumos[i].stock_id] = +movimiento.insumos[i].cantidad;
+                    }
+                  }
                 }
               }
 
-              if(transferencia_surtida){
+              if(entrega_pedido){
                 this.pedidoPorSurtir = false;
+                this.pedidoSurtido = true;
+                this.pedidoEntregado = true;
+
+                this.itemsDevueltos = {cantidad:0, listaStock:[]};
+
+                let lotes_entregados = {};
+                for(var i in entrega_pedido.insumos){
+                  var insumo = entrega_pedido.insumos[i];
+                  var llave = insumo.stock.clave_insumo_medico+'-'+insumo.stock.fecha_caducidad+'-'+insumo.stock.lote;
+                  lotes_entregados[llave] = {
+                    clave: insumo.stock.clave_insumo_medico,
+                    lote: insumo.stock.lote,
+                    fecha_caducidad: insumo.stock.fecha_caducidad,
+                    cantidad: +insumo.cantidad
+                  };
+                }
+
+                for(var i in pedido_surtido.insumos){
+                  var insumo = pedido_surtido.insumos[i];
+                  var llave = insumo.stock.clave_insumo_medico+'-'+insumo.stock.fecha_caducidad+'-'+insumo.stock.lote;
+                  let status_lote = null;
+                  let lote_activo = true;
+
+                  if(lotes_eliminados[insumo.stock_id]){
+                    status_lote = 'eliminado';
+                    lote_activo = false;
+                  }else if (lotes_reintegrados[insumo.stock_id]){
+                    status_lote = 'reintegrado';
+                    lote_activo = false;
+                  }
+                  if(lotes_entregados[llave]){
+                    if(lotes_entregados[llave].cantidad < +insumo.cantidad){
+                      this.itemsDevueltos.listaStock.push({
+                        seleccionado: false,
+                        activo: lote_activo,
+                        status: status_lote,
+                        stock_id: insumo.stock_id,
+                        clave: insumo.stock.clave_insumo_medico,
+                        lote: insumo.stock.lote,
+                        fecha_caducidad: insumo.stock.fecha_caducidad,
+                        cantidad: (+insumo.cantidad - lotes_entregados[llave].cantidad)
+                      });
+                      this.itemsDevueltos.cantidad += (+insumo.cantidad - lotes_entregados[llave].cantidad);
+                    }
+                  }else{
+                    this.itemsDevueltos.listaStock.push({
+                      seleccionado: false,
+                      activo: lote_activo,
+                      status: status_lote,
+                      stock_id: insumo.stock_id,
+                      clave: insumo.stock.clave_insumo_medico,
+                      lote: insumo.stock.lote,
+                      fecha_caducidad: insumo.stock.fecha_caducidad,
+                      cantidad: +insumo.cantidad
+                    });
+                    this.itemsDevueltos.cantidad += +insumo.cantidad;
+                  }
+                }
+              }else if(pedido_surtido){
+                this.pedidoPorSurtir = false;
+                this.pedidoSurtido = true;
+                this.pedidoEntregado = false;
               }
             }
+
+            /*
+            if(pedido.movimientos.length > 0){
+              let entrega_pedido:any;
+              let entrega_pedido_borrador:any;
+              let pedido_surtido:any;
+
+              for(var i in pedido.movimientos){
+                if(pedido.movimientos[i].transferencia_recibida){
+                  entrega_pedido = pedido.movimientos[i].transferencia_recibida;
+                }else if(pedido.movimientos[i].transferencia_recibida_borrador){
+                  entrega_pedido_borrador = pedido.movimientos[i].transferencia_recibida_borrador;
+                }else if(pedido.movimientos[i].transferencia_surtida){
+                  pedido_surtido = pedido.movimientos[i].transferencia_surtida;
+                }
+              }
+
+              if(entrega_pedido){
+                this.pedidoPorSurtir = false;
+                this.pedidoSurtido = true;
+                this.pedidoEntregado = true;
+
+                this.itemsDevueltos = {cantidad:0, listaStock:[]};
+
+                let lotes_entregados = {};
+                for(var i in entrega_pedido.insumos){
+                  var insumo = entrega_pedido.insumos[i];
+                  var llave = insumo.stock.clave_insumo_medico+'-'+insumo.stock.fecha_caducidad+'-'+insumo.stock.lote;
+                  lotes_entregados[llave] = {
+                    clave: insumo.stock.clave_insumo_medico,
+                    lote: insumo.stock.lote,
+                    fecha_caducidad: insumo.stock.fecha_caducidad,
+                    cantidad: +insumo.cantidad
+                  };
+                }
+
+                for(var i in pedido_surtido.insumos){
+                  var insumo = pedido_surtido.insumos[i];
+                  var llave = insumo.stock.clave_insumo_medico+'-'+insumo.stock.fecha_caducidad+'-'+insumo.stock.lote;
+                  if(lotes_entregados[llave]){
+                    if(lotes_entregados[llave].cantidad < +insumo.cantidad){
+                      this.itemsDevueltos.listaStock.push({
+                        seleccionado: false,
+                        activo: true,
+                        status: null,
+                        stock_id: insumo.stock_id,
+                        clave: insumo.stock.clave_insumo_medico,
+                        lote: insumo.stock.lote,
+                        fecha_caducidad: insumo.stock.fecha_caducidad,
+                        cantidad: (+insumo.cantidad - lotes_entregados[llave].cantidad)
+                      });
+                      this.itemsDevueltos.cantidad += (+insumo.cantidad - lotes_entregados[llave].cantidad);
+                    }
+                  }else{
+                    this.itemsDevueltos.listaStock.push({
+                      seleccionado: false,
+                      activo: true,
+                      status: null,
+                      stock_id: insumo.stock_id,
+                      clave: insumo.stock.clave_insumo_medico,
+                      lote: insumo.stock.lote,
+                      fecha_caducidad: insumo.stock.fecha_caducidad,
+                      cantidad: +insumo.cantidad
+                    });
+                    this.itemsDevueltos.cantidad += +insumo.cantidad;
+                  }
+                }
+              }else if(pedido_surtido){
+                this.pedidoPorSurtir = false;
+                this.pedidoSurtido = true;
+                this.pedidoEntregado = false;
+              }
+            }
+            */
 
             this.pedido.datosImprimir = pedido;
             this.pedido.indexar();
@@ -147,13 +308,12 @@ export class SurtirComponent implements OnInit {
     );
   }
 
-  
-
   seleccionarItem(item){  
     this.itemSeleccionado = item;
     if(this.pedidoPorSurtir){
       this.buscarStockApi(null,item.clave);
     }
+    //console.log(item);
   }
 
   buscar(e: KeyboardEvent, input:HTMLInputElement, inputAnterior: HTMLInputElement,  parametros:any[]){
@@ -265,7 +425,6 @@ export class SurtirComponent implements OnInit {
           if(resultado.length>0){
             this.claveInsumoSeleccionado = resultado[0].clave_insumo_medico;
 
-
             var existeClaveEnPedido = false;
 
             for(var  i = 0; i < this.pedido.lista.length ; i++){
@@ -293,11 +452,7 @@ export class SurtirComponent implements OnInit {
             }
             
           }
-
-          
-          
-          console.log("Stock cargado.");
-          
+          //console.log("Stock cargado.");
         },
         error => {
           this.cargandoStock = false;
@@ -322,9 +477,58 @@ export class SurtirComponent implements OnInit {
       );
   }
 
-  surtir (){
-    //alert("Preguntar quién recibe, observaciones, etc. Y si quiere imprimir de una vez.")
+  marcarLote(item){
+    if(item.activo){
+      item.seleccionado = !item.seleccionado;
+      let totalLotes = 0;
+      let totalMarcados = 0;
+      let clave = item.clave;
+      for(var i in this.itemsDevueltos.listaStock){
+        let stock = this.itemsDevueltos.listaStock[i];
+        if(stock.clave == clave){
+          totalLotes++;
+          if(stock.seleccionado){
+            totalMarcados++;
+          }
+        }
+      }
+  
+      if(totalLotes == totalMarcados){
+        for(var i in this.pedido.lista){
+          if(this.pedido.lista[i].clave == clave){
+            this.pedido.lista[i].marcados = true;
+            break;
+          }
+        }
+      }else{
+        for(var i in this.pedido.lista){
+          if(this.pedido.lista[i].clave == clave){
+            this.pedido.lista[i].marcados = false;
+            break;
+          }
+        }
+      }
+    }
+  }
 
+  marcarTodos(){
+    for(var i in this.itemsDevueltos.listaStock){
+      this.itemsDevueltos.listaStock[i].seleccionado = this.marcarTodosStatus;
+    }
+    for(var i in this.pedido.lista){
+      this.pedido.lista[i].marcados = this.marcarTodosStatus;
+    }
+  }
+
+  marcarClaves(status:boolean, clave:string){
+    for(var i in this.itemsDevueltos.listaStock){
+      if(this.itemsDevueltos.listaStock[i].clave == clave){
+        this.itemsDevueltos.listaStock[i].seleccionado = status;
+      }
+    }
+  }
+
+  surtir (){
     var validacion_palabra = prompt("Al surtir el pedido se retirara la cantidad surtida del inventario del almacen actual, para confirmar que desea surtir el pedido por favor escriba: SURTIR PEDIDO");
     if(validacion_palabra != 'SURTIR PEDIDO'){
       if(validacion_palabra != null){
@@ -409,7 +613,156 @@ export class SurtirComponent implements OnInit {
       );
   }
 
+  eliminarDelInventario(){
+    var validacion_palabra = prompt("Los insumos seleccionados seran marcados como dados de baja en el inventario, para confirmar esta acción por favor escriba: ELIMINAR");
+    if(validacion_palabra != 'ELIMINAR'){
+      if(validacion_palabra != null){
+        alert("Error al ingresar el texto para confirmar la acción.");
+      }
+      return false;
+    }
+    this.actualizarTransferencia('eliminar');
+  }
+  
+  reintegrarAlInventario(){
+    var validacion_palabra = prompt("Los insumos seleccionados seran reintegrados al inventario, para confirmar esta acción por favor escriba: REINTEGRAR");
+    if(validacion_palabra != 'REINTEGRAR'){
+      if(validacion_palabra != null){
+        alert("Error al ingresar el texto para confirmar la acción.");
+      }
+      return false;
+    }
+    this.actualizarTransferencia('reintegrar');
+  }
 
+  actualizarTransferencia(tipo:string){
+    let lista:any[] = [];
+
+    for(var i in this.itemsDevueltos.listaStock){
+      if(this.itemsDevueltos.listaStock[i].seleccionado && this.itemsDevueltos.listaStock[i].activo){
+        lista.push(this.itemsDevueltos.listaStock[i]);
+      }
+    }
+
+    if(lista.length == 0){
+      this.mensajeError = new Mensaje(true,5);
+      this.mensajeError.mostrar = true;
+      this.mensajeError.texto = "No se ha seleccionado ningun insumo del inventario, para surtir este pedido";
+      return false;
+    }
+
+    let datos = {accion:tipo,insumos:lista};
+
+    console.log(lista);
+
+    this.transferenciaAlmacenService.actualizarTransferencia(this.id,datos).subscribe(
+      respuesta => {
+        //this.router.navigate(['/almacen/transferencia-almacen/en-transito']);
+        let status = null;
+        if(tipo == 'eliminar'){
+          status = 'eliminado';
+        }else if(tipo == 'reintegrar'){
+          status = 'reintegrado';
+        }
+        for(var i in lista){
+          lista[i].activo = false;
+          lista[i].status = status;
+        }
+        this.mensajeExito = new Mensaje(true,5);
+        this.mensajeExito.texto = 'Datos Guardados';
+        this.mensajeExito.mostrar = true;
+      },
+      error => {
+        this.cargando = false;
+        console.log(error);
+        this.mensajeError = new Mensaje(true);
+        this.mensajeError.texto = 'No especificado';
+        this.mensajeError.mostrar = true;
+
+        try{
+          let e = error.json();
+            if (error.status == 401 ){
+              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }
+            // Problema de validación
+            if (error.status == 409){
+              this.mensajeError.texto = "Por favor verfique los campos marcados en rojo.";
+            }
+        }catch(e){
+          if (error.status == 500 ){
+            this.mensajeError.texto = "500 (Error interno del servidor)";
+          } else {
+            console.log(e);
+            this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+          }
+        }
+      }
+    );
+  }
+
+  finalizarPedido(){
+    var validacion_palabra = prompt("El pedido se finalizara con estatus de incompleto, para confirmar que desea finalizar el pedido por favor escriba: FINALIZAR PEDIDO");
+    if(validacion_palabra != 'FINALIZAR PEDIDO'){
+      if(validacion_palabra != null){
+        alert("Error al ingresar el texto para confirmar la acción.");
+      }
+      return false;
+    }
+
+    var lista:any[] = this.itemsDevueltos.listaStock;
+
+    if(lista.length == 0){
+      this.mensajeError = new Mensaje(true,5);
+      this.mensajeError.mostrar = true;
+      this.mensajeError.texto = "No se ha seleccionado ningun insumo del inventario, para surtir este pedido";
+      return false;
+    }
+
+    console.log(lista);
+
+    /*this.transferenciaAlmacenService.surtir(this.id,entrega).subscribe(
+      respuesta => {
+        this.router.navigate(['/almacen/transferencia-almacen/en-transito']);
+      },
+      error => {
+        this.cargando = false;
+        console.log(error);
+        this.mensajeError = new Mensaje(true);
+        this.mensajeError.texto = 'No especificado';
+        this.mensajeError.mostrar = true;
+
+        try{
+          let e = error.json();
+            if (error.status == 401 ){
+              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }
+            // Problema de validación
+            if (error.status == 409){
+              this.mensajeError.texto = "Por favor verfique los campos marcados en rojo.";
+              for (var input in e.error){
+                // Iteramos todos los errores
+                for (var i in e.error[input]){
+
+                  if(input == 'id' && e.error[input][i] == 'unique'){
+                    this.usuarioRepetido = true;
+                  }
+                  if(input == 'id' && e.error[input][i] == 'email'){
+                    this.usuarioInvalido = true;
+                  }
+                }                      
+              }
+            }
+        }catch(e){
+          if (error.status == 500 ){
+            this.mensajeError.texto = "500 (Error interno del servidor)";
+          } else {
+            console.log(e);
+            this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+          }
+        }
+      }
+    );*/
+  }
 
   buscarStock(e: KeyboardEvent, input:HTMLInputElement, term:string){
     if(e.keyCode == 13){

@@ -551,6 +551,7 @@ export class VerComponent implements OnInit {
   mostrarDialogoPedidoAlternoPedido(){
     //
     this.mostrarPedidoAlternoDialogo = true;
+    this.listaInsumosPedidoAlterno = [];
     
     for(let i in this.pedido.lista){
       let insumo = this.pedido.lista[i];
