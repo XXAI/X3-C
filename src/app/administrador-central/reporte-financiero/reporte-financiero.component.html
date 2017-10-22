@@ -137,7 +137,13 @@
 			<table *ngIf="!cargando" class="table is-bordered" style="font-size:0.7em;">
 				<thead *ngIf="agrupadoPor == 'UM'">
 					<tr>
-						<th colspan="8"></th>
+						<th colspan="8" rowspan="2"></th>
+						<th colspan="6" style="text-align:center">Causes y Mat. Cur.</th>
+						<th colspan="6" style="text-align:center">No Causes</th>
+					</tr>
+					<tr>
+						<th colspan="3" style="text-align:center">Monto</th>
+						<th colspan="3" style="text-align:center">Insumos</th>
 						<th colspan="3" style="text-align:center">Monto</th>
 						<th colspan="3" style="text-align:center">Insumos</th>
 					</tr>
@@ -156,11 +162,23 @@
 						<th style="text-align:center">Solicitado</th>
 						<th style="text-align:center">Surtido</th>
 						<th style="text-align:center">%</th>
+						<th style="text-align:center">Solicitado</th>
+						<th style="text-align:center">Surtido</th>
+						<th style="text-align:center">%</th>
+						<th style="text-align:center">Solicitado</th>
+						<th style="text-align:center">Surtido</th>
+						<th style="text-align:center">%</th>
 					</tr>
 				</thead>
 				<thead *ngIf="agrupadoPor == 'P'">
 					<tr>
-						<th colspan="7"></th>
+						<th colspan="7" rowspan="2"></th>
+						<th colspan="6" style="text-align:center">Causes y Mat. Cur.</th>
+						<th colspan="6" style="text-align:center">No Causes</th>
+					</tr>
+					<tr>
+						<th colspan="3" style="text-align:center">Monto</th>
+						<th colspan="3" style="text-align:center">Insumos</th>
 						<th colspan="3" style="text-align:center">Monto</th>
 						<th colspan="3" style="text-align:center">Insumos</th>
 					</tr>
@@ -178,11 +196,23 @@
 						<th style="text-align:center">Solicitado</th>
 						<th style="text-align:center">Surtido</th>
 						<th style="text-align:center">%</th>
+						<th style="text-align:center">Solicitado</th>
+						<th style="text-align:center">Surtido</th>
+						<th style="text-align:center">%</th>
+						<th style="text-align:center">Solicitado</th>
+						<th style="text-align:center">Surtido</th>
+						<th style="text-align:center">%</th>
 					</tr>
 				</thead>
 				<thead *ngIf="agrupadoPor == 'NA'">
 					<tr>
-						<th colspan="7"></th>
+						<th colspan="7" rowspan="2"></th>
+						<th colspan="6" style="text-align:center">Causes y Mat. Cur.</th>
+						<th colspan="6" style="text-align:center">No Causes</th>
+					</tr>
+					<tr>
+						<th colspan="3" style="text-align:center">Monto</th>
+						<th colspan="3" style="text-align:center">Insumos</th>
 						<th colspan="3" style="text-align:center">Monto</th>
 						<th colspan="3" style="text-align:center">Insumos</th>
 					</tr>
@@ -194,6 +224,12 @@
 						<th style="text-align:center">Comprometido</th>
 						<th style="text-align:center">Devengado</th>
 						<th style="text-align:center">Disponible</th>
+						<th style="text-align:center">Solicitado</th>
+						<th style="text-align:center">Surtido</th>
+						<th style="text-align:center">%</th>
+						<th style="text-align:center">Solicitado</th>
+						<th style="text-align:center">Surtido</th>
+						<th style="text-align:center">%</th>
 						<th style="text-align:center">Solicitado</th>
 						<th style="text-align:center">Surtido</th>
 						<th style="text-align:center">%</th>
@@ -218,16 +254,27 @@
 						<td style="text-align:right; vertical-align: middle;">${{ item.devengado | number:'1.2-2' }}</td>
 						<td style="text-align:right; vertical-align: middle;">${{ item.disponible | number:'1.2-2' }}</td>
 
-						<td style="text-align:right; vertical-align: middle;">${{ item.monto_solicitado | number:'1.2-2' }}</td>
-						<td style="text-align:right; vertical-align: middle;">${{ item.monto_recibido | number:'1.2-2' }}</td>
-						<td style="text-align:center; vertical-align: middle;">{{ item.porcentaje_monto | number:'1.2-2' }}%</td>
+						
+						
+						<td style="text-align:right; vertical-align: middle;">${{ item.causes_mat_cur_monto_solicitado | number:'1.2-2' }}</td>
+						<td style="text-align:right; vertical-align: middle;">${{ item.causes_mat_cur_monto_recibido | number:'1.2-2' }}</td>
+						<td style="text-align:center; vertical-align: middle;">{{ item.causes_mat_cur_porcentaje_monto | number:'1.2-2' }}%</td>
 
-						<td style="text-align:right; vertical-align: middle;">${{ item.cantidad_solicitada | number:'1.2-2' }}</td>
-						<td style="text-align:right; vertical-align: middle;">${{ item.cantidad_recibida | number:'1.2-2' }}</td>
-						<td style="text-align:center; vertical-align: middle;">{{ item.porcentaje_cantidad | number:'1.2-2' }}%</td>
+						<td style="text-align:right; vertical-align: middle;">{{ item.causes_mat_cur_cantidad_solicitada | number }}</td>
+						<td style="text-align:right; vertical-align: middle;">{{ item.causes_mat_cur_cantidad_recibida | number }}</td>
+						<td style="text-align:center; vertical-align: middle;">{{ item.causes_mat_cur_porcentaje_cantidad | number:'1.2-2' }}%</td>
+
+						<td style="text-align:right; vertical-align: middle;">${{ item.no_causes_monto_solicitado | number:'1.2-2' }}</td>
+						<td style="text-align:right; vertical-align: middle;">${{ item.no_causes_monto_recibido | number:'1.2-2' }}</td>
+						<td style="text-align:center; vertical-align: middle;">{{ item.no_causes_porcentaje_monto | number:'1.2-2' }}%</td>
+
+						<td style="text-align:right; vertical-align: middle;">{{ item.no_causes_cantidad_solicitada | number }}</td>
+						<td style="text-align:right; vertical-align: middle;">{{ item.no_causes_cantidad_recibida | number }}</td>
+						<td style="text-align:center; vertical-align: middle;">{{ item.no_causes_porcentaje_cantidad | number:'1.2-2' }}%</td>
+
 					</tr>
 					<tr *ngIf="lista.length == 0">
-						<td colspan="14" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
+						<td colspan="20" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
 					</tr>
 				</tbody>
 				<tfoot *ngIf="lista.length > 0">
@@ -238,13 +285,23 @@
 						<th style="text-align:right;" >${{ totalDevengado | number:'1.2-2' }}</th>
 						<th style="text-align:right;" >${{ totalDisponible | number:'1.2-2' }}</th>
 
-						<th style="text-align:right;" >${{ totalMontoSolicitado | number:'1.2-2' }}</th>
-						<th style="text-align:right;" >${{ totalMontoRecibido | number:'1.2-2' }}</th>
-						<th style="text-align:right;" >{{ totalMontoRecibido * 100 / totalMontoSolicitado | number:'1.2-2' }}%</th>
 
-						<th style="text-align:right;" >${{ totalCantidadSolicitada | number:'1.2-2' }}</th>
-						<th style="text-align:right;" >${{ totalCantidadRecibida | number:'1.2-2' }}</th>
-						<th style="text-align:right;" >{{ totalCantidadRecibida * 100 / totalCantidadSolicitada | number:'1.2-2' }}%</th>
+
+						<th style="text-align:right;" >${{ totalMontoSolicitadoCausesMatCur | number:'1.2-2' }}</th>
+						<th style="text-align:right;" >${{ totalMontoRecibidoCausesMatCur  | number:'1.2-2' }}</th>
+						<th style="text-align:right;" >{{ totalMontoRecibidoCausesMatCur  * 100 / totalMontoSolicitadoCausesMatCur  | number:'1.2-2' }}%</th>
+
+						<th style="text-align:right;" >{{ totalCantidadSolicitadaCausesMatCur  | number }}</th>
+						<th style="text-align:right;" >{{ totalCantidadRecibidaCausesMatCur  | number }}</th>
+						<th style="text-align:right;" >{{ totalCantidadRecibidaCausesMatCur  * 100 / totalCantidadSolicitadaCausesMatCur  | number:'1.2-2' }}%</th>
+
+						<th style="text-align:right;" >${{ totalMontoSolicitadoNoCauses | number:'1.2-2' }}</th>
+						<th style="text-align:right;" >${{ totalMontoRecibidoNoCauses | number:'1.2-2' }}</th>
+						<th style="text-align:right;" >{{ totalMontoRecibidoNoCauses * 100 / totalMontoSolicitadoNoCauses | number:'1.2-2' }}%</th>
+
+						<th style="text-align:right;" >{{ totalCantidadSolicitadaNoCauses | number }}</th>
+						<th style="text-align:right;" >{{ totalCantidadRecibidaNoCauses | number }}</th>
+						<th style="text-align:right;" >{{ totalCantidadRecibidaNoCauses * 100 / totalCantidadSolicitadaNoCauses | number:'1.2-2' }}%</th>
 					</tr>
 				</tfoot>
 			</table>
