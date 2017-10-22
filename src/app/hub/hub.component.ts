@@ -131,8 +131,31 @@ export class HubComponent implements OnInit {
       permisos: [
         'WbBYhMFZkGsAYeN13hY1hylZkNPJbHOE', // Ver Avances
       ]
+    },
+    {
+      title: 'Catálogos y parámetros del sistema', routerLink: '/catalogos-parametros', icono: 'assets/hub-configuracion-parametros.svg',
+      permisos: [
+        'Npmc6C155PMjnkPKWUFXcIF3NcegAzIE', // "Forma Farmaceutica"
+        'l9PXPHg1MMJYMKTlzXeEHNIsgw9d5oty', // Grupos de insumos
+        'KbzwkJtDcLGcaNhbuYd24bhdDMGaKXod', // "Marcas"
+        'JDAc3VaD3TbCIu0cUIYxZ6gG6QG32I3y', // "Material de curación"
+        'xSSmZGx6xgw4Qd4MQKlcDwxE1iD4QvxZ', // "Medicamentos"
+        'PtTJ9g7WGYcyuPjTxe5iaJILVzQedccG', // "Presentaciones de medicamentos"
+        'ygwsEwz3cUw4yVMCeaQ9hVMCFXUHri5q', // "Programas"
+        'OhAoehuuORlLObNSrzy4qpRYE89VfUdt', // "Servicios"
+        '2CGoJAwDzH2JGpaPVUz3Vakcge5ReO9F', // "Tipos de pedidos"
+        'JHUfLL82Cp1pUI7tTKaWuCfVIaeKZk5z', // Tipos de personal
+        'd1V2FX6TNxO6cCSXaAZQfLiAnDoL6rnO', // Tipos de insumos
+        'S1Yv83vAhv2o7xzq5ur37bmbfHvsomJf', // Tipos de movimientos
+        'ouIq0jdKpmTNYG1f2MRjMmlKvXmSviPd', // "Unidades de medida"
+        'EBQdToSqWCpu1TJTDWBibcuGOpO97ucT', // "Vias de administración"
+        // Almacenes
+        // Proveedores
+        // Servidores
+        // Unidades médicas
+      ]
     }
-  ]
+  ];
   hubAutorizado = [ { title: 'Dashboard', routerLink: '/dashboard', icono: 'assets/hub-dashboard.svg' } ]
 
   constructor() { }

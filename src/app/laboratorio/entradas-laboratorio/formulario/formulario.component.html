@@ -1,17 +1,18 @@
-<formulario #ctrl URL="movimientos" titulo="Entrada  de almacén" [dato]="dato"></formulario>
+<formulario #ctrl URL="entrada-almacen" titulo="Entrada  de almacén" [dato]="dato"></formulario>
+<!--<menu-farmacia [modulo]="'Entrada  de almacén'" [icono]="'assets/icono-entradas.svg'" [url]="'/laboratorio/entradas-laboratorio'"></menu-farmacia>-->
 <app-menu-laboratorio [modulo]="'Entradas de laboratorio'" [icono]="'assets/icono-entradas.svg'" [url]="'/laboratorio/entradas-laboratorio'"></app-menu-laboratorio>
 <div style="height:50px;"></div>
 <form name="form" novalidate [formGroup]="dato" (ngSubmit)="ctrl.enviar()">
-    <div class="contenedor columns " style="height:100%">
+    <div class="contenedor columns " style="height:90%">
         <div class="column is-one-third" style="padding:1em;">
             <div style="background: #FFF; border-radius: 1em; ">
                 <section class="hero is-primary">
-                    <h1 *ngIf="!tieneid" class="title" style="margin:0.5em; ">
+                    <h1 *ngIf="!tieneid || ctrl.dato.get('status').value == 'BR'" class="title" style="margin:0.5em; ">
                         <span class="icon is-medium">
                             <i class="fa fa-file-text"></i>
                         </span> {{ctrl.moduloTitulo}}
                     </h1>
-                    <h1 *ngIf="tieneid" class="title" style="margin:0.5em; ">
+                    <h1 *ngIf="tieneid && ctrl.dato.get('status').value == 'FI'" class="title" style="margin:0.5em; ">
                         <span class="icon is-medium">
                             <i class="fa fa-file-text"></i>
                         </span> Folio {{ctrl.id}}
@@ -32,10 +33,11 @@
 
 
                                 <input class="input" [value]="fecha_actual" [(ngModel)]='fecha_movimiento' formControlName="fecha_movimiento" ngui-datetime-picker
-                                    [min-date]="MinDate" [max-date]="MaxDate" date-only="true" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('fecha_movimiento').hasError('required') && ctrl.dato.get('fecha_movimiento').touched}"
+                                    [min-date]="MinDate" [max-date]="MaxDate" date-only="true" 
+                                    [ngClass]="{'is-disabled': tieneid && ctrl.dato.get('status').value == 'FI', 'is-danger': ctrl.dato.get('fecha_movimiento').hasError('required') && ctrl.dato.get('fecha_movimiento').touched}"
                                     placeholder="YYYY-MM-DD" readonly/>
 
-                                <span class="icon is-small" *ngIf="ctrl.dato.get('fecha_movimiento').hasError('required') && ctrl.dato.get('fecha_movimiento').touched">
+                                <span class="icon is-small" *ngIf="ctrl.dato.get('fecha_movimiento').hasError('required')">
                                     <i class="fa fa-warning"></i>
                                 </span>
                                 <span class="help is-danger" *ngIf="ctrl.dato.get('fecha_movimiento').hasError('required') && ctrl.dato.get('fecha_movimiento').touched">Este campo es requerido.</span>
@@ -45,7 +47,7 @@
                         <div class="field">
                             <label class="label">Observaciones:</label>
                             <p class="control is-expanded  has-icon has-icon-right">
-                                <textarea class="textarea" type="text" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('observaciones').hasError('required') && ctrl.dato.get('observaciones').touched}"
+                                <textarea class="textarea" type="text" [ngClass]="{'is-disabled': tieneid && ctrl.dato.get('status').value == 'FI', 'is-danger': ctrl.dato.get('observaciones').hasError('required') && ctrl.dato.get('observaciones').touched}"
                                     placeholder="Observaciones" formControlName="observaciones"></textarea>
                                 <span class="icon is-small" *ngIf="ctrl.dato.get('observaciones').hasError('required') && ctrl.dato.get('observaciones').touched">
                                     <i class="fa fa-warning"></i>
@@ -78,22 +80,48 @@
 
                         </div>
                     </div>
-
-
-                   <!-- <hr id="catalogos" (click)="ctrl.cargarCatalogo('servicios', 'servicios'); "> -->
-
+                    <br>
+                    <div>
+                        <div class="field">
+                            <label class="label">Programa:</label>
+                        </div><!-- SI carga los turnos -->
+                        <div class="control is-grouped">
+                            <span *ngIf="ctrl.cargando || cargandoProgramas" class="tag is-primary is-medium">Cargando programas. 
+                                <i class="fa fa-refresh fa-spin" aria-hidden="true"></i>
+                            </span>
+                            <div  *ngIf="!ctrl.cargando && !cargandoProgramas" class="control is-expanded  has-icon has-icon-right">
+                                <select class="select" name="programa" formControlName="programa_id" 
+                                    [ngClass]="{'is-disabled': tieneid && ctrl.dato.get('status').value == 'FI'}">
+                                    <option value="">Seleccione un programa</option>
+                                    <option *ngFor="let item of lista_programas" value="{{item.id}}">{{ item.nombre }}</option>
+                                </select>
+                                <span class="icon is-small" *ngIf="ctrl.dato.get('programa_id').hasError('required')">
+                                    <i class="fa fa-warning"></i>
+                                </span>
+                                <span class="help is-danger" *ngIf="ctrl.dato.get('programa_id').hasError('required')">Este campo es requerido.</span>
+                                <span class="help is-danger" *ngIf="lista_programas.length == 0"> No se cargaron programas, contacte al administrador.</span>
+                            </div>
+                            <!-- Botón para agregar turnos 
+                            <div class="control">
+                                <a class="button" *ngIf="permisos.indexOf('ygwsEwz3cUw4yVMCeaQ9hVMCFXUHri5q') > -1 && !tieneid" 
+                                    (click)="abrirModal('editar_turnos')" title="Agregar turno">
+                                    <i class="fa fa-plus fa-fw" aria-hidden="true"></i>
+                                </a>
+                            </div> -->
+                        </div>
+                    </div>
+                    <hr>
                     <div >
                         <nav class="panel" formGroupName="movimiento_metadato">
-
                             <div class="field">
                                 <label class="label">Persona que entrega:</label>
                                 <p class="control is-expanded  has-icon has-icon-right">
-                                    <input class="input" type="text" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required') && ctrl.dato.get('movimiento_metadato').get('persona_recibe').touched}"
+                                    <input class="input" type="text" [ngClass]="{'is-disabled': tieneid && ctrl.dato.get('status').value == 'FI', 'is-danger': ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required')}"
                                         placeholder="Persona que entrega" formControlName="persona_recibe">
-                                    <span class="icon is-small" *ngIf="ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required') && ctrl.dato.get('movimiento_metadato').get('persona_recibe').touched">
+                                    <span class="icon is-small" *ngIf="ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required')">
                                         <i class="fa fa-warning"></i>
                                     </span>
-                                    <span class="help is-danger" *ngIf="ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required') && ctrl.dato.get('movimiento_metadato').get('persona_recibe').touched">Este campo es requerido.</span>
+                                    <span class="help is-danger" *ngIf="ctrl.dato.get('movimiento_metadato').get('persona_recibe').hasError('required')">Este campo es requerido.</span>
                                 </p>
                             </div>
 
@@ -111,21 +139,34 @@
                         <nav class="level">
                             <div class="level-left"></div>
                             <!-- Right side -->
-                            <div class="level-right">
-                                <p class="level-item"><a class="button is-primary" (click)="ctrl.regresar()">Regresar</a></p>
-                                <p class="level-item" *ngIf="tieneid"><a class="button is-primary" routerLink="/laboratorio/entradas-laboratorio/nuevo" *ngIf="!ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva entrada</span></a></p>
-                                <p class="level-item" *ngIf="tieneid"><a *ngIf="tieneid" class="button is-primary" (click)="imprimir()"><span class="icon"><i class="fa fa-print"></i></span></a></p>
+                            <div class="level-right"> <!-- (click)="ctrl.regresar()" -->
+                                <p class="level-item"><a class="button is-primary" routerLink="/laboratorio/entradas-laboratorio">Regresar</a></p>
+                                <p class="level-item" *ngIf="tieneid && ctrl.dato.get('status').value == 'FI'"><a class="button is-primary" routerLink="/laboratorio/entradas-laboratorio/nuevo" *ngIf="!ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva entrada</span></a></p>
+                                <p class="level-item" *ngIf="tieneid && ctrl.dato.get('status').value == 'FI'"><a *ngIf="tieneid" class="button is-primary" (click)="imprimir()"><span class="icon"><i class="fa fa-print"></i></span></a></p>
                                 <!--
                                 <p class="level-item" *ngIf="!tieneid">
                                     <button class="button is-primary" type="submit" [ngClass]="{'is-loading': ctrl.cargando}" [disabled]="ctrl.dato.invalid"> <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar</button>
                                 </p>
                                 -->
-                                <p class="level-item" *ngIf="!tieneid">
-                                    <button class="button is-primary" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="guardar_movimiento()" [disabled]="ctrl.dato.invalid">
-                                        <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar
+                                <p class="level-item" *ngIf="!tieneid || ctrl.dato.get('status').value == 'BR'">
+                                    <button class="button is-primary" type="button" [ngClass]="{'is-loading': ctrl.cargando}" 
+                                    (click)="guardar_movimiento()" [disabled]="ctrl.dato.invalid">
+                                        <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Finalizar entrada
                                     </button>
                                 </p>
-                                <p class="level-item"><a class="button is-primary" title="Actualizar" (click)="ctrl.cargarDatos();"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
+                                <p class="level-item" *ngIf="!tieneid || ctrl.dato.get('status').value == 'BR'">
+                                    <button class="button is-primary" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="guardarBorrador();">
+                                        <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar avance
+                                        <span id="borrador" (click)="ctrl.enviar(false, '/laboratorio/entradas-laboratorio/editar'); tieneid ? ctrl.cargarDatos() : '';"></span>
+                                    </button>
+                                </p>
+                                <p class="level-item" *ngIf="tieneid"><a class="button is-primary" title="Actualizar" (click)="ctrl.cargarDatos();"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
+                                <p class="level-item" *ngIf="!tieneid">
+                                    <a class="button is-primary" title="Actualizar" (click)="cargarCatalogo('programa');">
+                                        <span class="icon "><i class="fa fa-refresh"></i>
+                                        </span>
+                                    </a>
+                                </p>
                                 <p class="level-item">&nbsp;</p>
                             </div>
                         </nav>
@@ -144,8 +185,9 @@
                 </div>
                 <section class="section">
 
-                    <div class="field has-addons has-addons-centered" *ngIf="!tieneid">
+                    <div class="field has-addons has-addons-centered" *ngIf="!tieneid || ctrl.dato.get('status').value == 'BR'">
 
+<!-- ******************************************* AUTOCOMPLETE ********************************************* 
                         <p class="control">
                             <input ngui-auto-complete [source]="insumos_term" [list-formatter]="autocompleListFormatter" id="buscarInsumo" value-property-name="clave"
                                 display-property-name="nombre" path-to-data="" loading-text="Cargando..." no-match-found-text="No hay resultados."
@@ -153,19 +195,76 @@
                                 type="text" placeholder="Escanea el codigo de barra, o empieza escribir el nombre del producto" >
 
                         </p>
+******************************************* AUTOCOMPLETE ********************************************* -->
 
-                        <hr>
+                        <!-- *****************     INPUT DE BUSQUEDA DE INSUMO     ****************** -->    
+                        <div class="control is-grouped">
+                            <div class="control is-expanded">
+                                <input 
+                                    (keyup.enter)="buscarInsumo.value != '' ?  enviarAutocomplete(buscarInsumo.value) : buscarInsumo.value = ''" 
+                                    id="buscarInsumo"
+                                    name="buscarInsumo"
+                                    #buscarInsumo
+                                    class="input is-success is-medium"
+                                    type="text"
+                                    placeholder="Escriba la clave o el nombre del insumo y presione la tecla ENTER"/>
+                            </div>
+                            <div class="control">
+                                <a class="button is-success is-medium" title="Buscar insumo" (click)="buscarInsumo.value != '' ?  enviarAutocomplete(buscarInsumo.value) : buscarInsumo.value = ''">
+                                    <i class="fa fa-search" aria-hidden="true"></i> &nbsp; Buscar
+                                </a>
+                            </div>
+                            <div class="control" *ngIf="buscarInsumo.value != ''">
+                                <a class="button is-info is-medium" title="Borrar texto" (click)="res_busq_insumos=[]; buscarInsumo.value='';">
+                                    <i class="fa fa-times" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="is-fullwidth has-text-centered" *ngIf="cargando" style="height:100px;">
+                            <br>
+                            <span class="tag is-primary is-large">
+                                <span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span>
+                            </span>
+                        </div>
+                        <!-- *****************     RESULTADOS DE BUSQUEDA DE INSUMO     ****************** -->
+                        <div *ngIf="res_busq_insumos.length > 0 && !cargando" style="height: 200px;">
+                            <div *ngIf="res_busq_insumos.length > 0 && !cargando" style="overflow: scroll; overflow-x: hidden; height: 90%;">
+                                <div class="content" style="z-index: 1;" *ngFor="let item_insumo of res_busq_insumos; let c = index">
+                                    <div class="card" (click)="select_insumo_autocomplete(item_insumo)" style="background: rgba(242,248,253, 0.8)">
+                                        <div class="card-content">
+                                            <div class="media">          
+                                                <div class="media-content">
+                                                    <p class="title is-4">{{item_insumo.descripcion}}</p>
+                                                    <p class="subtitle is-6">
+                                                        <strong>Clave: </strong> {{item_insumo.clave}}
+                                                        <label class="tag is-success" *ngIf="item_insumo.es_causes == 1"><strong>Cause </strong></label>
+                                                        <label class="tag" *ngIf="item_insumo.es_causes == 0" style="background: #B8FB7E; border-color: #B8FB7E; color: rgba(0,0,0,0.7);" ><strong>No Cause </strong> </label>
+                                                        <label class="tag is-warning" *ngIf="item_insumo.es_unidosis == 1"><strong>Unidosis</strong> </label>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    <hr> <!-- Línea de division -->
 
-                    <div formArrayName="insumos" style="overflow: scroll; overflow-x: hidden; height: 550px;">
+                    <div *ngIf="!llenando_formulario" formArrayName="insumos" style="overflow: scroll; overflow-x: hidden; height: 550px;">
                         <div class="box" *ngFor="let item of ctrl.dato.controls.insumos.controls; let i=index" [ngStyle]="{'background': i%2 == 0 ? 'rgba(230, 230, 232, 0.44)' : ''}">
                             <article class="media" [formGroupName]="i">
                                 <div class="media-content">
                                     <div class="content">
                                         <span style="float:right; padding-left: 15px;" >
-                                            <a *ngIf="!tieneid" class="button is-danger" title="Quitar este elemento de la lista" (click)="abrirModal('borrarInsumo', i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
+                                            <a *ngIf="!tieneid || ctrl.dato.get('status').value == 'BR'" class="button is-danger" title="Quitar este elemento de la lista" (click)="abrirModal('borrarInsumo', i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
                                         </span>
-                                        <a *ngIf="!tieneid" class="button is-success" [ngClass]="{'is-disabled':ctrl.dato.invalid}" title="Agregar más insumos de esta clave" style="float:right" (click)="select_insumo_autocomplete(item.value)"><span class="icon"><i class="fa fa-plus-circle" aria-hidden="true"></i></span> </a>
+                                        <a *ngIf="!tieneid || ctrl.dato.get('status').value == 'BR'" class="button is-success" 
+                                            [ngClass]="{'is-disabled': ctrl.dato.controls.insumos.invalid}" 
+                                            title="Agregar más insumos de esta clave" style="float:right" 
+                                            (click)="select_insumo_autocomplete(item.value);">
+                                            <span class="icon"><i class="fa fa-plus-circle" aria-hidden="true"></i></span>
+                                        </a>
                                         <p>
                                             <strong>
                                                 <span style="color:cornflowerblue">
@@ -181,16 +280,16 @@
                                             <br> {{ctrl.dato.controls.insumos.controls[i].controls.descripcion.value}}
                                         </p>
                                     </div>
-                                   <section >
-                                        <table *ngIf="tieneid" class="table is-narrow is-bordered is-striped">
+                                   <section *ngIf="tieneid && ctrl.dato.get('status').value == 'FI' && estoymodificando == false">
+                                        <table *ngIf="tieneid && ctrl.dato.get('status').value == 'FI'" class="table is-narrow is-bordered is-striped">
                                             <thead>
                                                 <tr>
                                                     <th>Lote</th>
                                                     <th>Caducidad</th>
                                                     <th>Codigo de barras</th>
-                                                    <th *ngIf="!tieneid">Existencia</th>
+                                                    <!-- <th *ngIf="!tieneid || ctrl.dato.get('status').value == 'BR'">Existencia</th> -->
                                                     <th>Cantidad</th>
-                                                    <th *ngIf="!tieneid"></th>
+                                                    <!-- <th *ngIf="!tieneid || ctrl.dato.get('status').value == 'BR'"></th> -->
                                                 </tr>
                                             </thead>
                                             <tbody formArrayName="lotes">
@@ -198,30 +297,32 @@
                                                     <td>{{val.value.lote}}</td>
                                                     <td>{{val.value.fecha_caducidad}}</td>
                                                     <td>{{val.value.codigo_barras}}</td>
-                                                    <td *ngIf="!tieneid">{{val.value.existencia}}</td>
+                                                    <!-- <td *ngIf="!tieneid">{{val.value.existencia}}</td> -->
                                                     <td [formGroupName]="i2">
                                                         {{val.value.cantidad}}
                                                     </td>
-                                                    <td *ngIf="!tieneid">
+                                                    <!-- <td *ngIf="!tieneid">
                                                         <a class="is-danger" title="Quitar este lote" (click)="quitar_lote_insumo(i, val.value, i2)">
                                                             <span class="icon">
                                                                 <i class="fa fa-trash-o"></i>
                                                             </span>
                                                         </a>
-                                                    </td>
+                                                    </td> -->
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </section>
-                                    <div *ngIf="!tieneid"  class="level-left">
+                                    <!-- || ctrl.dato.get('status').value == 'BR' -->
+                                    <div *ngIf="!tieneid || ctrl.dato.get('status').value == 'BR'"  class="level-left">
                                         <div class="columns is-flex-desktop" style="width: 100%">
                                             <div class="column is-3">
                                                 <p class="control is-expanded">
-                                                <label class="label">Lote:</label>
-                                                    <input type="text" class="input" formControlName="lote" 
-                                                    [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.lote.hasError('required') && 
-                                                    ctrl.dato.controls.insumos.controls[i].controls.lote.touched}">
+                                                    <label class="label">Lote:</label>
+                                                    <input type="text" class="input" formControlName="lote"
+                                                    [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.lote.hasError('required')}">
                                                 </p>
+                                                <span class="help is-danger" 
+                                                *ngIf="ctrl.dato.controls.insumos.controls[i].controls.lote.hasError('required')">Este campo es requerido.</span>
                                             </div>                       
                                             <div class="column is-4">
                                                 <p class="control is-expanded">
@@ -233,10 +334,13 @@
                                                             [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.hasError('required') 
                                                             && ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.touched}">
 -->
-                                                        <input class="input" formControlName="fecha_caducidad" (blur)="validar_fecha(ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.value, i)"
-                                                            min="MinDateCaducidad" date-only="true" [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.touched}"
-                                                            placeholder="YYYY-MM-DD" [textMask]="{mask:mask, keepCharPositions: true, pipe: autoCorrectedDatePipe}"/>
+                                                    <input class="input" formControlName="fecha_caducidad" (blur)="validar_fecha(ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.value, i)"
+                                                        min="MinDateCaducidad" date-only="true" 
+                                                        [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.hasError('required')}"
+                                                        placeholder="YYYY-MM-DD" [textMask]="{mask:mask, keepCharPositions: true, pipe: autoCorrectedDatePipe}"/>
                                                 </p>
+                                                <span class="help is-danger" 
+                                                *ngIf="ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.hasError('required')">Este campo es requerido.</span>
                                             </div>                          
                                             <div class="column is-3">
                                                 <p class="control is-expanded">
@@ -248,8 +352,10 @@
                                                 <p class="control is-expanded">
                                                     <label class="label">Cantidad:</label>
                                                     <input type="number" class="input" formControlName="cantidad" (keypress)="quitar_punto($event)"
-                                                    [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad.hasError('required') && ctrl.dato.controls.insumos.controls[i].controls.cantidad.touched}">
+                                                    [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad.hasError('required')}">
                                                 </p>
+                                                <span class="help is-danger" 
+                                                *ngIf="ctrl.dato.controls.insumos.controls[i].controls.cantidad.hasError('required')">Este campo es requerido.</span>
                                             </div>
                                         </div>
                                     </div>

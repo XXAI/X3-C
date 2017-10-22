@@ -5,11 +5,12 @@ import { ActivatedRoute, Params } from '@angular/router';
 
 import { environment } from '../../../../environments/environment';
 import { CrudService } from '../../../crud/crud.service';
-import { NotificationsService } from 'angular2-notifications';
 import { createAutoCorrectedDatePipe } from 'text-mask-addons';
 import * as moment from 'moment';
 import  * as FileSaver    from 'file-saver';
 
+import { Mensaje } from '../../../mensaje';
+import { NotificationsService } from 'angular2-notifications';
 
 @Component({
   selector: 'salidas-estandar-formulario',
@@ -27,7 +28,12 @@ export class FormularioComponent {
   tab = 1;
   cargando = false;
   key;
+  /**
+   * Contiene los datos de inicio de sesión del usuario.
+   * @type {any} */
   usuario;
+  // Crear la variable que mustra las notificaciones
+  mensajeResponse: Mensaje = new Mensaje();
   autoCorrectedDatePipe: any = createAutoCorrectedDatePipe('yyyy-mm-dd');
 
   MinDate = new Date();
@@ -141,6 +147,7 @@ export class FormularioComponent {
     // inicializar el formulario reactivo
     this.dato = this.fb.group({
       id: [''],
+      actualizar: [false],
       tipo_movimiento_id: ['1', [Validators.required]],
       status: ['FI'],
       fecha_movimiento: ['', [Validators.required]],
@@ -528,6 +535,73 @@ export class FormularioComponent {
     this.dato.controls.status.patchValue('BR');
     document.getElementById('borrador').click();
   }
+
+    /**
+     * Este método envia los datos para actualizar un elemento con el id
+     * que se envia por la url
+     * @return void
+     */
+    actualizarDatos() {
+        this.cargando = true;
+        let dato;
+        try {
+            dato = this.dato.getRawValue();
+        }catch (e) {
+            dato = this.dato.value;
+        }
+
+        this.crudService.editar(this.dato.controls.id.value, dato, 'entrada-almacen').subscribe(
+            resultado => {
+                document.getElementById('actualizar').click();
+                this.cargando = false;
+
+                this.mensajeResponse.texto = 'Se han guardado los cambios.';
+                this.mensajeResponse.mostrar = true;
+                this.mensajeResponse.clase = 'success';
+                this.mensaje(2);
+            },
+            error => {
+                this.cargando = false;
+
+                this.mensajeResponse.texto = 'No especificado.';
+                this.mensajeResponse.mostrar = true;
+                this.mensajeResponse.clase = 'alert';
+                this.mensaje(2);
+                try {
+                    let e = error.json();
+                    if (error.status == 401) {
+                        this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
+                        this.mensajeResponse.clase = 'error';
+                        this.mensaje(2);
+                    }
+                    // Problema de validación
+                    if (error.status == 409) {
+                        this.mensajeResponse.texto = 'Por favor verfique los campos marcados en rojo.';
+                        this.mensajeResponse.clase = 'error';
+                        this.mensaje(8);
+                        for (let input in e.error) {
+                            // Iteramos todos los errores
+                            for (let i in e.error[input]) {
+                                this.mensajeResponse.titulo = input;
+                                this.mensajeResponse.texto = e.error[input][i];
+                                this.mensajeResponse.clase = 'error';
+                                this.mensaje(3);
+                            }
+                        }
+                    }
+                } catch (e) {
+                    if (error.status == 500) {
+                        this.mensajeResponse.texto = '500 (Error interno del servidor)';
+                    } else {
+                        this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
+                    }
+                    this.mensajeResponse.clase = 'error';
+                    this.mensaje(2);
+                }
+
+            }
+        );
+    }
 /************************************ IMPRESION DE REPORTES ************************************** */
   imprimir() {
 
@@ -554,4 +628,42 @@ export class FormularioComponent {
       return new Blob( [ buffer ], { type: type } );
   }
 
+    /**
+     * Este método muestra los mensajes resultantes de los llamados de la api
+     * @param cuentaAtras numero de segundo a esperar para que el mensaje desaparezca solo
+     * @param posicion  array de posicion [vertical, horizontal]
+     * @return void
+     */
+    mensaje(cuentaAtras: number = 6, posicion: any[] = ['bottom', 'left']): void {
+        var objeto = {
+            showProgressBar: true,
+            pauseOnHover: false,
+            clickToClose: true,
+            maxLength: this.mensajeResponse.texto.length
+        };
+
+        this.options = {
+            position: posicion,
+            timeOut: cuentaAtras * 1000,
+            lastOnBottom: true
+        };
+        if (this.mensajeResponse.titulo === '') {
+            this.mensajeResponse.titulo = 'Entradas de almacén';
+          }
+        if (this.mensajeResponse.clase === 'alert') {
+            this.notificacion.alert(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+        if (this.mensajeResponse.clase === 'success') {
+            this.notificacion.success(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+        if (this.mensajeResponse.clase === 'info') {
+            this.notificacion.info(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+        if (this.mensajeResponse.clase === 'warning' || this.mensajeResponse.clase === 'warn') {
+            this.notificacion.warn(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+        if (this.mensajeResponse.clase === 'error' || this.mensajeResponse.clase === 'danger') {
+            this.notificacion.error(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+    }
 }

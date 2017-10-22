@@ -9,7 +9,10 @@ import { BuscarModuloPipe } from '../../pipes/buscar-modulo.pipe';
   styleUrls: ['./index-laboratorio.component.css']
 })
 export class IndexLaboratorioComponent implements OnInit {
-
+  /**
+   * Contiene los datos de inicio de sesión de usuario
+   * @type {any}
+   */
   usuario: any = {}
   busqueda: string = '';
 
@@ -19,10 +22,10 @@ export class IndexLaboratorioComponent implements OnInit {
   accesosDirectosAutorizados:any[] = [];
 
   constructor(private title: Title) { }
-  
+
   ngOnInit() {
-    this.title.setTitle("Almacén / Laboratorio");
-    this.usuario = JSON.parse(localStorage.getItem("usuario"));
+    this.title.setTitle('Laboratorio');
+    this.usuario = JSON.parse(localStorage.getItem('usuario'));
 
     this.modulos = [
       {
@@ -34,12 +37,16 @@ export class IndexLaboratorioComponent implements OnInit {
         permiso: '7GkcqRllVy4Z371KMLPsX0d04dqv3vBE', icono: 'assets/icono-salidas-laboratorio.svg',
         titulo: 'Salidas de laboratorio', url: '/laboratorio/salidas-laboratorio'
       },
+      {
+        permiso: '7GkcqRllVy4Z371KMLPsX0d04dqv3vBE', icono: 'assets/icono-stock-lab.svg',
+        titulo: 'Existencias de laboratorio', url: '/laboratorio/existencias'
+      },
     ];
-    this.accesosDirectos = [          
+    this.accesosDirectos = [
      // { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-catalogos.svg', titulo:"Catálogos", url:"/almacen-articulos/catalogos" },
     ];
 
-    let usuario = JSON.parse(localStorage.getItem("usuario"));
+    let usuario = JSON.parse(localStorage.getItem('usuario'));
     let permisos =  usuario.permisos.split('|');
 
     if (permisos.length > 0) {

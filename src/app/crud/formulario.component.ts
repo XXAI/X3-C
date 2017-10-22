@@ -92,6 +92,7 @@ export class FormularioComponent implements OnInit {
     enviar(regresar: boolean = true, editar: string = '') {
         try {
             if (this.id) {
+                console.log(this.id);
                 this.actualizarDatos();
             } else {
                 this.guardarDatos(regresar, editar);

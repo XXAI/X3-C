@@ -11,12 +11,11 @@ const routes: Routes = [
     children: [
        { path: '', component: ListaComponent},
        { path: 'nuevo', component: FormularioComponent },
+       { path: 'editar/:id', component: FormularioComponent},
        { path: 'ver/:id', component: FormularioComponent},
     ],
     canActivate: [AuthGuard]
   }
- 
-  
 ];
 
 @NgModule({

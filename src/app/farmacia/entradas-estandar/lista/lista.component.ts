@@ -33,8 +33,10 @@ export class ListaEntradasComponent {
    * Nombre de quien recibe para aplicarlo al filtro.
    * @type {string} */
     recibe = '';
+  /**
+   * Contiene los datos de inicio de sesión del usuario.
+   * @type {any} */
   usuario;
-  dato;
   /**
    * Variable que contiene un valor __true__ cuando está ocurriendo un proceso,
    * y __false__ cuando no hay procesos realizándose.

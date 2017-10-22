@@ -106,7 +106,9 @@
                                         <option value="">Seleccione un turno.</option>
                                         <option *ngFor="let item of ctrl.turnos.clues_turnos" value="{{item.id}}">{{ item.nombre }}</option>
                                     </select>
-                                    <span class="help is-danger" *ngIf="ctrl.turnos.clues_turnos.length == 0">Contacte al administrador. No hay turnos disponibles.</span>
+                                    <span class="help is-danger" *ngIf="ctrl.turnos.clues_turnos.length == 0">
+                                        Contacte al administrador. No hay turnos disponibles.
+                                    </span>
                                     <span class="icon is-small" *ngIf="ctrl.dato.get('movimiento_metadato').get('turno_id').hasError('required')">
                                         <i class="fa fa-warning"></i>
                                     </span>
@@ -133,7 +135,9 @@
                                         <option value="">Seleccione un servicio.</option>
                                         <option *ngFor="let item of ctrl.servicios.clues_servicios" value="{{item.id}}">{{ item.nombre }}</option>
                                     </select>
-                                    <span class="help is-danger" *ngIf="ctrl.servicios.clues_servicios.length == 0">Contacte al administrador. No hay servicios disponibles.</span>
+                                    <span class="help is-danger" *ngIf="ctrl.servicios.clues_servicios.length == 0">
+                                        Contacte al administrador. No hay servicios disponibles.
+                                    </span>
                                     <span class="icon is-small" *ngIf="ctrl.dato.get('movimiento_metadato').get('servicio_id').hasError('required')">
                                         <i class="fa fa-warning"></i>
                                     </span>

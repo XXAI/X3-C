@@ -580,7 +580,7 @@
                                 <td *ngIf="!item.nuevo">{{item.lote}}</td>
                                 <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Lote" [(ngModel)]="item.lote"></td>
                                 <td *ngIf="!item.nuevo">{{item.fecha_caducidad}}</td>
-                                <td *ngIf="item.nuevo"><input class="input has-text-centered " type="date" placeholder="Fecha de caducidad" [(ngModel)]="item.fecha_caducidad" readonly></td>
+                                <td *ngIf="item.nuevo"><input class="input has-text-centered " type="date" placeholder="Fecha de caducidad" [(ngModel)]="item.fecha_caducidad"></td>
                                 <td *ngIf="!item.nuevo">{{item.codigo_barras}}</td>
                                 <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Codigo de barras" [(ngModel)]="item.codigo_barras"></td>
                                 <td *ngIf="!item.nuevo">{{item.existencia}}</td>

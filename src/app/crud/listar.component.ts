@@ -76,7 +76,7 @@ export class ListarComponent implements OnInit {
     private resultadosPorPagina = 20;
     private total = 0;
     private paginasTotales = 0;
-    private indicePaginas: number[] = []
+    private indicePaginas: number[] = [];
     // # FIN SECCION
 
     // # SECCION: Resultados de búsqueda
@@ -88,7 +88,7 @@ export class ListarComponent implements OnInit {
     private resultadosPorPaginaBusqueda = 20;
     private totalBusqueda = 0;
     private paginasTotalesBusqueda = 0;
-    private indicePaginasBusqueda: number[] = []
+    private indicePaginasBusqueda: number[] = [];
     // # FIN SECCION
 
     @Input() URL: string;
