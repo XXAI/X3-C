@@ -12,7 +12,7 @@ export class MenuComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.usuario = JSON.parse(localStorage.getItem("usuario"));
+    this.usuario = JSON.parse(localStorage.getItem('usuario'));
   }
   toggleMenuAside() {
     this.mostrarMenuAside = !this.mostrarMenuAside;

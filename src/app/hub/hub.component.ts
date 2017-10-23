@@ -46,9 +46,9 @@ export class HubComponent implements OnInit {
     {
       title: 'Almacén general', routerLink: '/almacen-articulos', icono: 'assets/hub-almacen-articulos.svg',
       permisos: [
-        '--z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Permiso de prueba
+        'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Permiso de prueba
         'cuSmlV9lvABXzfjtLbzEe0VbI47Dh6Cv', // Ver catálogos
-
+/*
         'l9PXPHg1MMJYMKTlzXeEHNIsgw9d5oty', // Grupos de insumos
         'KbzwkJtDcLGcaNhbuYd24bhdDMGaKXod', // "Marcas"
         'JDAc3VaD3TbCIu0cUIYxZ6gG6QG32I3y', // "Material de curación"
@@ -62,11 +62,11 @@ export class HubComponent implements OnInit {
         '2CGoJAwDzH2JGpaPVUz3Vakcge5ReO9F', // "Tipos de pedidos"
         'S1Yv83vAhv2o7xzq5ur37bmbfHvsomJf', // Tipos de movimientos
         'd1V2FX6TNxO6cCSXaAZQfLiAnDoL6rnO', // Tipos de insumos
-        'JHUfLL82Cp1pUI7tTKaWuCfVIaeKZk5z', // Tipos de personal
+        'JHUfLL82Cp1pUI7tTKaWuCfVIaeKZk5z', // Tipos de personal*/
       ]
     },
     {
-      title: 'Laboratorio', routerLink: '/laboratorio', icono: 'assets/hub-laboratorio.svg',
+      title: 'Laboratorio clínico', routerLink: '/laboratorio', icono: 'assets/hub-laboratorio.svg',
       permisos: [
          'PzmTtCd1MbMWVBPwVmttQQWdNfqwzp7p', // Entradas laboratorio
          '7GkcqRllVy4Z371KMLPsX0d04dqv3vBE', // Salidas laboratorio
@@ -133,7 +133,7 @@ export class HubComponent implements OnInit {
       ]
     },
     {
-      title: 'Catálogos y parámetros del sistema', routerLink: '/catalogos-parametros', icono: 'assets/hub-configuracion-parametros.svg',
+      title: 'Catálogos y parámetros del sistema', routerLink: '/catalogos-parametros', icono: 'assets/hub-catalogos-params.svg',
       permisos: [
         'Npmc6C155PMjnkPKWUFXcIF3NcegAzIE', // "Forma Farmaceutica"
         'l9PXPHg1MMJYMKTlzXeEHNIsgw9d5oty', // Grupos de insumos
@@ -149,10 +149,10 @@ export class HubComponent implements OnInit {
         'S1Yv83vAhv2o7xzq5ur37bmbfHvsomJf', // Tipos de movimientos
         'ouIq0jdKpmTNYG1f2MRjMmlKvXmSviPd', // "Unidades de medida"
         'EBQdToSqWCpu1TJTDWBibcuGOpO97ucT', // "Vias de administración"
-        // Almacenes
-        // Proveedores
-        // Servidores
-        // Unidades médicas
+        'GVnLtL6maGUSPmaiLlCgAT4FzlzHKkN0', // Almacenes
+        'h9IhilMjvBtC7X64A0poFV26EL5xWAyM', // Proveedores
+        'DbpT0VqR0DcNcqmCnwRbK7XvgWqDY2yc', // Servidores
+        '56R2ES2GDbpovdiLAwFEjj75Rl975MsR', // Unidades médicas
       ]
     }
   ];

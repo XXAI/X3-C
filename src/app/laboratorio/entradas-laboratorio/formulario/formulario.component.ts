@@ -105,7 +105,7 @@ export class FormularioComponent {
    * @type {boolean} */
   llenando_formulario = true;
 
-  public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
+  public insumos_term = `${environment.API_URL}/insumos-laboratorio-clinico-auto?term=:keyword`;
   // Máscara para validar la entrada de la fecha de caducidad
   mask = [/[2]/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/];
   /**
@@ -149,7 +149,7 @@ export class FormularioComponent {
     }
 
     // Inicializamos el objeto para los reportes con web Webworkers
-    this.pdfworker = new Worker('web-workers/farmacia/movimientos/imprimir-entrada.js');
+    this.pdfworker = new Worker('web-workers/laboratorio/entrada-laboratorio.js');
 
     // Este es un hack para poder usar variables del componente dentro de una funcion del worker
     var self = this;

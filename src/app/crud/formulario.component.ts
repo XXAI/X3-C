@@ -93,7 +93,7 @@ export class FormularioComponent implements OnInit {
         try {
             if (this.id) {
                 console.log(this.id);
-                this.actualizarDatos();
+                this.actualizarDatos(editar);
             } else {
                 this.guardarDatos(regresar, editar);
             }
@@ -197,7 +197,7 @@ export class FormularioComponent implements OnInit {
      * que se envia por la url
      * @return void
      */
-    actualizarDatos() {
+    actualizarDatos(editar) {
         this.cargando = true;
         let dato;
         try {
@@ -210,7 +210,14 @@ export class FormularioComponent implements OnInit {
         }
 
         this.crudService.editar(this.id, dato, this.URL).subscribe(
-            resultado => {
+             resultado => {
+            //     if (dato.status === 'FI') {
+            //         this.location.back();
+            //         this.router.navigate(['almacen/entradas-estandar']);
+            //     }
+                if (editar && dato.status === 'FI') {
+                    this.router.navigate([editar]);
+                }
                 this.cargando = false;
 
                 this.mensajeResponse.texto = 'Se han guardado los cambios.';

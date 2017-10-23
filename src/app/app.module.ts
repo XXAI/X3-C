@@ -100,30 +100,31 @@ import { PacienteModule } from './admision/paciente/paciente.module';
 import { IndexRecetaModule          } from './receta-electronica/index-receta/index-receta.module';
 
 // #Hub Catálogos y parámetros de sistema
+import { IndexCatalogoParamsModule } from './catalogos-parametros/index-catalogo-params/index-catalogo-params.module';
 import { Almacenes2Module } from './catalogos-parametros/almacenes/almacenes.module';
 import { FormaFarmaceuticaModule } from './catalogos-parametros/forma-farmaceutica/forma-farmaceutica.module';
-import { GruposInsumosModule } from './catalogos-parametros/grupos-insumos/grupos-insumos.module';
+import { GruposInsumosModule     } from './catalogos-parametros/grupos-insumos/grupos-insumos.module';
 import { MarcasModule } from './catalogos-parametros/marcas/marcas.module';
-import { MaterialCuracionModule } from './catalogos-parametros/material-curacion/material-curacion.module';
+import { MaterialCuracionModule  } from './catalogos-parametros/material-curacion/material-curacion.module';
 import { MedicamentosModule } from './catalogos-parametros/medicamentos/medicamentos.module';
 import { PresentacionMedicamentoModule } from './catalogos-parametros/presentaciones-medicamentos/presentaciones-medicamentos.module';
-import { ProgramaModule } from './catalogos-parametros/programa/programa.module';
-import { ProveedoresModule } from './catalogos-parametros/proveedores/proveedores.module';
-import { ServiciosModule } from './catalogos-parametros/servicios/servicios.module';
+import { ProgramaModule   } from './catalogos-parametros/programa/programa.module';
+import { ProveedoresModule} from './catalogos-parametros/proveedores/proveedores.module';
+import { ServiciosModule  } from './catalogos-parametros/servicios/servicios.module';
 import { ServidoresModule } from './catalogos-parametros/servidores/servidores.module';
 import { TipoPedidoModule } from './catalogos-parametros/tipo-pedido/tipo-pedido.module';
 import { TipoPersonalModule } from './catalogos-parametros/tipo-personal/tipo-personal.module';
 import { TiposInsumosModule } from './catalogos-parametros/tipos-insumos/tipos-insumos.module';
 import { TiposMovimientosModule } from './catalogos-parametros/tipos-movimientos/tipos-movimientos.module';
-import { UnidadesMedicasModule    } from './catalogos-parametros/unidades-medicas/unidades-medicas.module';
-import { UnidadesMedidaModule } from './catalogos-parametros/unidades-medida/unidades-medida.module';
+import { UnidadesMedicasModule  } from './catalogos-parametros/unidades-medicas/unidades-medicas.module';
+import { UnidadesMedidaModule   } from './catalogos-parametros/unidades-medida/unidades-medida.module';
 import { ViasAdministracionModule } from './catalogos-parametros/vias-administracion/vias-administracion.module';
 
 // Catálogos
 import { AlmacenesModule } from './almacen-articulos/catalogos/almacenes/almacenes.module';
 
 import { CategoriasModule } from './almacen-articulos/categoria/categorias.module';
-import { ArticulosModule } from './almacen-articulos/articulos/articulos.module';
+import { ArticulosModule  } from './almacen-articulos/articulos/articulos.module';
 import { InventariosModule } from './almacen-articulos/inventarios/inventarios.module';
 
 import { PersonalCluesModule } from './configuracion/personal-clues/personal-clues.module';
@@ -199,6 +200,7 @@ export function highchartsFactory() {
     TipoPedidoModule,
     TiposMovimientosModule,
     TiposInsumosModule,
+    IndexCatalogoParamsModule,
     FormaFarmaceuticaModule,
     ServidoresModule,
     AlmacenesModule,

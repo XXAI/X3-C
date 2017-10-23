@@ -383,12 +383,12 @@
         </header>
         <section class="modal-card-body">
             <div class="content">
-                <h1>¿Esta seguro de guardar la entrada?</h1>
+                <h1>¿Esta seguro de finalizar la entrada?</h1>
                 <p>Ya no se podrá realizar cambios</p>
             </div>
         </section>
         <footer class="modal-card-foot">
-            <a class="button is-success" (click)="ctrl.enviar(); cancelarModal('guardarMovimiento')">Continuar</a>
+            <a class="button is-success" (click)="ctrl.enviar(false, 'almacen/entradas-estandar'); cancelarModal('guardarMovimiento')">Continuar</a>
             <a class="button" (click)="cancelarModal('guardarMovimiento')">Cancelar</a>
         </footer>
     </div>

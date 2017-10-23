@@ -19,6 +19,7 @@ import { AuthService } from '../../auth.service';
 
 import { MenuPanelModule } from '../menu/menu-panel.module';
 import { MenuAsidePanelModule } from '../menu-aside/menu-aside-panel.module';
+import { IndexCatalogoParamsModule } from './../index-catalogo-params/index-catalogo-params.module';
 
 //crud
 import { CrudService } from '../../crud/crud.service';
@@ -40,6 +41,7 @@ import { NguiAutoCompleteModule } from '@ngui/auto-complete';
     PipesModule,
     MenuPanelModule, 
     MenuAsidePanelModule,
+    IndexCatalogoParamsModule,
     CrudModule,
     // IndexCatalogoModule,
     NguiAutoCompleteModule,

@@ -6,11 +6,11 @@ import { FormularioComponent } from './formulario/formulario.component';
 import { AuthGuard } from '../../auth-guard.service';
 
 const routes: Routes = [
-  {
+  /*{
     path: 'catalogos-parametros',
     component: ListaComponent,
     canActivate: [AuthGuard]
-  },
+  },*/
   {
     path: 'catalogos-parametros/almacenes',
     children: [

@@ -1,7 +1,7 @@
 <listar #ctrl URL="tipo-personal" titulo="Tipo Personal / Almacen"></listar>
-<articulos-catalogo-menu></articulos-catalogo-menu>
+<app-menu-catalogo></app-menu-catalogo>
 <div style="height:50px;"></div>
-<div class="contenedor columns " style="height:100%; ">
+<div class="contenedor columns " style="height:100%;  padding-top: 1em;">
     <div class="column is-one-quarter is-hidden-mobile">
         <panel-control-menu-aside></panel-control-menu-aside>
     </div>
@@ -9,7 +9,13 @@
         <div style="background: #FFF; border-radius: 1em; ">
 
             <!-- Opciones y busqueda -->
-            <tabla-opciones [ctrl]="ctrl" [nombre]="'Tipo Personal'"></tabla-opciones>
+            <tabla-opciones 
+                #opciones
+                [ctrl]="ctrl" 
+                [icono]="'fa fa-users'" 
+                [nombre]="'Tipo de Personal'"
+                [ruta]="'tipo-personal'"
+                [ruta_pdf]="'catalogos-parametros/lista-tipo-personal.js'"></tabla-opciones>
 
             <table class="table" *ngIf="!ctrl.cargando">
                 <thead>

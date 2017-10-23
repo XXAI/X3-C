@@ -16,7 +16,8 @@ import { FormularioComponent } from './formulario/formulario.component';
 import { AuthService } from '../../auth.service';
 
 import { MenuPanelModule } from '../menu/menu-panel.module';
-import { MenuAsidePanelModule } from '../menu-aside/menu-aside-panel.module';
+import { MenuAsidePanelModule      } from '../menu-aside/menu-aside-panel.module';
+import { IndexCatalogoParamsModule } from './../index-catalogo-params/index-catalogo-params.module';
 
 //crud
 import { CrudService } from '../../crud/crud.service';
@@ -36,15 +37,16 @@ import { ParcialModule } from '../parcial/parcial.module';
     BloquearPantallaModule,
     PaginacionModule,
     PipesModule,
-    MenuPanelModule, 
+    MenuPanelModule,
     MenuAsidePanelModule,
+    IndexCatalogoParamsModule,
     CrudModule,
     ParcialModule,
     ParcialModule
   ],
-  declarations: [ 
-    ListaComponent,   
-    FormularioComponent 
+  declarations: [
+    ListaComponent,
+    FormularioComponent
   ],
   providers: [ AuthService, CrudService ]
 })
