@@ -40,15 +40,7 @@ export class MenuAsideComponent implements OnInit {
           { permiso: 'ICmOKw3HxhgRna4a78OP0QmKrIX0bNsp', icono: 'fa-users', titulo: 'Roles', url: '/panel-control/roles' },
           { permiso: 'DYwQAxJbpHWw07zT09scEogUeFKFdGSu', icono: 'fa-shield', titulo: 'Permisos', url: '/panel-control/permisos' }
         ]
-      },
-      {
-        titulo: 'Catálogos de sistema',
-        modulos: [
-          { permiso: 'ygwsEwz3cUw4yVMCeaQ9hVMCFXUHri5q', icono: 'fa-shopping-basket', titulo: 'Programas', url: '/panel-control/programas' },
-          { permiso: 'JHUfLL82Cp1pUI7tTKaWuCfVIaeKZk5z', icono: 'fa-users', titulo: 'Tipo de personal', url: '/panel-control/tipo-personal' },
-        ]
-      },
-      
+      }
     ],
     this.menuAutorizado = [
       {

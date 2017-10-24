@@ -9,6 +9,11 @@
 .b-checkbox {
   line-height: 1;
 }
+
+html, body {
+  overflow: hidden !important;
+}
+
 .select{
   width: 100%;
 }

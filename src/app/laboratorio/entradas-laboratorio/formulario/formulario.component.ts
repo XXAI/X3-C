@@ -345,8 +345,8 @@ export class FormularioComponent {
     if (this.usuario.almacen_activo) {
       cabecera += '&almacen=' + this.usuario.almacen_activo.id;
     }
-    let url: string = '' + environment.API_URL + '/insumos-auto?term=' + keyword + cabecera;
-    this.crudService.busquedaInsumos(keyword, 'insumos-auto').subscribe(
+    let url: string = '' + environment.API_URL + '/insumos-laboratorio-clinico-auto?term=' + keyword + cabecera;
+    this.crudService.busquedaInsumos(keyword, 'insumos-laboratorio-clinico-auto').subscribe(
       resultado => {
         this.cargando = false;
         this.res_busq_insumos = resultado;

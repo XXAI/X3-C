@@ -1,7 +1,7 @@
 <listar #ctrl URL="entrada-almacen?fecha_desde={{fecha_desde}}&fecha_hasta={{fecha_hasta}}&recibe={{recibe}}&status={{status}}" titulo="Entrada  de almacén"></listar>
 <menu-farmacia [modulo]="'Entradas  de almacén'" [icono]="'assets/icono-entradas.svg'" [url]="'/almacen/entradas-estandar'"></menu-farmacia>
 <div style="height:40px;"></div>
-<div class="contenedor columns " style="height:95%;">
+<div class="contenedor columns " >
     <div class="column" style="padding:2em;  z-index: initial; height:100%;">
         <div style="background: #FFF; border-radius: 1em; overflow: hidden; height:100%; ">
             <section class="hero is-hidden-touch" [ngClass]=" {'is-dark': ctrl.busquedaActivada, 'is-primary': !ctrl.busquedaActivada}"

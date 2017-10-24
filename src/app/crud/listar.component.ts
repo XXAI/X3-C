@@ -57,7 +57,10 @@ import { NotificationsService } from 'angular2-notifications';
 })
 
 export class ListarComponent implements OnInit {
-
+    /**
+     * Calcula el tamaño de la pantalla
+     */
+    tamano = document.body.clientHeight;
     cargando: boolean = false;
     borrarCargando: boolean = false;
     // # SECCION: Esta sección es para mostrar mensajes

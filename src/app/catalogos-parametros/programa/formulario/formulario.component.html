@@ -1,7 +1,7 @@
 <formulario #ctrl URL="programa" titulo="Programa / Catalogo" [dato]="dato"></formulario>
 <app-menu-catalogo></app-menu-catalogo>
 <div style="height:50px;"></div>
-<div class="contenedor columns " style="height:100%">
+<div class="contenedor columns " style="height:90%">
     <div class="column is-one-quarter is-hidden-mobile">
         <panel-control-menu-aside></panel-control-menu-aside>
     </div>
@@ -19,7 +19,6 @@
                                 <span *ngIf="!ctrl.cargando" class="icon is-medium"><i class="fa fa-edit"></i></span>
                                 <span *ngIf="ctrl.cargando" class="icon is-medium"><i class="fa fa-refresh fa-spin"></i></span>                                {{ctrl.moduloTitulo}} Programa
                             </h1>
-
                         </div>
                     </div>
                 </section>
@@ -28,18 +27,27 @@
                     <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>                    &nbsp;<span>Cargando...</span></span>
                 </div>
                 <section class="section">
-
-
-
-                    <div class="field">
+                    <div class="field" *ngIf="tieneid">
                         <label class="label">ID:</label>
                         <p class="control is-expanded  has-icon has-icon-right">
                             <input class="input" type="text" [ngClass]="{'is-danger': ctrl.dato.get('id').hasError('required') && ctrl.dato.get('id').touched}"
-                                placeholder="id" formControlName="id">
+                                placeholder="id" formControlName="id" readonly>
                             <span class="icon is-small" *ngIf="ctrl.dato.get('id').hasError('required') && ctrl.dato.get('id').touched">
                                 <i class="fa fa-warning"></i>
                             </span>
                             <span class="help is-danger" *ngIf="ctrl.dato.get('id').hasError('required') && ctrl.dato.get('id').touched">Este campo es requerido.</span>
+                        </p>
+                    </div>
+
+                    <div class="field">
+                        <label class="label">Clave:</label>
+                        <p class="control is-expanded  has-icon has-icon-right">
+                            <input class="input" type="text" [ngClass]="{'is-danger': ctrl.dato.get('clave').hasError('required')}" placeholder="clave"
+                                formControlName="clave">
+                            <span class="icon is-small" *ngIf="ctrl.dato.get('clave').hasError('required')">
+                                <i class="fa fa-warning"></i>
+                            </span>
+                            <span class="help is-danger" *ngIf="ctrl.dato.get('clave').hasError('required')">Este campo es requerido.</span>
                         </p>
                     </div>
 
@@ -54,6 +62,25 @@
                             <span class="help is-danger" *ngIf="ctrl.dato.get('nombre').hasError('required')">Este campo es requerido.</span>
                         </p>
                     </div>
+
+                     <div class="field">
+                        <!--<label class="label"></label>
+                        <p class="b-checkbox control is-expanded  has-icon has-icon-right">
+                            <input type="checkbox" id="status" name="status" class="styled" formControlName="status" [checked]="ctrl.dato.get('status').value == '0' ? false : false">
+                            <label for="status">  
+                                <strong> &nbsp; Programa activo</strong>
+                            </label>
+                        </p>
+                    -->
+                    <br>
+                        <p class="b-checkbox control is-expanded  has-icon has-icon-right">
+                            <input type="checkbox" id="status" class="styled" [checked]="ctrl.dato.get('status').value == '1' ? true : false"
+                                (change)="ctrl.dato.get('status').patchValue(ctrl.dato.get('status').value == '1' ? '0' : '1')">
+                            <label for="status"> 
+                                <strong> &nbsp; Programa activo</strong>
+                            </label>
+                        </p>
+                    </div> 
 
                 </section>
             </div>

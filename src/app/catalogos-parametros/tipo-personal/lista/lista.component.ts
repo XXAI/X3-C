@@ -5,6 +5,6 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './lista.component.html'
 })
 
-export class ListaComponent{
-  
+export class ListaComponent {
+
 }
