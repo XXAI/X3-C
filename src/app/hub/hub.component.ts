@@ -46,14 +46,28 @@ export class HubComponent implements OnInit {
     {
       title: 'Almacén general', routerLink: '/almacen-articulos', icono: 'assets/hub-almacen-articulos.svg',
       permisos: [
-        '--z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Permiso de prueba
+        'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Permiso de prueba
         'cuSmlV9lvABXzfjtLbzEe0VbI47Dh6Cv', // Ver catálogos
+/*
+        'l9PXPHg1MMJYMKTlzXeEHNIsgw9d5oty', // Grupos de insumos
+        'KbzwkJtDcLGcaNhbuYd24bhdDMGaKXod', // "Marcas"
+        'JDAc3VaD3TbCIu0cUIYxZ6gG6QG32I3y', // "Material de curación"
+        'xSSmZGx6xgw4Qd4MQKlcDwxE1iD4QvxZ', // "Medicamentos"
+        'ygwsEwz3cUw4yVMCeaQ9hVMCFXUHri5q', // "Programas"
+        'PtTJ9g7WGYcyuPjTxe5iaJILVzQedccG', // "Presentaciones de medicamentos"
+        'EBQdToSqWCpu1TJTDWBibcuGOpO97ucT', // "Vias de administración"
+        'ouIq0jdKpmTNYG1f2MRjMmlKvXmSviPd', // "Unidades de medida"
+        'OhAoehuuORlLObNSrzy4qpRYE89VfUdt', // "Servicios"
+        'Npmc6C155PMjnkPKWUFXcIF3NcegAzIE', // "Forma Farmaceutica"
+        '2CGoJAwDzH2JGpaPVUz3Vakcge5ReO9F', // "Tipos de pedidos"
+        'S1Yv83vAhv2o7xzq5ur37bmbfHvsomJf', // Tipos de movimientos
+        'd1V2FX6TNxO6cCSXaAZQfLiAnDoL6rnO', // Tipos de insumos
+        'JHUfLL82Cp1pUI7tTKaWuCfVIaeKZk5z', // Tipos de personal*/
       ]
     },
     {
-      title: 'Laboratorio', routerLink: '/laboratorio', icono: 'assets/hub-laboratorio.svg',
+      title: 'Laboratorio clínico', routerLink: '/laboratorio', icono: 'assets/hub-laboratorio.svg',
       permisos: [
-         'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk--', // Ver pedidos - Prueba
          'PzmTtCd1MbMWVBPwVmttQQWdNfqwzp7p', // Entradas laboratorio
          '7GkcqRllVy4Z371KMLPsX0d04dqv3vBE', // Salidas laboratorio
       ]
@@ -68,8 +82,7 @@ export class HubComponent implements OnInit {
       title: 'Farmacia Subrrogada', routerLink: '/farmacia-subrrogada', icono: 'assets/hub-farmacia-sub.svg',
       permisos: [
         '--z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
-        '--MrL06vIO12iNhchP14h57Puvg71eUmYb', // Ver FS proveedor pruebas
-        'RZsvMjtPtpLWC8afsAFZsNnD9iXtiZC3', // Ver sincronizar recetas
+        '6sTjs3q8rhHslelQgTUI4hdkNSbiwyhf', // Ver sincronizar recetas
       ]
     },
     {
@@ -97,7 +110,7 @@ export class HubComponent implements OnInit {
       ]
     },
     {
-      title: 'Configuración', routerLink: '/configuracion', icono:'assets/hub-configuracion.svg',
+      title: 'Configuración de Unidad Médica', routerLink: '/configuracion', icono:'assets/hub-configuracion.svg',
       permisos: [
         // 'bsIbPL3qv6XevcAyrRm1GxJufDbzLOax', // Ver pedidos pruebas
         'zRTSAl0H8YNFMWcn00yeeJPigztCbSdC', // Ver mis almacenes
@@ -118,8 +131,31 @@ export class HubComponent implements OnInit {
       permisos: [
         'WbBYhMFZkGsAYeN13hY1hylZkNPJbHOE', // Ver Avances
       ]
+    },
+    {
+      title: 'Catálogos y parámetros del sistema', routerLink: '/catalogos-parametros', icono: 'assets/hub-catalogos-params.svg',
+      permisos: [
+        'Npmc6C155PMjnkPKWUFXcIF3NcegAzIE', // "Forma Farmaceutica"
+        'l9PXPHg1MMJYMKTlzXeEHNIsgw9d5oty', // Grupos de insumos
+        'KbzwkJtDcLGcaNhbuYd24bhdDMGaKXod', // "Marcas"
+        'JDAc3VaD3TbCIu0cUIYxZ6gG6QG32I3y', // "Material de curación"
+        'xSSmZGx6xgw4Qd4MQKlcDwxE1iD4QvxZ', // "Medicamentos"
+        'PtTJ9g7WGYcyuPjTxe5iaJILVzQedccG', // "Presentaciones de medicamentos"
+        'ygwsEwz3cUw4yVMCeaQ9hVMCFXUHri5q', // "Programas"
+        'OhAoehuuORlLObNSrzy4qpRYE89VfUdt', // "Servicios"
+        '2CGoJAwDzH2JGpaPVUz3Vakcge5ReO9F', // "Tipos de pedidos"
+        'JHUfLL82Cp1pUI7tTKaWuCfVIaeKZk5z', // Tipos de personal
+        'd1V2FX6TNxO6cCSXaAZQfLiAnDoL6rnO', // Tipos de insumos
+        'S1Yv83vAhv2o7xzq5ur37bmbfHvsomJf', // Tipos de movimientos
+        'ouIq0jdKpmTNYG1f2MRjMmlKvXmSviPd', // "Unidades de medida"
+        'EBQdToSqWCpu1TJTDWBibcuGOpO97ucT', // "Vias de administración"
+        'GVnLtL6maGUSPmaiLlCgAT4FzlzHKkN0', // Almacenes
+        'h9IhilMjvBtC7X64A0poFV26EL5xWAyM', // Proveedores
+        'DbpT0VqR0DcNcqmCnwRbK7XvgWqDY2yc', // Servidores
+        '56R2ES2GDbpovdiLAwFEjj75Rl975MsR', // Unidades médicas
+      ]
     }
-  ]
+  ];
   hubAutorizado = [ { title: 'Dashboard', routerLink: '/dashboard', icono: 'assets/hub-dashboard.svg' } ]
 
   constructor() { }

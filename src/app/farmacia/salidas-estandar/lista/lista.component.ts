@@ -76,7 +76,7 @@ export class ListaComponent implements OnInit {
      * @type {ViewChildren} */
     @ViewChildren('sr') sr;
 
-    /**
+  /**
    * Este método inicializa la carga de las dependencias
    * que se necesitan para el funcionamiento del modulo
    */

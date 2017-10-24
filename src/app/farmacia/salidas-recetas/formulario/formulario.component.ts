@@ -208,7 +208,7 @@ export class FormularioComponent {
         tipo_receta: [''],
         fecha_receta: ['', [Validators.required]],
         doctor: ['', [Validators.required]],
-        personal_clues_id: [''],
+        personal_clues_id: ['', [Validators.required]],
         paciente: ['', [Validators.required]],
         diagnostico: ['', [Validators.required]],
         imagen_receta: [''],

@@ -8,23 +8,20 @@ import  * as FileSaver    from 'file-saver';
 })
 
 export class ListaComponent implements OnInit {
+  cargando;
+  lista_impresion;
   usuario;
+  dato;
   fecha_desde = '';
   fecha_hasta = '';
   turno = '';
-  servicio = '';
-  recibe = '';
-  dato;
-  cargando;
-  lista_impresion;
 
   // # SECCION: Reportes
   pdfworker: Worker;
   cargandoPdf = false;
   // # FIN SECCION
-
   @ViewChildren('tr') tr;
-  @ViewChildren('sr') sr;
+
   constructor(
     private _ngZone: NgZone,
     private crudService: CrudService) { }
@@ -33,7 +30,7 @@ export class ListaComponent implements OnInit {
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
 
     // Inicializamos el objeto para los reportes con web Webworkers
-    this.pdfworker = new Worker('web-workers/farmacia/movimientos/lista-salidas.js');
+    this.pdfworker = new Worker('web-workers/farmacia/movimientos/lista-recetas.js');
 
     // Este es un hack para poder usar variables del componente dentro de una funcion del worker
     let self = this;
@@ -52,56 +49,48 @@ export class ListaComponent implements OnInit {
   }
 
   export_excel() {
-    let titulo = 'Salida Estandar';
-    let turno = this.tr.first.nativeElement.options;
-    let servicio = this.sr.first.nativeElement.options;
-    turno = turno[turno.selectedIndex].text;
-    servicio = servicio[servicio.selectedIndex].text;
-    let exportData = '<table><tr><th colspan=\'7\'><h1>' + titulo
-    + '</h1></th></tr><tr><th>Desde: ' + this.fecha_desde + '</th><th>Hasta: ' + this.fecha_hasta + '</th>'
-    + '<th>Turno: ' + turno + '</th><th>Servicio: ' + servicio + '</th><th>Recibe: '
-    + this.recibe + '</th></tr><tr><th colspan=\'7\'></th></tr></table>';
+    let titulo = 'Salida por Receta';
+    let exportData =  '<table>' +
+                        '<tr><th colspan=\'7\'><h1>' + titulo + '</h1></th></tr>' +
+                        '<tr><th></th></tr>' +
+                        '<tr><th colspan=\'7\'></th></tr>' +
+                      '</table>';
 
     exportData += document.getElementById('exportable').innerHTML;
     let blob = new Blob([exportData], { type: 'text/comma-separated-values;charset=utf-8' });
     try {
-        FileSaver.saveAs(blob,  'salida_estandar.xls');
+        FileSaver.saveAs(blob,  'Listado_salida_por_receta.xls');
     } catch (e) {
       console.log(e);
     }
   }
 
+  /***************************************IMPRESION DE REPORTES*************************************************/
+
   imprimir() {
+    this.cargandoPdf = true;
+    let turno = this.tr.first.nativeElement.options;
+    turno = turno[turno.selectedIndex].text;
 
-    try {
-      this.cargandoPdf = true;
-      let turno = this.tr.first.nativeElement.options;
-      let servicio = this.sr.first.nativeElement.options;
-      turno = turno[turno.selectedIndex].text;
-      servicio = servicio[servicio.selectedIndex].text;
-
-      this.crudService.lista_general('movimientos?tipo=2&fecha_desde=' + this.fecha_desde
-      + '&fecha_hasta=' + this.fecha_hasta + '&turno=' + this.turno + '&servicio=' + this.servicio + '&recibe=' + this.recibe).subscribe(
-        resultado => {
-                this.cargando = false;
-                this.lista_impresion = resultado.data;
-                let entrada_imprimir = {
-                  lista: this.lista_impresion,
-                  usuario: this.usuario,
-                  fecha_desde: this.fecha_desde,
-                  fecha_hasta: this.fecha_hasta,
-                  turno: turno,
-                  servicio: servicio,
-                  recibe: this.recibe
-                };
-                this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
-              },
-              error => {
-              }
-      );
-    } catch (e) {
-      this.cargandoPdf = false;
-    }
+    this.crudService.lista_general('movimientos?tipo=5&fecha_desde=' + this.fecha_desde
+    + '&fecha_hasta=' + this.fecha_hasta + '&turno=' + this.turno).subscribe(
+      resultado => {
+        this.cargando = false;
+        this.lista_impresion = resultado;
+        try {
+          let entrada_imprimir = {
+            lista: this.lista_impresion,
+            usuario: this.usuario,
+            turno: turno,
+            fecha_desde: this.fecha_desde,
+            fecha_hasta: this.fecha_hasta,
+          };
+          this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
+        } catch (e) {
+          this.cargandoPdf = false;
+        }
+      },
+      error => {});
   }
 
   base64ToBlob( base64, type ) {
@@ -112,4 +101,5 @@ export class ListaComponent implements OnInit {
       }
       return new Blob( [ buffer ], { type: type } );
   }
+ 
 }

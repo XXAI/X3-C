@@ -62,14 +62,25 @@ export class FormularioComponent {
     maxLength: 2000
   };
 
-  MinDate = new Date();
-  MaxDate = new Date();
   MinDateCaducidad;
+  ;
+  /**
+   * Contiene la fecha MÍNIMA que puede ingresar el usuario para la fecha que fue hecha la salida de almacen.
+   * @type {Date} */
+  MinDate = new Date();
+  /**
+   * Contiene la fecha MÁXIMA que puede ingresar el usuario para la fecha que fue hecha la salida de almacen.
+   * @type {Date} */
+  MaxDate = new Date();
+  /**
+   * Contiene la fecha del día de hoy y es la que automáticamente se asigna a la fecha del movimiento, aunque el usuario puede
+   * cambiarla hay un límite de una fecha mínima [MinDate]{@link FormularioComponent#MinDate} y
+   * fecha máxima [MaxDate]{@link FormularioComponent#MaxDate}
+   * @type {Date} */
   fecha_actual;
   fecha_invalida = true;
   tieneid = false;
   cargando = false;
-  fecha_movimiento;
   mostrarCancelado;
   lotes_insumo;
   /**
@@ -81,7 +92,7 @@ export class FormularioComponent {
   pdfworker:Worker;
    cargandoPdf:boolean = false;
   // # FIN SECCION
-  
+
   // Crear la variable que mustra las notificaciones
   mensajeResponse: Mensaje = new Mensaje();
   titulo= 'Salidas estándar';
@@ -109,7 +120,7 @@ export class FormularioComponent {
 
     // Solo si se va a cargar catalogos poner un 
     // <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
-    document.getElementById("catalogos").click();
+    document.getElementById('catalogos').click();
     document.getElementById('actualizar').click();
 
     if (this.usuario.clues_activa) {
@@ -120,7 +131,7 @@ export class FormularioComponent {
     }
 
     // Inicializamos el objeto para los reportes con web Webworkers
-    this.pdfworker = new Worker('web-workers/farmacia/movimientos/salida.js')
+    this.pdfworker = new Worker('web-workers/farmacia/movimientos/salida.js');
 
     // Este es un hack para poder usar variables del componente dentro de una funcion del worker
     var self = this;

@@ -1,11 +1,11 @@
 <listar #ctrl URL="entrada-almacen?fecha_desde={{fecha_desde}}&fecha_hasta={{fecha_hasta}}&recibe={{recibe}}&status={{status}}" titulo="Entrada  de almacén"></listar>
 <menu-farmacia [modulo]="'Entradas  de almacén'" [icono]="'assets/icono-entradas.svg'" [url]="'/almacen/entradas-estandar'"></menu-farmacia>
 <div style="height:40px;"></div>
-<div class="contenedor columns " style="height:95%;">
+<div class="contenedor columns " >
     <div class="column" style="padding:2em;  z-index: initial; height:100%;">
         <div style="background: #FFF; border-radius: 1em; overflow: hidden; height:100%; ">
-            <section class="hero" [ngClass]=" {'is-dark': ctrl.busquedaActivada, 'is-primary': !ctrl.busquedaActivada}"
-                    style="height:25%; overflow: auto;">
+            <section class="hero is-hidden-touch" [ngClass]=" {'is-dark': ctrl.busquedaActivada, 'is-primary': !ctrl.busquedaActivada}"
+                    style="min-height:200px; height: 25%">
                 <div class="hero-body" style="position:relative; height: 90%">
                     <nav class="level">
                         <div class="level-left"></div>
@@ -17,8 +17,8 @@
                             <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="Actualizar" (click)="ctrl.listarBusqueda(searchBox.value,1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
                             <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="Actualizar" (click)="ctrl.listar(1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
 
-                            <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="PDF" (click)="dato = ctrl.dato; imprimir()"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
-                            <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="PDF" (click)="dato = ctrl.dato; imprimir()"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
+                            <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="PDF" (click)="imprimir()"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
+                            <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="PDF" (click)="imprimir()"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
 
                             <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="Excel" (click)="export_excel()"><span class="icon "><i class="fa fa-file-excel-o"></i></span></a></p>
                             <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="Excel" (click)="export_excel()"><span class="icon "><i class="fa fa-file-excel-o"></i></span></a></p>
@@ -70,6 +70,73 @@
                     </div>
                 </div>
             </section><!-- 25/100% height -->
+            <section class="hero is-hidden-desktop" [ngClass]=" {'is-dark': ctrl.busquedaActivada, 'is-primary': !ctrl.busquedaActivada}">
+                <div class="hero-body" style="position:relative; height: 90%">
+                        <div class="is-hidden-desktop">
+                            <h1 class="title" *ngIf="!ctrl.busquedaActivada">
+                                <span class="icon is-medium"><i class="fa fa-user"></i></span> Entradas  de laboratorio
+                            </h1>
+                        </div>
+                    <nav class="level">
+                        <div class="level-left"></div>
+                        <!-- Right side -->
+                        <div class="level-right">
+                            <p class="level-item"><a class="button is-dark is-medium" routerLink="nuevo" *ngIf="ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva entrada</span></a></p>
+                            <p class="level-item"><a class="button is-primary is-medium" routerLink="nuevo" *ngIf="!ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva entrada</span></a></p>
+                            <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" (click)="ctrl.busquedaActivada=false;searchBox.value=''; ctrl.resultadosBusqueda=[]"><span class="icon "><i class="fa fa-close"></i></span></a></p>
+                            <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="Actualizar" (click)="ctrl.listarBusqueda(searchBox.value,1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
+                            <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="Actualizar" (click)="ctrl.listar(1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
+
+                            <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="PDF" (click)="imprimir()"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
+                            <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="PDF" (click)="imprimir()"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
+
+                            <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="Excel" (click)="export_excel()"><span class="icon "><i class="fa fa-file-excel-o"></i></span></a></p>
+                            <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="Excel" (click)="export_excel()"><span class="icon "><i class="fa fa-file-excel-o"></i></span></a></p>
+                            <p class="level-item">&nbsp;</p>
+                        </div>
+                    </nav>               
+                    <div class="container is-fluid">
+                        <span></span>
+                        <h1 class="title" *ngIf="ctrl.busquedaActivada">
+                            <span class="icon is-medium"><i class="fa fa-search"></i></span> Búsqueda
+                        </h1>
+                        <div class="control is-grouped">
+                            <div class="control" style="z-index: 1000;">
+                                <div class="field">   
+                                    <label class="label">Desde:</label>                         
+                                    <input  style="width: 150px; z-index: 1000;" class="input is-medium" [(ngModel)]='fecha_desde' ngui-datetime-picker date-only="true" placeholder="YYYY-MM-DD" />
+                                </div>
+                            </div>
+                            <div class="control is-expanded" style="z-index: 1000;">
+                                <div class="field">   
+                                    <label class="label">Hasta:</label>                         
+                                    <input style="width: 150px; z-index: 1000;" class="input is-medium" [(ngModel)]='fecha_hasta' ngui-datetime-picker date-only="true" placeholder="YYYY-MM-DD" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">Entrega:</label>
+                            <div class="control">
+                                <input class="input is-medium" type="text" placeholder="Persona que entrega" [(ngModel)]="recibe">
+                            </div>
+                        </div>
+                        <div class="control is-grouped">
+                            <div class="control is-expanded">
+                                <div class="field">  
+                                <label class="label">&nbsp;</label>
+                                <button class="button is-expanded is-default is-medium" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="recibe='';fecha_desde=''; fecha_hasta='';" >Limpiar</button>
+                                </div>
+                            </div>
+                            <div class="control">
+                                <div class="field">  
+                                <label class="label">&nbsp;</label>
+                                <button class="button is-info is-medium" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="ctrl.listar(1)" >Filtrar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
             
         <div class="is-fullwidth has-text-centered" *ngIf="ctrl.cargando" style="height:75%;"> <!-- 75/100% height -->
             <br>
@@ -88,7 +155,7 @@
                 <table class="table" *ngIf="!ctrl.cargando && !cargandoPdf">
                     <thead>
                         <tr>
-                            <th style=" text-align: center;"><abbr title="Folio">Fecha</abbr></th>
+                            <th style=" text-align: center;"><abbr title="Fecha">Fecha</abbr></th>
                             <th style=" text-align: center;"><abbr title="Folio">Folio</abbr></th>
                             <th>Insumos</th>
                             <th>Entrega</th>

@@ -21,22 +21,67 @@ import  * as FileSaver    from 'file-saver';
 })
 
 export class FormularioComponent {
+  /**
+   * Formulario reactivo que contiene los datos que se enviarán a la API
+   * y son los mismos datos que podemos ver al consultar una receta.
+   * @type {FormGroup} */
   dato: FormGroup;
-  form_insumos: any;
-  index_borrar;
-  tab = 1;
+  /**
+   * Varible que nos  muestra si está ocurriendo un proceso y ayuda a mostrar un gráfico en la vista como retroalimentación
+   * al usuario.
+   * @type {boolean} */
   cargando = false;
+  /**
+   * Contiene el valor de la tecla presionada por el usuario.
+   * @type {any} */
   key;
-  autoCorrectedDatePipe: any = createAutoCorrectedDatePipe('yyyy-mm-dd');
+  /**
+   * Contiene los datos de inicio de sesión del usuario.
+   * @type {any} */
+  usuario;
 
+  /**
+   * Contiene la fecha MÍNIMA que puede ingresar el usuario para la fecha que fue hecha el movimiento.
+   * @type {Date} */
   MinDate = new Date();
-  MinDateCaducidad;
+  /**
+   * Contiene la fecha MÁXIMA que puede ingresar el usuario para la fecha que fue hecha el movimiento.
+   * @type {Date} */
   MaxDate = new Date();
+  MinDateCaducidad;
+  /**
+   * Contiene la fecha del día de hoy y es la que automáticamente se asigna a la fecha del movimiento, aunque el usuario puede
+   * cambiarla hay un límite de una fecha mínima [MinDate]{@link FormularioRecetaComponent#MinDate} y
+   * fecha máxima [MaxDate]{@link FormularioRecetaComponent#MaxDate}
+   * @type {Date} */
   fecha_actual;
+  /**
+   * Contiene __true__ cuando el formulario recibe el parámetro id, lo que significa que ha de mostrarse una salida por receta
+   * existente. Cuando su valor es __false__ quiere decir que mostraremos la vista para crear una nueva salida.
+   * @type {Boolean} */
   tieneid = false;
+  /**
+   * Variable que nos sirve para identificar si estamos editando una entrada. Debido a
+   * que la estructura del JSON de una entrada finalizada y un borrador son diferentes,
+   * es necesario la variable. Cuando se intenta finalizar la entrada a partir de un borrador
+   * si no se tiene la variable marca error porque al actualizar el valor del __status__ intenta mostrar la sección.
+   * ```html
+   * <section *ngIf="tieneid && ctrl.dato.get('status').value == 'FI' && estoymodificando == false">
+   * ```
+   * @type {boolean}
+   */
+  estoymodificando = false;
+  /**
+   * Se tuvo que crear la variable debido a que se debe hacer referencia únicamente cuando se esté actualizando
+   * el catálogo de programas y no cada vez que se esté cargando otros elementos.
+   */
+  cargandoProgramas = false;
 
   fecha_movimiento;
   mostrarCancelado;
+  form_insumos: any;
+  index_borrar;
+  autoCorrectedDatePipe: any = createAutoCorrectedDatePipe('yyyy-mm-dd');
 
   // # SECCION: Reportes
   pdfworker: Worker;
@@ -46,16 +91,34 @@ export class FormularioComponent {
   es_unidosis = false;
   lotes_insumo;
   mostrar_lote = [];
+  /**
+   * Guarda el resultado de la búsqueda de insumos médicos.
+   * @type {array} */
+  res_busq_insumos= [];
+  /**
+   * Contiene la lista de programas
+   * @type {any} */
+  lista_programas= [];
+  /**
+   * Contiene un valor __true__ cuando estamos llenando el formulario del borrador de una entrada
+   * en caso de tener una entrada nueva o finalizada el valor es __false__.
+   * @type {boolean} */
+  llenando_formulario = true;
 
-  public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
+  public insumos_term = `${environment.API_URL}/insumos-laboratorio-clinico-auto?term=:keyword`;
   // Máscara para validar la entrada de la fecha de caducidad
   mask = [/[2]/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/];
+  /**
+   * Contiene los permisos del usuario, que posteriormente sirven para verificar si puede realizar o no
+   * algunas acciones en este módulo.
+   * @type {any} */
+  permisos: any = [];
 
   objeto = {
     showProgressBar: true,
     pauseOnHover: true,
     clickToClose: true,
-    maxLength: 2000
+    maxLength: 3000
   };
   public options = {
     position: ['top', 'right'],
@@ -75,17 +138,18 @@ export class FormularioComponent {
   ngOnInit() {
 
     // obtener los datos del usiario logueado almacen y clues
-    let usuario = JSON.parse(localStorage.getItem('usuario'));
+    this.usuario = JSON.parse(localStorage.getItem('usuario'));
+    this.permisos = this.usuario.permisos;
 
-    if (usuario.clues_activa) {
-      this.insumos_term += '&clues=' + usuario.clues_activa.clues;
+    if (this.usuario.clues_activa) {
+      this.insumos_term += '&clues=' + this.usuario.clues_activa.clues;
     }
-    if (usuario.almacen_activo) {
-      this.insumos_term += '&almacen=' + usuario.almacen_activo.id;
+    if (this.usuario.almacen_activo) {
+      this.insumos_term += '&almacen=' + this.usuario.almacen_activo.id;
     }
 
     // Inicializamos el objeto para los reportes con web Webworkers
-    this.pdfworker = new Worker('web-workers/farmacia/movimientos/imprimir-entrada.js');
+    this.pdfworker = new Worker('web-workers/laboratorio/entrada-laboratorio.js');
 
     // Este es un hack para poder usar variables del componente dentro de una funcion del worker
     var self = this;
@@ -109,6 +173,7 @@ export class FormularioComponent {
       status: ['FI'],
       fecha_movimiento: ['', [Validators.required]],
       observaciones: [''],
+      programa_id: [''],
       cancelado: [''],
       observaciones_cancelacion: [''],
       movimiento_metadato: this.fb.group({
@@ -125,6 +190,24 @@ export class FormularioComponent {
       }
     });
 
+    // nos suscribimos para saber si es un borrador, nueva entrada o una entrada finalizada
+    this.dato.controls.id.valueChanges.subscribe(
+      val => {
+          if (val) {
+            this.llenando_formulario = true;
+            setTimeout(() => {
+              if (this.dato.controls.status.value === 'BR') {
+                this.llenarFormulario();
+              }else {
+                this.llenando_formulario = false;
+              }
+            }, 500);
+          }
+      }
+    );
+    if (!this.tieneid) {
+      this.llenando_formulario = false;
+    }
     // variable para crear el array del formulario reactivo
     this.form_insumos = {
       tipo_movimiento_id: ['', [Validators.required]]
@@ -144,6 +227,71 @@ export class FormularioComponent {
     } else {
       this.fecha_actual = this.dato.get('fecha_movimiento').value;
     }
+    this.cargarCatalogo('programa');
+  }
+  /**
+   * Función local para cargar el catalogo de programas, no se utilizó el cargarCatalogo del CRUD,
+   * debido a que este catálogo no existen 'mis-programas', sino que es un catálogo general y se agregan
+   * al arreglo únicamente aquellos programas que se encuentran activos (status = 1).
+   * @param url Contiene la cadena con la URL de la API a consultar para cargar el catalogo del select.
+   */
+  cargarCatalogo(url) {
+    this.cargandoProgramas = true;
+    this.crudService.lista_general(url).subscribe(
+      resultado => {
+        this.cargandoProgramas = false;
+        // this.lista_programas = resultado;
+        let contador = 0;
+        for (let item of resultado) {
+          if (item.status === '1') {
+            this.lista_programas.push(item);
+          }
+        }
+      }
+    );
+  }
+  /**
+   * Método que nos sirve para reacomodar los elementos en el formulario
+   * para editarlos, en el avance de una entrada.
+   * Se reordena el json recibido al formulario reactivo, los insumos que contienen un
+   * array de lotes se reordenan colocando los campos para el formulario reactivo y cada
+   * lote es parte de un solo insumo.
+   */
+  llenarFormulario() {
+    const insumos_temporal = this.fb.array([]);
+    const control_insumos = <FormArray>this.dato.controls['insumos'];
+
+    let lotes;
+    for ( let item of control_insumos.value) {
+      if (item.lotes) {
+        for (let lotes_item of item.lotes) {
+          lotes = {
+            'clave': item.clave,
+            'nombre': item.nombre,
+            'descripcion': item.descripcion,
+            'es_causes': item.es_causes,
+            'es_unidosis': item.es_unidosis,
+            'lote': [lotes_item.lote, [Validators.required]],
+            'id': lotes_item.id,
+            'codigo_barras': [lotes_item.codigo_barras, [Validators.required]],
+            'fecha_caducidad': [lotes_item.fecha_caducidad, [Validators.required]],
+            'cantidad': [Number(lotes_item.cantidad), [Validators.required]],
+            'cantidad_x_envase': Number(item.detalles.informacion_ampliada.cantidad_x_envase),
+            'cantidad_surtida': 1,
+            'movimiento_insumo_id': [lotes_item.movimiento_insumo_id],
+            'stock_id': [lotes_item.stock_id],
+          };
+          insumos_temporal.insert(0, this.fb.group(lotes));
+        }
+      }
+    }
+    this.dato.controls['insumos'] = this.fb.array([]);
+
+    const control_insumos2 = <FormArray>this.dato.controls['insumos'];
+    for (let item of insumos_temporal.value) {
+      control_insumos2.insert(0, this.fb.group(item));
+    }
+    this.llenando_formulario = false;
   }
   /**
      * Este método permite que el focus del cursor vuelva al buscador de insumos una vez presionada la tecla enter
@@ -179,7 +327,36 @@ export class FormularioComponent {
      */
   cancelarModal(id) {
     document.getElementById(id).classList.remove('is-active');
+    if (id === 'guardarMovimiento') {
+      this.dato.controls.status.patchValue('BR');
+    }
   }
+
+  /**
+   * Método de búsqueda de insumos en la API.
+   * @param keyword Contiene la palabra que va a buscar.
+   */
+  enviarAutocomplete(keyword: any) {
+    this.cargando = true;
+    let cabecera = '';
+    if (this.usuario.clues_activa) {
+      cabecera += '&clues=' + this.usuario.clues_activa.clues;
+    }
+    if (this.usuario.almacen_activo) {
+      cabecera += '&almacen=' + this.usuario.almacen_activo.id;
+    }
+    let url: string = '' + environment.API_URL + '/insumos-laboratorio-clinico-auto?term=' + keyword + cabecera;
+    this.crudService.busquedaInsumos(keyword, 'insumos-laboratorio-clinico-auto').subscribe(
+      resultado => {
+        this.cargando = false;
+        this.res_busq_insumos = resultado;
+        if (this.res_busq_insumos.length === 0) {
+          this.notificacion.warn('Insumos', 'No hay resultados que coincidan', this.objeto);
+        }
+      }
+    );
+  }
+
   /**
      * Este método formatea los resultados de la busqueda en el autocomplte
      * @param data resultados de la busqueda 
@@ -218,11 +395,12 @@ export class FormularioComponent {
      */
   select_insumo_autocomplete(data) {
 
-    var usuario = JSON.parse(localStorage.getItem('usuario'));
+    // usuario = JSON.parse(localStorage.getItem('usuario'));
     this.cargando = true;
     this.insumo = data;
     this.agregarLoteIsumo();
     (<HTMLInputElement>document.getElementById('buscarInsumo')).value = '';
+    this.res_busq_insumos = [];
     this.es_unidosis = data.es_unidosis;
     this.cargando = false;
   }
@@ -245,8 +423,8 @@ export class FormularioComponent {
         break;
       }
     }*/
-    //crear el json que se pasara al formulario reactivo tipo insumos
-    var temporal_cantidad_x_envase;
+    // crear el json que se pasara al formulario reactivo tipo insumos
+    let temporal_cantidad_x_envase;
     if(this.insumo.cantidad_x_envase == null){
       temporal_cantidad_x_envase = 1;
     }else{
@@ -259,18 +437,20 @@ export class FormularioComponent {
       'es_causes': this.insumo.es_causes,
       'es_unidosis': this.insumo.es_unidosis,
       'lote': ['', [Validators.required]],
+      'id': null,
       'codigo_barras': [''],
       'fecha_caducidad': ['', [Validators.required]],
       'cantidad': ['', [Validators.required]],
-      'cantidad_x_envase': parseInt(temporal_cantidad_x_envase),     
+      'cantidad_x_envase': parseInt(temporal_cantidad_x_envase),
       'cantidad_surtida': 1,
+      'movimiento_insumo_id': null,
+      'stock_id': null,
     };
 
-    //si no esta en la lista agregarlo
-    if (!existe)
-      control.push(this.fb.group(lotes));
-
-    
+    // si no esta en la lista agregarlo
+    if (!existe) {
+      control.insert(0, this.fb.group(lotes));
+    }
   }
   /**
      * Este método agrega una nueva fila para los lotes nuevos
@@ -325,16 +505,14 @@ export class FormularioComponent {
       this.notificacion.alert('Fecha inválida', 'Debe ingresar una fecha válida', this.objeto);
       ctrlLotes.controls['fecha_caducidad'].patchValue('');
     } else {
-      if (moment(fecha, 'YYYY-MM-DD', true) <= fecha_hoy) {
+      if (moment(fecha, 'YYYY-MM-DD', true) <= fecha_hoy.add(14, 'days')) {
         ctrlLotes.controls['fecha_caducidad'].patchValue('');
-        this.notificacion.alert('Fecha inválida', 'La fecha de caducidad debe ser mayor al día de hoy', this.objeto);
+        this.notificacion.alert('Fecha inválida', 'La fecha de caducidad debe ser mayor al ' +
+         fecha_hoy.format('YYYY-MM-DD'), this.objeto);
       }
     }
   }
 
-  guardar_movimiento() {
-    document.getElementById('guardarMovimiento').classList.add('is-active');
-  }
 
   /**
      * Este método valida que en el campo de la cantidad no pueda escribir puntos o signo negativo
@@ -353,16 +531,41 @@ export class FormularioComponent {
     return /^\d+$/.test(str);
   }
 
+  /**
+   * Compureba que los insumos de la entrada sean mayores a 0.
+   * Abre el modal 'guardarMovimiento' para confirmar que guarda la entrada como finalizada,
+   * sin poder hacer cambios después.
+   */
+  guardar_movimiento() {
+    // document.getElementById('guardarMovimiento').classList.add('is-active');
+    // obtener el formulario reactivo para agregar los elementos
+    const control = <FormArray>this.dato.controls['insumos'];
+    // let lotes = true;
+    if (control.length === 0) {
+      this.notificacion.warn('Insumos', 'Debe agregar por lo menos un insumo', this.objeto);
+    }else {
+      this.estoymodificando = true;
+      this.dato.controls['status'].patchValue('FI');
+      // patchValue({status: 'FI'});
+      // this.dato.controls.status.setValue('FI');
+      document.getElementById('guardarMovimiento').classList.add('is-active');
+    }
+  }
+
+  guardarBorrador() {
+    this.dato.controls.status.patchValue('BR');
+    document.getElementById('borrador').click();
+  }
 /************************************ IMPRESION DE REPORTES ************************************** */
   imprimir() {
 
-    var usuario = JSON.parse(localStorage.getItem('usuario'));
+    // var usuario = JSON.parse(localStorage.getItem('usuario'));
     try {
       this.cargandoPdf = true;
       var entrada_imprimir = {
         datos: this.dato.value,
         lista: this.dato.value.insumos,
-        usuario: usuario
+        usuario: this.usuario
       };
       this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
     } catch (e){

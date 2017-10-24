@@ -38,6 +38,7 @@ import { NotificationsService } from 'angular2-notifications';
 })
 export class FormularioComponent implements OnInit {
     borrarCargando: boolean = false;
+    tamano = document.body.clientHeight;
 
     private id: string;
     private moduloTitulo: string;
@@ -92,7 +93,7 @@ export class FormularioComponent implements OnInit {
     enviar(regresar: boolean = true, editar: string = '') {
         try {
             if (this.id) {
-                this.actualizarDatos();
+                this.actualizarDatos(editar);
             } else {
                 this.guardarDatos(regresar, editar);
             }
@@ -115,8 +116,11 @@ export class FormularioComponent implements OnInit {
                 if (regresar) {
                     this.location.back();
                 }
-                if (editar) {
+                if (editar && json.status === 'BR') {
                     this.router.navigate([editar, resultado.id]);
+                }
+                if (editar && json.status === 'FI') {
+                    this.router.navigate([editar]);
                 }
 
                 this.mensajeResponse.texto = 'Se han guardado los cambios.';
@@ -196,7 +200,7 @@ export class FormularioComponent implements OnInit {
      * que se envia por la url
      * @return void
      */
-    actualizarDatos() {
+    actualizarDatos(editar) {
         this.cargando = true;
         let dato;
         try {
@@ -207,9 +211,16 @@ export class FormularioComponent implements OnInit {
         if (!this.cambiarPassword) {
             delete dato.cambiarPassword;
         }
-        
+
         this.crudService.editar(this.id, dato, this.URL).subscribe(
-            resultado => {
+             resultado => {
+            //     if (dato.status === 'FI') {
+            //         this.location.back();
+            //         this.router.navigate(['almacen/entradas-estandar']);
+            //     }
+                if (editar && dato.status === 'FI') {
+                    this.router.navigate([editar]);
+                }
                 this.cargando = false;
 
                 this.mensajeResponse.texto = 'Se han guardado los cambios.';

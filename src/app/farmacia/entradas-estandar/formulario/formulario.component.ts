@@ -5,11 +5,12 @@ import { ActivatedRoute, Params } from '@angular/router';
 
 import { environment } from '../../../../environments/environment';
 import { CrudService } from '../../../crud/crud.service';
-import { NotificationsService } from 'angular2-notifications';
 import { createAutoCorrectedDatePipe } from 'text-mask-addons';
 import * as moment from 'moment';
 import  * as FileSaver    from 'file-saver';
 
+import { Mensaje } from '../../../mensaje';
+import { NotificationsService } from 'angular2-notifications';
 
 @Component({
   selector: 'salidas-estandar-formulario',
@@ -27,7 +28,12 @@ export class FormularioComponent {
   tab = 1;
   cargando = false;
   key;
+  /**
+   * Contiene los datos de inicio de sesión del usuario.
+   * @type {any} */
   usuario;
+  // Crear la variable que mustra las notificaciones
+  mensajeResponse: Mensaje = new Mensaje();
   autoCorrectedDatePipe: any = createAutoCorrectedDatePipe('yyyy-mm-dd');
 
   MinDate = new Date();
@@ -35,6 +41,22 @@ export class FormularioComponent {
   MaxDate = new Date();
   fecha_actual;
   tieneid = false;
+  /**
+   * Variable que nos sirve para identificar si estamos editando una entrada. Debido a
+   * que la estructura del JSON de una entrada finalizada y un borrador son diferentes,
+   * es necesario la variable. Cuando se intenta finalizar la entrada a partir de un borrador
+   * si no se tiene la variable marca error porque al actualizar el valor del __status__ intenta mostrar la sección.
+   * ```html
+   * <section *ngIf="tieneid && ctrl.dato.get('status').value == 'FI' && estoymodificando == false">
+   * ```
+   * @type {boolean}
+   */
+  estoymodificando = false;
+  /**
+   * Se tuvo que crear la variable debido a que se debe hacer referencia únicamente cuando se esté actualizando
+   * el catálogo de programas y no cada vez que se esté cargando otros elementos.
+   */
+  cargandoProgramas = false;
 
   fecha_movimiento;
   mostrarCancelado;
@@ -74,7 +96,7 @@ export class FormularioComponent {
     showProgressBar: true,
     pauseOnHover: true,
     clickToClose: true,
-    maxLength: 2000
+    maxLength: 3000
   };
   public options = {
     position: ['top', 'right'],
@@ -125,6 +147,7 @@ export class FormularioComponent {
     // inicializar el formulario reactivo
     this.dato = this.fb.group({
       id: [''],
+      actualizar: [false],
       tipo_movimiento_id: ['1', [Validators.required]],
       status: ['FI'],
       fecha_movimiento: ['', [Validators.required]],
@@ -150,6 +173,7 @@ export class FormularioComponent {
     this.dato.controls.id.valueChanges.subscribe(
       val => {
           if (val) {
+            this.llenando_formulario = true;
             setTimeout(() => {
               if (this.dato.controls.status.value === 'BR') {
                 this.llenarFormulario();
@@ -182,13 +206,29 @@ export class FormularioComponent {
     } else {
       this.fecha_actual = this.dato.get('fecha_movimiento').value;
     }
-    this.crudService.lista_general('programa').subscribe(
+    this.cargarCatalogo('programa');
+  }
+  /**
+   * Función local para cargar el catalogo de programas, no se utilizó el cargarCatalogo del CRUD,
+   * debido a que este catálogo no existen 'mis-programas', sino que es un catálogo general y se agregan
+   * al arreglo únicamente aquellos programas que se encuentran activos (status = 1).
+   * @param url Contiene la cadena con la URL de la API a consultar para cargar el catalogo del select.
+   */
+  cargarCatalogo(url) {
+    this.cargandoProgramas = true;
+    this.crudService.lista_general(url).subscribe(
       resultado => {
-        this.lista_programas = resultado;
+        this.cargandoProgramas = false;
+        // this.lista_programas = resultado;
+        let contador = 0;
+        for (let item of resultado) {
+          if (item.status === '1') {
+            this.lista_programas.push(item);
+          }
+        }
       }
     );
   }
-
   /**
    * Método que nos sirve para reacomodar los elementos en el formulario
    * para editarlos, en el avance de una entrada.
@@ -214,8 +254,8 @@ export class FormularioComponent {
             'id': lotes_item.id,
             'codigo_barras': [lotes_item.codigo_barras, [Validators.required]],
             'fecha_caducidad': [lotes_item.fecha_caducidad, [Validators.required]],
-            'cantidad': [lotes_item.cantidad, [Validators.required]],
-            'cantidad_x_envase': item.detalles.informacion_ampliada.cantidad_x_envase,
+            'cantidad': [Number(lotes_item.cantidad), [Validators.required]],
+            'cantidad_x_envase': Number(item.detalles.informacion_ampliada.cantidad_x_envase),
             'cantidad_surtida': 1,
             'movimiento_insumo_id': [lotes_item.movimiento_insumo_id],
             'stock_id': [lotes_item.stock_id],
@@ -444,9 +484,10 @@ export class FormularioComponent {
       this.notificacion.alert('Fecha inválida', 'Debe ingresar una fecha válida', this.objeto);
       ctrlLotes.controls['fecha_caducidad'].patchValue('');
     } else {
-      if (moment(fecha, 'YYYY-MM-DD', true) <= fecha_hoy) {
+      if (moment(fecha, 'YYYY-MM-DD', true) <= fecha_hoy.add(14, 'days')) {
         ctrlLotes.controls['fecha_caducidad'].patchValue('');
-        this.notificacion.alert('Fecha inválida', 'La fecha de caducidad debe ser mayor al día de hoy', this.objeto);
+        this.notificacion.alert('Fecha inválida', 'La fecha de caducidad debe ser mayor al ' +
+         fecha_hoy.format('YYYY-MM-DD'), this.objeto);
       }
     }
   }
@@ -478,11 +519,14 @@ export class FormularioComponent {
     // document.getElementById('guardarMovimiento').classList.add('is-active');
     // obtener el formulario reactivo para agregar los elementos
     const control = <FormArray>this.dato.controls['insumos'];
-    let lotes = true;
+    // let lotes = true;
     if (control.length === 0) {
       this.notificacion.warn('Insumos', 'Debe agregar por lo menos un insumo', this.objeto);
     }else {
-      this.dato.controls.status.patchValue('FI');
+      this.estoymodificando = true;
+      this.dato.controls['status'].patchValue('FI');
+      // patchValue({status: 'FI'});
+      // this.dato.controls.status.setValue('FI');
       document.getElementById('guardarMovimiento').classList.add('is-active');
     }
   }
@@ -491,6 +535,73 @@ export class FormularioComponent {
     this.dato.controls.status.patchValue('BR');
     document.getElementById('borrador').click();
   }
+
+    /**
+     * Este método envia los datos para actualizar un elemento con el id
+     * que se envia por la url
+     * @return void
+     */
+    actualizarDatos() {
+        this.cargando = true;
+        let dato;
+        try {
+            dato = this.dato.getRawValue();
+        }catch (e) {
+            dato = this.dato.value;
+        }
+
+        this.crudService.editar(this.dato.controls.id.value, dato, 'entrada-almacen').subscribe(
+            resultado => {
+                document.getElementById('actualizar').click();
+                this.cargando = false;
+
+                this.mensajeResponse.texto = 'Se han guardado los cambios.';
+                this.mensajeResponse.mostrar = true;
+                this.mensajeResponse.clase = 'success';
+                this.mensaje(2);
+            },
+            error => {
+                this.cargando = false;
+
+                this.mensajeResponse.texto = 'No especificado.';
+                this.mensajeResponse.mostrar = true;
+                this.mensajeResponse.clase = 'alert';
+                this.mensaje(2);
+                try {
+                    let e = error.json();
+                    if (error.status == 401) {
+                        this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
+                        this.mensajeResponse.clase = 'error';
+                        this.mensaje(2);
+                    }
+                    // Problema de validación
+                    if (error.status == 409) {
+                        this.mensajeResponse.texto = 'Por favor verfique los campos marcados en rojo.';
+                        this.mensajeResponse.clase = 'error';
+                        this.mensaje(8);
+                        for (let input in e.error) {
+                            // Iteramos todos los errores
+                            for (let i in e.error[input]) {
+                                this.mensajeResponse.titulo = input;
+                                this.mensajeResponse.texto = e.error[input][i];
+                                this.mensajeResponse.clase = 'error';
+                                this.mensaje(3);
+                            }
+                        }
+                    }
+                } catch (e) {
+                    if (error.status == 500) {
+                        this.mensajeResponse.texto = '500 (Error interno del servidor)';
+                    } else {
+                        this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
+                    }
+                    this.mensajeResponse.clase = 'error';
+                    this.mensaje(2);
+                }
+
+            }
+        );
+    }
 /************************************ IMPRESION DE REPORTES ************************************** */
   imprimir() {
 
@@ -517,4 +628,42 @@ export class FormularioComponent {
       return new Blob( [ buffer ], { type: type } );
   }
 
+    /**
+     * Este método muestra los mensajes resultantes de los llamados de la api
+     * @param cuentaAtras numero de segundo a esperar para que el mensaje desaparezca solo
+     * @param posicion  array de posicion [vertical, horizontal]
+     * @return void
+     */
+    mensaje(cuentaAtras: number = 6, posicion: any[] = ['bottom', 'left']): void {
+        var objeto = {
+            showProgressBar: true,
+            pauseOnHover: false,
+            clickToClose: true,
+            maxLength: this.mensajeResponse.texto.length
+        };
+
+        this.options = {
+            position: posicion,
+            timeOut: cuentaAtras * 1000,
+            lastOnBottom: true
+        };
+        if (this.mensajeResponse.titulo === '') {
+            this.mensajeResponse.titulo = 'Entradas de almacén';
+          }
+        if (this.mensajeResponse.clase === 'alert') {
+            this.notificacion.alert(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+        if (this.mensajeResponse.clase === 'success') {
+            this.notificacion.success(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+        if (this.mensajeResponse.clase === 'info') {
+            this.notificacion.info(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+        if (this.mensajeResponse.clase === 'warning' || this.mensajeResponse.clase === 'warn') {
+            this.notificacion.warn(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+        if (this.mensajeResponse.clase === 'error' || this.mensajeResponse.clase === 'danger') {
+            this.notificacion.error(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+    }
 }
