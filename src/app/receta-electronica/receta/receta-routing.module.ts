@@ -1,13 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { IndexRecetaComponent } from './index-receta.component';
-
+import { FormularioComponent } from './formulario/formulario.component';
 import { AuthGuard } from '../../auth-guard.service';
 
 const routes: Routes = [
 	{
-		path: 'receta-electronica', component: IndexRecetaComponent, canActivate: [AuthGuard],
+		path: 'receta-electronica/nuevo', component: FormularioComponent, canActivate: [AuthGuard],
 	}
 ];
 
@@ -15,4 +14,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class IndexRecetaRoutingModule { }
+export class RecetaRoutingModule { }
