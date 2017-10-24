@@ -86,14 +86,9 @@ export class FormularioComponent implements OnInit {
       this.ultimoTerminoBuscado = term;
       this.paginaActualBusqueda = 1;
       this.cargando_personal = true; 	  
-
-
-       //return false ? this.firmanteService.buscar_personal(term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]})
  	    return this.firmanteService.buscar_personal(term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda)
-    }
-      
     
-    ).catch( function handleError(error){ 
+    }).catch( function handleError(error){ 
      
       self.cargando_personal = false;      
       self.mensajeError.mostrar = true;
@@ -350,9 +345,7 @@ export class FormularioComponent implements OnInit {
       }
     }
 
-  	paginaSiguiente():void {
-	    this.listar(this.paginaActual+1);
-	}
+  
 
   seleccionarPersonal(obj:any):void
   {
@@ -404,6 +397,9 @@ export class FormularioComponent implements OnInit {
       console.log(this.firmantes);
   }
 
+  paginaSiguiente():void {
+      this.listar(this.paginaActual+1);
+  }
 
 	paginaAnterior():void {
 	    this.listar(this.paginaActual-1);
