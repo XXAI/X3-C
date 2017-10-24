@@ -76,6 +76,18 @@
                                 <span class="help is-danger" *ngIf="ctrl.dato.get('nombre').hasError('required')">Este campo es requerido.</span>
                             </p>
                         </div>
+
+                        <div class="field">
+                            <br>
+                            <div class="b-checkbox control is-expanded  has-icon has-icon-right">
+                                <input type="checkbox" id="es_activo_fijo{{i}}" class="styled" formControlName="es_activo_fijo" [checked]="ctrl.dato.get('es_activo_fijo').value == 1 ? true : false">
+                                <label for="es_activo_fijo{{i}}">  Es activo fijo? 
+                                </label>
+                            </div>
+                            <br>
+                        </div>
+
+
                         <div class="field">
                             <label class="label">Descripción:</label>
                             <p class="control is-expanded  has-icon has-icon-right">

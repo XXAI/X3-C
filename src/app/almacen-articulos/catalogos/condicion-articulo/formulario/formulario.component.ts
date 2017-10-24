@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 
 @Component({
-  selector: 'articulos-formulario',
+  selector: 'condicion-articulo-formulario',
   templateUrl: './formulario.component.html'
 })
 
@@ -13,14 +13,11 @@ export class FormularioComponent {
   ngOnInit() {
     this.dato = this.fb.group({
       id: [''],      
-      categoria_id: ['' , [Validators.required]]    ,
-      articulo_id: ['']    ,
-      nombre: ['', [Validators.required]],
-      descripcion:[''],
-      es_activo_fijo:['']
+      nombre: ['', [Validators.required]]    
     });  
+    
     //Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
-    document.getElementById("catalogos").click();  
+    //document.getElementById("catalogos").click();  
   }
   
 }

@@ -114,6 +114,7 @@ import { ProgramaModule } from './almacen-articulos/catalogos/programa/programa.
 import { MaterialCuracionModule } from './almacen-articulos/catalogos/material-curacion/material-curacion.module';
 import { MedicamentosModule } from './almacen-articulos/catalogos/medicamentos/medicamentos.module';
 import { FormaFarmaceuticaModule } from './almacen-articulos/catalogos/forma-farmaceutica/forma-farmaceutica.module';
+import { CondicionArticuloModule } from './almacen-articulos/catalogos/condicion-articulo/condicion-articulo.module';
 
 import { CategoriasModule } from './almacen-articulos/categoria/categorias.module';
 import { ArticulosModule } from './almacen-articulos/articulos/articulos.module';
@@ -121,6 +122,11 @@ import { InventariosModule } from './almacen-articulos/inventarios/inventarios.m
 
 import { TipoPersonalModule } from './almacen-articulos/catalogos/tipo-personal/tipo-personal.module';
 import { PersonalCluesModule } from './configuracion/personal-clues/personal-clues.module';
+
+import { EntradaModule } from './almacen-articulos/entrada/entrada.module';
+import { SalidaModule } from './almacen-articulos/salida/salida.module';
+import { AlmacenConfiguracionModule } from './almacen-articulos/almacen-configuracion/almacen-configuracion.module';
+
 //import { CrudModule } from './crud/crud.module';
 export function highchartsFactory() {
   const hc = require('highcharts');
@@ -202,6 +208,7 @@ export function highchartsFactory() {
     UnidadesMedicasModule,
     MaterialCuracionModule,
     MedicamentosModule,
+    CondicionArticuloModule,
     //ProveedoresModule,
     //
     CategoriasModule,
@@ -218,6 +225,11 @@ export function highchartsFactory() {
     //CrudModule,
     EgresoModule,
     AvancesModule,
+    //entradas salidas almacen articulos
+    EntradaModule,
+    SalidaModule,
+    AlmacenConfiguracionModule,
+
     WildcardRoutingModule, // Este siempre debe ir al final para que no haga conflicto con otras rutas
     
   ],

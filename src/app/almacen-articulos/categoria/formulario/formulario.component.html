@@ -110,14 +110,14 @@
                                     </td>
                                     <td style="vertical-align: middle;">
                                         <div class="b-checkbox control is-expanded  has-icon has-icon-right">
-                                            <input type="checkbox" id="requerido{{i}}" class="styled" formControlName="requerido" >
+                                            <input type="checkbox" id="requerido{{i}}" class="styled" formControlName="requerido" [checked]="ctrl.dato.get('categorias_metadatos').value[i]['requerido'] == 1 ? true : false">
                                             <label for="requerido{{i}}">  Es requerido? 
                                             </label>
                                         </div>
                                     </td>
                                     <td style="vertical-align: middle;">
                                         <div class="b-checkbox control is-expanded  has-icon has-icon-right">
-                                            <input type="checkbox" id="requerido_inventario{{i}}" class="styled" formControlName="requerido_inventario" >
+                                            <input type="checkbox" id="requerido_inventario{{i}}" class="styled" formControlName="requerido_inventario" [checked]="ctrl.dato.get('categorias_metadatos').value[i].requerido_inventario == 1 ? true : false">
                                             <label for="requerido_inventario{{i}}">  Es requerido en inventario?
                                             </label>
                                         </div>

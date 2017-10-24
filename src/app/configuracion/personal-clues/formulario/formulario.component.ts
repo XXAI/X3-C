@@ -21,6 +21,8 @@ export class FormularioComponent {
       usuario_asignado: [''],
       celular: [''],
       email: [''],
+      surte_controlados: [''],
+      licencia_controlados: [''],
       personal_clues_metadatos: this.fb.array([])
     });
     //Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
