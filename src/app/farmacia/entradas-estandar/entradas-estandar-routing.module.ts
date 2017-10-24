@@ -11,6 +11,7 @@ const routes: Routes = [
     children: [
        { path: '', component: ListaEntradasComponent},
        { path: 'nuevo', component: FormularioComponent },
+       { path: 'editar/:id', component: FormularioComponent},
        { path: 'ver/:id', component: FormularioComponent},
     ],
     canActivate: [AuthGuard]

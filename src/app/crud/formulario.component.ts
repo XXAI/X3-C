@@ -38,6 +38,7 @@ import { NotificationsService } from 'angular2-notifications';
 })
 export class FormularioComponent implements OnInit {
     borrarCargando: boolean = false;
+    tamano = document.body.clientHeight;
 
     private id: string;
     private moduloTitulo: string;
@@ -89,13 +90,14 @@ export class FormularioComponent implements OnInit {
     * o solo se esta editando
     * @return void
     */
-    enviar(regresar: boolean = true) {
+    enviar(regresar: boolean = true, editar: string = '') {
         try {
-            if (this.id)
-                this.actualizarDatos();
-            else
-                this.guardarDatos(regresar);
-        } catch (e){
+            if (this.id) {
+                this.actualizarDatos(editar);
+            } else {
+                this.guardarDatos(regresar, editar);
+            }
+        } catch (e) {
             console.log('Mal');
         }
     }
@@ -104,15 +106,22 @@ export class FormularioComponent implements OnInit {
     * Este método envia los datos para agregar un elemento
     * @return void
     */
-    guardarDatos(regresar) {
+    guardarDatos(regresar, editar) {
 
         this.cargando = true;
         var json = this.dato.getRawValue();
         this.crudService.crear(json, this.URL).subscribe(
             resultado => {
                 this.cargando = false;
-                if(regresar)
+                if (regresar) {
                     this.location.back();
+                }
+                if (editar && json.status === 'BR') {
+                    this.router.navigate([editar, resultado.id]);
+                }
+                if (editar && json.status === 'FI') {
+                    this.router.navigate([editar]);
+                }
 
                 this.mensajeResponse.texto = 'Se han guardado los cambios.';
                 this.mensajeResponse.mostrar = true;
@@ -134,9 +143,9 @@ export class FormularioComponent implements OnInit {
                         this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
                     }
                     // Problema de validación
-                    if (error.status == 409) {
+                    if (error.status === 409) {
                         try {
-                            for (var input in e.error) {
+                            for (let input in e.error) {
                                 if (e.error.hasOwnProperty(input)) {
                                     for (let i in e.error[input]) {
                                         if (e.error[input].hasOwnProperty(i)) {
@@ -191,7 +200,7 @@ export class FormularioComponent implements OnInit {
      * que se envia por la url
      * @return void
      */
-    actualizarDatos() {
+    actualizarDatos(editar) {
         this.cargando = true;
         let dato;
         try {
@@ -202,9 +211,16 @@ export class FormularioComponent implements OnInit {
         if (!this.cambiarPassword) {
             delete dato.cambiarPassword;
         }
-        
+
         this.crudService.editar(this.id, dato, this.URL).subscribe(
-            resultado => {
+             resultado => {
+            //     if (dato.status === 'FI') {
+            //         this.location.back();
+            //         this.router.navigate(['almacen/entradas-estandar']);
+            //     }
+                if (editar && dato.status === 'FI') {
+                    this.router.navigate([editar]);
+                }
                 this.cargando = false;
 
                 this.mensajeResponse.texto = 'Se han guardado los cambios.';

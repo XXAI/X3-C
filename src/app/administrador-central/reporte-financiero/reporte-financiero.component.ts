@@ -54,6 +54,17 @@ export class ReporteFinancieroComponent implements OnInit {
 	totalComprometido = 0;
 	totalDevengado = 0;
 	totalDisponible = 0;
+	
+	totalMontoSolicitadoCausesMatCur = 0;
+	totalMontoRecibidoCausesMatCur = 0;
+	totalCantidadSolicitadaCausesMatCur = 0;
+	totalCantidadRecibidaCausesMatCur = 0;
+
+	totalMontoSolicitadoNoCauses = 0;
+	totalMontoRecibidoNoCauses = 0;
+	totalCantidadSolicitadaNoCauses = 0;
+	totalCantidadRecibidaNoCauses = 0;
+
 	// # FIN SECCION
 
 
@@ -250,6 +261,19 @@ export class ReporteFinancieroComponent implements OnInit {
 			anio_fin: fechaFinSeleccionada != -1 ? fechaFinSeleccionada[1] : null
 		}
 		//var parametros = JSON.stringify(parametrosObj);
+
+		this.totalCantidadRecibidaCausesMatCur = 0;
+		this.totalCantidadSolicitadaCausesMatCur = 0;
+		this.totalMontoRecibidoCausesMatCur = 0;
+		this.totalMontoSolicitadoCausesMatCur = 0;
+		this.totalCantidadRecibidaNoCauses = 0;
+		this.totalCantidadSolicitadaNoCauses = 0;
+		this.totalMontoRecibidoNoCauses = 0;
+		this.totalMontoSolicitadoNoCauses = 0;
+		this.totalModificado  = 0;
+		this.totalComprometido = 0;
+		this.totalDevengado = 0;
+		this.totalDisponible = 0;
 		this.apiService.reporteFinanciero(parametros).subscribe(
 		  respuesta => {
 				this.cargando = false;
@@ -261,6 +285,14 @@ export class ReporteFinancieroComponent implements OnInit {
 					this.totalComprometido += +this.lista[x].comprometido;
 					this.totalDevengado += +this.lista[x].devengado;
 					this.totalDisponible += +this.lista[x].disponible;
+					this.totalMontoSolicitadoCausesMatCur += +this.lista[x].causes_mat_cur_monto_solicitado;
+					this.totalMontoRecibidoCausesMatCur += +this.lista[x].causes_mat_cur_monto_recibido;
+					this.totalCantidadSolicitadaCausesMatCur += +this.lista[x].causes_mat_cur_cantidad_solicitada;
+					this.totalCantidadRecibidaCausesMatCur += +this.lista[x].causes_mat_cur_cantidad_recibida;
+					this.totalMontoSolicitadoNoCauses += +this.lista[x].no_causes_monto_solicitado;
+					this.totalMontoRecibidoNoCauses += +this.lista[x].no_causes_monto_recibido;
+					this.totalCantidadSolicitadaNoCauses += +this.lista[x].no_causes_cantidad_solicitada;
+					this.totalCantidadRecibidaNoCauses += +this.lista[x].no_causes_cantidad_recibida;
 				}
 	
 			  console.log("Items cargados.");

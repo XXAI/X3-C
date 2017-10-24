@@ -72,7 +72,7 @@
                                 <label class="label">Clues:</label>
                                 <p class="control is-expanded  has-icon has-icon-right">
                                     <input class="input"  type="text" [ngClass]="{'is-danger': ctrl.dato.get('clues').hasError('required')}" placeholder="Clues"
-                                        formControlName="clues">
+                                        formControlName="clues" readonly>
                                     <span class="icon is-small" *ngIf="ctrl.dato.get('clues').hasError('required')">
                                         <i class="fa fa-warning"></i>
                                     </span>
@@ -122,7 +122,7 @@
                             <div class="column is-6">
                                 <br><br>
                                 <div class="b-checkbox is-info" >
-                                    <input id="surte_controlados" class="styled" type="checkbox" formControlName="surte_controlados" (checked)="ctrl.dato.get('surte_controlados').value == 1 ? true : false">
+                                    <input id="surte_controlados" class="styled" type="checkbox" formControlName="surte_controlados" [checked]="ctrl.dato.get('surte_controlados').value == 1 ? true : false">
                                     <label for="surte_controlados">
                                         Surte controlados? 
                                     </label>
@@ -161,7 +161,7 @@
 
                                 <!--boolean  -->
                                 <div class="b-checkbox is-info" *ngIf="item.value.tipo == 'boolean'" style="margin-bottom: 15px; margin-top: 15px;">
-                                    <input id="valor{{i}}" class="styled" type="checkbox" formControlName="valor" (checked)="ctrl.dato.get('personal_clues_metadatos').value[i].campo == 1 ? true : false">
+                                    <input id="valor{{i}}" class="styled" type="checkbox" formControlName="valor" [checked]="ctrl.dato.get('personal_clues_metadatos').value[i].campo == 1 ? true : false">
                                     <label for="valor{{i}}">
                                         {{ item.value.campo }} 
                                     </label>

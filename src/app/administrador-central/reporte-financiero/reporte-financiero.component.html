@@ -1,10 +1,10 @@
 <administrador-central-menu></administrador-central-menu>
 <div style="height:50px;"></div>
-<div class="contenedor columns " style="height:100%; ">
+<div class="contenedor columns " style="height:100%;  margin:0px; ">
 	<div class="column is-narrow is-hidden-mobile">
 		<administrador-central-menu-lateral></administrador-central-menu-lateral>
 	</div>
-	<div class="column" style="padding:2em;">
+	<div class="column hack-column" >
 		<div style="background: #FFF; border-radius: 1em; overflow: hidden;">			
 			<section class="hero is-primary"  >				
 				<div class="hero-body" style="position:relative;">                    
@@ -72,17 +72,18 @@
 								</p> 
 							</div>
 							<div class="column">
-									<label for="fechaInicio">Fecha fin:</label>
-									<p class="control "  [ngClass]="{'is-loading': cargandoFechas, 'is-disabled': cargandoFechas}">
-										<span class="select is-fullwidth">
-											<select id="fechaFin" (change)="lista=[]"  [(ngModel)]="fechaFin">
-												<option value="-1" *ngIf="cargandoFechas">Cargando...</option>
-												<option value="-1" *ngIf="!cargandoFechas">Cualquier fecha</option>
-												<option *ngFor="let item of listaMesesAnios" [value]="item.fecha">{{ item.mes_nombre }}/{{ item.anio }}</option>
-											</select>
-										</span>
-									</p> 
-								</div>
+								<label for="fechaInicio">Fecha fin:</label>
+								<p class="control "  [ngClass]="{'is-loading': cargandoFechas, 'is-disabled': cargandoFechas}">
+									<span class="select is-fullwidth">
+										<select id="fechaFin" (change)="lista=[]"  [(ngModel)]="fechaFin">
+											<option value="-1" *ngIf="cargandoFechas">Cargando...</option>
+											<option value="-1" *ngIf="!cargandoFechas">Cualquier fecha</option>
+											<option *ngFor="let item of listaMesesAnios" [value]="item.fecha">{{ item.mes_nombre }}/{{ item.anio }}</option>
+										</select>
+									</span>
+								</p> 
+							</div>
+							<!--
 							<div class="column">
 								<label for="statusPedido">Status pedido:</label>								
 								<p class="control is-expanded">
@@ -94,6 +95,7 @@
 									</span>
 								</p>
 							</div>
+							-->
 							<div class="column">
 								<label for="agrup">Agrupado por:</label>								
 								<p class="control is-expanded">
@@ -131,39 +133,109 @@
 				<br>
 				<br>
 			</div>
-			<table class="table" *ngIf="!cargando" style="font-size:0.8em;"  >
+			<div style="overflow-x:auto; width:100%; ">
+			<table *ngIf="!cargando" class="table is-bordered" style="font-size:0.7em;">
 				<thead *ngIf="agrupadoPor == 'UM'">
 					<tr>
-						<th>Num</th>
-						<th>Clues</th>
-						<th>Tipo</th>
-						<th>Nombre</th>
-						<th>Modificado</th>
-						<th>Comprometido</th>
-						<th>Devengado</th>
-						<th>Disponible</th>
+						<th colspan="8" rowspan="2"></th>
+						<th colspan="6" style="text-align:center">Causes y Mat. Cur.</th>
+						<th colspan="6" style="text-align:center">No Causes</th>
+					</tr>
+					<tr>
+						<th colspan="3" style="text-align:center">Monto</th>
+						<th colspan="3" style="text-align:center">Insumos</th>
+						<th colspan="3" style="text-align:center">Monto</th>
+						<th colspan="3" style="text-align:center">Insumos</th>
+					</tr>
+					<tr>
+						<th>#</th>
+						<th style="text-align:center">Clues</th>
+						<th style="text-align:center">Tipo</th>
+						<th style="text-align:center">Nombre</th>
+						<th style="text-align:center">Modificado</th>
+						<th style="text-align:center">Comprometido</th>
+						<th style="text-align:center">Devengado</th>
+						<th style="text-align:center">Disponible</th>
+						<th style="text-align:center">Solicitado</th>
+						<th style="text-align:center">Surtido</th>
+						<th style="text-align:center">%</th>
+						<th style="text-align:center">Solicitado</th>
+						<th style="text-align:center">Surtido</th>
+						<th style="text-align:center">%</th>
+						<th style="text-align:center">Solicitado</th>
+						<th style="text-align:center">Surtido</th>
+						<th style="text-align:center">%</th>
+						<th style="text-align:center">Solicitado</th>
+						<th style="text-align:center">Surtido</th>
+						<th style="text-align:center">%</th>
 					</tr>
 				</thead>
 				<thead *ngIf="agrupadoPor == 'P'">
 					<tr>
-						<th>Num</th>
-						<th>Proveedor</th>
-						<th>Cant. Clues</th>
-						<th>Modificado</th>
-						<th>Comprometido</th>
-						<th>Devengado</th>
-						<th>Disponible</th>
+						<th colspan="7" rowspan="2"></th>
+						<th colspan="6" style="text-align:center">Causes y Mat. Cur.</th>
+						<th colspan="6" style="text-align:center">No Causes</th>
+					</tr>
+					<tr>
+						<th colspan="3" style="text-align:center">Monto</th>
+						<th colspan="3" style="text-align:center">Insumos</th>
+						<th colspan="3" style="text-align:center">Monto</th>
+						<th colspan="3" style="text-align:center">Insumos</th>
+					</tr>
+					<tr>
+						<th style="text-align:center">#</th>
+						<th style="text-align:center">Proveedor</th>
+						<th style="text-align:center">Cant. Clues</th>
+						<th style="text-align:center">Modificado</th>
+						<th style="text-align:center">Comprometido</th>
+						<th style="text-align:center">Devengado</th>
+						<th style="text-align:center">Disponible</th>
+						<th style="text-align:center">Solicitado</th>
+						<th style="text-align:center">Surtido</th>
+						<th style="text-align:center">%</th>
+						<th style="text-align:center">Solicitado</th>
+						<th style="text-align:center">Surtido</th>
+						<th style="text-align:center">%</th>
+						<th style="text-align:center">Solicitado</th>
+						<th style="text-align:center">Surtido</th>
+						<th style="text-align:center">%</th>
+						<th style="text-align:center">Solicitado</th>
+						<th style="text-align:center">Surtido</th>
+						<th style="text-align:center">%</th>
 					</tr>
 				</thead>
 				<thead *ngIf="agrupadoPor == 'NA'">
 					<tr>
-						<th>Num</th>
-						<th>Nivel de Atención</th>
-						<th>Cant. Clues</th>
-						<th>Modificado</th>
-						<th>Comprometido</th>
-						<th>Devengado</th>
-						<th>Disponible</th>
+						<th colspan="7" rowspan="2"></th>
+						<th colspan="6" style="text-align:center">Causes y Mat. Cur.</th>
+						<th colspan="6" style="text-align:center">No Causes</th>
+					</tr>
+					<tr>
+						<th colspan="3" style="text-align:center">Monto</th>
+						<th colspan="3" style="text-align:center">Insumos</th>
+						<th colspan="3" style="text-align:center">Monto</th>
+						<th colspan="3" style="text-align:center">Insumos</th>
+					</tr>
+					<tr>
+						<th style="text-align:center">#</th>
+						<th style="text-align:center">Nivel de Atención</th>
+						<th style="text-align:center">Cant. Clues</th>
+						<th style="text-align:center">Modificado</th>
+						<th style="text-align:center">Comprometido</th>
+						<th style="text-align:center">Devengado</th>
+						<th style="text-align:center">Disponible</th>
+						<th style="text-align:center">Solicitado</th>
+						<th style="text-align:center">Surtido</th>
+						<th style="text-align:center">%</th>
+						<th style="text-align:center">Solicitado</th>
+						<th style="text-align:center">Surtido</th>
+						<th style="text-align:center">%</th>
+						<th style="text-align:center">Solicitado</th>
+						<th style="text-align:center">Surtido</th>
+						<th style="text-align:center">%</th>
+						<th style="text-align:center">Solicitado</th>
+						<th style="text-align:center">Surtido</th>
+						<th style="text-align:center">%</th>
 					</tr>
 				</thead>
 			
@@ -181,19 +253,60 @@
 						<td style="text-align:right; vertical-align: middle;">${{ item.comprometido | number:'1.2-2' }}</td>
 						<td style="text-align:right; vertical-align: middle;">${{ item.devengado | number:'1.2-2' }}</td>
 						<td style="text-align:right; vertical-align: middle;">${{ item.disponible | number:'1.2-2' }}</td>
+
+						
+						
+						<td style="text-align:right; vertical-align: middle;">${{ item.causes_mat_cur_monto_solicitado | number:'1.2-2' }}</td>
+						<td style="text-align:right; vertical-align: middle;">${{ item.causes_mat_cur_monto_recibido | number:'1.2-2' }}</td>
+						<td style="text-align:center; vertical-align: middle;">{{ item.causes_mat_cur_porcentaje_monto | number:'1.2-2' }}%</td>
+
+						<td style="text-align:right; vertical-align: middle;">{{ item.causes_mat_cur_cantidad_solicitada | number }}</td>
+						<td style="text-align:right; vertical-align: middle;">{{ item.causes_mat_cur_cantidad_recibida | number }}</td>
+						<td style="text-align:center; vertical-align: middle;">{{ item.causes_mat_cur_porcentaje_cantidad | number:'1.2-2' }}%</td>
+
+						<td style="text-align:right; vertical-align: middle;">${{ item.no_causes_monto_solicitado | number:'1.2-2' }}</td>
+						<td style="text-align:right; vertical-align: middle;">${{ item.no_causes_monto_recibido | number:'1.2-2' }}</td>
+						<td style="text-align:center; vertical-align: middle;">{{ item.no_causes_porcentaje_monto | number:'1.2-2' }}%</td>
+
+						<td style="text-align:right; vertical-align: middle;">{{ item.no_causes_cantidad_solicitada | number }}</td>
+						<td style="text-align:right; vertical-align: middle;">{{ item.no_causes_cantidad_recibida | number }}</td>
+						<td style="text-align:center; vertical-align: middle;">{{ item.no_causes_porcentaje_cantidad | number:'1.2-2' }}%</td>
+
 					</tr>
 					<tr *ngIf="lista.length == 0">
-						<td colspan="8" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
+						<td colspan="20" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
 					</tr>
 				</tbody>
 				<tfoot *ngIf="lista.length > 0">
-					<tr><th style="text-align:right;" [attr.colspan]="agrupadoPor == 'UM' ? '4' : '3' ">TOTAL</th>
+					<tr>
+						<th style="text-align:right;" [attr.colspan]="agrupadoPor == 'UM' ? '4' : '3' ">TOTAL</th>
 						<th style="text-align:right;" >${{ totalModificado | number:'1.2-2' }}</th>
 						<th style="text-align:right;" >${{ totalComprometido | number:'1.2-2' }}</th>
 						<th style="text-align:right;" >${{ totalDevengado | number:'1.2-2' }}</th>
-						<th style="text-align:right;" >${{ totalDisponible | number:'1.2-2' }}</th></tr>
+						<th style="text-align:right;" >${{ totalDisponible | number:'1.2-2' }}</th>
+
+
+
+						<th style="text-align:right;" >${{ totalMontoSolicitadoCausesMatCur | number:'1.2-2' }}</th>
+						<th style="text-align:right;" >${{ totalMontoRecibidoCausesMatCur  | number:'1.2-2' }}</th>
+						<th style="text-align:right;" >{{ totalMontoRecibidoCausesMatCur  * 100 / totalMontoSolicitadoCausesMatCur  | number:'1.2-2' }}%</th>
+
+						<th style="text-align:right;" >{{ totalCantidadSolicitadaCausesMatCur  | number }}</th>
+						<th style="text-align:right;" >{{ totalCantidadRecibidaCausesMatCur  | number }}</th>
+						<th style="text-align:right;" >{{ totalCantidadRecibidaCausesMatCur  * 100 / totalCantidadSolicitadaCausesMatCur  | number:'1.2-2' }}%</th>
+
+						<th style="text-align:right;" >${{ totalMontoSolicitadoNoCauses | number:'1.2-2' }}</th>
+						<th style="text-align:right;" >${{ totalMontoRecibidoNoCauses | number:'1.2-2' }}</th>
+						<th style="text-align:right;" >{{ totalMontoRecibidoNoCauses * 100 / totalMontoSolicitadoNoCauses | number:'1.2-2' }}%</th>
+
+						<th style="text-align:right;" >{{ totalCantidadSolicitadaNoCauses | number }}</th>
+						<th style="text-align:right;" >{{ totalCantidadRecibidaNoCauses | number }}</th>
+						<th style="text-align:right;" >{{ totalCantidadRecibidaNoCauses * 100 / totalCantidadSolicitadaNoCauses | number:'1.2-2' }}%</th>
+					</tr>
 				</tfoot>
 			</table>
+			</div>
+		</div>
 			<!-- Paginación para la lista  -->
 		
 	</div>

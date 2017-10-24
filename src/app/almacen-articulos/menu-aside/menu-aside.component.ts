@@ -28,31 +28,7 @@ export class MenuAsideComponent implements OnInit {
           { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-servidor.svg', titulo:"Salidas", url:"/almacen-articulos/salidas" },
           { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-servidor.svg', titulo:"Resguardos", url:"/almacen-articulos/resguardos" },        
         ]
-      },
-      {
-        titulo: 'Catalogos',
-        modulos: [
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-um.svg', titulo:"Unidades Médicas", url:"/catalogos/unidades-medicas"}, 
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-servidor.svg', titulo:"Servidores", url:"/catalogos/servidores" },
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-almacenes.svg', titulo:"Almacenes", url:"/catalogos/almacenes" },
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-proveedores.svg', titulo:"Proveedores", url:"/catalogos/proveedores"}, 
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-grupo-insumos.svg', titulo:"Grupos de insumos", url:"/catalogos/grupos-insumos"}, 
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-marcas.svg', titulo:"Marcas", url:"/catalogos/marcas"}, 
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-mc.svg', titulo:"Material de curación", url:"/catalogos/material-curacion"}, 
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-medicamento.svg', titulo:"Medicamentos", url:"/catalogos/medicamentos"},     
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-programas.svg', titulo:"Programas", url:"/catalogos/programas"}, 
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-presentacion.svg', titulo:"Presentaciones de medicamentos", url:"/catalogos/presentaciones-medicamentos"}, 
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-administracion.svg', titulo:"Vias de administración", url:"/catalogos/vias-administracion" },
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-unid-medida.svg', titulo:"Unidades de medida", url:"/catalogos/unidades-medida" },
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-servicios.svg', titulo:"Servicios", url:"/catalogos/servicios"},
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-servicios.svg', titulo:"Forma Farmaceutica", url:"/catalogos/forma-farmaceutica"},
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-pedido.svg', titulo:"Tipos de pedidos", url:"/catalogos/tipo-pedido" },
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-tipo-movimiento.svg', titulo:"Tipos de movimientos", url:"/catalogos/tipos-movimientos" },
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-tipo-insumos.svg', titulo:"Tipos de insumos", url:"/catalogos/tipos-insumos"},
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-tipo-insumos.svg', titulo:"Condicion articulo", url:"/catalogos/condicion-articulo"},
-        ]
-      },
-      
+      }
     ];
     
     

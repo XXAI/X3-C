@@ -154,7 +154,29 @@ export class RecepcionComponent implements OnInit {
                 }
 
                 if(transferencia_recibida){
-                  //
+                  /*let recepcion_insumos_guardados = transferencia_surtida.insumos;
+                  for(var i in recepcion_insumos_guardados){
+                    let insumo = recepcion_insumos_guardados[i];
+
+                    if(!recepcion_insumos[insumo.stock.clave_insumo_medico]){
+                      recepcion_insumos[insumo.stock.clave_insumo_medico] = {
+                        cantidad:0,
+                        stock:[]
+                      };
+                    }
+
+                    if(!transferencia_recibida_borrador){
+                      recepcion_insumos[insumo.stock.clave_insumo_medico].cantidad += +insumo.cantidad;
+                      //insumo.stock.cantidad = +insumo.cantidad;
+                      insumo.stock.cantidad_enviada = +insumo.cantidad;
+                      insumo.stock.cantidad_recibida = +insumo.cantidad;
+                      recepcion_insumos[insumo.stock.clave_insumo_medico].stock.push(insumo.stock);
+                    }else{
+                      insumo.stock.cantidad_enviada = +insumo.cantidad;
+                      insumo.stock.cantidad_recibida = 0;
+                      recepcion_insumos[insumo.stock.clave_insumo_medico].stock.push(insumo.stock);
+                    }
+                  }*/
                 }else if(transferencia_surtida){
                   let recepcion_insumos_guardados = transferencia_surtida.insumos;
                   for(var i in recepcion_insumos_guardados){
@@ -167,10 +189,13 @@ export class RecepcionComponent implements OnInit {
                     }
                     if(!transferencia_recibida_borrador){
                       recepcion_insumos[insumo.stock.clave_insumo_medico].cantidad += +insumo.cantidad;
-                      insumo.stock.cantidad = +insumo.cantidad;
+                      //insumo.stock.cantidad = +insumo.cantidad;
+                      insumo.stock.cantidad_enviada = +insumo.cantidad;
+                      insumo.stock.cantidad_recibida = +insumo.cantidad;
                       recepcion_insumos[insumo.stock.clave_insumo_medico].stock.push(insumo.stock);
                     }else{
                       insumo.stock.cantidad_enviada = +insumo.cantidad;
+                      insumo.stock.cantidad_recibida = 0;
                       recepcion_insumos[insumo.stock.clave_insumo_medico].stock.push(insumo.stock);
                     }
                   }
@@ -186,15 +211,16 @@ export class RecepcionComponent implements OnInit {
                 
                 if(transferencia_recibida_borrador){
                   let recepcion_insumos_guardados = transferencia_recibida_borrador.insumos;
+                  
                   for(var i in recepcion_insumos_guardados){
                     let insumo = recepcion_insumos_guardados[i];
 
                     if(recepcion_insumos[insumo.stock.clave_insumo_medico]){
-                      console.log('asfasdfasdf');
-                      console.log(recepcion_insumos[insumo.stock.clave_insumo_medico].stock);
-                      for(var i in recepcion_insumos[insumo.stock.clave_insumo_medico].stock){
-                        if(recepcion_insumos[insumo.stock.clave_insumo_medico].stock[i].id == insumo.stock.id){
-                          recepcion_insumos[insumo.stock.clave_insumo_medico].stock[i].cantidad_recibida = +insumo.cantidad;
+                      for(var j in recepcion_insumos[insumo.stock.clave_insumo_medico].stock){
+                        let insumo_recibido = recepcion_insumos[insumo.stock.clave_insumo_medico].stock[j];
+                        //if(recepcion_insumos[insumo.stock.clave_insumo_medico].stock[j].id == insumo.stock.id){ //El stock id no es el mismo, hay que comprar todo, fecha caducidad, lote, y codigo de barras
+                        if(insumo_recibido.lote == insumo.stock.lote && insumo_recibido.fecha_caducidad == insumo.stock.fecha_caducidad && insumo_recibido.codigo_barras == insumo.stock.codigo_barras ){
+                          insumo_recibido.cantidad_recibida = +insumo.cantidad;
                         }
                       }
                       recepcion_insumos[insumo.stock.clave_insumo_medico].cantidad += +insumo.cantidad;
@@ -498,15 +524,17 @@ export class RecepcionComponent implements OnInit {
             clave_insumo_medico: item.clave,
             lote: item.listaStockAsignado[j].lote,
             fecha_caducidad: item.listaStockAsignado[j].fecha_caducidad,
-            cantidad: item.listaStockAsignado[j].cantidad,
+            cantidad:0,
             existencia:0,
             codigo_barras: item.listaStockAsignado[j].codigo_barras,
             precio_unitario: 0,
             precio_total: 0
           };
           if(this.pedido.tipo_pedido != 'PEA'){
+            stock.cantidad = item.listaStockAsignado[j].cantidad;
             stock.existencia = item.listaStockAsignado[j].cantidad;
           }else{
+            stock.cantidad = item.listaStockAsignado[j].cantidad_recibida;
             stock.existencia = item.listaStockAsignado[j].cantidad_recibida;
           }
           guardar_recepcion.stock.push(stock);
@@ -580,7 +608,6 @@ export class RecepcionComponent implements OnInit {
         }
       }
     );
-    console.log(guardar_recepcion);
   }
 
   buscarStock(e: KeyboardEvent, input:HTMLInputElement, term:string){

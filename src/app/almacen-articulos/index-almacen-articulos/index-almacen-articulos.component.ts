@@ -29,8 +29,7 @@ export class IndexAlmacenArticulosComponent implements OnInit {
       { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-catalogos.svg', titulo:"Entradas", url:"/almacen-articulos/entradas"},
       { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-catalogos.svg', titulo:"Salidas", url:"/almacen-articulos/salidas"}
     ]
-    this.accesosDirectos = [          
-      { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-catalogos.svg', titulo:"Catálogos", url:"/almacen-articulos/catalogos"},
+    this.accesosDirectos = [
       { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-catalogos.svg', titulo:"Categorias", url:"/almacen-articulos/categoria"},
       { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-catalogos.svg', titulo:"Articulos", url:"/almacen-articulos/articulos"}
     ]

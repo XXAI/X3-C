@@ -5,11 +5,12 @@ import { ActivatedRoute, Params } from '@angular/router';
 
 import { environment } from '../../../../environments/environment';
 import { CrudService } from '../../../crud/crud.service';
-import { NotificationsService } from 'angular2-notifications';
 import { createAutoCorrectedDatePipe } from 'text-mask-addons';
 import * as moment from 'moment';
 import  * as FileSaver    from 'file-saver';
 
+import { Mensaje } from '../../../mensaje';
+import { NotificationsService } from 'angular2-notifications';
 
 @Component({
   selector: 'salidas-estandar-formulario',
@@ -27,7 +28,12 @@ export class FormularioComponent {
   tab = 1;
   cargando = false;
   key;
+  /**
+   * Contiene los datos de inicio de sesión del usuario.
+   * @type {any} */
   usuario;
+  // Crear la variable que mustra las notificaciones
+  mensajeResponse: Mensaje = new Mensaje();
   autoCorrectedDatePipe: any = createAutoCorrectedDatePipe('yyyy-mm-dd');
 
   MinDate = new Date();
@@ -35,6 +41,22 @@ export class FormularioComponent {
   MaxDate = new Date();
   fecha_actual;
   tieneid = false;
+  /**
+   * Variable que nos sirve para identificar si estamos editando una entrada. Debido a
+   * que la estructura del JSON de una entrada finalizada y un borrador son diferentes,
+   * es necesario la variable. Cuando se intenta finalizar la entrada a partir de un borrador
+   * si no se tiene la variable marca error porque al actualizar el valor del __status__ intenta mostrar la sección.
+   * ```html
+   * <section *ngIf="tieneid && ctrl.dato.get('status').value == 'FI' && estoymodificando == false">
+   * ```
+   * @type {boolean}
+   */
+  estoymodificando = false;
+  /**
+   * Se tuvo que crear la variable debido a que se debe hacer referencia únicamente cuando se esté actualizando
+   * el catálogo de programas y no cada vez que se esté cargando otros elementos.
+   */
+  cargandoProgramas = false;
 
   fecha_movimiento;
   mostrarCancelado;
@@ -51,16 +73,30 @@ export class FormularioComponent {
    * Guarda el resultado de la búsqueda de insumos médicos.
    * @type {array} */
   res_busq_insumos= [];
+  /**
+   * Contiene la lista de programas
+   * @type {any} */
+  lista_programas= [];
+  /**
+   * Contiene un valor __true__ cuando estamos llenando el formulario del borrador de una entrada
+   * en caso de tener una entrada nueva o finalizada el valor es __false__.
+   * @type {boolean} */
+  llenando_formulario = true;
 
   public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
   // Máscara para validar la entrada de la fecha de caducidad
   mask = [/[2]/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/];
+  /**
+   * Contiene los permisos del usuario, que posteriormente sirven para verificar si puede realizar o no
+   * algunas acciones en este módulo.
+   * @type {any} */
+  permisos: any = [];
 
   objeto = {
     showProgressBar: true,
     pauseOnHover: true,
     clickToClose: true,
-    maxLength: 2000
+    maxLength: 3000
   };
   public options = {
     position: ['top', 'right'],
@@ -81,6 +117,7 @@ export class FormularioComponent {
 
     // obtener los datos del usiario logueado almacen y clues
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
+    this.permisos = this.usuario.permisos;
 
     if (this.usuario.clues_activa) {
       this.insumos_term += '&clues=' + this.usuario.clues_activa.clues;
@@ -110,10 +147,12 @@ export class FormularioComponent {
     // inicializar el formulario reactivo
     this.dato = this.fb.group({
       id: [''],
+      actualizar: [false],
       tipo_movimiento_id: ['1', [Validators.required]],
       status: ['FI'],
       fecha_movimiento: ['', [Validators.required]],
       observaciones: [''],
+      programa_id: [''],
       cancelado: [''],
       observaciones_cancelacion: [''],
       movimiento_metadato: this.fb.group({
@@ -130,6 +169,24 @@ export class FormularioComponent {
       }
     });
 
+    // nos suscribimos para saber si es un borrador, nueva entrada o una entrada finalizada
+    this.dato.controls.id.valueChanges.subscribe(
+      val => {
+          if (val) {
+            this.llenando_formulario = true;
+            setTimeout(() => {
+              if (this.dato.controls.status.value === 'BR') {
+                this.llenarFormulario();
+              }else {
+                this.llenando_formulario = false;
+              }
+            }, 500);
+          }
+      }
+    );
+    if (!this.tieneid) {
+      this.llenando_formulario = false;
+    }
     // variable para crear el array del formulario reactivo
     this.form_insumos = {
       tipo_movimiento_id: ['', [Validators.required]]
@@ -149,6 +206,71 @@ export class FormularioComponent {
     } else {
       this.fecha_actual = this.dato.get('fecha_movimiento').value;
     }
+    this.cargarCatalogo('programa');
+  }
+  /**
+   * Función local para cargar el catalogo de programas, no se utilizó el cargarCatalogo del CRUD,
+   * debido a que este catálogo no existen 'mis-programas', sino que es un catálogo general y se agregan
+   * al arreglo únicamente aquellos programas que se encuentran activos (status = 1).
+   * @param url Contiene la cadena con la URL de la API a consultar para cargar el catalogo del select.
+   */
+  cargarCatalogo(url) {
+    this.cargandoProgramas = true;
+    this.crudService.lista_general(url).subscribe(
+      resultado => {
+        this.cargandoProgramas = false;
+        // this.lista_programas = resultado;
+        let contador = 0;
+        for (let item of resultado) {
+          if (item.status === '1') {
+            this.lista_programas.push(item);
+          }
+        }
+      }
+    );
+  }
+  /**
+   * Método que nos sirve para reacomodar los elementos en el formulario
+   * para editarlos, en el avance de una entrada.
+   * Se reordena el json recibido al formulario reactivo, los insumos que contienen un
+   * array de lotes se reordenan colocando los campos para el formulario reactivo y cada
+   * lote es parte de un solo insumo.
+   */
+  llenarFormulario() {
+    const insumos_temporal = this.fb.array([]);
+    const control_insumos = <FormArray>this.dato.controls['insumos'];
+
+    let lotes;
+    for ( let item of control_insumos.value) {
+      if (item.lotes) {
+        for (let lotes_item of item.lotes) {
+          lotes = {
+            'clave': item.clave,
+            'nombre': item.nombre,
+            'descripcion': item.descripcion,
+            'es_causes': item.es_causes,
+            'es_unidosis': item.es_unidosis,
+            'lote': [lotes_item.lote, [Validators.required]],
+            'id': lotes_item.id,
+            'codigo_barras': [lotes_item.codigo_barras, [Validators.required]],
+            'fecha_caducidad': [lotes_item.fecha_caducidad, [Validators.required]],
+            'cantidad': [Number(lotes_item.cantidad), [Validators.required]],
+            'cantidad_x_envase': Number(item.detalles.informacion_ampliada.cantidad_x_envase),
+            'cantidad_surtida': 1,
+            'movimiento_insumo_id': [lotes_item.movimiento_insumo_id],
+            'stock_id': [lotes_item.stock_id],
+          };
+          insumos_temporal.insert(0, this.fb.group(lotes));
+        }
+      }
+    }
+    this.dato.controls['insumos'] = this.fb.array([]);
+
+    const control_insumos2 = <FormArray>this.dato.controls['insumos'];
+    for (let item of insumos_temporal.value) {
+      control_insumos2.insert(0, this.fb.group(item));
+    }
+    this.llenando_formulario = false;
   }
   /**
      * Este método permite que el focus del cursor vuelva al buscador de insumos una vez presionada la tecla enter
@@ -184,6 +306,9 @@ export class FormularioComponent {
      */
   cancelarModal(id) {
     document.getElementById(id).classList.remove('is-active');
+    if (id === 'guardarMovimiento') {
+      this.dato.controls.status.patchValue('BR');
+    }
   }
 
   /**
@@ -277,8 +402,8 @@ export class FormularioComponent {
         break;
       }
     }*/
-    //crear el json que se pasara al formulario reactivo tipo insumos
-    var temporal_cantidad_x_envase;
+    // crear el json que se pasara al formulario reactivo tipo insumos
+    let temporal_cantidad_x_envase;
     if(this.insumo.cantidad_x_envase == null){
       temporal_cantidad_x_envase = 1;
     }else{
@@ -291,16 +416,20 @@ export class FormularioComponent {
       'es_causes': this.insumo.es_causes,
       'es_unidosis': this.insumo.es_unidosis,
       'lote': ['', [Validators.required]],
+      'id': null,
       'codigo_barras': [''],
       'fecha_caducidad': ['', [Validators.required]],
       'cantidad': ['', [Validators.required]],
-      'cantidad_x_envase': parseInt(temporal_cantidad_x_envase),     
+      'cantidad_x_envase': parseInt(temporal_cantidad_x_envase),
       'cantidad_surtida': 1,
+      'movimiento_insumo_id': null,
+      'stock_id': null,
     };
 
-    //si no esta en la lista agregarlo
-    if (!existe)
+    // si no esta en la lista agregarlo
+    if (!existe) {
       control.insert(0, this.fb.group(lotes));
+    }
   }
   /**
      * Este método agrega una nueva fila para los lotes nuevos
@@ -355,16 +484,14 @@ export class FormularioComponent {
       this.notificacion.alert('Fecha inválida', 'Debe ingresar una fecha válida', this.objeto);
       ctrlLotes.controls['fecha_caducidad'].patchValue('');
     } else {
-      if (moment(fecha, 'YYYY-MM-DD', true) <= fecha_hoy) {
+      if (moment(fecha, 'YYYY-MM-DD', true) <= fecha_hoy.add(14, 'days')) {
         ctrlLotes.controls['fecha_caducidad'].patchValue('');
-        this.notificacion.alert('Fecha inválida', 'La fecha de caducidad debe ser mayor al día de hoy', this.objeto);
+        this.notificacion.alert('Fecha inválida', 'La fecha de caducidad debe ser mayor al ' +
+         fecha_hoy.format('YYYY-MM-DD'), this.objeto);
       }
     }
   }
 
-  guardar_movimiento() {
-    document.getElementById('guardarMovimiento').classList.add('is-active');
-  }
 
   /**
      * Este método valida que en el campo de la cantidad no pueda escribir puntos o signo negativo
@@ -383,6 +510,98 @@ export class FormularioComponent {
     return /^\d+$/.test(str);
   }
 
+  /**
+   * Compureba que los insumos de la entrada sean mayores a 0.
+   * Abre el modal 'guardarMovimiento' para confirmar que guarda la entrada como finalizada,
+   * sin poder hacer cambios después.
+   */
+  guardar_movimiento() {
+    // document.getElementById('guardarMovimiento').classList.add('is-active');
+    // obtener el formulario reactivo para agregar los elementos
+    const control = <FormArray>this.dato.controls['insumos'];
+    // let lotes = true;
+    if (control.length === 0) {
+      this.notificacion.warn('Insumos', 'Debe agregar por lo menos un insumo', this.objeto);
+    }else {
+      this.estoymodificando = true;
+      this.dato.controls['status'].patchValue('FI');
+      // patchValue({status: 'FI'});
+      // this.dato.controls.status.setValue('FI');
+      document.getElementById('guardarMovimiento').classList.add('is-active');
+    }
+  }
+
+  guardarBorrador() {
+    this.dato.controls.status.patchValue('BR');
+    document.getElementById('borrador').click();
+  }
+
+    /**
+     * Este método envia los datos para actualizar un elemento con el id
+     * que se envia por la url
+     * @return void
+     */
+    actualizarDatos() {
+        this.cargando = true;
+        let dato;
+        try {
+            dato = this.dato.getRawValue();
+        }catch (e) {
+            dato = this.dato.value;
+        }
+
+        this.crudService.editar(this.dato.controls.id.value, dato, 'entrada-almacen').subscribe(
+            resultado => {
+                document.getElementById('actualizar').click();
+                this.cargando = false;
+
+                this.mensajeResponse.texto = 'Se han guardado los cambios.';
+                this.mensajeResponse.mostrar = true;
+                this.mensajeResponse.clase = 'success';
+                this.mensaje(2);
+            },
+            error => {
+                this.cargando = false;
+
+                this.mensajeResponse.texto = 'No especificado.';
+                this.mensajeResponse.mostrar = true;
+                this.mensajeResponse.clase = 'alert';
+                this.mensaje(2);
+                try {
+                    let e = error.json();
+                    if (error.status == 401) {
+                        this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
+                        this.mensajeResponse.clase = 'error';
+                        this.mensaje(2);
+                    }
+                    // Problema de validación
+                    if (error.status == 409) {
+                        this.mensajeResponse.texto = 'Por favor verfique los campos marcados en rojo.';
+                        this.mensajeResponse.clase = 'error';
+                        this.mensaje(8);
+                        for (let input in e.error) {
+                            // Iteramos todos los errores
+                            for (let i in e.error[input]) {
+                                this.mensajeResponse.titulo = input;
+                                this.mensajeResponse.texto = e.error[input][i];
+                                this.mensajeResponse.clase = 'error';
+                                this.mensaje(3);
+                            }
+                        }
+                    }
+                } catch (e) {
+                    if (error.status == 500) {
+                        this.mensajeResponse.texto = '500 (Error interno del servidor)';
+                    } else {
+                        this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
+                    }
+                    this.mensajeResponse.clase = 'error';
+                    this.mensaje(2);
+                }
+
+            }
+        );
+    }
 /************************************ IMPRESION DE REPORTES ************************************** */
   imprimir() {
 
@@ -409,4 +628,42 @@ export class FormularioComponent {
       return new Blob( [ buffer ], { type: type } );
   }
 
+    /**
+     * Este método muestra los mensajes resultantes de los llamados de la api
+     * @param cuentaAtras numero de segundo a esperar para que el mensaje desaparezca solo
+     * @param posicion  array de posicion [vertical, horizontal]
+     * @return void
+     */
+    mensaje(cuentaAtras: number = 6, posicion: any[] = ['bottom', 'left']): void {
+        var objeto = {
+            showProgressBar: true,
+            pauseOnHover: false,
+            clickToClose: true,
+            maxLength: this.mensajeResponse.texto.length
+        };
+
+        this.options = {
+            position: posicion,
+            timeOut: cuentaAtras * 1000,
+            lastOnBottom: true
+        };
+        if (this.mensajeResponse.titulo === '') {
+            this.mensajeResponse.titulo = 'Entradas de almacén';
+          }
+        if (this.mensajeResponse.clase === 'alert') {
+            this.notificacion.alert(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+        if (this.mensajeResponse.clase === 'success') {
+            this.notificacion.success(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+        if (this.mensajeResponse.clase === 'info') {
+            this.notificacion.info(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+        if (this.mensajeResponse.clase === 'warning' || this.mensajeResponse.clase === 'warn') {
+            this.notificacion.warn(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+        if (this.mensajeResponse.clase === 'error' || this.mensajeResponse.clase === 'danger') {
+            this.notificacion.error(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+    }
 }
