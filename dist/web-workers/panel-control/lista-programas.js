@@ -8,7 +8,6 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
     onmessage = function(evt) {
         let data = JSON.parse(evt.data)
         pdf(data);
-        console.log(data);
     };
 
     function pdf(data) {
@@ -33,15 +32,15 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         [{ text: 'SIAL', style: 'titulo', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],
-                        [{ text: 'ENTRADAS DE ALMACEN', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },
+                        [{ text: 'PROGRAMAS', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],[
                             { text: 'CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
                             {},
-                            { text: 'data.usuario.clues_activa.clues', style: 'tableHeader', alignment: 'left' }, 
+                            { text: data.usuario.clues_activa.clues, style: 'tableHeader', alignment: 'left' }, 
                             { text: 'NOMBRE DE CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' }, 
                             {},
-                            { text: 'data.usuario.clues_activa.nombre', style: 'tableHeader', colSpan: 2, alignment: 'left' }, 
+                            { text: data.usuario.clues_activa.nombre, style: 'tableHeader', colSpan: 2, alignment: 'left' }, 
                             {}
                         ],
                         [
@@ -49,24 +48,18 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                             {},{},
                             { text: 'NOMBRE DE ALMACÉN', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
                             {},
-                            { text: 'data.usuario.almacen_activo.nombre', style: 'tableHeader', colSpan: 2, alignment: 'left' }, {}
-                        ],
-                        [{ text: ' ', style: 'celdaEspacio', colSpan: 7, alignment: 'center' },
-                            {}, {}, {}, {}, {}, {}
-                        ],
-                        [{ text: 'DETALLES DE ENTRADAS', style: 'tableHeaderLeyenda', colSpan: 7, alignment: 'center' },
-                            {}, {}, {}, {}, {}, {}
+                            { text: data.usuario.almacen_activo.nombre, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {}
                         ],
                         [{ text: ' ', style: 'celdaEspacio', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],
                         [
-                            { text: 'FECHA', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'FOLIO', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'INSUMOS', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'ENTREGÓ', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'RECIBE', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'CAPTURADO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
+                            { text: 'ID', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
+                            {},
+                            { text: 'NOMBRE', style: 'tableHeaderVerde', colSpan: 3, alignment: 'center' },
+                            {},
+                            {},
+                            { text: 'Estatus', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
                             {}
                         ]
                         //Body -> insumos
@@ -181,21 +174,19 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
 
         for (var i in data.lista) {
             var movimiento = data.lista[i];
-            if(i == data.lista.length-1){
-                break;
-            }
                 dd.content[0].table.body.push([
-                    { text: movimiento.fecha_movimiento ? movimiento.fecha_movimiento : 'No disponible' , style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.id ? movimiento.id : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.numero_claves == null || movimiento.numero_insumos == null ? 'No disponible' : 'Claves: ' + movimiento.numero_claves + '\n Insumos: ' + movimiento.numero_insumos, style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.movimiento_metadato == null ? 'No disponible' :  movimiento.movimiento_metadato.persona_recibe, style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.movimiento_usuario == null ? 'No disponible' : movimiento.movimiento_usuario.nombre + ' ' + movimiento.movimiento_usuario.apellidos, style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.created_at ? movimiento.created_at : 'No disponible', colSpan: 2, style: 'tableRow', alignment: 'center' },{}
+                    { text: movimiento.id ? movimiento.id : 'No disponible', colSpan: 2, style: 'tableRow', alignment: 'center' },
+                    {},
+                    { text: movimiento.nombre == null ? 'No disponible' : movimiento.nombre, colSpan: 3, style: 'tableRow', alignment: 'center' },
+                    {},
+                    {},
+                    { text: movimiento.status == null ? 'No disponible' : movimiento.status == 1 ? 'Activo' : 'Inactivo', colSpan: 2, style: 'tableRow', alignment: 'center' },
+                    {}
                 ]);
         }
 
         pdfMake.createPdf(dd).getBase64(function(base64) {
-            postMessage({ fileName: 'Entradas_estandar.pdf', base64: base64 });
+            postMessage({ fileName: 'Programas.pdf', base64: base64 });
         });
     }
 
