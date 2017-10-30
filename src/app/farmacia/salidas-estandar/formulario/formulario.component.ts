@@ -18,7 +18,10 @@ import  * as FileSaver    from 'file-saver';
   selector: 'salidas-estandar-formulario',
   templateUrl: './formulario.component.html',
   styleUrls: ['./../../../../../src/styles.css'],
-  styles: ['ngui-auto-complete {z-index: 999999 !important}']
+  styles: ['ngui-auto-complete {z-index: 999999 !important}'],
+  host: {
+        '(document:keydown)': 'handleKeyboardEvents($event)'
+    }
 })
 
 export class FormularioComponent {
@@ -36,14 +39,21 @@ export class FormularioComponent {
    * @type {String} */
   modo = 'N';
   /**
-   * Formulario reactivo que contiene los datos que se enviarán a la API
-   * y son los mismos datos que podemos ver al consultar una receta.
-   * @type {FormGroup} */
+   * Variable que contiene un valor _true_ si la cantidad solicitada es mayor a cero.
+   * @type {boolean} */
   cant_solicitada_valida = false;
+  sum_cant_lotes = false;
+  /**
+   * Contiene el valor de la tecla presionada por el usuario.
+   * @type {any} */
+  key;
   unidad_medida;
+  /**
+   * Contiene la lista de turnos disponibles en la CLUES.
+   * @type {array}
+   */
   array_turnos;
   array_servicios;
-  sum_cant_lotes = false;
   index_borrar;
   /**
    * Contiene los datos de inicio de sesión del usuario.
@@ -695,7 +705,24 @@ export class FormularioComponent {
       }
     }
   }
-
+/**
+     * Este método permite que colocar el cursor en el campo deseado
+     * o al buscador de insumos una vez presionada la tecla enter.
+     * @param event Parametro que contiene el valor de la tecla presionada
+     * @return void
+     */
+  handleKeyboardEvents(event: KeyboardEvent) {
+    if (document.activeElement.id === 'buscarMedico') {
+      document.getElementById('buscarMedico').focus();
+    } else {
+      this.key = event.which || event.keyCode;
+        if (event.keyCode === 13) {
+          document.getElementById('buscarInsumo').focus();
+          event.preventDefault();
+          return false;
+        }
+    }
+  }
 
   /**
      * Este método muestra los mensajes resultantes de los llamados de la api

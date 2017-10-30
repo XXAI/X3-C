@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { ListaComponent } from './lista/lista.component';
 import { FormularioComponent } from './formulario/formulario.component';
 import { SurtirComponent } from './surtir/surtir.component';
+import { TransferenciaComponent } from './transferencia/transferencia.component';
 import { AuthGuard } from '../../auth-guard.service';
 
 const routes: Routes = [
@@ -22,6 +23,9 @@ const routes: Routes = [
        { path: 'editar/:id', component: FormularioComponent},
        { path: 'ver/:id', component: FormularioComponent},
        { path: 'surtir/:id', component: SurtirComponent},
+
+       { path: 'nueva', component: TransferenciaComponent},
+       
     ],
     canActivate: [AuthGuard]
   }

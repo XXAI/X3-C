@@ -95,11 +95,16 @@ export class TablaOpcionesComponent {
     };
   }
 
+  /**
+   * Método que genera una lista general de los registros en formato PDF, con los filtros correspondientes
+   * @returns archivo en formato PDF
+   */
   imprimir() {
     this.cargandoPdf = true;
     this.crudService.lista_general(this.ruta).subscribe(
       resultado => {
         this.lista_impresion = resultado;
+        console.log(resultado);
         try {
           let imprimir = {
             usuario: this.usuario,
@@ -115,8 +120,13 @@ export class TablaOpcionesComponent {
             this.mensajeResponse.mostrar = true;
             try {
                 let e = error.json();
-                if (error.status == 401) {
-                    this.mensajeResponse.texto = "No tiene permiso para hacer esta operación.";
+                if (error.status === 401) {
+                    this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
+                    this.mensajeResponse.clase = 'danger';
+                    this.mensaje(2);
+                }
+                if (error.status === 404) {
+                    this.mensajeResponse.texto = 'Página no encontrada, contacte al administrador.';
                     this.mensajeResponse.clase = 'danger';
                     this.mensaje(2);
                 }

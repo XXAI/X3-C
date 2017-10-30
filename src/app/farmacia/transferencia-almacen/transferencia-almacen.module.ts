@@ -24,6 +24,7 @@ import { TextMaskModule } from 'angular2-text-mask';
 import { NguiAutoCompleteModule } from '@ngui/auto-complete';
 import { SimpleNotificationsModule } from 'angular2-notifications';
 import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
+import { TransferenciaComponent } from './transferencia/transferencia.component';
 
 @NgModule({
   imports: [
@@ -43,7 +44,7 @@ import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
     SimpleNotificationsModule,
     TransferenciaAlmacenRoutingModule
   ],
-  declarations: [ListaComponent, FormularioComponent, MenuLateralComponent, SurtirComponent],
+  declarations: [ListaComponent, FormularioComponent, MenuLateralComponent, SurtirComponent, TransferenciaComponent],
   providers:[TransferenciaAlmacenService, CrudService]
 })
 export class TransferenciaAlmacenModule { }

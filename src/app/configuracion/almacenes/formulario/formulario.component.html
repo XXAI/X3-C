@@ -45,7 +45,7 @@
 
                     <div [ngClass]="{ 'is-hidden': tab != 1}">
 
-                        <div class="field">
+                        <div class="field" *ngIf="tieneid">
                             <label class="label">ID:</label>
                             <p class="control is-expanded  has-icon has-icon-right">
                                 <input class="input" type="text" [ngClass]="{'is-danger': ctrl.dato.get('id').hasError('required') && ctrl.dato.get('id').touched}"

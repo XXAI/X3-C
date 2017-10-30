@@ -10,19 +10,21 @@ import { SalidasLaboratorioRoutingModule } from './salidas-laboratorio-routing.m
 import { PaginacionModule } from '../../paginacion/paginacion.module';
 
 import { PipesModule }             from '../../pipes/pipes.module';
-import { ListaComponent } from './lista/lista.component';
+import { ListaComponent } from '../salidas-laboratorio/lista/lista.component';
 import { FormularioComponent } from './formulario/formulario.component';
-import { ModalTurnosComponent}  from  './formulario/modal-turnos.component';
 
 import { AuthService } from '../../auth.service';
 
 import { IndexLaboratorioModule } from '../index-laboratorio/index-laboratorio.module';
-//crud
+// crud
 import { CrudService } from '../../crud/crud.service';
 import { CrudModule } from '../../crud/crud.module';
-//fin crud
+// fin crud
 import { NguiAutoCompleteModule } from '@ngui/auto-complete';
 import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
+import { TextMaskModule } from 'angular2-text-mask';
+import { MomentModule   } from 'angular2-moment';
+import { SimpleNotificationsModule } from 'angular2-notifications';
 
 @NgModule({
   imports: [
@@ -38,12 +40,14 @@ import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
     IndexLaboratorioModule,
     CrudModule,
     NguiAutoCompleteModule,
-    NguiDatetimePickerModule
+    NguiDatetimePickerModule,
+    TextMaskModule,
+    MomentModule,
+    SimpleNotificationsModule
   ],
-  declarations: [ 
+  declarations: [
     ListaComponent,
-    FormularioComponent,
-    ModalTurnosComponent
+    FormularioComponent
   ],
   providers: [ AuthService, CrudService ]
 })

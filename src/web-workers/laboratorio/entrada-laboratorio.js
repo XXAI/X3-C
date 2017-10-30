@@ -242,7 +242,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
         );
 
         pdfMake.createPdf(dd).getBase64(function(base64) {
-            postMessage({ fileName: 'Entrada' + data.datos.id + '.pdf', base64: base64 });
+            postMessage({ fileName: 'Entrada_de_laboratorio_' + data.datos.id + '.pdf', base64: base64 });
         });
     }
 
