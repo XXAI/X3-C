@@ -21,7 +21,7 @@ export class MenuAsideComponent implements OnInit {
       {
         titulo: 'Configuración',
         modulos: [
-          { permiso: 'mQkBWsqUn00z7jDD66qhiJO7jrnPEaOT', icono: 'fa-cog', titulo:"Configuración de almacén", url:"/configuracion/almacen-configuracion" },
+          { permiso: 'mQkBWsqUn00z7jDD66qhiJO7jrnPEaOT', icono: 'fa-cog', titulo:"Configuración de almacén", url:"/configuracion/configuracion-general" },
           { permiso: 'zRTSAl0H8YNFMWcn00yeeJPigztCbSdC', icono: 'fa-archive', titulo:"Mis almacenes", url:"/configuracion/almacenes" },
           { permiso: 'Ki9kBghgqYsY17kqL620GWYl0bpeU6TB', icono: 'fa-hospital-o', titulo:"Mis servicios", url:"/configuracion/servicios"},
           { permiso: '9dKCEyujSdLQF2CbpjXiWKeap0NlJCzw', icono: 'fa-clock-o', titulo:"Mis turnos", url:"/configuracion/turnos" },

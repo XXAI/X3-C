@@ -47,10 +47,10 @@
                         <tbody formArrayName="movimientos_articulos">
                             <tr *ngFor="let val of ctrl.dato.controls.movimientos_articulos.controls;  let i = index;" [formGroupName]="i">
                                 <td>{{val.get("articulos").value.nombre}} </td>                                
-                                <td *ngIf="tieneid">{{val.get("precio_unitario").value}}</td>
-                                <td *ngIf="ctrl.permisos.indexOf('ArticuloPreciocontroller.index') < 0 && !tieneid">{{val.get("precio_unitario").value}}</td>
+                                <td *ngIf="tieneid">{{val.get("precio_unitario_unitario").value}}</td>
+                                <td *ngIf="ctrl.permisos.indexOf('ArticuloPreciocontroller.index') < 0 && !tieneid">{{val.get("precio_unitario_unitario").value}}</td>
                                 <td *ngIf="ctrl.permisos.indexOf('ArticuloPreciocontroller.index') > -1 && !tieneid">
-                                    {{(val.get("precio_unitario").value) | currency:'MXN':true}}
+                                    {{(val.get("precio_unitario_unitario").value) | currency:'MXN':true}}
                                 </td>
                                 <td><strong class="tag is-info is-medium">{{val.get("cantidad").value}}</strong></td>
                                 <td>
@@ -60,8 +60,8 @@
                                     (keyup)="cambio_cantidad_articulo_key($event, ctrl.dato.controls.movimientos_articulos.controls[i].controls);" > 
                                 </td>
                                 <td>
-                                    <span class="tag is-medium">{{(val.get("cantidad").value * val.get("precio_unitario").value) | currency:'MXN':true}}</span>
-                                    <span class="tag is-success is-medium">{{(val.get("cantidad").value - val.get("cantidad_devolucion").value ) * (val.get("precio_unitario").value) | currency:'MXN':true}}</span></td>
+                                    <span class="tag is-medium">{{(val.get("cantidad").value * val.get("precio_unitario_unitario").value) | currency:'MXN':true}}</span>
+                                    <span class="tag is-success is-medium">{{(val.get("cantidad").value - val.get("cantidad_devolucion").value ) * (val.get("precio_unitario_unitario").value) | currency:'MXN':true}}</span></td>
                             
                             </tr>
                         </tbody>

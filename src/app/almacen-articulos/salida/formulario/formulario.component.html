@@ -1,5 +1,5 @@
 <!-- crud asignar url de la api URL="url de la api" titulo="un titulo para la pestaña de la pagina" [dato]="variable que contiene el formulario]-->
-<formulario #ctrl URL="salida" titulo="Salida" [dato]="dato"></formulario>
+<formulario #ctrl URL="salida-articulo" titulo="Salida" [dato]="dato"></formulario>
 
 <!-- Menu principal "-->
 <articulos-catalogo-menu></articulos-catalogo-menu>
@@ -7,7 +7,7 @@
 <form name="form" novalidate [formGroup]="dato" (ngSubmit)="enviar();">
     <div class="contenedor columns " style=" overflow:auto;" [style.maxHeight.px]="tamano-50">
 
-        <!-- apartado de movimientos_articulos -->
+        <!-- apartado de movimiento_articulos -->
         <div class="column">
             <div style="background: #FFF; border-radius: 1em; ">
                 <section class="hero is-primary">
@@ -31,97 +31,84 @@
                         ¡No se completo la salida! <strong>Intente de nuevo</strong>, Si no contacte con soporte
                     </div>
                     <div class="notification is-success" *ngIf="salida_ok">
-                        Salida realizada con exito <strong>Puede seguir vendiendo</strong>
+                        Salida realizada con exito 
                     </div>
                     <div class="field has-addons">
-                        <p class="control is-expanded" *ngIf="codigo_barras_activo">
-                            <input autofocus class="input is-success is-medium" (keydown)="buscar_articulo($event)" id="buscarArticulo" type="text" placeholder="Escanea el codigo de barra, o cambia la forma de busqueda en el botón azul de a lado para escribir el nombre del producto">
-                        </p>
-
-                        <p class="control is-expanded" *ngIf="!codigo_barras_activo">
+                        <p class="control is-expanded" >
                             <input autofocus autocomplete="off" ngui-auto-complete [source]="articulos_term" [list-formatter]="autocompleListFormatter"
                                 id="buscarArticulo" value-property-name="clave" display-property-name="nombre" path-to-data=""
                                 loading-text="Cargando..." no-match-found-text="No hay resultados." (valueChanged)="select_articulo_autocomplete($event)"
-                                min-chars="1" class="input is-success is-medium" type="text" placeholder="Escanea el codigo de barra, o empieza escribir el nombre del producto, o cambia la forma de busqueda en el botón azul">
+                                min-chars="1" class="input is-success is-medium" type="text" placeholder="Empieza escribir el nombre del producto">
                         </p>
-                        <p class="control" style="margin-top: -51px; float: right;">
-                            <button type="button" class="button is-info is-medium" (click)="cambiar_busqueda()">
-                                <span class="icon">
-                                    <i class="fa fa-{{codigo_barras_activo ? 'barcode' : 'search'}}"> </i> 
-                                </span> 
-                                &nbsp;&nbsp; {{codigo_barras_activo ? "Codigo de barras" : "Buscar texto"}}
-                            </button>
-                        </p>
+                        
                     </div>
                     <hr>
-
                     <table class="table is-narrow is-bordered is-striped">
                         <thead>
                             <tr>
                                 <th>Articulo</th>
-                                <th *ngIf="ctrl.configuracion.sucursal.lote_salida == 1">Lotes</th>
-                                <th>Precio</th>
                                 <th>Cantidad</th>
+                                <th>Precio</th>
+                                <th>Iva({{configuracion_general.iva}} %)</th>
                                 <th>Importe</th>
+                                <th>Observaciones</th>
                                 <th style="width:1px"></th>
                             </tr>
                         </thead>
-                        <tbody formArrayName="movimientos_articulos">
-                            <tr *ngFor="let val of ctrl.dato.controls.movimientos_articulos.controls;  let i = index;" [formGroupName]="i">
-                                <td>{{val.get("articulos").value.nombre}} </td>
-                                <td *ngIf="ctrl.configuracion.sucursal.lote_salida == 1">
-                                    <!-- Stock -->
-                                    <button (click)="seleccionar_stock(val.get('articulos').value.stocks, i); ctrl.abrirModal('abrirstock');" class="button is-fullwidth is-info"
-                                        type="button" *ngIf="val.get('cantidad_restante').value > 0">Seleccionar lote</button>
-
-                                    <table class="table">
-                                        <thead>
-                                            <tr>                                                
-                                                <th>Lote</th>
-                                                <th>Caducidad</th>
-                                                <th>Existencia</th>
-                                                <th>Cantidad</th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody formArrayName="stocks">
-                                            <tr *ngFor="let stck of val.controls.stocks.controls; let x = index;" [formGroupName]="x">                                                                                                
-                                                <td>{{stck.value.lote}}</td>
-                                                <td>{{stck.value.fecha_caducidad}}</td>
-                                                <td>{{stck.value.existencia}}</td>
-                                                <td>
-                                                    <input class="input" id="cantidad{{i}}{{x}}" formControlName="cantidad" type="number" step="1" min="1" [max]="val.get('stocks').value > 1 ? val.get('cantidad_restante').value : val.get('cantidad').value" 
-                                                    (change)="cambio_cantidad_stock(ctrl.dato.controls.movimientos_articulos.controls[i].controls, ctrl.dato.controls.movimientos_articulos.controls[i].controls.stocks.controls[x].controls)"
-                                                    (keyup)="cambio_cantidad_stock_key($event, ctrl.dato.controls.movimientos_articulos.controls[i].controls, ctrl.dato.controls.movimientos_articulos.controls[i].controls.stocks.controls[x].controls)">
-                                                </td>
-                                                <td>
-                                                    <a class="is-danger" title="Quitar" (click)="quitar_stock(ctrl.dato.controls.movimientos_articulos.controls[i].controls.stocks, x, i, stck); ">
-                                                        <span class="icon">
-                                                            <i class="fa fa-trash-o"></i>
-                                                        </span>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                                <td *ngIf="tieneid">{{val.get("precio_unitario").value}}</td>
-                                <td *ngIf="ctrl.permisos.indexOf('ArticuloPreciocontroller.index') < 0 && !tieneid">{{val.get("precio_unitario").value}}</td>
-                                <td *ngIf="ctrl.permisos.indexOf('ArticuloPreciocontroller.index') > -1 && !tieneid">
-                                    <div class="select">
-                                        <select class="select" (change)="cambiar_precio($event, i, ctrl.dato.controls.movimientos_articulos.controls)">
-                                            <option *ngFor="let pre of val.get('articulos').value.articulos_precios; let p = index" value="{{p}}" >{{ pre.nombre }} {{ pre.precio  | currency:'MXN':true }}</option>
-                                        </select>
+                        <tbody formArrayName="movimiento_articulos">
+                            <tr *ngFor="let val of ctrl.dato.controls.movimiento_articulos.controls;  let i = index;" [formGroupName]="i">
+                                <td>{{val.get("articulos").value.nombre}} ({{val.get("articulos").value.numero_inventario ? val.get("articulos").value.numero_inventario : val.get('inventarios').value[0].numero_inventario}}) </td>                                
+                                
+                                <td>
+                                    <div class="field">
+                                        <p class="control is-expanded  has-icon has-icon-right">
+                                            <input class="input" type="number" [ngClass]="{'is-danger': val.get('cantidad').hasError('required') }"
+                                                placeholder="Cantidad" formControlName="cantidad" min="0" max="val.get('articulos').value.existencia"
+                                                (change)="cambio_cantidad(i, ctrl.dato.controls.movimiento_articulos.controls[i].controls)"
+                                                (keyup)="cambio_cantidad_key($event, i, ctrl.dato.controls.movimiento_articulos.controls[i].controls)">
+                                            <span class="icon is-small" *ngIf="val.get('cantidad').hasError('required') ">
+                                                <i class="fa fa-warning"></i>
+                                            </span>                                            
+                                        </p>
                                     </div>
                                 </td>
                                 <td>
-                                    <input class="input has-text-centered"  type="number" step="1" min="1" placeholder="Cantidad" formControlName="cantidad"
-                                    (change)="cambio_cantidad_articulo(ctrl.dato.controls.movimientos_articulos.controls[i].controls);"
-                                    (keyup)="cambio_cantidad_articulo_key($event, ctrl.dato.controls.movimientos_articulos.controls[i].controls);" > 
+                                    <div class="field">
+                                        <p class="control is-expanded  has-icon has-icon-right">
+                                            <input class="input" type="number" [ngClass]="{'is-danger': val.get('precio_unitario').hasError('required') }"
+                                                placeholder="Precio" formControlName="precio_unitario" min="0" 
+                                                (change)="cambio_precio_unitario(ctrl.dato.controls.movimiento_articulos.controls[i].controls)"
+                                                (keyup)="cambio_precio_unitario_key($event, ctrl.dato.controls.movimiento_articulos.controls[i].controls)">
+                                            <span class="icon is-small" *ngIf="val.get('precio_unitario').hasError('required') ">
+                                                <i class="fa fa-warning"></i>
+                                            </span>                                            
+                                        </p>
+                                    </div>
                                 </td>
-                                <td><span class="tag is-success is-medium">{{(val.get("cantidad").value ) * (val.get("precio_unitario").value) | currency:'MXN':true}}</span></td>
+                               
                                 <td>
-                                    <a class="is-danger" title="Quitar" (click)="ctrl.quitar_form_array(ctrl.dato.controls.movimientos_articulos, i); calcular_importe_articulo();">
+                                    <div class="field">
+                                        <p class="control is-expanded  has-icon has-icon-right">
+                                            <input class="input" type="number" [ngClass]="{'is-danger': val.get('iva').hasError('required') }"
+                                                placeholder="Iva" formControlName="iva" min="0" 
+                                                (change)="cambio_precio_unitario(ctrl.dato.controls.movimiento_articulos.controls[i].controls)"
+                                                (keyup)="cambio_precio_unitario_key($event, ctrl.dato.controls.movimiento_articulos.controls[i].controls)" >
+                                            <span class="icon is-small" *ngIf="val.get('iva').hasError('required') ">
+                                                <i class="fa fa-warning"></i>
+                                            </span>                                            
+                                        </p>
+                                    </div>
+                                </td>
+                                <td><span class="tag is-success is-medium">{{val.value.importe | currency:'MXN':true}}</span></td>
+                                <td>
+                                    <div class="field">
+                                        <p class="control is-expanded  has-icon has-icon-right">
+                                            <input class="input" type="text" placeholder="Observaciones" formControlName="observaciones" >                                                                                    
+                                        </p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a class="is-danger" title="Quitar" (click)="ctrl.quitar_form_array(ctrl.dato.controls.movimiento_articulos, i); calcular_importe_articulo();">
                                         <span class="icon">
                                             <i class="fa fa-trash-o"></i>
                                         </span>
@@ -192,128 +179,38 @@
                 <div style="padding: 1em;">
 
                     <!-- cargar los catalogos que se requieran parametro 1 modelo donde se guarda el catalogo, parametro 2 ruta de la api -->
-                    <a id="catalogos" (click)="ctrl.cargarCatalogo('clientes', 'cliente?id=2'); ctrl.cargarCatalogo('metodos_pagos', 'tipo-metodo-pago');"></a>
+                    
                     <h3 class="title">
                         <i class="fa fa-file"></i> Datos de la salida
                     </h3>
                     <div class="field">
-                        <label class="label">Cliente (opcional):</label>
-                        <select2 name="personas_id" [options]="ctrl.optionSelect" [value]="startValue" (valueChanged)="ctrl.seleccionarValorSelect2($event, ctrl.dato.controls.personas_id); "
-                            [data]="ctrl.clientes"></select2>
+                            <label class="label">Fecha:</label>
+                            <input id="fecha_movimiento"  class="input"   ngui-datetime-picker
+                            [ngClass]="{'is-danger': ctrl.dato.get('fecha_movimiento').hasError('required')}" formControlName="fecha_movimiento"
+                            placeholder="YYYY-MM-DD HH:MM" />  
                     </div>
                     <div class="field">
                         <label class="label">Comentarios:</label>
                         <p class="control is-expanded  has-icon has-icon-right">
-                            <textarea class="textarea" type="text" rows="2" placeholder="Comentarios" formControlName="comentarios"></textarea>
+                            <textarea class="textarea" type="text" rows="2" placeholder="Comentarios" formControlName="observaciones"></textarea>
                         </p>
                     </div>
 
-                    <hr>
-
-                    <div class="card">
-                        <header class="card-header">
-                            <p class="card-header-title">
-                                Formas de pago
-                            </p>
-                            <a class="card-header-icon">
-                            <span class="icon">
-                                <i class="fa fa-money"></i>
-                            </span>
-                            </a>
-                        </header>
-                        <div class="card-content">
-
-                            <div formArrayName="pagos">
-                                <div class="content" *ngFor="let item of ctrl.dato.controls.pagos.controls; let i=index">
-                                    <div class="box" [formGroupName]="i">
-                                        <article class="media">
-                                            <div class="media-left">
-                                                <figure class="image is-64x64">
-                                                    <a *ngIf="!tieneid" class="button is-danger" (click)="ctrl.quitar_form_array(ctrl.dato.controls.pagos, i); calcular_importe_articulo();"><span class="icon"><i class="fa fa-minus"></i></span></a>
-                                                </figure>
-                                            </div>
-                                            <div class="media-content">
-                                                <div class="columns">
-                                                    <div class="column is-6">
-                                                        <label>Forma de pago: </label>
-                                                        <div class="select">
-                                                            <select class="select" name="tipos_metodos_pagos_id" formControlName="tipos_metodos_pagos_id">
-                                                                <option *ngFor="let val of ctrl.metodos_pagos" value="{{val.id}}" >{{ val.nombre }}</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="column is-6">
-                                                        <label>Pago: </label>
-                                                        <input class="input has-text-centered is-success" 
-                                                            (keyup)="validar_cantidad_pago($event, ctrl.dato.controls.pagos.controls[i].controls.importe, ctrl.dato.get('total').value, 'max', i); " 
-                                                            (change)="validar_pago($event, ctrl.dato.controls.pagos.controls[i].controls.importe, ctrl.dato.get('total').value, 'max', i);"
-                                                            type="number" step="0.1" min="0" max="{{ctrl.dato.get('total').value}}"
-                                                            placeholder="Pago" formControlName="importe">
-                                                    </div>
-                                                </div>
-                                                <div class="columns">
-                                                    <div class="column is-6">
-                                                        <label>Paga con: </label>
-                                                        <input class="input has-text-centered is-warning" 
-                                                            (keyup)="validar_cantidad_pago($event, ctrl.dato.controls.pagos.controls[i].controls.paga_con, ctrl.dato.get('pagos').value[i].importe, 'min', i); " 
-                                                            (change)="validar_pago($event, ctrl.dato.controls.pagos.controls[i].controls.paga_con, ctrl.dato.get('pagos').value[i].importe, 'min', i); "
-                                                            type="number" step="0.1" min="{{ctrl.dato.get('pagos').value[i].importe}}"
-                                                            placeholder="Paga con" formControlName="paga_con">
-                                                    </div>
-                                                    <div class="column is-6">
-                                                        <label>Cambio: </label>
-                                                        <input class="input has-text-centered is-dark" readonly placeholder="Cambio" formControlName="cambio">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </article>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <footer class="card-footer" *ngIf="ctrl.dato.get('subtotal').value > 0 || !tieneid">
-                            <a class="card-footer-item" *ngIf="ctrl.dato.get('valido').value == ''" (click)="agregar_forma_pago(ctrl.dato.controls.pagos, form_pagos); calcular_importe_articulo();">
-                                <span class="icon">
-                                    <i class="fa fa-plus"></i>
-                                </span>
-                                &nbsp;Agregar otro</a>
-                            <a class="card-footer-item is-danger" (click)="ctrl.limpiar_form_array(ctrl.dato.controls.pagos); calcular_importe_articulo();">
-                                <span class="icon">
-                                    <i class="fa fa-trash-o"></i>
-                                </span>
-                                &nbsp;Limpiar pagos</a>
-                        </footer>
-                    </div>
 
                     <nav class="panel" style="font-size:1.5em">
                         <p class="panel-heading">
-                            Cobro
+                            Total
                         </p>
-
-
-                        <a class="panel-block is-active">
+                        <a class="panel-block">
                             <span class="panel-icon">
                             <i class="fa fa-money"></i>
                             </span>
                             <div class="columns" style="width:100%">
                                 <div class="column is-6">
-                                    Subtotal: 
+                                    Sub Total: 
                                 </div>
-                                <div class="column is-6">
-                                   {{ctrl.dato.get('subtotal').value  | currency:'MXN':true}}
-                                </div>
-                            </div>
-                        </a>
-                        <a class="panel-block" *ngIf="ctrl.dato.get('descuento').value > 0">
-                            <span class="panel-icon">
-                            <i class="fa fa-money"></i>
-                            </span>
-                            <div class="columns" style="width:100%">
-                                <div class="column is-6">
-                                    Descuento: 
-                                </div>
-                                <div class="column is-6">
-                                    {{ctrl.dato.get('descuento').value  | currency:'MXN':true}}
+                                <div class="column is-6"> 
+                                    {{ctrl.dato.get('subtotal').value  | currency:'MXN':true}}
                                 </div>
                             </div>
                         </a>
@@ -343,32 +240,7 @@
                                 </div>
                             </div>
                         </a>
-                        <a class="panel-block" *ngIf="ctrl.dato.get('total_recibido').value > 0">
-                            <span class="panel-icon">
-                            <i class="fa fa-money"></i>
-                            </span>
-                            <div class="columns" style="width:100%">
-                                <div class="column is-6">
-                                    Total recibido: 
-                                </div>
-                                <div class="column is-6">
-                                   {{ctrl.dato.get('total_recibido').value  | currency:'MXN':true}}
-                                </div>
-                            </div>
-                        </a>
-                        <a class="panel-block" *ngIf="ctrl.dato.get('cambio').value > 0">
-                            <span class="panel-icon">
-                            <i class="fa fa-money"></i>
-                            </span>
-                            <div class="columns" style="width:100%">
-                                <div class="column is-6">
-                                    Cambio: 
-                                </div>
-                                <div class="column is-6">
-                                   {{ctrl.dato.get('cambio').value  | currency:'MXN':true}}
-                                </div>
-                            </div>
-                        </a>
+                        
                     </nav>
 
                 </div>
@@ -377,59 +249,3 @@
 
     </div>
 </form>
-
-
-
-<div class="modal" id="abrirstock">
-    <div class="modal-background"></div>
-    <div class="modal-card" style="width:45%">
-        <header class="modal-card-head">
-            <h1>Lista de existencias</h1>
-        </header>
-        <section class="modal-card-body">
-            <div class="content">
-                <div class="control is-grouped">
-                    <p class="control is-expanded">
-                        <input class="input is-medium" type="text" placeholder="Buscar" [(ngModel)]="busqueda" id="search-box">
-                    </p>
-                    <p class="control">
-                        <a class="button is-medium is-primary" [ngClass]="{ 'is-disabled': busqueda==''}" (click)="busqueda=''">
-                            <span class="icon"><i class="fa fa-close"></i></span>
-                            </a>
-                    </p>
-                </div>
-                <table class="table is-striped">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Lote</th>
-                            <th>Fecha de caducidad</th>
-                            <th>Existencia</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let item of stocks ; let i=index">
-                            <td>{{i + 1}}</td>
-                            <td>{{item.lote}}</td>
-                            <td>{{item.fecha_caducidad}}</td>
-                            <td>{{item.existencia}}</td>                            
-                            <td>
-                                <a title="Surtir" class="button is-success" (click)="agregar_stock(item)">
-                                    <span class="icon">
-                                        <i class="fa fa-check"></i>
-                                    </span> 
-                                </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
-            </div>
-        </section>
-        <footer class="modal-card-foot">
-
-            <a class="button" (click)="ctrl.cancelarModal('abrirstock')" id="cancelar_stock">Cancelar</a>
-        </footer>
-    </div>
-</div>

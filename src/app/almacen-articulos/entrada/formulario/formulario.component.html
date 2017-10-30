@@ -1,5 +1,5 @@
 <!-- crud asignar url de la api URL="url de la api" titulo="un titulo para la pestaña de la pagina" [dato]="variable que contiene el formulario]-->
-<formulario #ctrl URL="entrada" titulo="Entrada" [dato]="dato"></formulario>
+<formulario #ctrl URL="entrada-articulo" titulo="Entrada" [dato]="dato"></formulario>
 
 <!-- Menu principal "-->
 <articulos-catalogo-menu></articulos-catalogo-menu>
@@ -7,7 +7,7 @@
 <form name="form" novalidate [formGroup]="dato" (ngSubmit)="enviar();">
     <div class="contenedor columns " style=" overflow:auto;" [style.maxHeight.px]="tamano-50">
 
-        <!-- apartado de movimientos_articulos -->
+        <!-- apartado de movimiento_articulos -->
         <div class="column">
             <div style="background: #FFF; border-radius: 1em; ">
                 <section class="hero is-primary">
@@ -51,14 +51,14 @@
                                 <th>Información</th>
                                 <th>Cantidad</th>
                                 <th>Precio</th>
-                                <th>Iva</th>
+                                <th>Iva({{configuracion_general.iva}} %)</th>
                                 <th>Importe</th>
                                 <th>Observaciones</th>
                                 <th style="width:1px"></th>
                             </tr>
                         </thead>
-                        <tbody formArrayName="movimientos_articulos">
-                            <tr *ngFor="let val of ctrl.dato.controls.movimientos_articulos.controls;  let i = index;" [formGroupName]="i">
+                        <tbody formArrayName="movimiento_articulos">
+                            <tr *ngFor="let val of ctrl.dato.controls.movimiento_articulos.controls;  let i = index;" [formGroupName]="i">
                                 <td>{{val.get("articulos").value.nombre}} </td>                                
                                 <td >
                                     <!-- Inventario -->
@@ -79,7 +79,7 @@
                                                     <div class="field">
                                                         <p class="control is-expanded  has-icon has-icon-right">
                                                             <input class="input" type="text" [ngClass]="{'is-danger': stck.get('numero_inventario').hasError('required') }"
-                                                                placeholder="Numero de inventario" formControlName="numero_inventario" >
+                                                                placeholder="Almacen + - + número consecutivo" formControlName="numero_inventario" >
                                                             <span class="icon is-small" *ngIf="stck.get('numero_inventario').hasError('required') ">
                                                                 <i class="fa fa-warning"></i>
                                                             </span>                                            
@@ -93,13 +93,13 @@
                                                         </p>
                                                     </div>
                                                 </td>
-                                                <td formArrayName="inventarios_metadatos">
-                                                    <a title="Capturar información" class="button is-{{stck.value.valido == '1' ? 'success' : 'warning'}}" (click)="ctrl.abrirModal('meta'+i+''+x)">
+                                                <td formArrayName="inventario_metadato">
+                                                    <a title="Capturar información" class="button is-{{stck.value.valido == '1' || ctrl.id ? 'success' : 'warning'}}" (click)="ctrl.abrirModal('meta'+i+''+x)">
                                                         <span class="icon">
-                                                            <i class="fa fa-{{stck.value.valido == '1' ? 'check' : 'ban'}}"></i>
+                                                            <i class="fa fa-{{stck.value.valido == '1' || ctrl.id ? 'check' : 'ban'}}"></i>
                                                         </span> 
                                                         &nbsp;
-                                                        {{stck.value.valido ? 'Información capturada' : 'Capturar información'}}
+                                                        {{stck.value.valido || ctrl.id ? 'Información capturada' : 'Capturar información'}}
                                                     </a>
 
                                                     <div class="modal" id="meta{{i}}{{x}}">
@@ -110,7 +110,7 @@
                                                                 <button class="delete" type="button" (click)="ctrl.cancelarModal('meta'+i+''+x)"></button>
                                                             </header>
                                                             <section class="modal-card-body"  style="overflow:auto; display:block" [style.maxHeight.px]="tamano-385">
-                                                                <div class="field" *ngFor="let item of stck.controls.inventarios_metadatos.controls; let z=index" >
+                                                                <div class="field" *ngFor="let item of stck.controls.inventario_metadato.controls; let z=index" >
                                                                     <div class="control is-expanded  has-icon has-icon-right"  [formGroupName]="z">   
                                                                         <label *ngIf="item.value.tipo != 'boolean'" class="label">{{ item.value.campo }}</label>
                                                                         <!--text  -->
@@ -184,7 +184,7 @@
 
                                                             </section>
                                                             <footer class="modal-card-foot">
-                                                                <a class="button is-success" type="button" (click)="ctrl.cancelarModal('meta'+i+''+x); validar_campos(val.controls.inventarios.controls[x].controls.inventarios_metadatos.controls, val.controls.inventarios.controls[x].controls)">Continuar</a>
+                                                                <a class="button is-success" type="button" (click)="ctrl.cancelarModal('meta'+i+''+x); validar_campos(val.controls.inventarios.controls[x].controls.inventario_metadato.controls, val.controls.inventarios.controls[x].controls)">Continuar</a>
                                                             </footer>
                                                         </div>
                                                     </div>
@@ -199,8 +199,8 @@
                                         <p class="control is-expanded  has-icon has-icon-right">
                                             <input class="input" type="number" [ngClass]="{'is-danger': val.get('cantidad').hasError('required') }"
                                                 placeholder="Cantidad" formControlName="cantidad" min="0" 
-                                                (change)="cambio_cantidad(i, ctrl.dato.controls.movimientos_articulos.controls[i].controls)"
-                                                (keyup)="cambio_cantidad_key($event, i, ctrl.dato.controls.movimientos_articulos.controls[i].controls)">
+                                                (change)="cambio_cantidad(i, ctrl.dato.controls.movimiento_articulos.controls[i].controls)"
+                                                (keyup)="cambio_cantidad_key($event, i, ctrl.dato.controls.movimiento_articulos.controls[i].controls)">
                                             <span class="icon is-small" *ngIf="val.get('cantidad').hasError('required') ">
                                                 <i class="fa fa-warning"></i>
                                             </span>                                            
@@ -210,11 +210,11 @@
                                 <td>
                                     <div class="field">
                                         <p class="control is-expanded  has-icon has-icon-right">
-                                            <input class="input" type="number" [ngClass]="{'is-danger': val.get('precio').hasError('required') }"
-                                                placeholder="Precio" formControlName="precio" min="0" 
-                                                (change)="cambio_precio(ctrl.dato.controls.movimientos_articulos.controls[i].controls)"
-                                                (keyup)="cambio_precio_key($event, ctrl.dato.controls.movimientos_articulos.controls[i].controls)">
-                                            <span class="icon is-small" *ngIf="val.get('precio').hasError('required') ">
+                                            <input class="input" type="number" [ngClass]="{'is-danger': val.get('precio_unitario').hasError('required') }"
+                                                placeholder="Precio" formControlName="precio_unitario" min="0" 
+                                                (change)="cambio_precio_unitario(ctrl.dato.controls.movimiento_articulos.controls[i].controls)"
+                                                (keyup)="cambio_precio_unitario_key($event, ctrl.dato.controls.movimiento_articulos.controls[i].controls)">
+                                            <span class="icon is-small" *ngIf="val.get('precio_unitario').hasError('required') ">
                                                 <i class="fa fa-warning"></i>
                                             </span>                                            
                                         </p>
@@ -226,8 +226,8 @@
                                         <p class="control is-expanded  has-icon has-icon-right">
                                             <input class="input" type="number" [ngClass]="{'is-danger': val.get('iva').hasError('required') }"
                                                 placeholder="Iva" formControlName="iva" min="0" 
-                                                (change)="cambio_precio(ctrl.dato.controls.movimientos_articulos.controls[i].controls)"
-                                                (keyup)="cambio_precio_key($event, ctrl.dato.controls.movimientos_articulos.controls[i].controls)" >
+                                                (change)="cambio_precio_unitario(ctrl.dato.controls.movimiento_articulos.controls[i].controls)"
+                                                (keyup)="cambio_precio_unitario_key($event, ctrl.dato.controls.movimiento_articulos.controls[i].controls)" >
                                             <span class="icon is-small" *ngIf="val.get('iva').hasError('required') ">
                                                 <i class="fa fa-warning"></i>
                                             </span>                                            
@@ -243,7 +243,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <a class="is-danger" title="Quitar" (click)="ctrl.quitar_form_array(ctrl.dato.controls.movimientos_articulos, i); calcular_importe_articulo();">
+                                    <a class="is-danger" title="Quitar" (click)="ctrl.quitar_form_array(ctrl.dato.controls.movimiento_articulos, i); calcular_importe_articulo();">
                                         <span class="icon">
                                             <i class="fa fa-trash-o"></i>
                                         </span>
