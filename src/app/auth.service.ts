@@ -28,6 +28,7 @@ export class AuthService {
         localStorage.removeItem('token');
         localStorage.removeItem('usuario');
         localStorage.removeItem('server_info');
+        localStorage.removeItem('configuracion_general');
 
         // Tratamos de obtener la unidad medica seleccionada por default
         // y si habia bloqueado pantalla obtenemos la que tenia seleccionada
@@ -110,6 +111,7 @@ export class AuthService {
         localStorage.setItem('token', json.token)
         localStorage.setItem('usuario', JSON.stringify(json.usuario));
         localStorage.setItem('server_info', JSON.stringify(json.server_info));
+        localStorage.setItem('configuracion_general', JSON.stringify(json.configuracion_general));
       }
     });
   }
@@ -133,6 +135,7 @@ export class AuthService {
     localStorage.removeItem('token');
     localStorage.removeItem('usuario');
     localStorage.removeItem('server_info');
+    localStorage.removeItem('configuracion_general');
 
     if(url != null){
       this.router.navigate(['login'], { queryParams: { returnUrl: decodeURIComponent(url.replace(/\+/g,  " ")) } });

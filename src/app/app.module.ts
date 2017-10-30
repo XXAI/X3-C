@@ -129,7 +129,7 @@ import { PersonalCluesModule } from './configuracion/personal-clues/personal-clu
 
 import { EntradaModule } from './almacen-articulos/entrada/entrada.module';
 import { SalidaModule } from './almacen-articulos/salida/salida.module';
-import { AlmacenConfiguracionModule } from './almacen-articulos/almacen-configuracion/almacen-configuracion.module';
+import { ConfiguracionGeneralModule } from './almacen-articulos/configuracion-general/configuracion-general.module';
 
 //import { CrudModule } from './crud/crud.module';
 export function highchartsFactory() {
@@ -233,7 +233,7 @@ export function highchartsFactory() {
     //entradas salidas almacen articulos
     EntradaModule,
     SalidaModule,
-    AlmacenConfiguracionModule,
+    ConfiguracionGeneralModule,
 
     WildcardRoutingModule, // Este siempre debe ir al final para que no haga conflicto con otras rutas
 
