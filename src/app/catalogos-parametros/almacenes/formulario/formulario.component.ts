@@ -33,8 +33,8 @@ export class FormularioComponent {
   
   ngOnInit() {
     this.dato = this.fb.group({
-      id: ['', [Validators.required]], 
-      nombre: ['', [Validators.required]],     
+      id: ['', [Validators.required]],
+      nombre: ['', [Validators.required]],
       nivel_almacen: ['', [Validators.required]] ,
       tipo_almacen: ['', [Validators.required]] ,
       clues: ['', [Validators.required]] ,

@@ -128,7 +128,7 @@ export class ListaComponent {
    */
   imprimir() {
     this.cargandoPdf = true;
-    this.crudService.lista_general('entrada-almacen?fecha_desde=' + this.fecha_desde
+    this.crudService.lista_general('entrada-laboratorio?fecha_desde=' + this.fecha_desde
     + '&fecha_hasta=' + this.fecha_hasta + '&recibe=' + this.recibe).subscribe(
       resultado => {
               this.cargando = false;

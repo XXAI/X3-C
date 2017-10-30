@@ -1,5 +1,4 @@
-<formulario #ctrl URL="entrada-almacen" titulo="Entrada  de almacén" [dato]="dato"></formulario>
-<!--<menu-farmacia [modulo]="'Entrada  de almacén'" [icono]="'assets/icono-entradas.svg'" [url]="'/laboratorio/entradas-laboratorio'"></menu-farmacia>-->
+<formulario #ctrl URL="entrada-laboratorio" titulo="Entrada  de laboratorio" [dato]="dato"></formulario>
 <app-menu-laboratorio [modulo]="'Entradas de laboratorio'" [icono]="'assets/icono-entradas.svg'" [url]="'/laboratorio/entradas-laboratorio'"></app-menu-laboratorio>
 <div style="height:50px;"></div>
 <form name="form" novalidate [formGroup]="dato" (ngSubmit)="ctrl.enviar()">
@@ -150,7 +149,7 @@
                                 -->
                                 <p class="level-item" *ngIf="!tieneid || ctrl.dato.get('status').value == 'BR'">
                                     <button class="button is-primary" type="button" [ngClass]="{'is-loading': ctrl.cargando}" 
-                                    (click)="guardar_movimiento()" [disabled]="ctrl.dato.invalid">
+                                    (click)="guardar_movimiento()" [disabled]="ctrl.dato.invalid" title="Finalizar entrada de laboratorio">
                                         <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Finalizar entrada
                                     </button>
                                 </p>

@@ -169,11 +169,11 @@ export class FormularioComponent {
     // inicializar el formulario reactivo
     this.dato = this.fb.group({
       id: [''],
-      tipo_movimiento_id: ['1', [Validators.required]],
+      tipo_movimiento_id: ['13', [Validators.required]],
       status: ['FI'],
       fecha_movimiento: ['', [Validators.required]],
       observaciones: [''],
-      programa_id: [''],
+      programa_id: [null],
       cancelado: [''],
       observaciones_cancelacion: [''],
       movimiento_metadato: this.fb.group({
@@ -243,7 +243,7 @@ export class FormularioComponent {
         // this.lista_programas = resultado;
         let contador = 0;
         for (let item of resultado) {
-          if (item.status === '1') {
+          if (item.status === 1 || item.status === '1') {
             this.lista_programas.push(item);
           }
         }
@@ -260,6 +260,7 @@ export class FormularioComponent {
   llenarFormulario() {
     const insumos_temporal = this.fb.array([]);
     const control_insumos = <FormArray>this.dato.controls['insumos'];
+    console.log(control_insumos);
 
     let lotes;
     for ( let item of control_insumos.value) {
@@ -276,7 +277,9 @@ export class FormularioComponent {
             'codigo_barras': [lotes_item.codigo_barras, [Validators.required]],
             'fecha_caducidad': [lotes_item.fecha_caducidad, [Validators.required]],
             'cantidad': [Number(lotes_item.cantidad), [Validators.required]],
-            'cantidad_x_envase': Number(item.detalles.informacion_ampliada.cantidad_x_envase),
+            'cantidad_x_envase': item.informacion_ampliada_sustancia == null ? 1 :
+              item.informacion_ampliada_sustancia.cantidad_x_envase ?
+              Number(item.informacion_ampliada_sustancia.cantidad_x_envase) : 1,
             'cantidad_surtida': 1,
             'movimiento_insumo_id': [lotes_item.movimiento_insumo_id],
             'stock_id': [lotes_item.stock_id],
@@ -351,7 +354,7 @@ export class FormularioComponent {
         this.cargando = false;
         this.res_busq_insumos = resultado;
         if (this.res_busq_insumos.length === 0) {
-          this.notificacion.warn('Insumos', 'No hay resultados que coincidan', this.objeto);
+          this.notificacion.warn('Laboratorio', 'No hay resultados que coincidan', this.objeto);
         }
       }
     );
@@ -542,7 +545,7 @@ export class FormularioComponent {
     const control = <FormArray>this.dato.controls['insumos'];
     // let lotes = true;
     if (control.length === 0) {
-      this.notificacion.warn('Insumos', 'Debe agregar por lo menos un insumo', this.objeto);
+      this.notificacion.warn('Laboratorio', 'Debe agregar por lo menos un insumo', this.objeto);
     }else {
       this.estoymodificando = true;
       this.dato.controls['status'].patchValue('FI');
@@ -571,7 +574,6 @@ export class FormularioComponent {
     } catch (e){
       this.cargandoPdf = false;
     }
-   
   }
 
   base64ToBlob( base64, type ) {

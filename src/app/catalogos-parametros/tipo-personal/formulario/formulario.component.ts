@@ -14,26 +14,25 @@ export class FormularioComponent {
 
   ngOnInit() {
     this.dato = this.fb.group({
-      id: [''],      
+      id: [''],
       nombre: ['', [Validators.required]],
-      tipos_personal_metadatos: this.fb.array([])   
-    });  
+      tipos_personal_metadatos: this.fb.array([]),
+    });
     this.form_tipos_personal_metadatos = {
-      campo:['', [Validators.required]], 
-      descripcion: [''],  
-      tipo:['', [Validators.required]], 
-      longitud:[1, [Validators.required]], 
-      requerido:[1]
-    }
+      campo: ['', [Validators.required]],
+      descripcion: [''],
+      tipo: ['', [Validators.required]],
+      longitud: [1, [Validators.required]],
+      requerido: [1]
+    };
     this.tipos = [
-      {id: "text", nombre: "Texto"},
-      {id: "number", nombre: "Número"},
-      {id: "boolean", nombre: "Falso/Verdadero"},
-      {id: "timestamp", nombre: "Fecha:hora"},
-      {id: "date", nombre: "Fecha"},
-      {id: "time", nombre: "Hora"},
-      {id: "file", nombre: "File"}
-    ]
+      {id: 'text', nombre: 'Texto'},
+      {id: 'number', nombre: 'Número'},
+      {id: 'boolean', nombre: 'Falso/Verdadero'},
+      {id: 'timestamp', nombre: 'Fecha:hora'},
+      {id: 'date', nombre: 'Fecha'},
+      {id: 'time', nombre: 'Hora'},
+      {id: 'file', nombre: 'File'}
+    ];
   }
-  
 }
