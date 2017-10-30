@@ -9,10 +9,21 @@
         <div style="background: #FFF; border-radius: 1em; ">
                     
             <!-- Opciones y busqueda -->
-            <tabla-opciones [ctrl]="ctrl" [nombre]="'Grupos de insumos'"></tabla-opciones>
+            <tabla-opciones 
+                #opciones
+                [ctrl]="ctrl"
+                [nombre]="'Grupos de insumos'"
+                [ruta]="'grupos-insumos'"
+                [ruta_pdf]="'catalogos-parametros/lista-grupos-insumos.js'"></tabla-opciones>
 
             <div style="overflow:auto; display:block" [style.maxHeight.px]="ctrl.tamano-300">
-                <table class="table" *ngIf="!ctrl.cargando">
+                <div class="is-fullwidth has-text-centered" *ngIf="opciones.cargandoPdf">
+                    <br>
+                    <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Generando PDF...</span></span>
+                    <br>
+                    <br>
+                </div>
+                <table class="table" *ngIf="!ctrl.cargando && !opciones.cargandoPdf">
                     <thead>
                         <tr>
                             <th><abbr title="Usuario ID">ID</abbr></th>

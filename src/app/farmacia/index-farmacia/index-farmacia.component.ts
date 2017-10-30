@@ -21,7 +21,7 @@ export class IndexFarmaciaComponent implements OnInit {
   constructor(private title: Title) { }
 
   ngOnInit() {
-    this.title.setTitle('Almacén');
+    this.title.setTitle('Almacén medicamentos');
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
 
     this.modulos = [
@@ -31,8 +31,8 @@ export class IndexFarmaciaComponent implements OnInit {
       //{ permiso: 'iSxK0TpoYpnzf8KIQTWOq9Web7WnSKhz', icono: 'assets/icono-pedidos-alt.svg', titulo:'Entregas de pedidos', url:"/almacen/entregas" },
 
       { permiso: 'GPSDLmXckXcdfdj7lD4rdacwMivsTp9g', icono: 'assets/icono-recetas.svg', titulo: 'Recetas', url: '/almacen/salidas-recetas' },
-      { permiso: 'qQvNeb1UFPOfVMKQnNkvxyqjCIUgFuEG', icono: 'assets/icono-salidas.svg', titulo: 'Salida de almacén', url:'/almacen/salidas-estandar' },
-      { permiso: 'a1OMZVn7dveOf5aUK8V0VsvvSCxz8EMw', icono: 'assets/icono-entradas.svg', titulo: 'Entrada de almacén', url:'/almacen/entradas-estandar' },
+      { permiso: 'qQvNeb1UFPOfVMKQnNkvxyqjCIUgFuEG', icono: 'assets/icono-salidas.svg', titulo: 'Salida de medicamentos', url:'/almacen/salidas-estandar' },
+      { permiso: 'a1OMZVn7dveOf5aUK8V0VsvvSCxz8EMw', icono: 'assets/icono-entradas.svg', titulo: 'Entrada de medicamentos', url:'/almacen/entradas-estandar' },
 
       { permiso: 'tTxAiFKSsx4xSvJjIv5jodZpliDxFe1y', icono: 'assets/icono-transferencias.svg', titulo: 'Transferencias Almacen', url:'/almacen/transferencia-almacen' },
 

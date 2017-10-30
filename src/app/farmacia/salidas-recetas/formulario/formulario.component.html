@@ -278,7 +278,9 @@
                                         <button class="button is-primary" type="submit" [ngClass]="{'is-loading': ctrl.cargando}" [disabled]="ctrl.dato.invalid"> <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar</button>
                                 </p> -->
                                 <p class="level-item" *ngIf="!tieneid" [title]="ctrl.dato.invalid ? 'Llene los campos en rojo' : 'Guardar'">
-                                    <button class="button is-primary" [ngClass]="{'is-loading': ctrl.cargando}" (click)="guardar_movimiento()" [disabled]="ctrl.dato.invalid"> <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar</button>
+                                    <button class="button is-primary" [ngClass]="{'is-loading': ctrl.cargando}" (click)="guardar_movimiento()"
+                                        [disabled]="ctrl.dato.invalid"> <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> 
+                                        &nbsp; Guardar</button>
                                 </p>
                                 <p *ngIf="tieneid" class="level-item"><a class="button is-primary" title="Actualizar" (click)="ctrl.cargarDatos();"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
                                 <p *ngIf="!tieneid" class="level-item"><a class="button is-primary" title="Actualizar" (click)="ctrl.cargarCatalogo('turnos', 'mis-turnos');"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
