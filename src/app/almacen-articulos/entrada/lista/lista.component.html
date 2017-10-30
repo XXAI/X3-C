@@ -1,5 +1,5 @@
 <!-- crud asignar url de la api URL="url de la api" titulo="un titulo para la pestaña de la pagina" [dato]="variable que contiene el formulario]-->
-<listar #ctrl URL="entrada?tipos_movimientos_id=11" titulo="Entrada"></listar>
+<listar #ctrl URL="entrada-articulo?tipo_movimiento_id=11" titulo="Entrada"></listar>
 
 <!-- Menu principal "-->
 <articulos-catalogo-menu></articulos-catalogo-menu>
@@ -44,7 +44,7 @@
     
                         </tr>
                         <tr *ngIf="ctrl.dato ">
-                            <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>
+                            <td colspan="6" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>
                         </tr>
                     </tbody>
                     <tbody *ngIf="ctrl.busquedaActivada">
@@ -60,7 +60,7 @@
                         </tr>
     
                         <tr *ngIf="ctrl.resultadosBusqueda.length == 0 && ctrl.busquedaActivada">
-                            <td colspan="5" style="vertical-align: middle; color:#888;">No se encontraron resultados.</td>
+                            <td colspan="6" style="vertical-align: middle; color:#888;">No se encontraron resultados.</td>
                         </tr>
                     </tbody>
 

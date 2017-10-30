@@ -16,9 +16,9 @@ import { NotificationsService } from 'angular2-notifications';
 export class DevolucionComponent {
   dato: FormGroup;
   form_pagos: any;
-  form_movimientos_articulos: any;
+  form_movimiento_articulos: any;
   cargando = false;
-  movimientos_articulos;
+  movimiento_articulos;
   codigo_barras_activo = true;
   caja_abierta = false;
   public articulos_term: string = `${environment.API_URL}/articulos-auto?term=:keyword`;
@@ -49,7 +49,7 @@ export class DevolucionComponent {
     //inicializar el devolucion reactivo
     this.dato = this.fb.group({
       id: [''],
-      tipos_movimientos_id: [11],
+      tipo_movimiento_id: [11],
       personas_id: [''],
       subtotal: [0],
       descuento: [0],
@@ -66,7 +66,7 @@ export class DevolucionComponent {
       comentarios: [''],
       valido: ['', [Validators.required]],
       pagos: this.fb.array([]),
-      movimientos_articulos: this.fb.array([]),
+      movimiento_articulos: this.fb.array([]),
       usuarios: this.fb.group({})
     });
     
@@ -85,11 +85,11 @@ export class DevolucionComponent {
       comentarios: ['']
     };
 
-    this.form_movimientos_articulos = {
+    this.form_movimiento_articulos = {
       articulos_id: ['', [Validators.required]],
       cantidad: ['', [Validators.required]],
-      precios_unitario: ['', [Validators.required]],
-      articulos_precios_id: [],
+      precio_unitarios_unitario: ['', [Validators.required]],
+      articulos_precio_unitarios_id: [],
       importe: ['', [Validators.required]],
       descuento: ['', [Validators.required]],
       importe_con_descuento: ['', [Validators.required]],
@@ -103,7 +103,7 @@ export class DevolucionComponent {
     this.dato.controls.personas_id.valueChanges.
     subscribe(val => {
       setTimeout(()=> {                          
-        this.dato.controls.tipos_movimientos_id.patchValue(11);
+        this.dato.controls.tipo_movimiento_id.patchValue(11);
       }, 500);
     });
     
@@ -141,9 +141,9 @@ export class DevolucionComponent {
     timeOut: 5000,
     lastOnBottom: true
   };
-  cambiar_precio(p, i, modelo) {
+  cambiar_precio_unitario(p, i, modelo) {
     p = p.srcElement.value;
-    modelo[i].controls['precio_unitario'].patchValue(modelo[i].get('articulos').value.articulos_precios[p].precio);
+    modelo[i].controls['precio_unitario_unitario'].patchValue(modelo[i].get('articulos').value.articulos_precio_unitarios[p].precio_unitario);
     this.calcular_importe_articulo();
   }
   /**
@@ -155,7 +155,7 @@ export class DevolucionComponent {
     this.cargando = true;
 
     //obtener el devolucion reactivo para agregar los elementos
-    const control = <FormArray>this.dato.controls['movimientos_articulos'];
+    const control = <FormArray>this.dato.controls['movimiento_articulos'];
 
     //comprobar que el articulo no este en la lista cargada
     var existe = false; var i = 0;
@@ -170,25 +170,25 @@ export class DevolucionComponent {
     }
 
     //crear el json que se pasara al devolucion reactivo tipo articulos
-    var movimientos_articulos = {
+    var movimiento_articulos = {
       articulos_id: [data.id, [Validators.required]],
       cantidad: [1, [Validators.required]],
       cantidad_restante:[1],
-      precio_unitario: [data.articulos_precios[0].precio, [Validators.required]],
-      articulos_precios_id: [data.articulos_precios[0].id, [Validators.required]],
-      importe: [data.articulos_precios[0].precio, [Validators.required]],
+      precio_unitario_unitario: [data.articulos_precio_unitarios[0].precio_unitario, [Validators.required]],
+      articulos_precio_unitarios_id: [data.articulos_precio_unitarios[0].id, [Validators.required]],
+      importe: [data.articulos_precio_unitarios[0].precio_unitario, [Validators.required]],
       descuento: [0, [Validators.required]],
-      importe_con_descuento: [data.articulos_precios[0].precio, [Validators.required]],
+      importe_con_descuento: [data.articulos_precio_unitarios[0].precio_unitario, [Validators.required]],
       iva_porcentaje: [0, [Validators.required]],
       iva_cantidad: [0, [Validators.required]],
-      subtotal: [data.articulos_precios[0].precio, [Validators.required]],
+      subtotal: [data.articulos_precio_unitarios[0].precio_unitario, [Validators.required]],
       stocks:this.fb.array([]),
       articulos: data
     };
 
     //si no esta en la lista agregarlo
     if (!existe)
-      control.push(this.fb.group(movimientos_articulos));
+      control.push(this.fb.group(movimiento_articulos));
 
     this.calcular_importe_articulo();
 
@@ -240,11 +240,11 @@ export class DevolucionComponent {
 
     var total = 0;
     var c = 0;
-    this.dato.get('movimientos_articulos').value.forEach(element => {
+    this.dato.get('movimiento_articulos').value.forEach(element => {
       var cantidad = element.cantidad - element.cantidad_devolucion;
-      element.importe = cantidad * element.precio_unitario;
+      element.importe = cantidad * element.precio_unitario_unitario;
       total = total + element.importe;
-      const ma = <FormArray>this.dato.controls.movimientos_articulos;
+      const ma = <FormArray>this.dato.controls.movimiento_articulos;
       const it = <FormGroup>ma.controls[c];
       it.controls.importe.patchValue(element.importe);
       c++;
@@ -364,7 +364,7 @@ export class DevolucionComponent {
       resultado => {
         this.enviar_ticket(this.json, resultado);        
         this.reset_form();
-        this.dato.controls.tipos_movimientos_id.patchValue(11);
+        this.dato.controls.tipo_movimiento_id.patchValue(11);
         this.dato.controls.status_movimientos_id.patchValue(1);
       },
       error => {

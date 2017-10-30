@@ -16,7 +16,8 @@ import { NotificationsService } from 'angular2-notifications';
 export class FormularioComponent {
   dato: FormGroup;
   cargando = false;
-  movimientos_articulos;
+  movimiento_articulos;
+  configuracion_general = JSON.parse(localStorage.getItem("configuracion_general"));
   public articulos_term: string = `${environment.API_URL}/articulos-auto?term=:keyword`;
   constructor(private fb: FormBuilder, private crudService: CrudService, private route: ActivatedRoute, private _sanitizer: DomSanitizer, private notificacion: NotificationsService) { }
 
@@ -30,14 +31,14 @@ export class FormularioComponent {
     //inicializar el formulario reactivo
     this.dato = this.fb.group({
       id: [''],
-      tipos_movimientos_id: [11],
+      tipo_movimiento_id: [11],
       status: ['FI'],
       fecha_movimiento: ['', Validators.required],
       observaciones: [''],
       iva: [],
       total: [],
       subtotal: [],
-      movimientos_articulos: this.fb.array([])
+      movimiento_articulos: this.fb.array([])
     });
 
     this.route.params.subscribe(params => {
@@ -95,13 +96,13 @@ export class FormularioComponent {
     this.cargando = true;
 
     //obtener el formulario reactivo para agregar los elementos
-    const control = <FormArray>this.dato.controls['movimientos_articulos'];
+    const control = <FormArray>this.dato.controls['movimiento_articulos'];
 
      //crear el json que se pasara al formulario reactivo tipo articulos
-    var movimientos_articulos = {
+    var movimiento_articulos = {
       articulo_id: [data.id, [Validators.required]],
       cantidad: [1, [Validators.required]],
-      precio: [0, [Validators.required]],
+      precio_unitario: [0, [Validators.required]],
       iva: [0],
       importe: [0, [Validators.required]],
       observaciones: [''],
@@ -112,7 +113,7 @@ export class FormularioComponent {
     };
 
     //si no esta en la lista agregarlo  
-    control.push(this.fb.group(movimientos_articulos));
+    control.push(this.fb.group(movimiento_articulos));
 
     this.calcular_importe_articulo();
 
@@ -137,13 +138,16 @@ export class FormularioComponent {
     var subtotal = 0;
     var iva = 0;
     var c = 0;
-    this.dato.get('movimientos_articulos').value.forEach(element => {
-      const ma = <FormArray>this.dato.controls.movimientos_articulos;
+    var p_iva = this.configuracion_general.iva;
+    this.dato.get('movimiento_articulos').value.forEach(element => {
+      const ma = <FormArray>this.dato.controls.movimiento_articulos;
       const it = <FormGroup>ma.controls[c];
+      var ix = element.precio_unitario * (p_iva / 100);
 
-      it.controls.importe.patchValue((element.cantidad * element.precio) + element.iva);
-      subtotal += (element.cantidad * element.precio);
-      iva += element.iva;
+      it.controls.iva.patchValue(ix * element.cantidad);
+      it.controls.importe.patchValue((element.cantidad * element.precio_unitario) + (element.cantidad * ix));
+      subtotal += (element.cantidad * element.precio_unitario);
+      iva += (element.cantidad * ix);
       c++;
     });
 
@@ -174,7 +178,7 @@ export class FormularioComponent {
       numero_inventario: [''],
       observaciones: [''],
       valido: ['', [Validators.required]],
-      inventarios_metadatos: formulario
+      inventario_metadato: formulario
     })
   }
 
@@ -182,13 +186,13 @@ export class FormularioComponent {
     setTimeout(() => {
       var v = <HTMLInputElement>document.getElementById("valor" + z);
 
-      const articulos = <FormArray>this.dato.controls.movimientos_articulos;
+      const articulos = <FormArray>this.dato.controls.movimiento_articulos;
       const articulo = <FormGroup>articulos.controls[i];
 
       const inventarios = <FormArray>articulo.controls.inventarios;
       const inventario = <FormGroup>inventarios.controls[x];
 
-      const metadatos = <FormArray>inventario.controls.inventarios_metadatos;
+      const metadatos = <FormArray>inventario.controls.inventario_metadato;
       const metadato = <FormGroup>metadatos.controls[z];
 
       metadato.controls.valor.patchValue(v.value);
@@ -196,7 +200,7 @@ export class FormularioComponent {
   }
 
   agregar_lote(i?: number) {
-    const ar = <FormArray>this.dato.controls.movimientos_articulos;
+    const ar = <FormArray>this.dato.controls.movimiento_articulos;
     const po = <FormGroup>ar.controls[i];
     const st = <FormArray>po.controls.inventarios;
 
@@ -204,7 +208,7 @@ export class FormularioComponent {
   }
 
   quitar_lote(i, i2) {
-    const a: FormArray = <FormArray>this.dato.controls.movimientos_articulos;
+    const a: FormArray = <FormArray>this.dato.controls.movimiento_articulos;
     const control: FormArray = <FormArray>a.at(i).get('inventarios');
     control.removeAt(i2);
   }
@@ -224,9 +228,10 @@ export class FormularioComponent {
         this.quitar_lote(index, articulos.inventarios.controls.length - 1);
       }
     }
+    this.calcular_importe_articulo();
   }
 
-  cambio_precio(articulos) {
+  cambio_precio_unitario(articulos) {
     this.calcular_importe_articulo();
   }
 
@@ -249,11 +254,11 @@ export class FormularioComponent {
     }, 500);
   }
 
-  private time_cambio_precio;
-  cambio_precio_key(event, articulos) {
+  private time_cambio_precio_unitario;
+  cambio_precio_unitario_key(event, articulos) {
     if (event.key != 'Backspace' && event.key != 'Delete' && event.key != 'ArrowLeft' && event.key != 'ArrowRight' && event.key != 'ArrowUp' && event.key != 'ArrowDown' && event.key != '.') {
-      clearTimeout(this.time_cambio_precio);
-      this.time_cambio_precio = setTimeout(() => {
+      clearTimeout(this.time_cambio_precio_unitario);
+      this.time_cambio_precio_unitario = setTimeout(() => {
         this.calcular_importe_articulo();
       }, 500);
     }
@@ -300,7 +305,7 @@ export class FormularioComponent {
     this.cargando = true;
     this.json = this.dato.getRawValue();
     if (this.dato.get('id').value > 0) {
-      this.crudService.editar(this.dato.get('id').value, this.json, "entrada").subscribe(
+      this.crudService.editar(this.dato.get('id').value, this.json, "entrada-articulo").subscribe(
         resultado => {
           this.enviar_ticket(this.json, resultado);
         },
@@ -310,11 +315,11 @@ export class FormularioComponent {
       );
     }
     else {
-      this.crudService.crear(this.json, "entrada").subscribe(
+      this.crudService.crear(this.json, "entrada-articulo").subscribe(
         resultado => {
           this.enviar_ticket(this.json, resultado);
           this.reset_form();
-          this.dato.controls.tipos_movimientos_id.patchValue(11);
+          this.dato.controls.tipo_movimiento_id.patchValue(11);
           this.dato.controls.status.patchValue('FI');
         },
         error => {
