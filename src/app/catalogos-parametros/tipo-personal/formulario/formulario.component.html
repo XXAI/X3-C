@@ -85,8 +85,10 @@
                                         <input class="input" type="number" min="1" placeholder="Longitud" formControlName="longitud">
                                     </td>
                                     <td style="vertical-align: middle;">
-                                        <div class="b-checkbox control is-expanded  has-icon has-icon-right">
-                                            <input type="checkbox" id="requerido{{i}}" [checked]="ctrl.dato.get('tipos_personal_metadatos').value[i].requerido == 1 ? true : false" class="styled" formControlName="requerido" >
+                                        <div class="b-checkbox control is-expanded has-icon has-icon-right" if="ctrl.dato.get('tipos_personal_metadatos').value[i]">
+                                            <input type="checkbox" id="requerido{{i}}"
+                                                [checked]="ctrl.dato.get('tipos_personal_metadatos').value[i]?.requerido == 1 ? true : false"
+                                                class="styled" formControlName="requerido">
                                             <label for="requerido{{i}}">  Es requerido? 
                                             </label>
                                         </div>

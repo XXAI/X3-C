@@ -177,7 +177,7 @@
                                 <p class="level-item" *ngIf="tieneid"><a class="button is-primary" routerLink="/almacen/salidas-estandar/nuevo" *ngIf="!ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva salida</span></a></p>
                                 <p class="level-item" *ngIf="tieneid"><a *ngIf="tieneid" class="button is-primary" (click)="array_servicios = ctrl.servicios; array_turnos = ctrl.turnos; imprimir();"><span class="icon"><i class="fa fa-print"></i></span></a></p>
                                 <p class="level-item" *ngIf="!tieneid">
-                                        <button class="button is-primary" type="submit" [ngClass]="{'is-loading': ctrl.cargando}" (click)="guardar_movimiento()" [disabled]="ctrl.dato.invalid"> <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar</button>
+                                        <button class="button is-primary" [ngClass]="{'is-loading': ctrl.cargando}" (click)="guardar_movimiento()" [disabled]="ctrl.dato.invalid"> <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar</button>
                                 </p>
                                 <p *ngIf="tieneid" class="level-item"><a class="button is-primary" title="Actualizar" (click)="ctrl.cargarDatos();"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
                                 <p *ngIf="!tieneid" class="level-item"><a class="button is-primary" title="Actualizar" (click)="ctrl.cargarCatalogo('turnos', 'mis-turnos'); ctrl.cargarCatalogo('servicios','mis-servicios');"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>

@@ -1,16 +1,17 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { ListaComponent } from '../salidas-laboratorio/lista/lista.component';
+import { ListaEntradasComponent } from './lista/lista.component';
 import { FormularioComponent } from './formulario/formulario.component';
 import { AuthGuard } from '../../auth-guard.service';
 
 const routes: Routes = [
   {
-    path: 'laboratorio/salidas-laboratorio',
+    path: 'laboratorio/entradas-laboratorio',
     children: [
-       { path: '', component: ListaComponent},
+       { path: '', component: ListaEntradasComponent},
        { path: 'nuevo', component: FormularioComponent },
+       { path: 'editar/:id', component: FormularioComponent},
        { path: 'ver/:id', component: FormularioComponent},
     ],
     canActivate: [AuthGuard]
@@ -22,5 +23,5 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: []
 })
-export class SalidasLaboratorioRoutingModule { }
+export class EntradaslaboratorioRoutingModule { }
 

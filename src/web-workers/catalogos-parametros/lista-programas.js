@@ -11,7 +11,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
     };
 
     function pdf(data) {
-        var contadorLineasHorizontalesV = 0;
+        var contadorLineasHorizontalesV = 0; 
         var COLOR_CELDA = '#eaf1dd';
         var dd = {
             content: [{

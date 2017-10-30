@@ -3,6 +3,8 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Headers     } from '@angular/http';
 import { CrudService } from '../../../crud/crud.service';
 import { environment } from '../../../../environments/environment';
+import { Mensaje } from '../../../mensaje';
+import { NotificationsService } from 'angular2-notifications';
 import  * as FileSaver    from 'file-saver';
 
 @Component({
@@ -30,15 +32,36 @@ export class ListaComponent implements OnInit {
   @ViewChildren('claves') claves;
 
   // # SECCION: Reportes
+  /**
+   * Variable para la seccion de reportes.
+   * @type {Worker} */
   pdfworker: Worker;
+  /**
+   * Identifica su el archivo se está cargando.
+   * @type {boolean} */
   cargandoPdf = false;
   // # FIN SECCION
+  /**
+   * Variable que muestra las notificaciones.
+   * @type {Mensaje}
+   */
+  mensajeResponse: Mensaje = new Mensaje();
+  /**
+   * Variable que contiene la configuracion default para mostrar las notificaciones.
+   * Posición abajo izquierda, tiempo 2 segundos
+   */
+  public options = {
+    position: ['bottom', 'right'],
+    timeOut: 2000,
+    lastOnBottom: true
+  };
   public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
 
   constructor(
     private crudService: CrudService,
     private _sanitizer: DomSanitizer,
-    private _ngZone: NgZone) {}
+    private _ngZone: NgZone,
+    private notificacion: NotificationsService) {}
 
   ngOnInit() {
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
@@ -184,20 +207,22 @@ export class ListaComponent implements OnInit {
   }
   imprimirExcel() {
     let cadena_url;
-    if (this.usuario.clues_activa) {
-      cadena_url = '&clues=' + this.usuario.clues_activa.clues;
+    let usuario_actual = JSON.parse(localStorage.getItem('usuario'));
+    if (usuario_actual.clues_activa) {
+      cadena_url = '&clues=' + usuario_actual.clues_activa.clues;
     }
-    if (this.usuario.almacen_activo) {
-      cadena_url += '&almacen=' + this.usuario.almacen_activo.id;
+    if (usuario_actual.almacen_activo) {
+      cadena_url += '&almacen=' + usuario_actual.almacen_activo.id;
     }
     let query = 'token=' + localStorage.getItem('token');
-    window.open(`${environment.API_URL}/inventario-excel?${query}${cadena_url}&buscar_en=${this.buscar_en}&seleccionar=${this.seleccionar}&tipo=${this.tipo}&clave_insumo=${this.clave_insumo}`);
+    window.open(`${environment.API_URL}/inventario-insumos-excel?${query}${cadena_url}&buscar_en=${this.buscar_en}&seleccionar=${this.seleccionar}&tipo=${this.tipo}&clave_insumo=${this.clave_insumo}`);
   }
 
   imprimir() {
     this.cargandoPdf = true;
+    let usuario_actual = JSON.parse(localStorage.getItem('usuario'));
     // this.abrirModal('imprimirModal');
-    this.crudService.lista_general( 'inventario?buscar_en=' + this.buscar_en
+    this.crudService.lista_general( 'inventario-insumos?buscar_en=' + this.buscar_en
     + '&seleccionar=' + this.seleccionar + '&tipo=' + this.tipo).subscribe(
       resultado => {
                 this.cargando = false;
@@ -208,19 +233,36 @@ export class ListaComponent implements OnInit {
                 existencia = existencia[existencia.selectedIndex].text;
                 try {
 
-                  let entrada_imprimir = {
+                  let existencia_imprimir = {
                     lista: this.lista_impresion,
-                    usuario: this.usuario,
+                    usuario: usuario_actual,
                     buscar_en: this.buscar_en,
                     seleccionar: existencia,
                     tipo: tipo_insumo
                   };
-                  this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
+                  this.pdfworker.postMessage(JSON.stringify(existencia_imprimir));
                 } catch (e) {
                   this.cargandoPdf = false;
                 }
             },
             error => {
+              try {
+                    let e = error.json();
+                    if (error.status == 401) {
+                        this.mensajeResponse.texto = "No tiene permiso para hacer esta operación.";
+                        this.mensajeResponse.clase = 'danger';
+                        this.mensaje(2);
+                    }
+                } catch (e) {
+                    if (error.status == 500) {
+                        this.mensajeResponse.texto = '500 (Error interno del servidor)';
+                    } else {
+                        this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
+                    }
+                    this.mensajeResponse.clase = 'danger';
+                    this.mensaje(2);
+                }
+
             }
     );
     
@@ -234,4 +276,43 @@ export class ListaComponent implements OnInit {
       }
       return new Blob( [ buffer ], { type: type } );
   }
+
+  /**
+     * Este método muestra los mensajes resultantes de los llamados de la api
+     * @param cuentaAtras numero de segundo a esperar para que el mensaje desaparezca solo
+     * @param posicion  array de posicion [vertical, horizontal]
+     * @return void
+     */
+    mensaje(cuentaAtras: number = 6, posicion: any[] = ['bottom', 'left']): void {
+        var objeto = {
+            showProgressBar: true,
+            pauseOnHover: false,
+            clickToClose: true,
+            maxLength: this.mensajeResponse.texto.length
+        };
+
+        this.options = {
+            position: posicion,
+            timeOut: cuentaAtras * 1000,
+            lastOnBottom: true
+        };
+        if (this.mensajeResponse.titulo === '') {
+            this.mensajeResponse.titulo = 'Entradas de medicamentos';
+          }
+        if (this.mensajeResponse.clase === 'alert') {
+            this.notificacion.alert(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+        if (this.mensajeResponse.clase === 'success') {
+            this.notificacion.success(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+        if (this.mensajeResponse.clase === 'info') {
+            this.notificacion.info(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+        if (this.mensajeResponse.clase === 'warning' || this.mensajeResponse.clase === 'warn') {
+            this.notificacion.warn(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+        if (this.mensajeResponse.clase === 'error' || this.mensajeResponse.clase === 'danger') {
+            this.notificacion.error(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+          }
+    }
 }
