@@ -195,8 +195,6 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     { layout: 'lightHorizontalLines', table: {dontBreakRows: true, body: metadatos, widths: ['*','*']}, colSpan: 3, style: 'tableRow', alignment: 'center' },
                     {},
                     {}
-                    /*{ text: personal_metadatos.campo == null ? 'No disponible' : personal_metadatos.campo, style: 'tableRow', alignment: 'center' },
-                    { text: personal_metadatos.descripcion == null ? 'No disponible' : personal_metadatos.descripcion, style: 'tableRow', alignment: 'center' }*/
                 ]);
         }
 
