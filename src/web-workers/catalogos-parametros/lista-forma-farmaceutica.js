@@ -19,7 +19,6 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                 table: {
                     headerRows: 7,
                     dontBreakRows: true,
-                    //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
                     widths: [80, 'auto','auto', 30, 'auto', 'auto','auto'],
                     body: [
                         [{

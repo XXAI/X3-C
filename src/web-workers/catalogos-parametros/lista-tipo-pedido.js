@@ -8,7 +8,6 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
     onmessage = function(evt) {
         let data = JSON.parse(evt.data)
         pdf(data);
-        console.log(data);
     };
 
     function pdf(data) {
@@ -33,7 +32,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         [{ text: 'SIAL', style: 'titulo', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],
-                        [{ text: 'LISTA DE ALMACENES', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },
+                        [{ text: 'LISTA DE TIPO DE PEDIDOS', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],[
                             { text: 'CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
@@ -56,12 +55,12 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         ],
                         [
                             { text: 'ID', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'NOMBRE', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'SERVIDOR', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'NIVEL', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'TIPO', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'CLUES', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'SUBRROGADO', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'NOMBRE', style: 'tableHeaderVerde', colSpan: 6, alignment: 'center' },
+                            { },
+                            { },
+                            { },
+                            { },
+                            { },
                         ]
                         //Body -> insumos
                     ]
@@ -175,34 +174,19 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
 
         for (var i in data.lista) {
             var movimiento = data.lista[i];
-            // let longitud = movimiento.tipos_personal_metadatos.length;
-            
-            // var metadatos = [];
-            // metadatos.push([
-            //         { text: 'Campo', style: 'tableHeaderVerde', alignment: 'right' },
-            //         { text: 'Descripción', style: 'tableHeaderVerde', alignment: 'left' }
-            //     ])
-            // for(let personal_metadatos of movimiento.tipos_personal_metadatos) {
-            //     metadatos.push([
-            //         { text: personal_metadatos.campo == null ? 'No disponible' : personal_metadatos.campo, alignment: 'right' },
-            //         { text: personal_metadatos.descripcion == null ? 'No disponible' : personal_metadatos.descripcion, alignment: 'left' }
-            //     ])
-            // }
             dd.content[0].table.body.push([
-                    { text: movimiento.id ? movimiento.id : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.nombre ? movimiento.nombre : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.servidor == null ? 'No disponible' : movimiento.nombre, style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.nivel_almacen ? movimiento.nivel_almacen : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.tipo_almacen == null ? 'No disponible' : movimiento.tipo_almacen, style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.clues ? movimiento.clues : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.subrogado == null ? 'No disponible' : movimiento.subrogado == 1 ? 'Sí' : 'No', style: 'tableRow', alignment: 'center'}
-                    /*{ text: personal_metadatos.campo == null ? 'No disponible' : personal_metadatos.campo, style: 'tableRow', alignment: 'center' },
-                    { text: personal_metadatos.descripcion == null ? 'No disponible' : personal_metadatos.descripcion, style: 'tableRow', alignment: 'center' }*/
+                    { text: movimiento.id == null ? 'No disponible' : movimiento.id, style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.nombre ? movimiento.nombre : 'No disponible', style: 'tableRow', colSpan: 6, alignment: 'left' },
+                    { },
+                    { },
+                    { },
+                    { },
+                    { },
                 ]);
         }
 
         pdfMake.createPdf(dd).getBase64(function(base64) {
-            postMessage({ fileName: 'Lista_Almacenes.pdf', base64: base64 });
+            postMessage({ fileName: 'Lista_Pedidos.pdf', base64: base64 });
         });
     }
 

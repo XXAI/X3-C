@@ -8,7 +8,6 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
     onmessage = function(evt) {
         let data = JSON.parse(evt.data)
         pdf(data);
-        console.log(data);
     };
 
     function pdf(data) {
@@ -20,7 +19,6 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                 table: {
                     headerRows: 5,
                     dontBreakRows: true,
-                    //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
                     widths: [80, 'auto','auto', 30, 'auto', 'auto','auto'],
                     body: [
                         [{
@@ -175,19 +173,6 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
 
         for (var i in data.lista) {
             var movimiento = data.lista[i];
-            // let longitud = movimiento.tipos_personal_metadatos.length;
-            
-            // var metadatos = [];
-            // metadatos.push([
-            //         { text: 'Campo', style: 'tableHeaderVerde', alignment: 'right' },
-            //         { text: 'Descripción', style: 'tableHeaderVerde', alignment: 'left' }
-            //     ])
-            // for(let personal_metadatos of movimiento.tipos_personal_metadatos) {
-            //     metadatos.push([
-            //         { text: personal_metadatos.campo == null ? 'No disponible' : personal_metadatos.campo, alignment: 'right' },
-            //         { text: personal_metadatos.descripcion == null ? 'No disponible' : personal_metadatos.descripcion, alignment: 'left' }
-            //     ])
-            // }
             dd.content[0].table.body.push([
                     { text: movimiento.id ? movimiento.id : 'No disponible', style: 'tableRow', alignment: 'center' },
                     { text: movimiento.nombre ? movimiento.nombre : 'No disponible', style: 'tableRow', alignment: 'center' },
@@ -196,8 +181,6 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     { text: movimiento.tipo_almacen == null ? 'No disponible' : movimiento.tipo_almacen, style: 'tableRow', alignment: 'center' },
                     { text: movimiento.clues ? movimiento.clues : 'No disponible', style: 'tableRow', alignment: 'center' },
                     { text: movimiento.subrogado == null ? 'No disponible' : movimiento.subrogado == 1 ? 'Sí' : 'No', style: 'tableRow', alignment: 'center'}
-                    /*{ text: personal_metadatos.campo == null ? 'No disponible' : personal_metadatos.campo, style: 'tableRow', alignment: 'center' },
-                    { text: personal_metadatos.descripcion == null ? 'No disponible' : personal_metadatos.descripcion, style: 'tableRow', alignment: 'center' }*/
                 ]);
         }
 
