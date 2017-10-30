@@ -9,16 +9,15 @@
         <div style="background: #FFF; border-radius: 1em; ">
 
             <!-- Opciones y busqueda -->
-            <tabla-opciones [ctrl]="ctrl" [nombre]="'Unidades medicas'"></tabla-opciones>
             <tabla-opciones 
                 #opciones
                 [ctrl]="ctrl" 
-                [icono]="'fa fa-users'" 
+                [icono]="'fa fa-hospital-o'" 
                 [nombre]="'Unidades médicas'"
                 [ruta]="'unidad-medica'"
                 [ruta_pdf]="'catalogos-parametros/lista-unidades-medicas.js'"></tabla-opciones>
             
-                <div class="is-fullwidth has-text-centered" *ngIf="opciones.cargandoPdf" style="height: 75%">
+            <div class="is-fullwidth has-text-centered" *ngIf="opciones.cargandoPdf" style="height: 75%">
                 <br>
                 <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Generando PDF...</span></span>
                 <br>
