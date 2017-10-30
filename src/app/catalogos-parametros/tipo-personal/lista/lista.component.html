@@ -1,8 +1,8 @@
 <listar #ctrl URL="tipos-personal" titulo="Tipo de Personal / Catálogos"></listar>
 <app-menu-catalogo></app-menu-catalogo>
 <div style="height:50px;"></div>
-<div class="contenedor columns " >
-    <div class="column is-one-quarter is-hidden-mobile" style="height: 100%">
+<div class="contenedor columns " style="padding-top: 1em;">
+    <div class="column is-one-quarter is-hidden-mobile">
         <panel-control-menu-aside></panel-control-menu-aside>
     </div>
     <div class="column" style="padding: 0em 2em 0em 0em" style="height: 100%">
@@ -24,7 +24,7 @@
                 <br>
             </div>
 
-            <div  style="height: 75%">
+            <div style="overflow:auto; display:block" [style.maxHeight.px]="ctrl.tamano-300">
                 <table class="table" *ngIf="!ctrl.cargando && !opciones.cargandoPdf">
                     <thead>
                         <tr>
