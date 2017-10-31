@@ -13,9 +13,10 @@
             <!-- Opciones y busqueda -->
             <tabla-opciones 
                 #opciones
-                [ctrl]="ctrl"
-                [nombre]="'Inventarios'"
-                [ruta]="'inventarios'"
+                [ctrl]= "ctrl"
+                [nombre]= "'Inventarios'"
+                [ruta]= "'inventarios'"
+                [nuevo]= false
                 [ruta_pdf]="'almacen-articulos/lista-inventario-articulos.js'"></tabla-opciones>
             
             <span style="overflow-y:auto; overflow-x: hidden; display:block" [style.maxHeight.px]="tamano-285">

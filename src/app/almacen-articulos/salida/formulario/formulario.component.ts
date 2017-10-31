@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Params } from '@angular/router';
 
 import { environment } from '../../../../environments/environment';
@@ -17,16 +17,28 @@ export class FormularioComponent {
   dato: FormGroup;
   cargando = false;
   movimiento_articulos;
-  usuario = JSON.parse(localStorage.getItem("usuario"));
-  configuracion_general = JSON.parse(localStorage.getItem("configuracion_general"));
-
-  public articulos_term: string = `${environment.API_URL}/inventario-articulo-auto?term=:keyword&almacen=${this.usuario.almacen_activo.id}`;
-  constructor(private fb: FormBuilder, private crudService: CrudService, private route: ActivatedRoute, private _sanitizer: DomSanitizer, private notificacion: NotificationsService) { }
+  usuario = JSON.parse(localStorage.getItem('usuario'));
+  configuracion_general = JSON.parse(localStorage.getItem('configuracion_general'));
+  ticket;
+  error_salida = false;
+  salida_ok = false;
+  json;
+  /**
+   * Contiene la URL a la que se hace la consulta a la API para la búsqueda de artículos.
+   * @type {string}
+   */
+  public articulos_term = `${environment.API_URL}/inventario-articulo-auto?term=:keyword&almacen=${this.usuario.almacen_activo.id}`;
+  constructor(
+    private fb: FormBuilder,
+    private crudService: CrudService,
+    private route: ActivatedRoute,
+    private _sanitizer: DomSanitizer,
+    private notificacion: NotificationsService) { }
 
   private tieneid: boolean = false;
   tamano = document.body.clientHeight;
 
-  url_nuevo = "../../nuevo";
+  url_nuevo = '../../nuevo';
 
   ngOnInit() {
 
@@ -48,18 +60,27 @@ export class FormularioComponent {
         this.tieneid = true;
       }
     });
-    //variable para crear el array del formulario reactivo
 
-    //Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
-    //document.getElementById("catalogos").click();
+    this.dato.valueChanges.subscribe(
+      val => {
+          if (val) {
+            setTimeout(() => {
+              this.calcular_importe_articulo();
+            }, 500);
+          }
+      }
+    );
+
+    // Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
+    // document.getElementById("catalogos").click();
     setTimeout(function () {
-      (<HTMLInputElement>document.getElementById("buscarArticulo")).focus;
+      (<HTMLInputElement>document.getElementById('buscarArticulo')).focus;
     }, 100);
   }
 
   /**
      * Este método formatea los resultados de la busqueda en el autocomplte
-     * @param data resultados de la busqueda 
+     * @param data resultados de la busqueda
      * @return void
      */
   autocompleListFormatter = (data: any) => {
@@ -85,7 +106,7 @@ export class FormularioComponent {
   }
 
   public options = {
-    position: ["top", "right"],
+    position: ['top', 'right'],
     timeOut: 5000,
     lastOnBottom: true
   };
@@ -140,16 +161,19 @@ export class FormularioComponent {
     };
 
     this.options = {
-      position: ["top", "right"],
+      position: ['top', 'right'],
       timeOut: 5000,
       lastOnBottom: true
     };
-    (<HTMLInputElement>document.getElementById("buscarArticulo")).value = "";
+    (<HTMLInputElement>document.getElementById('buscarArticulo')).value = '';
     this.cargando = false;
   }
 
+  /**
+   * Método que sirve para calcular el importe de la salida, sumando los precios de los artículos.
+   */
   calcular_importe_articulo() {
-    //sumamos las cantidades
+    // sumamos las cantidades
     var subtotal = 0;
     var iva = 0;
     var c = 0;
@@ -203,9 +227,9 @@ export class FormularioComponent {
   //fin lote
   buscar_articulo(e) {
     if (e.keyCode == 13) {
-      var valor = (<HTMLInputElement>document.getElementById("buscarArticulo")).value;
-      (<HTMLInputElement>document.getElementById("buscarArticulo")).value = "";
-      (<HTMLInputElement>document.getElementById("buscarArticulo")).focus;
+      var valor = (<HTMLInputElement>document.getElementById('buscarArticulo')).value;
+      (<HTMLInputElement>document.getElementById('buscarArticulo')).value = '';
+      (<HTMLInputElement>document.getElementById('buscarArticulo')).focus;
       var este = this;
       this.cargando = true;
       this.crudService.ver(valor, 'articulos').subscribe(
@@ -232,16 +256,12 @@ export class FormularioComponent {
       }
     }
   }
-  ticket;
-  error_salida = false;
-  salida_ok = false;
-  json;
 
   enviar() {
     this.cargando = true;
     this.json = this.dato.getRawValue();
     if (this.dato.get('id').value > 0) {
-      this.crudService.editar(this.dato.get('id').value, this.json, "salida-articulo").subscribe(
+      this.crudService.editar(this.dato.get('id').value, this.json, 'salida-articulo').subscribe(
         resultado => {
           this.enviar_ticket(this.json, resultado);
         },
@@ -251,7 +271,7 @@ export class FormularioComponent {
       );
     }
     else {
-      this.crudService.crear(this.json, "salida-articulo").subscribe(
+      this.crudService.crear(this.json, 'salida-articulo').subscribe(
         resultado => {
           this.enviar_ticket(this.json, resultado);
           this.reset_form();

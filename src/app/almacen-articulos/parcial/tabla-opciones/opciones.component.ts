@@ -13,6 +13,11 @@ export class TablaOpcionesComponent {
     @Input() ctrl: any;
     @Input() nombre: any;
     /**
+     * Contiene valor _true_ si puede verse la opción de nuevo, false en caso contrario.
+     * @type {string}
+     */
+    @Input() nuevo= true;
+    /**
      * Contiene la cadena de caracteres que representa el ícono del módulo,
      * por default contiene un icono de lista.
      * @type {string}

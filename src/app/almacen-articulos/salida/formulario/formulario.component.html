@@ -57,7 +57,7 @@
                         </thead>
                         <tbody formArrayName="movimiento_articulos">
                             <tr *ngFor="let val of ctrl.dato.controls.movimiento_articulos.controls;  let i = index;" [formGroupName]="i">
-                                <td>{{val.get("articulos").value.nombre}} ({{val.get("articulos").value.numero_inventario ? val.get("articulos").value.numero_inventario : val.get('inventarios').value[0].numero_inventario}}) </td>                                
+                                <td>{{val.get("articulos").value.nombre}} ({{val.get("articulos").value.numero_inventario ? val.get("articulos").value.numero_inventario : val.get('inventarios').value[0] ? val.get('inventarios').value[0].numero_inventario : ''}}) </td>                                
                                 
                                 <td>
                                     <div class="field">
