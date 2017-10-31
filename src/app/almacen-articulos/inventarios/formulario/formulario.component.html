@@ -1,10 +1,12 @@
-<formulario #ctrl URL="inventarios" titulo="Inventarios / Almacen" [dato]="dato"></formulario>
-<articulos-catalogo-menu></articulos-catalogo-menu>
+<formulario #ctrl URL="inventario-articulos" titulo="Inventarios / Almacen" [dato]="dato"></formulario>
+<menu-almacen-articulos [modulo]="'Inventario de artículos'" [icono]="'assets/icono-entradas.svg'" [url]="'/almacen-articulos/inventarios'"></menu-almacen-articulos>
 <div style="height:50px;"></div>
-<div class="contenedor columns " style="height:100%">
+<div class="contenedor columns " style="overflow:auto; padding: 1em;" [style.maxHeight.px]="tamano-50">
+    <!--
     <div class="column is-one-quarter is-hidden-mobile">
         <panel-control-menu-aside></panel-control-menu-aside>
     </div>
+    -->
     <div class="column" style="padding: 0em 2em 0em 0em;">
         <!-- formulario -->
         <form name="form" novalidate [formGroup]="dato" (ngSubmit)="ctrl.enviar()" >
@@ -12,7 +14,7 @@
                 <section class="hero is-primary">
                     <div class="hero-body">
                         <!-- Opciones  -->
-                        <formulario-opciones [ctrl]="ctrl"  class="control is-grouped" style="position:absolute; top:8em; right:3em;">
+                        <formulario-opciones [ctrl]="ctrl"  class="control is-grouped" style="position:absolute; top:6em; right:3em;">
                            
                         </formulario-opciones>  
                         

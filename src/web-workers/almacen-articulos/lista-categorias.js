@@ -32,7 +32,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         [{ text: 'SIAL', style: 'titulo', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],
-                        [{ text: 'ENTRADAS DE LABORATORIO CLÍNICO', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },
+                        [{ text: 'LISTA DE CATEGORÍAS', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],[
                             { text: 'CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
@@ -192,7 +192,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
         }
 
         pdfMake.createPdf(dd).getBase64(function(base64) {
-            postMessage({ fileName: 'Lista_Entradas_Artículos.pdf', base64: base64 });
+            postMessage({ fileName: 'Lista_Categorías.pdf', base64: base64 });
         });
     }
 

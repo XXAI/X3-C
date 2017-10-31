@@ -110,18 +110,39 @@
                                     </td>
                                     <td style="vertical-align: middle;">
                                         <div class="b-checkbox control is-expanded  has-icon has-icon-right">
-                                            <input type="checkbox" id="requerido{{i}}" class="styled" formControlName="requerido" [checked]="ctrl.dato.get('categorias_metadatos').value[i]['requerido'] == 1 ? true : false">
+                                            <input type="checkbox" id="requerido{{i}}" class="styled" 
+                                                formControlName="requerido" [checked]="ctrl.dato.get('categorias_metadatos').value[i]['requerido'] == 1 ? true : false">
+                                            <label for="requerido{{i}}">  Es requerido? 
+                                            </label> 
+                                        </div>
+                                    </td>
+                                    <!-- <td style="vertical-align: middle;">
+                                        <div class="b-checkbox control is-expanded has-icon has-icon-right" if="ctrl.dato.get('categorias_metadatos').value[i]">
+                                            <input type="checkbox" id="requerido{{i}}"
+                                                [checked]="ctrl.dato.get('categorias_metadatos').value[i]?.requerido == 1 ? true : false"
+                                                class="styled" formControlName="requerido">
                                             <label for="requerido{{i}}">  Es requerido? 
                                             </label>
                                         </div>
-                                    </td>
+                                    </td> -->
                                     <td style="vertical-align: middle;">
                                         <div class="b-checkbox control is-expanded  has-icon has-icon-right">
-                                            <input type="checkbox" id="requerido_inventario{{i}}" class="styled" formControlName="requerido_inventario" [checked]="ctrl.dato.get('categorias_metadatos').value[i].requerido_inventario == 1 ? true : false">
+                                            <input type="checkbox" id="requerido_inventario{{i}}" class="styled" 
+                                            formControlName="requerido_inventario" [checked]="ctrl.dato.get('categorias_metadatos').value[i].requerido_inventario == 1 ? true : false">
                                             <label for="requerido_inventario{{i}}">  Es requerido en inventario?
                                             </label>
                                         </div>
                                     </td>
+                                    <!--
+                                    <td style="vertical-align: middle;">
+                                        <div class="b-checkbox control is-expanded has-icon has-icon-right" if="ctrl.dato.get('categorias_metadatos').value[i]">
+                                            <input type="checkbox" id="requerido_inventario{{i}}"
+                                                [checked]="ctrl.dato.get('categorias_metadatos').value[i]?.requerido_inventario == 1 ? true : false"
+                                                class="styled" formControlName="requerido_inventario">
+                                            <label for="requerido_inventario{{i}}">  Es requerido? 
+                                            </label>
+                                        </div>
+                                    </td>-->
                                     <td style="vertical-align: middle;">
                                         <a class="is-danger" (click)="ctrl.quitar_form_array(ctrl.dato.controls.categorias_metadatos, i)">
                                             <span class="icon"><i class="fa fa-trash-o"></i></span>
@@ -132,7 +153,7 @@
                             <tfoot>
                                 <tr>
                                     <th colspan="7">
-                                        <a class="button is-primary is-outlined is-fullwidth" (click)="ctrl.agregar_form_array(ctrl.dato.controls.categorias_metadatos.controls, form_categorias_metadatos)">
+                                        <a class="button is-primary is-outlined is-fullwidth" (click)="ctrl.agregar_form_array(ctrl.dato.controls.categorias_metadatos, form_categorias_metadatos)">
                                             <span class="icon"><i class="fa fa-plus"></i></span>&nbsp; Agregar Campo
                                         </a>
                                     </th>

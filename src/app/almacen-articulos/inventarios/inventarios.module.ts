@@ -17,6 +17,7 @@ import { AuthService } from '../../auth.service';
 
 import { MenuPanelModule } from '../menu/menu-panel.module';
 import { MenuAsidePanelModule } from '../menu-aside/menu-aside-panel.module';
+import { IndexAlmacenArticulosModule } from '../index-almacen-articulos/index-almacen-articulos.module';
 import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
 
 //crud
@@ -37,15 +38,16 @@ import { ParcialModule } from '../parcial/parcial.module';
     BloquearPantallaModule,
     PaginacionModule,
     PipesModule,
-    MenuPanelModule, 
+    MenuPanelModule,
     MenuAsidePanelModule,
+    IndexAlmacenArticulosModule,
     NguiDatetimePickerModule,
     CrudModule,
     ParcialModule
   ],
-  declarations: [ 
-    ListaComponent,   
-    FormularioComponent 
+  declarations: [
+    ListaComponent,
+    FormularioComponent
   ],
   providers: [ AuthService, CrudService ]
 })
