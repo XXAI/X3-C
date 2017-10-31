@@ -2,10 +2,10 @@
 <formulario #ctrl URL="entrada-articulo" titulo="Entrada" [dato]="dato"></formulario>
 
 <!-- Menu principal "-->
-<articulos-catalogo-menu></articulos-catalogo-menu>
+<menu-almacen-articulos [modulo]="'Entrada  de artículos'" [icono]="'assets/icono-entradas.svg'" [url]="'/almacen-articulos/entradas'"></menu-almacen-articulos>
 <div style="height:50px;"></div>
 <form name="form" novalidate [formGroup]="dato" (ngSubmit)="enviar();">
-    <div class="contenedor columns " style=" overflow:auto;" [style.maxHeight.px]="tamano-50">
+    <div class="contenedor columns " style="overflow:auto; padding: 1em;" [style.maxHeight.px]="tamano-50">
 
         <!-- apartado de movimiento_articulos -->
         <div class="column">
@@ -267,7 +267,7 @@
                             <i class="fa fa-file-text"></i>
                         </span> Entrada
                     </h1>
-                    <div class="control is-grouped" style="position:absolute; top:7.5em; right:2em;">
+                    <div class="control is-grouped" style="position:absolute; top:5.5em; right:2em;">
                             <p class="control" >
                                 <a class="button is-primary tooltip" (click)="ctrl.regresar()">
                                     <span class="icon ">

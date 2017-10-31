@@ -79,7 +79,7 @@ export class HubComponent implements OnInit {
       ]
     },
     {
-      title: 'Farmacia Subrrogada', routerLink: '/farmacia-subrrogada', icono: 'assets/hub-farmacia-sub.svg',
+      title: 'Farmacia Subrogada', routerLink: '/farmacia-subrrogada', icono: 'assets/hub-farmacia-sub.svg',
       permisos: [
         '--z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
         '6sTjs3q8rhHslelQgTUI4hdkNSbiwyhf', // Ver sincronizar recetas

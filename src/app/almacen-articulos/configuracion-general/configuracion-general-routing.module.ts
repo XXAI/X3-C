@@ -5,10 +5,10 @@ import { FormularioComponent } from './formulario/formulario.component';
 import { AuthGuard } from '../../auth-guard.service';
 
 const usuario = JSON.parse(localStorage.getItem("usuario"));
-const routes: Routes = [ 
-  {path: 'configuracion/configuracion-general', redirectTo: 'configuracion/configuracion-general/editar/1', pathMatch: 'full'}, 
+const routes: Routes = [
+  {path: 'catalogos-parametros/configuracion-general', redirectTo: 'catalogos-parametros/configuracion-general/editar/1', pathMatch: 'full'},
   {
-    path: 'configuracion/configuracion-general',
+    path: 'catalogos-parametros/configuracion-general',
     children: [
        { path: 'editar/:id', component: FormularioComponent},
     ],

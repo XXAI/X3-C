@@ -105,6 +105,7 @@ export class TablaOpcionesComponent {
             usuario: this.usuario,
             lista: this.lista_impresion
           };
+        console.log(imprimir);
           this.pdfworker.postMessage(JSON.stringify(imprimir));
         } catch (e) {
           this.cargandoPdf = false;
