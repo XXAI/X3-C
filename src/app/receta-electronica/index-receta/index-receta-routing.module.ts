@@ -7,9 +7,7 @@ import { AuthGuard } from '../../auth-guard.service';
 
 const routes: Routes = [
 	{
-		path: 'receta-electronica',
-	    component: IndexRecetaComponent,
-	    canActivate: [AuthGuard]
+		path: 'receta-electronica', component: IndexRecetaComponent, canActivate: [AuthGuard],
 	}
 ];
 
