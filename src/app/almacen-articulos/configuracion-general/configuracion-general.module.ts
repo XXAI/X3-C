@@ -14,7 +14,9 @@ import { FormularioComponent } from './formulario/formulario.component';
 
 import { AuthService } from '../../auth.service';
 
-import { MenuModule  } from '.././../configuracion/menu/menu.module';
+import { MenuPanelModule } from '.././../catalogos-parametros/menu/menu-panel.module';
+import { MenuAsidePanelModule } from '.././../catalogos-parametros/menu-aside/menu-aside-panel.module';
+import { IndexCatalogoParamsModule } from '.././../catalogos-parametros/index-catalogo-params/index-catalogo-params.module';
 
 //crud
 import { CrudService } from '../../crud/crud.service';
@@ -35,7 +37,9 @@ import { CKEditorModule } from 'ng2-ckeditor';
     BloquearPantallaModule,
     PaginacionModule,
     PipesModule,
-    MenuModule, 
+    MenuPanelModule,
+    MenuAsidePanelModule,
+    IndexCatalogoParamsModule,
     CrudModule,
     ParcialModule,
     ConfiguracionGeneralRoutingModule,
@@ -45,7 +49,7 @@ import { CKEditorModule } from 'ng2-ckeditor';
     Select2Module,
     CKEditorModule
   ],
-  declarations: [ 
+  declarations: [
     FormularioComponent
   ],
   providers: [ AuthService, CrudService ]

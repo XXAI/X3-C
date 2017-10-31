@@ -2,24 +2,35 @@
 <listar #ctrl URL="entrada-articulo?tipo_movimiento_id=11" titulo="Entrada"></listar>
 
 <!-- Menu principal "-->
-<articulos-catalogo-menu></articulos-catalogo-menu>
+<menu-almacen-articulos></menu-almacen-articulos>
 <div style="height:50px;"></div>
-<div class="contenedor columns " style="height:100%; ">
-    <div class="column is-one-quarter is-hidden-mobile menu-izquierda">
+<div class="contenedor columns " style="height:90%; padding-top: 1em;">
+    <!--<div class="column is-one-quarter is-hidden-mobile menu-izquierda">
 
-        <!-- Menu izquierda del modulo enviroment" -->
+         Menu izquierda del modulo enviroment" 
         <panel-control-menu-aside></panel-control-menu-aside>
-    </div>
-    <div class="column" style="padding: 0em 2em 0em 0em">
+    </div>-->
+    <div class="column" style="padding: 0em 2em 0em 1.5em">
         <div style="background: #FFF; border-radius: 1em; ">
 
             <!-- Opciones y busqueda -->
-            <tabla-opciones [ctrl]="ctrl" [nombre]="'Entradas'"></tabla-opciones>                          
+            <tabla-opciones 
+                #opciones
+                [ctrl]="ctrl"
+                [nombre]="'Entradas'"
+                [ruta]="'entrada-articulo?tipo_movimiento_id=11'"
+                [ruta_pdf]="'almacen-articulos/lista-entrada-articulos.js'"></tabla-opciones>                      
 
             <span style="overflow:auto; display:block" [style.maxHeight.px]="tamano-285">
+                <div class="is-fullwidth has-text-centered" *ngIf="opciones.cargandoPdf">
+                    <br>
+                    <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Generando PDF...</span></span>
+                    <br>
+                    <br>
+                </div>
 
                 <!--Tabla -->
-                <table class="table is-bordered is-striped is-narrow is-fullwidth" *ngIf=" !ctrl.cargando">
+                <table class="table is-bordered is-striped is-narrow is-fullwidth" *ngIf="!ctrl.cargando && !opciones.cargandoPdf">
                     <thead>
                         <tr>
                             <th>

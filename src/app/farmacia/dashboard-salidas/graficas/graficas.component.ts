@@ -13,6 +13,11 @@ import { GraficasService } from '../graficas/graficas.service';
 })
 
 export class GraficasComponent {
+    /**
+     * Calcula el tamaño de la
+     * @type {number}
+     */
+  tamano = document.body.clientHeight;
   constructor(
       private http: Http,
       private crudService: CrudService,

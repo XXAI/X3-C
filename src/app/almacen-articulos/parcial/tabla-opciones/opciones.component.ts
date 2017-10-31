@@ -12,6 +12,16 @@ import { NotificationsService } from 'angular2-notifications';
 export class TablaOpcionesComponent {
     @Input() ctrl: any;
     @Input() nombre: any;
+    /**
+     * Contiene valor _true_ si puede verse la opción de nuevo, false en caso contrario.
+     * @type {string}
+     */
+    @Input() nuevo= true;
+    /**
+     * Contiene la cadena de caracteres que representa el ícono del módulo,
+     * por default contiene un icono de lista.
+     * @type {string}
+     */
     @Input() icono= 'fa fa-list';
     /**
      * Contiene la ruta a la cual se hará la consulta a la API para imprimir el PDF.
@@ -95,6 +105,10 @@ export class TablaOpcionesComponent {
     };
   }
 
+  /**
+   * Método que genera una lista general de los registros en formato PDF
+   * @returns archivo en formato PDF
+   */
   imprimir() {
     this.cargandoPdf = true;
     this.crudService.lista_general(this.ruta).subscribe(

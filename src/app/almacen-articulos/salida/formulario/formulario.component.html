@@ -2,10 +2,10 @@
 <formulario #ctrl URL="salida-articulo" titulo="Salida" [dato]="dato"></formulario>
 
 <!-- Menu principal "-->
-<articulos-catalogo-menu></articulos-catalogo-menu>
-<div style="height:10px;"></div>
+<menu-almacen-articulos [modulo]="'Salida  de artículos'" [icono]="'assets/icono-salidas.svg'" [url]="'/almacen-articulos/salidas'"></menu-almacen-articulos>
+<div style="height:50px;"></div>
 <form name="form" novalidate [formGroup]="dato" (ngSubmit)="enviar();">
-    <div class="contenedor columns " style=" overflow:auto;" [style.maxHeight.px]="tamano-50">
+    <div class="contenedor columns " style="padding: 1em; overflow:auto;" [style.maxHeight.px]="tamano-50">
 
         <!-- apartado de movimiento_articulos -->
         <div class="column">
@@ -57,7 +57,7 @@
                         </thead>
                         <tbody formArrayName="movimiento_articulos">
                             <tr *ngFor="let val of ctrl.dato.controls.movimiento_articulos.controls;  let i = index;" [formGroupName]="i">
-                                <td>{{val.get("articulos").value.nombre}} ({{val.get("articulos").value.numero_inventario ? val.get("articulos").value.numero_inventario : val.get('inventarios').value[0].numero_inventario}}) </td>                                
+                                <td>{{val.get("articulos").value.nombre}} ({{val.get("articulos").value.numero_inventario ? val.get("articulos").value.numero_inventario : val.get('inventarios').value[0] ? val.get('inventarios').value[0].numero_inventario : ''}}) </td>                                
                                 
                                 <td>
                                     <div class="field">

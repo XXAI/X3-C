@@ -5,14 +5,14 @@
 <div class="box" style="margin: 20px;">
       <div class="columns">
         <div class="column is-half">
-  <section class="section">
-          <div class="heading">
-            <h1 class="title">{{usuario.almacen_activo.nombre}}</h1>
-            <h2 class="subtitle">
-              {{usuario.clues_activa.clues}} <strong>{{usuario.clues_activa.nombre}}</strong>
-            </h2>
-          </div>
-  </section>
+          <section class="section">
+                  <div class="heading">
+                    <h1 class="title">{{usuario.almacen_activo.nombre}}</h1>
+                    <h2 class="subtitle">
+                      {{usuario.clues_activa.clues}} <strong>{{usuario.clues_activa.nombre}}</strong>
+                    </h2>
+                  </div>
+          </section>
         </div>
         <div class="column">
           <div class="field">
@@ -34,7 +34,7 @@
 
         </div>
       </div>
-
+<div style="overflow:auto; display:block" [style.maxHeight.px]="tamano-300">
   <div class="card" style="margin: 20px; padding-left: 30px; padding-right: 70px">
     <table class="table" style="margin:5px;">
       <tbody>
@@ -742,4 +742,5 @@
       </div>
     </div>
   </div>
+</div>
 </div>

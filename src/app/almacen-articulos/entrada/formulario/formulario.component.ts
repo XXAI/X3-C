@@ -46,7 +46,15 @@ export class FormularioComponent {
         this.tieneid = true;
       }
     });
-    //variable para crear el array del formulario reactivo
+    this.dato.controls.id.valueChanges.subscribe(
+      val => {
+          if (val) {
+            setTimeout(() => {
+              this.calcular_importe_articulo();
+            }, 500);
+          }
+      }
+    );
 
     //Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
     //document.getElementById("catalogos").click();
@@ -133,6 +141,9 @@ export class FormularioComponent {
     this.cargando = false;
   }
 
+  /**
+   * Método que sirve para calcular el importe de la entrada, sumando los precios de los artículos.
+   */
   calcular_importe_articulo() {
     //sumamos las cantidades
     var subtotal = 0;

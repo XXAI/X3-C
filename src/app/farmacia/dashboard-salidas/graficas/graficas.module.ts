@@ -32,7 +32,7 @@ export function highchartsFactory() {
   providers: [
       AuthService,
       GraficasService,
-    { //Propiedad de la gráfica
+    { // Propiedad de la gráfica
       provide: HighchartsStatic,
       useFactory: highchartsFactory,
     }

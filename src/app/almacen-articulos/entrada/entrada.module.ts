@@ -15,8 +15,9 @@ import { ListaComponent } from './lista/lista.component';
 
 import { AuthService } from '../../auth.service';
 
-import { MenuPanelModule } from '../menu/menu-panel.module';
+import { MenuPanelModule      } from '../menu/menu-panel.module';
 import { MenuAsidePanelModule } from '../menu-aside/menu-aside-panel.module';
+import { IndexAlmacenArticulosModule } from '../index-almacen-articulos/index-almacen-articulos.module';
 
 //crud
 import { CrudService } from '../../crud/crud.service';
@@ -44,6 +45,7 @@ import { Select2Module } from 'ng2-select2';
     CrudModule,
     MenuPanelModule,
     MenuAsidePanelModule,
+    IndexAlmacenArticulosModule,
     Select2Module
   ],
   declarations: [ 
