@@ -8,6 +8,10 @@ import { FormBuilder, FormArray, FormGroup, Validators, FormControl } from '@ang
 
 export class FormularioComponent {
   /**
+   * Contiene la altura del navegador en pixeles, que se calcula con _document.body.clientHeight_
+   */
+  tamano = document.body.clientHeight;
+  /**
    * Formulario reactivo que contiene los datos que se enviarán a la API,
    * y son los mismos datos que podemos ver al consultar personal clues.
    * @type {FormGroup} */
@@ -17,6 +21,11 @@ export class FormularioComponent {
    * su valor puede ser 1 para mostrar los Datos Generales o 2 para Datos Detallados.
    */
   tab = 1;
+  /**
+   * Contiene los datos detallados del personal de la clues. Que son los campos
+   * que dependiendo del tipo de personal deben cargarse.
+   * @type {array}
+   */
   valor = [];
   /**
    * Este método inicializa la carga de las dependencias
@@ -26,7 +35,6 @@ export class FormularioComponent {
 
   ngOnInit() {
     let usuario =  JSON.parse(localStorage.getItem('usuario'));
-    console.log(usuario.clues_activa.clues);
     this.dato = this.fb.group({
       id: [''],
       tipo_personal_id: ['', [Validators.required]],
@@ -42,6 +50,10 @@ export class FormularioComponent {
     // Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
     document.getElementById('catalogos').click();
   }
+  /**
+   * 
+   * @param tipos 
+   */
   seleccionar_tipo_personal(tipos) {
     var id = this.dato.get('tipo_personal_id').value;
     var campos = {};

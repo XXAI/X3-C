@@ -5,10 +5,12 @@ import { ActivatedRoute, Params } from '@angular/router';
 
 import { environment } from '../../../../environments/environment';
 import { CrudService } from '../../../crud/crud.service';
-import { NotificationsService } from 'angular2-notifications';
 import { createAutoCorrectedDatePipe } from 'text-mask-addons';
 import * as moment from 'moment';
 import  * as FileSaver    from 'file-saver';
+
+import { Mensaje } from '../../../mensaje';
+import { NotificationsService } from 'angular2-notifications';
 
 
 @Component({
@@ -48,6 +50,10 @@ export class FormularioComponent {
    * Contiene la fecha MÁXIMA que puede ingresar el usuario para la fecha que fue hecha el movimiento.
    * @type {Date} */
   MaxDate = new Date();
+  /**
+   * Contiene la fecha mínima de caducidad que puede tener las sustancias de laboratorio para ingresarlas.
+   * @type {any}
+   */
   MinDateCaducidad;
   /**
    * Contiene la fecha del día de hoy y es la que automáticamente se asigna a la fecha del movimiento, aunque el usuario puede
@@ -76,6 +82,11 @@ export class FormularioComponent {
    * el catálogo de programas y no cada vez que se esté cargando otros elementos.
    */
   cargandoProgramas = false;
+  /**
+   * Variable que muestra las notificaciones al usuario.
+   * @type {Mensaje}
+   */
+  mensajeResponse: Mensaje = new Mensaje();
 
   fecha_movimiento;
   mostrarCancelado;
@@ -173,7 +184,7 @@ export class FormularioComponent {
       status: ['FI'],
       fecha_movimiento: ['', [Validators.required]],
       observaciones: [''],
-      programa_id: [null],
+      programa_id: [''],
       cancelado: [''],
       observaciones_cancelacion: [''],
       movimiento_metadato: this.fb.group({
@@ -260,7 +271,6 @@ export class FormularioComponent {
   llenarFormulario() {
     const insumos_temporal = this.fb.array([]);
     const control_insumos = <FormArray>this.dato.controls['insumos'];
-    console.log(control_insumos);
 
     let lotes;
     for ( let item of control_insumos.value) {
@@ -303,7 +313,6 @@ export class FormularioComponent {
      */
   handleKeyboardEvents(event: KeyboardEvent) {
     this.key = event.which || event.keyCode;
-    // console.log(this.key);
     if (event.keyCode === 13) {
       document.getElementById('buscarInsumo').focus();
       event.preventDefault();
@@ -428,9 +437,9 @@ export class FormularioComponent {
     }*/
     // crear el json que se pasara al formulario reactivo tipo insumos
     let temporal_cantidad_x_envase;
-    if(this.insumo.cantidad_x_envase == null){
+    if (this.insumo.cantidad_x_envase == null){
       temporal_cantidad_x_envase = 1;
-    }else{
+    }else {
       temporal_cantidad_x_envase = this.insumo.cantidad_x_envase;
     }
     var lotes = {
@@ -559,6 +568,72 @@ export class FormularioComponent {
     this.dato.controls.status.patchValue('BR');
     document.getElementById('borrador').click();
   }
+  /**
+   * Este método envia los datos para actualizar un elemento con el id
+   * que se envia por la url
+   * @return void
+   */
+  actualizarDatos() {
+      this.cargando = true;
+      let dato;
+      try {
+          dato = this.dato.getRawValue();
+      }catch (e) {
+          dato = this.dato.value;
+      }
+
+      this.crudService.editar(this.dato.controls.id.value, dato, 'entrada-almacen').subscribe(
+          resultado => {
+              document.getElementById('actualizar').click();
+              this.cargando = false;
+
+              this.mensajeResponse.texto = 'Se han guardado los cambios.';
+              this.mensajeResponse.mostrar = true;
+              this.mensajeResponse.clase = 'success';
+              this.mensaje(2);
+          },
+          error => {
+              this.cargando = false;
+
+              this.mensajeResponse.texto = 'No especificado.';
+              this.mensajeResponse.mostrar = true;
+              this.mensajeResponse.clase = 'alert';
+              this.mensaje(2);
+              try {
+                  let e = error.json();
+                  if (error.status == 401) {
+                      this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
+                      this.mensajeResponse.clase = 'error';
+                      this.mensaje(2);
+                  }
+                  // Problema de validación
+                  if (error.status == 409) {
+                      this.mensajeResponse.texto = 'Por favor verfique los campos marcados en rojo.';
+                      this.mensajeResponse.clase = 'error';
+                      this.mensaje(8);
+                      for (let input in e.error) {
+                          // Iteramos todos los errores
+                          for (let i in e.error[input]) {
+                              this.mensajeResponse.titulo = input;
+                              this.mensajeResponse.texto = e.error[input][i];
+                              this.mensajeResponse.clase = 'error';
+                              this.mensaje(3);
+                          }
+                      }
+                  }
+              } catch (e) {
+                  if (error.status == 500) {
+                      this.mensajeResponse.texto = '500 (Error interno del servidor)';
+                  } else {
+                      this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
+                  }
+                  this.mensajeResponse.clase = 'error';
+                  this.mensaje(2);
+              }
+
+          }
+      );
+  }
 /************************************ IMPRESION DE REPORTES ************************************** */
   imprimir() {
 
@@ -582,6 +657,46 @@ export class FormularioComponent {
       for ( var i=0 ; i < len ; i++ )
       view[i] = bytes.charCodeAt(i) & 0xff;
       return new Blob( [ buffer ], { type: type } );
+  }
+
+  /***************************MENSAJES******************************* */
+  /**
+   * Este método muestra los mensajes resultantes de los llamados de la api
+   * @param cuentaAtras numero de segundo a esperar para que el mensaje desaparezca solo
+   * @param posicion  array de posicion [vertical, horizontal]
+   * @return void
+   */
+  mensaje(cuentaAtras: number = 6, posicion: any[] = ['bottom', 'left']): void {
+      var objeto = {
+          showProgressBar: true,
+          pauseOnHover: false,
+          clickToClose: true,
+          maxLength: this.mensajeResponse.texto.length
+      };
+
+      this.options = {
+          position: posicion,
+          timeOut: cuentaAtras * 1000,
+          lastOnBottom: true
+      };
+      if (this.mensajeResponse.titulo === '') {
+          this.mensajeResponse.titulo = 'Entradas de almacén';
+        }
+      if (this.mensajeResponse.clase === 'alert') {
+          this.notificacion.alert(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+        }
+      if (this.mensajeResponse.clase === 'success') {
+          this.notificacion.success(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+        }
+      if (this.mensajeResponse.clase === 'info') {
+          this.notificacion.info(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+        }
+      if (this.mensajeResponse.clase === 'warning' || this.mensajeResponse.clase === 'warn') {
+          this.notificacion.warn(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+        }
+      if (this.mensajeResponse.clase === 'error' || this.mensajeResponse.clase === 'danger') {
+          this.notificacion.error(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
+        }
   }
 
 }

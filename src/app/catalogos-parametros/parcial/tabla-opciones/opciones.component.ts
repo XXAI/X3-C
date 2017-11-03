@@ -12,6 +12,23 @@ import { NotificationsService } from 'angular2-notifications';
 export class TablaOpcionesComponent {
     @Input() ctrl: any;
     @Input() nombre: any;
+    /**
+     * Contiene valor _true_ si debe mostrarse el nombre del módulo, _false_ en caso contrario.
+     * @type {string}
+     */
+    @Input() mostrar_nombre= true;
+    /**
+     * Contiene valor _true_ si puede verse la opción de nuevo, false en caso contrario.
+     * @type {string}
+     */
+    @Input() nuevo= true;
+    /**
+     * Variable que contiene un valor _true_ si debe mostrarse el input de búsqueda.
+     */
+    @Input() busqueda: true;
+    /**
+     * Contiene la cadena de fontAwesome para insertar ícono
+     */
     @Input() icono= 'fa fa-list';
     /**
      * Contiene la ruta a la cual se hará la consulta a la API para imprimir el PDF.

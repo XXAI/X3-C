@@ -33,7 +33,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         [{ text: 'SIAL', style: 'titulo', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],
-                        [{ text: 'SALIDA ESTANDAR', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },
+                        [{ text: 'SALIDA DE LABORATORIO', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],
                         [
@@ -189,6 +189,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
 
         for (var i in data.lista) {
             var insumo = data.lista[i];
+            console.log(insumo);
 
             for (var j in insumo.lotes) {
                 var lote = insumo.lotes[j];
@@ -251,7 +252,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
         );
 
         pdfMake.createPdf(dd).getBase64(function(base64) {
-            postMessage({ fileName: 'Salida' + data.datos.id + '.pdf', base64: base64 });
+            postMessage({ fileName: 'Salida_Laboratorio_' + data.datos.id + '.pdf', base64: base64 });
         });
     }
 

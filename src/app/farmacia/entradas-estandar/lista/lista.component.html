@@ -189,7 +189,7 @@
                                     <a *ngIf="item.status == 'BR'" routerLink="/almacen/entradas-estandar/editar/{{item.id}}">{{ item.movimiento_metadato.persona_recibe }}</a>
                                 </td>
                                 <td *ngIf="!item.movimiento_metadato && (i+1)<ctrl.dato.length" style="vertical-align: middle;" >No disponible</td>
-                                <td *ngIf="!item.movimiento_metadato && (i+1)<ctrl.dato.length" style="vertical-align: middle;" >No disponible</td>
+                                <td *ngIf="!item.movimiento_usuario && (i+1)<ctrl.dato.length" style="vertical-align: middle;" >No disponible</td>
                                 <td *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle;">
                                     <a *ngIf="item.status == 'FI'" routerLink="/almacen/entradas-estandar/ver/{{item.id}}">{{ item.movimiento_usuario.nombre }} {{ item.movimiento_usuario.apellidos }} </a>
                                     <a *ngIf="item.status == 'BR'" routerLink="/almacen/entradas-estandar/editar/{{item.id}}">{{ item.movimiento_usuario.nombre }} {{ item.movimiento_usuario.apellidos }} </a>

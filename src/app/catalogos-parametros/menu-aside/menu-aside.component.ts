@@ -30,7 +30,7 @@ export class MenuAsideComponent implements OnInit {
         titulo: 'Catalogos',
         modulos: [
           { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'assets/catalogo-almacenes.svg', titulo: 'Almacenes', url: '/catalogos-parametros/almacenes' },
-          { permiso: 'ygwsEwz3cUw4yVMCeaQ9hVMCFXUHri5q', icono: 'assets/catalogo-programas.svg', titulo: 'Parámetros globales', url: '/catalogos-parametros/configuracion-general'}, 
+          { permiso: '1ulsQmM7Abnw2V74dD2is5NEeCQq54YE', icono: 'assets/catalogo-parametros.svg', titulo: 'Parámetros globales', url: '/catalogos-parametros/configuracion-general'}, 
           { permiso: 'Npmc6C155PMjnkPKWUFXcIF3NcegAzIE', icono: 'assets/catalogo-servicios.svg', titulo: 'Forma Farmaceutica', url: '/catalogos-parametros/forma-farmaceutica'},
           { permiso: 'l9PXPHg1MMJYMKTlzXeEHNIsgw9d5oty', icono: 'assets/catalogo-grupo-insumos.svg', titulo: 'Grupos de insumos', url: '/catalogos-parametros/grupos-insumos'}, 
           { permiso: 'KbzwkJtDcLGcaNhbuYd24bhdDMGaKXod', icono: 'assets/catalogo-marcas.svg', titulo: 'Marcas', url: '/catalogos-parametros/marcas'}, 

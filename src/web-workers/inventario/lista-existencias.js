@@ -20,7 +20,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     headerRows: 10,
                     dontBreakRows: true,
                     //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
-                    widths: [80, 70, 'auto', 'auto', 'auto', 'auto','auto', 'auto'],
+                    widths: [80, 70, 'auto', 'auto', 'auto', 'auto', 40, 40],
                     body: [
                         [{
                             image: 'header',
@@ -196,7 +196,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
             }*/
                 dd.content[0].table.body.push([
                     { text: movimiento.clave_insumo_medico ? movimiento.clave_insumo_medico : 'No disponible' , style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.descripcion ? movimiento.descripcion : 'No disponible', style: 'tableRow', colSpan:2, alignment: 'center' },
+                    { text: movimiento.descripcion ? movimiento.descripcion : 'No disponible', style: 'tableRow', colSpan:2, alignment: 'left' },
                     {},
                     { text: movimiento.movimiento_metadato == null ? 'No disponible' : movimiento.movimiento_metadato.turno.nombre, style: 'tableRow', alignment: 'center' },
                     { text: movimiento.numero_claves == null || movimiento.numero_insumos == null ? 'No disponible' : 'Claves: ' + movimiento.numero_claves + '\n Insumos: ' + movimiento.numero_insumos, style: 'tableRow', alignment: 'center' },

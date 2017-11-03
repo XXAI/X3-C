@@ -153,13 +153,18 @@
                                         <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Finalizar entrada
                                     </button>
                                 </p>
-                                <p class="level-item" *ngIf="!tieneid || ctrl.dato.get('status').value == 'BR'">
+                                <p class="level-item" *ngIf="!tieneid">
                                     <button class="button is-primary" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="guardarBorrador();">
                                         <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar avance
                                         <span id="borrador" (click)="ctrl.enviar(false, '/laboratorio/entradas-laboratorio/editar'); tieneid ? ctrl.cargarDatos() : '';"></span>
                                     </button>
                                 </p>
-                                <p class="level-item" *ngIf="tieneid"><a class="button is-primary" title="Actualizar" (click)="ctrl.cargarDatos();"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
+                                <p class="level-item" *ngIf="ctrl.dato.get('status').value == 'BR'">
+                                    <button class="button is-primary" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="actualizarDatos();">
+                                        <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar avance
+                                    </button>
+                                </p>
+                                <p class="level-item" *ngIf="tieneid"><a class="button is-primary" id="actualizar" title="Actualizar" (click)="ctrl.cargarDatos();"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
                                 <p class="level-item" *ngIf="!tieneid">
                                     <a class="button is-primary" title="Actualizar" (click)="cargarCatalogo('programa');">
                                         <span class="icon "><i class="fa fa-refresh"></i>

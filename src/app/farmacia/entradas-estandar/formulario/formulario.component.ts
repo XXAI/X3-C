@@ -32,14 +32,39 @@ export class FormularioComponent {
    * Contiene los datos de inicio de sesión del usuario.
    * @type {any} */
   usuario;
-  // Crear la variable que mustra las notificaciones
+  /**
+   * Variable que muestra las notificaciones al usuario.
+   * @type {Mensaje}
+   */
   mensajeResponse: Mensaje = new Mensaje();
+  /**
+   * Pipe que formate la fecha que ingresa el usuario
+   * @type {any}
+   */
   autoCorrectedDatePipe: any = createAutoCorrectedDatePipe('yyyy-mm-dd');
-
+  /**
+   * Contiene la fecha MÍNIMA que puede ingresar el usuario para la fecha que fue hecha el movimiento.
+   * @type {Date} */
   MinDate = new Date();
+  /**
+   * Contiene la fecha mínima de caducidad que puede tener medicamento para ingresarlo
+   * @type {any}
+   */
   MinDateCaducidad;
+  /**
+   * Contiene la fecha MÁXIMA que puede ingresar el usuario para la fecha que fue hecha el movimiento.
+   * @type {Date} */
   MaxDate = new Date();
+  /**
+   * Contiene la fecha del día de hoy y es la que automáticamente se asigna a la fecha del movimiento, aunque el usuario puede
+   * cambiarla hay un límite de una fecha mínima [MinDate]{@link FormularioComponent#MinDate} y
+   * fecha máxima [MaxDate]{@link FormularioComponent#MaxDate}
+   * @type {Date} */
   fecha_actual;
+  /**
+   * Contiene __true__ cuando el formulario recibe el parámetro id, lo que significa que ha de mostrarse una salida por receta
+   * existente. Cuando su valor es __false__ quiere decir que mostraremos la vista para crear una nueva salida.
+   * @type {Boolean} */
   tieneid = false;
   /**
    * Variable que nos sirve para identificar si estamos editando una entrada. Debido a
@@ -152,7 +177,7 @@ export class FormularioComponent {
       status: ['FI'],
       fecha_movimiento: ['', [Validators.required]],
       observaciones: [''],
-      programa_id: [null],
+      programa_id: [''],
       cancelado: [''],
       observaciones_cancelacion: [''],
       movimiento_metadato: this.fb.group({
@@ -551,7 +576,7 @@ export class FormularioComponent {
         }
 
         this.crudService.editar(this.dato.controls.id.value, dato, 'entrada-almacen').subscribe(
-            resultado => {
+            resultado => { 
                 document.getElementById('actualizar').click();
                 this.cargando = false;
 

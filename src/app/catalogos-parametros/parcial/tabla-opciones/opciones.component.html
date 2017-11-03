@@ -21,7 +21,7 @@
                 </a>
             </p>
 
-            <p class="control" >
+            <p class="control" *ngIf="nuevo">
                 <a  class="button is-{{ctrl.busquedaActivada ? 'dark' : 'primary'}} tooltip"  routerLink="{{url_nuevo}}">
                     <span class="icon ">
                         <i class="fa fa-file"></i>
@@ -57,9 +57,9 @@
             </p>
         </div>
 
-        <div class="container is-fluid">
+        <div class="container is-fluid" *ngIf="busqueda">
 
-            <h1 class="title" *ngIf="!ctrl.busquedaActivada">
+            <h1 class="title" *ngIf="!ctrl.busquedaActivada && mostrar_nombre">
                 <span class="icon is-medium"><i class="{{icono}}"></i></span>&nbsp; {{nombre}}
             </h1>
             <h1 class="title" *ngIf="ctrl.busquedaActivada">

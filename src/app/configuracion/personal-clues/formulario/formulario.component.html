@@ -8,7 +8,7 @@
     <div class="column" style="padding:2em;">
         <!-- formulario -->
         <form name="form" novalidate [formGroup]="dato" (ngSubmit)="ctrl.enviar()" >
-            <div style="background: #FFF; overflow: hidden;">
+            <div style="background: #FFF; overflow: hidden;" [style.height.px]="tamano-100">
                 <section class="hero is-primary">
                     <div class="hero-body">
                         <!-- Opciones  -->
@@ -29,7 +29,7 @@
                     <br>
                     <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>                    &nbsp;<span>Cargando...</span></span>
                 </div>
-                <section class="section">
+                <section class="section" style="height: inherit">
 
 
 

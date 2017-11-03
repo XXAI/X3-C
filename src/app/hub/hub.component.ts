@@ -65,7 +65,7 @@ export class HubComponent implements OnInit {
     {
       title: 'Equipamiento', routerLink: '/equipamiento', icono: 'assets/hub-equipamiento.svg',
       permisos: [
-        // 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
+         'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
       ]
     },
     {
