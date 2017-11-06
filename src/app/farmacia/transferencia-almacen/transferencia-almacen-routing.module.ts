@@ -20,11 +20,14 @@ const routes: Routes = [
        { path: 'finalizados', component: ListaComponent},
        { path: 'cancelados', component: ListaComponent},
        { path: 'nuevo', component: FormularioComponent},
-       { path: 'editar/:id', component: FormularioComponent},
+       //{ path: 'editar/:id', component: FormularioComponent},
        { path: 'ver/:id', component: FormularioComponent},
        { path: 'surtir/:id', component: SurtirComponent},
 
+
+       // Akira:
        { path: 'nueva', component: TransferenciaComponent},
+       { path: 'editar/:id', component: TransferenciaComponent},
        
     ],
     canActivate: [AuthGuard]

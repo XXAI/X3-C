@@ -13,6 +13,12 @@ export class TransferenciaAlmacenService {
   static readonly URL_STATS: string = "almacen/transferencias-stats";
   static readonly URL_CANCELAR: string = "cancelar-pedido-transferir";
   static readonly URL_GENERAR_ALTERNO: string = "generar-pedido-alterno";
+
+
+  //AKIRA:
+
+  static readonly URL_UNIDADES_MEDICAS: string = "unidades-medicas";
+  static readonly URL_ALMACENES: string = "almacenes";
   
   constructor(private http: Http,   private jwtRequest:JwtRequestService) { }
 
@@ -63,5 +69,22 @@ export class TransferenciaAlmacenService {
   generarPedidoAlterno(id:any, parametros:any = {}): Observable<any>{
     return this.jwtRequest.put(TransferenciaAlmacenService.URL_GENERAR_ALTERNO,id,parametros).map( (response: Response) => response.json().data) as Observable<any[]>;
   }
+
+  //AKIRA:
+  unidadesMedicas(): Observable<any>{
+    return this.jwtRequest.get(TransferenciaAlmacenService.URL_UNIDADES_MEDICAS,null,{ lista:true, activa: true}).map( (response: Response) => response.json().data);
+  }
+
+  almacenes(clues:string): Observable<any>{
+    return this.jwtRequest.get(TransferenciaAlmacenService.URL_ALMACENES,null,{q: clues, tipo: 'ALMPAL'}).map( (response: Response) => response.json().data);
+  }
   
+  guardarTransferencia(id:any = null, parametros: any = {}):Observable<any> {
+    if(id == null){
+      return this.jwtRequest.post(TransferenciaAlmacenService.URL,parametros).map( (response: Response) => response.json().data) as Observable<any>;
+    } else {
+      return this.jwtRequest.put(TransferenciaAlmacenService.URL,id, parametros).map( (response: Response) => response.json().data) as Observable<any>;
+    }
+  }
+
 }
