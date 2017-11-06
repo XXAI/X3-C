@@ -1,3 +1,11 @@
+select.is-danger {
+    border-color: #D84315 !important;
+    border-radius: 3px;
+    border: 1px solid;
+}
+.select {
+    margin-bottom: 0px !important;
+}
 .item {
     cursor: pointer;
 }
@@ -11,7 +19,7 @@
     display: inherit;
 }
 .item .item-detalle {
-    display: none;
+    /*display: none;*/
 }
 
 .item.asignado {
