@@ -31,7 +31,7 @@
             </p>
 
             <p class="control">
-                <a class="button is-{{ctrl.busquedaActivada ? 'dark' : 'primary'}} tooltip"  >
+                <a class="button is-{{ctrl.busquedaActivada ? 'dark' : 'primary'}} tooltip" (click)="imprimirExcel()">
                     <span class="icon ">
                         <i class="fa fa-file-excel-o"></i>
                     </span>
@@ -113,7 +113,8 @@
                 </p>
                 <p class="control">
                     <span class="select">
-                        <select style="width: 150px" name="tipo_causes" #tipoCauses (change)="tipo_causes = tipoCauses.value">
+                        <select style="width: 150px" name="tipo_causes" #tipoCauses (change)="tipo_causes = tipoCauses.value"
+                            [ngClass]="{'is-disabled': tipoInsumo.value == 'MC'}">
                             <option value="TODO">TODO</option>
                             <option value="CAUSES">CAUSES</option>
                             <option value="NO_CAUSES">NO CAUSES</option>
@@ -122,7 +123,8 @@
                 </p>
                 <p class="control">
                     <span class="select">
-                        <select name="tipo_controlados" #tipoControlado (change)="tipo_controlado = tipoControlado.value">
+                        <select name="tipo_controlados" #tipoControlado (change)="tipo_controlado = tipoControlado.value"
+                            [ngClass]="{'is-disabled': tipoInsumo.value == 'MC'}">>
                             <option value="TODO">TODO</option>
                             <option value="CONTROLADOS">CONTROLADOS</option>
                             <option value="NO_CONTROLADOS">NO CONTROLADOS</option>

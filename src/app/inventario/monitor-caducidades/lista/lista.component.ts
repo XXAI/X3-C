@@ -8,6 +8,7 @@ import { environment } from '../../../../environments/environment';
 import { Mensaje } from '../../../mensaje';
 import { NotificationsService } from 'angular2-notifications';
 import  * as FileSaver    from 'file-saver';
+import * as moment from 'moment';
 
 @Component({
   selector: 'inventario-lista',
@@ -26,7 +27,9 @@ export class ListaComponent implements OnInit {
   tipo_causes = 'TODOS'; // 'CAUSES', 'NO_CAUSES'
   tipo_controlado = 'TODOS'; // 'CONTROLADO', 'NO_CONTROLADO'
   tipo_busqueda = 'TODO';
-
+  /**
+   * Variable que se pasa a la API para saber que claves debe mostrar
+   */
   buscar_en = 'TODAS_LAS_CLAVES';
   seleccionar = 'TODO';
   insumo;
@@ -34,6 +37,18 @@ export class ListaComponent implements OnInit {
   es_unidosis;
   unidad_medida;
   lista_impresion;
+  /**
+   * Contiene la fecha de caducidad óptima del insumo (caducidad > un año).
+   */
+  fecha_optima;
+  /**
+   * Contiene la fecha de caducidad media del insumo (caducidad mayor 6 meses y menor un año).
+   */
+  fecha_media;
+  /**
+   * Contiene la fecha de hoy para comparar si un insumo ya está caducado.
+   */
+  fecha_hoy;
 
   @ViewChildren('t') t;
   @ViewChildren('s') s;
@@ -98,6 +113,9 @@ export class ListaComponent implements OnInit {
               document.getElementById('listarCaducidades').click();
             }, 500);
         });
+    this.fecha_optima = moment().add(365, 'days').format('YYYY-MM-DD');
+    this.fecha_media = moment().add(183, 'days').format('YYYY-MM-DD');
+    this.fecha_hoy = moment().format('YYYY-MM-DD');
   }
 
   /**

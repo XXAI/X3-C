@@ -13,11 +13,11 @@
                 #opciones
                 [ctrl]="ctrl"
                 [nombre]="'Almacenes'"
-                [ruta]="'caducidad-insumos'"
+                [ruta]="'caducidad-insumos?tipo_busqueda='+tipo_busqueda+'&buscar_en='+opciones.buscar_en+'&tipo_insumo='+opciones.tipo_insumo+'&tipo_causes='+opciones.tipo_causes+'&tipo_controlado='+opciones.tipo_controlado+'&clave_insumo='+opciones.clave_insumo"
                 [nuevo]= false
                 [busqueda]= false
                 [mostrar_nombre]= false
-                [ruta_pdf]="'catalogos-parametros/lista-almacen.js'">
+                [ruta_pdf]="'inventario/lista-monitor-caducidades.js'">
             </app-tabla-opciones-inventario>
 
             <a id="listarCaducidades" (click)="ctrl.listar(1)"></a>
@@ -38,7 +38,6 @@
                             <th>Descripción</th>
                             <th title="Lote">Lote</th>
                             <th title="Fecha de caducidad">Caducidad</th>
-                            <th title="Consumo Promedio Mensual">C.P.M.</th>
                             <th style="text-align: right;">Existencia</th>
                             <th style="text-align: right;">Existencia Unidosis</th>
                             <th style="text-align: center;">Actualizado</th>
@@ -47,27 +46,31 @@
                     <tbody *ngIf="!ctrl.busquedaActivada">
                         <tr *ngFor="let item of ctrl.dato; let i=index" style="border: 1px">
                             <th style="vertical-align: middle; text-align: center;">
-                                <a (click)="select_insumo_autocomplete(item)">{{ item.clave_insumo_medico }}</a>
+                                {{ item.clave_insumo_medico }}
                             </th>
                             <td style="vertical-align: middle;">
-                                <a (click)="select_insumo_autocomplete(item)">
-                                    <p class="title is-5"> <small>{{ item.descripcion }} </small></p>
-                                        <p class="subtitle is-6">
-                                            <label *ngIf="item.es_causes==1" class="tag is-success" ><strong>Causes </strong></label>
-                                            <label *ngIf="item.es_causes==0" class="tag" style="background: #B8FB7E; border-color: #B8FB7E; color: rgba(0,0,0,0.7);">
-                                                <strong>No Causes </strong> 
-                                            </label>
-                                            <label *ngIf="item.tipo=='MC'" class="tag is-info" ><strong title="Material de curación">Mat. Curación </strong></label>
-                                            <label *ngIf="item.es_unidosis==1" class="tag is-warning" ><strong>Unidosis</strong></label>
-                                        </p>
-                                </a>
+                                <p class="title is-5"> <strong><small>{{ item.descripcion }} </small></strong></p>
+                                <p class="subtitle is-6">
+                                    <label *ngIf="item.es_causes==1" class="tag is-success" ><strong>Causes </strong></label>
+                                    <label *ngIf="item.es_causes==0" class="tag" style="background: #B8FB7E; border-color: #B8FB7E; color: rgba(0,0,0,0.7);">
+                                        <strong>No Causes </strong> 
+                                    </label>
+                                    <label *ngIf="item.tipo=='MC'" class="tag is-info" ><strong title="Material de curación">Mat. Curación </strong></label>
+                                    <label *ngIf="item.es_unidosis==1" class="tag is-warning" ><strong>Unidosis</strong></label>
+                                </p>
                             </td>
-                            <td>{{ item.lote }}</td>
-                            <td>{{ item.fecha_caducidad }}</td>
-                            <td>--</td>
-                            <td style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)" style="font-size:1.2em;" class="help" [ngClass]="{'is-danger': item.existencia == 0}">{{ item.existencia }} </a></td>
-                            <td style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)" style="font-size:1.2em;" class="help" [ngClass]="{'is-danger': item.existencia_unidosis == 0}">{{ item.existencia_unidosis }} </a></td>
-                            <td style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)">{{ item.updated_at | date}} </a></td>
+                            <td style="vertical-align: middle;">{{ item.lote }}</td>
+                            <td style="vertical-align: middle;" *ngIf="item.fecha_caducidad">
+                                <label *ngIf="item.fecha_caducidad >= fecha_optima" class="tag is-success" ><strong>&nbsp;</strong></label>
+                                <label *ngIf="item.fecha_caducidad >= fecha_media && item.fecha_caducidad < fecha_optima" class="tag is-warning" ><strong>&nbsp;</strong></label>
+                                <label *ngIf="item.fecha_caducidad >= fecha_hoy && item.fecha_caducidad < fecha_media" class="tag is-danger" ><strong>&nbsp;</strong></label>
+                                <label *ngIf="item.fecha_caducidad < fecha_hoy" class="tag is-black" ><strong>&nbsp;</strong></label>
+                                &nbsp; {{ item.fecha_caducidad | date }}
+                            </td>
+                            <td style="vertical-align: middle;" *ngIf="!item.fecha_caducidad">No disponible</td>
+                            <td style="vertical-align: middle; text-align: center;"><span style="font-size:1.2em;" class="help" [ngClass]="{'is-danger': item.fecha_caducidad >= fecha_hoy && item.fecha_caducidad < fecha_media}">{{ item.existencia }} </span></td>
+                            <td style="vertical-align: middle; text-align: center;"><span style="font-size:1.2em;" class="help" [ngClass]="{'is-danger': item.fecha_caducidad >= fecha_hoy && item.fecha_caducidad < fecha_media}">{{ item.existencia_unidosis }} </span></td>
+                            <td style="vertical-align: middle; text-align: center;">{{ item.updated_at | date}}</td>
                         </tr>
                         <tr *ngIf="ctrl.dato.length == 0">
                             <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>

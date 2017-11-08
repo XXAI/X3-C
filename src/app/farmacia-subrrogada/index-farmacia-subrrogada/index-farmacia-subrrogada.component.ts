@@ -28,7 +28,7 @@ export class IndexFarmaciaSubrrogadaComponent implements OnInit {
       
     ]
     this.accesosDirectos = [          
-      { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-dashboard.svg', titulo:"Dashboard Salidas", url:"/almacen/dashboard-salidas" },
+      { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk--', icono: 'assets/icono-dashboard.svg', titulo:"Dashboard Salidas", url:"/almacen/dashboard-salidas" },
       { permiso: '6sTjs3q8rhHslelQgTUI4hdkNSbiwyhf', icono: 'assets/icono-sincronizar-receta.svg', titulo:"Sincronizar recetas", url:"/farmacia-subrrogada/sincronizar-recetas" },
     ]
 

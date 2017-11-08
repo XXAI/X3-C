@@ -1,5 +1,6 @@
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { LocationStrategy, HashLocationStrategy} from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
@@ -231,10 +232,10 @@ export function highchartsFactory() {
     SincronizarRecetasModule,
     // Hub catalogos y parámetros
     Almacenes2Module,
-    //CrudModule,
+    // CrudModule,
     EgresoModule,
     AvancesModule,
-    //entradas salidas almacen articulos
+    // entradas salidas almacen articulos
     EntradaModule,
     SalidaModule,
     ConfiguracionGeneralModule,
@@ -250,7 +251,8 @@ export function highchartsFactory() {
     JwtHelper,
     JwtRequestService,
     Uploader,
-    { provide: HighchartsStatic, useFactory: highchartsFactory} ],
+    { provide: HighchartsStatic, useFactory: highchartsFactory},
+    { provide: LocationStrategy, useClass: HashLocationStrategy} ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

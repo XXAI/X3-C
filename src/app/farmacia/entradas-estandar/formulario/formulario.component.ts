@@ -85,7 +85,6 @@ export class FormularioComponent {
 
   fecha_movimiento;
   mostrarCancelado;
-
   // # SECCION: Reportes
   pdfworker: Worker;
   cargandoPdf = false;

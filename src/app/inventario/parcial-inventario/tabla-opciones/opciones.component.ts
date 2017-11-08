@@ -3,6 +3,8 @@ import { CrudService } from '../../../crud/crud.service';
 import  * as FileSaver    from 'file-saver';
 import { Mensaje } from '../../../mensaje';
 import { NotificationsService } from 'angular2-notifications';
+import { environment } from '../../../../environments/environment';
+import {Router, ActivatedRoute, Params} from '@angular/router';
 
 @Component({
   selector: 'app-tabla-opciones-inventario',
@@ -108,7 +110,8 @@ export class TablaOpcionesComponent {
   constructor(
     private _ngZone: NgZone,
     private crudService: CrudService,
-    private notificacion: NotificationsService) { }
+    private notificacion: NotificationsService,
+    private activatedRoute: ActivatedRoute) { }
 
   ngOnInit() {
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
@@ -134,6 +137,23 @@ export class TablaOpcionesComponent {
       FileSaver.saveAs( self.base64ToBlob( evt.data.base64, 'application/pdf' ), evt.data.fileName );
       // open( 'data:application/pdf;base64,' + evt.data.base64 ); // Popup PDF
     };
+    this.activatedRoute.params.subscribe((params: Params) => {
+        this.tipo_busqueda = params['tipo_busqueda'];
+      });
+  }
+  imprimirExcel() {
+    let cadena_url;
+    let usuario_actual = JSON.parse(localStorage.getItem('usuario'));
+    if (usuario_actual.clues_activa) {
+      cadena_url = '&clues=' + usuario_actual.clues_activa.clues;
+    }
+    if (usuario_actual.almacen_activo) {
+      cadena_url += '&almacen=' + usuario_actual.almacen_activo.id;
+    }
+    let query = 'token=' + localStorage.getItem('token');
+    window.open(`${environment.API_URL}/caducidad-insumos?${query}${cadena_url}&
+    tipo_busqueda=${this.tipo_busqueda}&buscar_en=${this.buscar_en}&tipo_insumo=${this.tipo_insumo}
+    &tipo_causes=${this.tipo_causes}&tipo_controlado=${this.tipo_controlado}&clave_insumo=${this.clave_insumo}`);
   }
 
   /**
@@ -148,7 +168,13 @@ export class TablaOpcionesComponent {
         try {
           let imprimir = {
             usuario: this.usuario,
-            lista: this.lista_impresion
+            lista: this.lista_impresion,
+            buscar_en: this.buscar_en,
+            tipo_busqueda: this.tipo_busqueda,
+            tipo_causes: this.tipo_causes,
+            tipo_insumo: this.tipo_insumo,
+            clave_insumo: this.clave_insumo,
+            tipo_controlado: this.tipo_controlado
           };
           this.pdfworker.postMessage(JSON.stringify(imprimir));
         } catch (e) {

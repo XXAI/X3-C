@@ -121,6 +121,7 @@ export class TablaOpcionesComponent {
     this.crudService.lista_general(this.ruta).subscribe(
       resultado => {
         this.lista_impresion = resultado;
+        console.log(resultado);
         try {
           let imprimir = {
             usuario: this.usuario,

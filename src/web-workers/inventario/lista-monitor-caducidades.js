@@ -1,15 +1,27 @@
 var document = { 'createElementNS': function() { return {} } };
 var window = this;
-importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js');
+var fecha_optima, fecha_media, fecha_hoy;
+importScripts(
+    '../../../scripts/pdfmake.min.js',
+    '../../../scripts/vfs_fonts.js',
+    '../../../scripts/moment.min.js'
+);
 
 (function() {
     'use strict';
 
-
     onmessage = function(evt) {
         let data = JSON.parse(evt.data)
         pdf(data);
-        console.log(data);
+        fechas();
+    };
+
+    function fechas() {
+        fecha_optima = moment().add(365, 'days').format('YYYY-MM-DD');
+        fecha_media = moment().add(183, 'days').format('YYYY-MM-DD');
+        fecha_hoy = moment().format('YYYY-MM-DD');
+        moment.locale('es');
+        // console.log(moment().format('llll'));
     };
 
     function pdf(data) {
@@ -19,70 +31,96 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
             content: [{
                 style: 'Movimiento',
                 table: {
-                    headerRows: 5,
+                    headerRows: 10,
                     dontBreakRows: true,
-                    //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
-                    widths: [80, 'auto', 'auto', 'auto', 50, 50],
+                    widths: [80, 70, 'auto', 'auto', 20, 'auto', 40, 40],
                     body: [
                         [{
                             image: 'header',
-                            width: 550,
+                            width: 500,
                             style: 'tableHeaderTop',
-                            colSpan: 6,
+                            colSpan: 8,
                             alignment: 'center'
-                        }, {}, {}, {}, {}, {}],
-                        [{ text: 'SIAL', style: 'titulo', colSpan: 6, alignment: 'center' },
-                            {}, {}, {}, {}, {}
+                        }, {}, {}, {}, {}, {},{},{}],
+                        [{ text: 'SIAL', style: 'titulo', colSpan: 8, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {},{}
                         ],
-                        [{ text: 'RECETA', style: 'tableHeaderTop', colSpan: 6, alignment: 'center' },
-                            {}, {}, {}, {}, {}
-                        ],
-                        [
-                            { text: 'FOLIO', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.datos.receta.folio, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
-                            { text: 'TIPO', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.datos.receta.tipo_receta_id == '1' ? 'Normal' : data.datos.receta.tipo_receta_id == '2' ? 'Controlado' : 'No disponible', style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
+                        [{ text: 'LISTA DE CADUCIDADES', style: 'tableHeaderTop', colSpan: 8, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {},{}
                         ],
                         [
-                            { text: 'PACIENTE', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.datos.receta.paciente, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
-                            { text: 'DIAGNOSTICO', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.datos.receta.diagnostico, style: 'tableHeader', colSpan: 2, alignment: 'left' },
-                            {}
-                        ],
-                        [
-                            { text: 'PÓLIZA DE SEGURO POPULAR:', style: 'tableHeaderVerde', colSpan: 3, alignment: 'right' },
-                            {}, {},
-                            { text: data.poliza, style: 'tableHeader', colSpan: 3, alignment: 'left' },
-                            {}, {}
-                        ],
-                        [
-                            { text: 'USUARIO', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.usuario.nombre +' '+ data.usuario.apellidos, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
-                            { text: 'FECHA', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.datos.receta.fecha_receta, style: 'tableHeader',  colSpan: 2, alignment: 'left' },
-                            {}
-                        ],
-                        [
-                            { text: 'CLUES', style: 'tableHeaderVerde', alignment: 'right' },
+                            { text: 'CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
+                            {},
                             { text: data.usuario.clues_activa.clues, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
-                            { text: 'NOMBRE DE CLUES', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.usuario.clues_activa.nombre, style: 'tableHeader', colSpan: 2, alignment: 'left' },
+                            { text: 'NOMBRE DE CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' }, {},
+                            { text: data.usuario.clues_activa.nombre, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {}
+                        ],
+                        [
+                            { text: '', style: 'tableHeaderVerde', colSpan: 4, alignment: 'right' },
+                            {},{}, {},
+                            { text: 'NOMBRE DE ALMACÉN', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
+                            {},
+                            { text: data.usuario.almacen_activo.nombre, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {}
+                        ],
+                        [{ text: ' ', style: 'celdaEspacio', colSpan: 8, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {}, {}
+                        ],
+                        [{ text: 'DETALLES DE CADUCIDADES', style: 'tableHeaderLeyenda', colSpan: 8, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {}, {}
+                        ],
+
+                        /**
+                         * 
+            clave_insumo: this.clave_insumo,
+            tipo_controlado: this.tipo_controlado
+                         */
+                        [ 
+                            { text: 'TIPO DE CADUCIDAD:', style: 'tableHeaderVerde', alignment: 'right' },
+                            { text: 
+                                data.tipo_busqueda == null ? 'No disponible' : 
+                                data.tipo_busqueda == 'OPTIMA' ? 'CADUCIDAD ÓPTIMA' : 
+                                data.tipo_busqueda == 'MEDIA' ? 'CADUCIDAD MEDIA' : 
+                                data.tipo_busqueda == 'PROXIMA' ? 'PRÓXIMA A CADUCAR' : 
+                                data.tipo_busqueda == 'CADUCADO' ? 'CADUCADOS':  data.tipo_busqueda, style: 'tableHeader', alignment: 'left' },
+                            { text: 'BUSCAR EN:', style: 'tableHeaderVerde', alignment: 'right' },
+                            { text: 
+                                data.buscar_en == null ? 'No disponible' : 
+                                data.buscar_en == 'TODAS_LAS_CLAVES' ? 'TODAS LAS CLAVES' : 
+                                data.buscar_en == 'MIS_CLAVES' ? 'MIS CLAVES' : 'No disponible', style: 'tableHeader', alignment: 'left' },
+                            { text: 'TIPOS DE INSUMO:', style: 'tableHeaderVerde', colSpan:2, alignment: 'right' },
+                            { },
+                            { text: 
+                                data.tipo_insumo == null ? 'No disponible' : 
+                                data.tipo_insumo == 'MC' ? 'MATERIAL DE CURACIÓN' : 
+                                data.tipo_insumo == 'ME' ? 'MEDICAMENTOS' : data.tipo_insumo, style: 'tableHeader', colSpan:2, alignment: 'left' },
                             {}
                         ],
-                        [{ text: ' ', style: 'celdaEspacio', colSpan: 6, alignment: 'center' },
-                            {}, {}, {}, {}, {}
+                        [ 
+                            { text: 'TIPO DE CAUSES:', style: 'tableHeaderVerde', alignment: 'right'},
+                            { text: data.tipo_causes !== null ? data.tipo_causes : 'No disponible', style: 'tableHeader', alignment: 'left' },
+                            { text: 'TIPO DE CONTROLADOS:', style: 'tableHeaderVerde', alignment: 'right' },
+                            { text: data.tipo_controlado == null ? 'No disponible' : data.tipo_controlado == 'NO_CONTROLADOS' ? 'NO CONTROLADOS' : data.tipo_controlado, style: 'tableHeader', alignment: 'left' },
+                            { text: 'CLAVE DE INSUMO:', style: 'tableHeaderVerde', colSpan:2, alignment: 'right' },
+                            { },
+                            { text: 
+                                data.clave_insumo == null ? 'No disponible' :
+                                data.clave_insumo == '' ? '--' : data.clave_insumo, style: 'tableHeader', colSpan:2, alignment: 'left' },
+                            { },
                         ],
-                        
+                        [{ text: ' ', style: 'celdaEspacio', colSpan: 8, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {}, {}
+                        ],
                         [
                             { text: 'CLAVE', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'DESCRIPCION', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'DATOS INSUMO', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'INDICACIONES', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'CANTIDAD RECETADA', style: 'tableHeaderVerde',alignment: 'center' },
-                            { text: 'CANTIDAD SURTIDA', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'DESCRIPCION', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
+                            {},
+                            { text: 'LOTE', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'CADUCIDAD', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
+                            { },
+                            { text: 'EXISTENCIA', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'EXISTENCIA UNIDOSIS', style: 'tableHeaderVerde', alignment: 'center' },
                         ]
-                        //Body -> insumos
+                        //Body -> Salidas estandar
                     ]
                 },
                 layout: {
@@ -115,7 +153,6 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                 }
             }],
             pageSize: 'LETTER',
-            pageMargins: [ 30, 5, 5, 5 ],
             compress: true,
             pageOrientation: 'portrait',
             footer: function(currentPage, pageCount) {
@@ -123,7 +160,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
             },
             styles: {
                 titulo: {
-                    fontSize: 16,
+                    fontSize: 12,
                     bold: true,
                     color: 'black'
                 },
@@ -191,73 +228,50 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
             }
         };
 
-        var suma_total_insumos = 0;
-
+        fecha_optima = moment().add(365, 'days').format('YYYY-MM-DD');
+        fecha_media = moment().add(183, 'days').format('YYYY-MM-DD');
+        fecha_hoy = moment().format('YYYY-MM-DD');
 
         for (var i in data.lista) {
-            var insumo = data.lista[i];
-
-            for (var j in insumo.lotes) {
-                var lote = insumo.lotes[j];
-                dd.content[0].table.body.push([
-                    { text: lote.clave_insumo_medico, style: 'tableRow', alignment: 'center' },
-                    { text: insumo.descripcion, style: 'tableRow', alignment: 'center' },
-                    { text: "Lote:"+lote.lote + '\n' + "Caducidad:"+ lote.fecha_caducidad, style: 'tableRow', alignment: 'center' },
-                    { text: "Dosis: "+insumo.dosis + '\n' + "Frecuencia: Cada "+insumo.frecuencia + " hrs.", style: 'tableRow', alignment: 'center' },
-                    { text: insumo.cantidad_recetada, style: 'tableRow', alignment: 'center' },
-                    { text: insumo.cantidad_surtida, style: 'tableRow', alignment: 'center' }
-                ]);
+            var movimiento = data.lista[i];
+            /* Este if es cuando mandan en la última posicion datos que no son del listado]
+            if(i == data.lista.length-1){
+                break;
+            }*/
+            var color_circulo;  
+            if (movimiento.fecha_caducidad > fecha_optima) {
+                color_circulo = 'green';
             }
-
+            if(movimiento.fecha_caducidad >= fecha_media && movimiento.fecha_caducidad < fecha_optima){
+                color_circulo = 'yellow';
+            }
+            if(movimiento.fecha_caducidad >= fecha_hoy && movimiento.fecha_caducidad < fecha_media){
+                color_circulo = 'red';
+            }
+            if(movimiento.fecha_caducidad < fecha_hoy){
+                color_circulo = 'black';
+            }
+            moment.locale('es');
+                dd.content[0].table.body.push([
+                    { text: movimiento.clave_insumo_medico ? movimiento.clave_insumo_medico : 'No disponible' , style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.descripcion ? movimiento.descripcion : 'No disponible', style: 'tableRow', colSpan:2, alignment: 'left' },
+                    {},
+                    { text: movimiento.lote == null ? 'No disponible' : movimiento.lote, style: 'tableRow', alignment: 'left' },
+                    { canvas: [{
+                            type: 'ellipse',
+                            x: 12, y: 6.5,
+                            color: color_circulo,
+                            fillOpacity: 0.5,
+                            r1: 5, r2: 5,
+                            lineColor: 'black'
+                        }]},
+                    { text: movimiento.fecha_caducidad ? moment(movimiento.fecha_caducidad).format('LL') : 'No disponible', style: 'tableRow', alignment: 'right' },
+                    { text: movimiento.existencia == null ? 'No disponible' : movimiento.existencia, style: 'tableRow', alignment: 'right' },
+                    { text: movimiento.existencia_unidosis  != null ? movimiento.existencia_unidosis : 'No disponible', style: 'tableRow', alignment: 'right' }
+                ]);
         }
-
-
-        dd.content[0].table.body.push(
-            // Footer
-            [
-                { text: "", style: 'tableHeader', colSpan: 6, alignment: 'center' },
-                '', '', '', '', ''
-            ],
-
-            // Firmas
-            [{
-                table: {
-                    widths: ['*', '*'],
-                    body: [
-                        [
-                            { text: '\n\n\n\n' + '' + data.datos.receta.doctor, rowSpan: 2, style: 'tableRow' }, 
-                            { text: "Observaciones", style: 'text' }
-                        ],
-                        [
-                            '', 
-                            { text: '\n' + data.datos.observaciones, rowSpan: 2, alignment: 'justify' }
-                        ],
-                        ['RESPONSABLE ', '']
-                    ],
-                },
-                layout: {
-                    hLineWidth: function(i, node) {
-                        if (i == 0 || i == 3) {
-                            return 0;
-                        }
-                        return 0.5;
-                    },
-                    vLineWidth: function(i, node) {
-                        if (i == 0 || i == 3) {
-                            return 0;
-                        }
-                        return 0.5;
-                    },
-                },
-                style: 'tableHeader',
-                margin: [0, 0, 0, 0],
-                colSpan: 6,
-                alignment: 'center',
-            }, {}, {}, {}, {}, {}]
-        );
-
         pdfMake.createPdf(dd).getBase64(function(base64) {
-            postMessage({ fileName: 'RECETA' + data.datos.id + '.pdf', base64: base64 });
+            postMessage({ fileName: 'CADUCIDADES_INSUMO_MEDICOS.pdf', base64: base64 });
         });
     }
 

@@ -222,6 +222,38 @@
                                 </div>
                             </div>
 
+                            
+                            <div class="columns" style="width:100%">
+                                <div class="column ">
+                                    <div class="field" *ngIf="!tieneid">
+                                        <p class="b-checkbox control is-expanded  has-icon has-icon-right">
+                                            <input type="checkbox" id="tiene_seguro_popular" (click)="requerirCampo()" 
+                                            class="styled" value="true" formControlName="tiene_seguro_popular">
+                                            <label for="tiene_seguro_popular"> 
+                                                <strong> &nbsp; ¿Afiliado a seguro popular? </strong>
+                                            </label>                                            
+                                        </p>
+                                    </div>
+                                    <br>
+                                    <div class="field" [ngClass]="{'is-hidden': !ctrl.dato.get('receta').value.tiene_seguro_popular && !tieneid}">
+                                        <label class="label" *ngIf="!tieneid || ctrl.dato.controls.receta.controls.poliza_seguro_popular.value != null">Póliza de Seguro Popular</label>
+                                        <label class="label" *ngIf="tieneid && ctrl.dato.controls.receta.controls.poliza_seguro_popular.value == null">
+                                            No cuenta con póliza de Seguro Popular
+                                        </label>
+                                        <p class="control is-expanded  has-icon has-icon-right" >
+                                            <input class="input" type="text"  #poliza [disabled]="!ctrl.dato.get('receta').value.tiene_seguro_popular"
+                                                [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('receta').get('poliza_seguro_popular').hasError('required')}"
+                                                placeholder="Poliza de seguro popular" formControlName="poliza_seguro_popular" id="poliza_seguro_popular"
+                                                *ngIf="!tieneid || ctrl.dato.controls.receta.controls.poliza_seguro_popular.value != null">
+                                            <span class="icon is-small" *ngIf="ctrl.dato.get('receta').get('poliza_seguro_popular').hasError('required')">
+                                                <i class="fa fa-warning"></i>
+                                            </span>
+                                            <span class="help is-danger" *ngIf="ctrl.dato.get('receta').get('poliza_seguro_popular').hasError('required')">Este campo es requerido.</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="columns" style="width:100%">
                                 <div class="column ">
                                     <div class="field">
@@ -501,7 +533,7 @@
         <section class="modal-card-body" style="height: 90%;">
             <div style="padding: 1em; overflow-x: hidden; height: 100%;">
                 <div style="padding: 1em; overflow: scroll; overflow-x: hidden; height: 28%;">
-                    <div class="columns"  style="padding: 0;">
+                    <div class="columns"  style="padding: 0; margin-bottom: -15px">
                         <div class="column is-auto" style="padding: 0; margin-top: 0.5em; margin-bottom: 1em;">
                             <label class="title is-3" style="vertical-align: center;">
                                 <strong>Indicaciones del medicamento</strong>
@@ -581,7 +613,17 @@
                             <tr *ngFor="let item of lotes_insumo;  let i = index;">
                                 <td *ngIf="!item.nuevo">{{item.lote}}</td>
                                 <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Lote" [(ngModel)]="item.lote"></td>
-                                <td *ngIf="!item.nuevo">{{item.fecha_caducidad}}</td>
+                                <td *ngIf="!item.nuevo" style="text-align: center">
+                                    &nbsp;
+                                    <span *ngIf="item.tipo_caducidad">
+                                        <label *ngIf="item.tipo_caducidad == 'OPTIMA'" class="tag is-success" ><strong>&nbsp;</strong></label>
+                                        <label *ngIf="item.tipo_caducidad == 'MEDIA'" class="tag is-warning" ><strong>&nbsp;</strong></label>
+                                        <label *ngIf="item.tipo_caducidad == 'PRONTA'" class="tag is-danger" ><strong>&nbsp;</strong></label>
+                                        <label *ngIf="item.tipo_caducidad == 'CADUCADO'" class="tag is-black" ><strong>&nbsp;</strong></label>
+                                    </span>
+                                    &nbsp;
+                                    {{item.fecha_caducidad}}
+                                </td>
                                 <td *ngIf="item.nuevo"><input class="input has-text-centered " type="date" placeholder="Fecha de caducidad" [(ngModel)]="item.fecha_caducidad"></td>
                                 <td *ngIf="!item.nuevo">{{item.codigo_barras}}</td>
                                 <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Codigo de barras" [(ngModel)]="item.codigo_barras"></td>
@@ -590,7 +632,8 @@
                                 <td>
                                     <input class="input has-text-centered " type="number" step="1" min="0" max="{{item.existencia}}" 
                                     (keyup)="calcularCantidadSurtida(); comprobar_cant_lotes()" (keypress)="quitar_punto($event);" 
-                                    (change)="comprobar_cant_lotes(); calcularCantidadSurtida();" placeholder="Cantidad" [(ngModel)]="item.cantidad">
+                                    (change)="comprobar_cant_lotes(); calcularCantidadSurtida();" placeholder="Cantidad"
+                                    [(ngModel)]="item.cantidad" [ngClass]="{'is-disabled': item.tipo_caducidad == 'CADUCADO'}">
                                 </td>
                                 <td *ngIf="item.nuevo && es_unidosis"></td>
                                 <td *ngIf="item.nuevo">
@@ -625,7 +668,7 @@
             </div>
         </section>
         <footer class="modal-card-foot">
-            <a class="button is-success" (click)="ctrl.enviar(); cancelarModal('guardarMovimiento')">Continuar</a>
+            <a class="button is-success" (click)="ctrl.enviar(false, 'almacen/salidas-recetas'); cancelarModal('guardarMovimiento')">Continuar</a>
             <a class="button" (click)="cancelarModal('guardarMovimiento')">Cancelar</a>
         </footer>
     </div>
