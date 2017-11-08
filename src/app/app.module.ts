@@ -252,7 +252,8 @@ export function highchartsFactory() {
     JwtRequestService,
     Uploader,
     { provide: HighchartsStatic, useFactory: highchartsFactory},
-    { provide: LocationStrategy, useClass: HashLocationStrategy} ],
+    { provide: LocationStrategy, useClass: HashLocationStrategy}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

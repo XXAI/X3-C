@@ -25,8 +25,8 @@ export class FormularioOpcionesComponent {
 
   ngOnInit() {
     let url = location.href.split('/');
-    this.carpeta = url[3];
-    this.modulo = url[4];
+    this.carpeta = url[4];
+    this.modulo = url[5];
     this.url_nuevo = '/' + this.carpeta + '/' + this.modulo + '/nuevo';
   }
 }

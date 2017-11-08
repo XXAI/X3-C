@@ -212,10 +212,13 @@ export class FormularioComponent {
                             { id: 1, nombre: 'Normal'},
                             { id: 2, nombre: 'Controlado'}
                           ];
-
-
+  /**
+   * Objeto que contiene la configuracion default para mostrar los mensajes,
+   * posicion abajo izquierda, tiempo 5 segundos.
+   * @type {Object}
+   */
   public options = {
-    position: ['top', 'right'],
+    position: ['top', 'left'],
     timeOut: 5000,
     lastOnBottom: true
   };
@@ -846,7 +849,7 @@ export class FormularioComponent {
 
   /***************************************IMPRESION DE REPORTES*************************************************/
   /**
-   * Metodo que permite imprimir la salida de medicamentos en pdf.
+   * Metodo que permite imprimir la receta en pdf.
    */
   imprimir() {
     var usuario = JSON.parse(localStorage.getItem('usuario'));

@@ -107,7 +107,11 @@ export class FormularioComponent {
   mensajeResponse: Mensaje = new Mensaje();
   titulo= 'Salidas estándar';
 
-  // mostrar notificaciones configuracion default, posicion abajo izquierda, tiempo 2 segundos
+  /**
+   * Objeto que contiene la configuracion default para mostrar los mensajes,
+   * posicion abajo izquierda, tiempo 5 segundos.
+   * @type {Object}
+   */
   public options = {
     position: ['bottom', 'right'],
     timeOut: 2000,
