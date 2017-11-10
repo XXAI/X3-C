@@ -56,6 +56,7 @@ export class TransferenciaComponent implements OnInit {
 	guardando:boolean = false;
 	finalizando:boolean = false;
 
+    cluesSinAlmacenes:boolean = false;
     
      // # SECCION: Esta sección es para mostrar mensajes
     mensajeError: Mensaje = new Mensaje();
@@ -122,98 +123,100 @@ export class TransferenciaComponent implements OnInit {
         this.id = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number      
       });
 
-	  if(this.id!= null){
-		this.title.setTitle('Editar transferencia / Farmacia');
-	  } else {
-		this.title.setTitle('Nueva transferencia / Farmacia');
-	  }
+      if(this.id!= null){
+      this.title.setTitle('Editar transferencia / Farmacia');
+      } else {
+      this.title.setTitle('Nueva transferencia / Farmacia');
+      }
 
       var usuario =  JSON.parse(localStorage.getItem("usuario"));
       this.almacenDelUsuario = usuario.almacen_activo;
 
-
       this.cargarUnidadesMedicas();
-	  this.pedido = new Pedido(true);
-	
-
-	  this.datosPedido = {
-		  almacen_proveedor:null,
-		  almacen_solicitante: null,
-		  clues: null,
-		  clues_destino: null,
-		  fecha: new Date(),
-		  descripcion: null,
-		  observaciones: null,
-	  }
+      this.pedido = new Pedido(true);
       
+      this.datosPedido = {
+        almacen_proveedor:null,
+        almacen_solicitante: null,
+        clues: null,
+        clues_destino: null,
+        fecha: new Date(),
+        descripcion: null,
+        observaciones: null,
+      }
       
-      this.pedido.paginacion.resultadosPorPagina = 2;
-      this.pedido.filtro.paginacion.resultadosPorPagina = 2;
+      this.pedido.paginacion.resultadosPorPagina = 10;
+      this.pedido.filtro.paginacion.resultadosPorPagina = 10;
       
       this.pedido.lista = [];      
       this.pedido.indexar();
 
-	  if(this.id!= null){
-		this.cargando = true;
-		this.apiService.ver(this.id).subscribe(
-			respuesta => {
-				this.cargando = false;
-				console.log(respuesta);
-				// Akira:
-				// Vamos a darle formato para que lo veamos bien en la interfaz
-				// A este punto todo es una melcocha porque se mexclaron modulos
-				// Y pues ni modo jajajaja
+      if(this.id!= null){
+        this.cargando = true;
+        this.apiService.ver(this.id).subscribe(
+          respuesta => {
+            this.cargando = false;
+            console.log(respuesta);
+            // Akira:
+            // Vamos a darle formato para que lo veamos bien en la interfaz
+            // A este punto todo es una melcocha porque se mexclaron modulos
+            // Y pues ni modo jajajaja
 
-				this.movimiento = respuesta.movimientos_transferencias_completo[0];
+            this.movimiento = respuesta.movimientos_transferencias_completo[0];
 
-				// Akira:
-				// Aqui hacemos push a la lista de almacenes con el solicitante, pero faltarian los demas almacenes
-				// pero si tenemos en cuenta que solo hay un almacen principal pues no habria problema,
-				// Si no pues habria que actualizar la lista
-				this.almacenes = [];
-				this.almacenes.push(respuesta.almacen_solicitante);
+            // Akira:
+            // Aqui hacemos push a la lista de almacenes con el solicitante, pero faltarian los demas almacenes
+            // pero si tenemos en cuenta que solo hay un almacen principal pues no habria problema,
+            // Si no pues habria que actualizar la lista
+            this.almacenes = [];
+            this.almacenes.push(respuesta.almacen_solicitante);
 
-				this.datosPedido.almacen_solicitante = respuesta.almacen_solicitante.id;
-				this.datosPedido.clues_destino = respuesta.clues_destino;
+            this.datosPedido.almacen_solicitante = respuesta.almacen_solicitante.id;
+            this.datosPedido.clues_destino = respuesta.clues_destino;
 
-				this.datosPedido.fecha  = new Date(respuesta.fecha);
-				this.datosPedido.descripcion = respuesta.descripcion;
-				this.datosPedido.observaciones =  respuesta.observaciones;
-				console.log("aqui")
-				for(let i in respuesta.insumos){
-					let dato = respuesta.insumos[i];
-					let insumo = dato.insumos_con_descripcion;
-					if (insumo != null){
-						insumo.cantidad = +dato.cantidad_solicitada;              
-						insumo.listaStockAsignado = [];
-						insumo.totalStockAsignado = insumo.cantidad
-						this.pedido.lista.push(insumo);
-					}
+            this.datosPedido.fecha  = new Date(respuesta.fecha);
+            this.datosPedido.descripcion = respuesta.descripcion;
+            this.datosPedido.observaciones =  respuesta.observaciones;
+            console.log("aqui")
+            for(let i in respuesta.insumos){
+              let dato = respuesta.insumos[i];
+              let insumo = dato.insumos_con_descripcion;
+              if (insumo != null){
+                insumo.cantidad = +dato.cantidad_solicitada;
+                insumo.precio = +dato.precio_unitario;
+                insumo.listaStockAsignado = [];
+                insumo.totalStockAsignado = insumo.cantidad
+                this.pedido.lista.push(insumo);
+              }
 
-					for(let j in this.movimiento.insumos){
-						if(this.movimiento.insumos[j].clave_insumo_medico == dato.insumo_medico_clave){
-							insumo.listaStockAsignado.push({
-								cantidad: this.movimiento.insumos[j].cantidad,
-								insumo: dato.insumos_con_descripcion,
-								lote: this.movimiento.insumos[j].stock.lote,
-								fecha_caducidad: this.movimiento.insumos[j].stock.fecha_caducidad,
-								codigo_barras: this.movimiento.insumos[j].stock.codigo_barras,
-								existencia: this.movimiento.insumos[j].stock.existencia
-							})
-						}
-					}
-					//for(let j in this)
-				}
-				this.pedido.indexar();
-				this.pedido.listar(1);
-				
-			}, error => {
-				this.cargando = false;
-				console.log(error);
-				this.router.navigate(['/almacen/transferencia-almacen/nueva']);
-			}
-		)
-	  }
+              for(let j in this.movimiento.insumos){
+                if(this.movimiento.insumos[j].clave_insumo_medico == dato.insumo_medico_clave){
+                  insumo.listaStockAsignado.push({
+                    clave_insumo_medico: this.movimiento.insumos[j].clave_insumo_medico,
+                    cantidad: +this.movimiento.insumos[j].cantidad,
+                    tipo_insumo_id: this.movimiento.insumos[j].tipo_insumo_id,
+                    insumo: dato.insumos_con_descripcion,
+                    precio: +this.movimiento.insumos[j].precio_unitario,
+                    id: this.movimiento.insumos[j].stock.id,
+                    lote: this.movimiento.insumos[j].stock.lote,
+                    fecha_caducidad: this.movimiento.insumos[j].stock.fecha_caducidad,
+                    codigo_barras: this.movimiento.insumos[j].stock.codigo_barras,
+                    existencia: this.movimiento.insumos[j].stock.existencia
+                  })
+                }
+              }
+              //for(let j in this)
+            }
+            this.pedido.indexar();
+            this.pedido.listar(1);
+            
+          }, error => {
+            this.cargando = false;
+            console.log(error);
+            this.router.navigate(['/almacen/transferencia-almacen/nueva']);
+          }
+        )
+      }
     }
   
     
@@ -226,7 +229,7 @@ export class TransferenciaComponent implements OnInit {
     buscar(e: KeyboardEvent, input:HTMLInputElement, inputAnterior: HTMLInputElement,  parametros:any[]){
       
       let term = input.value;
-  
+      
       // Quitamos la busqueda
       if(e.keyCode == 27){
         e.preventDefault();
@@ -395,9 +398,7 @@ export class TransferenciaComponent implements OnInit {
           }
         );
     }
-  
-  
-  
+
     buscarStock(e: KeyboardEvent, input:HTMLInputElement, term:string){
       if(e.keyCode == 13){
         e.preventDefault();
@@ -413,91 +414,84 @@ export class TransferenciaComponent implements OnInit {
     }
   
     limpiarStock(){
-    
       this.listaStock = [];
       this.itemSeleccionado = null;
       this.searchBoxStockViewChildren.first.nativeElement.value = "";
     }
   
 	eliminarInsumo(index): void {
-		
 		this.pedido.lista.splice(index, 1);  
 		this.pedido.indexar();
 		this.pedido.listar(1);
-		
-		
-	  }
+	}
 	
 	eliminarStock(index): void {
       
-      this.itemSeleccionado.listaStockAsignado.splice(index, 1);  
-       
-      this.calcularTotalStockItem();
-      if(this.itemSeleccionado.cantidad <= 0){
-        var indice = 0;
-        for(var x in this.pedido.paginacion.lista){
-          if(this.pedido.paginacion.lista[x].clave == this.itemSeleccionado.clave){
-            this.pedido.paginacion.lista.splice(indice, 1);  
-          }
-          indice++;
-        } 
-        
-        this.itemSeleccionado = null;
+    this.itemSeleccionado.listaStockAsignado.splice(index, 1);  
+      
+    this.calcularTotalStockItem();
+    if(this.itemSeleccionado.cantidad <= 0){
+      var indice = 0;
+      for(var x in this.pedido.paginacion.lista){
+        if(this.pedido.paginacion.lista[x].clave == this.itemSeleccionado.clave){
+          this.pedido.paginacion.lista.splice(indice, 1);  
+        }
+        indice++;
+      } 
+      
+      this.itemSeleccionado = null;
 
-      } else{
-        this.verificarItemsAsignadosStockApi();
+    } else{
+      this.verificarItemsAsignadosStockApi();
+    }
+    
+  }
+
+  
+  asignarStock(item:any){
+    var item_previamente_agregado = false;
+    for(var i in this.pedido.lista){
+      if(this.pedido.lista[i].clave == item.clave_insumo_medico){
+        
+        this.itemSeleccionado = this.pedido.lista[i];
+        item_previamente_agregado = true;
       }
+    }
+    if(!item_previamente_agregado){
+      var last = this.pedido.lista.push({
+          clave: item.insumo.clave,
+          tipo: item.insumo.tipo,
+          informacion: item.insumo.informacion,
+          descripcion: item.insumo.descripcion,
+          generico_nombre: item.insumo.generico.nombre,
+          cantidad:0,
+          es_causes: item.insumo.es_causes,
+          es_cuadro_basico: item.es_cuadro_basico,
+          listaStockAsignado:[]
+      });
+      this.pedido.indexar();
+      this.pedido.listar(1);
+      this.itemSeleccionado = this.pedido.lista[last-1];
       
     }
-  
-    asignarStock(item:any){
+    
+    if( this.itemSeleccionado.listaStockAsignado == null ){
       
-      
-      var item_previamente_agregado = false;
-      for(var i in this.pedido.lista){
-        if(this.pedido.lista[i].clave == item.clave_insumo_medico){
-          
-          this.itemSeleccionado = this.pedido.lista[i];
-          item_previamente_agregado = true;
-        }
-      }
-      if(!item_previamente_agregado){
-        var last = this.pedido.lista.push({
-            clave: item.insumo.clave,
-            tipo: item.insumo.tipo,
-            informacion: item.insumo.informacion,
-            descripcion: item.insumo.descripcion,
-            generico_nombre: item.insumo.generico.nombre,
-            cantidad:0,
-            es_causes: item.insumo.es_causes,
-            es_cuadro_basico: item.es_cuadro_basico,
-            listaStockAsignado:[]
-        });
-        this.pedido.indexar();
-        this.pedido.listar(1);
-        this.itemSeleccionado = this.pedido.lista[last-1];
-       
-      }
-      
-      if( this.itemSeleccionado.listaStockAsignado == null ){
-        
-        this.itemSeleccionado.listaStockAsignado = [];
-      }
-      
-      for(var i in this.itemSeleccionado.listaStockAsignado) {
-        if(item.id == this.itemSeleccionado.listaStockAsignado[i].id){
-  
-          // No podemos asignar dos veces el mismo item
-          return;
-        }
-      }
-
-      this.itemSeleccionado.listaStockAsignado.push(item)
-  
-	  
-	  
-	  console.log(this.pedido.lista);
+      this.itemSeleccionado.listaStockAsignado = [];
     }
+    
+    for(var i in this.itemSeleccionado.listaStockAsignado) {
+      if(item.id == this.itemSeleccionado.listaStockAsignado[i].id){
+
+        // No podemos asignar dos veces el mismo item
+        return;
+      }
+    }
+
+    this.itemSeleccionado.listaStockAsignado.push(item)
+    
+    console.log(this.pedido.lista);
+  }
   
   
     validarItemStock(item:any, setMaxVal:boolean = false){
@@ -593,15 +587,19 @@ export class TransferenciaComponent implements OnInit {
         }
       )
     }
+
     seleccionarClues(clues){
       this.cargandoAlmacenes = true;
+      this.cluesSinAlmacenes = false;
       this.apiService.almacenes(clues).subscribe(
         respuesta =>{
           this.cargandoAlmacenes = false;
-		  this.almacenes = respuesta;
-		  if(this.almacenes.length > 0){
-			  this.datosPedido.almacen_solicitante = this.almacenes[0].id;
-		  }
+          this.almacenes = respuesta;
+          if(this.almacenes.length > 0){
+            this.datosPedido.almacen_solicitante = this.almacenes[0].id;
+          }else{
+            this.cluesSinAlmacenes = true;
+          }
         }, error => {
           this.cargandoAlmacenes = false;
           console.log(error);
@@ -726,7 +724,15 @@ export class TransferenciaComponent implements OnInit {
 		);
 	}
 	finalizar() {
-		this.guardar(true);
+    var validacion_palabra = prompt("Atención la transferencia ya no podra editarse, para confirmar que desea concluir el movimiento por favor escriba: CONCLUIR TRANSFERENCIA");
+    if(validacion_palabra == 'CONCLUIR TRANSFERENCIA'){
+      this.guardar(true);
+    }else{
+      if(validacion_palabra != null){
+        alert("Error al ingresar el texto para confirmar la acción.");
+      }
+      return false;
+    }
 	}
     // # SECCION: Eventos del teclado
     keyboardInput(e: KeyboardEvent) {

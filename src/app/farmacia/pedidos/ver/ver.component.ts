@@ -276,16 +276,16 @@ export class VerComponent implements OnInit {
           error => {
             this.cargando = false;
 
-            this.mensajeError = new Mensaje(true);
-            this.mensajeError = new Mensaje(true);
-            this.mensajeError.mostrar;
+            this.mensajeError = new Mensaje(true,5);
 
             try {
               let e = error.json();
               if (error.status == 401 ){
                 this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+              }else{
+                this.mensajeError.texto = e.error;
               }
-              
+              this.mensajeError.mostrar;
             } catch(e){
                           
               if (error.status == 500 ){

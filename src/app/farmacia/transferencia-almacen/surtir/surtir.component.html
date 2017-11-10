@@ -17,7 +17,11 @@
             <div style="padding:1em;">Folio: <strong style="color:#FFF;">{{ pedido.datosImprimir.folio }}</strong> 
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Lotes: {{ lotesSurtidos.length  }} / {{ pedido.lista.length }}
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span *ngIf="pedidoSurtido && !pedidoEntregado"><strong style="color:#FFF;">Pedido Surtido</strong></span>
-              <span *ngIf="pedidoEntregado"><strong style="color:#FFF;">Pedido Entregado</strong></span>
+              <span *ngIf="pedidoEntregado"><strong style="color:#FFF;">Pedido Entregado</strong></span><br>
+              <span *ngIf="pedido.datosImprimir.clues_destino && pedido.datosImprimir.clues_destino != pedido.datosImprimir.clues">
+                Almacen destino: <strong style="color:#FFF;"> [{{ pedido.datosImprimir.almacen_solicitante.clues }}] {{ pedido.datosImprimir.almacen_solicitante.nombre }}</strong><br>
+                Clues destino: <strong style="color:#FFF;"> {{ pedido.datosImprimir.almacen_solicitante.unidad_medica.nombre }}</strong><br>
+              </span>
             </div>
           </div>
           <div class="column is-4" style="text-align:center; ">

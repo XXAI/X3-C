@@ -27,15 +27,16 @@
               </p>
           </div>
           <div class="column">
-              <label class="label">Almacén de la unidad:</label>
-              <div class="control is-expanded" [ngClass]="{ 'is-loading':  cargandoAlmacenes}" >
-                  	<div class="select is-fullwidth" >
-                      <select   [(ngModel)]="datosPedido.almacen_solicitante"  [ngClass]="{'is-danger': errores.almacen_solicitante != null}">                          
-                          <option *ngFor="let almacen of almacenes" value="{{ almacen.id }}" [selected]="false">{{ almacen.nombre }}</option>
-                      </select>
-					</div>
-				  	<span class="help is-danger" *ngIf="errores.almacen_solicitante == 'required'">Este campo es requerido.</span>
-				</div>
+            <label class="label">Almacén de la unidad:</label>
+            <div class="control is-expanded" [ngClass]="{ 'is-loading':  cargandoAlmacenes}" >
+              <div *ngIf="!cluesSinAlmacenes" class="select is-fullwidth" >
+                <select   [(ngModel)]="datosPedido.almacen_solicitante"  [ngClass]="{'is-danger': errores.almacen_solicitante != null}">                          
+                  <option *ngFor="let almacen of almacenes" value="{{ almacen.id }}" [selected]="false">{{ almacen.nombre }}</option>
+                </select>
+              </div>
+              <span class="help is-danger" *ngIf="errores.almacen_solicitante == 'required'">Este campo es requerido.</span>
+              <span class="help is-danger" *ngIf="cluesSinAlmacenes">La unidad seleccionada, no tiene almacenes asignados.</span>
+				    </div>
           </div>
           <div class="column">
               <label class="label">Nombre de la transferencia:</label>
@@ -110,8 +111,9 @@
                       </div>
                     
                       <div  style="padding: 0.5em 0 0.5em 0; ">
-                        <span *ngIf="item.es_causes" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
-                        <span *ngIf="!item.es_causes" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
+                        <span *ngIf="item.es_causes && item.tipo == 'ME'" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
+                        <span *ngIf="!item.es_causes && item.tipo == 'ME'" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
+                        <span *ngIf="item.tipo == 'MC'" class="tag is-warning" style="font-size: 0.7em !important;">MATERIAL DE CURACIÓN</span>
                         <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
                         
                         <span *ngIf="(item.tipo == 'ME' && item.informacion)">
