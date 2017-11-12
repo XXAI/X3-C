@@ -46,7 +46,7 @@
                         <a class="button is-info is-fullwidth is-outlined" title="Imprimir PDF" (click)="mostrarDialogo(); " *ngIf="esEditar">
                             <span class="icon"><i class="fa fa-print"></i></span> &nbsp; Pedido
                         </a>
-                        <a class="button is-info is-fullwidth is-outlined" [ngClass]="{'is-loading': cargandoActa}" title="Imprimir Acta" (click)="imprimirActa(); " *ngIf="esEditar && pedido.datosImprimir.acta">
+                        <a class="button is-info is-fullwidth is-outlined" [ngClass]="{'is-loading': cargandoActa}" title="Imprimir Acta" (click)="imprimirActa(); " *ngIf="esEditar && pedido.datosImprimir && pedido.datosImprimir.acta">
                             <span class="icon"><i class="fa fa-print"></i></span> &nbsp; Acta
                         </a>
                     </div>

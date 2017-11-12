@@ -71,6 +71,7 @@
                   <li [ngClass]="{ 'is-active' : tab == 1}"><a (click)="tab=1">Roles</a></li>
                   <li [ngClass]="{ 'is-active' : tab == 2}"><a (click)="tab=2">Clues / Almacenes</a></li>
                   <li [ngClass]="{ 'is-active' : tab == 3}"><a (click)="tab=3">Avatar</a></li>
+                  <li [ngClass]="{ 'is-active' : tab == 4}"><a (click)="tab=4">Médico</a></li>
                 </ul>
               </div>
        
@@ -200,6 +201,18 @@
 
                   
                 </p>
+              </div>
+              <div [ngClass]="{ 'is-hidden': tab != 4}">
+              
+                  <p class="control is-expanded">
+                    <label for="medico">Enlazar cuenta con un médico:</label>
+                    <span class="select is-fullwidth">
+                    <select #medico id="medico" formControlName="medico_id">
+                      <option value="-1">Ninguno</option>
+                      <option *ngFor="let item of medicos" [value]="item.id">{{ item.nombre }}</option>
+                    </select>
+                    </span>
+                  </p>   
               </div>
               
               <br><br>

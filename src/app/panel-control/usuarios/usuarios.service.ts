@@ -70,4 +70,10 @@ export class UsuariosService {
     return this.jwtRequest.get("unidades-medicas",null,null).map( (response: Response) => response.json().data);
   }
 
+  listaMedicos( ): Observable<any>{
+
+    var usuario = JSON.parse(localStorage.getItem("usuario"));
+    return this.jwtRequest.get("personal-clues",null,{clues: usuario.clues_activa.clues}).map( (response: Response) => response.json().data);
+  }
+
 }

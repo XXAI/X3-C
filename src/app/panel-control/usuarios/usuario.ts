@@ -13,6 +13,7 @@ export class Usuario {
     almacenes: string[];
     su: boolean;
     cargando:boolean = false;
+    medico_id: string;
 }
 
 export interface Usuario {
@@ -26,4 +27,5 @@ export interface Usuario {
     unidades_medicas: string[];
     unidades_medicas_objs: any[];
     almacenes: string[];
+    medico_id: string;
 }
