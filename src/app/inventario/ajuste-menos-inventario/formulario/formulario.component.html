@@ -27,24 +27,24 @@
                         <div class="field">
                             <label class="label">Tipo de ajuste:</label>
                             <p class="control is-expanded  has-icon has-icon-right">
-                                <select class="select" name="tipo_ajuste" formControlName="tipo_ajuste" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('tipo_ajuste').hasError('required') && ctrl.dato.get('tipo_ajuste').touched}">
+                                <select class="select" name="tipo_ajuste" formControlName="tipo_ajuste" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('tipo_ajuste').hasError('required') }">
                                     <option *ngFor="let item of tipos_ajustes" value="{{item.id}}" >{{ item.nombre }}</option>
                                 </select>
-                                <span class="icon is-small" *ngIf="ctrl.dato.get('tipo_ajuste').hasError('required') && ctrl.dato.get('tipo_ajuste').touched">
+                                <span class="icon is-small" *ngIf="ctrl.dato.get('tipo_ajuste').hasError('required') ">
                                     <i class="fa fa-warning"></i>
                                 </span>
-                                <span class="help is-danger" *ngIf="ctrl.dato.get('tipo_ajuste').hasError('required') && ctrl.dato.get('tipo_ajuste').touched">Este campo es requerido.</span>
+                                <span class="help is-danger" *ngIf="ctrl.dato.get('tipo_ajuste').hasError('required') ">Este campo es requerido.</span>
                             </p>
                         </div> 
                         <div class="field">
                             <label class="label">Observaciones:</label>
                             <p class="control is-expanded  has-icon has-icon-right">
-                                <textarea class="textarea" type="text" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('observaciones').hasError('required') && ctrl.dato.get('observaciones').touched}"
+                                <textarea class="textarea" type="text" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('observaciones').hasError('required')}"
                                     placeholder="Observaciones" formControlName="observaciones"></textarea>
-                                <span class="icon is-small" *ngIf="ctrl.dato.get('observaciones').hasError('required') && ctrl.dato.get('observaciones').touched">
+                                <span class="icon is-small" *ngIf="ctrl.dato.get('observaciones').hasError('required')">
                                     <i class="fa fa-warning"></i>
                                 </span>
-                                <span class="help is-danger" *ngIf="ctrl.dato.get('observaciones').hasError('required') && ctrl.dato.get('observaciones').touched">Este campo es requerido.</span>
+                                <span class="help is-danger" *ngIf="ctrl.dato.get('observaciones').hasError('required')">Este campo es requerido.</span>
                             </p>
                         </div>
                     </div>

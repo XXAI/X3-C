@@ -13,6 +13,7 @@
                 #opciones
                 [ctrl]="ctrl"
                 [nombre]="'Almacenes'"
+                [excel_export]= false
                 [ruta]="'caducidad-insumos?tipo_busqueda='+tipo_busqueda+'&buscar_en='+opciones.buscar_en+'&tipo_insumo='+opciones.tipo_insumo+'&tipo_causes='+opciones.tipo_causes+'&tipo_controlado='+opciones.tipo_controlado+'&clave_insumo='+opciones.clave_insumo"
                 [nuevo]= false
                 [busqueda]= false
@@ -22,7 +23,7 @@
 
             <a id="listarCaducidades" (click)="ctrl.listar(1)"></a>
                 
-            <div style="overflow:auto; display:block" [style.maxHeight.px]="ctrl.tamano-300">
+            <div style="overflow:auto; display:block" [style.maxHeight.px]="ctrl.tamano-200">
                 <div class="is-fullwidth has-text-centered" *ngIf="opciones.cargandoPdf">
                     <br>
                     <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Generando PDF...</span></span>

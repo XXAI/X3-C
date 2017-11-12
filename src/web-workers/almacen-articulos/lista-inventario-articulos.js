@@ -8,6 +8,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
     onmessage = function(evt) {
         let data = JSON.parse(evt.data)
         pdf(data);
+        console.log(data);
     };
 
     function pdf(data) {
@@ -20,7 +21,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     headerRows: 5,
                     dontBreakRows: true,
                     //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
-                    widths: [50, 50, 'auto', 'auto', 'auto', 45,'auto'],
+                    widths: [50, 50, 'auto', 110, 'auto', 'auto','auto'],
                     body: [
                         [{
                             image: 'header',
@@ -57,13 +58,13 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                             {}, {}, {}, {}, {}, {}
                         ],
                         [
-                            { text: 'FECHA', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'FOLIO', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'INSUMOS', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'ENTREGÓ', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'RECIBE', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'ESTATUS', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'CAPTURADO', style: 'tableHeaderVerde', alignment: 'center' }
+                            { text: 'ALMACÉN', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
+                            { },
+                            { text: 'ARTÍCULO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center'},
+                            { },
+                            { text: 'NÚMERO DE INVENTARIO', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'EXISTENCIA', style: 'tableHeaderVerde', alignment: 'center' },
                         ]
                         //Body -> insumos
                     ]
@@ -181,18 +182,18 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                 break;
             }
                 dd.content[0].table.body.push([
-                    { text: movimiento.fecha_movimiento ? movimiento.fecha_movimiento : 'No disponible' , style: 'tableRow', alignment: 'center' },
                     { text: movimiento.id ? movimiento.id : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.numero_claves == null || movimiento.numero_insumos == null ? 'No disponible' : 'Claves: ' + movimiento.numero_claves + '\n Insumos: ' + movimiento.numero_insumos, style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.movimiento_metadato == null ? 'No disponible' :  movimiento.movimiento_metadato.persona_recibe, style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.movimiento_usuario == null ? 'No disponible' : movimiento.movimiento_usuario.nombre + ' ' + movimiento.movimiento_usuario.apellidos, style: 'tableRow', alignment: 'center' },
-                    { text: !movimiento.status ? 'No disponible' : movimiento.status == 'FI' ? 'Finalizado' : movimiento.status == 'BR' ? 'Borrador' : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.created_at ? movimiento.created_at : 'No disponible', style: 'tableRow', alignment: 'center' }
+                    { text: movimiento.almacen == null ? 'No disponible' : movimiento.almacen.nombre, style: 'tableRow', colSpan: 2, alignment: 'left' },
+                    { },
+                    { text: movimiento.articulo == null ? 'No disponible' :  movimiento.articulo.nombre, style: 'tableRow', colSpan: 2, alignment: 'left' },
+                    { },
+                    { text: movimiento.numero_inventario == null ? 'No disponible' : movimiento.numero_inventario, style: 'tableRow', alignment: 'left' },
+                    { text: !movimiento.existencia ? 'No disponible' : movimiento.existencia, style: 'tableRow', alignment: 'center' },
                 ]);
         }
 
         pdfMake.createPdf(dd).getBase64(function(base64) {
-            postMessage({ fileName: 'Lista_Salidas_Artículos.pdf', base64: base64 });
+            postMessage({ fileName: 'Lista_Inventario_Artículos.pdf', base64: base64 });
         });
     }
 

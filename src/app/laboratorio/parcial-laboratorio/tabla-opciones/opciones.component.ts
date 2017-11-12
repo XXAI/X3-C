@@ -7,7 +7,7 @@ import { environment } from '../../../../environments/environment';
 import {Router, ActivatedRoute, Params} from '@angular/router';
 
 @Component({
-  selector: 'app-tabla-opciones-inventario',
+  selector: 'app-tabla-opciones-laboratorio',
   templateUrl: './opciones.component.html'
 })
 
@@ -65,9 +65,13 @@ export class TablaOpcionesComponent {
      */
     clave_insumo = '';
     /**
-     * Contiene el tipo de insumo que hemos de buscar relacionado a medicamentos controlados, no controlados o ambos.
+     * Contiene el parametro de búsqueda por existencia, no existencia o todos.
      */
-    tipo_controlado = 'TODO';
+    seleccionar = 'TODO';
+    /**
+     * Contiene el tipo de insumo de laboratorio.
+     */
+    tipo_sustancia = 'TODO';
     /**
      * Contiene los datos de inicio de sesión del usuario.
      * @type {any} */
@@ -156,8 +160,7 @@ export class TablaOpcionesComponent {
     }
     let query = 'token=' + localStorage.getItem('token');
     window.open(`${environment.API_URL}/caducidad-insumos?${query}${cadena_url}&
-    tipo_busqueda=${this.tipo_busqueda}&buscar_en=${this.buscar_en}&tipo_insumo=${this.tipo_insumo}
-    &tipo_causes=${this.tipo_causes}&tipo_controlado=${this.tipo_controlado}&clave_insumo=${this.clave_insumo}`);
+    seleccionar=${this.seleccionar}&tipo=${this.tipo_sustancia}&clave_insumo=${this.clave_insumo}`);
   }
 
   /**
@@ -176,9 +179,8 @@ export class TablaOpcionesComponent {
             buscar_en: this.buscar_en,
             tipo_busqueda: this.tipo_busqueda,
             tipo_causes: this.tipo_causes,
-            tipo_insumo: this.tipo_insumo,
-            clave_insumo: this.clave_insumo,
-            tipo_controlado: this.tipo_controlado
+            seleccionar: this.seleccionar,
+            clave_insumo: this.clave_insumo
           };
           this.pdfworker.postMessage(JSON.stringify(imprimir));
         } catch (e) {

@@ -592,7 +592,6 @@ export class FormularioComponent {
     let valido = true;
     for (let item of control.value){
       for (let lote of item.lotes){
-        console.log(lote.cantidad);
         if (lote.cantidad == null) {
           valido = false;
         }

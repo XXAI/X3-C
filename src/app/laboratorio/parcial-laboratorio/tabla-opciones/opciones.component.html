@@ -88,58 +88,34 @@
                     </span>
                 </p>
                 -->
-                <p class="control">&nbsp;</p>
-                <p class="control b-checkbox is-info is-circular" style="margin-top: -15px;">
-                    <input class="styled" type="radio" id="buscar_en_mis_claves" #claves [checked]="buscar_en == 'MIS_CLAVES'" (click)="buscar_en = 'MIS_CLAVES'" [value]="'MIS_CLAVES'" name="buscar_en">
-                    <label class="radio" for="buscar_en_mis_claves">
-                        <span class="tag is-medium" [ngClass]="{'is-dark':buscar_en == 'MIS_CLAVES'}">Mis claves</span>
-                    </label>
-                </p>
-                <p class="control">&nbsp;</p>
-                <p class="control  b-checkbox is-circular" style="margin-top: -15px;">
-                    <input class="styled" type="radio" id="buscar_en_todas_claves" #claves [checked]="buscar_en == 'TODAS_LAS_CLAVES'" (click)="buscar_en = 'TODAS_LAS_CLAVES'" [value]="'TODAS_LAS_CLAVES'" name="buscar_en">
-                    <label class="radio" for="buscar_en_todas_claves">
-                        <span class="tag is-medium" [ngClass]="{'is-dark':buscar_en == 'TODAS_LAS_CLAVES'}">Todas las claves</span>
-                    </label>    
-                </p>
                 <p class="control">
                     <span class="select">
-                        <select name="tipo_insumo" #tipoInsumo (change)="tipo_insumo = tipoInsumo.value">
+                        <select style="width: 180px" name="tipo_sustancia" #tipoSustancia (change)="tipo_sustancia = tipoSustancia.value">
                             <option value="TODO">TODO</option>
-                            <option value="ME">MEDICAMENTOS</option>
-                            <option value="MC">MATERIAL DE CURACIÓN</option>
+                            <option value="1">SUSTANCIAS QUÍMICAS</option>
+                            <option value="2">MATERIAL</option>
+                            <option value="3">PRODUCTOS QUÍMICOS</option>
+                            <option value="4">CONSUMIBLES</option>
                         </select>
                     </span>
                 </p>
                 <p class="control">
                     <span class="select">
-                        <select style="width: 150px" name="tipo_causes" #tipoCauses (change)="tipo_causes = tipoCauses.value"
-                            [ngClass]="{'is-disabled': tipoInsumo.value == 'MC'}">
+                        <select name="seleccionar" #tipoSeleccion (change)="seleccionar = tipoSeleccion.value">
                             <option value="TODO">TODO</option>
-                            <option value="CAUSES">CAUSES</option>
-                            <option value="NO_CAUSES">NO CAUSES</option>
-                        </select>
-                    </span>
-                </p>
-                <p class="control">
-                    <span class="select">
-                        <select name="tipo_controlados" #tipoControlado (change)="tipo_controlado = tipoControlado.value"
-                            [ngClass]="{'is-disabled': tipoInsumo.value == 'MC'}">>
-                            <option value="TODO">TODO</option>
-                            <option value="CONTROLADOS">CONTROLADOS</option>
-                            <option value="NO_CONTROLADOS">NO CONTROLADOS</option>
+                            <option value="EXISTENTE">EXISTENTE</option>
+                            <option value="NO_EXISTENTE">NO EXISTENTE</option>
                         </select>
                     </span>
                 </p>
                 <p class="control is-expanded">
                     <input class="input" type="text" #claveInsumo (change)="clave_insumo = claveInsumo.value"
-                    placeholder="Descripción o clave del insumo" id="clave_insumo" name="clave_insumo">
+                    placeholder="Descripción o clave del insumo de laboratorio" id="clave_insumo" name="clave_insumo">
                 </p>
                 <p class="control">
                     <button class="button is-default" type="button" [ngClass]="{'is-loading': ctrl.cargando}" 
-                    (click)="buscar_en='TODAS_LAS_CLAVES';
-                    tipoInsumo.value='TODO'; tipoCauses.value='TODO'; tipoControlado.value='TODO'; claveInsumo.value='';
-                    tipo_insumo='TODO'; tipo_causes='TODO'; tipo_controlado='TODO'; clave_insumo=''" >Limpiar</button>
+                    (click)="tipoSeleccion.value='TODO'; tipoSustancia.value='TODO'; claveInsumo.value='';
+                    seleccionar='TODO'; tipo_sustancia= tipoSustancia.value;  clave_insumo=''" >Limpiar</button>
                 </p>
                 <p class="control">
                     <button class="button" (click)="ctrl.listar(1)">

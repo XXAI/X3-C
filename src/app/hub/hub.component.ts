@@ -46,7 +46,7 @@ export class HubComponent implements OnInit {
     {
       title: 'Almacén general', routerLink: '/almacen-articulos', icono: 'assets/hub-almacen-articulos.svg',
       permisos: [
-        'cuSmlV9lvABXzfjtLbzEe0VbI47Dh6Cv', // Ver catálogos
+        // 'cuSmlV9lvABXzfjtLbzEe0VbI47Dh6Cv', // Ver catálogos
         'fMKARTchWDT56hgX0sNJnmTD9wcwTwK0', // Categorías
         '1giAayqzxUGwhGYQgGD6PTYkPin1edAs', // Artículos
         'VmObT0aDFLEXDMer0yvfKo76gBsGNdcR', // Inventario

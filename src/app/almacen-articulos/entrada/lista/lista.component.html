@@ -30,7 +30,7 @@
                 </div>
 
                 <!--Tabla -->
-                <table class="table is-bordered is-striped is-narrow is-fullwidth" *ngIf="!ctrl.cargando && !opciones.cargandoPdf">
+                <table class="table" *ngIf="!ctrl.cargando && !opciones.cargandoPdf">
                     <thead>
                         <tr>
                             <th>
@@ -40,6 +40,7 @@
                             <th>Status </th>
                             <th>Fecha</th>
                             <th>Cancelado</th>
+                            <th>Opciones</th>
                         </tr>
                     </thead>
 
@@ -54,7 +55,7 @@
                                     class="is-danger" (click)="ctrl.eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>
     
                         </tr>
-                        <tr *ngIf="ctrl.dato ">
+                        <tr *ngIf="!ctrl.dato">
                             <td colspan="6" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>
                         </tr>
                     </tbody>

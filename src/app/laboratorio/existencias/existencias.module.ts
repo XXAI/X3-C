@@ -16,8 +16,9 @@ import { AuthService } from '../../auth.service';
 
 import { IndexLaboratorioModule } from '../index-laboratorio/index-laboratorio.module';
 //crud
-import { CrudService } from '../../crud/crud.service';
-import { CrudModule } from '../../crud/crud.module';
+import { CrudService    } from '../../crud/crud.service';
+import { CrudModule     } from '../../crud/crud.module';
+import { ParcialModule  } from '../parcial-laboratorio/parcial.module';
 //fin crud
 import { NguiAutoCompleteModule } from '@ngui/auto-complete';
 import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
@@ -35,6 +36,7 @@ import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
     PipesModule,
     IndexLaboratorioModule,
     CrudModule,
+    ParcialModule,
     NguiAutoCompleteModule,
     NguiDatetimePickerModule
   ],
