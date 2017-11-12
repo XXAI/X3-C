@@ -33,10 +33,12 @@ export class NuevoComponent implements OnInit {
 
   cargando: boolean = false;
   cargandoRoles: boolean = false;
+  cargandoMedicos: boolean = false;
   cargandoUnidadesMedicas: boolean = false;
 
   roles: Rol[] = [];
   unidadesMedicas: any[] = [];
+  medicos: any[] = [];
 
   
 
@@ -61,6 +63,7 @@ export class NuevoComponent implements OnInit {
     
     this.cargarRoles();
     this.cargarUnidadesMedicas();
+    this.cargarMedicos();
 
     this.usuario = this.fb.group({
       nombre: ['', [Validators.required]],
@@ -71,8 +74,8 @@ export class NuevoComponent implements OnInit {
       avatar: ['avatar-circled-user-male'],
       roles: [[],[Validators.required]],
       unidades_medicas: [[]],
-      almacenes: [[]]
-      
+      almacenes: [[]],
+      medico_id: ['-1']
 
     });
     
@@ -147,6 +150,19 @@ export class NuevoComponent implements OnInit {
         console.log("Unidades Médicas cargadas")
       }, error => {
         this.cargandoUnidadesMedicas = false;
+      }
+
+    )
+  }
+  cargarMedicos(){
+    this.cargandoMedicos = true;
+    this.usuariosService.listaMedicos().subscribe(
+      medicos => {
+        this.medicos = medicos;
+        this.cargandoMedicos = false;
+        console.log("Médicos cargados")
+      }, error => {
+        this.cargandoMedicos = false;
       }
 
     )

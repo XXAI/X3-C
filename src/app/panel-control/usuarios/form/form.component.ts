@@ -15,18 +15,21 @@ export class FormComponent implements OnInit {
 
   @Input() roles: Rol[];
   @Input() unidadesMedicas: any[];
+  @Input() medicos: any[];
   @Input() usuario:FormGroup;
 
   @Input()  usuarioRepetido:boolean;
   @Input()  usuarioInvalido:boolean;
   @Input()  cargando: boolean;
   @Input()  cargandoRoles: boolean;
+  @Input()  cargandoMedicos: boolean;
   @Input()  mostrarCambiarPassword:boolean;
 
   @Output() onEnviar = new EventEmitter<void>();
   @Output() onRegresar = new EventEmitter<void>();
   @Output() onToggleCambiarPassword = new EventEmitter<void>();
   @Output() onCargarRoles = new EventEmitter<void>();
+  @Output() onCargarMedicos = new EventEmitter<void>();
 
   // # Esto es solo para listar las unidades medicas que ya estan relacionadas
   // al usuario, en el modulo de edicion
@@ -44,8 +47,9 @@ export class FormComponent implements OnInit {
   ngOnInit() {
     var ums:FormArray = this.usuario.get('unidades_medicas') as FormArray;
     var almacenes:FormArray = this.usuario.get('almacenes') as FormArray;
-    
+    console.log(this.usuario.get('medico_id'))
 
+    
     this.cluesAgregadas = ums.value;
     
     this.idsAlmacenesSeleccionados = almacenes.value;
@@ -73,6 +77,9 @@ export class FormComponent implements OnInit {
   cargarRoles(){
      this.onCargarRoles.emit();
   }
+  cargarMedicos(){
+    this.onCargarMedicos.emit();
+ }
 
   regresar() {
     this.onRegresar.emit();
@@ -81,6 +88,8 @@ export class FormComponent implements OnInit {
   toggleCambiarPassword() {
     this.onToggleCambiarPassword.emit();
   }
+
+  
 
   agregarUnidadMedica(clues){
     

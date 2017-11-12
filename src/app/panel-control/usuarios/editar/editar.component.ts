@@ -25,19 +25,23 @@ export class EditarComponent implements OnInit {
   usuario: FormGroup;
   
   
-  private id:string;
-  private usuarioRepetido:boolean = false;
-  private usuarioInvalido:boolean = false;
-  private cambiarPassword:boolean = false;
+  id:string;
+  usuarioRepetido:boolean = false;
+  usuarioInvalido:boolean = false;
+  cambiarPassword:boolean = false;
 
   datosCargados: boolean;
   cargando: boolean = false;
-  private cargandoRoles: boolean = false;
-  private cargandoUnidadesMedicas: boolean = false;
+  cargandoRoles: boolean = false;
+  cargandoMedicos: boolean = false;
+  cargandoUnidadesMedicas: boolean = false;
+
+  catalogosCargados:number = 0;
   
-  private roles: Rol[] = [];
-  private unidadesMedicas: any[] = [];
-  private unidadesMedicasEdicion:any[]  = [];
+  roles: Rol[] = [];
+  unidadesMedicas: any[] = [];
+  medicos: any[] = [];
+  unidadesMedicasEdicion:any[]  = [];
 
    // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje()
@@ -68,7 +72,8 @@ export class EditarComponent implements OnInit {
       avatar: ['avatar-circled-user-male'],
       roles: [[1],[Validators.required]],
       unidades_medicas: [[]],
-      almacenes: [[]]
+      almacenes: [[]],
+      medico_id: ['-1']
     });
 
     this.route.params.subscribe(params => {
@@ -78,6 +83,7 @@ export class EditarComponent implements OnInit {
 
     this.cargarRoles();
     this.cargarUnidadesMedicas();
+    this.cargarMedicos();
     
   }
   
@@ -164,7 +170,10 @@ export class EditarComponent implements OnInit {
         usuario => {
           this.cargando = false;
           this.datosCargados = true;
-          
+          if(usuario.medico_id == null){
+            usuario.medico_id = '-1';
+          }
+          console.log(usuario.medico_id)
           this.usuario.patchValue(usuario);
           this.unidadesMedicasEdicion = usuario.unidades_medicas_objs;
           console.log("Usuario cargado.");
@@ -195,7 +204,24 @@ export class EditarComponent implements OnInit {
         }
       );
   }
-cargarUnidadesMedicas(){
+  cargarMedicos(){
+    this.cargandoMedicos = true;
+    this.usuariosService.listaMedicos().subscribe(
+      medicos => {
+        this.medicos = medicos;
+        this.cargandoMedicos = false;
+        console.log("Médicos cargados");
+        this.catalogosCargados++;
+        if(this.catalogosCargados >1 ){
+          this.cargarDatos();
+        }
+      }, error => {
+        this.cargandoMedicos = false;
+      }
+
+    )
+  }
+  cargarUnidadesMedicas(){
     this.cargandoUnidadesMedicas = true;
     this.usuariosService.listaUnidadesMedicas().subscribe(
       clues => {
@@ -223,7 +249,12 @@ cargarUnidadesMedicas(){
             this.mensajeAdvertencia.mostrar = true;
           }
 
-          this.cargarDatos();
+          this.catalogosCargados++;
+          if(this.catalogosCargados >1 ){
+            this.cargarDatos();
+          }
+
+          
         },
         error => {
           this.cargandoRoles = false;

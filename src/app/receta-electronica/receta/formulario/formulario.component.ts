@@ -259,7 +259,7 @@ export class FormularioComponent implements OnInit {
 
     );
 
-    var busquedaInsumoSubject = this.terminosBusquedaInsumo
+    var busquedaInsumoSubject:any = this.terminosBusquedaInsumo
     .debounceTime(300) // Esperamos 300 ms pausando eventos
     .distinctUntilChanged() // Ignorar si la busqueda es la misma que la ultima
     .switchMap((term:string)  =>  { 
