@@ -1,5 +1,6 @@
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { LocationStrategy, HashLocationStrategy} from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
@@ -72,6 +73,7 @@ import { AjusteMasInventarioModule      } from './inventario/ajuste-mas-inventar
 import { AjusteMenosInventarioModule    } from './inventario/ajuste-menos-inventario/ajuste-menos-inventario.module';
 import { CorreccionesModule             } from './inventario/correcciones/correcciones.module';
 import { MovimientosGeneralesModule     }  from './inventario/movimientos-generales/movimientos-generales.module';
+import { MonitorCaducidadesModule       }  from './inventario/monitor-caducidades/monitor-caducidades.module';
 
 // # Hub almacén artículos
 import { IndexAlmacenArticulosModule } from './almacen-articulos/index-almacen-articulos/index-almacen-articulos.module';
@@ -188,6 +190,7 @@ export function highchartsFactory() {
     AjusteMenosInventarioModule,
     CorreccionesModule,
     MovimientosGeneralesModule,
+    MonitorCaducidadesModule,
     SalidasRecetasModule,
     DashboardSalidasModule,
     ClavesBasicasModule,
@@ -229,10 +232,10 @@ export function highchartsFactory() {
     SincronizarRecetasModule,
     // Hub catalogos y parámetros
     Almacenes2Module,
-    //CrudModule,
+    // CrudModule,
     EgresoModule,
     AvancesModule,
-    //entradas salidas almacen articulos
+    // entradas salidas almacen articulos
     EntradaModule,
     SalidaModule,
     ConfiguracionGeneralModule,
@@ -248,7 +251,9 @@ export function highchartsFactory() {
     JwtHelper,
     JwtRequestService,
     Uploader,
-    { provide: HighchartsStatic, useFactory: highchartsFactory} ],
+    { provide: HighchartsStatic, useFactory: highchartsFactory},
+    { provide: LocationStrategy, useClass: HashLocationStrategy}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

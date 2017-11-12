@@ -22,6 +22,7 @@ export class LoginComponent implements OnInit {
   mensaje: string = "";
   mostrarMensaje: boolean = false;
   private bloquearPantallaSuscription: Subscription;
+  private tamano = document.body.clientHeight;
 
   constructor(
     private route: ActivatedRoute,

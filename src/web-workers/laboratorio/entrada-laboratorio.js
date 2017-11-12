@@ -33,7 +33,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         [{ text: 'SIAL', style: 'titulo', colSpan: 6, alignment: 'center' },
                             {}, {}, {}, {}, {}
                         ],
-                        [{ text: 'ENTRADA LABORATORIO CLÍNICO', style: 'tableHeaderTop', colSpan: 6, alignment: 'center' },
+                        [{ text: 'ENTRADA LABORATORIO  CLÍNICO', style: 'tableHeaderTop', colSpan: 6, alignment: 'center' },
                             {}, {}, {}, {}, {}
                         ],
                         [
@@ -186,7 +186,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                 var lote = insumo.lotes[j];
                 dd.content[0].table.body.push([
                     { text: lote.clave_insumo_medico, style: 'tableRow', alignment: 'center' },
-                    { text: insumo.detalles.descripcion, style: 'tableRow', alignment: 'center' },
+                    { text: insumo.descripcion, style: 'tableRow', alignment: 'center' },
                     { text: lote.lote, style: 'tableRow', alignment: 'center' },
                     { text: lote.fecha_caducidad, style: 'tableRow', alignment: 'center' },
                     { text: lote.codigo_barras, style: 'tableRow', alignment: 'center' },

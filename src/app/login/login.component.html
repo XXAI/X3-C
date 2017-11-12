@@ -1,12 +1,70 @@
 <div class="modal is-active">
-    <div class="modal-background login-background"></div>
+    <div class="modal-background login-background">
+        <section class="hero is-primary" style="height: 100px">
+            <div class="hero-body">
+                <div class="container">
+                    <nav class="level">
+                    <!-- Left side -->
+                        <div class="level-left" style="padding: 0">
+                            <div class="level-item">
+                                <figure class="image is-128x128">
+                                    <img src="assets/sial.svg">
+                                </figure>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </section>
+        <div class="content" style="padding: 2rem 2rem !important; overflow:auto;" [style.height.px]="tamano-250">
+        </div>
+        <footer class="footer">
+            <div class="container">
+                <div class="content has-text-centered">
+                    <div class="columns">
+                        <div class="column">
+                            <figure class="image is-128x128">
+                                <img src="assets/ssa.png">
+                            </figure>
+                        </div>
+                        <div class="column">
+                            <figure class="image is-128x128">
+                                <img src="assets/chiapas-une.svg">
+                            </figure>
+                        </div>
+                        <div class="column">
+                            <figure class="image is-128x128">
+                                <img src="assets/gob_estado.png">
+                            </figure>
+                        </div>
+                        <div class="column">
+                            <figure class="image is-128x128">
+                                <img src="assets/salud-meso.svg">
+                            </figure>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
     <div class="modal-content">
         <div class="card" style=" border-radius:1em; overflow: hidden">
-            <div class="card-image" >
+            <div class="card-header is-primary">
+                <section class="hero is-primary" style="width: 100%">
+                    <div class="hero-body" style="align-self: center;">
+                        <div class="container">
+                            <figure class="image is-128x128">
+                                <img src="assets/sial-logo.svg">
+                            </figure>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!--<div class="card-image" >
                 <figure class="image " style="border-radius: 1em 1em 0em 0em; overflow: hidden;">
                     <img src="assets/bg-login_salud.svg" alt="Image">
                 </figure>
-            </div>
+            </div>-->
             <div class="card-content">
                 <form name="form" (ngSubmit)="!loading && login()">
                     <h1 class="title has-text-centered">Bienvenido</h1>

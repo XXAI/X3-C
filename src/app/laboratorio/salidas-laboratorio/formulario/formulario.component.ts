@@ -170,7 +170,7 @@ export class FormularioComponent {
     }
 
     // Inicializamos el objeto para los reportes con web Webworkers
-    this.pdfworker = new Worker('web-workers/laboratorio/lista-salidas.js');
+    this.pdfworker = new Worker('web-workers/laboratorio/salida-laboratorio.js');
 
     // Este es un hack para poder usar variables del componente dentro de una funcion del worker
     var self = this;

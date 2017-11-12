@@ -9,7 +9,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
     onmessage = function(evt) {
         let data = JSON.parse(evt.data)
         pdf(data);
-        console.log(data);
+
     };
 
     function pdf(data) {
@@ -50,8 +50,11 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                             { text: data.datos.receta.diagnostico, style: 'tableHeader', colSpan: 2, alignment: 'left' },
                             {}
                         ],
-                        [{ text: ' ', style: 'celdaEspacio', colSpan: 6, alignment: 'center' },
-                            {}, {}, {}, {}, {}
+                        [
+                            { text: 'PÓLIZA DE SEGURO POPULAR:', style: 'tableHeaderVerde', colSpan: 3, alignment: 'right' },
+                            {}, {},
+                            { text: data.poliza, style: 'tableHeader', colSpan: 3, alignment: 'left' },
+                            {}, {}
                         ],
                         [
                             { text: 'USUARIO', style: 'tableHeaderVerde', alignment: 'right' },

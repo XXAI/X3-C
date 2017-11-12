@@ -61,11 +61,12 @@ export class FormularioComponent {
       }
     });
 
-    this.dato.valueChanges.subscribe(
+    this.dato.controls.fecha_movimiento.valueChanges.subscribe(
       val => {
           if (val) {
             setTimeout(() => {
               this.calcular_importe_articulo();
+              console.log(val, this.dato);
             }, 500);
           }
       }

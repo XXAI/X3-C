@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Params } from '@angular/router';
 
 import { environment } from '../../../../environments/environment';
@@ -17,14 +17,39 @@ export class FormularioComponent {
   dato: FormGroup;
   cargando = false;
   movimiento_articulos;
-  configuracion_general = JSON.parse(localStorage.getItem("configuracion_general"));
+  configuracion_general = JSON.parse(localStorage.getItem('configuracion_general'));
+  /**
+   * Contiene la ruta de la API a la cual hacer la búsqueda de artículos.
+   * @type {string}
+   */
   public articulos_term: string = `${environment.API_URL}/articulos-auto?term=:keyword`;
-  constructor(private fb: FormBuilder, private crudService: CrudService, private route: ActivatedRoute, private _sanitizer: DomSanitizer, private notificacion: NotificationsService) { }
-
+  /**
+   * Contiene un valor _true_ si va a consultar una entrada, y _false_
+   * si es una entrada nueva.
+   * @type {boolean}
+   */
   private tieneid: boolean = false;
+  /**
+   * Contiene el valor de la altura del navegador web.
+   */
   tamano = document.body.clientHeight;
+  /**
+   * Variable que contiene la ruta para crear una entrada nueva
+   * @type {string}
+   */
+  url_nuevo = '../../nuevo';
 
-  url_nuevo = "../../nuevo";
+  public options = {
+    position: ['top', 'right'],
+    timeOut: 5000,
+    lastOnBottom: true
+  };
+  constructor(
+    private fb: FormBuilder,
+    private crudService: CrudService,
+    private route: ActivatedRoute,
+    private _sanitizer: DomSanitizer,
+    private notificacion: NotificationsService) { }
 
   ngOnInit() {
 
@@ -46,7 +71,7 @@ export class FormularioComponent {
         this.tieneid = true;
       }
     });
-    this.dato.controls.id.valueChanges.subscribe(
+    this.dato.controls.fecha_movimiento.valueChanges.subscribe(
       val => {
           if (val) {
             setTimeout(() => {
@@ -56,10 +81,10 @@ export class FormularioComponent {
       }
     );
 
-    //Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
-    //document.getElementById("catalogos").click();
+    // Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
+    // document.getElementById("catalogos").click();
     setTimeout(function () {
-      (<HTMLInputElement>document.getElementById("buscarArticulo")).focus;
+      (<HTMLInputElement>document.getElementById('buscarArticulo')).focus;
     }, 100);
   }
 
@@ -88,12 +113,6 @@ export class FormularioComponent {
     return this._sanitizer.bypassSecurityTrustHtml(html);
 
   }
-
-  public options = {
-    position: ["top", "right"],
-    timeOut: 5000,
-    lastOnBottom: true
-  };
 
   /**
      * Este método agrega los lostes del modal a el modelo que se envia a la api
@@ -133,11 +152,11 @@ export class FormularioComponent {
     };
 
     this.options = {
-      position: ["top", "right"],
+      position: ['top', 'right'],
       timeOut: 5000,
       lastOnBottom: true
     };
-    (<HTMLInputElement>document.getElementById("buscarArticulo")).value = "";
+    (<HTMLInputElement>document.getElementById('buscarArticulo')).value = '';
     this.cargando = false;
   }
 
@@ -167,20 +186,17 @@ export class FormularioComponent {
     this.dato.controls['total'].patchValue(subtotal + iva);
   }
 
-  //lote
-
   initLote(meta) {
-
     var formulario: FormArray = this.fb.array([]);
     meta.forEach(ele => {
       var campos = {};
-      campos["metadatos_id"] = [ele.id];
-      campos["campo"] = [ele.campo, [Validators.required]];
-      campos["descripcion"] = [ele.descripcion];
-      campos["longitud"] = [ele.longitud];
-      campos["tipo"] = [ele.tipo];
-      campos["requerido"] = [ele.requerido];
-      campos["valor"] = [''];
+      campos['metadatos_id'] = [ele.id];
+      campos['campo'] = [ele.campo, [Validators.required]];
+      campos['descripcion'] = [ele.descripcion];
+      campos['longitud'] = [ele.longitud];
+      campos['tipo'] = [ele.tipo];
+      campos['requerido'] = [ele.requerido];
+      campos['valor'] = [''];
       
       formulario.controls.push(this.fb.group(campos));
     });
@@ -195,7 +211,7 @@ export class FormularioComponent {
 
   asignar_fecha(i, x, z) {
     setTimeout(() => {
-      var v = <HTMLInputElement>document.getElementById("valor" + z);
+      var v = <HTMLInputElement>document.getElementById('valor' + z);
 
       const articulos = <FormArray>this.dato.controls.movimiento_articulos;
       const articulo = <FormGroup>articulos.controls[i];
@@ -278,9 +294,9 @@ export class FormularioComponent {
   //fin lote
   buscar_articulo(e) {
     if (e.keyCode == 13) {
-      var valor = (<HTMLInputElement>document.getElementById("buscarArticulo")).value;
-      (<HTMLInputElement>document.getElementById("buscarArticulo")).value = "";
-      (<HTMLInputElement>document.getElementById("buscarArticulo")).focus;
+      var valor = (<HTMLInputElement>document.getElementById('buscarArticulo')).value;
+      (<HTMLInputElement>document.getElementById('buscarArticulo')).value = '';
+      (<HTMLInputElement>document.getElementById('buscarArticulo')).focus;
       var este = this;
       this.cargando = true;
       this.crudService.ver(valor, 'articulos').subscribe(
@@ -316,7 +332,7 @@ export class FormularioComponent {
     this.cargando = true;
     this.json = this.dato.getRawValue();
     if (this.dato.get('id').value > 0) {
-      this.crudService.editar(this.dato.get('id').value, this.json, "entrada-articulo").subscribe(
+      this.crudService.editar(this.dato.get('id').value, this.json, 'entrada-articulo').subscribe(
         resultado => {
           this.enviar_ticket(this.json, resultado);
         },
@@ -326,7 +342,7 @@ export class FormularioComponent {
       );
     }
     else {
-      this.crudService.crear(this.json, "entrada-articulo").subscribe(
+      this.crudService.crear(this.json, 'entrada-articulo').subscribe(
         resultado => {
           this.enviar_ticket(this.json, resultado);
           this.reset_form();

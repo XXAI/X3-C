@@ -50,15 +50,15 @@ export class IndexAlmacenArticulosComponent implements OnInit {
 
     this.modulos = [
       {
-        permiso: 'VmObT0aDFLEXDMer0yvfKo76gBsGNdcR', icono: 'assets/icono-inventario-gral.svg',
+        permiso: 'VmObT0aDFLEXDMer0yvfKo76gBsGNdcR', icono: 'assets/icono-inventario-general.svg',
         titulo: 'Inventario', url: '/almacen-articulos/inventarios'
       },
       {
-        permiso: '8u2HduKCBo53Vwa2DiMh1ujytqdL9c7M', icono: 'assets/icono-entradas-gral.svg',
+        permiso: '8u2HduKCBo53Vwa2DiMh1ujytqdL9c7M', icono: 'assets/icono-entradas-general.svg',
         titulo: 'Entradas', url: '/almacen-articulos/entradas'
       },
       {
-        permiso: '5Pnh7DTayhrND0GyB7bzfbdFK2kA6bgM', icono: 'assets/icono-salidas-gral.svg',
+        permiso: '5Pnh7DTayhrND0GyB7bzfbdFK2kA6bgM', icono: 'assets/icono-salidas-general.svg',
         titulo: 'Salidas', url: '/almacen-articulos/salidas'
       },
       /*{

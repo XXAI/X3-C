@@ -12,6 +12,23 @@ import { NotificationsService } from 'angular2-notifications';
 export class TablaOpcionesComponent {
     @Input() ctrl: any;
     @Input() nombre: any;
+    /**
+     * Contiene valor _true_ si debe mostrarse el nombre del módulo, _false_ en caso contrario.
+     * @type {string}
+     */
+    @Input() mostrar_nombre= true;
+    /**
+     * Contiene valor _true_ si puede verse la opción de nuevo, false en caso contrario.
+     * @type {string}
+     */
+    @Input() nuevo= true;
+    /**
+     * Variable que contiene un valor _true_ si debe mostrarse el input de búsqueda.
+     */
+    @Input() busqueda: true;
+    /**
+     * Contiene la cadena de fontAwesome para insertar ícono
+     */
     @Input() icono= 'fa fa-list';
     /**
      * Contiene la ruta a la cual se hará la consulta a la API para imprimir el PDF.
@@ -72,8 +89,8 @@ export class TablaOpcionesComponent {
   ngOnInit() {
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
     let url = location.href.split('/');
-    this.carpeta = url[3];
-    this.modulo = url[4];
+    this.carpeta = url[4];
+    this.modulo = url[5];
 
     this.url_nuevo = '/' + this.carpeta + '/' + this.modulo + '/nuevo';
     // Inicializamos el objeto para los reportes con web Webworkers
@@ -104,6 +121,7 @@ export class TablaOpcionesComponent {
     this.crudService.lista_general(this.ruta).subscribe(
       resultado => {
         this.lista_impresion = resultado;
+        console.log(resultado);
         try {
           let imprimir = {
             usuario: this.usuario,

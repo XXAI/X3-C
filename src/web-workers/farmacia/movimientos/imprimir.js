@@ -8,12 +8,12 @@ importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js
 
     onmessage = function( evt ) {
         let data = JSON.parse(evt.data)
-        console.log(data);
+
         pdf(data);
     };
 
     function pdf(data) {
-        console.log(data);
+
         var contadorLineasHorizontalesV = 0;
         var dd = {
             content: [{

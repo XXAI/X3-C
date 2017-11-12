@@ -523,7 +523,15 @@
                             <tr *ngFor="let item of lotes_insumo;  let i = index;">
                                 <td *ngIf="!item.nuevo">{{item.lote}}</td>
                                 <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Lote" [(ngModel)]="item.lote"></td>
-                                <td *ngIf="!item.nuevo">{{item.fecha_caducidad}}</td>
+                                <td *ngIf="!item.nuevo">
+                                    <span *ngIf="item.tipo_caducidad">
+                                        <label *ngIf="item.tipo_caducidad == 'OPTIMA'" class="tag is-success" ><strong>&nbsp;</strong></label>
+                                        <label *ngIf="item.tipo_caducidad == 'MEDIA'" class="tag is-warning" ><strong>&nbsp;</strong></label>
+                                        <label *ngIf="item.tipo_caducidad == 'PRONTA'" class="tag is-danger" ><strong>&nbsp;</strong></label>
+                                        <label *ngIf="item.tipo_caducidad == 'CADUCADO'" class="tag is-black" ><strong>&nbsp;</strong></label>
+                                    </span>
+                                    {{item.fecha_caducidad}}
+                                </td>
                                 <td *ngIf="item.nuevo">
                                     <input class="input has-text-centered" placeholder="Fecha de caducidad" 
                                     [(ngModel)]="item.fecha_caducidad" min="MinDateCaducidad" (blur)="validar_fecha()"
@@ -535,7 +543,9 @@
                                 <td *ngIf="!item.nuevo && modo == 'U'">{{item.existencia_unidosis}}</td>
                                 <td *ngIf="item.nuevo "></td>
                                 <td >
-                                    <input class="input has-text-centered" type="number" step="1" min="0" (keypress)="quitar_punto($event)"  (keyup)="comprobar_cant_lotes()" (change)="comprobar_cant_lotes()" max="{{item.existencia}}" placeholder="Cantidad" [(ngModel)]="item.cantidad">
+                                    <input class="input has-text-centered" type="number" step="1" min="0" (keypress)="quitar_punto($event)"
+                                    (keyup)="comprobar_cant_lotes()" (change)="comprobar_cant_lotes()" max="{{item.existencia}}" 
+                                    placeholder="Cantidad" [(ngModel)]="item.cantidad" [ngClass]="{'is-disabled': item.tipo_caducidad == 'CADUCADO'}">
                                 </td>
                                 <td *ngIf="item.nuevo">
                                     <a class="delete" (click)=eliminarLote(i)></a>
@@ -593,7 +603,7 @@
             </div>
         </section>
         <footer class="modal-card-foot">
-            <a class="button is-success" (click)="ctrl.enviar(); cancelarModal('guardarMovimiento')">Continuar</a>
+            <a class="button is-success" (click)="ctrl.enviar(false, 'almacen/salidas-estandar'); cancelarModal('guardarMovimiento')">Continuar</a>
             <a class="button" (click)="cancelarModal('guardarMovimiento')">Cancelar</a>
         </footer>
     </div>

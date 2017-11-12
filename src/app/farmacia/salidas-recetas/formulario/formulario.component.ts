@@ -18,7 +18,103 @@ import  * as FileSaver    from 'file-saver';
 @Component({
   selector: 'salidas-recetas-formulario',
   templateUrl: './formulario.component.html',
-  styles: ['ngui-auto-complete {z-index: 999999 !important}'],
+  styles: [`
+    ngui-auto-complete {
+      z-index: 999999 !important
+    }
+    .b-checkbox {
+      line-height: 1;
+    }
+    .select{
+      width: 100%;
+    }
+    .b-checkbox label {
+      position: relative;
+      padding-left: 5px;
+      cursor: pointer;
+    }
+
+    .b-checkbox label::before {
+      content: "";
+      position: absolute;
+      width: 17px;
+      height: 17px;
+      left: 0;
+      margin-left: -17px;
+      border: 1px solid #dbdbdb;
+      border-radius: 3px;
+      background-color: #fff;
+      transition: background .1s ease-in-out;
+    }
+
+    .b-checkbox label::after {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      left: 0;
+      top: 5px;
+      margin-left: -15px;
+      font-size: 12px;
+      line-height: 1;
+      color: #363636;
+    }
+
+    .b-checkbox input[type="checkbox"],
+    .b-checkbox input[type="radio"] {
+      opacity: 0;
+      z-index: 1;
+      cursor: pointer;
+    }
+
+    .b-checkbox input[type="checkbox"]:focus + label::before,
+    .b-checkbox input[type="radio"]:focus + label::before {
+      outline: thin dotted;
+      outline: 5px auto -webkit-focus-ring-color;
+      outline-offset: -2px;
+    }
+
+    .b-checkbox input[type="checkbox"]:checked + label::after,
+    .b-checkbox input[type="radio"]:checked + label::after {
+      font-family: "FontAwesome";
+      content: "";
+    }
+
+    .b-checkbox input[type="checkbox"]:indeterminate + label::after,
+    .b-checkbox input[type="radio"]:indeterminate + label::after {
+      display: block;
+      content: "";
+      width: 10px;
+      height: 3px;
+      background-color: #555555;
+      border-radius: 2px;
+      margin-left: -16.5px;
+      margin-top: 7px;
+    }
+
+    .b-checkbox input[type="checkbox"]:disabled,
+    .b-checkbox input[type="radio"]:disabled {
+      cursor: not-allowed;
+    }
+
+    .b-checkbox input[type="checkbox"]:disabled + label,
+    .b-checkbox input[type="radio"]:disabled + label {
+      opacity: 0.65;
+    }
+
+    .b-checkbox input[type="checkbox"]:disabled + label::before,
+    .b-checkbox input[type="radio"]:disabled + label::before {
+      background-color: whitesmoke;
+      cursor: not-allowed;
+    }
+
+    .b-checkbox.is-circular label::before {
+      border-radius: 50%;
+    }
+
+    .b-checkbox.is-inline {
+      margin-top: 0;
+    }
+  `],
   host: {
         '(document:keydown)': 'handleKeyboardEvents($event)'
     }
@@ -116,10 +212,13 @@ export class FormularioComponent {
                             { id: 1, nombre: 'Normal'},
                             { id: 2, nombre: 'Controlado'}
                           ];
-
-
+  /**
+   * Objeto que contiene la configuracion default para mostrar los mensajes,
+   * posicion abajo izquierda, tiempo 5 segundos.
+   * @type {Object}
+   */
   public options = {
-    position: ['top', 'right'],
+    position: ['top', 'left'],
     timeOut: 5000,
     lastOnBottom: true
   };
@@ -132,6 +231,8 @@ export class FormularioComponent {
     maxLength: 2000
   };
   mostrar_lote = [];
+  @ViewChildren('seguroPopular') seguroPopular;
+  @ViewChildren('poliza') poliza;
   @ViewChildren('campoDr') campoDr;
   @ViewChildren('dosis') dosis;
   @ViewChildren('frecuencia') frecuencia;
@@ -146,7 +247,7 @@ export class FormularioComponent {
   /**
    * Contiene la URL donde se hace la búsqueda del personal médico.
    * @type {string} */
-  public medicos_term = `${environment.API_URL}/personal-clues?tipo_personal=1&term=:keyword`;
+  public medicos_term = `${environment.API_URL}/personal-medico?tipo_personal=1&term=:keyword`;
 
   constructor(
     private fb: FormBuilder,
@@ -208,8 +309,10 @@ export class FormularioComponent {
         tipo_receta: [''],
         fecha_receta: ['', [Validators.required]],
         doctor: ['', [Validators.required]],
-        personal_clues_id: ['', [Validators.required]],
+        personal_clues_id: [''],
         paciente: ['', [Validators.required]],
+        tiene_seguro_popular: [false, []],
+        poliza_seguro_popular: [{value: '', disabled: true}, [Validators.required]],
         diagnostico: ['', [Validators.required]],
         imagen_receta: [''],
         servidor_id: [''],
@@ -256,6 +359,21 @@ export class FormularioComponent {
      */
   abrirModal(id) {
     document.getElementById(id).classList.add('is-active');
+  }
+
+  /**
+   * Método para volver requerido el campo de póliza de seguro. Se llama al método
+   * cuando se da click al checkbox tiene_seguro_popular.
+   */
+  requerirCampo () {
+
+    const formReceta = <FormArray>this.dato.controls['receta'];
+
+    if (!formReceta.controls['tiene_seguro_popular'].value) {
+      formReceta.get('poliza_seguro_popular').enable();
+    } else {
+      formReceta.get('poliza_seguro_popular').disable();
+    }
   }
 
   /**
@@ -346,10 +464,10 @@ export class FormularioComponent {
   }
 
   /**
-     * Este método formatea los resultados de la busqueda en el autocomplte
-     * @param data resultados de la busqueda 
-     * @return void
-     */
+   * Este método formatea los resultados de la busqueda en el autocomplte de los insumos médicos
+   * @param data resultados de la busqueda
+   * @return void
+   */
   autocompleListFormatter = (data: any) => {
     let html = `
     <div class="card">
@@ -417,7 +535,7 @@ export class FormularioComponent {
   }
 
   /**
-     * Este método agrega los lostes del modal a el modelo que se envia a la api
+     * Este método agrega los lotes del modal a el modelo que se envia a la api
      * @return void
      */
   agregarLoteIsumo(dosis, frecuencia, duracion, cantidad_recetada) {
@@ -585,7 +703,7 @@ export class FormularioComponent {
   }
 
   /**
-     * Este método valida que la cantidad escrita en el lote por listado de isnumos sea menor que la existencia
+     * Este método valida que la cantidad escrita en el lote por listado de insumos sea menor que la existencia
      * @param i Posicion del insumo en la lista
      * @param val Object con los datos del lote
      * @param i2 Posicion del lote en la lista de lotes
@@ -611,12 +729,16 @@ export class FormularioComponent {
     }
     ctrlLotes.controls['cantidad_surtida'].patchValue(cantidad);
   }
-
+  /**
+   * Verifica que la cantidad ingresada de los lotes a salir sea válida, si la suma de las 
+   * cantidades de los lotes es cero, entonces no se activa el botón acpetar en el modal.
+   */
   comprobar_cant_lotes() {
     let cantidad = 0;
     for (let l of this.lotes_insumo) {
-      if (l.cantidad)
+      if (l.cantidad) {
         cantidad = Number(cantidad) + Number(l.cantidad);
+      }
     }
     if (cantidad > 0 && this.dosis.first.nativeElement.value !== '' && this.frecuencia.first.nativeElement.value !== ''
       && this.duracion.first.nativeElement.value !== '' && this.cant_recetada.first.nativeElement.value !== '') {
@@ -625,7 +747,10 @@ export class FormularioComponent {
       this.sum_cant_lotes = false;
     }
   }
-
+  /**
+   * Función no permite escribir signos puntos o letras en el campo donde se manda a llamar esta función.
+   * @param event Objeto que contiene las propiedades de la tecla presionada
+   */
   quitar_punto(event) {
     if (this.is_numeric(event.key )) {
       return true;
@@ -633,7 +758,10 @@ export class FormularioComponent {
       return false;
     }
   }
-
+  /**
+   * Devuelve un valor Boolean que indica si existe o no un patrón en una cadena de búsqueda.
+   * @param str Contiene el valor de tecla presionada por el usuario.
+   */
   is_numeric(str) {
     return /^\d+$/.test(str);
   }
@@ -690,7 +818,10 @@ export class FormularioComponent {
       this.sum_cant_lotes = false;
     }
   }
-
+  /**
+   * Este método permite validar la salida al dar click en guardar, verifica que hayan ingresado por lo menos un insumo
+   * para poder llamar al modal de confirmación de la salida.
+   */
   guardar_movimiento() {
     // obtener el formulario reactivo para agregar los elementos
     const control = <FormArray>this.dato.controls['insumos'];
@@ -717,15 +848,22 @@ export class FormularioComponent {
 
 
   /***************************************IMPRESION DE REPORTES*************************************************/
-
+  /**
+   * Metodo que permite imprimir la receta en pdf.
+   */
   imprimir() {
     var usuario = JSON.parse(localStorage.getItem('usuario'));
+    const formReceta = <FormArray>this.dato.controls['receta'];
+
+    
     try {
       this.cargandoPdf = true;
       var entrada_imprimir = {
         datos: this.dato.value,
         lista: this.dato.value.insumos,
-        usuario: usuario
+        usuario: usuario,
+        poliza: formReceta.controls['poliza_seguro_popular'].value ?
+                formReceta.controls['poliza_seguro_popular'].value : 'No cuenta con póliza de Seguro Popular'
       };
       this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
     } catch (e){

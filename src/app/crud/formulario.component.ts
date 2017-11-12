@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Location } from '@angular/common';
-import { ActivatedRoute, Params } from '@angular/router'
+import { ActivatedRoute, Params } from '@angular/router';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 

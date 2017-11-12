@@ -49,16 +49,16 @@ export class IndexInventarioComponent implements OnInit {
         permiso: 'IVgehpUXTeMa5k9BT8uqfEyayEVyxJuD', icono: 'assets/icono-correcciones.svg',
         titulo: 'Correcciones', url: '/inventario/correcciones'
       },
+      {
+        permiso: 'xYbpHsWi4HGSXQDUmG7fcJT8ZzcZKqyb', icono: 'assets/icono-monitor-caduc.svg',
+        titulo: 'Monitor de caducidades', url: '/inventario/monitor-caducidades'
+      },
       /**
        * Temporales
        */
       {
         permiso: '--cE81erieaVjvmhcb9GCYI4doqYGtTcj1', icono: 'assets/icono-movimientos.svg',
         titulo: 'Movimientos generales', url: '/inventario/movimientos-generales'
-      },
-      {
-        permiso: '--cE81erieaVjvmhcb9GCYI4doqYGtTcj1', icono: 'assets/icono-correcciones.svg',
-        titulo: 'Correcciones', url: '/inventario/correcciones'
       },
 
     ];
