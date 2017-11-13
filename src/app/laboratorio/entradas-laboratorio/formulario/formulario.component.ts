@@ -582,7 +582,7 @@ export class FormularioComponent {
           dato = this.dato.value;
       }
 
-      this.crudService.editar(this.dato.controls.id.value, dato, 'entrada-almacen').subscribe(
+      this.crudService.editar(this.dato.controls.id.value, dato, 'entrada-laboratorio').subscribe(
           resultado => {
               document.getElementById('actualizar').click();
               this.cargando = false;
