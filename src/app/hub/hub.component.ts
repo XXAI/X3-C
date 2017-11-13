@@ -110,6 +110,12 @@ export class HubComponent implements OnInit {
       ]
     },
     {
+      title: 'Médicos', routerLink: '/medicos', icono: 'assets/hub-medicos.svg',
+      permisos: [
+        'mGKikN0aJaeF2XrHwwYK3XNw0f9CSZDe', // Recetas
+      ]
+    },
+    {
       title: 'Pacientes', routerLink: '/paciente', icono: 'assets/avatar-enfermero.svg',
       permisos: [
         'PpXKhxdG8dGheNKm1rRSCT4EXZYyhRMm', // Ver admision

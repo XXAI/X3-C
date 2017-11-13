@@ -100,6 +100,9 @@ import { PacienteModule } from './admision/paciente/paciente.module';
 import { IndexRecetaModule          } from './receta-electronica/index-receta/index-receta.module';
 import { RecetaModule          } from './receta-electronica/receta/receta.module';
 
+// # Hub Médicos
+import { RecetasModule  as MedicosRecetasModule        } from './medicos/recetas/recetas.module';
+
 // #Hub Catálogos y parámetros de sistema
 import { IndexCatalogoParamsModule } from './catalogos-parametros/index-catalogo-params/index-catalogo-params.module';
 import { Almacenes2Module } from './catalogos-parametros/almacenes/almacenes.module';
@@ -239,6 +242,8 @@ export function highchartsFactory() {
     EntradaModule,
     SalidaModule,
     ConfiguracionGeneralModule,
+
+    MedicosRecetasModule,
 
     WildcardRoutingModule, // Este siempre debe ir al final para que no haga conflicto con otras rutas
 
