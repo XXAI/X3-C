@@ -420,65 +420,107 @@
                       <th>EXISTENCIA</th>
                     </tr>
                 </thead>
-                <!--  (click) = 'seleccionarPersonal(item)' -->
-                <tbody>
-                    <tr *ngFor="let item of insumos_busqueda; let i=index" style="cursor:pointer" (click)='seleccionar_insumo(item)'>
-                     <td class="has-text-centered">{{ item.clave }}</td>
-                        <!--<td class="has-text-centered is-hidden-mobile"><a (click)="mostrarFichaInformativa($event, item.clave)" style="cursor:help;">{{ item.clave }}</a></td>-->            
+                    <tbody>
+                        <tr *ngFor="let item of insumos_busqueda; let i=index" style="cursor:pointer" (click)='seleccionar_insumo(item)'>
+                         <td class="has-text-centered">{{ item.clave }}</td>
+                            <!--<td class="has-text-centered is-hidden-mobile"><a (click)="mostrarFichaInformativa($event, item.clave)" style="cursor:help;">{{ item.clave }}</a></td>-->            
+                            
+                            <td>
+                                
+                                <div style="line-height:1em;">
+                                <small>{{ item.descripcion }}</small>
+                                </div>
+                                <div style="padding: 0.5em 0 0.5em 0; ">
+                                <span *ngIf="(item.es_causes && item.tipo == 'ME')" class="tag is-success" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
+                                <span *ngIf="(!item.es_causes && item.tipo == 'ME')" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
+                                <span *ngIf="item.tipo == 'MC'" class="tag is-warning" style="font-size: 0.7em !important;">MATERIAL CURACIÓN</span>
+                                <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
+                                <span *ngIf="(item.tipo == 'ME' && item.informacion)">
+                                    <span *ngIf="item.informacion.es_controlado" class="tag is-info" style="font-size: 0.7em">Controlado</span>
+                                    <span *ngIf="item.informacion.es_surfactante" class="tag is-info" style="font-size: 0.7em">Surfactante</span>  
+                                </span>
+                                <br>
+                                
+                                </div>
+                            </td>
+                            <td>
+                                {{ item.stockExistencia.existencia }}
+                            </td>
+                        </tr>
                         
-                        <td>
-                            
-                            <div style="line-height:1em;">
-                            <small>{{ item.descripcion }}</small>
-                            </div>
-                            <div style="padding: 0.5em 0 0.5em 0; ">
-                            <span *ngIf="(item.es_causes && item.tipo == 'ME')" class="tag is-success" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">CAUSES</span>
-                            <span *ngIf="(!item.es_causes && item.tipo == 'ME')" class="tag is-danger" style="font-size: 0.7em !important;">NO CAUSES</span>
-                            <span *ngIf="item.tipo == 'MC'" class="tag is-warning" style="font-size: 0.7em !important;">MATERIAL CURACIÓN</span>
-                            <span *ngIf="item.es_cuadro_basico" class="tag is-light" [ngClass]="{'is-dark': item == insumoSeleccionado}" style="font-size: 0.7em !important;">Cuadro básico</span>
-                            <span *ngIf="(item.tipo == 'ME' && item.informacion)">
-                                <span *ngIf="item.informacion.es_controlado" class="tag is-info" style="font-size: 0.7em">Controlado</span>
-                                <span *ngIf="item.informacion.es_surfactante" class="tag is-info" style="font-size: 0.7em">Surfactante</span>  
-                            </span>
-                            <br>
-                            
-                            </div>
-                        </td>
-                        <td>
-                            {{ item.stockExistencia.existencia }}
-                        </td>
-                    </tr>
-                    <tr *ngIf="datos_insumo">
-                        <td colspan="5" style="vertical-align: middle; color:#888;">seleccionado.</td>                    
-                    </tr> 
-                   <tr *ngIf="insumos_busqueda.length == 0">
-                    <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
-                </tr>
-                </tbody>
+                       <tr *ngIf="insumos_busqueda.length == 0">
+                            <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
+                        </tr>
+                        
+                    </tbody>
+                    
+                </table>
+                <paginacion 
+                    [total]="totalBusqueda"
+                    [paginasTotales]="paginasTotalesBusqueda" 
+                    [resultadosPorPagina]="resultadosPorPaginaBusqueda"
+                    [paginaActual]="paginaActual"
+                    [indicePaginas]="indicePaginasBusqueda"
+                    (onSiguiente)="paginaSiguiente(searchBoxInsumos.value)" 
+                    (onAnterior)="paginaAnterior(searchBoxInsumos.value)" 
+                    (onListar)="listar(searchBoxInsumos.value, $event)" 
+                    *ngIf="totalBusqueda > 0 && totalBusqueda > resultadosPorPaginaBusqueda && lista_insumos"> 
+
+                </paginacion>
+            <form name="form" [formGroup]="insumo_receta"   (ngSubmit)="agregar_insumos()" >      
+                <table class="table" *ngIf="!lista_insumos" >
+                    <thead>
+                        <th>Cantidad</th>
+                        <th>Dosis</th>
+                        <th>Frecuencia</th>
+                        <th>Duración</th>
+                        <th>Cantidad Recetada</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input class="input" type="text" placeholder="Dosis"  formControlName="dosis">
+                            </td>
+                            <td>
+                                <input class="input" type="text" placeholder="Frecuencia" formControlName="frecuencia">
+                            </td>
+                            <td>
+                                <input class="input" type="text" placeholder="Duracion" formControlName="duracion">
+                            </td>
+                            <td>
+                                <input class="input" type="text" placeholder="Cantidad Sugerido" formControlName="sugerido" readonly="readonly">
+                            </td>
+                            <td>
+                                <input class="input" type="text" placeholder="Cantidad Recetada" formControlName="cantidad">
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <div class="control is-grouped" style="padding-top:10px;">
+                            <p class="control">
+                                <a class="button is-primary " >Guardar</a>
+                            </p>
+                            <p class="control">
+                                <a class="button is-danger " ><span class="icon"><i class="fa fa-close"></i></span><span>Cancelar</span></a>
+                            </p>
+                                            
+                        </div>
+                    </tfoot>
+                </table>
                 
-            </table>
-            <paginacion 
-                [total]="totalBusqueda"
-                [paginasTotales]="paginasTotalesBusqueda" 
-                [resultadosPorPagina]="resultadosPorPaginaBusqueda"
-                [paginaActual]="paginaActual"
-                [indicePaginas]="indicePaginasBusqueda"
-                (onSiguiente)="paginaSiguiente(searchBoxInsumos.value)" 
-                (onAnterior)="paginaAnterior(searchBoxInsumos.value)" 
-                (onListar)="listar(searchBoxInsumos.value, $event)" 
-                *ngIf="totalBusqueda > 0 && totalBusqueda > resultadosPorPaginaBusqueda">   
-            </paginacion>
+            
            
 
-              <div class="is-fullwidth has-text-centered" *ngIf="cargando_insumos">
-              <br>
-              <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
-              <br>
-              <br>
-          </div>
-        </div>
+                <div class="is-fullwidth has-text-centered" *ngIf="cargando_insumos">
+                  <br>
+                  <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
+                  <br>
+                  <br>
+                </div>
+            
+            </form>
 
-        
+        </div>
     
     </section>
     <footer class="" style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em " >

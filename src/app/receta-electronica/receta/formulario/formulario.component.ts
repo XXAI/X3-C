@@ -37,6 +37,7 @@ export class FormularioComponent implements OnInit {
 
   datos_receta: FormGroup;
   datos_paciente: FormGroup;
+  insumo_receta: FormGroup;
   id_receta: number;
   folio: string ="";
   usuario: any = {}
@@ -59,6 +60,7 @@ export class FormularioComponent implements OnInit {
   cargando: boolean = false;
   guardando: boolean = false;
   cargandoInsumos: boolean = false;
+  lista_insumos: boolean = true;
   formularioTitulo: string = "";
   // Fiin de variables del entonno del sistema
   
@@ -138,6 +140,15 @@ export class FormularioComponent implements OnInit {
            receta: ['1', [Validators.required]],
            conocido: ['1', [Validators.required]],
            responsableconocido: ['0', [Validators.required]],
+       
+    });
+
+    this.insumo_receta = this.fb.group({
+           dosis: ['', [Validators.required]],
+           frecuencia: ['', [Validators.required]],
+           duracion: ['', [Validators.required]],
+           sugerido: ['', [Validators.required]],
+           cantidad: ['', [Validators.required]],
        
     });
 
@@ -594,9 +605,8 @@ export class FormularioComponent implements OnInit {
     this.insumos_busqueda = [];
     this.insumos_busqueda[0] = obj;
     this.datos_insumo = true;
-    /*for(let i=0; i< this.insumos_busqueda.length; i++){
-      this.insumos_busqueda[i].disabled = false;
-    }*/
+    this.lista_insumos = false;
+    
   }
 
   /*this.cambiarEntornoSuscription = this.cambiarEntornoService.entornoCambiado$.subscribe(evento => {
