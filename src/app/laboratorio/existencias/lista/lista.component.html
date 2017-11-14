@@ -15,21 +15,16 @@
                 [mostrar_nombre]= false
                 [ruta_pdf]="'laboratorio/lista-inventario-laboratorio.js'">
             </app-tabla-opciones-laboratorio>
-            <div class="is-fullwidth has-text-centered" *ngIf="ctrl.cargando">
-                <br>
-                <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
-                <br>
-                <br>
-            </div>
             <span id="exportable">
-                <div style="overflow: scroll; overflow-x: hidden; height: 630px;">
-                    <div class="is-fullwidth has-text-centered" *ngIf="cargandoPdf">
+                <div style="overflow:auto; display:block" [style.maxHeight.px]="ctrl.tamano-300">
+                    <div class="is-fullwidth has-text-centered" *ngIf="opciones.cargandoPdf">
                         <br>
                         <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Generando PDF...</span></span>
                         <br>
                         <br>
                     </div>
-                    <table class="table" *ngIf="!ctrl.cargando && !cargandoPdf" style="min-width:100%; font-size:1.2em;">
+
+                    <table class="table" *ngIf="!ctrl.cargando && !opciones.cargandoPdf">
                         <thead>
                             <tr>
                                 <th style="text-align: center;">Clave</th>

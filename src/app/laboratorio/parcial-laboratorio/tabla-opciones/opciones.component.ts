@@ -178,7 +178,7 @@ export class TablaOpcionesComponent {
             lista: this.lista_impresion,
             buscar_en: this.buscar_en,
             tipo_busqueda: this.tipo_busqueda,
-            tipo_causes: this.tipo_causes,
+            tipo_sustancia: this.tipo_sustancia,
             seleccionar: this.seleccionar,
             clave_insumo: this.clave_insumo
           };

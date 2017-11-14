@@ -38,7 +38,7 @@ export class IndexLaboratorioComponent implements OnInit {
         titulo: 'Salidas de laboratorio', url: '/laboratorio/salidas-laboratorio'
       },
       {
-        permiso: '7GkcqRllVy4Z371KMLPsX0d04dqv3vBE', icono: 'assets/icono-stock-lab.svg',
+        permiso: 'mJ2E55G7moiDdV3VpY2u7g5obUzeop7p', icono: 'assets/icono-stock-lab.svg',
         titulo: 'Existencias de laboratorio', url: '/laboratorio/existencias'
       },
     ];
