@@ -45,8 +45,8 @@ export class FormularioComponent {
       email: [''],
       surte_controlados: [''],
       licencia_controlados: [''],
-      curp: ['', [Validators.required]],
-      rfc: ['', [Validators.required]],
+      // curp: ['', [Validators.required]],
+      // rfc: ['', [Validators.required]],
       personal_clues_metadatos: this.fb.array([])
     });
     // Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
