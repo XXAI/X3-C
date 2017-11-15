@@ -17,9 +17,9 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
             content: [{
                 style: 'Movimiento',
                 table: {
-                    headerRows: 5,
+                    headerRows: 7,
                     dontBreakRows: true,
-                    widths: [80, 'auto','auto', 30, 'auto', 'auto','auto'],
+                    widths: [70, 'auto','auto', 'auto', 'auto', 'auto', 45],
                     body: [
                         [{
                             image: 'header',
@@ -177,7 +177,8 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     { text: movimiento.id ? movimiento.id : 'No disponible', style: 'tableRow', alignment: 'center' },
                     { text: movimiento.nombre ? movimiento.nombre : 'No disponible', style: 'tableRow', alignment: 'center' },
                     { text: movimiento.servidor == null ? 'No disponible' : movimiento.nombre, style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.nivel_almacen ? movimiento.nivel_almacen : 'No disponible', style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.nivel_almacen == null ? 'No disponible' : 
+                        movimiento.nivel_almacen == 1 ? 'HACE PEDIDOS AL PROVEEDOR' : 'HACE PEDIDOS A OTRO ALMACEN DENTRO DE LA CLUES', style: 'tableRow', alignment: 'center' },
                     { text: movimiento.tipo_almacen == null ? 'No disponible' : movimiento.tipo_almacen, style: 'tableRow', alignment: 'center' },
                     { text: movimiento.clues ? movimiento.clues : 'No disponible', style: 'tableRow', alignment: 'center' },
                     { text: movimiento.subrogado == null ? 'No disponible' : movimiento.subrogado == 1 ? 'Sí' : 'No', style: 'tableRow', alignment: 'center'}

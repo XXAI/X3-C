@@ -148,7 +148,7 @@ export class ListaComponent implements OnInit {
       + '&fecha_hasta=' + this.fecha_hasta + '&turno=' + this.turno + '&servicio=' + this.servicio + '&recibe=' + this.recibe).subscribe(
         resultado => {
                 this.cargando = false;
-                this.lista_impresion = resultado.data;
+                this.lista_impresion = resultado;
                 let entrada_imprimir = {
                   lista: this.lista_impresion,
                   usuario: this.usuario,

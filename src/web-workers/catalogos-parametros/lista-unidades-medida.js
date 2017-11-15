@@ -8,7 +8,6 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
     onmessage = function(evt) {
         let data = JSON.parse(evt.data)
         pdf(data);
-
     };
 
     function pdf(data) {
@@ -21,7 +20,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     headerRows: 5,
                     dontBreakRows: true,
                     //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
-                    widths: [80, 'auto','auto', 30, 'auto', 'auto','auto'],
+                    widths: [ 30, 'auto','auto', 50, 'auto', 'auto','auto'],
                     body: [
                         [{
                             image: 'header',
@@ -33,7 +32,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         [{ text: 'SIAL', style: 'titulo', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],
-                        [{ text: 'LISTA DE ALMACENES', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },
+                        [{ text: 'LISTA DE UNIDADES DE MEDIDA', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],[
                             { text: 'CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
@@ -55,12 +54,12 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                             {}, {}, {}, {}, {}, {}
                         ],
                         [
-                            { text: 'ID', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'NOMBRE', style: 'tableHeaderVerde', colSpan: 4, alignment: 'center' },
+                            { text: 'ID', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
+                            { },
+                            { text: 'NOMBRE', style: 'tableHeaderVerde', colSpan: 3, alignment: 'left' },
                             { },
                             { },
-                            { text: 'CLAVE', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
-                            { },
+                            { text: 'CLAVE', style: 'tableHeaderVerde', colSpan: 2, alignment: 'left' },
                             { }
                         ]
                         //Body -> insumos
@@ -98,6 +97,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
             pageSize: 'LETTER',
             compress: true,
             pageOrientation: 'portrait',
+            pageMargins: [ 90, 35, 40, 70 ],
             footer: function(currentPage, pageCount) {
                 return { style: 'piePagina', text: 'Página ' + currentPage.toString() + ' de ' + pageCount, alignment: 'center' };
             },
@@ -175,19 +175,20 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
 
         for (var i in data.lista) {
             var movimiento = data.lista[i];
+            
             dd.content[0].table.body.push([
-                    { text: movimiento.id ? movimiento.id : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.nombre ? movimiento.nombre : 'No disponible', style: 'tableRow', colSpan: 4, alignment: 'center' },
+                    { text: movimiento.id ? movimiento.id : 'No disponible', style: 'tableRow', colSpan: 2, alignment: 'center' },
+                    { },
+                    { text: movimiento.nombre ? movimiento.nombre : 'No disponible', style: 'tableRow', colSpan: 3, alignment: 'left' },
                     { },
                     { },
-                    { },
-                    { text: movimiento.clave ? movimiento.clave : 'No disponible', style: 'tableRow', colSpan: 2, alignment: 'center' },
+                    { text: movimiento.clave ? movimiento.clave : 'No disponible', style: 'tableRow', colSpan: 2, alignment: 'left' },
                     { }
                 ]);
         }
 
         pdfMake.createPdf(dd).getBase64(function(base64) {
-            postMessage({ fileName: 'Lista_Unidades_medida.pdf', base64: base64 });
+            postMessage({ fileName: 'Lista_Unidades_Medida.pdf', base64: base64 });
         });
     }
 

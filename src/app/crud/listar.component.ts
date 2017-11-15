@@ -160,6 +160,7 @@ export class ListarComponent implements OnInit {
             resultado => {
                 this.cargando = false;
                 this.resultadosBusqueda = resultado.data as any[];
+                console.log(resultado);
                 this.totalBusqueda = resultado.total | 0;
                 this.paginasTotalesBusqueda = Math.ceil(this.totalBusqueda / this.resultadosPorPaginaBusqueda);
 

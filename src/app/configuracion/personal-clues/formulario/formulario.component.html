@@ -92,6 +92,30 @@
                             </p>
                         </div>
 
+                        <div class="field">
+                            <label class="label">CURP:</label>
+                            <p class="control is-expanded  has-icon has-icon-right">
+                                <input class="input"  type="text" [ngClass]="{'is-danger': ctrl.dato.get('curp').hasError('required')}" placeholder="CURP"
+                                    formControlName="curp">
+                                <span class="icon is-small" *ngIf="ctrl.dato.get('curp').hasError('required')">
+                                    <i class="fa fa-warning"></i>
+                                </span>
+                                <span class="help is-danger" *ngIf="ctrl.dato.get('curp').hasError('required')">Este campo es requerido.</span>
+                            </p>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">RFC:</label>
+                            <p class="control is-expanded  has-icon has-icon-right">
+                                <input class="input"  type="text" [ngClass]="{'is-danger': ctrl.dato.get('rfc').hasError('required')}" placeholder="RFC"
+                                    formControlName="rfc">
+                                <span class="icon is-small" *ngIf="ctrl.dato.get('rfc').hasError('required')">
+                                    <i class="fa fa-warning"></i>
+                                </span>
+                                <span class="help is-danger" *ngIf="ctrl.dato.get('rfc').hasError('required')">Este campo es requerido.</span>
+                            </p>
+                        </div>
+
                        <div class="columns">
                             <div class="column is-6">
                                 <div class="field">

@@ -8,7 +8,6 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
     onmessage = function(evt) {
         let data = JSON.parse(evt.data)
         pdf(data);
-
     };
 
     function pdf(data) {
@@ -57,7 +56,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         [
                             { text: 'CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
                             { },
-                            { text: 'NOMBRE', style: 'tableHeaderVerde', colSpan: 5, alignment: 'center' },
+                            { text: 'NOMBRE', style: 'tableHeaderVerde', colSpan: 5, alignment: 'left' },
                             { },
                             { },
                             { },
@@ -179,7 +178,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
             dd.content[0].table.body.push([
                     { text: movimiento.clues ? movimiento.clues : 'No disponible', style: 'tableRow', colSpan: 2, alignment: 'center' },
                     { },
-                    { text: movimiento.nombre ? movimiento.nombre : 'No disponible', style: 'tableRow', colSpan: 5, alignment: 'center' },
+                    { text: movimiento.nombre ? movimiento.nombre : 'No disponible', style: 'tableRow', colSpan: 5, alignment: 'left' },
                     { },
                     { },
                     { },

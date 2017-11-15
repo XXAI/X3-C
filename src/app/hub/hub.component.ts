@@ -158,7 +158,7 @@ export class HubComponent implements OnInit {
 
   ngOnInit() {
     let usuario = JSON.parse(localStorage.getItem('usuario'));
-    var permisos =  usuario.permisos.split('|')
+    var permisos =  usuario.permisos.split('|');
 
     if(permisos.length > 0) {
       for(var i in this.itemsProtegidos){

@@ -8,7 +8,6 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
     onmessage = function(evt) {
         let data = JSON.parse(evt.data)
         pdf(data);
-
     };
 
     function pdf(data) {
@@ -21,7 +20,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     headerRows: 5,
                     dontBreakRows: true,
                     //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
-                    widths: [80, 'auto','auto', 30, 'auto', 'auto','auto'],
+                    widths: [80, 'auto', 'auto', 35, 'auto', 'auto','auto'],
                     body: [
                         [{
                             image: 'header',
@@ -56,12 +55,12 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         ],
                         [
                             { text: 'ID', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'NOMBRE', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'SERVIDOR', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'NIVEL', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'TIPO', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'CLUES', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'SUBRROGADO', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'NOMBRE', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
+                            { },
+                            { text: 'INTERNET', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'CATÁLOGOS ACTUALIZADOS', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'VERSIÓN', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'PRINCIPAL', style: 'tableHeaderVerde', alignment: 'center' },
                         ]
                         //Body -> insumos
                     ]
@@ -175,29 +174,17 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
 
         for (var i in data.lista) {
             var movimiento = data.lista[i];
-            // let longitud = movimiento.tipos_personal_metadatos.length;
-            
-            // var metadatos = [];
-            // metadatos.push([
-            //         { text: 'Campo', style: 'tableHeaderVerde', alignment: 'right' },
-            //         { text: 'Descripción', style: 'tableHeaderVerde', alignment: 'left' }
-            //     ])
-            // for(let personal_metadatos of movimiento.tipos_personal_metadatos) {
-            //     metadatos.push([
-            //         { text: personal_metadatos.campo == null ? 'No disponible' : personal_metadatos.campo, alignment: 'right' },
-            //         { text: personal_metadatos.descripcion == null ? 'No disponible' : personal_metadatos.descripcion, alignment: 'left' }
-            //     ])
-            // }
             dd.content[0].table.body.push([
                     { text: movimiento.id ? movimiento.id : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.nombre ? movimiento.nombre : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.servidor == null ? 'No disponible' : movimiento.nombre, style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.nivel_almacen ? movimiento.nivel_almacen : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.tipo_almacen == null ? 'No disponible' : movimiento.tipo_almacen, style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.clues ? movimiento.clues : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.subrogado == null ? 'No disponible' : movimiento.subrogado == 1 ? 'Sí' : 'No', style: 'tableRow', alignment: 'center'}
-                    /*{ text: personal_metadatos.campo == null ? 'No disponible' : personal_metadatos.campo, style: 'tableRow', alignment: 'center' },
-                    { text: personal_metadatos.descripcion == null ? 'No disponible' : personal_metadatos.descripcion, style: 'tableRow', alignment: 'center' }*/
+                    { text: movimiento.nombre ? movimiento.nombre : 'No disponible', colSpan: 2, style: 'tableRow', alignment: 'center' },
+                    { },
+                    { text: movimiento.tiene_internet == null ? 'No disponible':
+                        movimiento.tiene_internet == 1 ? 'Si' : 'No', style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.catalogos_actualizados == null ? 'No disponible' : 
+                        movimiento.catalogos_actualizados == 1 ? 'Si' : 'No', style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.version == null ? 'No disponible' : movimiento.version, style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.principal == null ? 'No disponible' : 
+                        movimiento.principal == 1 ? 'Si' : 'No', style: 'tableRow', alignment: 'center' },
                 ]);
         }
 

@@ -86,7 +86,8 @@
                                 </span>
                             </p>
                             <p class="level-item">
-                                <button class="button is-default is-medium" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="buscar_en='TODAS_LAS_CLAVES';seleccionar='TODO'; tipo='TODO'; clave_insumo=''" >Limpiar</button>
+                                <button class="button is-default is-medium" type="button" [ngClass]="{'is-loading': ctrl.cargando}" 
+                                (click)="buscar_en='TODAS_LAS_CLAVES'; seleccionar='TODO'; s.value=seleccionar; tipo='TODO'; t.value=tipo; clave.value=''; clave_insumo=''" >Limpiar</button>
                                 
                             </p>
                             <p class="level-item">
