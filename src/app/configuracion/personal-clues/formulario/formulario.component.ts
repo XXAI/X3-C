@@ -53,10 +53,12 @@ export class FormularioComponent {
     document.getElementById('catalogos').click();
   }
   /**
-   * 
-   * @param tipos 
+   * Método que activa los campos a mostrar de acuerdo al tipo de personal elegido. Recibe el arreglo completo de tipos de
+   * personal, y con el id obtenido del campo tipo_personal_id se compara para ver que campos y valores corresponde mostrar.
+   * @param tipos Array que contiene los tipos de personal que existen.
    */
   seleccionar_tipo_personal(tipos) {
+    console.log(tipos);
     var id = this.dato.get('tipo_personal_id').value;
     var campos = {};
     this.dato.controls.personal_clues_metadatos.reset();
@@ -76,13 +78,17 @@ export class FormularioComponent {
           } else {
             campos['valor'] = [''];
           }
-          const im = <FormArray>this.dato.controls.personal_clues_metadatos;  
+          const im = <FormArray>this.dato.controls.personal_clues_metadatos;
           im.push(this.fb.group(campos));
         });
         return;
       }
     });
   }
+  /**
+   * Se llama a este método cuando el tipo de valor a ingresar es una fecha en los metadatos del personal.
+   * @param i Contiene el valor del índex del elemento que se va a afectar.
+   */
   asignar_fecha(i) {
     setTimeout(() => {
       var v = <HTMLInputElement>document.getElementById('valor' + i);
