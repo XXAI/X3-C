@@ -21,12 +21,12 @@
                 </section>
                 <div style="padding: 1em; overflow: scroll; overflow-x: hidden; height: 820px;">
 
-                    <h3 class="title">
+                    <!--<h3 class="title">
                         <i class="fa fa-file"></i>
-                         Datos del movimiento
-                    </h3>
+                         Nueva Receta
+                    </h3>-->
                     <div >
-                        <div class="field">
+                        <!--<div class="field">
                             <label class="label">Fecha del movimiento:</label>
                             <p class="control is-expanded  has-icon has-icon-right">
 
@@ -52,10 +52,9 @@
                                 </span>
                                 <span class="help is-danger" *ngIf="ctrl.dato.get('observaciones').hasError('required') && ctrl.dato.get('observaciones').touched">Este campo es requerido.</span>
                             </p>
-                        </div>
+                        </div>-->
 
-                        <div class="control" *ngIf="mostrarCancelado">
-                            <!-- *ngIf -->
+                        <!--<div class="control" *ngIf="mostrarCancelado">
                             <div class="field">
                                 <div class="b-checkbox control is-expanded  has-icon has-icon-right">
 
@@ -77,11 +76,11 @@
                                 </p>
                             </div>
 
-                        </div>
-                        <div formGroupName="movimiento_metadato">
+                        </div>-->
+                        <!--<div formGroupName="movimiento_metadato">
                             <div class="field"  >
                                 <label class="label">Turno:</label>
-                            </div><!-- SI carga los turnos -->
+                            </div>
                             <div class="control is-grouped">
                                 <span *ngIf="ctrl.cargando" class="tag is-primary is-medium">Cargando turnos. <i class="fa fa-refresh fa-spin" aria-hidden="true"></i></span>
                                 <div  *ngIf="ctrl.turnos && !ctrl.cargando" class="control is-expanded  has-icon has-icon-right">
@@ -103,7 +102,7 @@
                                     </a>
                                 </div>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
 
                     <hr id="catalogos" (click)="ctrl.cargarCatalogo('turnos', 'mis-turnos');">
@@ -119,14 +118,15 @@
                                 <div class="column is-half">
                                     <div class="field">
                                         <label class="label">Folio:</label>
-                                        <p class="control is-expanded  has-icon has-icon-right">
+                                        Sin número
+                                        <!--<p class="control is-expanded  has-icon has-icon-right">
                                             <input class="input" type="text" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('receta').get('folio').hasError('required')}"
                                                 placeholder="folio" formControlName="folio">
                                             <span class="icon is-small" *ngIf="ctrl.dato.get('receta').get('folio').hasError('required')">
                                                 <i class="fa fa-warning"></i>
                                             </span>
                                             <span class="help is-danger" *ngIf="ctrl.dato.get('receta').get('folio').hasError('required')">Este campo es requerido.</span>
-                                        </p>
+                                        </p>-->
                                     </div>
                                 </div>
                                 <div class="column is-half">
@@ -223,7 +223,7 @@
                             </div>
 
                             
-                            <div class="columns" style="width:100%">
+                            <!--<div class="columns" style="width:100%">
                                 <div class="column ">
                                     <div class="field" *ngIf="!tieneid">
                                         <p class="b-checkbox control is-expanded  has-icon has-icon-right">
@@ -252,7 +252,7 @@
                                         </p>
                                     </div>
                                 </div>
-                            </div>
+                            </div>-->
 
                             <div class="columns" style="width:100%">
                                 <div class="column ">
