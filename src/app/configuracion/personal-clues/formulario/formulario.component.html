@@ -43,12 +43,12 @@
                                     <span>Datos Generles</span>
                                 </a>
                             </li>
-                            <li [ngClass]="{ 'is-active' : tab == 2}">
+                            <!-- <li [ngClass]="{ 'is-active' : tab == 2}">
                                 <a (click)="tab=2">
                                     <span class="icon is-small"><i class="fa fa-list"></i></span>
                                     <span>Datos detallados</span>
                                 </a>
-                            </li>
+                            </li> -->
                         </ul>
                     </div>
                     <div [ngClass]="{ 'is-hidden': tab != 1}">
@@ -91,6 +91,30 @@
                                 <span class="help is-danger" *ngIf="ctrl.dato.get('nombre').hasError('required')">Este campo es requerido.</span>
                             </p>
                         </div>
+
+                        <!-- <div class="field">
+                            <label class="label">CURP:</label>
+                            <p class="control is-expanded  has-icon has-icon-right">
+                                <input class="input"  type="text" [ngClass]="{'is-danger': ctrl.dato.get('curp').hasError('required')}" placeholder="CURP"
+                                    formControlName="curp">
+                                <span class="icon is-small" *ngIf="ctrl.dato.get('curp').hasError('required')">
+                                    <i class="fa fa-warning"></i>
+                                </span>
+                                <span class="help is-danger" *ngIf="ctrl.dato.get('curp').hasError('required')">Este campo es requerido.</span>
+                            </p>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">RFC:</label>
+                            <p class="control is-expanded  has-icon has-icon-right">
+                                <input class="input"  type="text" [ngClass]="{'is-danger': ctrl.dato.get('rfc').hasError('required')}" placeholder="RFC"
+                                    formControlName="rfc">
+                                <span class="icon is-small" *ngIf="ctrl.dato.get('rfc').hasError('required')">
+                                    <i class="fa fa-warning"></i>
+                                </span>
+                                <span class="help is-danger" *ngIf="ctrl.dato.get('rfc').hasError('required')">Este campo es requerido.</span>
+                            </p>
+                        </div> -->
 
                        <div class="columns">
                             <div class="column is-6">
@@ -141,25 +165,106 @@
                             </div> 
                             
                         </div>
+                        <hr>
+                        <div>
+                            <span class="icon is-small"><i class="fa fa-list"></i></span>
+                            <span>
+                                <strong>&nbsp; Datos detallados</strong>
+                            </span>
+                            <br>
+                        </div>
+                        <div formArrayName="personal_clues_metadatos">
+                            <div class="field" *ngFor="let item of ctrl.dato.controls.personal_clues_metadatos.controls; let i=index" >
+                                <div class="control is-expanded  has-icon has-icon-right"  [formGroupName]="i">   
+                                    <label *ngIf="item.value.tipo != 'boolean'" class="label">{{ item.value.campo }}</label>
+                                    <!--text  -->
+                                    <input *ngIf="item.value.tipo == 'text'" class="input" type="text" placeholder="{{item.value.descripcion}}" 
+                                        [ngClass]="{'is-danger': ctrl.dato.controls.personal_clues_metadatos.controls[i].controls.valor.hasError('required')}"
+                                        [maxlength]="item.value.longitud" formControlName="valor"> 
+                                    
+
+                                    <!--number  -->
+                                    <input *ngIf="item.value.tipo == 'number'" class="input" type="number" step="1" placeholder="{{item.value.descripcion}}" 
+                                        [ngClass]="{'is-danger': ctrl.dato.controls.personal_clues_metadatos.controls[i].controls.valor.hasError('required')}"
+                                        [maxlength]="item.value.longitud" formControlName="valor"> 
+                                    
+
+                                    <!--boolean  -->
+                                    <div class="b-checkbox is-info" *ngIf="item.value.tipo == 'boolean'" style="margin-bottom: 15px; margin-top: 15px;">
+                                        <input id="valor{{i}}" class="styled" type="checkbox" formControlName="valor" [checked]="ctrl.dato.get('personal_clues_metadatos').value[i].campo == 1 ? true : false">
+                                        <label for="valor{{i}}">
+                                            {{ item.value.campo }} 
+                                        </label>
+                                    </div>  
+                                    
+                                    <!--timestamp  -->
+                                    <input id="valor{{i}}" *ngIf="item.value.tipo == 'timestamp'" class="input" [(ngModel)]='valor[i]' [ngModelOptions]="{standalone: true}" (ngModelChange)="asignar_fecha(i)" ngui-datetime-picker
+                                        [ngClass]="{'is-danger': ctrl.dato.controls.personal_clues_metadatos.controls[i].controls.valor.hasError('required')}"
+                                        placeholder="YYYY-MM-DD HH:MM" />           
+                                    
+
+                                    <!--date  -->
+                                    <input id="valor{{i}}" *ngIf="item.value.tipo == 'date'" class="input" [(ngModel)]='valor[i]' [ngModelOptions]="{standalone: true}" (ngModelChange)="asignar_fecha(i)"  ngui-datetime-picker
+                                        [ngClass]="{'is-danger': ctrl.dato.controls.personal_clues_metadatos.controls[i].controls.valor.hasError('required')}"
+                                        placeholder="YYYY-MM-DD"  date-only="true"/>  
+
+                                    <!--time  -->
+                                    <input id="valor{{i}}" *ngIf="item.value.tipo == 'time'" class="input" [(ngModel)]='valor[i]' [ngModelOptions]="{standalone: true}" (ngModelChange)="asignar_fecha(i)"  ngui-datetime-picker
+                                        [ngClass]="{'is-danger': ctrl.dato.controls.personal_clues_metadatos.controls[i].controls.valor.hasError('required')}"
+                                        placeholder="HH:MM" date-format="hh:mm" hour="23" minute='59' time-only="true"/>  
+
+                                    <!--file  -->
+                                    <span *ngIf="item.value.tipo == 'file'">
+                                        <input type="file" (change)="ctrl.seleccionarImagenBase64($event, ctrl.dato.controls.personal_clues_metadatos.controls[i].controls.valor)" accept="image/x-png,image/gif,image/jpeg,image/jpg">
+                                        <input foto type="hidden" formControlName="valor" >
+
+                                        <div class="block" *ngIf="ctrl.dato.controls.personal_clues_metadatos.controls[i].controls.valor.value != ''">
+                                            <a class="button is-primary is-outlined is-fullwidth" [ngClass]="{'is-disabled': tieneid}" (click)="ctrl.abrirModal('verFoto'+i)">
+                                                <span class="icon">
+                                                    <i class="fa fa-eye"> </i> 
+                                                </span> 
+                                                &nbsp; Ver
+                                            </a>
+                                        </div>
+
+                                        <div class="modal" id="verFoto{{i}}">
+                                            <div class="modal-background"></div>
+                                            <div class="modal-content">
+                                                <p class="image is-4by3">
+                                                    <img  [src]="'data:image/jpg;base64,'+ctrl.dato.controls.personal_clues_metadatos.controls[i].controls.valor.value"  />
+                                                </p>
+                                            </div>
+                                            <button type="button" class="modal-close" (click)="ctrl.cancelarModal('verFoto'+i)"></button>
+                                        </div>
+                                    </span>
+
+                                    <span style="margin-top: 27px;" class="icon is-small" *ngIf="ctrl.dato.controls.personal_clues_metadatos.controls[i].controls.valor.hasError('required') && item.value.requerido == 1 ">
+                                        <i class="fa fa-warning"></i>
+                                    </span>
+                                    <span class="help is-danger" *ngIf="ctrl.dato.controls.personal_clues_metadatos.controls[i].controls.valor.hasError('required') && item.value.requerido == 1">Este campo es requerido.</span>
+
+                                </div>
+                            </div>   
+                        </div>
                     </div>
-                    <div [ngClass]="{ 'is-hidden': tab != 2}" formArrayName="personal_clues_metadatos">
+                    <!-- <div [ngClass]="{ 'is-hidden': tab != 2}" formArrayName="personal_clues_metadatos">
                         
                         <div class="field" *ngFor="let item of ctrl.dato.controls.personal_clues_metadatos.controls; let i=index" >
                             <div class="control is-expanded  has-icon has-icon-right"  [formGroupName]="i">   
                                 <label *ngIf="item.value.tipo != 'boolean'" class="label">{{ item.value.campo }}</label>
-                                <!--text  -->
+                                
                                 <input *ngIf="item.value.tipo == 'text'" class="input" type="text" placeholder="{{item.value.descripcion}}" 
                                     [ngClass]="{'is-danger': ctrl.dato.controls.personal_clues_metadatos.controls[i].controls.valor.hasError('required')}"
                                     [maxlength]="item.value.longitud" formControlName="valor"> 
                                 
 
-                                <!--number  -->
+                                >
                                 <input *ngIf="item.value.tipo == 'number'" class="input" type="number" step="1" placeholder="{{item.value.descripcion}}" 
                                     [ngClass]="{'is-danger': ctrl.dato.controls.personal_clues_metadatos.controls[i].controls.valor.hasError('required')}"
                                     [maxlength]="item.value.longitud" formControlName="valor"> 
                                 
 
-                                <!--boolean  -->
+                                
                                 <div class="b-checkbox is-info" *ngIf="item.value.tipo == 'boolean'" style="margin-bottom: 15px; margin-top: 15px;">
                                     <input id="valor{{i}}" class="styled" type="checkbox" formControlName="valor" [checked]="ctrl.dato.get('personal_clues_metadatos').value[i].campo == 1 ? true : false">
                                     <label for="valor{{i}}">
@@ -167,23 +272,22 @@
                                     </label>
                                 </div>  
                                 
-                                <!--timestamp  -->
+                                
                                 <input id="valor{{i}}" *ngIf="item.value.tipo == 'timestamp'" class="input" [(ngModel)]='valor[i]' [ngModelOptions]="{standalone: true}" (ngModelChange)="asignar_fecha(i)" ngui-datetime-picker
                                     [ngClass]="{'is-danger': ctrl.dato.controls.personal_clues_metadatos.controls[i].controls.valor.hasError('required')}"
                                     placeholder="YYYY-MM-DD HH:MM" />           
                                 
 
-                                <!--date  -->
                                 <input id="valor{{i}}" *ngIf="item.value.tipo == 'date'" class="input" [(ngModel)]='valor[i]' [ngModelOptions]="{standalone: true}" (ngModelChange)="asignar_fecha(i)"  ngui-datetime-picker
                                     [ngClass]="{'is-danger': ctrl.dato.controls.personal_clues_metadatos.controls[i].controls.valor.hasError('required')}"
                                     placeholder="YYYY-MM-DD"  date-only="true"/>  
 
-                                <!--time  -->
+                                
                                 <input id="valor{{i}}" *ngIf="item.value.tipo == 'time'" class="input" [(ngModel)]='valor[i]' [ngModelOptions]="{standalone: true}" (ngModelChange)="asignar_fecha(i)"  ngui-datetime-picker
                                     [ngClass]="{'is-danger': ctrl.dato.controls.personal_clues_metadatos.controls[i].controls.valor.hasError('required')}"
                                     placeholder="HH:MM" date-format="hh:mm" hour="23" minute='59' time-only="true"/>  
 
-                                <!--file  -->
+                                
                                 <span *ngIf="item.value.tipo == 'file'">
                                     <input type="file" (change)="ctrl.seleccionarImagenBase64($event, ctrl.dato.controls.personal_clues_metadatos.controls[i].controls.valor)" accept="image/x-png,image/gif,image/jpeg,image/jpg">
                                     <input foto type="hidden" formControlName="valor" >
@@ -215,7 +319,7 @@
 
                             </div>
                         </div>                        
-                    </div>
+                    </div> -->
                 </section>
             </div>
         </form>

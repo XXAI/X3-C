@@ -22,11 +22,17 @@ export class FormularioOpcionesComponent {
    * @type {string}
    */
   private url_nuevo;
+  /**
+   * Contiene la ruta para ir al listado.
+   * @type {string}
+   */
+  private url_lista;
 
   ngOnInit() {
     let url = location.href.split('/');
     this.carpeta = url[4];
     this.modulo = url[5];
+    this.url_lista = '/' + this.carpeta + '/' + this.modulo;
     this.url_nuevo = '/' + this.carpeta + '/' + this.modulo + '/nuevo';
   }
 }

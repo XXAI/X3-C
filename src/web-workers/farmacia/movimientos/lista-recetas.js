@@ -8,7 +8,6 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
     onmessage = function(evt) {
         let data = JSON.parse(evt.data);
         pdf(data);
-
     };
 
     function pdf(data) {
@@ -21,7 +20,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     headerRows: 5,
                     dontBreakRows: true,
                     //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
-                    widths: [50, 50, 50, 50, 'auto', 'auto', 50,'auto'],
+                    widths: [50, 50, 50, 50, 'auto', 80, 50,'auto'],
                     body: [
                         [{
                             image: 'header',
@@ -200,7 +199,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     { text: movimiento.movimiento_receta == null ? 'No disponible' : movimiento.movimiento_receta.folio ? movimiento.movimiento_receta.folio : 'No disponible' , style: 'tableRow', alignment: 'center' },
                     { text: movimiento.movimiento_receta == null ? 'No disponible' : movimiento.movimiento_receta.tipo_receta_id == 1 ? 'Normal' : movimiento.movimiento_receta.tipo_receta_id == 2 ? 'Controlado' : 'No disponible', style: 'tableRow', alignment: 'center' },
                     { text: movimiento.movimiento_receta == null ? 'No disponible' : movimiento.movimiento_receta.fecha_receta ? movimiento.fecha_movimiento : 'No disponible', style: 'tableRow', alignment: 'center' },                    
-                    { text: movimiento.movimiento_receta == null ? 'No disponible' : movimiento.movimiento_receta.doctor ? movimiento.movimiento_receta.doctor : 'No disponible', style: 'tableRow', alignment: 'left' },
+                    { text: movimiento.movimiento_receta == null ? 'No disponible' : movimiento.movimiento_receta.personal_medico == null ? 'No disponible' : movimiento.movimiento_receta.personal_medico.nombre ? movimiento.movimiento_receta.personal_medico.nombre : 'No disponible', style: 'tableRow', alignment: 'left' },
                     { text: movimiento.movimiento_receta == null ? 'No disponible' : movimiento.movimiento_receta.paciente ? movimiento.movimiento_receta.paciente : 'No disponible', style: 'tableRow', alignment: 'left' },
                     { text: movimiento.numero_claves == null || movimiento.numero_insumos == null ? 'No disponible' : 'Claves: ' + movimiento.numero_claves + '\n Insumos: ' + movimiento.numero_insumos, style: 'tableRow', alignment: 'left' },
                     { text: movimiento.movimiento_metadato == null ? 'No disponible' :  movimiento.movimiento_metadato.turno == null ? 'No disponible' : movimiento.movimiento_metadato.turno.nombre == null ? 'No disponible' : movimiento.movimiento_metadato.turno.nombre, style: 'tableRow', alignment: 'left' }

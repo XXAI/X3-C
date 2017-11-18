@@ -32,7 +32,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         [{ text: 'SIAL', style: 'titulo', colSpan: 8, alignment: 'center' },
                             {}, {}, {}, {}, {}, {},{}
                         ],
-                        [{ text: 'LISTA DE EXISTENCIAS', style: 'tableHeaderTop', colSpan: 8, alignment: 'center' },
+                        [{ text: 'LISTA DE EXISTENCIAS DE LABORATORIO', style: 'tableHeaderTop', colSpan: 8, alignment: 'center' },
                             {}, {}, {}, {}, {}, {},{}
                         ],
                         [
@@ -56,14 +56,20 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                             {}, {}, {}, {}, {}, {}, {}
                         ],
                         [ 
-                            { text: 'BUSCAR EN:', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.buscar_en == "TODAS_LAS_CLAVES" ? 'TODAS LAS CLAVES' : 'MIS CLAVES', style: 'tableHeader', colSpan: 2, alignment: 'left' },
-                            {},
                             { text: 'EXISTENCIA:', style: 'tableHeaderVerde',    alignment: 'right' },
-                            { text: data.seleccionar == "TODO" ? 'TODO' : data.seleccionar, style: 'tableHeader', alignment: 'left' },
-                            { text: 'INSUMOS:', style: 'tableHeaderVerde',  alignment: 'right' },
-                            { text: data.tipo == "TODO" ? 'TODOS LOS INSUMOS' : data.tipo, style: 'tableHeader', colSpan: 2, alignment: 'left' },
-                            {}
+                            { text: data.seleccionar == "TODO" ? 'TODO' : data.seleccionar, colSpan: 3, style: 'tableHeader', alignment: 'left' },
+                            {},
+                            {},
+                            { text: 'TIPO DE SUSTANCIA:', style: 'tableHeaderVerde',  alignment: 'right' },
+                            { text: data.tipo_sustancia == "TODO" ? 'TODOS INSUMOS DE LABORATORIO' : 
+                            data.tipo_sustancia == 1 || data.tipo_sustancia == '1' ? 'SUSTANCIAS QUÍMICAS' :
+                            data.tipo_sustancia == 2 || data.tipo_sustancia == '2' ? 'MATERIAL' : 
+                            data.tipo_sustancia == 3 || data.tipo_sustancia == '3' ? 'PRODUCTOS QUÍMICOS' :
+                            data.tipo_sustancia == 4 || data.tipo_sustancia == '4' ? 'CONSUMIBLES' : 'No disponible', style: 'tableHeader', colSpan: 3, alignment: 'left' },
+                            {},
+                            // { text: 'BUSCAR EN:', style: 'tableHeaderVerde', alignment: 'right' },
+                            // { text: '', style: 'tableHeader', colSpan: 2, alignment: 'left' },
+                            {},
                         ],
                         [{ text: ' ', style: 'celdaEspacio', colSpan: 8, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}, {}
@@ -206,7 +212,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                 ]);
         }
         pdfMake.createPdf(dd).getBase64(function(base64) {
-            postMessage({ fileName: 'Existencia_insumos_medicos.pdf', base64: base64 });
+            postMessage({ fileName: 'Existencia_insumos_laboratorio.pdf', base64: base64 });
         });
     }
 

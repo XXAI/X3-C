@@ -56,10 +56,10 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         ],
                         [
                             { text: 'ID', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'NOMBRE', style: 'tableHeaderVerde', colSpan: 4, alignment: 'center' },
+                            { text: 'NOMBRE', style: 'tableHeaderVerde', colSpan: 6, alignment: 'center' },
                             { },
                             { },
-                            { text: 'CLAVE', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
+                            { },
                             { },
                             { }
                         ]
@@ -177,17 +177,17 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
             var movimiento = data.lista[i];
             dd.content[0].table.body.push([
                     { text: movimiento.id ? movimiento.id : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.nombre ? movimiento.nombre : 'No disponible', style: 'tableRow', colSpan: 4, alignment: 'center' },
+                    { text: movimiento.nombre ? movimiento.nombre : 'No disponible', style: 'tableRow', colSpan: 6, alignment: 'left' },
                     { },
                     { },
                     { },
-                    { text: movimiento.clave ? movimiento.clave : 'No disponible', style: 'tableRow', colSpan: 2, alignment: 'center' },
+                    { },
                     { }
                 ]);
         }
 
         pdfMake.createPdf(dd).getBase64(function(base64) {
-            postMessage({ fileName: 'Lista_Almacenes.pdf', base64: base64 });
+            postMessage({ fileName: 'Lista_Vias_Administracion.pdf', base64: base64 });
         });
     }
 

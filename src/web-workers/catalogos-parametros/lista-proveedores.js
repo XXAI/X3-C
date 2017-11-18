@@ -20,7 +20,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     headerRows: 5,
                     dontBreakRows: true,
                     //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
-                    widths: [80, 'auto','auto', 55, 'auto', 'auto','auto'],
+                    widths: [ 70, 'auto', 'auto', 55, 'auto', 'auto', 35],
                     body: [
                         [{
                             image: 'header',
@@ -176,11 +176,11 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
             var movimiento = data.lista[i];
             dd.content[0].table.body.push([
                     { text: movimiento.id ? movimiento.id : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.nombre ? movimiento.nombre : 'No disponible', style: 'tableRow',colSpan: 2, alignment: 'center' },
+                    { text: movimiento.nombre ? movimiento.nombre : 'No disponible', style: 'tableRow',colSpan: 2, alignment: 'left' },
                     {},
                     { text: movimiento.rfc == null ? 'No disponible' : movimiento.rfc, style: 'tableRow', alignment: 'center' },
                     { text: movimiento.telefono ? movimiento.telefono : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.email == null ? 'No disponible' : movimiento.email, style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.email == null ? 'No disponible' : movimiento.email, style: 'tableRow', alignment: 'left' },
                     { text: movimiento.activo == null ? 'No disponible' : movimiento.activo == 1 ? 'Sí' : 'No', style: 'tableRow', alignment: 'center'}
                 ]);
         }

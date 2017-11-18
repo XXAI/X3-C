@@ -8,6 +8,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
     onmessage = function(evt) {
         let data = JSON.parse(evt.data)
         pdf(data);
+        console.log(data);
     };
 
     function pdf(data) {
@@ -17,7 +18,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
             content: [{
                 style: 'Movimiento',
                 table: {
-                    headerRows: 5,
+                    headerRows: 7,
                     dontBreakRows: true,
                     //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
                     widths: [60, 70, 'auto', 'auto', 'auto', 'auto','auto'],
@@ -179,7 +180,8 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
             }
                 dd.content[0].table.body.push([
                     { text: movimiento.id ? movimiento.id : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.tipo_personal_id ? movimiento.tipo_personal_id : 'No disponible' , style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.tipos_personal == null ? 'No disponible' : 
+                     movimiento.tipos_personal.nombre == null ? 'No disponible' :  movimiento.tipos_personal.nombre , style: 'tableRow', alignment: 'center' },
                     { text: movimiento.clues == null ? 'No disponible' : movimiento.clues, style: 'tableRow', alignment: 'center' },
                     { text: movimiento.nombre == null ? 'No disponible' :  movimiento.nombre, style: 'tableRow', alignment: 'left' },
                     { text: movimiento.celular == null ? 'No disponible' : movimiento.celular, style: 'tableRow', alignment: 'center' },
