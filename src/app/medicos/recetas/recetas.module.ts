@@ -27,6 +27,7 @@ import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
 
 import { AuthService } from '../../auth.service';
 import { RecetasRoutingModule } from './recetas-routing.module';
+import { VerComponent } from './ver/ver.component';
 
 @NgModule({
   imports: [
@@ -44,6 +45,6 @@ import { RecetasRoutingModule } from './recetas-routing.module';
     NguiDatetimePickerModule,
     RecetasRoutingModule
   ],
-  declarations: [ListaComponent, NuevaComponent, ModalTurnosComponent]
+  declarations: [ListaComponent, NuevaComponent, ModalTurnosComponent, VerComponent]
 })
 export class RecetasModule { }

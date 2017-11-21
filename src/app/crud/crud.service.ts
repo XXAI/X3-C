@@ -85,6 +85,11 @@ export class CrudService {
       return this.jwtRequest.get(URL, null).map((response: Response) => response.json().data);
   }
 
+  lista_personalizada(payload:any ={},URL: string){
+    console.log(payload);
+    return this.jwtRequest.get(URL, null,payload).map((response: Response) => response.json().data);
+  }
+
   /**
    * Este método obtiene el valor de un elementos de la
    * api con el id del elemento que se especifiquen en la vista

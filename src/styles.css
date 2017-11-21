@@ -5,7 +5,16 @@
    MIT License
    
 */
-@charset "UTF-8";
+
+
+form {
+  height: 100%;
+  overflow: scroll;
+  padding: 0.75rem;
+}
+
+
+
 .b-checkbox {
   line-height: 1;
 }

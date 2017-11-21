@@ -1,4 +1,4 @@
-<listar #ctrl URL="movimientos?tipo=5&fecha_desde={{fecha_desde}}&fecha_hasta={{fecha_hasta}}&turno={{turno}}" titulo="Salida Receta"></listar>
+<listar #ctrl URL="medicos/recetas?medico_id={{medico_id}}&fecha_desde={{fecha_desde}}&fecha_hasta={{fecha_hasta}}" titulo="Recetas"></listar>
 <menu-medicos [modulo]="'Recetas'" [icono]="'assets/hub-medicos.svg'" [url]="'/medicos/recetas'"></menu-medicos>
 <div style="height:50px;"></div>
 <div class="contenedor columns " style="height:95%; "> <!-- 85% -->
@@ -16,9 +16,10 @@
                             <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" (click)="ctrl.busquedaActivada=false;searchBox.value=''; ctrl.resultadosBusqueda=[]"><span class="icon "><i class="fa fa-close"></i></span></a></p>
                             <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="Actualizar" (click)="ctrl.listarBusqueda(searchBox.value,1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
                             <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="Actualizar" (click)="ctrl.listar(1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
-                            
+                            <!--
                             <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="PDF" (click)="dato = ctrl.dato; imprimir()"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
                             <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="PDF" (click)="dato = ctrl.dato; imprimir()"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
+                            -->
                             <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="Excel" (click)="export_excel()"><span class="icon "><i class="fa fa-file-excel-o"></i></span></a></p>
                             <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="Excel" (click)="export_excel()"><span class="icon "><i class="fa fa-file-excel-o"></i></span></a></p>
                             <p class="level-item">&nbsp;</p>
@@ -47,24 +48,11 @@
                                 </div>
                             </div>
                             <!-- /*******************************************/ -->
-                            <div class="control is-expanded" *ngIf="!ctrl.cargando">                                
-                                <div class="field">
-                                    <label class="label">Turno:</label>
-                                    <div class="select is-medium">
-                                        <select *ngIf="ctrl.dato" class="select is-medium" [(ngModel)]="turno" #tr>
-                                            <option value="">Todos</option>
-                                            <option *ngFor="let val of ctrl.dato[ctrl.dato.length-1].turnos_disponibles" value="{{val.id}}" >{{ val.nombre }}</option>
-                                        </select>
-                                        <select *ngIf="!ctrl.dato"  class="select is-medium" [(ngModel)]="turno" #tr>
-                                            <option value="">Todos</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
+                           
                             <div class="control">
                                 <div class="field">  
                                 <label class="label">&nbsp;</label>
-                                <button class="button is-default is-medium" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="turno=''; fecha_desde=''; fecha_hasta='';" >Limpiar</button>
+                                <button class="button is-default is-medium" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="fecha_desde=''; fecha_hasta='';" >Limpiar</button>
                                 </div>
                             </div>
                             <div class="control">
@@ -93,39 +81,32 @@
                         <br>
                         <br>
                     </div>
-                    <table class="table is-responsive" *ngIf="!ctrl.cargando && !cargandoPdf">
+                    <table class="table is-responsive" style="font-size:0.8em;" *ngIf="!ctrl.cargando && !cargandoPdf">
                         <thead>
                             <tr>
-                                <th><abbr title="Folio de movimiento">Folio</abbr></th>
-                                <th><abbr title="Folio de receta">Receta</abbr></th>
-                                <th><abbr title="Tipo de receta">Tipo</abbr></th>
-                                <th><abbr title="Fecha de receta">Fecha</abbr></th>
-                                <th>Doctor</th>
+                                <th><abbr title="ID de la receta">Folio</abbr></th>                                                           
                                 <th>Paciente</th>
-                                <th>Insumos</th>
-                                <th>Turno</th>
-                                <th>Capturó</th>
-                                <th style=" text-align: center;">Actualizado</th>
+                                <th>Tipo</th>
+                                <th>Cant. Claves</th>
+                                <th><abbr title="Fecha de receta">Fecha</abbr></th>   
+                                <th>Usuario</th>
+                                <th>Creado</th>
                             </tr>
                         </thead>
                         <tbody *ngIf="!ctrl.busquedaActivada && ctrl.dato;">
                             <tr *ngFor="let item of ctrl.dato; let i=index">
-                                <th *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.id ? item.id : 'No disponible'}}</a></th>
-                                <td *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.movimiento_receta == null ? 'No disponible' : item.movimiento_receta.folio ? item.movimiento_receta.folio : 'No disponible'}} </a></td>
-                                <td *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.movimiento_receta == null ? 'No disponible' : item.movimiento_receta.tipo_receta_id == 1 ? 'Normal' : item.movimiento_receta.tipo_receta_id == 2 ? 'Controlado' : 'No disponible' }} </a></td>
-                                <td *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.movimiento_receta == null ? 'No disponible' : item.movimiento_receta.fecha_receta ? item.fecha_movimiento : 'No disponible' }} </a></td>
-                                <td *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.movimiento_receta == null ? 'No disponible' : item.movimiento_receta.personal_medico ? item.movimiento_receta.personal_medico.nombre : 'No disponible'}}</a></td>
-                                <td *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.movimiento_receta == null ? 'No disponible' : item.movimiento_receta.paciente ? item.movimiento_receta.paciente : 'No disponible'}}</a></td>
-                                <td *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}"><p> Claves: {{item.numero_claves ? item.numero_claves : 'No disponible'}}</p> <p> Insumos: {{item.numero_insumos ? item.numero_insumos : 'No disponible'}}</p> </a></td>
-                                <td *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">
-                                    {{ item.movimiento_metadato == null ? 'No disponible' : item.movimiento_metadato.turno == null ? 'No disponible' : item.movimiento_metadato.turno.nombre ? item.movimiento_metadato.turno.nombre : 'No disponible' }}
-                                </a></td>
-                                <td *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.movimiento_usuario == null ? 'No disponible' : item.movimiento_usuario.nombre }} {{ item.movimiento_usuario.apellidos }} </a></td>
-                                <td *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle; text-align: center;"><a routerLink="/almacen/salidas-recetas/ver/{{item.id}}">{{ item.updated_at | date:'medium' }} </a></td>
+                                <th style="vertical-align: middle;"><a routerLink="/medicos/recetas/ver/{{item.id}}">{{ item.id ? item.id : 'N/A'}}</a></th>
+                                <td style="vertical-align: middle;"><a routerLink="/medicos/recetas/ver/{{item.id}}">{{ item.paciente ? item.paciente.nombre : 'No disponible'}}</a></td>
+                                <td style="vertical-align: middle;"><a routerLink="/medicos/recetas/ver/{{item.id}}">{{ item.tipo_receta_id == 1 ? 'Normal' : item.tipo_receta_id == 2 ? 'Controlado' : 'No disponible' }} </a></td>
+                                <td style="vertical-align: middle;"><a routerLink="/medicos/recetas/ver/{{item.id}}"><p> Claves: {{item.numero_claves ? item.numero_claves : 'No disponible'}}</p> <p> Insumos: {{item.numero_insumos ? item.numero_insumos : 'No disponible'}}</p> </a></td>
+                                <td style="vertical-align: middle;"><a routerLink="/medicos/recetas/ver/{{item.id}}">{{  item.fecha_receta ? (item.fecha_receta  | date:'mediumDate') : 'No disponible' }} </a></td>
+                                
+                                <td style="vertical-align: middle;"><a routerLink="/medicos/recetas/ver/{{item.id}}">{{ item.usuario_id  }} </a></td>
+                                <td style="vertical-align: middle; text-align: center;"><a routerLink="/medicos/recetas/ver/{{item.id}}">{{ item.updated_at | date:'medium' }} </a></td>
 
                             </tr>
                             <tr *ngIf="ctrl.dato.length == 0">
-                                <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>
+                                <td colspan="7" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>
                             </tr>
                         </tbody>
                     </table>

@@ -17,101 +17,44 @@ import  * as FileSaver    from 'file-saver';
   templateUrl: './nueva.component.html',
   styleUrls: ['./nueva.component.css'],
   styles: [`
-    ngui-auto-complete {
-      z-index: 999999 !important
+    html, body {
+      overflow:auto!important;
     }
-    .b-checkbox {
-      line-height: 1;
-    }
-    .select{
-      width: 100%;
-    }
-    .b-checkbox label {
-      position: relative;
-      padding-left: 5px;
-      cursor: pointer;
-    }
-
-    .b-checkbox label::before {
-      content: "";
+    .akira-autocomplete {
+      display: inline-block;
       position: absolute;
-      width: 17px;
-      height: 17px;
-      left: 0;
-      margin-left: -17px;
-      border: 1px solid #dbdbdb;
-      border-radius: 3px;
-      background-color: #fff;
-      transition: background .1s ease-in-out;
+      z-index:999;
+      width:100%;
+      height:auto;
+      max-height:120px;
+      background:white;
+      overflow-y:auto;
+      overflow-x:hidden;
+      font-size:0.8em;
+      cursor:pointer;
+      border: 1px solid #DDD;
     }
+    .akira-autocomplete li.is-selected {
+      background: #EEE;
+      
+    }
+    .akira-autocomplete a{
+      color: black;
+      display:block;
+      
+    }
+    .akira-autocomplete li:hover{
+      background: #EFEFEF;
+      
+    }
+    .akira-autocomplete p {
+      padding:3px;
+    }
+    .akira-autocomplete li {
+      border-bottom:1px solid #DDD;
+    },
 
-    .b-checkbox label::after {
-      position: absolute;
-      width: 16px;
-      height: 16px;
-      left: 0;
-      top: 5px;
-      margin-left: -15px;
-      font-size: 12px;
-      line-height: 1;
-      color: #363636;
-    }
 
-    .b-checkbox input[type="checkbox"],
-    .b-checkbox input[type="radio"] {
-      opacity: 0;
-      z-index: 1;
-      cursor: pointer;
-    }
-
-    .b-checkbox input[type="checkbox"]:focus + label::before,
-    .b-checkbox input[type="radio"]:focus + label::before {
-      outline: thin dotted;
-      outline: 5px auto -webkit-focus-ring-color;
-      outline-offset: -2px;
-    }
-
-    .b-checkbox input[type="checkbox"]:checked + label::after,
-    .b-checkbox input[type="radio"]:checked + label::after {
-      font-family: "FontAwesome";
-      content: "";
-    }
-
-    .b-checkbox input[type="checkbox"]:indeterminate + label::after,
-    .b-checkbox input[type="radio"]:indeterminate + label::after {
-      display: block;
-      content: "";
-      width: 10px;
-      height: 3px;
-      background-color: #555555;
-      border-radius: 2px;
-      margin-left: -16.5px;
-      margin-top: 7px;
-    }
-
-    .b-checkbox input[type="checkbox"]:disabled,
-    .b-checkbox input[type="radio"]:disabled {
-      cursor: not-allowed;
-    }
-
-    .b-checkbox input[type="checkbox"]:disabled + label,
-    .b-checkbox input[type="radio"]:disabled + label {
-      opacity: 0.65;
-    }
-
-    .b-checkbox input[type="checkbox"]:disabled + label::before,
-    .b-checkbox input[type="radio"]:disabled + label::before {
-      background-color: whitesmoke;
-      cursor: not-allowed;
-    }
-
-    .b-checkbox.is-circular label::before {
-      border-radius: 50%;
-    }
-
-    .b-checkbox.is-inline {
-      margin-top: 0;
-    }
   `],
   host: {
     '(document:keydown)': 'handleKeyboardEvents($event)'
@@ -124,6 +67,14 @@ export class NuevaComponent implements OnInit {
    * y son los mismos datos que podemos ver al consultar una receta.
    * @type {FormGroup} */
   dato: FormGroup;
+
+  /**
+   * Formulario reactivo que contiene los datos que se enviarán a la API
+   * y son los mismos datos que podemos ver al consultar una receta.
+   * @type {FormGroup} */
+  datoPaciente: FormGroup;
+
+
   /**
    * Varible que nos  muestra si está ocurriendo un proceso y ayuda a mostrar un gráfico en la vista como retroalimentación
    * al usuario.
@@ -229,14 +180,18 @@ export class NuevaComponent implements OnInit {
     maxLength: 2000
   };
   mostrar_lote = [];
+
+  @ViewChildren('autocompletePaciente') autocompletePaciente;
+
+
   @ViewChildren('seguroPopular') seguroPopular;
   @ViewChildren('poliza') poliza;
-  @ViewChildren('campoDr') campoDr;
+  //@ViewChildren('campoPac') campoPac;
   @ViewChildren('dosis') dosis;
   @ViewChildren('frecuencia') frecuencia;
   @ViewChildren('duracion') duracion;
   @ViewChildren('cant_recetada') cant_recetada;
-  @ViewChildren('cant_surtida') cant_surtida;
+  //@ViewChildren('cant_surtida') cant_surtida;
   /**
    * Contiene la URL donde se hace la búsqueda de insumos médicos, cuyos resultados posteriormente
    * se guarda en [res_busq_insumos]{@link FormularioRecetaComponent#res_busq_insumos}
@@ -245,7 +200,7 @@ export class NuevaComponent implements OnInit {
   /**
    * Contiene la URL donde se hace la búsqueda del personal médico.
    * @type {string} */
-  public medicos_term = `${environment.API_URL}/personal-medico?tipo_personal=1&term=:keyword`;
+  public pacientes_term = `${environment.API_URL}/medicos/pacientes?term=:keyword`;
 
   constructor(
     private fb: FormBuilder,
@@ -262,14 +217,16 @@ export class NuevaComponent implements OnInit {
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
     this.permisos = this.usuario.permisos;
 
+
+
     if (this.usuario.clues_activa) {
       this.insumos_term += '&clues=' + this.usuario.clues_activa.clues;
-      this.medicos_term += '&clues=' + this.usuario.clues_activa.clues;
+      this.pacientes_term += '&clues=' + this.usuario.clues_activa.clues;
     }
-    if (this.usuario.almacen_activo) {
+    /*if (this.usuario.almacen_activo) {
       this.insumos_term += '&almacen=' + this.usuario.almacen_activo.id;
-      this.medicos_term += '&almacen=' + this.usuario.almacen_activo.id;
-    }
+      this.pacienes_term += '&almacen=' + this.usuario.almacen_activo.id;
+    }*/
 
     // Inicializamos el objeto para los reportes con web Webworkers
     this.pdfworker = new Worker('web-workers/farmacia/movimientos/receta.js');
@@ -292,38 +249,24 @@ export class NuevaComponent implements OnInit {
     // inicializar el formulario reactivo
     this.dato = this.fb.group({
       id: [''],
-      tipo_movimiento_id: ['5', [Validators.required]],
-      status: ['FI'],
-      fecha_movimiento: ['', [Validators.required]],
-      observaciones: [''],
-      cancelado: [''],
-      observaciones_cancelacion: [''],
-      movimiento_metadato: this.fb.group({
-        turno_id: ['', [Validators.required]]
-      }),
-      receta: this.fb.group({
-        id: [''],
-        folio: ['', [Validators.required]],
-        tipo_receta: [''],
-        fecha_receta: ['', [Validators.required]],
-        doctor: ['', [Validators.required]],
-        personal_clues_id: [''],
-        paciente: ['', [Validators.required]],
-        tiene_seguro_popular: [false, []],
-        poliza_seguro_popular: [{value: '', disabled: true}, [Validators.required]],
-        diagnostico: ['', [Validators.required]],
-        imagen_receta: [''],
-        servidor_id: [''],
-        movimiento_id: [''],
-        incremento: [''],
-        tipo_receta_id: ['1', [Validators.required]],
-        fecha_surtido: [''],
-        folio_receta: [''],
-        usuario_id: [''],
-        receta_detalles: this.fb.array([])
-      }),
+    
+      tipo_receta: [''],
+      
+      tipo_receta_id: ['1', [Validators.required]],
+      fecha_receta: ['', [Validators.required]],  
+      paciente_nombre: [''],    
+      paciente_id: ['', [Validators.required]],
+      diagnostico: ['', [Validators.required]],
+      medico_id: [this.usuario.medico_id, [Validators.required]],
+
       insumos: this.fb.array([])
     });
+
+    
+    
+
+    // inicializar el formulario reactivo paciente
+  
 
     this.route.params.subscribe(params => {
       if (params['id']) {
@@ -339,15 +282,16 @@ export class NuevaComponent implements OnInit {
     this.MaxDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
     // si es nuevo poner la fecha actual si no poner la fecha con que se guardo
-    if (!this.dato.get('fecha_movimiento').value) {
+    if (!this.dato.get('fecha_receta').value) {
       this.fecha_actual = date.getFullYear() + '-' + ('00' + (date.getMonth() + 1)).slice(-2) + '-' + date.getDate();
-      this.dato.get('fecha_movimiento').patchValue(this.fecha_actual);
+    //  this.dato.get('fecha_receta').patchValue(this.fecha_actual);
     } else {
-      this.fecha_actual = this.dato.get('fecha_movimiento').value;
+      this.fecha_actual = this.dato.get('fecha_receta').value;
     }
 
     // Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
-    document.getElementById('catalogos').click();
+    // Akira comente esto porque no se que verga es
+    //document.getElementById('catalogos').click();
   }
 
   /**
@@ -364,14 +308,14 @@ export class NuevaComponent implements OnInit {
    * cuando se da click al checkbox tiene_seguro_popular.
    */
   requerirCampo () {
-
+/*
     const formReceta = <FormArray>this.dato.controls['receta'];
 
     if (!formReceta.controls['tiene_seguro_popular'].value) {
       formReceta.get('poliza_seguro_popular').enable();
     } else {
       formReceta.get('poliza_seguro_popular').disable();
-    }
+    }*/
   }
 
   /**
@@ -385,7 +329,7 @@ export class NuevaComponent implements OnInit {
     this.duracion.first.nativeElement.value = '';
     this.frecuencia.first.nativeElement.value = '';
     this.cant_recetada.first.nativeElement.value = '';
-    this.cant_surtida.first.nativeElement.value = '';
+//    this.cant_surtida.first.nativeElement.value = '';
     this.sum_cant_lotes = false;
   }
 
@@ -418,48 +362,25 @@ export class NuevaComponent implements OnInit {
      * @param data resultados de la busqueda
      * @return void
      */
-    autocompleListFormatMedico = (data: any) => {
-        let html = `
-        <div class="card">
-            <div class="card-content">
-                <div class="media">          
-                    <div class="media-content">
-                        <p class="title is-4" style="color: black;">
-                            <i class="fa fa-user-md" aria-hidden="true"></i> &nbsp; ${data.nombre}
-                        </p>
-                        <p class="subtitle is-6" style="color: black;">
-                            <strong style="color: black;">Título: </strong> Médico cirujano
-                            <strong style="color: black;">&nbsp; Cédula: </strong>
-                            <span style="color: black;"> ${data.cedula ? data.cedula : 'No disponible'} </span>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>`;
-        return this._sanitizer.bypassSecurityTrustHtml(html);
-    }
+  
 
-  /**
-     * Este método carga los datos de un elemento de la api con el id que se pase por la url
-     * @param data json con los datos del objeto seleccionado del autocomplete
-     * @return void
-     */
-  select_medico_autocomplete(data) {
-    let usuario = JSON.parse(localStorage.getItem('usuario'));
-    const control_receta = <FormArray>this.dato.controls['receta'];
-    const ctrlDr = <FormArray>control_receta.controls['doctor'];
-    const ctrlPersonalClues = <FormArray>control_receta.controls['personal_clues_id'];
-    ctrlDr.patchValue(data.nombre);
-    ctrlPersonalClues.patchValue(data.id);
+    autocompleListFormatPaciente = (data: any) => {      
+      let html = `<p>
+        ${data.nombre}<br>
+        <small><i class="fa fa-${data.sexo==1?"mars":"venus"}" style="font-size:1em;line-height:2em;"></i> ${data.sexo==1?"Hombre":"Mujer"}
+        ${this.calcularEdad(new Date(data.fecha_nacimiento))} años</small>
+      </p>`;
+      return this._sanitizer.bypassSecurityTrustHtml(html);
+  }
+  
+  calcularEdad(fecha_nacimiento) { // birthday is a date
+    var birthday = new Date(fecha_nacimiento);
+    var ageDifMs = Date.now() - birthday.getTime();
+    var ageDate = new Date(ageDifMs); // miliseconds from epoch
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
   }
 
-  asignarDoctor() {
-    const control_receta = <FormArray>this.dato.controls['receta'];
-    const ctrlDr = <FormArray>control_receta.controls['doctor'];
-    const ctrlPersonalClues = <FormArray>control_receta.controls['personal_clues_id'];
-    ctrlDr.patchValue(this.campoDr.first.nativeElement.value);
-    ctrlPersonalClues.patchValue(null);
-  }
+
 
   /**
    * Este método formatea los resultados de la busqueda en el autocomplte de los insumos médicos
@@ -502,9 +423,24 @@ export class NuevaComponent implements OnInit {
   select_insumo_autocomplete(data) {
 
     var usuario = JSON.parse(localStorage.getItem('usuario'));
-    this.cargando = true;
+    //this.cargando = true;
+    
+    this.insumo = data;
+    this.res_busq_insumos = [];
+    document.getElementById('tituloModal').innerHTML = ` ${data.descripcion} <br>
+    <p aling="justify" style="font-size:12px">CANTIDAD POR ENVASE: 
+    ${data.cantidad_x_envase ? data.cantidad_x_envase : 'Sin especificar' }</p> `;
+
+    
+    this.es_unidosis = data.es_unidosis;
+    this.unidad_medida = data.unidad_medida;
+    this.presentacion_nombre = data.presentacion_nombre;    
+    this.cantidad_x_envase = data.cantidad_x_envase ? data.cantidad_x_envase : 1;
+
+    this.abrirModal('verLotes');
+    
     // cargar los datos de los lotes del insumo seleccionado en el autocomplete
-    this.crudService.lista(0, 1000, 'comprobar-stock?almacen=' + usuario.almacen_activo.id + '&clave=' + data.clave).subscribe(
+   /* this.crudService.lista(0, 1000, 'comprobar-stock?&clave=' + data.clave).subscribe(
       resultado => {
 
         this.lotes_insumo = resultado;
@@ -529,7 +465,7 @@ export class NuevaComponent implements OnInit {
       error => {
         this.cargando = false;
       }
-    );
+    );*/
   }
 
   /**
@@ -553,10 +489,9 @@ export class NuevaComponent implements OnInit {
       'frecuencia': [frecuencia, [Validators.required]],
       'duracion': [duracion, [Validators.required]],
       'cantidad_recetada': [cantidad_recetada, [Validators.required]],
-      'cantidad_surtida': 1,
+      
       'unidad_medida': this.unidad_medida,
-      'presentacion_nombre': this.presentacion_nombre,
-      'lotes': this.fb.array([])
+      'presentacion_nombre': this.presentacion_nombre
     };
 
     // comprobar que el isumo no este en la lista cargada
@@ -572,6 +507,7 @@ export class NuevaComponent implements OnInit {
       control.push(this.fb.group(lotes));
     }
 
+    /*
     // obtener la ultima posicion para que en esa se agreguen los lostes
     var posicion = control.length - 1;
     // obtener el control del formulario en la posicion para agregar el nuevo form array que corresponde a los lotes
@@ -585,8 +521,12 @@ export class NuevaComponent implements OnInit {
       clickToClose: true,
       maxLength: 2000
     };
-    //recorrer la tabla de lotes del modal para obtener la cantidad 
+    console.log("aqui no hay error")
+    */
+    /*//recorrer la tabla de lotes del modal para obtener la cantidad 
+    
     for (let item of this.lotes_insumo) {
+      console.log("que tal aca");
       //agregar unicamente aquellos que tiene cantidad
       if (item.cantidad > 0) {
         var existe_lote = false;
@@ -642,16 +582,18 @@ export class NuevaComponent implements OnInit {
           ));
         }
       }
-    }
+    }*/
+    /*
+    console.log("incluso yo debería ejecutarme")
     //sumamos las cantidades de los lotes
     let cantidad: number = 0;
     for (let l of ctrlLotes.controls['lotes'].value) {
       cantidad = cantidad + l.cantidad;
     }
     //agregar la cantidad surtida
-    ctrlLotes.controls['cantidad_surtida'].patchValue(cantidad);
+    ctrlLotes.controls['cantidad_surtida'].patchValue(cantidad);*/
     this.cancelarModal('verLotes');
-    this.sum_cant_lotes = false;
+    //this.sum_cant_lotes = false;
   }
   /**
      * Este método agrega una nueva fila para los lotes nuevos
@@ -810,7 +752,7 @@ export class NuevaComponent implements OnInit {
     for (let item of this.lotes_insumo) {
       total_cantidad_surtida = item.cantidad ? total_cantidad_surtida + item.cantidad : total_cantidad_surtida + 0;
     }
-    this.cant_surtida.first.nativeElement.value = total_cantidad_surtida;
+    //this.cant_surtida.first.nativeElement.value = total_cantidad_surtida;
     if (this.dosis.first.nativeElement.value === '' || this.frecuencia.first.nativeElement.value === ''
       || this.duracion.first.nativeElement.value === '' || this.cant_recetada.first.nativeElement.value === '') {
       this.sum_cant_lotes = false;
@@ -820,29 +762,141 @@ export class NuevaComponent implements OnInit {
    * Este método permite validar la salida al dar click en guardar, verifica que hayan ingresado por lo menos un insumo
    * para poder llamar al modal de confirmación de la salida.
    */
-  guardar_movimiento() {
+  guardar_receta() {
     // obtener el formulario reactivo para agregar los elementos
     const control = <FormArray>this.dato.controls['insumos'];
     let lotes = true;
     if (control.length === 0) {
       this.notificacion.warn('Insumos', 'Debe agregar por lo menos un insumo', this.objeto);
     }else {
-      for (let item of control.value) {
-        if (item.lotes.length === 0) {
-          lotes = false;
-        }
-      }
-      if (lotes) {
-        document.getElementById('guardarMovimiento').classList.add('is-active');
-      } else {
-        document.getElementById('tituloGuardar').innerHTML = ` <br>
-          <p aling="justify" style="font-size:12px; color: red"> Contiene insumos con existencia negada.</p>`;
-        document.getElementById('guardarMovimiento').classList.add('is-active');
-        this.notificacion.warn('Insumos', 'negarExistencia', this.objeto);
-      }
+      document.getElementById('modalGuardarReceta').classList.add('is-active');
     }
   }
 
+  
+
+
+
+
+
+  /*******************************************PACIENTES*********************************************/
+  // Akira: tuve que hacer el autocomplete perdi mucho tiempo no mamen
+  resultadosPaciente: any[] = [];
+  mostrarAutocompletePaciente:boolean = false;
+  seleccionarPaciente(item){
+    console.log(item);
+    for(var i in this.resultadosPaciente){
+      this.resultadosPaciente[i].seleccionado = false;
+    }
+    item.seleccionado = true;
+    this.mostrarAutocompletePaciente = false;
+
+    this.autocompletePaciente.first.nativeElement.value = item.nombre;
+    this.dato.get('paciente_id').patchValue(item.id);
+  }
+  buscandoAutocompletePaciente:boolean = false;
+  buscarPaciente(term:string = ''){
+    this.mostrarAutocompletePaciente = true;
+    this.buscandoAutocompletePaciente = true;
+    // Despues le metemos lo del subscribe pa que no mande un millon de peticiones por cada letra que vaya ingresando
+    this.crudService.lista_personalizada({term: term, clues: this.usuario.clues_activa.clues },'medicos/pacientes').subscribe(
+      resultado => {
+        this.resultadosPaciente = resultado;
+        for(var i in this.resultadosPaciente){
+          this.resultadosPaciente[i].seleccionado = false;
+          this.resultadosPaciente[i].edad = this.calcularEdad(this.resultadosPaciente[i].fecha_nacimiento);
+        }
+        this.buscandoAutocompletePaciente = false;
+
+      }, error => {
+        console.log(error);
+        this.buscandoAutocompletePaciente = false;
+      }
+    )
+
+    if(term == ""){
+      this.dato.get('paciente_id').patchValue("");
+    }
+
+
+  }
+  nuevoPaciente: any = {
+    nombre:'',
+    sexo: 1,
+    fecha_nacimiento:'',
+    no_expediente:'',
+    no_afiliacion:''
+  }
+  erroresPaciente: any = {
+    nombre:null,
+    sexo: null,
+    fecha_nacimiento:null,
+  }
+  mensajeErrorPaciente = '';
+  enviandoDatosPaciente: boolean = false;
+  agregarPaciente(){    
+    this.abrirModal('modalNuevoPaciente');    
+  }
+  enviarDatosPaciente(){
+    this.enviandoDatosPaciente = true;
+    this.erroresPaciente = {
+      nombre:null,
+      sexo: null,
+      fecha_nacimiento:null,
+    }
+    this.mensajeErrorPaciente = '';
+    this.crudService.crear(this.nuevoPaciente,'medicos/pacientes').subscribe(
+      respuesta => {
+        this.enviandoDatosPaciente = false;
+        console.log(respuesta);
+
+       /* this.campoPac.first.nativeElement.value = respuesta.nombre;
+        this.dato.patchValue({
+          paciente: myValue1, 
+        });*/
+        this.autocompletePaciente.first.nativeElement.value = respuesta.nombre;
+        this.dato.get('paciente_id').patchValue(respuesta.id);
+
+
+        this.nuevoPaciente = {
+          nombre:'',
+          sexo: 1,
+          fecha_nacimiento:'',
+          no_expediente:'',
+          no_afiliacion:''
+        }
+        this.cancelarModal('modalNuevoPaciente');
+      }, error => {
+        this.enviandoDatosPaciente = false;
+        try {
+          let e = error.json();
+         
+          switch(error.status){
+            case 401: 
+              this.mensajeErrorPaciente =  "No tiee permiso para realizar esta acción.";
+              break;
+            case 409:
+              this.mensajeErrorPaciente = "Verifique la información marcada de color rojo";
+              for (var input in e.error){
+                // Iteramos todos los errores
+                for (var i in e.error[input]){
+                  this.erroresPaciente[input] = e.error[input][i];
+                }                      
+              }
+              break;
+            case 500:
+              this.mensajeErrorPaciente = "500 (Error interno del servidor)";
+              break;
+            default: 
+              this.mensajeErrorPaciente = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+          }
+        } catch (e){
+          this.mensajeErrorPaciente = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+        }
+      }
+    )
+  }
+  /****************************************************************************************/
 
 
   /***************************************IMPRESION DE REPORTES*************************************************/

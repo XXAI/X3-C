@@ -90,12 +90,12 @@ export class FormularioComponent implements OnInit {
     * o solo se esta editando
     * @return void
     */
-    enviar(regresar: boolean = true, editar: string = '') {
+    enviar(regresar: boolean = true, editar: string = '',redirigirAVer: string = '') {
         try {
             if (this.id) {
                 this.actualizarDatos(editar);
             } else {
-                this.guardarDatos(regresar, editar);
+                this.guardarDatos(regresar, editar, redirigirAVer);
             }
         } catch (e) {
             console.log('Mal');
@@ -106,7 +106,7 @@ export class FormularioComponent implements OnInit {
     * Este método envia los datos para agregar un elemento
     * @return void
     */
-    guardarDatos(regresar, editar) {
+    guardarDatos(regresar, editar,redirigirAVer: string = '') {
 
         this.cargando = true;
         var json = this.dato.getRawValue();
@@ -115,6 +115,9 @@ export class FormularioComponent implements OnInit {
                 this.cargando = false;
                 if (regresar) {
                     this.location.back();
+                }
+                if(redirigirAVer != ''){
+                    this.router.navigate([redirigirAVer + "/"+ resultado.id]);
                 }
                 if (editar && json.status === 'BR') {
                     this.router.navigate([editar, resultado.id]);

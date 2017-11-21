@@ -15,7 +15,8 @@ export class ListaComponent implements OnInit {
   dato;
   fecha_desde = '';
   fecha_hasta = '';
-  turno = '';
+
+  medico_id = '';
 
   // # SECCION: Reportes
   pdfworker: Worker;
@@ -29,7 +30,7 @@ export class ListaComponent implements OnInit {
 
   ngOnInit() {
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
-
+    this.medico_id = this.usuario.medico_id;
     // Inicializamos el objeto para los reportes con web Webworkers
     this.pdfworker = new Worker('web-workers/farmacia/movimientos/lista-recetas.js');
 
@@ -70,11 +71,10 @@ export class ListaComponent implements OnInit {
 
   imprimir() {
     this.cargandoPdf = true;
-    let turno = this.tr.first.nativeElement.options;
-    turno = turno[turno.selectedIndex].text;
 
-    this.crudService.lista_general('movimientos?tipo=5&fecha_desde=' + this.fecha_desde
-    + '&fecha_hasta=' + this.fecha_hasta + '&turno=' + this.turno).subscribe(
+
+    this.crudService.lista_general('medicos/recetas?medico_id='+this.medico_id+'&fecha_desde=' + this.fecha_desde
+    + '&fecha_hasta=' + this.fecha_hasta ).subscribe(
       resultado => {
         this.cargando = false;
         this.lista_impresion = resultado;
@@ -82,7 +82,7 @@ export class ListaComponent implements OnInit {
           let entrada_imprimir = {
             lista: this.lista_impresion,
             usuario: this.usuario,
-            turno: turno,
+            turno: '',
             fecha_desde: this.fecha_desde,
             fecha_hasta: this.fecha_hasta,
           };
