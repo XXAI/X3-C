@@ -51,11 +51,20 @@ export class CrudService {
    * @param URL  ruta de la api donde se obtiene los valores
    * @return Respuesta tipo object que obtiene de la api
    */
-  busquedaInsumos(term: string, URL: string): Observable<any> {
-    return this.jwtRequest.get(URL, null,
-      {
+  busquedaInsumos(term: string, URL: string, parametros_adicionales: any = null): Observable<any> {
+
+    var payload:any = {};
+    if(!parametros_adicionales){
+      payload = {
         term: term
-      }).map(
+      };
+    } else {
+      payload = parametros_adicionales;
+      payload.term = term;
+    }
+
+    return this.jwtRequest.get(URL, null,
+      payload).map(
         (response: Response) => response.json().data
       );
   }

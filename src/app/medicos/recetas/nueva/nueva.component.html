@@ -179,10 +179,11 @@
                                             <p >{{item_insumo.descripcion}}</p>
                                             <p>
                                                 <small>
+                                                <strong>Existencia:</strong> {{ item_insumo.existencia | number}} 
                                                 <strong>Clave: </strong> {{item_insumo.clave}}
-                                                <label class="tag is-success" *ngIf="item_insumo.es_causes == 1"><strong>Cause </strong></label>
-                                                <label class="tag" *ngIf="item_insumo.es_causes == 0" style="background: #B8FB7E; border-color: #B8FB7E; color: rgba(0,0,0,0.7);" ><strong>No Cause </strong> </label>
-                                                <label class="tag is-warning" *ngIf="item_insumo.es_unidosis == 1"><strong>Unidosis</strong> </label>
+                                                <label class="tag is-primary" *ngIf="item_insumo.es_causes == 1">Causes</label>
+                                                <label class="tag is-warning"  *ngIf="item_insumo.es_causes == 0"  >No Causes</label>
+                                                <label class="tag" *ngIf="item_insumo.es_unidosis == 1">Unidosis </label>
                                                 </small>
                                             </p>
                                         </div>
@@ -208,10 +209,9 @@
                                                 </span>
                                                 Nombre: {{ctrl.dato.controls.insumos.controls[i].controls.descripcion.value}}
                                                 <br>                                            
-                                                <label class="tag is-success" *ngIf="ctrl.dato.controls.insumos.controls[i].controls.es_causes.value"><strong>Cause </strong></label>
-                                                <label class="tag is-success" *ngIf="!ctrl.dato.controls.insumos.controls[i].controls.es_causes.value"><strong>No Cause </strong> </label>                                           
-                                                                                            
-                                                <label class="tag is-warning" *ngIf="ctrl.dato.controls.insumos.controls[i].controls.es_unidosis.value"><strong>Unidosis</strong> </label>
+                                                <label class="tag is-success" *ngIf="ctrl.dato.controls.insumos.controls[i].controls.es_causes.value">Causes</label>
+                                                <label class="tag is-warning" *ngIf="!ctrl.dato.controls.insumos.controls[i].controls.es_causes.value">No Causes</label>                                                                                                                                       
+                                                <label class="tag" *ngIf="ctrl.dato.controls.insumos.controls[i].controls.es_unidosis.value">Unidosis</label>
                                             </strong>
                                             <br> {{ctrl.dato.controls.insumos.controls[i].controls.descripcion.value}}
                                         </p>

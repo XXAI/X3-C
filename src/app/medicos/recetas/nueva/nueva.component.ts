@@ -196,7 +196,7 @@ export class NuevaComponent implements OnInit {
    * Contiene la URL donde se hace la búsqueda de insumos médicos, cuyos resultados posteriormente
    * se guarda en [res_busq_insumos]{@link FormularioRecetaComponent#res_busq_insumos}
    * @type {string} */
-  public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
+  public insumos_term = `${environment.API_URL}/insumos-auto?stock=true&term=:keyword`;
   /**
    * Contiene la URL donde se hace la búsqueda del personal médico.
    * @type {string} */
@@ -344,8 +344,12 @@ export class NuevaComponent implements OnInit {
     if (this.usuario.almacen_activo) {
       cabecera += '&almacen=' + this.usuario.almacen_activo.id;
     }
-    let url: string = '' + environment.API_URL + '/insumos-auto?term=' + keyword + cabecera;
-    this.crudService.busquedaInsumos(keyword, 'insumos-auto').subscribe(
+    // Akira: Esto no se ni paque lo dejaron si no lo ocupan pero bueno
+    let url: string = '' + environment.API_URL + '/insumos-auto?stock=true&term=' + keyword + cabecera;
+    //----------
+    
+
+    this.crudService.busquedaInsumos(keyword, 'insumos-auto',{stock:true, clues: this.usuario.clues_activa.clues}).subscribe(
       resultado => {
         this.cargando = false;
         this.res_busq_insumos = resultado;
