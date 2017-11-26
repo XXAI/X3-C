@@ -11,9 +11,9 @@ const routes: Routes = [
   {
     path: 'medicos/recetas',
     children: [
-       { path: '', component: ListaComponent},
-       { path: 'nuevo', component: NuevaComponent },
-       { path: 'ver/:id', component: VerComponent},
+       { path: '', component: ListaComponent, canActivate: [PermisosGuard], data: { key: 'nyMZvmCF2DQYSrulP5sKgEPN4CnJiixQ'} },
+       { path: 'nuevo', component: NuevaComponent, canActivate: [PermisosGuard], data: { key: 'nyMZvmCF2DQYSrulP5sKgEPN4CnJiixQ'} },
+       { path: 'ver/:id', component: VerComponent, canActivate: [PermisosGuard], data: { key: 'nyMZvmCF2DQYSrulP5sKgEPN4CnJiixQ'}},
     ],
     canActivate: [AuthGuard]
   }

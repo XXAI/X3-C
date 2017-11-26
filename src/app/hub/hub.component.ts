@@ -112,7 +112,7 @@ export class HubComponent implements OnInit {
     {
       title: 'Médicos', routerLink: '/medicos', icono: 'assets/hub-medicos.svg',
       permisos: [
-        'mGKikN0aJaeF2XrHwwYK3XNw0f9CSZDe', // Recetas
+        'nyMZvmCF2DQYSrulP5sKgEPN4CnJiixQ', // Recetas
       ]
     },
     {
