@@ -52,6 +52,17 @@
                 </p>
                 
               </div>
+              <h2 class="subtitle">Pregunta secreta para recuperación de contraseña</h2>
+              <p class="control has-icon has-icon-right">
+                  <input type="text" class="input" placeholder="Pregunta secreta" formControlName="pregunta_secreta" >
+              </p>
+              <p class="control has-icon has-icon-right">
+                  <input type="text" class="input" placeholder="Respuesta"   [ngClass]="{'is-danger': respuestaRequerida}" formControlName="respuesta">
+                  <span class="icon is-small" *ngIf="respuestaRequerida ">
+                      <i class="fa fa-warning"></i>
+                  </span>
+                  <span class="help is-danger" *ngIf="respuestaRequerida">Si escribe una pregunta secreta, la respuesta es obligatoria.</span>
+                </p>
 
               <!--<h2 class="subtitle">Roles</h2>
               <div class="control" [ngClass]="{'is-loading': cargandoRoles}">

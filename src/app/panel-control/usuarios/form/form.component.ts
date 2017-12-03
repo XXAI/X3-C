@@ -18,6 +18,7 @@ export class FormComponent implements OnInit {
   @Input() medicos: any[];
   @Input() usuario:FormGroup;
 
+  @Input()  respuestaRequerida:boolean;
   @Input()  usuarioRepetido:boolean;
   @Input()  usuarioInvalido:boolean;
   @Input()  cargando: boolean;

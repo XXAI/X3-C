@@ -29,6 +29,7 @@ export class EditarComponent implements OnInit {
   usuarioRepetido:boolean = false;
   usuarioInvalido:boolean = false;
   cambiarPassword:boolean = false;
+  respuestaRequerida:boolean = false;
 
   datosCargados: boolean;
   cargando: boolean = false;
@@ -73,7 +74,9 @@ export class EditarComponent implements OnInit {
       roles: [[1],[Validators.required]],
       unidades_medicas: [[]],
       almacenes: [[]],
-      medico_id: ['-1']
+      medico_id: ['-1'],
+      pregunta_secreta: [''],
+      respuesta: ['']
     });
 
     this.route.params.subscribe(params => {
@@ -116,6 +119,8 @@ export class EditarComponent implements OnInit {
           this.cargando = false;
           console.log("Usuario editado.");
 
+          this.respuestaRequerida = false;
+          
           this.mensajeExito = new Mensaje(true);
           this.mensajeExito.texto = "Se han guardado los cambios.";
           this.mensajeExito.mostrar = true;
@@ -137,6 +142,8 @@ export class EditarComponent implements OnInit {
               this.mensajeError.texto = "Por favor verfique los campos marcados en rojo.";
               this.usuarioRepetido = false;
               this.usuarioInvalido = false;
+              this.respuestaRequerida = false;
+
               for (var input in e.error){
                 // Iteramos todos los errores
                 for (var i in e.error[input]){
@@ -146,6 +153,10 @@ export class EditarComponent implements OnInit {
                   }
                   if(input == 'id' && e.error[input][i] == 'email'){
                     this.usuarioInvalido = true;
+                  }
+                  if(input == 'respuesta' && e.error[input][i] == 'required'){
+                    console.log("deberia entrar")
+                    this.respuestaRequerida = true;
                   }
                 }                      
               }

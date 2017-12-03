@@ -136,6 +136,7 @@ import { PersonalCluesModule } from './configuracion/personal-clues/personal-clu
 import { EntradaModule } from './almacen-articulos/entrada/entrada.module';
 import { SalidaModule } from './almacen-articulos/salida/salida.module';
 import { ConfiguracionGeneralModule } from './almacen-articulos/configuracion-general/configuracion-general.module';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 //import { CrudModule } from './crud/crud.module';
 export function highchartsFactory() {
@@ -154,7 +155,8 @@ export function highchartsFactory() {
     AppComponent,
     LoginComponent,
     DashboardComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    ResetPasswordComponent
   ],
   imports: [
     BrowserModule,

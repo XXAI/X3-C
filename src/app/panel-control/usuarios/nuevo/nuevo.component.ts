@@ -31,6 +31,8 @@ export class NuevoComponent implements OnInit {
   usuarioRepetido:boolean = false;
   usuarioInvalido:boolean = false;
 
+  respuestaRequerida:boolean = false;
+
   cargando: boolean = false;
   cargandoRoles: boolean = false;
   cargandoMedicos: boolean = false;
@@ -75,7 +77,9 @@ export class NuevoComponent implements OnInit {
       roles: [[],[Validators.required]],
       unidades_medicas: [[]],
       almacenes: [[]],
-      medico_id: ['-1']
+      medico_id: ['-1'],
+      pregunta_secreta: [''],
+      respuesta: ['']
 
     });
     
@@ -114,6 +118,7 @@ export class NuevoComponent implements OnInit {
               this.mensajeError.texto = "Por favor verfique los campos marcados en rojo.";
               this.usuarioRepetido = false;
               this.usuarioInvalido = false;
+              this.respuestaRequerida = false;
               for (var input in e.error){
                 // Iteramos todos los errores
                 for (var i in e.error[input]){
@@ -123,6 +128,11 @@ export class NuevoComponent implements OnInit {
                   }
                   if(input == 'id' && e.error[input][i] == 'email'){
                     this.usuarioInvalido = true;
+                  }
+
+                  if(input == 'respuesta' && e.error[input][i] == 'required'){
+                    console.log("deberia entrar")
+                    this.respuestaRequerida = true;
                   }
                 }                      
               }

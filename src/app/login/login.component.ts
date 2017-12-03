@@ -24,6 +24,14 @@ export class LoginComponent implements OnInit {
   private bloquearPantallaSuscription: Subscription;
   private tamano = document.body.clientHeight;
 
+  mostrarRecuperarPassword:boolean = false;
+  resetPasswordViaToken:boolean = false;
+
+  resetPasswordPayload: any = {
+    id:null,
+    reset_token:null
+  }
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -36,7 +44,7 @@ export class LoginComponent implements OnInit {
       if(!bloquear){
         console.log("Redirigiendo desde login por desbloqueo de pantalla")
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-        this.router.navigate([this.returnUrl]);
+        this.router.navigate([this.returnUrl]);        
       }
       
     });
@@ -45,6 +53,15 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     this.saludIdDisponible = ESTA_SALUD_ID_DISPONIBLE;
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    
+    if(this.route.snapshot.queryParams['reset_password']=='true'){      
+      this.resetPasswordPayload.id = this.route.snapshot.queryParams['id'] || '';
+      this.resetPasswordPayload.reset_token = this.route.snapshot.queryParams['reset_token'] || '';
+      this.mostrarRecuperarPassword = true;
+      this.resetPasswordViaToken = true;
+      console.log(this.resetPasswordPayload)
+    }
+    
   }
   login() {
     this.loading = true;

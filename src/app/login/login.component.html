@@ -1,60 +1,13 @@
 <div class="modal is-active">
-    <div class="modal-background login-background">
-        <section class="hero is-primary" style="height: 100px">
-            <div class="hero-body">
-                <div class="container">
-                    <nav class="level">
-                    <!-- Left side -->
-                        <div class="level-left" style="padding: 0">
-                            <div class="level-item">
-                                <figure class="image is-128x128">
-                                    <img src="assets/sial.svg">
-                                </figure>
-                            </div>
-                        </div>
-                    </nav>
-                </div>
-            </div>
-        </section>
-        <div class="content" style="padding: 2rem 2rem !important; overflow:auto;" [style.height.px]="tamano-250">
-        </div>
-        <footer class="footer">
-            <div class="container">
-                <div class="content has-text-centered">
-                    <div class="columns">
-                        <div class="column">
-                            <figure class="image is-128x128">
-                                <img src="assets/ssa.png">
-                            </figure>
-                        </div>
-                        <div class="column">
-                            <figure class="image is-128x128">
-                                <img src="assets/chiapas-une.svg">
-                            </figure>
-                        </div>
-                        <div class="column">
-                            <figure class="image is-128x128">
-                                <img src="assets/gob_estado.png">
-                            </figure>
-                        </div>
-                        <div class="column">
-                            <figure class="image is-128x128">
-                                <img src="assets/salud-meso.svg">
-                            </figure>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </footer>
-    </div>
+   
     <div class="modal-content">
         <div class="card" style=" border-radius:1em; overflow: hidden">
             <div class="card-header is-primary">
                 <section class="hero is-primary" style="width: 100%">
                     <div class="hero-body" style="align-self: center;">
                         <div class="container">
-                            <figure class="image is-128x128">
-                                <img src="assets/sial-logo.svg">
+                            <figure class="image" style="height:60px">
+                                <img src="assets/sial.svg" style="height:60px">
                             </figure>
                         </div>
                     </div>
@@ -66,9 +19,9 @@
                 </figure>
             </div>-->
             <div class="card-content">
-                <form name="form" (ngSubmit)="!loading && login()">
+                <form name="form" (ngSubmit)="!loading && login()" style="overflow:auto" class="has-text-centered">
+                    
                     <h1 class="title has-text-centered">Bienvenido</h1>
-                    <h2 class="subtitle has-text-centered">Esta app esta diseñada especialmente para ti.</h2>
                     <div class="notification is-danger" *ngIf="mostrarMensaje">
                         <a class="delete" (click)="mostrarMensaje = false"></a>
                         <b>Error:</b> {{ mensaje }}
@@ -92,10 +45,45 @@
                         <button class="button is-info is-large is-fullwidth">Conectar con Salud ID</button>
                     </p>
                     <p class="control">
-                        <a class="button is-white is-fullwidth" >Olvidé mi contraseña</a>
+                        <a class="button is-white is-fullwidth" (click)="mostrarRecuperarPassword=true">Olvidé mi contraseña</a>
                     </p>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<footer class="footer" style="position:absolute; bottom:0px; width:100%; max-height:128px;">
+        <div class="container">
+            <div class="content has-text-centered">
+                <div class="columns is-mobile">
+                    <div class="column">
+                        <figure class="image" style="max-width:128px">
+                            <img src="assets/ssa.png">
+                        </figure>
+                    </div>
+                    <div class="column">
+                        <figure class="image" style="max-width:128px">
+                            <img src="assets/chiapas-une.svg">
+                        </figure>
+                    </div>
+                    <div class="column">
+                        <figure class="image" style="max-width:128px">
+                            <img src="assets/gob_estado.png">
+                        </figure>
+                    </div>
+                    <div class="column">
+                        <figure class="image" style="max-width:128px">
+                            <img src="assets/salud-meso.svg">
+                        </figure>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+<app-reset-password *ngIf="mostrarRecuperarPassword"
+[resetPasswordViaToken]="resetPasswordViaToken"
+[id]="resetPasswordPayload.id"
+[resetToken]="resetPasswordPayload.reset_token"
+ (onCerrar)="mostrarRecuperarPassword=false;resetPasswordViaToken=false"></app-reset-password>
