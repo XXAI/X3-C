@@ -13,7 +13,6 @@ import { IndexFarmaciaModule } from '../index-farmacia/index-farmacia.module';
 import { TransferenciaAlmacenRoutingModule } from './transferencia-almacen-routing.module';
 import { TransferenciaAlmacenService } from './transferencia-almacen.service';
 import { ListaComponent } from './lista/lista.component';
-import { FormularioComponent } from './formulario/formulario.component';
 import { MenuLateralComponent } from './menu-lateral/menu-lateral.component';
 import { SurtirComponent } from './surtir/surtir.component';
 
@@ -25,6 +24,7 @@ import { NguiAutoCompleteModule } from '@ngui/auto-complete';
 import { SimpleNotificationsModule } from 'angular2-notifications';
 import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
 import { TransferenciaComponent } from './transferencia/transferencia.component';
+import { VerComponent } from './ver/ver.component';
 
 @NgModule({
   imports: [
@@ -44,7 +44,7 @@ import { TransferenciaComponent } from './transferencia/transferencia.component'
     SimpleNotificationsModule,
     TransferenciaAlmacenRoutingModule
   ],
-  declarations: [ListaComponent, FormularioComponent, MenuLateralComponent, SurtirComponent, TransferenciaComponent],
+  declarations: [ListaComponent, MenuLateralComponent, SurtirComponent, TransferenciaComponent, VerComponent],
   providers:[TransferenciaAlmacenService, CrudService]
 })
 export class TransferenciaAlmacenModule { }

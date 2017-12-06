@@ -44,6 +44,9 @@ export class SurtirComponent implements OnInit {
   pedidoPorSurtir:boolean = false;
   pedidoSurtido:boolean = false;
   pedidoEntregado:boolean = false;
+  permitirResurtir:boolean = false;
+
+  transferenciaCompleta:boolean = false;
 
   marcarTodosStatus:boolean = false;
 
@@ -62,6 +65,7 @@ export class SurtirComponent implements OnInit {
   private itemSeleccionado: any = null;
   
   itemsDevueltos: any = null;
+  clavesDevueltasStatus: any = null;
   
   constructor(private title: Title, private route:ActivatedRoute, private router: Router,private transferenciaAlmacenService:TransferenciaAlmacenService, private stockService:StockService) { }
 
@@ -82,31 +86,152 @@ export class SurtirComponent implements OnInit {
             this.pedido = new Pedido(true);
             this.pedido.paginacion.resultadosPorPagina = 10;
             this.pedido.filtro.paginacion.resultadosPorPagina = 10;
-            for(let i in pedido.insumos){
-              let dato = pedido.insumos[i];
-              let insumo = dato.insumos_con_descripcion;
-             
-              if (insumo != null){
-                //insumo.cantidad = +dato.cantidad_solicitada;
-                insumo.cantidad = +dato.cantidad_solicitada - +dato.cantidad_enviada;
-                insumo.cantidad_a_surtir = (+dato.cantidad_solicitada - +dato.cantidad_enviada) + (+dato.cantidad_enviada - +dato.cantidad_recibida);
-                insumo.cantidad_solicitada = +dato.cantidad_solicitada;
-                insumo.cantidad_enviada = +dato.cantidad_enviada;
-                insumo.cantidad_recibida = +dato.cantidad_recibida;
-                insumo.marcados = false;
-                this.pedido.lista.push(insumo);
-              }
-            }
-            pedido.insumos = undefined;
 
             this.pedidoPorSurtir = true;
+            this.pedidoSurtido = false;
+            this.pedidoEntregado = false;
 
+            this.transferenciaCompleta = false;
+
+            this.clavesDevueltasStatus = {};
+
+            if(pedido.historial_transferencia_completo.length > 0){
+              let movimiento_entrega:any; //La recepcion, aparecera aqui cuando se haya finalizado
+              let movimiento_surtido:any;
+              let movimiento_eliminados:any[] = [];
+              let movimiento_reintegrados:any[] = [];
+
+              let lotes_eliminados:any = {};
+              let lotes_reintegrados:any = {};
+
+              this.itemsDevueltos = {cantidad:0, listaStock:[]};
+
+              for(var i in pedido.historial_transferencia_completo){
+                let historial = pedido.historial_transferencia_completo[i];
+                
+                if(historial.evento == 'SURTIO PEA' && historial.status == 'FI'){ //El pedido ya fue surtido al menos una vez, si se surte mas de una vez, se va guardando el ultimo movimiento capturado
+                  this.pedidoPorSurtir = false;
+                  this.pedidoSurtido = true;
+                  this.pedidoEntregado = false;
+                  movimiento_surtido = historial.movimiento;
+                  movimiento_entrega = null;
+                  movimiento_eliminados = [];
+                  movimiento_reintegrados = [];
+                }else if(historial.evento == 'RECEPCION PEA' && historial.status == 'FI'){ //El pedido ya fue entregado, si se entrega mas de una vez, se guarda el ultimo movimiento capturado
+                  this.pedidoPorSurtir = false;
+                  this.pedidoSurtido = false;
+                  this.pedidoEntregado = true;
+                  movimiento_entrega = historial.movimiento;
+                }else if(historial.evento == 'REINTEGRACION INVENTARIO' && historial.status == 'FI'){
+                  movimiento_reintegrados.push(historial.movimiento);
+                }else if(historial.evento == 'ELIMINACION INVENTARIO' && historial.status == 'FI'){
+                  movimiento_eliminados.push(historial.movimiento);
+                }
+              }
+
+              if(movimiento_reintegrados.length > 0){
+                for(var i in movimiento_reintegrados){
+                  for(var j in movimiento_reintegrados[i].insumos){
+                    if(lotes_reintegrados[movimiento_reintegrados[i].insumos[j].stock_id]){
+                      lotes_reintegrados[movimiento_reintegrados[i].insumos[j].stock_id] += +movimiento_reintegrados[i].insumos[j].cantidad;
+                    }else{
+                      lotes_reintegrados[movimiento_reintegrados[i].insumos[j].stock_id] = +movimiento_reintegrados[i].insumos[j].cantidad;
+                    }
+                  }
+                }
+              }
+
+              if(movimiento_eliminados.length > 0){
+                for(var i in movimiento_eliminados){
+                  for(var j in movimiento_eliminados[i].insumos){
+                    if(lotes_eliminados[movimiento_eliminados[i].insumos[j].stock_id]){
+                      lotes_eliminados[movimiento_eliminados[i].insumos[j].stock_id] += +movimiento_eliminados[i].insumos[j].cantidad;
+                    }else{
+                      lotes_eliminados[movimiento_eliminados[i].insumos[j].stock_id] = +movimiento_eliminados[i].insumos[j].cantidad;
+                    }
+                  }
+                }
+              }
+
+              let lotes_entregados = {};
+              if(movimiento_entrega){
+                for(var i in movimiento_entrega.insumos){
+                  var insumo = movimiento_entrega.insumos[i];
+                  var llave = insumo.stock.clave_insumo_medico+'-'+insumo.stock.fecha_caducidad+'-'+insumo.stock.lote;
+                  lotes_entregados[llave] = {
+                    clave: insumo.stock.clave_insumo_medico,
+                    lote: insumo.stock.lote,
+                    fecha_caducidad: insumo.stock.fecha_caducidad,
+                    cantidad: +insumo.cantidad
+                  };
+
+                }
+
+                for(var i in movimiento_surtido.insumos){
+                  var insumo = movimiento_surtido.insumos[i];
+                  var llave = insumo.stock.clave_insumo_medico+'-'+insumo.stock.fecha_caducidad+'-'+insumo.stock.lote;
+                  let status_lote = null;
+                  let lote_activo = true;
+
+                  if(lotes_eliminados[insumo.stock_id] || lotes_reintegrados[insumo.stock_id]){
+                    lote_activo = false;
+
+                    if(lotes_eliminados[insumo.stock_id]){
+                      status_lote = 'eliminado';
+                    }else if (lotes_reintegrados[insumo.stock_id]){
+                      status_lote = 'reintegrado';
+                    }
+                  }
+
+                  if(status_lote){
+                    if(!this.clavesDevueltasStatus[insumo.stock.clave_insumo_medico]){
+                      this.clavesDevueltasStatus[insumo.stock.clave_insumo_medico] = 0;
+                    }
+                    this.clavesDevueltasStatus[insumo.stock.clave_insumo_medico] += (+insumo.cantidad - ((lotes_entregados[llave])?lotes_entregados[llave].cantidad:0));
+                  }
+
+                  if(lotes_entregados[llave]){
+                    if(lotes_entregados[llave].cantidad < +insumo.cantidad){
+                      this.itemsDevueltos.listaStock.push({
+                        seleccionado: false,
+                        activo: lote_activo,
+                        status: status_lote,
+                        stock_id: insumo.stock_id,
+                        clave: insumo.stock.clave_insumo_medico,
+                        lote: insumo.stock.lote,
+                        fecha_caducidad: insumo.stock.fecha_caducidad,
+                        cantidad: (+insumo.cantidad - lotes_entregados[llave].cantidad)
+                      });
+                      this.itemsDevueltos.cantidad += (+insumo.cantidad - lotes_entregados[llave].cantidad);
+                    }
+                  }else{
+                    this.itemsDevueltos.listaStock.push({
+                      seleccionado: false,
+                      activo: lote_activo,
+                      status: status_lote,
+                      stock_id: insumo.stock_id,
+                      clave: insumo.stock.clave_insumo_medico,
+                      lote: insumo.stock.lote,
+                      fecha_caducidad: insumo.stock.fecha_caducidad,
+                      cantidad: +insumo.cantidad
+                    });
+                    this.itemsDevueltos.cantidad += +insumo.cantidad;
+                  }
+                }
+                
+              }
+
+            }
+
+            /*
             if(pedido.movimientos_transferencias_completo.length > 0){
               let entrega_pedido:any;
               let entrega_pedido_borrador:any;
               let pedido_surtido:any;
               let lotes_eliminados:any = {};
               let lotes_reintegrados:any = {};
+
+              this.itemsDevueltos = {cantidad:0, listaStock:[]};
 
               for(var i in pedido.movimientos_transferencias_completo){
                 let movimiento = pedido.movimientos_transferencias_completo[i];
@@ -138,14 +263,12 @@ export class SurtirComponent implements OnInit {
                 }
               }
 
+              let lotes_entregados = {};
               if(entrega_pedido){
                 this.pedidoPorSurtir = false;
-                this.pedidoSurtido = true;
+                this.pedidoSurtido = false;
                 this.pedidoEntregado = true;
 
-                this.itemsDevueltos = {cantidad:0, listaStock:[]};
-
-                let lotes_entregados = {};
                 for(var i in entrega_pedido.insumos){
                   var insumo = entrega_pedido.insumos[i];
                   var llave = insumo.stock.clave_insumo_medico+'-'+insumo.stock.fecha_caducidad+'-'+insumo.stock.lote;
@@ -155,6 +278,7 @@ export class SurtirComponent implements OnInit {
                     fecha_caducidad: insumo.stock.fecha_caducidad,
                     cantidad: +insumo.cantidad
                   };
+
                 }
 
                 for(var i in pedido_surtido.insumos){
@@ -163,13 +287,23 @@ export class SurtirComponent implements OnInit {
                   let status_lote = null;
                   let lote_activo = true;
 
-                  if(lotes_eliminados[insumo.stock_id]){
-                    status_lote = 'eliminado';
+                  if(lotes_eliminados[insumo.stock_id] || lotes_reintegrados[insumo.stock_id]){
                     lote_activo = false;
-                  }else if (lotes_reintegrados[insumo.stock_id]){
-                    status_lote = 'reintegrado';
-                    lote_activo = false;
+
+                    if(lotes_eliminados[insumo.stock_id]){
+                      status_lote = 'eliminado';
+                    }else if (lotes_reintegrados[insumo.stock_id]){
+                      status_lote = 'reintegrado';
+                    }
                   }
+
+                  if(status_lote){
+                    if(!this.clavesDevueltasStatus[insumo.stock.clave_insumo_medico]){
+                      this.clavesDevueltasStatus[insumo.stock.clave_insumo_medico] = 0;
+                    }
+                    this.clavesDevueltasStatus[insumo.stock.clave_insumo_medico] += (+insumo.cantidad - ((lotes_entregados[llave])?lotes_entregados[llave].cantidad:0));
+                  }
+
                   if(lotes_entregados[llave]){
                     if(lotes_entregados[llave].cantidad < +insumo.cantidad){
                       this.itemsDevueltos.listaStock.push({
@@ -198,12 +332,60 @@ export class SurtirComponent implements OnInit {
                     this.itemsDevueltos.cantidad += +insumo.cantidad;
                   }
                 }
+
               }else if(pedido_surtido){
                 this.pedidoPorSurtir = false;
                 this.pedidoSurtido = true;
                 this.pedidoEntregado = false;
               }
             }
+            */
+
+            for(let i in pedido.insumos){
+              let dato = pedido.insumos[i];
+              let insumo = dato.insumos_con_descripcion;
+             
+              if (insumo != null){
+                //insumo.cantidad = +dato.cantidad_solicitada;
+                insumo.cantidad = +dato.cantidad_solicitada - +dato.cantidad_enviada;
+
+                if(this.pedidoEntregado){
+                  insumo.cantidad_a_surtir = (+dato.cantidad_solicitada - +dato.cantidad_recibida); // + (+dato.cantidad_enviada - +dato.cantidad_recibida);
+                }else{
+                  insumo.cantidad_a_surtir = (+dato.cantidad_solicitada - +dato.cantidad_enviada); // + (+dato.cantidad_enviada - +dato.cantidad_recibida);
+                }
+                
+                insumo.cantidad_solicitada = +dato.cantidad_solicitada;
+                insumo.cantidad_enviada = +dato.cantidad_enviada;
+                insumo.cantidad_recibida = +dato.cantidad_recibida;
+                insumo.marcados = false;
+
+                if(insumo.cantidad_enviada > 0 && insumo.cantidad_recibida < insumo.cantidad_enviada){
+                  if(this.clavesDevueltasStatus[insumo.clave] && (this.clavesDevueltasStatus[insumo.clave] + insumo.cantidad_recibida) == insumo.cantidad_enviada){
+                    insumo.puede_seleccionar = false;
+                  }else{
+                    insumo.puede_seleccionar = true;
+                  }
+                }else{
+                  insumo.puede_seleccionar = false;
+                }
+
+                this.pedido.lista.push(insumo);
+              }
+            }
+
+            if(this.pedidoEntregado){
+              this.checarStatusDeItemsDevueltos();
+              if(this.transferenciaCompleta){
+                this.permitirResurtir = true;
+              }
+            }
+
+            /*console.log('##########################################################################');
+            console.log(this.clavesDevueltasStatus);
+            console.log(this.itemsDevueltos);*/
+            pedido.insumos = undefined;
+            this.pedido.datosImprimir = pedido;
 
             /*
             if(pedido.movimientos.length > 0){
@@ -278,8 +460,6 @@ export class SurtirComponent implements OnInit {
               }
             }
             */
-
-            this.pedido.datosImprimir = pedido;
             this.pedido.indexar();
             this.pedido.listar(1);
           },
@@ -306,6 +486,16 @@ export class SurtirComponent implements OnInit {
             }
           }
     );
+  }
+
+  checarStatusDeItemsDevueltos(){
+    this.transferenciaCompleta = true;
+    for(var i in this.itemsDevueltos.listaStock){
+      if(this.itemsDevueltos.listaStock[i].activo){
+        this.transferenciaCompleta = false;
+        break;
+      }
+    }
   }
 
   seleccionarItem(item){  
@@ -653,8 +843,8 @@ export class SurtirComponent implements OnInit {
 
     let datos = {accion:tipo,insumos:lista};
 
-    console.log(lista);
-
+    //console.log(this.clavesDevueltasStatus);
+    
     this.transferenciaAlmacenService.actualizarTransferencia(this.id,datos).subscribe(
       respuesta => {
         //this.router.navigate(['/almacen/transferencia-almacen/en-transito']);
@@ -664,10 +854,30 @@ export class SurtirComponent implements OnInit {
         }else if(tipo == 'reintegrar'){
           status = 'reintegrado';
         }
+        
         for(var i in lista){
           lista[i].activo = false;
           lista[i].status = status;
+          if(!this.clavesDevueltasStatus[lista[i].clave]){
+            this.clavesDevueltasStatus[lista[i].clave] = 0; 
+          }
+          this.clavesDevueltasStatus[lista[i].clave] += lista[i].cantidad;
         }
+
+        for(var i in this.pedido.lista){
+          let insumo = this.pedido.lista[i];
+          if(insumo.cantidad_enviada > 0 && insumo.cantidad_recibida < insumo.cantidad_enviada){
+            if(this.clavesDevueltasStatus[insumo.clave] && (this.clavesDevueltasStatus[insumo.clave] + insumo.cantidad_recibida) == insumo.cantidad_enviada){
+              insumo.puede_seleccionar = false;
+            }
+          }
+        }
+
+        this.checarStatusDeItemsDevueltos();
+        if(this.transferenciaCompleta){
+          this.permitirResurtir = true;
+        }
+
         this.mensajeExito = new Mensaje(true,5);
         this.mensajeExito.texto = 'Datos Guardados';
         this.mensajeExito.mostrar = true;
@@ -698,6 +908,18 @@ export class SurtirComponent implements OnInit {
         }
       }
     );
+  }
+
+  volverASurtir(){
+    this.pedidoEntregado = false;
+    this.pedidoSurtido = false;
+    this.pedidoPorSurtir = true;
+  }
+
+  cancelarVolverASurtir(){
+    this.pedidoEntregado = true;
+    this.pedidoSurtido = false;
+    this.pedidoPorSurtir = false;
   }
 
   finalizarPedido(){
@@ -795,22 +1017,27 @@ export class SurtirComponent implements OnInit {
   }
 
   asignarStock(item:any){
+    //console.log('--------------------------------------------------------------------------------------------------------------------------------------');
+    //console.log(this.itemSeleccionado);
     if( this.itemSeleccionado.listaStockAsignado == null ){
       this.itemSeleccionado.listaStockAsignado = [];
     }
     var acumulado = 0;
     for(var i in this.itemSeleccionado.listaStockAsignado) {
       if(item.id == this.itemSeleccionado.listaStockAsignado[i].id){
-
         // No podemos asignar dos veces el mismo item
         return;
       }
       acumulado += this.itemSeleccionado.listaStockAsignado[i].cantidad;
     }
 
-    if (acumulado < this.itemSeleccionado.cantidad){
+    if(this.itemSeleccionado.cantidad_recibida){
+      acumulado += this.itemSeleccionado.cantidad_recibida;
+    }
 
-      let faltante = this.itemSeleccionado.cantidad - acumulado;
+    if (acumulado < this.itemSeleccionado.cantidad_solicitada){
+
+      let faltante = this.itemSeleccionado.cantidad_solicitada - acumulado;
 
       if(item.existencia > faltante){
         item.cantidad = faltante
@@ -828,7 +1055,6 @@ export class SurtirComponent implements OnInit {
     } else {
       //Ya no se puede asignar mas
     }
-    
   }
 
 
@@ -869,7 +1095,6 @@ export class SurtirComponent implements OnInit {
         item_stock.cantidad_asignada = item.cantidad;
       }
     }
-
     this.calcularTotalStockItem();
   }
 
@@ -882,7 +1107,7 @@ export class SurtirComponent implements OnInit {
       
     }
 
-    var faltante = this.itemSeleccionado.cantidad - acumulado;
+    var faltante = this.itemSeleccionado.cantidad_solicitada - (acumulado + (this.itemSeleccionado.cantidad_recibida || 0));
 
     if(faltante >= item.existencia){
       item.cantidad = item.existencia;
@@ -907,15 +1132,16 @@ export class SurtirComponent implements OnInit {
     }
 
   }
+
   verificarTotalStockItem():boolean{
-    var acumulado = 0;
+    /*var acumulado = 0;
     for(var i in this.itemSeleccionado.listaStockAsignado) {
       acumulado += this.itemSeleccionado.listaStockAsignado[i].cantidad;
-    }
-    return this.itemSeleccionado.totalStockAsignado <= this.itemSeleccionado.cantidad;
+    }*/
+    return this.itemSeleccionado.totalStockAsignado + (this.itemSeleccionado.cantidad_recibida || 0) <= this.itemSeleccionado.cantidad_solicitada;
   }
+
   calcularTotalStockItem(){
-    
     var acumulado = 0;
     for(var i in this.itemSeleccionado.listaStockAsignado) {
       acumulado += this.itemSeleccionado.listaStockAsignado[i].cantidad;
@@ -939,11 +1165,11 @@ export class SurtirComponent implements OnInit {
         }
       }
       if(!bandera){
-        
         this.lotesSurtidos.push({ clave: this.itemSeleccionado.clave, cantidad:  acumulado});
       }
     }
     this.itemSeleccionado.totalStockAsignado = acumulado;
+    this.itemSeleccionado.cantidad_a_surtir = this.itemSeleccionado.cantidad_solicitada - (acumulado + this.itemSeleccionado.cantidad_recibida);
   }
 
   // # SECCION: Eventos del teclado

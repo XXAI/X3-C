@@ -10,7 +10,7 @@ import { Title }     from '@angular/platform-browser';
 export class DashboardComponent implements OnInit {
 
   usuario: any = {}
-
+  
   constructor(private title: Title) { }
 
   ngOnInit() {

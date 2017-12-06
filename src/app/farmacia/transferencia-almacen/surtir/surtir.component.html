@@ -13,25 +13,25 @@
       <div class="tile is-child notification is-dark">
         
         <div class="columns">
-          <div class="column" >
-            <div style="padding:1em;">Folio: <strong style="color:#FFF;">{{ pedido.datosImprimir.folio }}</strong> 
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Lotes: {{ lotesSurtidos.length  }} / {{ pedido.lista.length }}
+          <div class="column" *ngIf="pedido.datosImprimir">
+            <div>Folio: <strong style="color:#FFF;">{{ pedido.datosImprimir.folio }}</strong> 
+              <span *ngIf="pedidoPorSurtir">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Lotes: {{ lotesSurtidos.length  }} / {{ pedido.lista.length }}</span>
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span *ngIf="pedidoSurtido && !pedidoEntregado"><strong style="color:#FFF;">Pedido Surtido</strong></span>
               <span *ngIf="pedidoEntregado"><strong style="color:#FFF;">Pedido Entregado</strong></span><br>
-              <span *ngIf="pedido.datosImprimir.clues_destino && pedido.datosImprimir.clues_destino != pedido.datosImprimir.clues">
+              <span *ngIf="pedido.datosImprimir && pedido.datosImprimir.clues_destino && pedido.datosImprimir.clues_destino != pedido.datosImprimir.clues"><small>
                 Almacen destino: <strong style="color:#FFF;"> [{{ pedido.datosImprimir.almacen_solicitante.clues }}] {{ pedido.datosImprimir.almacen_solicitante.nombre }}</strong><br>
                 Clues destino: <strong style="color:#FFF;"> {{ pedido.datosImprimir.almacen_solicitante.unidad_medica.nombre }}</strong><br>
-              </span>
+              </small></span>
             </div>
           </div>
           <div class="column is-4" style="text-align:center; ">
             <div style="margin:1em;" *ngIf="pedidoPorSurtir">
               <a  class="button is-primary" style="width:45%; margin-right:5%;" (click)="surtir()"> <span class="icon"><i class="fa fa-check-circle"></i></span> <span>Surtir</span></a>
-              <a *ngIf="!pedidoSurtido" class="button is-white"  style="width:45%" routerLink="/almacen/transferencia-almacen/en-transito"> Cancelar</a>
-              <a *ngIf="pedidoSurtido" class="button is-white"  style="width:45%" (click)="pedidoPorSurtir = false"> Cancelar</a>
+              <a *ngIf="!permitirResurtir" class="button is-white"  style="width:45%" routerLink="/almacen/transferencia-almacen/en-transito"> Cancelar</a>
+              <a *ngIf="permitirResurtir" class="button is-white"  style="width:45%" (click)="cancelarVolverASurtir()"> Cancelar</a>
             </div>
             <div style="margin:1em;" *ngIf="!pedidoPorSurtir">
-              <!--a  class="button is-primary" style="width:45%; margin-right:5%;" (click)="pedidoPorSurtir = true"> <span class="icon"><i class="fa fa-list"></i></span> <span>Seleccionar Lotes</span></a-->
+              <a *ngIf="permitirResurtir"  class="button is-primary" style="width:45%; margin-right:5%;" (click)="volverASurtir()"> <span class="icon"><i class="fa fa-repeat"></i></span> <span>Volver a Surtir</span></a>
               <!--a class="button is-primary"  style="width:45%" (click)="finalizarPedido()">Finalizar Pedido</a-->
               <a  class="button is-white"  style="width:45%" routerLink="/almacen/transferencia-almacen/en-transito"> Regresar</a>
             </div>
@@ -54,11 +54,11 @@
                       </p>
                     </th>  
                     
-                    <th *ngIf="pedidoPorSurtir" style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Cantidad">Cant.</abbr></th>
-                    <th *ngIf="pedidoPorSurtir" style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Surtido">Surt.</abbr></th>
+                    <th *ngIf="pedidoPorSurtir || pedidoSurtido" style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Cantidad Surtida/Solicitada">Cant.</abbr></th>
+                    <th *ngIf="pedidoPorSurtir || pedidoSurtido" style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Lotes a surtir">Lotes</abbr></th>
 
-                    <th *ngIf="!pedidoPorSurtir" style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Enviado/Solicitado">Env/Sol</abbr></th>
-                    <th *ngIf="!pedidoPorSurtir" style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Entregado">Entregado</abbr></th>
+                    <th *ngIf="pedidoEntregado" style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Enviado/Solicitado">Env/Sol</abbr></th>
+                    <th *ngIf="pedidoEntregado" style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Entregado">Entregado</abbr></th>
 
                     <th  style="width:21px !important; text-align: center; vertical-align: middle;">Surtido</th>
 
@@ -97,13 +97,13 @@
                           </div>
                         </div>
                       </td> 
-                      <td *ngIf="pedidoPorSurtir" style="width:78px !important; text-align:center;">{{ ((item.totalStockAsignado || 0) + (item.cantidad_enviada || 0)) }} / {{ item.cantidad_solicitada }}</td>
-                      <th *ngIf="pedidoPorSurtir" style="width:78px !important; text-align:center;">{{ (item.listaStockAsignado)?item.listaStockAsignado.length:0 }}</th>
+                      <td *ngIf="pedidoPorSurtir || pedidoSurtido" style="width:78px !important; text-align:center;">{{ ((item.totalStockAsignado || 0) + ((pedidoSurtido && !permitirResurtir)?(item.cantidad_enviada || 0):(item.cantidad_recibida || 0))) }} / {{ item.cantidad_solicitada }}</td>
+                      <th *ngIf="pedidoPorSurtir || pedidoSurtido" style="width:78px !important; text-align:center;">{{ (item.listaStockAsignado)?item.listaStockAsignado.length:0 }}</th>
 
-                      <td *ngIf="!pedidoPorSurtir" style="width:78px !important; text-align:center;">{{ (item.cantidad_enviada || 0) | number }} / {{ item.cantidad_solicitada | number }}</td>
-                      <th *ngIf="!pedidoPorSurtir" style="width:78px !important; text-align:center;">{{ (item.cantidad_recibida || 0) | number }}</th>
+                      <td *ngIf="pedidoEntregado" style="width:78px !important; text-align:center;">{{ (item.cantidad_enviada || 0) | number }} / {{ item.cantidad_solicitada | number }}</td>
+                      <th *ngIf="pedidoEntregado" style="width:78px !important; text-align:center;">{{ (item.cantidad_recibida || 0) | number }}</th>
 
-                      <td *ngIf="pedidoPorSurtir" style="width:21px !important; text-align:center;">
+                      <td *ngIf="pedidoPorSurtir || pedidoSurtido" style="width:21px !important; text-align:center;">
                         <!--span class="icon" style="color:gray;" *ngIf="item.totalStockAsignado == 0 || item.totalStockAsignado == null"><i class="fa fa-circle-thin"></i></span>
                         <span class="icon" style="color:orange;" *ngIf="item.totalStockAsignado > 0 && item.totalStockAsignado < item.cantidad"><i class="fa fa-minus-circle"></i></span>
                         <span class="icon" style="color:green;" *ngIf="item.totalStockAsignado == item.cantidad"><i class="fa fa-check-circle"></i></span-->
@@ -112,14 +112,14 @@
                         <span class="icon" style="color:green;" *ngIf="item.cantidad_a_surtir == 0"><i class="fa fa-check-circle"></i></span>
                       </td>
                       
-                      <td *ngIf="!pedidoPorSurtir" style="width:21px !important; text-align:center;">
-                          <span class="icon" style="color:gray;" *ngIf="!item.cantidad_enviada"><i class="fa fa-circle-thin"></i></span>
+                      <td *ngIf="pedidoEntregado" style="width:21px !important; text-align:center;">
+                        <span class="icon" style="color:gray;" *ngIf="!item.cantidad_enviada"><i class="fa fa-circle-thin"></i></span>
                         <span class="icon" style="color:orange;" *ngIf="item.cantidad_enviada > 0 && item.cantidad_recibida < item.cantidad_enviada"><i class="fa fa-minus-circle"></i></span>
                         <span class="icon" style="color:green;" *ngIf="item.cantidad_enviada > 0 && item.cantidad_enviada == item.cantidad_recibida"><i class="fa fa-check-circle"></i></span>
                       </td>
 
                       <td *ngIf="pedidoEntregado">
-                        <label *ngIf="item.cantidad_enviada > 0 && item.cantidad_recibida < item.cantidad_enviada">
+                        <label *ngIf="item.puede_seleccionar">
                             <span class="icon"><i class="fa" [ngClass]="{ 'fa-square-o':!item.marcados, 'fa-check-square-o':item.marcados }"></i></span>
                             <input type="checkbox" [(ngModel)]="item.marcados" (change)="marcarClaves(item.marcados,item.clave)" style="display:none;"/>
                         </label>
@@ -249,7 +249,7 @@
             </div>
           </div>
         </div>
-        <div class="tile is-child  notification is-white" *ngIf="!pedidoEntregado">
+        <div class="tile is-child  notification is-white" *ngIf="pedidoPorSurtir || pedidoSurtido">
           <div class="contenedor-tabla">
             <table class="table" *ngIf="!cargando && itemSeleccionado != null" style="font-size: 0.8em;" >
               <thead>
@@ -286,7 +286,7 @@
           </div>
         </div>
 
-        <div class="tile is-child box notification is-white is-12"  *ngIf="pedidoEntregado">
+        <div class="tile is-child box notification is-white is-12"  *ngIf="pedidoEntregado && !permitirResurtir">
           <a class="button is-danger is-pulled-right" (click)="eliminarDelInventario()">Eliminar del inventario</a>
           <a class="button is-info is-pulled-left" (click)="reintegrarAlInventario()">Reintegrar al inventario</a>
         </div>

@@ -1,0 +1,76 @@
+.item {
+    cursor: pointer;
+}
+.item.seleccionado {
+    background: #CCC;
+}
+.item.seleccionado .icon {
+    color:white !important;
+}
+.item.seleccionado .item-detalle {
+    display: inherit;
+}
+.item .item-detalle {
+    display: none;
+}
+
+.item.asignado {
+    background: #DDD;
+    color: #777;
+}
+
+.surtido{
+    background: hsl(141, 71%, 48%);
+    color: #FFF;
+}
+
+.surtido:hover{
+    background: hsl(141, 73%, 38%);
+    color: #FFF;
+}
+
+.recibido{
+    background: hsl(204, 86%, 53%);
+    color: #FFF;
+}
+
+.recibido:hover{
+    background: hsl(204, 71%, 40%);
+    color: #FFF;
+}
+
+.reintegrado{
+    background: hsl(217, 71%, 53%);
+    color: #FFF;
+}
+
+.reintegrado:hover{
+    background: hsl(217, 62%, 45%);
+    color: #FFF;
+}
+
+.eliminado{
+    background: hsl(348, 100%, 61%);
+    color: #FFF;
+}
+
+.eliminado:hover{
+    background: hsl(348, 68%, 44%);
+    color: #FFF;
+}
+
+tr.filtro td,
+tr.filtro th {
+    color:#FFF;
+    background: #4a4a4a !important;
+}
+
+.contenedor-tabla {
+    overflow: auto; width:100%; height:99% !important; display:block; position:absolute; left:0; top:0;
+}
+.contenedor-tabla table { border-radius: 3px; }
+@media screen and (max-width: 768px) {
+    .contenedor-tabla { position: relative; }
+
+    .tile.notification { padding:0px !important; }
+}
