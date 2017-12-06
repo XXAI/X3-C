@@ -162,7 +162,7 @@ export class TransferenciaComponent implements OnInit {
             // A este punto todo es una melcocha porque se mexclaron modulos
             // Y pues ni modo jajajaja
 
-            this.movimiento = respuesta.movimientos_transferencias_completo[0];
+            this.movimiento = respuesta.historial_transferencia_completo[0].movimiento;
 
             // Akira:
             // Aqui hacemos push a la lista de almacenes con el solicitante, pero faltarian los demas almacenes

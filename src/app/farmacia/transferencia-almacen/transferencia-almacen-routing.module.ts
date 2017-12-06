@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { ListaComponent } from './lista/lista.component';
-import { FormularioComponent } from './formulario/formulario.component';
+import { VerComponent } from './ver/ver.component';
 import { SurtirComponent } from './surtir/surtir.component';
 import { TransferenciaComponent } from './transferencia/transferencia.component';
 import { AuthGuard } from '../../auth-guard.service';
@@ -19,12 +19,8 @@ const routes: Routes = [
        { path: 'por-finalizar', component: ListaComponent},
        { path: 'finalizados', component: ListaComponent},
        { path: 'cancelados', component: ListaComponent},
-       { path: 'nuevo', component: FormularioComponent},
-       //{ path: 'editar/:id', component: FormularioComponent},
-       { path: 'ver/:id', component: FormularioComponent},
+       { path: 'ver/:id', component: VerComponent},
        { path: 'surtir/:id', component: SurtirComponent},
-
-
        // Akira:
        { path: 'nueva', component: TransferenciaComponent},
        { path: 'editar/:id', component: TransferenciaComponent},
