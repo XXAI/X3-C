@@ -16,7 +16,8 @@ export class ResetPasswordService {
 
   enviarEmail(email:string){
     const url: string = 'reset-password/email';
-    return this.http.post(`${environment.API_URL}/${url}`,JSON.stringify({email: email, reset_url:environment.RESET_URL}),{ headers: this.headers }).map( (response: Response) => response.json(), error => {});
+    return this.http.post(`${environment.API_URL}/${url}`,JSON.stringify({email: email, reset_url:environment.API_URL}),{ headers: this.headers }).map( (response: Response) => response.json(), error => {});
+    
   }
 
   validarToken(id:string, reset_token:string){
