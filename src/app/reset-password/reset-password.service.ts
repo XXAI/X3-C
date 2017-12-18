@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
-import { API_URL } from '../config';
 import { environment } from '../../environments/environment';
 
 @Injectable()

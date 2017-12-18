@@ -24,11 +24,12 @@
               </small></span>
             </div>
           </div>
-          <div class="column is-4" style="text-align:center; ">
+          <div class="column is-5" style="text-align:right; ">
             <div style="margin:1em;" *ngIf="pedidoPorSurtir">
-              <a  class="button is-primary" style="width:45%; margin-right:5%;" (click)="surtir()"> <span class="icon"><i class="fa fa-check-circle"></i></span> <span>Surtir</span></a>
-              <a *ngIf="!permitirResurtir" class="button is-white"  style="width:45%" routerLink="/almacen/transferencia-almacen/en-transito"> Cancelar</a>
-              <a *ngIf="permitirResurtir" class="button is-white"  style="width:45%" (click)="cancelarVolverASurtir()"> Cancelar</a>
+              <a *ngIf="puedeCancelarTransferencia" class="button is-danger" style="margin-right:5%;"  (click)="mostrarDialogoCancelarTransferencia()"> <span class="icon"><i class="fa fa-ban"></i></span> <span>Cancelar Transferencia</span></a>
+              <a class="button is-primary" style="margin-right:5%;" (click)="surtir()"> <span class="icon"><i class="fa fa-check-circle"></i></span> <span>Surtir</span></a>
+              <a *ngIf="!permitirResurtir" class="button is-white"  routerLink="/almacen/transferencia-almacen/en-transito"> Regresar</a>
+              <a *ngIf="permitirResurtir" class="button is-white"  (click)="cancelarVolverASurtir()"> Regresar</a>
             </div>
             <div style="margin:1em;" *ngIf="!pedidoPorSurtir">
               <a *ngIf="permitirResurtir"  class="button is-primary" style="width:45%; margin-right:5%;" (click)="volverASurtir()"> <span class="icon"><i class="fa fa-repeat"></i></span> <span>Volver a Surtir</span></a>
@@ -342,7 +343,53 @@
     
   </div>
 </div>
-  
+
+<div class="modal is-active" [ngClass]="{'is-active': mostrarCancelarTransferenciaDialogo}">
+  <div class="modal-background" (click)="cerrarDialogoCancelarTransferencia()"></div>
+  <div class="modal-card" style="width:95%; height: auto;">
+      <header class="modal-card-head" style="background: #ff3860;">
+          <div class="container is-fluid"  style="width:100%;">
+              <h1 class="title" style="color:#FFF;">
+              <span class="icon is-medium"><i class="fa fa-ban"></i></span> Cancelar Transferencia 
+              </h1>
+          </div>            
+          <a class="button  is-danger" style="position:absolute; top:1em; right:1em;" (click)="cerrarDialogoCancelarTransferencia()"><span class="icon "><i class="fa fa-close"></i></span></a>
+      </header>
+      <section class="modal-card-body" style="padding:0px;" >
+          <div style="padding: 1em;" *ngIf="pedido">
+              La transferencia actual sera <strong>cancelada</strong>
+              <table class="table" *ngIf="pedido.datosImprimir">
+                  <thead>
+                  <tr><th>Folio</th><th>Nombre del Pedido</th><th>Fecha</th></tr>
+                  </thead>
+                  <tbody>
+                  <tr><td>{{pedido.datosImprimir.folio}}</td><td>{{pedido.datosImprimir.descripcion}}</td><td>{{pedido.datosImprimir.fecha}}</td></tr>
+                  </tbody>
+                  <thead>
+                  <tr><th>Almacén</th><th colspan="2">Observaciones:</th></tr>
+                  </thead>
+                  <tbody>
+                  <tr><td>{{pedido.datosImprimir.almacen_solicitante.nombre}}</td><td colspan="2">{{pedido.datosImprimir.observaciones}}</td></tr>
+                  </tbody>
+                  <thead>
+                      <tr><th colspan="3">Motivo(s) de la cancelación:</th></tr>
+                  </thead>
+                  <tbody>
+                      <tr><td colspan="3">
+                          <textarea class="textarea" placeholder="Motivo(s) de la cancelación"  [(ngModel)]="motivosCancelarTransferencia"></textarea>
+                      </td></tr>
+                  </tbody>
+              </table>
+          </div>
+      </section>
+      <footer class="" style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em " >
+          <span *ngIf="errorCancelarTransferencia" class="notification is-small is-danger is-inverted">{{errorCancelarTransferenciaTexto}}</span>
+          <button class="button is-medium is-danger is-pulled-right" [ngClass]="{'is-loading': cancelandoPedido}"  (click)="cancelarTransferencia()">
+              <span class="icon"><i class="fa fa-times"></i></span> &nbsp;Cancelar Transferencia
+          </button>
+      </footer>
+  </div>
+</div>
 
 
 <div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeError.mostrar">

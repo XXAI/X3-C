@@ -62,7 +62,8 @@ export class VerComponent implements OnInit {
             this.pedido.paginacion.resultadosPorPagina = 10;
             this.pedido.filtro.paginacion.resultadosPorPagina = 10;
 
-            let historial_por_claves = {}; //{ 'clave.insumo.medico': [{historial},{historial},{historial}] }
+            let historial_movimientos = [];
+            //let historial_por_claves = {}; //{ 'clave.insumo.medico': [{historial},{historial},{historial}] }
             if(pedido.historial_transferencia_completo.length > 0){
               for(let i in pedido.historial_transferencia_completo){
                 let historial = pedido.historial_transferencia_completo[i];
@@ -85,21 +86,25 @@ export class VerComponent implements OnInit {
                 }
 
                 if(status){
+                  let item_movimiento = {
+                    'estatus':status,
+                    'fecha_movimiento':movimiento.fecha_movimiento,
+                    'insumos':{}
+                  };
                   for(let j in movimiento.insumos){
                     let insumo = movimiento.insumos[j];
 
-                    if(!historial_por_claves[insumo.clave_insumo_medico]){
-                      historial_por_claves[insumo.clave_insumo_medico] = [];
+                    if(!item_movimiento.insumos[insumo.clave_insumo_medico]){
+                      item_movimiento.insumos[insumo.clave_insumo_medico] = [];
                     }
 
-                    historial_por_claves[insumo.clave_insumo_medico].push({
-                        'estatus':status,
-                        'fecha_movimiento':movimiento.fecha_movimiento,
-                        'lote':insumo.stock.lote,
-                        'fecha_caducidad':insumo.stock.fecha_caducidad,
-                        'cantidad':insumo.cantidad
+                    item_movimiento.insumos[insumo.clave_insumo_medico].push({
+                      'lote':insumo.stock.lote,
+                      'fecha_caducidad':insumo.stock.fecha_caducidad,
+                      'cantidad':insumo.cantidad
                     });
                   }
+                  historial_movimientos.push(item_movimiento);
                 }
               }
             }
@@ -168,15 +173,38 @@ export class VerComponent implements OnInit {
               let insumo = dato.insumos_con_descripcion;
              
               if (insumo != null){
-                //insumo.cantidad = +dato.cantidad_solicitada;
-                insumo.cantidad = +dato.cantidad_solicitada - +dato.cantidad_enviada;
-
                 insumo.cantidad_a_surtir = (+dato.cantidad_solicitada - +dato.cantidad_recibida); // + (+dato.cantidad_enviada - +dato.cantidad_recibida);
                 
                 insumo.cantidad_solicitada = +dato.cantidad_solicitada;
                 insumo.cantidad_enviada = +dato.cantidad_enviada;
                 insumo.cantidad_recibida = +dato.cantidad_recibida;
-                insumo.historial_lotes = historial_por_claves[insumo.clave];
+                insumo.historial_lotes = [];
+
+                for(let j in historial_movimientos){
+                  let movimiento = historial_movimientos[j];
+                  if(movimiento.insumos[insumo.clave]){
+                    let lotes = movimiento.insumos[insumo.clave];
+                    for(let k in lotes){
+                      insumo.historial_lotes.push({
+                        'estatus':movimiento.estatus,
+                        'fecha_movimiento':movimiento.fecha_movimiento,
+                        'lote':lotes[k].lote,
+                        'fecha_caducidad':lotes[k].fecha_caducidad,
+                        'cantidad':lotes[k].cantidad
+                      });
+                    }
+                  }else{
+                    if(movimiento.estatus == 'SURTIDO' || movimiento.estatus == 'RECIBIDO'){
+                      insumo.historial_lotes.push({
+                        'estatus':movimiento.estatus,
+                        'fecha_movimiento':movimiento.fecha_movimiento,
+                        'lote':'---',
+                        'fecha_caducidad':'---',
+                        'cantidad':0
+                      });
+                    }
+                  }
+                }
 
                 this.pedido.lista.push(insumo);
               }

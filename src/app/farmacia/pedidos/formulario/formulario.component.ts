@@ -192,10 +192,10 @@ export class FormularioComponent implements OnInit {
             let fecha_pedido = pedido.fecha.split('-');
             let mes_pedido = parseInt(fecha_pedido[1]);
             
-            if(fecha_pedido[0] != now.getFullYear()){
+            if(fecha_pedido[0] < now.getFullYear()){
               this.fechasValidas.push({fecha:fecha_pedido[0] + "-" + fecha_pedido[1] + "-" + fecha_pedido[2], descripcion: this.meses[mes_pedido] + " " + fecha_pedido[0]}); //fecha diferente año
-            }else if(mes_pedido < mes_actual){
-              this.fechasValidas.push({fecha:fecha_pedido[0] + "-" + fecha_pedido[1] + "-" + fecha_pedido[2], descripcion: this.meses[mes_pedido] + " " + fecha_pedido[0]}); //fecha anterior
+            }else if(mes_pedido < mes_actual && fecha_pedido[0] == now.getFullYear()){
+              this.fechasValidas.push({fecha:fecha_pedido[0] + "-" + fecha_pedido[1] + "-" + fecha_pedido[2], descripcion: this.meses[mes_pedido] + " " + fecha_pedido[0]}); //fecha anterior mismo año
             }
 
             if(mes_pedido == mes_actual && fecha_pedido[0] == now.getFullYear()){

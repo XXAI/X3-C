@@ -172,10 +172,11 @@
             <table class="table" *ngIf="!cargando && itemSeleccionado != null" style="font-size: 0.8em;" >
               <thead>
                   <tr style="background: #00d1b2;">
-                    <th colspan="5" style="color:#FFF !important; text-align:center;" >Movmientos</th>
+                    <th colspan="6" style="color:#FFF !important; text-align:center;" >Movmientos</th>
                   </tr>
                   <tr>
-                    <th>Estatus</th>
+                    <th width="1"></th>
+                    <th>Movmiento</th>
                     <th>Fecha</th>
                     <th>Lote</th>
                     <th>Caducidad</th>
@@ -192,10 +193,15 @@
               </tfoot-->
               <tbody>
                   <tr  class="is-unselectable" *ngFor="let item of itemSeleccionado.historial_lotes" [ngClass]="{'surtido': item.estatus == 'SURTIDO','recibido': item.estatus == 'RECIBIDO','reintegrado': item.estatus == 'REINTEGRADO','eliminado': item.estatus == 'ELIMINADO'}">
-                    <td>{{ item.estatus }}</td>
+                    <td>
+                        <small><span class="icon"><i class="fa" [ngClass]="{'fa-inbox': item.estatus == 'SURTIDO','fa-truck': item.estatus == 'RECIBIDO','fa-archive': item.estatus == 'REINTEGRADO','fa-times-circle': item.estatus == 'ELIMINADO'}"></i></span></small> 
+                    </td>
+                    <td>
+                      {{ item.estatus }}
+                    </td>
                     <td>{{ item.fecha_movimiento}}</td>
                     <td>{{ item.lote }}</td>
-                    <td>{{ item.fecha_caducidad | date:'dd/MM/y' }}</td>
+                    <td>{{ item.fecha_caducidad }}</td>
                     <td style="width:78px !important;">{{ item.cantidad | number }}</td>
                   </tr>    
               </tbody>  
