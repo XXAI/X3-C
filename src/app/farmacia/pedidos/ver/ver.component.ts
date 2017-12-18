@@ -65,8 +65,14 @@ export class VerComponent implements OnInit {
   dialogCancelarMeses: any[] = [];
   errorCancelarPedido: boolean = false;
   errorCancelarPedidoTexto: string = '';
-	cancelandoPedido:boolean = false;
-	
+  cancelandoPedido:boolean = false;
+  
+  errorCancelarTransferencia: boolean = false;
+  errorCancelarTransferenciaTexto: string = '';
+  mostrarCancelarTransferenciaDialogo: boolean = false;
+  motivosCancelarTransferencia: string = '';
+  
+  puedeCancelarTransferencia:boolean = false;
 
 	//Pedido alterno
 	errorGenerarPedidoAlterno: boolean = false;
@@ -207,6 +213,8 @@ export class VerComponent implements OnInit {
             this.pedido.recepcionPermitida = pedido.recepcion_permitida;
             this.pedido.tipo_pedido = pedido.tipo_pedido_id;
 
+            let enviado_sin_recibir = 0;
+
             for(let i in pedido.insumos){
               let dato = pedido.insumos[i];
               let insumo = dato.insumos_con_descripcion;
@@ -215,23 +223,27 @@ export class VerComponent implements OnInit {
               insumo.monto = +dato.monto_solicitado;
               insumo.monto_recibido = (+dato.monto_recibido||0);
 							insumo.precio = +dato.precio_unitario;
-							
+              
+              if(dato.cantidad_enviada){
+                enviado_sin_recibir += dato.cantidad_enviada - dato.cantidad_recibida;
+              }
+
 							//Akira: Tuve que agregar el tipo_insumo_id para cuando se cree el pedido alterno
 							insumo.tipo_insumo_id = dato.tipo_insumo_id;
 
               this.pedido.lista.push(insumo);
               //this.listaClaveAgregadas.push(insumo.clave);
               //let tipo_insumo = 'ST';
-              let tiene_iva = false;
+              
               let clave_tipo_insumo = 'SC';
               
               clave_tipo_insumo = dato.tipo_insumo.clave;
-              if(dato.tipo_insumo.clave == 'MC'){
-                tiene_iva = true;
-              }
               
-
               if(!this.subPedidos[clave_tipo_insumo]){
+                let tiene_iva = false;
+                if(dato.tipo_insumo.clave == 'MC'){
+                  tiene_iva = true;
+                }
                 this.tiposSubPedidos.push(clave_tipo_insumo);
                 this.cargandoPdf[clave_tipo_insumo] = false;
                 this.subPedidos[clave_tipo_insumo] = {
@@ -245,13 +257,27 @@ export class VerComponent implements OnInit {
                   'lista':[]
                 }
               }
+
               this.subPedidos[clave_tipo_insumo].claves++;
               this.subPedidos[clave_tipo_insumo].cantidad += insumo.cantidad;
               this.subPedidos[clave_tipo_insumo].monto += insumo.monto;
               this.subPedidos[clave_tipo_insumo].lista.push(insumo);
             }
 
-            //if(pedido.status != 'EF'){
+            if(pedido.tipo_pedido_id == 'PEA' && (pedido.status == 'ET' || pedido.status == 'SD')){
+              for(var i in pedido.historial_transferencia_completo){
+                let historial = pedido.historial_transferencia_completo[i];
+
+                if(historial.evento == 'CAPTURA PEA'){
+                  this.puedeCancelarTransferencia = true;
+                }else if(historial.evento == 'SURTIO PEA'){
+                  this.puedeCancelarTransferencia = false;
+                }else if(historial.evento == 'RECEPCION PEA' && enviado_sin_recibir == 0){
+                  this.puedeCancelarTransferencia = true;
+                }
+              }
+              this.puedeCancelarTransferencia = true;
+            }else{
               for(let i in pedido.recepciones){
                 if(pedido.recepciones[i].entrada){
                   if(pedido.recepciones[i].entrada.status == 'BR'){
@@ -259,7 +285,7 @@ export class VerComponent implements OnInit {
                   }
                 }
               }
-            //}
+            }
             
             pedido.insumos = undefined;
             this.pedido.indexar();
@@ -548,6 +574,13 @@ export class VerComponent implements OnInit {
     this.mostrarCancelarDialogo = true;
   }
 
+  mostrarDialogoCancelarTransferencia(){
+    this.errorCancelarTransferencia = false;
+    this.errorCancelarTransferenciaTexto = 'Ocurrio un error al intentar cancelar el pedido';
+    this.mostrarCancelarTransferenciaDialogo = true;
+    this.motivosCancelarTransferencia = '';
+  }
+
   mostrarDialogoPedidoAlternoPedido(){
     //
     this.mostrarPedidoAlternoDialogo = true;
@@ -575,6 +608,66 @@ export class VerComponent implements OnInit {
     }
   }
   
+  cancelarTransferencia(){
+    var validacion_palabra = prompt("Para confirmar esta transacción, por favor escriba: CANCELAR TRANSFERENCIA");
+    if(validacion_palabra == 'CANCELAR TRANSFERENCIA'){
+
+      if(this.motivosCancelarTransferencia == ''){
+        this.errorCancelarTransferencia = true;
+        this.errorCancelarTransferenciaTexto = "No se especificó ningún motivo.";
+        return false;
+      }
+
+      this.cancelandoPedido = true;
+      
+      let parametros = {motivos:this.motivosCancelarTransferencia};
+
+      this.pedidosService.cancelarTransferencia(this.pedido.datosImprimir.id,parametros).subscribe(
+        respuesta => {
+          //this.transaccion_clues_origen = {clues:''}; //"";
+          this.pedido.status = 'EX-CA';
+
+          this.cancelandoPedido = false;
+          this.mostrarCancelarTransferenciaDialogo = false;
+          this.errorCancelarTransferencia = false;
+          // Akira: Quizás aquí deberia limpiar el filtro pa ver el registro.
+        }, error =>{
+          console.log(error);
+          this.errorCancelarTransferencia = true;
+          this.cancelandoPedido = false;
+          this.mostrarCancelarTransferenciaDialogo = true;
+
+          try {
+
+            let e = error.json();
+
+            if (error.status == 401 ){
+              this.errorCancelarTransferenciaTexto = "No tiene permiso para esta acción.";
+            }
+            if (error.status == 500 ){
+              this.errorCancelarTransferenciaTexto = "500 (Error interno del servidor)";
+            }
+
+            if(e.error){
+              this.errorCancelarTransferenciaTexto = e.error;
+            }
+          } catch(e){
+
+            if (error.status == 500 ){
+              this.errorCancelarTransferenciaTexto = "500 (Error interno del servidor)";
+            } else {
+              this.errorCancelarTransferenciaTexto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }          
+          }
+        }
+      );
+    }else{
+      if(validacion_palabra != null){
+        alert("Error al ingresar el texto para confirmar la transferencia.");
+      }
+      return false;
+    }
+  }
 
   transferirRecurso(){
     var validacion_palabra = prompt("Para confirmar esta transacción, por favor escriba: CANCELAR PEDIDO");
@@ -635,6 +728,10 @@ export class VerComponent implements OnInit {
 
   cerrarDialogoCancelarPedido(){
     this.mostrarCancelarDialogo = false;
+  }
+
+  cerrarDialogoCancelarTransferencia(){
+    this.mostrarCancelarTransferenciaDialogo = false;
   }
 
   cerrarDialogoPedidoAlterno(){

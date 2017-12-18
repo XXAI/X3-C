@@ -20,8 +20,8 @@
 }
 
 .surtido{
-    background: hsl(141, 71%, 48%);
-    color: #FFF;
+    background: #c6f4d7;
+    color: #026b27;
 }
 
 .surtido:hover{
@@ -30,8 +30,8 @@
 }
 
 .recibido{
-    background: hsl(204, 86%, 53%);
-    color: #FFF;
+    background: #c3d8fc;
+    color: #0c5180;
 }
 
 .recibido:hover{
@@ -40,8 +40,8 @@
 }
 
 .reintegrado{
-    background: hsl(217, 71%, 53%);
-    color: #FFF;
+    background: #98b5f8;
+    color: #032982;
 }
 
 .reintegrado:hover{
@@ -50,8 +50,8 @@
 }
 
 .eliminado{
-    background: hsl(348, 100%, 61%);
-    color: #FFF;
+    background: #ea6f6f;
+    color: #84051e;
 }
 
 .eliminado:hover{

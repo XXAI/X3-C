@@ -13,7 +13,7 @@ export class TransferenciaAlmacenService {
   static readonly URL_STATS: string = "almacen/transferencias-stats";
   static readonly URL_CANCELAR: string = "cancelar-pedido-transferir";
   static readonly URL_GENERAR_ALTERNO: string = "generar-pedido-alterno";
-
+  static readonly URL_CANCELAR_TRANSFERENCIA: string = "cancelar-transferencia";
 
   //AKIRA:
 
@@ -85,6 +85,10 @@ export class TransferenciaAlmacenService {
     } else {
       return this.jwtRequest.put(TransferenciaAlmacenService.URL,id, parametros).map( (response: Response) => response.json().data) as Observable<any>;
     }
+  }
+
+  cancelarTransferencia(id:any, parametros:any = {}): Observable<any>{
+    return this.jwtRequest.put(TransferenciaAlmacenService.URL_CANCELAR_TRANSFERENCIA,id,parametros).map( (response: Response) => response.json().data) as Observable<any[]>;
   }
 
 }

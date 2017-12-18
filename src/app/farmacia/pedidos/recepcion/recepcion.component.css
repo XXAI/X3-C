@@ -35,3 +35,8 @@ tr.filtro th {
 
     .tile.notification { padding:0px !important; }
 }
+
+form{
+    overflow: auto;
+    padding: 0;
+}

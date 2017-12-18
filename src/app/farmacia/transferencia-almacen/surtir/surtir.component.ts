@@ -57,6 +57,14 @@ export class SurtirComponent implements OnInit {
   ultimaPeticion: any;
   // # FIN SECCION  
 
+  errorCancelarTransferencia: boolean = false;
+  errorCancelarTransferenciaTexto: string = '';
+  mostrarCancelarTransferenciaDialogo: boolean = false;
+  motivosCancelarTransferencia: string = '';
+  cancelandoPedido: boolean = false;
+
+  puedeCancelarTransferencia:boolean = false;
+
   pedido: Pedido; 
   private lotesSurtidos:any[] = [];
   private listaStock: any[] = [];  
@@ -1170,6 +1178,78 @@ export class SurtirComponent implements OnInit {
     }
     this.itemSeleccionado.totalStockAsignado = acumulado;
     this.itemSeleccionado.cantidad_a_surtir = this.itemSeleccionado.cantidad_solicitada - (acumulado + this.itemSeleccionado.cantidad_recibida);
+  }
+
+  mostrarDialogoCancelarTransferencia(){
+    this.errorCancelarTransferencia = false;
+    this.errorCancelarTransferenciaTexto = 'Ocurrio un error al intentar cancelar el pedido';
+    this.mostrarCancelarTransferenciaDialogo = true;
+    this.motivosCancelarTransferencia = '';
+  }
+
+  cerrarDialogoCancelarTransferencia(){
+    this.mostrarCancelarTransferenciaDialogo = false;
+  }
+
+  cancelarTransferencia(){
+    var validacion_palabra = prompt("Para confirmar esta transacción, por favor escriba: CANCELAR TRANSFERENCIA");
+    if(validacion_palabra == 'CANCELAR TRANSFERENCIA'){
+
+      if(this.motivosCancelarTransferencia == ''){
+        this.errorCancelarTransferencia = true;
+        this.errorCancelarTransferenciaTexto = "No se especificó ningún motivo.";
+        return false;
+      }
+
+      this.cancelandoPedido = true;
+      
+      let parametros = {motivos:this.motivosCancelarTransferencia};
+      
+      this.transferenciaAlmacenService.cancelarTransferencia(this.pedido.datosImprimir.id,parametros).subscribe(
+        respuesta => {
+          //this.transaccion_clues_origen = {clues:''}; //"";
+          this.pedido.status = 'EX-CA';
+
+          this.cancelandoPedido = false;
+          this.mostrarCancelarTransferenciaDialogo = false;
+          this.errorCancelarTransferencia = false;
+          // Akira: Quizás aquí deberia limpiar el filtro pa ver el registro.
+        }, error =>{
+          console.log(error);
+          this.errorCancelarTransferencia = true;
+          this.cancelandoPedido = false;
+          this.mostrarCancelarTransferenciaDialogo = true;
+
+          try {
+
+            let e = error.json();
+
+            if (error.status == 401 ){
+              this.errorCancelarTransferenciaTexto = "No tiene permiso para esta acción.";
+            }
+            if (error.status == 500 ){
+              this.errorCancelarTransferenciaTexto = "500 (Error interno del servidor)";
+            }
+
+            if(e.error){
+              this.errorCancelarTransferenciaTexto = e.error;
+            }
+          } catch(e){
+
+            if (error.status == 500 ){
+              this.errorCancelarTransferenciaTexto = "500 (Error interno del servidor)";
+            } else {
+              this.errorCancelarTransferenciaTexto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }          
+          }
+        }
+      );
+    }else{
+      if(validacion_palabra != null){
+        alert("Error al ingresar el texto para confirmar la transferencia.");
+      }
+      return false;
+    }
   }
 
   // # SECCION: Eventos del teclado

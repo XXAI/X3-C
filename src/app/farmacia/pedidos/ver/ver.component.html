@@ -116,6 +116,7 @@
                     <span class="icon"><i class="fa fa-file"></i></span><span>Recepciones: {{pedido.datosImprimir.recepciones.length}}</span>
                 </a-->
                 <a *ngIf="pedido.status == 'EX'" class="button is-danger is-pulled-right" (click)="mostrarDialogoCancelarPedido()"> <span class="icon"><i class="fa fa-ban"></i></span> <span>Cancelar Pedido</span></a>
+                <a *ngIf="pedido.tipo_pedido == 'PEA' && puedeCancelarTransferencia" class="button is-danger is-pulled-right" (click)="mostrarDialogoCancelarTransferencia()"> <span class="icon"><i class="fa fa-ban"></i></span> <span>Cancelar Transferencia</span></a>
                 <!--a *ngIf="pedido.status == 'EX'" class="button is-warning is-pulled-right" (click)="mostrarDialogoPedidoAlternoPedido()"> <span class="icon"><i class="fa fa-retweet"></i></span> <span>Pedido Alterno</span></a-->
             </div> 
 
@@ -407,6 +408,53 @@
         </button>
     </footer>
   </div>
+</div>
+
+<div class="modal is-active" [ngClass]="{'is-active': mostrarCancelarTransferenciaDialogo}">
+    <div class="modal-background" (click)="cerrarDialogoCancelarTransferencia()"></div>
+    <div class="modal-card" style="width:95%; height: auto;">
+        <header class="modal-card-head" style="background: #ff3860;">
+            <div class="container is-fluid"  style="width:100%;">
+                <h1 class="title" style="color:#FFF;">
+                <span class="icon is-medium"><i class="fa fa-ban"></i></span> Cancelar Transferencia 
+                </h1>
+            </div>            
+            <a class="button  is-danger" style="position:absolute; top:1em; right:1em;" (click)="cerrarDialogoCancelarTransferencia()"><span class="icon "><i class="fa fa-close"></i></span></a>
+        </header>
+        <section class="modal-card-body" style="padding:0px;" >
+            <div style="padding: 1em;">
+                La transferencia actual sera <strong>cancelada</strong>
+                <table class="table" *ngIf="pedido.datosImprimir">
+                    <thead>
+                    <tr><th>Folio</th><th>Nombre del Pedido</th><th>Fecha</th></tr>
+                    </thead>
+                    <tbody>
+                    <tr><td>{{pedido.datosImprimir.folio}}</td><td>{{pedido.datosImprimir.descripcion}}</td><td>{{pedido.datosImprimir.fecha}}</td></tr>
+                    </tbody>
+                    <thead>
+                    <tr><th>Almacén</th><th colspan="2">Observaciones:</th></tr>
+                    </thead>
+                    <tbody>
+                    <tr><td>{{pedido.datosImprimir.almacen_solicitante.nombre}}</td><td colspan="2">{{pedido.datosImprimir.observaciones}}</td></tr>
+                    </tbody>
+                    <thead>
+                        <tr><th colspan="3">Motivo(s) de la cancelación:</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="3">
+                            <textarea class="textarea" placeholder="Motivo(s) de la cancelación"  [(ngModel)]="motivosCancelarTransferencia"></textarea>
+                        </td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <footer class="" style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em " >
+            <span *ngIf="errorCancelarTransferencia" class="notification is-small is-danger is-inverted">{{errorCancelarTransferenciaTexto}}</span>
+            <button class="button is-medium is-danger is-pulled-right" [ngClass]="{'is-loading': cancelandoPedido}"  (click)="cancelarTransferencia()">
+                <span class="icon"><i class="fa fa-times"></i></span> &nbsp;Cancelar Transferencia
+            </button>
+        </footer>
+    </div>
 </div>
 
 <div class="modal is-active" [ngClass]="{'is-active': mostrarImprimirDialogo}">

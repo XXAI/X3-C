@@ -13,6 +13,7 @@ export class PedidosService {
   static readonly URL_STATS: string = "pedidos-stats";
   static readonly URL_PRESUPUESTO: string = "pedidos-presupuesto";
   static readonly URL_CANCELAR: string = "cancelar-pedido-transferir";
+  static readonly URL_CANCELAR_TRANSFERENCIA: string = "cancelar-transferencia";
   static readonly URL_GENERAR_ALTERNO: string = "generar-pedido-alterno";
   
   constructor(private http: Http,   private jwtRequest:JwtRequestService) { }
@@ -63,14 +64,16 @@ export class PedidosService {
     return this.jwtRequest.put(PedidosService.URL,id, pedido).map( (response: Response) => response.json().data) as Observable<Pedido>;
   } 
 
-  
-
   eliminar(id:any): Observable<Pedido> {
     return this.jwtRequest.delete('pedido-alteno',id).map( (response: Response) => response.json().data) as Observable<Pedido>;
   }
 
   cancelarPedidoTransferir(id:any, parametros:any = {}): Observable<any>{
     return this.jwtRequest.put(PedidosService.URL_CANCELAR,id,parametros).map( (response: Response) => response.json().data) as Observable<any[]>;
+  }
+
+  cancelarTransferencia(id:any, parametros:any = {}): Observable<any>{
+    return this.jwtRequest.put(PedidosService.URL_CANCELAR_TRANSFERENCIA,id,parametros).map( (response: Response) => response.json().data) as Observable<any[]>;
   }
 
   generarPedidoAlterno(id:any, parametros:any = {}): Observable<any>{
