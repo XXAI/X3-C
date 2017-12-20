@@ -89,7 +89,9 @@
                       </p>
                     </th>  
                     <th style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Cantidad">Cant.</abbr></th>                    
-                    <th></th>
+                    <th width="1">
+                      <!--a  class="button is-primary is-small" (click)="mostrarModalInsumos = true" [ngClass]="{ 'is-disabled' : guardando }"> <span class="icon"><i class="fa fa-plus"></i></span></a-->
+                    </th>
                   </tr>
               </thead>
               <tbody *ngIf="!pedido.filtro.activo">
@@ -279,6 +281,16 @@
     </div>
   </div>
 </div>
+
+<buscar-insumos 
+    *ngIf="mostrarModalInsumos" 
+    (onCerrar)="mostrarModalInsumos = false" 
+    (onEnviar)="agregarItem($event)" 
+    [listaAgregados]="listaClaveAgregadas" 
+    [listaAgregadosConClues]="listaClaveAgregadas" 
+    [conPrecios]="false"
+    [conClues]="false">
+</buscar-insumos>
 
 <div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeError.mostrar">
     <button class="delete" (click)="mensajeError.mostrar = false"></button>        

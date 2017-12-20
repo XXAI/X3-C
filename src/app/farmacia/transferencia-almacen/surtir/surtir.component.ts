@@ -50,6 +50,13 @@ export class SurtirComponent implements OnInit {
 
   marcarTodosStatus:boolean = false;
 
+  // # SECCION: Modal Insumos
+  mostrarModalInsumos = false;
+  
+  // Akira: Lo volvy tipo any en lugar de string porque en pedidos jurisdiccionales se agregan más datos :P
+  listaClaveAgregadas: any[] = [];
+  // # FIN SECCION
+
    // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
   mensajeAdvertencia: Mensaje = new Mensaje()
@@ -504,6 +511,10 @@ export class SurtirComponent implements OnInit {
         break;
       }
     }
+  }
+
+  agregarItem(item:any = {}){
+    return item;
   }
 
   seleccionarItem(item){  

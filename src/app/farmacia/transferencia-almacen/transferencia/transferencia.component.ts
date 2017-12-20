@@ -65,6 +65,13 @@ export class TransferenciaComponent implements OnInit {
     ultimaPeticion: any;
     // # FIN SECCION  
 
+    // # SECCION: Modal Insumos
+    mostrarModalInsumos = false;
+    
+    // Akira: Lo volvy tipo any en lugar de string porque en pedidos jurisdiccionales se agregan más datos :P
+    listaClaveAgregadas: any[] = [];
+    // # FIN SECCION
+
 
     private listaStock: any[] = [];  
 
@@ -219,8 +226,10 @@ export class TransferenciaComponent implements OnInit {
       }
     }
   
+    agregarItem(item:any = {}){
+      return item;
+    }
     
-  
     seleccionarItem(item){  
       this.itemSeleccionado = item; 
       this.buscarStockApi(null,item.clave)

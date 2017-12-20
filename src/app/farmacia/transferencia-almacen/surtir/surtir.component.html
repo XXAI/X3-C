@@ -391,6 +391,15 @@
   </div>
 </div>
 
+<buscar-insumos 
+    *ngIf="mostrarModalInsumos" 
+    (onCerrar)="mostrarModalInsumos = false" 
+    (onEnviar)="agregarItem($event)" 
+    [listaAgregados]="listaClaveAgregadas" 
+    [listaAgregadosConClues]="listaClaveAgregadas" 
+    [conPrecios]="false"
+    [conClues]="false">
+</buscar-insumos>
 
 <div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeError.mostrar">
     <button class="delete" (click)="mensajeError.mostrar = false"></button>        
