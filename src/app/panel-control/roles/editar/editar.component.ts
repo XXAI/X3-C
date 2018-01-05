@@ -12,8 +12,12 @@ import { Mensaje } from '../../../mensaje';
   styleUrls: ['./editar.component.css']
 })
 export class EditarComponent implements OnInit {
+  /**
+   * Calcula el tamaño de la pantalla
+   */
+  tamano = document.body.clientHeight;
 
-  private id:number = null;
+  id:number = null;
 
   cargando: boolean = false;
   enviando: boolean = false;
@@ -25,16 +29,16 @@ export class EditarComponent implements OnInit {
   ultimaPeticion:any;
   // # FIN SECCION
 
-  private errores = {
+  errores = {
     nombre: null,
     permisos: null,
   }
 
 
-  private permisos:any[] = [];
-  private todosSeleccionados: boolean = false;
+  permisos:any[] = [];
+  todosSeleccionados: boolean = false;
 
-  private rol: any = { nombre: '', permisos: [] }
+  rol: any = { nombre: '', permisos: [] }
 
 
 

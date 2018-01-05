@@ -28,6 +28,11 @@ export class FormularioComponent {
    * @type {string}
    */
   public articulos_term = `${environment.API_URL}/inventario-articulo-auto?term=:keyword&almacen=${this.usuario.almacen_activo.id}`;
+
+  tieneid: boolean = false;
+  tamano = document.body.clientHeight;
+
+  url_nuevo = '../../nuevo';
   constructor(
     private fb: FormBuilder,
     private crudService: CrudService,
@@ -35,10 +40,6 @@ export class FormularioComponent {
     private _sanitizer: DomSanitizer,
     private notificacion: NotificationsService) { }
 
-  private tieneid: boolean = false;
-  tamano = document.body.clientHeight;
-
-  url_nuevo = '../../nuevo';
 
   ngOnInit() {
 
@@ -207,7 +208,7 @@ export class FormularioComponent {
     this.calcular_importe_articulo();
   }
 
-  private time_cambio_cantidad;
+  time_cambio_cantidad;
   cambio_cantidad_key(event, index, articulos) {
     clearTimeout(this.time_cambio_cantidad);
     this.time_cambio_cantidad = setTimeout(() => {
@@ -215,7 +216,7 @@ export class FormularioComponent {
     }, 500);
   }
 
-  private time_cambio_precio_unitario;
+  time_cambio_precio_unitario;
   cambio_precio_unitario_key(event, articulos) {
     if (event.key != 'Backspace' && event.key != 'Delete' && event.key != 'ArrowLeft' && event.key != 'ArrowRight' && event.key != 'ArrowUp' && event.key != 'ArrowDown' && event.key != '.') {
       clearTimeout(this.time_cambio_precio_unitario);

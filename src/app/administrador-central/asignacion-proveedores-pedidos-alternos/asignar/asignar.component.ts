@@ -77,10 +77,10 @@ export class AsignarComponent implements OnInit {
 
 	//Harima: para ver si el formulaior es para crear o para editar
 	formularioTitulo:string = 'Nuevo';
-	private esEditar:boolean = false;
+	esEditar:boolean = false;
 	
 	// # SECCION: Modal Insumos
-	private mostrarModalInsumos = false;
+	mostrarModalInsumos = false;
 	//Harima: Lista de claves agregadas al pedido, para checar duplicidad
 	//listaClaveAgregadas: Array<string> = [];
 	// # FIN SECCION
@@ -93,12 +93,12 @@ export class AsignarComponent implements OnInit {
 	// # FIN SECCION
 
 	// # SECCION: Reportes
-	private pdfworker:Worker;
+	pdfworker:Worker;
 	cargandoPdf:any = {};
 	errorEnPDF:boolean = false;
 	// # FIN SECCION
 
-	private cambiarEntornoSuscription: Subscription;
+	cambiarEntornoSuscription: Subscription;
 
   constructor(
 		private title: Title, 
@@ -111,6 +111,9 @@ export class AsignarComponent implements OnInit {
 		private cambiarEntornoService:CambiarEntornoService
   ) { }
 
+  /**
+   * Método que inicializa y obtiene valores para el funcionamiento del componente.
+   */
   ngOnInit() {
 
     this.asignacion = this.fb.group({

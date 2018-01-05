@@ -35,7 +35,7 @@ export class ListaComponent implements OnInit {
   cargandoActa: boolean = false;
 
  
-  private pdfworker:Worker;
+  pdfworker:Worker;
   errorPDFActa:boolean = false;
 
   // # SECCION: Esta sección es para mostrar mensajes
@@ -50,26 +50,26 @@ export class ListaComponent implements OnInit {
 
   pedidos: Pedido[] = [];
   presupuesto:any = false;
-  private paginaActual = 1;
+  paginaActual = 1;
   resultadosPorPagina = 10;
   total = 0;
-  private paginasTotales = 0;
-  private indicePaginas:number[] = []
+  paginasTotales = 0;
+  indicePaginas:number[] = []
   // # FIN SECCION
 
   // # SECCION: Resultados de búsqueda
-  private ultimoTerminoBuscado = "";
-  private terminosBusqueda = new Subject<string>();
-  private resultadosBusqueda: Pedido[] = [];
+  ultimoTerminoBuscado = "";
+  terminosBusqueda = new Subject<string>();
+  resultadosBusqueda: Pedido[] = [];
   busquedaActivada:boolean = false;
-  private paginaActualBusqueda = 1;
+  paginaActualBusqueda = 1;
   resultadosPorPaginaBusqueda = 10;
   totalBusqueda = 0;
-  private paginasTotalesBusqueda = 0;
-  private indicePaginasBusqueda:number[] = []
+  paginasTotalesBusqueda = 0;
+  indicePaginasBusqueda:number[] = []
   // # FIN SECCION
 
-  private cambiarEntornoSuscription: Subscription;
+  cambiarEntornoSuscription: Subscription;
 
   constructor(private title: Title, private route: ActivatedRoute, private apiService: ActasService, private pedidosService: PedidosService, private cambiarEntornoService:CambiarEntornoService, private _ngZone: NgZone, ) { }
 

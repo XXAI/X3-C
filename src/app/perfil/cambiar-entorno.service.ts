@@ -4,7 +4,7 @@ import { Subject }    from 'rxjs/Subject';
 @Injectable()
 export class CambiarEntornoService {
 
-  private cambiarEntornoSource = new Subject<boolean>();
+  cambiarEntornoSource = new Subject<boolean>();
 
     entornoCambiado$ = this.cambiarEntornoSource.asObservable();
     

@@ -11,7 +11,9 @@ import  * as FileSaver    from 'file-saver';
 
 import { Mensaje } from '../../../mensaje';
 import { NotificationsService } from 'angular2-notifications';
-
+/**
+ * Componente que muestra el formulario para crear una entrada estandar.
+ */
 @Component({
   selector: 'salidas-estandar-formulario',
   templateUrl: './formulario.component.html',

@@ -7,10 +7,13 @@ import {Router} from '@angular/router';
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent implements OnInit {
-  private mostrarMenuAside: boolean = false;
-  private usuario: any = {};
+  mostrarMenuAside: boolean = false;
+  usuario: any = {};
   constructor() { }
 
+  /**
+   * Método que inicializa y obtiene valores para el funcionamiento del componente.
+   */
   ngOnInit() {
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
   }

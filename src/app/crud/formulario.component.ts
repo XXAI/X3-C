@@ -40,14 +40,14 @@ export class FormularioComponent implements OnInit {
     borrarCargando: boolean = false;
     tamano = document.body.clientHeight;
 
-    private id: string;
-    private moduloTitulo: string;
-    private datosCargados: boolean = true;
-    private cargando: boolean = false;
-    private cambiarPassword: boolean = false;
+    id: string;
+    moduloTitulo: string;
+    datosCargados: boolean = true;
+    cargando: boolean = false;
+    cambiarPassword: boolean = false;
 
-    private derecha: any[] = [];
-    private izquierda: any[] = [];
+    derecha: any[] = [];
+    izquierda: any[] = [];
     // Crear la variable que mustra las notificaciones
     mensajeResponse: Mensaje = new Mensaje()
 
@@ -614,8 +614,8 @@ export class FormularioComponent implements OnInit {
     }
 
 
-    private cargarDatosCatalogo: boolean = false;
-    private catalogo: any[] = []; roles: any[] = [];
+    cargarDatosCatalogo: boolean = false;
+    catalogo: any[] = []; roles: any[] = [];
     /**
      * Este metodo se encarga de cargar los datos de un catalogo para crear un select, grupos de radios o check
      * @param item nombre del modelo donde se guardaron los resultados
@@ -812,7 +812,7 @@ export class FormularioComponent implements OnInit {
      * @param esmodelo Bandera que determina si el modelo es un formGroup
      * @return void
      */
-    private modelo = [];
+    modelo = [];
     addInFormArray(valor, modelo, key, esmodelo: boolean = false) {
         if (!this.modelo[key]) {
             this.modelo[key] = modelo.value;
@@ -1045,7 +1045,7 @@ ofModelo
         modelo.removeAt(i);
     }
 
-    private error_archivo = false;
+    error_archivo = false;
     /**
      * Este método selecciona una imagen de un campo file <input type="file" (change)="seleccionarImagenBase64($event, 'modelo')">
      * @param evt Evento change del campo file
@@ -1091,7 +1091,7 @@ ofModelo
             modelo.patchValue(objeto);
         }
     }
-    private error_json = false;
+    error_json = false;
     /**
      * Este método selecciona un archivo txt con un json para subirlo <input type="file" (change)="seleccionarJson($event, 'modelo')">
      * @param evt Evento change del campo file

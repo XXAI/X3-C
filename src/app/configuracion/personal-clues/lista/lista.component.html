@@ -1,4 +1,4 @@
-<listar #ctrl URL="personal-clues" titulo="Personal Clues"></listar>
+<listar #ctrl URL="personal-clues?clues={{clues_actual}}" titulo="Personal Clues"></listar>
 <panel-control-menu></panel-control-menu>
 <div style="height:50px;"></div>
 <div class="contenedor columns " style="height:95%; ">
@@ -50,7 +50,7 @@
                                     class="is-danger" (click)="ctrl.eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>
 
                         </tr>
-                        <tr *ngIf="ctrl.dato ">
+                        <tr *ngIf="ctrl.dato.length == 0">
                             <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>
                         </tr>
                     </tbody>

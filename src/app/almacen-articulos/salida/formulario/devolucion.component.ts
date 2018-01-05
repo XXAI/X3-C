@@ -24,7 +24,7 @@ export class DevolucionComponent {
   public articulos_term: string = `${environment.API_URL}/articulos-auto?term=:keyword`;
   constructor(private fb: FormBuilder, private crudService: CrudService, private route: ActivatedRoute, private _sanitizer: DomSanitizer, private notificacion: NotificationsService) { }
 
-  private tieneid: boolean = false;
+  tieneid: boolean = false;
   tamano = document.body.clientHeight;
 
   public startValue: string;
@@ -225,7 +225,7 @@ export class DevolucionComponent {
     this.calcular_importe_articulo();  
   }
  
-  private time_cambio_cantidad_articulo_key;
+  time_cambio_cantidad_articulo_key;
   cambio_cantidad_articulo_key(event, articulo) {
     if (event.key != 'Backspace' && event.key != 'Delete' && event.key != 'ArrowLeft' && event.key != 'ArrowRight' &&event.key !=  'ArrowUp' && event.key != 'ArrowDown' && event.key != '.' ) {      
       clearTimeout(this.time_cambio_cantidad_articulo_key);
@@ -310,7 +310,7 @@ export class DevolucionComponent {
   }
 
  
-  private time_pago;
+  time_pago;
   validar_cantidad_pago(event, modelo, cantidad, tipo, i) {
     if (event.key != 'Backspace' && event.key != 'Delete' && event.key != 'ArrowLeft' && event.key != 'ArrowRight' &&event.key !=  'ArrowUp' && event.key != 'ArrowDown' && event.key != '.' ) {
       clearTimeout(this.time_pago);

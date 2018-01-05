@@ -49,7 +49,7 @@ export class RecepcionComponent implements OnInit {
   erroresFormularioStock:any = {cantidad:{error:false}, lote:{error:false}, fecha_caducidad:{error:false}};
 
   public formularioRecepcion: FormGroup;
-  private fb:FormBuilder;
+  fb:FormBuilder;
 
   statusRecepcion: string = 'NV';
 
@@ -60,16 +60,16 @@ export class RecepcionComponent implements OnInit {
   ultimaPeticion: any;
   // # FIN SECCION  
 
-  //private marcas = [{id:1,nombre:'Sin Especificar'}];
+  //marcas = [{id:1,nombre:'Sin Especificar'}];
   formStock: any = {};
   pedido: Pedido; 
-  private lotesSurtidos:any[] = [];
-  private listaStock: any[] = [];  
-  private claveInsumoSeleccionado:string = null;
-  private claveNoSolicitada:boolean = false;
-  private itemSeleccionado: any = null;
+  lotesSurtidos:any[] = [];
+  listaStock: any[] = [];  
+  claveInsumoSeleccionado:string = null;
+  claveNoSolicitada:boolean = false;
+  itemSeleccionado: any = null;
 
-  private cambiarEntornoSuscription: Subscription;
+  cambiarEntornoSuscription: Subscription;
   
   constructor(private title: Title, private route:ActivatedRoute, private pedidosService:PedidosService, private recepcionService:RecepcionService, private stockService:StockService, private router: Router, private cambiarEntornoService:CambiarEntornoService) {
     this.fb  = new FormBuilder();

@@ -171,9 +171,10 @@
                     <div class="hero-body">
                         <nav class="level">
                             <div class="level-left"></div>
-                            <!-- Right side -->
+                            <!-- Right side 
+                                (click)="ctrl.regresar()"-->
                             <div class="level-right">
-                                <p class="level-item"><a class="button is-primary" (click)="ctrl.regresar()">Regresar</a></p>
+                                <p class="level-item"><a class="button is-primary" routerLink="/almacen/salidas-estandar">Regresar</a></p>
                                 <p class="level-item" *ngIf="tieneid"><a class="button is-primary" routerLink="/almacen/salidas-estandar/nuevo" *ngIf="!ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva salida</span></a></p>
                                 <p class="level-item" *ngIf="tieneid"><a *ngIf="tieneid" class="button is-primary" (click)="array_servicios = ctrl.servicios; array_turnos = ctrl.turnos; imprimir();"><span class="icon"><i class="fa fa-print"></i></span></a></p>
                                 <p class="level-item" *ngIf="!tieneid">

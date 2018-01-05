@@ -11,17 +11,17 @@ export class FormularioOpcionesComponent {
    * Contiene el nombre de la carpeta/hub donde se encuentra.
    * @type {string}
    */
-  private carpeta;
+  carpeta;
   /**
    * Contiene el nombre del módulo donde se encuentra.
    * @type {string}
    */
-  private modulo;
+  modulo;
   /**
    * Contiene la ruta para crear un registro nuevo.
    * @type {string}
    */
-  private url_nuevo;
+  url_nuevo;
 
   ngOnInit() {
     let url = location.href.split('/');

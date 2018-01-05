@@ -7,8 +7,8 @@ import {Router} from '@angular/router';
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent implements OnInit {
-  private mostrarMenuAside: boolean = false;
-  private usuario: any = {};
+  mostrarMenuAside: boolean = false;
+  usuario: any = {};
   constructor() { }
 
   ngOnInit() {

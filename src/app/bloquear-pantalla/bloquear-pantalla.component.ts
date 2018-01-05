@@ -22,7 +22,7 @@ export class BloquearPantallaComponent implements OnInit {
 
   mostrar:Boolean;
   
-  private bloquearPantallaSuscription: Subscription;
+  bloquearPantallaSuscription: Subscription;
   
 
   constructor(
@@ -42,6 +42,9 @@ export class BloquearPantallaComponent implements OnInit {
     });
   }
 
+  /**
+   * Método que inicializa y obtiene valores para el funcionamiento del componente.
+   */
   ngOnInit() { 
     let bloquear = localStorage.getItem("bloquear_pantalla"); 
     if(bloquear != null){

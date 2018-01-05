@@ -9,7 +9,9 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 export class FormularioComponent {
   dato: FormGroup;
   constructor(private fb: FormBuilder) { }
-
+  /**
+   * Método que inicializa y obtiene valores para el funcionamiento del componente.
+   */
   ngOnInit() {
     this.dato = this.fb.group({
       id: [''],      

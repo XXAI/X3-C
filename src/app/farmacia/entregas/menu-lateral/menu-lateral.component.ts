@@ -22,7 +22,7 @@ export class MenuLateralComponent implements OnInit {
 
 
   // # SECCION: Cambios de Entorno
-  private cambiarEntornoSuscription: Subscription;
+  cambiarEntornoSuscription: Subscription;
   // # FIN SECCION
 
   constructor( private entregasService: EntregasService, private cambiarEntornoService:CambiarEntornoService) { }

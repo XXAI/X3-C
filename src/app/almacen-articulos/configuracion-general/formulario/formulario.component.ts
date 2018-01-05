@@ -7,14 +7,21 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 
 export class FormularioComponent {
   dato: FormGroup;
-  private tab = 1;
-  private tamano = document.body.clientHeight;
+  tab = 1;
+  tamano = document.body.clientHeight;
 
-  private CkeditorConfig = {
-    height:document.body.clientHeight - 460
-  }
+  CkeditorConfig = {
+    height: document.body.clientHeight - 460
+  };
+  /**
+   * Este método inicializa la carga de las dependencias
+   * que se necesitan para el funcionamiento del modulo
+   */
   constructor(private fb: FormBuilder) { }
 
+  /**
+   * Método que inicializa y obtiene valores para el funcionamiento del componente.
+   */
   ngOnInit() {
     this.dato = this.fb.group({
       id: [1],

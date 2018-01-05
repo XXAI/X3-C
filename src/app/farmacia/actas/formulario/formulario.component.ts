@@ -15,7 +15,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/catch';
 
-import  * as FileSaver    from 'file-saver'; 
+import  * as FileSaver    from 'file-saver';
 
 import { Mensaje } from '../../../mensaje';
 
@@ -42,12 +42,12 @@ export class FormularioComponent implements OnInit {
   mensajeAdvertencia: Mensaje = new Mensaje()
   mensajeExito: Mensaje = new Mensaje();
   ultimaPeticion: any;
-  // # FIN SECCION  
+  // # FIN SECCION
 
   //Harima: para ver si el formulaior es para crear o para editar
   formularioTitulo:string = 'Nuevo';
   esEditar:boolean = false;
-  
+
   // # SECCION: Modal Insumos
   mostrarModalInsumos = false;
   //Harima: Lista de claves agregadas al pedido, para checar duplicidad
@@ -59,44 +59,47 @@ export class FormularioComponent implements OnInit {
   almacenes: Almacen[];
 
   // Los pedidos tienen que ser en un array por si se va a generar mas de un pedido de golpe
-  pedidos: Pedido[] = []; 
+  pedidos: Pedido[] = [];
   // esta variable es para saber el pedido seleccionado (por si hay mas)
-  pedidoActivo:number = 0; 
-  
+  pedidoActivo:number = 0;
+
   // # FIN SECCION
 
 
   // # SECCION: Reportes
-  private pdfworker:Worker;
+  pdfworker:Worker;
   cargandoPdf:boolean = false;
   // # FIN SECCION
 
 
   constructor(
-    private title: Title, 
-    private location: Location, 
+    private title: Title,
+    private location: Location,
     private router: Router,
     private route: ActivatedRoute,
-    private _ngZone: NgZone, 
+    private _ngZone: NgZone,
     private actasService: ActasService,
     private almacenesService: AlmacenesService,
     private fb: FormBuilder
   ) { }
 
+  /**
+   * Método que inicializa y obtiene valores para el funcionamiento del componente.
+   */
   ngOnInit() {
     this.title.setTitle('Nuevo pedido / Farmacia');
 
     // Inicializamos el objeto para los reportes con web Webworkers
     this.pdfworker = new Worker("web-workers/farmacia/pedidos/imprimir.js")
-    
+
     // Este es un hack para poder usar variables del componente dentro de una funcion del worker
-    var self = this;    
+    var self = this;
     var $ngZone = this._ngZone;
 
     //Harima:cargamos catalogos
     this.cargarAlmacenes();
 
-    this.pdfworker.onmessage = function( evt ) {       
+    this.pdfworker.onmessage = function( evt ) {
       // Esto es un hack porque estamos fuera de contexto dentro del worker
       // Y se usa esto para actualizar alginas variables
       $ngZone.run(() => {
@@ -113,7 +116,7 @@ export class FormularioComponent implements OnInit {
       });
       console.log(e)
     };
-    
+
     // Inicialicemos el pedido
     this.pedidos.push(new Pedido(true) );
 
@@ -153,14 +156,14 @@ export class FormularioComponent implements OnInit {
               if (error.status == 401 ){
                 this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
               }
-              
+
             } catch(e){
-                          
+
               if (error.status == 500 ){
                 this.mensajeError.texto = "500 (Error interno del servidor)";
               } else {
                 this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
-              }            
+              }
             }
           }
         );
@@ -190,16 +193,16 @@ export class FormularioComponent implements OnInit {
   }
 
   // # SECCION Funciones globales
-  
+
   agregarItem(item:any = {}){
     let auxPaginasTotales = this.pedidos[this.pedidoActivo].paginacion.totalPaginas;
-   
+
     this.pedidos[this.pedidoActivo].lista.push(item);
-    
+
     this.pedidos[this.pedidoActivo].indexar();
 
     // El siguiente proceso es para cambiar de página automáticamente si se encuentra en la última.
-    
+
     if(this.pedidos[this.pedidoActivo].paginacion.lista.length == this.pedidos[this.pedidoActivo].paginacion.resultadosPorPagina
       && this.pedidos[this.pedidoActivo].paginacion.paginaActual == auxPaginasTotales
       && !this.pedidos[this.pedidoActivo].filtro.activo){
@@ -207,11 +210,11 @@ export class FormularioComponent implements OnInit {
     } else {
       this.pedidos[this.pedidoActivo].listar(this.pedidos[this.pedidoActivo].paginacion.paginaActual);
     }
-    
+
   }
-  
+
   buscar(e: KeyboardEvent, input:HTMLInputElement, inputAnterior: HTMLInputElement,  parametros:any[]){
-    
+
     let term = input.value;
 
     // Quitamos la busqueda
@@ -222,25 +225,25 @@ export class FormularioComponent implements OnInit {
       inputAnterior.value = "";
 
       this.pedidos[this.pedidoActivo].filtro.activo = false;
-      this.pedidos[this.pedidoActivo].filtro.lista = [];      
+      this.pedidos[this.pedidoActivo].filtro.lista = [];
 
-      return;      
+      return;
     }
 
-    
+
     //Verificamos que la busqueda no sea la misma que la anterior para no filtrar en vano
     if(inputAnterior.value == term){
-      
+
       return
     }
 
     e.preventDefault();
     e.stopPropagation();
 
-    inputAnterior.value = term;    
+    inputAnterior.value = term;
 
     if(term != ""){
-      this.pedidos[this.pedidoActivo].filtro.activo = true;      
+      this.pedidos[this.pedidoActivo].filtro.activo = true;
     } else {
       this.pedidos[this.pedidoActivo].filtro.activo = false;
       this.pedidos[this.pedidoActivo].filtro.lista = [];
@@ -254,38 +257,38 @@ export class FormularioComponent implements OnInit {
       if(termino == ""){
         continue;
       }
-            
-      let listaFiltrada = this.pedidos[this.pedidoActivo].lista.filter((item)=> {   
+
+      let listaFiltrada = this.pedidos[this.pedidoActivo].lista.filter((item)=> {
         var cadena = "";
         let campos = parametros[i].campos;
         for (let l in campos){
           try{
             // Esto es por si escribieron algo como "objeto.propiedad" en lugar de: "propiedad"
-            let prop = campos[l].split(".");            
+            let prop = campos[l].split(".");
             if (prop.length > 1){
               cadena += " " + item[prop[0]][prop[1]].toLowerCase();
             } else {
                cadena += " " + item[campos[l]].toLowerCase();
             }
-           
+
           } catch(e){}
-          
+
         }
         return cadena.includes(termino.toLowerCase())
       });
 
       arregloResultados.push(listaFiltrada)
     }
-    
+
     if(arregloResultados.length > 1 ){
       // Ordenamos Ascendente
 
       arregloResultados = arregloResultados.sort( function(a,b){ return  a.length - b.length });
-      
+
       var filtro = arregloResultados[0];
       var match: any[] = [];
       for(let k = 1; k <  arregloResultados.length ; k++){
-        
+
         for(let i in arregloResultados[k]){
           for(let j in filtro){
             if(arregloResultados[k][i] === filtro[j]){
@@ -301,9 +304,9 @@ export class FormularioComponent implements OnInit {
 
 
     this.pedidos[this.pedidoActivo].filtro.indexar(false);
-    
+
     this.pedidos[this.pedidoActivo].filtro.paginacion.paginaActual = 1;
-    this.pedidos[this.pedidoActivo].filtro.listar(1); 
+    this.pedidos[this.pedidoActivo].filtro.listar(1);
 
   }
 
@@ -383,7 +386,7 @@ export class FormularioComponent implements OnInit {
                     if(input == 'id' && e.error[input][i] == 'email'){
                       this.usuarioInvalido = true;
                     }
-                  }                      
+                  }
                 }*/
               }
           }catch(e){
@@ -430,7 +433,7 @@ export class FormularioComponent implements OnInit {
                     if(input == 'id' && e.error[input][i] == 'email'){
                       this.usuarioInvalido = true;
                     }
-                  }                      
+                  }
                 }*/
               }
           }catch(e){
@@ -469,7 +472,7 @@ export class FormularioComponent implements OnInit {
         },
         error => {
           this.cargandoAlmacenes = false;
-          
+
           this.mensajeError = new Mensaje(true);
           this.mensajeError.texto = "No especificado.";
           this.mensajeError.mostrar = true;
@@ -491,7 +494,7 @@ export class FormularioComponent implements OnInit {
               this.mensajeError.texto = "500 (Error interno del servidor). No se pudieron cargar los almacenes";
             } else {
               this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.  No se pudieron cargar los almacenes";
-            }          
+            }
           }
 
         }
@@ -500,11 +503,11 @@ export class FormularioComponent implements OnInit {
 
   // # SECCION: Eventos del teclado
   keyboardInput(e: KeyboardEvent) {
-    
+
     if(e.keyCode == 32 &&  e.ctrlKey){ // Ctrl + barra espaciadora
       event.preventDefault();
       event.stopPropagation();
-      
+
       this.mostrarModalInsumos = true;
     }
 
@@ -518,11 +521,11 @@ export class FormularioComponent implements OnInit {
       } else {
         this.pedidos[this.pedidoActivo].filtro.paginaSiguiente();
       }
-      
+
     }
     // Cambiar página hacia adelante ctrl + shift + <-
     if (e.keyCode == 37 && ((e.ctrlKey && e.shiftKey) || e.ctrlKey )){
-      
+
       event.preventDefault();
       event.stopPropagation();
 
@@ -531,10 +534,10 @@ export class FormularioComponent implements OnInit {
       } else {
         this.pedidos[this.pedidoActivo].filtro.paginaAnterior();
       }
-      
+
     }
-    
-        
+
+
   }
 
   // # SECCION - Webworkers
@@ -552,7 +555,7 @@ export class FormularioComponent implements OnInit {
       this.cargandoPdf = false;
       console.log(e);
     }
-    
+
   }
 
   base64ToBlob( base64, type ) {

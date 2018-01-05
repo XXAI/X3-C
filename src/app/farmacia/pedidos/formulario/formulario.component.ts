@@ -80,9 +80,9 @@ export class FormularioComponent implements OnInit {
 
   // # SECCION: Pedido
   almacenes: Almacen[];
-  private presupuesto:any = {causes_disponible:0,no_causes_disponible:0,material_curacion_disponible:0};
-  private mes:number = 0;
-  private subrogados: {} = {};
+  presupuesto:any = {causes_disponible:0,no_causes_disponible:0,material_curacion_disponible:0};
+  mes:number = 0;
+  subrogados: {} = {};
   es_almacen_subrogado: boolean = false;
   almacenSeleccionado: any = {};
 
@@ -94,8 +94,8 @@ export class FormularioComponent implements OnInit {
   // # FIN SECCION
 
   // # SECCION: Reportes
-  private pdfworker:Worker;
-  private cargandoPdf:boolean = false;
+  pdfworker:Worker;
+  cargandoPdf:boolean = false;
   // # FIN SECCION
 
   // ######### PEDIDOS JURISDICCIONALES #########
@@ -105,7 +105,7 @@ export class FormularioComponent implements OnInit {
 
   // ############################################
 
-  private cambiarEntornoSuscription: Subscription;
+  cambiarEntornoSuscription: Subscription;
 
   constructor(
     private title: Title, 

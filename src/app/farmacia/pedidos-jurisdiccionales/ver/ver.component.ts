@@ -52,24 +52,24 @@ export class VerComponent implements OnInit {
 
   //Harima: para ver si el formulaior es para crear o para editar
   formularioTitulo:string = 'Nuevo';
-  private esEditar:boolean = false;
+  esEditar:boolean = false;
   
   // # SECCION: Modal Insumos
-  private mostrarModalInsumos = false;
+  mostrarModalInsumos = false;
   //Harima: Lista de claves agregadas al pedido, para checar duplicidad
   //listaClaveAgregadas: Array<string> = [];
   // # FIN SECCION
 
   // # SECCION: Pedido
 
-  private almacenes: Almacen[];
+  almacenes: Almacen[];
   pedido: Pedido;
   
   // # FIN SECCION
 
 
   // # SECCION: Reportes
-  private pdfworker:Worker;
+  pdfworker:Worker;
   cargandoPdf:boolean = false;
   // # FIN SECCION
 

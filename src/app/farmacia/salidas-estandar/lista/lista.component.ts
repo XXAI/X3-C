@@ -4,7 +4,7 @@ import  * as FileSaver    from 'file-saver';
 
 /**
  * Componente que lista las salidas estandar.
- */
+ */ 
 @Component({
   selector: 'app-salidas-estandar-lista',
   templateUrl: './lista-estandar.component.html'

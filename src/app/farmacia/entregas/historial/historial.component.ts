@@ -35,37 +35,40 @@ export class HistorialComponent implements OnInit {
   // # FIN SECCION
 
   // # SECCION: Lista
-  
+
   titulo: string = "Historial";
   icono: string = "f";
   pedidos: Pedido[] = [];
-  private paginaActual = 1;
+  paginaActual = 1;
   resultadosPorPagina = 5;
   total = 0;
-  private paginasTotales = 0;
-  private indicePaginas:number[] = []
+  paginasTotales = 0;
+  indicePaginas:number[] = []
   // # FIN SECCION
 
   // # SECCION: Resultados de búsqueda
-  private ultimoTerminoBuscado = "";
-  private terminosBusqueda = new Subject<string>();
-  private resultadosBusqueda: Pedido[] = [];
+  ultimoTerminoBuscado = "";
+  terminosBusqueda = new Subject<string>();
+  resultadosBusqueda: Pedido[] = [];
   busquedaActivada:boolean = false;
-  private paginaActualBusqueda = 1;
+  paginaActualBusqueda = 1;
   resultadosPorPaginaBusqueda = 5;
   totalBusqueda = 0;
-  private paginasTotalesBusqueda = 0;
-  private indicePaginasBusqueda:number[] = []
+  paginasTotalesBusqueda = 0;
+  indicePaginasBusqueda:number[] = []
   // # FIN SECCION
 
   constructor(private title: Title, private route:ActivatedRoute, private entregasService: EntregasService) { }
 
+  /**
+   * Método que inicializa y obtiene valores para el funcionamiento del componente.
+   */
   ngOnInit() {
-    
-  
+
+
 
     this.title.setTitle("Historial de entregas / Farmacia");
-    
+
 
     this.listar(1);
     this.mensajeError = new Mensaje();
@@ -76,20 +79,20 @@ export class HistorialComponent implements OnInit {
     var busquedaSubject = this.terminosBusqueda
     .debounceTime(300) // Esperamos 300 ms pausando eventos
     .distinctUntilChanged() // Ignorar si la busqueda es la misma que la ultima
-    .switchMap((term:string)  =>  { 
+    .switchMap((term:string)  =>  {
       console.log("Cargando búsqueda.");
       this.busquedaActivada = term != "" ? true: false;
 
       this.ultimoTerminoBuscado = term;
       this.paginaActualBusqueda = 1;
       this.cargando = true;
-      return term  ? this.entregasService.buscar(null, term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]}) 
+      return term  ? this.entregasService.buscar(null, term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda) : Observable.of<any>({data:[]})
     }
-      
-    
-    ).catch( function handleError(error){ 
-     
-      self.cargando = false;      
+
+
+    ).catch( function handleError(error){
+
+      self.cargando = false;
       self.mensajeError.mostrar = true;
       self.ultimaPeticion = function(){self.listarBusqueda(self.ultimoTerminoBuscado,self.paginaActualBusqueda);};//OJO
       try {
@@ -99,16 +102,16 @@ export class HistorialComponent implements OnInit {
         }
       } catch(e){
         console.log("No se puede interpretar el error");
-        
+
         if (error.status == 500 ){
           self.mensajeError.texto = "500 (Error interno del servidor)";
         } else {
           self.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
-        }            
+        }
       }
-      // Devolvemos el subject porque si no se detiene el funcionamiento del stream 
+      // Devolvemos el subject porque si no se detiene el funcionamiento del stream
       return busquedaSubject
-    
+
     });
 
     busquedaSubject.subscribe(
@@ -122,7 +125,7 @@ export class HistorialComponent implements OnInit {
         for(let i=0; i< this.paginasTotalesBusqueda; i++){
           this.indicePaginasBusqueda.push(i+1);
         }
-        
+
         console.log("Búsqueda cargada.");
       }
 
@@ -135,7 +138,7 @@ export class HistorialComponent implements OnInit {
   listarBusqueda(term:string ,pagina:number): void {
     this.paginaActualBusqueda = pagina;
     console.log("Cargando búsqueda.");
-   
+
     this.cargando = true;
     this.entregasService.buscar(null, term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
         resultado => {
@@ -158,7 +161,7 @@ export class HistorialComponent implements OnInit {
           }
 
           console.log("Búsqueda cargada.");
-          
+
         },
         error => {
           this.cargando = false;
@@ -171,28 +174,28 @@ export class HistorialComponent implements OnInit {
             }
           } catch(e){
             console.log("No se puede interpretar el error");
-            
+
             if (error.status == 500 ){
               this.mensajeError.texto = "500 (Error interno del servidor)";
             } else {
               this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
-            }            
+            }
           }
 
         }
       );
-  }  
+  }
 
 
   listar(pagina:number): void {
     this.paginaActual = pagina;
     console.log("Cargando items.");
-   
+
     this.cargando = true;
     this.entregasService.lista(null, pagina,this.resultadosPorPagina).subscribe(
         resultado => {
           this.cargando = false;
-          
+
           let parsed = resultado.data ;
           for(var i in parsed) {
             console.log(parsed[i].created_at.replace(" ","T"))
@@ -212,7 +215,7 @@ export class HistorialComponent implements OnInit {
           }
 
           console.log("Pedidos cargados.");
-          
+
         },
         error => {
           this.cargando = false;
@@ -225,17 +228,17 @@ export class HistorialComponent implements OnInit {
             }
           } catch(e){
             console.log("No se puede interpretar el error");
-            
+
             if (error.status == 500 ){
               this.mensajeError.texto = "500 (Error interno del servidor)";
             } else {
               this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
-            }            
+            }
           }
 
         }
       );
-  }  
+  }
 
   // # SECCION: Paginación
   paginaSiguiente():void {

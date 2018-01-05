@@ -46,33 +46,35 @@ export class ListaComponent implements OnInit {
 	// # FIN SECCION
 
 	// # SECCION: Lista de pacinetes
-	private paginaActual = 1;
+	paginaActual = 1;
 	resultadosPorPagina = 25;
 	total = 0;
-	private paginasTotales = 0;
-	private indicePaginas:number[] = [];
+	paginasTotales = 0;
+	indicePaginas:number[] = [];
 	
 
 	temas: Tema[] = [];
 	// # FIN SECCION
 	
 	// # SECCION: Resultados de búsqueda
-	private ultimoTerminoBuscado = "";
-	private terminosBusqueda = new Subject<string>();
-	private resultadosBusqueda: Tema[] = [];
+	ultimoTerminoBuscado = "";
+	terminosBusqueda = new Subject<string>();
+	resultadosBusqueda: Tema[] = [];
 	busquedaActivada:boolean = false;
-	private paginaActualBusqueda = 1;
+	paginaActualBusqueda = 1;
 	resultadosPorPaginaBusqueda = 25;
 	totalBusqueda = 0;
-	private paginasTotalesBusqueda = 0;
-	private indicePaginasBusqueda:number[] = [];
+	paginasTotalesBusqueda = 0;
+	indicePaginasBusqueda:number[] = [];
 
   constructor(
   		private title: Title, 
     	private avanceService: AvanceService,
     	private fb: FormBuilder
   	) { }
-
+	/**
+   * Método que inicializa y obtiene valores para el funcionamiento del componente.
+   */
   ngOnInit() {
 
   		this.tema_avance = this.fb.group({

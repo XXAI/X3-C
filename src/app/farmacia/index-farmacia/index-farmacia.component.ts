@@ -2,33 +2,76 @@ import { Component, OnInit } from '@angular/core';
 import { Title }     from '@angular/platform-browser';
 
 import { BuscarModuloPipe } from '../../pipes/buscar-modulo.pipe';
-
+/**
+ * Componente que muestra los módulos disponibles para esta sección.
+ */
 @Component({
   selector: 'app-index-farmacia',
   templateUrl: './index-farmacia.component.html',
   styleUrls: ['./index-farmacia.component.css']
 })
+/**
+ * Clase que muestra los módulos autorizados y disponibles del almacén.
+ */
 export class IndexFarmaciaComponent implements OnInit {
-
+  /**
+   * Contiene los datos de inicio de sesión del usuario.
+   */
   usuario: any = {};
+  /**
+   * Contiene el término de búsqueda que ingresa el usuario.
+   * @type {string}
+   */
   busqueda = '';
 
-  private modulos: any[] = [];
+  /**
+   * Contiene la lista de los módulos en general que se agregan en este archivo.
+   * @type {array}
+   */
+  modulos: any[] = [];
+  /**
+   * Contiene los módulos que van a mostrarse en la vista de acuerdo a los permisos.
+   * @type {array}
+   */
   modulosAutorizados: any[] = [];
-  private accesosDirectos: any[] = [];
+  /**
+   * Contiene la lista de los módulos que se agregan a la lista de accesos directos.
+   * @type {array}
+   */
+  accesosDirectos: any[] = [];
+  /**
+   * Contiene la lista de los módulos con acceso directo que se mostrarán en la vista
+   * de acuerdo al rol del usuario.
+   * @type {array}
+   */
   accesosDirectosAutorizados: any[] = [];
-
+  /**
+   * Este método inicializa la carga de las dependencias
+   * que se necesitan para el funcionamiento del modulo
+   */
   constructor(private title: Title) { }
 
+  /**
+   * Método que inicializa y obtiene valores para el funcionamiento del componente.
+   */
   ngOnInit() {
     this.title.setTitle('Almacén medicamentos');
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
 
     this.modulos = [
-      { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', icono: 'assets/icono-pagina-lista.svg', titulo: 'Pedidos', url: '/almacen/pedidos' },
-      
-      // { permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk--', icono: 'assets/icono-pedidos-jurisdiccionales.svg', titulo: 'Pedidos jurisdiccionales', url:"/almacen/pedidos-jurisdiccionales" },
-      //{ permiso: 'iSxK0TpoYpnzf8KIQTWOq9Web7WnSKhz', icono: 'assets/icono-pedidos-alt.svg', titulo:'Entregas de pedidos', url:"/almacen/entregas" },
+      {
+        permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk',
+        icono: 'assets/icono-pagina-lista.svg',
+        titulo: 'Pedidos', url: '/almacen/pedidos'
+      },
+      // {
+      //   permiso: 'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk--',
+      //   icono: 'assets/icono-pedidos-jurisdiccionales.svg',
+      //   titulo: 'Pedidos jurisdiccionales',
+      //   url: "/almacen/pedidos-jurisdiccionales"
+      // },
+      // { permiso: 'iSxK0TpoYpnzf8KIQTWOq9Web7WnSKhz',
+      // icono: 'assets/icono-pedidos-alt.svg', titulo:'Entregas de pedidos', url:"/almacen/entregas" },
 
       { permiso: 'GPSDLmXckXcdfdj7lD4rdacwMivsTp9g', icono: 'assets/icono-recetas.svg', titulo: 'Recetas', url: '/almacen/salidas-recetas' },
       { permiso: 'qQvNeb1UFPOfVMKQnNkvxyqjCIUgFuEG', icono: 'assets/icono-salidas.svg', titulo: 'Salida de medicamentos', url:'/almacen/salidas-estandar' },

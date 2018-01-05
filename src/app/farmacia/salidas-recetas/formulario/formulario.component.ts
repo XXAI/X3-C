@@ -176,7 +176,7 @@ export class FormularioComponent {
   MinDate = new Date();
   /**
    * Contiene la fecha MÁXIMA que puede ingresar el usuario para la fecha que fue hecha el movimiento.
-   * @type {Date} */
+   * @type {Date} */ 
   MaxDate = new Date();
   /**
    * Contiene la fecha del día de hoy y es la que automáticamente se asigna a la fecha del movimiento, aunque el usuario puede

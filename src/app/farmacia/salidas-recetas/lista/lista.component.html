@@ -3,7 +3,7 @@
 <div style="height:50px;"></div>
 <div class="contenedor columns " style="height:95%; "> <!-- 85% -->
     <div class="column" style="padding:2em; height:100%; ">
-        <div style="background: #FFF; border-radius: 1em; overflow: hidden; height:100%; ">
+        <div style="background: #FFF;">
             <section class="hero" [ngClass]="{'is-dark': ctrl.busquedaActivada, 'is-primary': !ctrl.busquedaActivada}" 
                     style="min-height:200px; height: 25%;">
                 <div class="hero-body" style="position:relative; height: 90%">
@@ -17,8 +17,8 @@
                             <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="Actualizar" (click)="ctrl.listarBusqueda(searchBox.value,1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
                             <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="Actualizar" (click)="ctrl.listar(1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
                             
-                            <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="PDF" (click)="dato = ctrl.dato; imprimir()"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
-                            <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="PDF" (click)="dato = ctrl.dato; imprimir()"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
+                            <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="PDF" (click)="ctrl.dato; imprimir()"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
+                            <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="PDF" (click)="ctrl.dato; imprimir()"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
                             <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="Excel" (click)="export_excel()"><span class="icon "><i class="fa fa-file-excel-o"></i></span></a></p>
                             <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="Excel" (click)="export_excel()"><span class="icon "><i class="fa fa-file-excel-o"></i></span></a></p>
                             <p class="level-item">&nbsp;</p>

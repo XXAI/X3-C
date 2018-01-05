@@ -11,8 +11,6 @@ const routes: Routes = [
     component: IndexAlmacenArticulosComponent,
     canActivate: [AuthGuard]
   }
- 
-  
 ];
 
 @NgModule({

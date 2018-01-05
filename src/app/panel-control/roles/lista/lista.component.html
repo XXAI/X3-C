@@ -39,34 +39,36 @@
                 <br>
                 <br>
             </div>
-        
-            <table class="table" *ngIf="!cargando">
-                <thead>
-                    <tr>
-                    <th>Nombre</th>
-                    <th style="text-align:center; width:60px"></th>
-                    </tr>
-                </thead>
-                <tbody  *ngIf="!busquedaActivada">
-                    <tr *ngFor="let item of lista; let i=index">                        
+            <div style="overflow:auto; display:block" [style.maxHeight.px]="tamano-320">
+                <table class="table" *ngIf="!cargando">
+                    <thead>
+                        <tr>
+                        <th>Nombre</th>
+                        <th style="text-align:center; width:60px"></th>
+                        </tr>
+                    </thead>
+                    <tbody  *ngIf="!busquedaActivada">
+                        <tr *ngFor="let item of lista; let i=index">                        
+                            <td style="vertical-align: middle;"><a routerLink="/panel-control/roles/editar/{{item.id}}">{{ item.nombre }}</a></td>                        
+                            <td style="vertical-align: middle;" class="has-text-centered"><span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>                        
+                        </tr>
+                        <tr *ngIf="lista.length == 0">
+                            <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="busquedaActivada">
+                        <tr *ngFor="let item of resultadosBusqueda; let i=index">
                         <td style="vertical-align: middle;"><a routerLink="/panel-control/roles/editar/{{item.id}}">{{ item.nombre }}</a></td>                        
-                        <td style="vertical-align: middle;" class="has-text-centered"><span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>                        
-                    </tr>
-                    <tr *ngIf="lista.length == 0">
-                        <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
-                    </tr>
-                </tbody>
-                <tbody *ngIf="busquedaActivada">
-                    <tr *ngFor="let item of resultadosBusqueda; let i=index">
-                    <td style="vertical-align: middle;"><a routerLink="/panel-control/roles/editar/{{item.id}}">{{ item.nombre }}</a></td>                        
-                        <td style="vertical-align: middle;" class="has-text-centered"><span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>
-                    </tr>
+                            <td style="vertical-align: middle;" class="has-text-centered"><span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>
+                        </tr>
 
-                    <tr *ngIf="resultadosBusqueda.length == 0 && busquedaActivada">
-                        <td colspan="5" style="vertical-align: middle; color:#888;">No se encontraron resultados.</td>                    
-                    </tr>
-                </tbody>
-            </table>
+                        <tr *ngIf="resultadosBusqueda.length == 0 && busquedaActivada">
+                            <td colspan="5" style="vertical-align: middle; color:#888;">No se encontraron resultados.</td>                    
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
             <!-- Paginación para la lista  -->
             <paginacion 
                 [total]="total" 

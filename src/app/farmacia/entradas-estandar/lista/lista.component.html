@@ -1,9 +1,9 @@
 <listar #ctrl URL="entrada-almacen?fecha_desde={{fecha_desde}}&fecha_hasta={{fecha_hasta}}&recibe={{recibe}}&status={{status}}" titulo="Entrada  de medicamentos"></listar>
-<menu-farmacia [modulo]="'Entradas de medicamentos'" [icono]="'assets/icono-entradas.svg'" [url]="'/almacen/entradas-estandar'"></menu-farmacia>
+<menu-farmacia [modulo]="'Entradas de medicamentos'" [icono]="'assets/icono-entradas.svg'" [url]="'/almacen/entradas-estandar'" [urlAyuda]="'ayuda'"></menu-farmacia>
 <div style="height:40px;"></div>
 <div class="contenedor columns " >
     <div class="column" style="padding:2em;  z-index: initial; height:100%;">
-        <div style="background: #FFF; border-radius: 1em; overflow: hidden; height:100%; ">
+        <div style="background: #FFF;">
             <section class="hero is-hidden-touch" [ngClass]=" {'is-dark': ctrl.busquedaActivada, 'is-primary': !ctrl.busquedaActivada}"
                     style="min-height:200px; height: 25%">
                 <div class="hero-body" style="position:relative; height: 90%">
@@ -45,7 +45,7 @@
                             <div class="control is-expanded" style="z-index: 1000;">
                                 <div class="field">   
                                     <label class="label">Hasta:</label>                         
-                                    <input style="width: 150px; z-index: 1000;" class="input is-medium" [(ngModel)]='fecha_hasta' ngui-datetime-picker date-only="true" placeholder="YYYY-MM-DD" />
+                                    <input readonly style="width: 150px; z-index: 1000;" class="input is-medium" [(ngModel)]='fecha_hasta' ngui-datetime-picker date-only="true" placeholder="YYYY-MM-DD" />
                                 </div>
                             </div>
                             <div class="control is-expanded">
@@ -144,8 +144,8 @@
             <br>
             <br>
         </div>
-        <span id="exportable" style="height:70%;"><!-- 75/100% height -->
-            <div style="overflow: scroll; overflow-x: hidden; height: 70%;">
+        <div id="exportable"><!-- 75/100% height -->
+            <div style="overflow:auto; display:block" [style.maxHeight.px]="ctrl.tamano-350">
                 <div class="is-fullwidth has-text-centered" *ngIf="cargandoPdf">
                     <br>
                     <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Generando PDF...</span></span>
@@ -232,7 +232,7 @@
                     </table>
                 </div>
             </div>
-        </span>
+        </div>
             <!-- Paginación para la lista  -->
             <paginacion [total]="ctrl.total" [paginasTotales]="ctrl.paginasTotales" [resultadosPorPagina]="ctrl.resultadosPorPagina"
                 [paginaActual]="ctrl.paginaActual" [indicePaginas]="ctrl.indicePaginas" (onSiguiente)="ctrl.paginaSiguiente()"

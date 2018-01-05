@@ -75,23 +75,23 @@ export class ListarComponent implements OnInit {
     respuesta: any[] = [];
     mensajeResponse: Mensaje = new Mensaje(true);
 
-    private paginaActual = 1;
-    private resultadosPorPagina = 20;
-    private total = 0;
-    private paginasTotales = 0;
-    private indicePaginas: number[] = [];
+    paginaActual = 1;
+    resultadosPorPagina = 20;
+    total = 0;
+    paginasTotales = 0;
+    indicePaginas: number[] = [];
     // # FIN SECCION
 
     // # SECCION: Resultados de búsqueda
-    private ultimoTerminoBuscado = "";
-    private terminosBusqueda = new Subject<string>();
-    private resultadosBusqueda: any[] = [];
-    private busquedaActivada: boolean = false;
-    private paginaActualBusqueda = 1;
-    private resultadosPorPaginaBusqueda = 20;
-    private totalBusqueda = 0;
-    private paginasTotalesBusqueda = 0;
-    private indicePaginasBusqueda: number[] = [];
+    ultimoTerminoBuscado = "";
+    terminosBusqueda = new Subject<string>();
+    resultadosBusqueda: any[] = [];
+    busquedaActivada: boolean = false;
+    paginaActualBusqueda = 1;
+    resultadosPorPaginaBusqueda = 20;
+    totalBusqueda = 0;
+    paginasTotalesBusqueda = 0;
+    indicePaginasBusqueda: number[] = [];
     // # FIN SECCION
 
     @Input() URL: string;
@@ -159,8 +159,11 @@ export class ListarComponent implements OnInit {
         busquedaSubject.subscribe(
             resultado => {
                 this.cargando = false;
-                this.resultadosBusqueda = resultado.data as any[];
-                console.log(resultado);
+                if (resultado.data) {
+                    this.resultadosBusqueda = resultado.data as any[];
+                } else {
+                    this.resultadosBusqueda = resultado as any[];
+                }
                 this.totalBusqueda = resultado.total | 0;
                 this.paginasTotalesBusqueda = Math.ceil(this.totalBusqueda / this.resultadosPorPaginaBusqueda);
 

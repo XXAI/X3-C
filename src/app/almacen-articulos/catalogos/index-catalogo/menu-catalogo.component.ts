@@ -9,7 +9,7 @@ import { BuscarModuloPipe } from '../../../pipes/buscar-modulo.pipe';
 })
 export class MenuCatalogoComponent implements OnInit {
 
-  private usuario: any = {}
+  usuario: any = {}
 
   @Input() modulo:string;
   @Input() icono:string;

@@ -24,10 +24,10 @@ export class Inventario {
   public paginacion:Paginacion = new Paginacion();
   public filtro: Inventario;
   //Harima: Para tener acceso al objeto que contiene la lista principal sin filtro
-  private padre: Inventario;
+  padre: Inventario;
   public activo:boolean = false;
   public cargando:boolean = false;
-  private fb:FormBuilder;
+  fb:FormBuilder;
 
   constructor(conFiltro:boolean = false){
     if (conFiltro){

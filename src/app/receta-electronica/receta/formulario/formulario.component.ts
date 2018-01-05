@@ -29,18 +29,18 @@ import { CambiarEntornoService } from '../../../perfil/cambiar-entorno.service';
   styleUrls: ['./formulario.component.css']
 })
 export class FormularioComponent implements OnInit {
-  
+
    @ViewChild("searchBoxPersonal") inputSearchPersonal: ElementRef;
    @ViewChild("searchBoxPaciente") inputSearchPaciente: ElementRef;
 
- 
+
 
   datos_receta: FormGroup;
   datos_paciente: FormGroup;
   id_receta: number;
   folio: string ="";
   usuario: any = {}
-  
+
   erroresEnInsumos:any = {lista:{}, errores:0};
 
   // # SECCION: Esta sección es para mostrar mensajes
@@ -48,7 +48,7 @@ export class FormularioComponent implements OnInit {
   mensajeExito: Mensaje = new Mensaje();
   ultimaPeticion: any;
 
-  // # FIN SECCION  
+  // # FIN SECCION
 
   // Variables del sistema
   buscarPersonal = "";
@@ -61,7 +61,7 @@ export class FormularioComponent implements OnInit {
   cargandoInsumos: boolean = false;
   formularioTitulo: string = "";
   // Fiin de variables del entonno del sistema
-  
+
   // # SECCION: Modal Insumos
   mostrarModalInsumos = false;
   mostrarBuscadorPersonas = false;
@@ -74,7 +74,7 @@ export class FormularioComponent implements OnInit {
 
 
   // Personal busqueda
-  private paginaActual = 1;
+  paginaActual = 1;
   resultadosPorPagina = 6;
   total = 0;
   personal_medico:any[] = [];
@@ -82,20 +82,20 @@ export class FormularioComponent implements OnInit {
   insumos:any[] = [];
   insumos_busqueda:any[] = [];
 
-  private paginasTotales = 0;
-  private indicePaginas:number[] = [];
+  paginasTotales = 0;
+  indicePaginas:number[] = [];
   // # SECCION: Resultados de búsqueda
-  private ultimoTerminoBuscado = "";
-  private terminosBusqueda = new Subject<string>();
-  private terminosBusquedaPaciente = new Subject<string>();
-  private terminosBusquedaInsumo = new Subject<string>();
-  private resultadosBusqueda: any;
+  ultimoTerminoBuscado = "";
+  terminosBusqueda = new Subject<string>();
+  terminosBusquedaPaciente = new Subject<string>();
+  terminosBusquedaInsumo = new Subject<string>();
+  resultadosBusqueda: any;
   busquedaActivada:boolean = false;
-  private paginaActualBusqueda = 1;
+  paginaActualBusqueda = 1;
   resultadosPorPaginaBusqueda = 6;
   totalBusqueda = 0;
-  private paginasTotalesBusqueda = 0;
-  private indicePaginasBusqueda:number[] = [];
+  paginasTotalesBusqueda = 0;
+  indicePaginasBusqueda:number[] = [];
 
   //Fin busqueda
   // # FIN SECCION
@@ -103,11 +103,11 @@ export class FormularioComponent implements OnInit {
   // ######### PEDIDOS JURISDICCIONALES #########
 
   constructor(
-  	 private title: Title, 
-    private location: Location, 
+    private title: Title,
+    private location: Location,
     private router: Router,
     private route: ActivatedRoute,
-    private _ngZone: NgZone, 
+    private _ngZone: NgZone,
     private fb: FormBuilder,
     private cambiarEntornoService:CambiarEntornoService,
     private recetaService: RecetaService
@@ -138,13 +138,13 @@ export class FormularioComponent implements OnInit {
            receta: ['1', [Validators.required]],
            conocido: ['1', [Validators.required]],
            responsableconocido: ['0', [Validators.required]],
-       
+
     });
 
-    
+
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
 
- 
+
     this.route.params.subscribe(params => {
       this.id_receta = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number
     });
@@ -160,17 +160,17 @@ export class FormularioComponent implements OnInit {
     var busquedaSubject = this.terminosBusqueda
     .debounceTime(300) // Esperamos 300 ms pausando eventos
     .distinctUntilChanged() // Ignorar si la busqueda es la misma que la ultima
-    .switchMap((term:string)  =>  { 
+    .switchMap((term:string)  =>  {
 
       /*this.ultimoTerminoBuscado = term;
       this.paginaActualBusqueda = 1;*/
-      this.cargando_personal = true;   
-      //console.log("entro en busqueda "+term);  
+      this.cargando_personal = true;
+      //console.log("entro en busqueda "+term);
       return this.recetaService.buscar_personal(term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda)
-    
-    }).catch( function handleError(error){ 
-     
-      self.cargando_personal = false;      
+
+    }).catch( function handleError(error){
+
+      self.cargando_personal = false;
       self.mensajeError.mostrar = true;
       self.ultimaPeticion = function(){self.listarBusqueda(self.ultimoTerminoBuscado,self.paginaActualBusqueda);};//OJO
       try {
@@ -180,16 +180,16 @@ export class FormularioComponent implements OnInit {
         }
       } catch(e){
         console.log("No se puede interpretar el error");
-        
+
         if (error.status == 500 ){
           self.mensajeError.texto = "500 (Error interno del servidor)";
         } else {
           self.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
-        }            
+        }
       }
-      // Devolvemos el subject porque si no se detiene el funcionamiento del stream 
+      // Devolvemos el subject porque si no se detiene el funcionamiento del stream
       return busquedaSubject
-    
+
     });
 
     busquedaSubject.subscribe(
@@ -204,7 +204,7 @@ export class FormularioComponent implements OnInit {
         for(let i=0; i< this.paginasTotalesBusqueda; i++){
           this.indicePaginasBusqueda.push(i+1);
         }*/
-       
+
       }
 
     );
@@ -212,16 +212,16 @@ export class FormularioComponent implements OnInit {
     var busquedaPacienteSubject = this.terminosBusquedaPaciente
     .debounceTime(300) // Esperamos 300 ms pausando eventos
     .distinctUntilChanged() // Ignorar si la busqueda es la misma que la ultima
-    .switchMap((term:string)  =>  { 
+    .switchMap((term:string)  =>  {
 
       this.ultimoTerminoBuscado = term;
       //this.paginaActualBusqueda = 1;
-      this.cargando_personal_pacientes = true;   
+      this.cargando_personal_pacientes = true;
       return this.recetaService.buscar_pacientes(term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda)
-    
-    }).catch( function handleError(error){ 
-     
-      self.cargando_personal_pacientes = false;      
+
+    }).catch( function handleError(error){
+
+      self.cargando_personal_pacientes = false;
       self.mensajeError.mostrar = true;
       self.ultimaPeticion = function(){self.listarBusqueda(self.ultimoTerminoBuscado,self.paginaActualBusqueda);};//OJO
       try {
@@ -231,16 +231,16 @@ export class FormularioComponent implements OnInit {
         }
       } catch(e){
         console.log("No se puede interpretar el error");
-        
+
         if (error.status == 500 ){
           self.mensajeError.texto = "500 (Error interno del servidor)";
         } else {
           self.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
-        }            
+        }
       }
-      // Devolvemos el subject porque si no se detiene el funcionamiento del stream 
+      // Devolvemos el subject porque si no se detiene el funcionamiento del stream
       return busquedaPacienteSubject
-    
+
     });
 
     busquedaPacienteSubject.subscribe(
@@ -254,7 +254,7 @@ export class FormularioComponent implements OnInit {
         for(let i=0; i< this.paginasTotalesBusqueda; i++){
           this.indicePaginasBusqueda.push(i+1);
         }*/
-       
+
       }
 
     );
@@ -262,16 +262,16 @@ export class FormularioComponent implements OnInit {
     var busquedaInsumoSubject:any = this.terminosBusquedaInsumo
     .debounceTime(300) // Esperamos 300 ms pausando eventos
     .distinctUntilChanged() // Ignorar si la busqueda es la misma que la ultima
-    .switchMap((term:string)  =>  { 
+    .switchMap((term:string)  =>  {
 
       this.ultimoTerminoBuscado = term;
       this.paginaActualBusqueda = 1;
-      this.cargando_insumos = true;   
+      this.cargando_insumos = true;
       return this.recetaService.buscar_insumo(term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda)
-    
-    }).catch( function handleError(error){ 
-     
-      self.cargando_insumos = false;      
+
+    }).catch( function handleError(error){
+
+      self.cargando_insumos = false;
       self.mensajeError.mostrar = true;
       self.ultimaPeticion = function(){self.listarBusquedaInsumo(self.ultimoTerminoBuscado,self.paginaActualBusqueda);};//OJO
       try {
@@ -281,16 +281,16 @@ export class FormularioComponent implements OnInit {
         }
       } catch(e){
         console.log("No se puede interpretar el error");
-        
+
         if (error.status == 500 ){
           self.mensajeError.texto = "500 (Error interno del servidor)";
         } else {
           self.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
-        }            
+        }
       }
-      // Devolvemos el subject porque si no se detiene el funcionamiento del stream 
+      // Devolvemos el subject porque si no se detiene el funcionamiento del stream
       return busquedaPacienteSubject
-    
+
     });
 
     busquedaInsumoSubject.subscribe(
@@ -306,7 +306,7 @@ export class FormularioComponent implements OnInit {
         }
 
         console.log(this.indicePaginasBusqueda);
-       
+
       }
 
     );
@@ -318,7 +318,7 @@ export class FormularioComponent implements OnInit {
   listarBusqueda(term:string ,pagina:number): void {
     this.paginaActualBusqueda = pagina;
     console.log("Cargando búsqueda.");
-   
+
     this.cargando_personal = true;
     this.recetaService.buscar(term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
         resultado => {
@@ -331,7 +331,7 @@ export class FormularioComponent implements OnInit {
           for(let i=0; i< this.paginasTotalesBusqueda; i++){
             this.indicePaginasBusqueda.push(i+1);
           }
-          
+
         },
         error => {
           this.cargando_personal = false;
@@ -344,12 +344,12 @@ export class FormularioComponent implements OnInit {
             }
           } catch(e){
             console.log("No se puede interpretar el error");
-            
+
             if (error.status == 500 ){
               this.mensajeError.texto = "500 (Error interno del servidor)";
             } else {
               this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
-            }            
+            }
           }
 
         }
@@ -360,7 +360,7 @@ export class FormularioComponent implements OnInit {
   listarBusquedaPaciente(term:string ,pagina:number): void {
     this.paginaActualBusqueda = pagina;
     console.log("Cargando búsqueda.");
-   
+
     this.cargando_personal = true;
     this.recetaService.buscar_pacientes(term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
         resultado => {
@@ -373,7 +373,7 @@ export class FormularioComponent implements OnInit {
           for(let i=0; i< this.paginasTotalesBusqueda; i++){
             this.indicePaginasBusqueda.push(i+1);
           }
-          
+
         },
         error => {
           this.cargando_personal = false;
@@ -386,12 +386,12 @@ export class FormularioComponent implements OnInit {
             }
           } catch(e){
             console.log("No se puede interpretar el error");
-            
+
             if (error.status == 500 ){
               this.mensajeError.texto = "500 (Error interno del servidor)";
             } else {
               this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
-            }            
+            }
           }
 
         }
@@ -400,7 +400,7 @@ export class FormularioComponent implements OnInit {
 
   listarBusquedaInsumo(term:string ,pagina:number): void {
     this.paginaActualBusqueda = pagina;
-    
+
     this.cargando_insumos = true;
     this.recetaService.buscar_insumo(term, pagina, this.resultadosPorPaginaBusqueda).subscribe(
         resultado => {
@@ -413,7 +413,7 @@ export class FormularioComponent implements OnInit {
           for(let i=0; i< this.paginasTotalesBusqueda; i++){
             this.indicePaginasBusqueda.push(i+1);
           }
-          
+
         },
         error => {
           this.cargando_insumos = false;
@@ -426,12 +426,12 @@ export class FormularioComponent implements OnInit {
             }
           } catch(e){
             console.log("No se puede interpretar el error");
-            
+
             if (error.status == 500 ){
               this.mensajeError.texto = "500 (Error interno del servidor)";
             } else {
               this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
-            }            
+            }
           }
 
         }
@@ -454,7 +454,7 @@ export class FormularioComponent implements OnInit {
   }
 
   paginaSiguiente(term:string):void {
-      
+
       this.listar(term, this.paginaActual+1);
   }
   paginaAnterior(term:string):void {
@@ -468,7 +468,7 @@ export class FormularioComponent implements OnInit {
     	this.mostrarBuscadorPersonas = true;
     	this.buscarPersonal = value;
     	this.inputSearchPersonal.nativeElement.focus();
-       
+
     }else if(id==2)
     {
        this.mostrarBuscadorPacientes = true;
@@ -507,16 +507,16 @@ export class FormularioComponent implements OnInit {
           console.log(paciente);
           this.cargando = false;
           console.log("Usuario creado.");
-          
+
         },
         error => {
           console.log(error);
           this.cargando = false;
-          
+
           this.mensajeError = new Mensaje(true);
           this.mensajeError.texto = "No especificado.";
-          this.mensajeError.mostrar = true;      
-          
+          this.mensajeError.mostrar = true;
+
           try {
             let e = error.json();
             if (error.status == 401 ){
@@ -525,18 +525,18 @@ export class FormularioComponent implements OnInit {
             // Problema de validación
             if (error.status == 409){
               this.mensajeError.texto = "Por favor verfique los campos marcados en rojo.";
-              
+
             }
-          } catch(e){   
+          } catch(e){
 
             if (error.status == 500 ){
               this.mensajeError.texto = "500 (Error interno del servidor)";
             } else {
               this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
-            }   
-                      
+            }
+
           }
-          
+
 
         }
       );
@@ -544,9 +544,9 @@ export class FormularioComponent implements OnInit {
 
   listar(term:string, pagina:number): void {
     this.paginaActual = pagina;
-    
+
     this.cargando = true;
-    
+
     this.recetaService.buscar_insumo(term, pagina,this.resultadosPorPagina).subscribe(
         resultado => {
 
@@ -559,7 +559,7 @@ export class FormularioComponent implements OnInit {
           for(let i=0; i< this.paginasTotalesBusqueda; i++){
             this.indicePaginasBusqueda.push(i+1);
           }
-          
+
         },
         error => {
           this.cargando = false;
@@ -572,12 +572,12 @@ export class FormularioComponent implements OnInit {
             }
           } catch(e){
             console.log("No se puede interpretar el error");
-            
+
             if (error.status == 500 ){
               this.mensajeError.texto = "500 (Error interno del servidor)";
             } else {
               this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
-            }            
+            }
           }
 
         }

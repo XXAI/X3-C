@@ -91,11 +91,11 @@ export class TablaOpcionesComponent {
      */
     mensajeResponse: Mensaje = new Mensaje(true);
 
-    private url_nuevo: string = '';
-    private carpeta;
-    private modulo;
-    private controlador;
-    private modulo_actual;
+    url_nuevo: string = '';
+    carpeta;
+    modulo;
+    controlador;
+    modulo_actual;
 
   /**
    * Contiene el resultado de la consulta de la lista general de programas.

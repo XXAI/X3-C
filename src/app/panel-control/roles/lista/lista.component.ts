@@ -23,6 +23,10 @@ import { Mensaje } from '../../../mensaje'
   styleUrls: ['./lista.component.css']
 })
 export class ListaComponent implements OnInit {
+  /**
+   * Calcula el tamaño de la pantalla
+   */
+  tamano = document.body.clientHeight;
 
   cargando: boolean = false;
 
@@ -35,23 +39,23 @@ export class ListaComponent implements OnInit {
 
   // # SECCION: Lista 
   lista: any[] = [];
-  private paginaActual = 1;
+  paginaActual = 1;
   resultadosPorPagina = 25;
   total = 0;
-  private paginasTotales = 0;
-  private indicePaginas:number[] = []
+  paginasTotales = 0;
+  indicePaginas:number[] = []
   // # FIN SECCION
 
   // # SECCION: Resultados de búsqueda
-  private ultimoTerminoBuscado = "";
-  private terminosBusqueda = new Subject<string>();
-  private resultadosBusqueda: any[] = [];
+  ultimoTerminoBuscado = "";
+  terminosBusqueda = new Subject<string>();
+  resultadosBusqueda: any[] = [];
   busquedaActivada:boolean = false;
-  private paginaActualBusqueda = 1;
+  paginaActualBusqueda = 1;
   resultadosPorPaginaBusqueda = 25;
   totalBusqueda = 0;
-  private paginasTotalesBusqueda = 0;
-  private indicePaginasBusqueda:number[] = []
+  paginasTotalesBusqueda = 0;
+  indicePaginasBusqueda:number[] = []
   // # FIN SECCION
 
   constructor(    

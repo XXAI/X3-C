@@ -25,7 +25,7 @@ export class MenuLateralComponent implements OnInit {
     alternos: 0,
   };
 
-  private cambiarEntornoSuscription: Subscription;
+  cambiarEntornoSuscription: Subscription;
 
   constructor(private pedidosService:PedidosService, private cambiarEntornoService:CambiarEntornoService) { }
 

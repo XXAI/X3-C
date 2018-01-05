@@ -1,7 +1,7 @@
 <formulario #ctrl URL="unidad-medica" titulo="UM / Catalogo" [dato]="dato"></formulario>
 <app-menu-catalogo></app-menu-catalogo>
 <div style="height:50px;"></div>
-<div class="contenedor columns " style="height:100%">
+<div class="contenedor columns" style="height:90%;  padding-top: 1em;">
     <div class="column is-one-quarter is-hidden-mobile">
         <panel-control-menu-aside></panel-control-menu-aside>
     </div>
@@ -11,14 +11,20 @@
             <div style="background: #FFF; overflow: hidden;">
                 <section class="hero is-primary">
                     <div class="hero-body">
-                        <a class="button  is-primary" style="position:absolute; top:8em; right:3em;" (click)="ctrl.cargarDatos(); "><span class="icon "><i class="fa fa-refresh"></i></span></a>
+                        <!-- Opciones  -->                         
+                        <formulario-opciones
+                            [ctrl]="ctrl"
+                            class="control is-grouped"
+                            style="position:absolute; top:8em; right:3em;">
+                        </formulario-opciones>
+                        <!-- <a class="button  is-primary" style="position:absolute; top:8em; right:3em;" (click)="ctrl.cargarDatos(); "><span class="icon "><i class="fa fa-refresh"></i></span></a>
+                        -->
                         <div class="container is-fluid">
                             <h1 class="title">
                                 <span *ngIf="!ctrl.cargando" class="icon is-medium"><i class="fa fa-edit"></i></span>
                                 <span *ngIf="ctrl.cargando" class="icon is-medium"><i class="fa fa-refresh fa-spin"></i></span>                                {{ctrl.moduloTitulo}} unidad médica
                             </h1>
-
-                        </div>
+                        </div> 
                     </div>
                 </section>
                 <div class="is-fullwidth has-text-centered" *ngIf="!ctrl.datosCargados">
@@ -72,10 +78,10 @@
 
                     <div [ngClass]="{ 'is-hidden': tab != 2}">
 
-                        <div class="box">
+                        <div class="box" [style.maxHeight.px]="ctrl.tamano-300">
                             <article class="media">
                                 <div class="media-content">
-                                    <div class="content">
+                                    <div class="content" >
                                         <div class="column is-5" style="float:left">
                                             <nav class="panel">
                                                 <div class="panel-heading">
@@ -89,69 +95,69 @@
                                                         <a id="catalogos" (click)="ctrl.cargarCatalogo('tipos_servicios', 'servicios'); "></a>
                                                     </div>
                                                 </div>
-                                                <label class="panel-block" *ngFor="let val of ctrl.tipos_servicios; let i=index">          
+                                                <div style="overflow:auto; display:block" [style.maxHeight.px]="ctrl.tamano-450">
+                                                    <label class="panel-block" *ngFor="let val of ctrl.tipos_servicios; let i=index">          
+                                                        <div class="field">
+                                                            <div class="b-checkbox">
+                                                                <input id="{{val.id}}" class="styled" type="checkbox" 
+                                                                [checked]="ctrl.izquierda.indexOf(val) > -1"
+                                                                (click)="ctrl.agregarMover('izquierda', ctrl.tipos_servicios, val)">
+                                                                <label for="{{val.id}}">
+                                                                    {{val.nombre}} 
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </nav>
+                                        </div>
+                                        <div class="column is-2" style="float:left">
+
+                                            <p class="control">
+                                                <button class="button is-default" type="button" style="width:100%" [ngClass]="{'is-success': ctrl.izquierda.length > 0}"
+                                                    [disabled]="ctrl.izquierda.length <= 0" (click)="ctrl.iniciarMover('izquierda', ctrl.dato.controls.clues_servicios.controls, ctrl.tipos_servicios, true)">></button>
+                                            </p>
+                                            <p class="control">
+                                                <button class="button is-default" type="button" style="width:100%" [ngClass]="{'is-success': ctrl.derecha.length > 0}" [disabled]="ctrl.derecha.length <= 0"
+                                                    (click)="ctrl.iniciarMover('derecha', ctrl.tipos_servicios, ctrl.dato.controls.clues_servicios.controls, false)"><</button>
+                                            </p>
+
+                                        </div>
+                                        <div class="column is-5" style="float:left">
+                                            <nav class="panel" formGroupName="clues_servicios">
+                                                <div class="panel-heading">
                                                     <div class="field">
-                                                        <div class="b-checkbox">
-                                                            <input id="{{val.id}}" class="styled" type="checkbox" 
-                                                            [checked]="ctrl.izquierda.indexOf(val) > -1"
-                                                            (click)="ctrl.agregarMover('izquierda', ctrl.tipos_servicios, val)">
-                                                            <label for="{{val.id}}">
-                                                                {{val.nombre}} 
-                                                            </label>
+                                                        <div class="b-checkbox is-info">
+                                                            <input id="MisServicios" class="styled" type="checkbox" [checked]="ctrl.todosSeleccionados.derecha" (click)="ctrl.seleccionarTodosMover('derecha', ctrl.dato.controls.clues_servicios.controls)">
+                                                            <label for="MisServicios">
+                                                                    Mis servicios
+                                                                </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div style="overflow:auto; display:block" [style.maxHeight.px]="ctrl.tamano-450">
+                                                    <label class="panel-block" *ngFor="let item of ctrl.dato.controls.clues_servicios.controls; let i2=index">          
+                                                        <div class="field" [formGroupName]="i2">
+                                                            <div class="b-checkbox">
+                                                                <input id="{{item.value.id}}" class="styled" type="checkbox"
+                                                                [checked]="ctrl.derecha.indexOf(item) > -1"
+                                                                (click)="ctrl.agregarMover('derecha', ctrl.dato.controls.clues_servicios.controls, item)">
+                                                                <label for="{{item.value.id}}">
+                                                                    {{item.value.nombre}} 
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </nav>
                                         </div>
                                     </div>
-
-                                    </label>
-                                    </nav>
                                 </div>
-                                <div class="column is-2" style="float:left">
-
-                                    <p class="control">
-                                        <button class="button is-default" type="button" style="width:100%" [ngClass]="{'is-success': ctrl.izquierda.length > 0}"
-                                            [disabled]="ctrl.izquierda.length <= 0" (click)="ctrl.iniciarMover('izquierda', ctrl.dato.controls.clues_servicios.controls, ctrl.tipos_servicios, true)">></button>
-                                    </p>
-                                    <p class="control">
-                                        <button class="button is-default" type="button" style="width:100%" [ngClass]="{'is-success': ctrl.derecha.length > 0}" [disabled]="ctrl.derecha.length <= 0"
-                                            (click)="ctrl.iniciarMover('derecha', ctrl.tipos_servicios, ctrl.dato.controls.clues_servicios.controls, false)"><</button>
-                                    </p>
-
-                                </div>
-                                <div class="column is-5" style="float:left">
-                                    <nav class="panel" formGroupName="clues_servicios">
-                                        <div class="panel-heading">
-                                            <div class="field">
-                                                <div class="b-checkbox is-info">
-                                                    <input id="MisServicios" class="styled" type="checkbox" [checked]="ctrl.todosSeleccionados.derecha" (click)="ctrl.seleccionarTodosMover('derecha', ctrl.dato.controls.clues_servicios.controls)">
-                                                    <label for="MisServicios">
-                                                            Mis servicios
-                                                        </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <label class="panel-block" *ngFor="let item of ctrl.dato.controls.clues_servicios.controls; let i2=index">          
-                                                    <div class="field" [formGroupName]="i2">
-                                                        <div class="b-checkbox">
-                                                            <input id="{{item.value.id}}" class="styled" type="checkbox"
-                                                            [checked]="ctrl.derecha.indexOf(item) > -1"
-                                                            (click)="ctrl.agregarMover('derecha', ctrl.dato.controls.clues_servicios.controls, item)">
-                                                            <label for="{{item.value.id}}">
-                                                                {{item.value.nombre}} 
-                                                            </label>
-                                </div>
+                            </article>
                         </div>
-
-                        </label>
-                        </nav>
                     </div>
+                </section>
             </div>
+        </form>
     </div>
-    </article>
-</div>
-
-</div>
-
-</section>
-</div>
-</form>
-</div>
 </div>

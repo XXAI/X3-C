@@ -12,12 +12,10 @@ export class FormularioComponent {
 
   ngOnInit() {
     this.dato = this.fb.group({
-      id: ['', [Validators.required]],      
-      nombre: ['', [Validators.required]]    
-    });  
-    
+      id: [''],
+      nombre: ['', [Validators.required]]
+    });
     //Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
-    //document.getElementById("catalogos").click();  
+    //document.getElementById("catalogos").click();
   }
-  
 }

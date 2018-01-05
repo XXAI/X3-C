@@ -88,32 +88,32 @@ export class VerComponent implements OnInit {
 	}
   //Harima: para ver si el formulaior es para crear o para editar
   formularioTitulo:string = 'Nuevo';
-  private esEditar:boolean = false;
+  esEditar:boolean = false;
   
   // # SECCION: Modal Insumos
-  private mostrarModalInsumos = false;
+  mostrarModalInsumos = false;
   //Harima: Lista de claves agregadas al pedido, para checar duplicidad
   //listaClaveAgregadas: Array<string> = [];
   // # FIN SECCION
 
   // # SECCION: Pedido
 
-  private almacenes: Almacen[];
+  almacenes: Almacen[];
   pedido: Pedido;
   
   porcentageTotalPedido: number = 0.00;
   // # FIN SECCION
 
   // # SECCION: Reportes
-  private pdfworker:Worker;
+  pdfworker:Worker;
   cargandoPdf:any = {};
   errorEnPDF:boolean = false;
-  private pdfworkerActa:Worker;
+  pdfworkerActa:Worker;
   cargandoActa:boolean = false;
   errorPDFActa:boolean = false;
   // # FIN SECCION
 
-  private cambiarEntornoSuscription: Subscription;
+  cambiarEntornoSuscription: Subscription;
 
   constructor(
     private title: Title, 

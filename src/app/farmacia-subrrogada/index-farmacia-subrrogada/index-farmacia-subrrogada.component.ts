@@ -13,13 +13,16 @@ export class IndexFarmaciaSubrrogadaComponent implements OnInit {
   usuario: any = {}
   busqueda: string = "";
 
-  private modulos:any[] = [];
+  modulos:any[] = [];
   modulosAutorizados:any[] = [];
-  private accesosDirectos:any[] = [];
+  accesosDirectos:any[] = [];
   accesosDirectosAutorizados:any[] = [];
 
   constructor(private title: Title) { }
-  
+
+  /**
+   * Método que inicializa y obtiene valores para el funcionamiento del componente.
+   */
   ngOnInit() {
     this.title.setTitle("Farmacia Subrogada");
     this.usuario = JSON.parse(localStorage.getItem("usuario"));

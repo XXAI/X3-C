@@ -46,22 +46,22 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
 
   // # SECCION: Lista de insumos
   insumos: InsumoMedico[] = [];
-  private ultimoTerminoBuscado = "";
-  private terminosBusqueda = new Subject<string>();
-  private paginaActual = 1;
+  ultimoTerminoBuscado = "";
+  terminosBusqueda = new Subject<string>();
+  paginaActual = 1;
   resultadosPorPagina = 25;
   total = 0;
-  private paginasTotales = 0;
-  private indicePaginas:number[] = [];
+  paginasTotales = 0;
+  indicePaginas:number[] = [];
   // # FIN SECCION
 
 
    // # SECCION: Unidades Medicas dependientes
 
-  private listaClues:any[] = [];
-  private clues:any = -1;
+  listaClues:any[] = [];
+  clues:any = -1;
 
-  private listaCluesUtilizadasConInsumo:any[] = [];
+  listaCluesUtilizadasConInsumo:any[] = [];
 
    // # FIN SECCION
   
@@ -77,6 +77,9 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
 
   constructor(private buscarInsumosService: BuscarInsumosService) { }
 
+  /**
+   * Método que inicializa y obtiene valores para el funcionamiento del componente.
+   */
   ngOnInit() {
     console.log("Se supone me vuelvo a ejectuar");
      console.log(this.listaAgregadosConClues);

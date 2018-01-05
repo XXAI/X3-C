@@ -16,9 +16,9 @@ export class IndexLaboratorioComponent implements OnInit {
   usuario: any = {}
   busqueda: string = '';
 
-  private modulos:any[] = [];
+  modulos:any[] = [];
   modulosAutorizados:any[] = [];
-  private accesosDirectos:any[] = [];
+  accesosDirectos:any[] = [];
   accesosDirectosAutorizados:any[] = [];
 
   constructor(private title: Title) { }

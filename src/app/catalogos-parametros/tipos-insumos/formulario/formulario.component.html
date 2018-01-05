@@ -1,7 +1,7 @@
 <formulario #ctrl URL="tipo-insumo" titulo="Tipo insumo / Catalogo" [dato]="dato"></formulario>
 <app-menu-catalogo></app-menu-catalogo>
 <div style="height:50px;"></div>
-<div class="contenedor columns " style="height:100%">
+<div class="contenedor columns" style="height:90%;  padding-top: 1em;">
     <div class="column is-one-quarter is-hidden-mobile">
         <panel-control-menu-aside></panel-control-menu-aside>
     </div>
@@ -12,7 +12,10 @@
                 <section class="hero is-primary">
                     <div class="hero-body">
                         <!-- Opciones  -->
-                        <formulario-opciones [ctrl]="ctrl" class="control is-grouped" style="position:absolute; top:8em; right:3em;">
+                        <formulario-opciones
+                            [ctrl]="ctrl"
+                            class="control is-grouped"
+                            style="position:absolute; top:8em; right:3em;">
                         </formulario-opciones>
                         <div class="container is-fluid">
                             <h1 class="title">

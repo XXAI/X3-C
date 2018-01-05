@@ -13,9 +13,9 @@ export class IndexInventarioComponent implements OnInit {
   usuario: any = {};
   busqueda = '';
 
-  private modulos: any[] = [];
+  modulos: any[] = [];
   modulosAutorizados: any[] = [];
-  private accesosDirectos: any[] = [];
+  accesosDirectos: any[] = [];
   accesosDirectosAutorizados: any[] = [];
 
   constructor(private title: Title) { }

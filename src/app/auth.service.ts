@@ -10,7 +10,7 @@ import { environment } from '../environments/environment';
 
 @Injectable()
 export class AuthService {
-  private headers = new Headers({'Content-Type': 'application/json'});
+  headers = new Headers({'Content-Type': 'application/json'});
 
   constructor(private http: Http,  private router:Router) { }
 

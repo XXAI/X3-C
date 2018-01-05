@@ -58,7 +58,6 @@ export class FormularioComponent {
    * @param tipos Array que contiene los tipos de personal que existen.
    */
   seleccionar_tipo_personal(tipos) {
-    console.log(tipos);
     var id = this.dato.get('tipo_personal_id').value;
     var campos = {};
     this.dato.controls.personal_clues_metadatos.reset();

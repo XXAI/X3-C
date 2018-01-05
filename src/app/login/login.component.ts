@@ -18,11 +18,11 @@ export class LoginComponent implements OnInit {
   saludIdDisponible: boolean;
   credenciales: any = {};
   loading: boolean = false;
-  private returnUrl: string;
+  returnUrl: string;
   mensaje: string = "";
   mostrarMensaje: boolean = false;
-  private bloquearPantallaSuscription: Subscription;
-  private tamano = document.body.clientHeight;
+  bloquearPantallaSuscription: Subscription;
+  tamano = document.body.clientHeight;
 
   constructor(
     private route: ActivatedRoute,

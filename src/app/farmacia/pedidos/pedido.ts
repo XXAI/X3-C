@@ -23,10 +23,10 @@ export class Pedido {
   public paginacion:Paginacion = new Paginacion();
   public filtro: Pedido;
   //Harima: Para tener acceso al objeto que contiene la lista principal sin filtro
-  private padre: Pedido;
+  padre: Pedido;
   public activo:boolean = false;
   public cargando:boolean = false;
-  private fb:FormBuilder;
+  fb:FormBuilder;
 
   constructor(conFiltro:boolean = false){
     if (conFiltro){

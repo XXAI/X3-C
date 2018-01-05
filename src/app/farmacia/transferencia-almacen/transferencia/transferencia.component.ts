@@ -16,7 +16,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/catch';
 
-import  * as FileSaver    from 'file-saver'; 
+import  * as FileSaver    from 'file-saver';
 
 
 import { PedidosService } from '../../pedidos/pedidos.service';
@@ -47,31 +47,31 @@ import { Almacen } from '../../../catalogos/almacenes/almacen';
 export class TransferenciaComponent implements OnInit {
 
   @ViewChildren('searchBoxStock') searchBoxStockViewChildren;
-  
-  
+
+
     id:string ;
     cargando: boolean = false;
 	cargandoStock: boolean = false;
-	
+
 	guardando:boolean = false;
 	finalizando:boolean = false;
 
     cluesSinAlmacenes:boolean = false;
-    
+
      // # SECCION: Esta sección es para mostrar mensajes
     mensajeError: Mensaje = new Mensaje();
     mensajeAdvertencia: Mensaje = new Mensaje()
     mensajeExito: Mensaje = new Mensaje();
     ultimaPeticion: any;
-    // # FIN SECCION  
+    // # FIN SECCION
 
 
-    private listaStock: any[] = [];  
-
-    
+    listaStock: any[] = [];
 
 
-	pedido: Pedido; 
+
+
+	pedido: Pedido;
 	datosPedido: any = {};
 	movimiento: any;
 
@@ -79,48 +79,49 @@ export class TransferenciaComponent implements OnInit {
 
 
 
-    private lotesSurtidos:any[] = [];
-    
-    private claveInsumoSeleccionado:string = null;
-    private claveNoSolicitada:boolean = false;
-    private itemSeleccionado: any = null;
+    lotesSurtidos:any[] = [];
+
+    claveInsumoSeleccionado:string = null;
+    claveNoSolicitada:boolean = false;
+    itemSeleccionado: any = null;
 
     cargandoAlmacenes:boolean = false;
     almacenDelUsuario:any = {};
     almacenes: any[];
 
     cargandoUnidadesMedicas:boolean = false;
-	unidadesMedicas: any [];
-	
-	errores:any = {
-		clues_destino: null,
-		almacen_solicitante: null,
-		descripcion: null,
-		fecha: null,
-		observaciones: null,
-		insumos: null
-	}
-    
-  
-    
-    constructor(private title: Title, 
-      private route:ActivatedRoute, 
+    unidadesMedicas: any [];
+
+    errores:any = {
+        clues_destino: null,
+        almacen_solicitante: null,
+        descripcion: null,
+        fecha: null,
+        observaciones: null,
+        insumos: null
+    }
+
+
+
+    constructor(
+      private title: Title,
+      private route:ActivatedRoute,
       private router: Router,
-      private entregasService:EntregasService, 
-      private pedidosService:PedidosService, 
+      private entregasService:EntregasService,
+      private pedidosService:PedidosService,
       private stockService:StockService,
       private apiService:TransferenciaAlmacenService
     ) { }
-  
+
     ngOnInit() {
-     
+
       this.route.params.subscribe(params => {
         this.id = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number
         //this.cargarDatos();
       });
-  
+
       this.route.params.subscribe(params => {
-        this.id = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number      
+        this.id = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number
       });
 
       if(this.id!= null){
@@ -134,7 +135,7 @@ export class TransferenciaComponent implements OnInit {
 
       this.cargarUnidadesMedicas();
       this.pedido = new Pedido(true);
-      
+
       this.datosPedido = {
         almacen_proveedor:null,
         almacen_solicitante: null,
@@ -144,11 +145,11 @@ export class TransferenciaComponent implements OnInit {
         descripcion: null,
         observaciones: null,
       }
-      
+
       this.pedido.paginacion.resultadosPorPagina = 10;
       this.pedido.filtro.paginacion.resultadosPorPagina = 10;
-      
-      this.pedido.lista = [];      
+
+      this.pedido.lista = [];
       this.pedido.indexar();
 
       if(this.id!= null){
@@ -209,7 +210,7 @@ export class TransferenciaComponent implements OnInit {
             }
             this.pedido.indexar();
             this.pedido.listar(1);
-            
+
           }, error => {
             this.cargando = false;
             console.log(error);
@@ -218,93 +219,93 @@ export class TransferenciaComponent implements OnInit {
         )
       }
     }
-  
-    
-  
-    seleccionarItem(item){  
-      this.itemSeleccionado = item; 
+
+
+
+    seleccionarItem(item){
+      this.itemSeleccionado = item;
       this.buscarStockApi(null,item.clave)
     }
-  
+
     buscar(e: KeyboardEvent, input:HTMLInputElement, inputAnterior: HTMLInputElement,  parametros:any[]){
-      
+
       let term = input.value;
-      
+
       // Quitamos la busqueda
       if(e.keyCode == 27){
         e.preventDefault();
         e.stopPropagation();
         input.value = "";
         inputAnterior.value = "";
-  
+
         this.pedido.filtro.activo = false;
-        this.pedido.filtro.lista = [];      
-  
-        return;      
+        this.pedido.filtro.lista = [];
+
+        return;
       }
-  
-      
+
+
       //Verificamos que la busqueda no sea la misma que la anterior para no filtrar en vano
-      if(inputAnterior.value == term){      
+      if(inputAnterior.value == term){
         return
       }
-  
+
       e.preventDefault();
       e.stopPropagation();
-  
-      inputAnterior.value = term;    
-  
+
+      inputAnterior.value = term;
+
       if(term != ""){
-        this.pedido.filtro.activo = true;      
+        this.pedido.filtro.activo = true;
       } else {
         this.pedido.filtro.activo = false;
         this.pedido.filtro.lista = [];
         return;
       }
-  
+
       var arregloResultados:any[] = []
-      
+
       for(let i in parametros){
-  
+
         let termino = (parametros[i].input as HTMLInputElement).value;
         if(termino == ""){
-          
+
           continue;
         }
-              
-        let listaFiltrada = this.pedido.lista.filter((item)=> {   
+
+        let listaFiltrada = this.pedido.lista.filter((item)=> {
           var cadena = "";
           let campos = parametros[i].campos;
-          
+
           for (let l in campos){
             try{
               // Esto es por si escribieron algo como "objeto.propiedad" en lugar de: "propiedad"
-              let prop = campos[l].split(".");   
-                     
+              let prop = campos[l].split(".");
+
               if (prop.length > 1){
                 cadena += " " + item[prop[0]][prop[1]].toLowerCase();
               } else {
                  cadena += " " + item[campos[l]].toLowerCase();
               }
-             
+
             } catch(e){}
-            
+
           }
           return cadena.includes(termino.toLowerCase())
         });
-  
+
         arregloResultados.push(listaFiltrada)
       }
-      
+
       if(arregloResultados.length > 1 ){
         // Ordenamos Ascendente
         console.log(arregloResultados)
         arregloResultados = arregloResultados.sort( function(a,b){ return  a.length - b.length });
-        
+
         var filtro = arregloResultados[0];
         var match: any[] = [];
         for(let k = 1; k <  arregloResultados.length ; k++){
-          
+
           for(let i in arregloResultados[k]){
             for(let j in filtro){
               if(arregloResultados[k][i] === filtro[j]){
@@ -317,45 +318,45 @@ export class TransferenciaComponent implements OnInit {
       } else {
         this.pedido.filtro.lista = arregloResultados[0];
       }
-  
-  
+
+
       this.pedido.filtro.indexar(false);
-      
+
       this.pedido.filtro.paginacion.paginaActual = 1;
-      this.pedido.filtro.listar(1); 
-  
+      this.pedido.filtro.listar(1);
+
     }
-  
-  
+
+
     buscarStockApi(term:string, clave:string = null){
       this.cargandoStock = true;
       this.stockService.buscar(term, clave).subscribe(
           resultado => {
             this.cargandoStock = false;
             this.claveNoSolicitada = false;
-  
+
             this.listaStock = resultado ;
-  
+
             if(resultado.length>0){
               this.claveInsumoSeleccionado = resultado[0].clave_insumo_medico;
-  
-  
+
+
               var existeClaveEnPedido = false;
-  
+
               for(var  i = 0; i < this.pedido.lista.length ; i++){
-            
+
                 if(this.pedido.lista[i].clave == this.claveInsumoSeleccionado){
                   // Calculamos la pagina
                   this.pedido.filtro.activo = false;
                   let pag = Math.ceil((i + 1) /this.pedido.paginacion.resultadosPorPagina);
                   this.pedido.listar(pag);
                   this.itemSeleccionado = this.pedido.lista[i] ;
-                  
+
                   // Akira
                   //existeClaveEnPedido = true;
                 }
               }
-  
+
               if(!existeClaveEnPedido){
                 //Akira
                 //this.claveNoSolicitada = true;
@@ -363,18 +364,18 @@ export class TransferenciaComponent implements OnInit {
               } else {
                 this.verificarItemsAsignadosStockApi();
               }
-  
+
             } else {
               if( this.searchBoxStockViewChildren.first.nativeElement.value != ""){
                 this.itemSeleccionado = null;
               }
-              
+
             }
-  
-            
-            
+
+
+
             console.log("Stock cargado.");
-            
+
           },
           error => {
             this.cargandoStock = false;
@@ -387,14 +388,14 @@ export class TransferenciaComponent implements OnInit {
               }
             } catch(e){
               console.log("No se puede interpretar el error");
-              
+
               if (error.status == 500 ){
                 this.mensajeError.texto = "500 (Error interno del servidor)";
               } else {
                 this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
-              }            
+              }
             }
-  
+
           }
         );
     }
@@ -405,54 +406,54 @@ export class TransferenciaComponent implements OnInit {
         e.stopPropagation();
         if (term == ""){
           return false;
-        }      
+        }
         this.buscarStockApi(term);
         input.select();
         return false;
       }
       return false;
     }
-  
+
     limpiarStock(){
       this.listaStock = [];
       this.itemSeleccionado = null;
       this.searchBoxStockViewChildren.first.nativeElement.value = "";
     }
-  
+
 	eliminarInsumo(index): void {
-		this.pedido.lista.splice(index, 1);  
+		this.pedido.lista.splice(index, 1);
 		this.pedido.indexar();
 		this.pedido.listar(1);
 	}
-	
+
 	eliminarStock(index): void {
-      
-    this.itemSeleccionado.listaStockAsignado.splice(index, 1);  
-      
+
+    this.itemSeleccionado.listaStockAsignado.splice(index, 1);
+
     this.calcularTotalStockItem();
     if(this.itemSeleccionado.cantidad <= 0){
       var indice = 0;
       for(var x in this.pedido.paginacion.lista){
         if(this.pedido.paginacion.lista[x].clave == this.itemSeleccionado.clave){
-          this.pedido.paginacion.lista.splice(indice, 1);  
+          this.pedido.paginacion.lista.splice(indice, 1);
         }
         indice++;
-      } 
-      
+      }
+
       this.itemSeleccionado = null;
 
     } else{
       this.verificarItemsAsignadosStockApi();
     }
-    
+
   }
 
-  
+
   asignarStock(item:any){
     var item_previamente_agregado = false;
     for(var i in this.pedido.lista){
       if(this.pedido.lista[i].clave == item.clave_insumo_medico){
-        
+
         this.itemSeleccionado = this.pedido.lista[i];
         item_previamente_agregado = true;
       }
@@ -472,14 +473,14 @@ export class TransferenciaComponent implements OnInit {
       this.pedido.indexar();
       this.pedido.listar(1);
       this.itemSeleccionado = this.pedido.lista[last-1];
-      
+
     }
-    
+
     if( this.itemSeleccionado.listaStockAsignado == null ){
-      
+
       this.itemSeleccionado.listaStockAsignado = [];
     }
-    
+
     for(var i in this.itemSeleccionado.listaStockAsignado) {
       if(item.id == this.itemSeleccionado.listaStockAsignado[i].id){
 
@@ -489,58 +490,58 @@ export class TransferenciaComponent implements OnInit {
     }
 
     this.itemSeleccionado.listaStockAsignado.push(item)
-    
+
     console.log(this.pedido.lista);
   }
-  
-  
+
+
     validarItemStock(item:any, setMaxVal:boolean = false){
-  
-     
+
+
       if(item.cantidad == null){
         item.cantidad = 0;
         this.calcularTotalStockItem();
         return;
       }
-  
+
       var cantidad = parseInt(item.cantidad);
-  
+
       if(isNaN(cantidad)){
         item.cantidad = 0;
         this.calcularTotalStockItem();
         return;
       }
-  
+
       if(cantidad <= 0){
         item.cantidad = 0;
         this.calcularTotalStockItem();
         return;
       }
-  
-      
-  
+
+
+
       if( cantidad > item.existencia){
         item.cantidad = item.existencia;
       }
-  
+
       this.calcularTotalStockItem();
-      
+
     }
     verificarItemsAsignadosStockApi(){
-      
+
       for(var i in this.listaStock){
         this.listaStock[i].asignado = false;
         for(var j in this.itemSeleccionado.listaStockAsignado){
           if(this.itemSeleccionado.listaStockAsignado[j].id == this.listaStock[i].id){
             this.listaStock[i].asignado = true;
             break;
-          } 
+          }
         }
       }
-  
+
     }
     calcularTotalStockItem(){
-      
+
       var acumulado = 0;
       for(var i in this.itemSeleccionado.listaStockAsignado) {
         acumulado += this.itemSeleccionado.listaStockAsignado[i].cantidad;
@@ -549,13 +550,13 @@ export class TransferenciaComponent implements OnInit {
         var indice = 0;
         for(var i  in this.lotesSurtidos) {
           if(this.lotesSurtidos[i].clave == this.itemSeleccionado.clave){
-            
+
             this.lotesSurtidos.splice(indice,1);
           }
           indice++;
         }
       } else {
-       
+
         var bandera = false;
         for(var i  in this.lotesSurtidos) {
           if(this.lotesSurtidos[i].clave == this.itemSeleccionado.clave){
@@ -564,15 +565,15 @@ export class TransferenciaComponent implements OnInit {
           }
         }
         if(!bandera){
-          
+
           this.lotesSurtidos.push({ clave: this.itemSeleccionado.clave, cantidad:  acumulado});
         }
       }
 
-    
+
       this.itemSeleccionado.totalStockAsignado = acumulado;
       this.itemSeleccionado.cantidad = acumulado;
-      
+
     }
 
     cargarUnidadesMedicas(){
@@ -613,8 +614,8 @@ export class TransferenciaComponent implements OnInit {
 		} else {
 			this.guardando = true;
 		}
-		
-		
+
+
 		this.errores = {
 			clues_destino: null,
 			almacen_solicitante: null,
@@ -628,7 +629,7 @@ export class TransferenciaComponent implements OnInit {
 		if(this.datosPedido.fecha != null){
 			fecha = this.datosPedido.fecha.getFullYear() + "-" + ('0' + (this.datosPedido.fecha.getMonth() + 1) ).slice(-2)  + "-" + ('0' + this.datosPedido.fecha.getDate()).slice(-2)
 		}
-		// Vamos a dar formato a la lista del pedido 
+		// Vamos a dar formato a la lista del pedido
 		var listaStock = [];
 		var insumos = [];
 		console.log(this.pedido.lista);
@@ -637,14 +638,14 @@ export class TransferenciaComponent implements OnInit {
 			var precio = 0.00;
 			var tipo_insumo_id = null;
 			for( var j in this.pedido.lista[i].listaStockAsignado){
-				
+
 				listaStock.push({
 					stock_id: this.pedido.lista[i].listaStockAsignado[j].id,
 					clave: this.pedido.lista[i].listaStockAsignado[j].clave_insumo_medico,
 					cantidad: this.pedido.lista[i].listaStockAsignado[j].cantidad != null ? this.pedido.lista[i].listaStockAsignado[j].cantidad : 0,
 					precio: this.pedido.lista[i].listaStockAsignado[j].precio,
 					tipo: this.pedido.lista[i].tipo,
-					tipo_insumo_id: this.pedido.lista[i].listaStockAsignado[j].tipo_insumo_id		
+					tipo_insumo_id: this.pedido.lista[i].listaStockAsignado[j].tipo_insumo_id
 				});
 				// Asignamos el ultimo precio
 				precio = this.pedido.lista[i].listaStockAsignado[j].precio	;
@@ -697,7 +698,7 @@ export class TransferenciaComponent implements OnInit {
 					let e = error.json();
 					this.mensajeError = new Mensaje(true)
 					switch(error.status){
-					  case 401: 
+					  case 401:
 						this.mensajeError.texto =  "No tiee permiso para realizar esta acción.";
 						break;
 					  case 409:
@@ -706,13 +707,13 @@ export class TransferenciaComponent implements OnInit {
 						  // Iteramos todos los errores
 						  for (var i in e.error[input]){
 							this.errores[input] = e.error[input][i];
-						  }                      
+						  }
 						}
 						break;
 					  case 500:
 						this.mensajeError.texto = "500 (Error interno del servidor)";
 						break;
-					  default: 
+					  default:
 						this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
 					}
 					console.log(this.errores);
@@ -736,15 +737,15 @@ export class TransferenciaComponent implements OnInit {
 	}
     // # SECCION: Eventos del teclado
     keyboardInput(e: KeyboardEvent) {
-      
+
       if(e.keyCode == 32 &&  e.ctrlKey){ // Ctrl + barra espaciadora
         event.preventDefault();
         event.stopPropagation();
-        
+
          this.searchBoxStockViewChildren.first.nativeElement.focus();
       }
-      
-          
+
+
     }
 
 }
