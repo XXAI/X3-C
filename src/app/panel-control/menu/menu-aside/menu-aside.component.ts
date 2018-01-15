@@ -21,9 +21,9 @@ export class MenuAsideComponent implements OnInit {
       {
         titulo: 'Sincronización con servidor principal',
         modulos: [
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'fa-cloud', titulo: 'Servidor central', url: '/panel-control/sync/central' },
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'fa-desktop', titulo: 'Servidor local', url: '/panel-control/sync/local' },
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'fa-server', titulo: 'Servidores', url: '/panel-control/sync/servidores' },
+          { permiso: '3DMVRdBv4cLGzdfAqXO7oqTvAMbEdhI7', icono: 'fa-cloud', titulo: 'Servidor central', url: '/panel-control/sync/central' },
+          { permiso: 'NNN3YYcmuXdZYVSGCk0CJFjcx3ATnRQ5', icono: 'fa-desktop', titulo: 'Servidor local', url: '/panel-control/sync/local' },
+          { permiso: '8DDwGNuZOZfoFfaDOsQvBBhVzmnlU4PA', icono: 'fa-server', titulo: 'Servidores', url: '/panel-control/sync/servidores' },
         ]
       },
       {

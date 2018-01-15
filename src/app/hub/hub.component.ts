@@ -96,7 +96,10 @@ export class HubComponent implements OnInit {
       permisos: [
         'mGKikN0aJaeF2XrHwwYK3XNw0f9CSZDe', // Ver usuarios
         'ICmOKw3HxhgRna4a78OP0QmKrIX0bNsp', // Ver roles
-        'DYwQAxJbpHWw07zT09scEogUeFKFdGSu' // Ver permisos
+        'DYwQAxJbpHWw07zT09scEogUeFKFdGSu', // Ver permisos
+        'NNN3YYcmuXdZYVSGCk0CJFjcx3ATnRQ5', // Sincronización local
+        '3DMVRdBv4cLGzdfAqXO7oqTvAMbEdhI7', // Sincronización con servidor central
+        '8DDwGNuZOZfoFfaDOsQvBBhVzmnlU4PA', // Ver Servidores
       ]
     },
     {

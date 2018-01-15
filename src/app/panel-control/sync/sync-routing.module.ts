@@ -18,11 +18,11 @@ const routes: Routes = [
     children: [
        { path: '',  redirectTo: '/panel-control/sync/estatus', pathMatch: 'full' },
        { path: 'estatus', component: EstatusComponent },
-       { path: 'local', component: LocalComponent , canActivate: [PermisosGuard], data: { key: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f'} },
-       { path: 'central', component: CentralComponent, canActivate: [PermisosGuard], data: { key: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f'}  },
-       { path: 'servidores', component: ServidoresComponent, canActivate: [PermisosGuard], data: { key: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f'}  },
-       { path: 'servidores/nuevo', component: NuevoServidorComponent, canActivate: [PermisosGuard], data: { key: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f'}  },
-       { path: 'servidores/editar/:id', component: EditarServidorComponent, canActivate: [PermisosGuard], data: { key: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f'}  },
+       { path: 'local', component: LocalComponent , canActivate: [PermisosGuard], data: { key: 'NNN3YYcmuXdZYVSGCk0CJFjcx3ATnRQ5'} },
+       { path: 'central', component: CentralComponent, canActivate: [PermisosGuard], data: { key: '3DMVRdBv4cLGzdfAqXO7oqTvAMbEdhI7'}  },
+       { path: 'servidores', component: ServidoresComponent, canActivate: [PermisosGuard], data: { key: '8DDwGNuZOZfoFfaDOsQvBBhVzmnlU4PA'}  },
+       { path: 'servidores/nuevo', component: NuevoServidorComponent, canActivate: [PermisosGuard], data: { key: 'Txy4Qi7mIekBNDG3T3vnJmLdMpiLQCeu'}  },
+       { path: 'servidores/editar/:id', component: EditarServidorComponent, canActivate: [PermisosGuard], data: { key: 'C9I92bngLlDGuSpW9sHahdNx9f8zad3B'}  },
        
     ],
     canActivate: [AuthGuard]
