@@ -90,7 +90,7 @@
                     </th>  
                     <th style="width:78px !important;text-align: center; vertical-align: middle;"><abbr title="Cantidad">Cant.</abbr></th>                    
                     <th width="1">
-                      <!--a  class="button is-primary is-small" (click)="mostrarModalInsumos = true" [ngClass]="{ 'is-disabled' : guardando }"> <span class="icon"><i class="fa fa-plus"></i></span></a-->
+                      <a  class="button is-primary is-small" (click)="mostrarModalInsumos = true" [ngClass]="{ 'is-disabled' : guardando }"> <span class="icon"><i class="fa fa-plus"></i></span></a>
                     </th>
                   </tr>
               </thead>
@@ -193,6 +193,11 @@
               <thead>
                 <tr>
                   <td colspan="6">
+                    <h1 class="subtitle"><span class="icon"><i class="fa fa-archive"></i></span> Lotes</h1>
+                  </td>
+                </tr>
+                <!--tr>
+                  <td colspan="6">
                     <h1 class="subtitle"><span class="icon"><i class="fa fa-archive"></i></span> Existencias <small>( Ctrl + Barra espaciadora)</small></h1>
                   </td>
                 </tr>
@@ -202,10 +207,8 @@
                       <input class="input" type="text" placeholder="Código" #searchBoxStock (keyup)="buscarStock($event, searchBoxStock , searchBoxStock.value)" (focus)="searchBoxStock.select()" >
                     </p>
                   </td>
-                </tr>
+                </tr-->
                 <tr>
-                  <th>Clave</th>
-                  <th>Descripcion</th>
                   <th>Código</th>
                   <th>Lote</th>
                   <th>Caducidad</th>
@@ -214,8 +217,6 @@
               </thead>
               <tbody>
                   <tr  class="is-unselectable item" *ngFor="let item of listaStock" (click)="asignarStock(item)" [ngClass]="{ 'asignado': item.asignado }">
-                    <td>{{ item.insumo.clave }}</td>           
-                    <td>{{ item.insumo.descripcion }}</td>
                     <td>{{ item.codigo_barras != null ? item.codigo_barras : '-' }}</td>
                     <td>{{ item.lote }}</td>
                     <td>{{ item.fecha_caducidad | date:'dd/MM/y' }}</td>
@@ -242,7 +243,6 @@
               <thead>
                   <tr style="background: #00d1b2;">
                     <th style="color:#FFF !important;">Código</th>
-                    <th style="color:#FFF !important;">Descripcion</th>
                     <th style="color:#FFF !important;">Lote</th>
                     <th style="color:#FFF !important;">Caducidad</th>
                     <th style="color:#FFF !important;"><abbr title="Cantidad">Cant.</abbr></th>  
@@ -261,7 +261,6 @@
                   <tr  class="is-unselectable" *ngFor="let item of itemSeleccionado.listaStockAsignado">
                                       
                     <td>{{ item.codigo_barras}}</td>
-                    <td>{{ item.insumo.descripcion }}</td>
                     <td>{{ item.lote }}</td>
                     <td>{{ item.fecha_caducidad | date:'dd/MM/y' }}</td>
                     <td style="width:78px !important;">
@@ -269,10 +268,8 @@
                         <input class="input is-small has-text-centered"  type="number" min="1" max="{{item.existencia}}" placeholder="Cant" [(ngModel)]="item.cantidad" (change)="validarItemStock(item, true)" (keyup)="validarItemStock(item)">
                         </p>
                     </td> 
-                    <td style="vertical-align: middle;" class="has-text-centered"><a  class="is-danger" (click)="eliminarStock(i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>                    
+                    <td style="vertical-align: middle;" class="has-text-centered"><a  class="is-danger" (click)="eliminarStock(item)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>                    
                   </tr>
-                  
-                      
               </tbody>  
             </table>
           </div>
@@ -286,10 +283,11 @@
     *ngIf="mostrarModalInsumos" 
     (onCerrar)="mostrarModalInsumos = false" 
     (onEnviar)="agregarItem($event)" 
-    [listaAgregados]="listaClaveAgregadas" 
-    [listaAgregadosConClues]="listaClaveAgregadas" 
-    [conPrecios]="false"
-    [conClues]="false">
+    [listaAgregadosConStock]="listaLotesAgregados"
+    [conPrecios]="true"
+    [conClues]="false"
+    [conStock]="true"
+    >
 </buscar-insumos>
 
 <div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeError.mostrar">

@@ -1220,11 +1220,11 @@ export class SurtirComponent implements OnInit {
         respuesta => {
           //this.transaccion_clues_origen = {clues:''}; //"";
           this.pedido.status = 'EX-CA';
-
+          this.permitirResurtir = false;
           this.cancelandoPedido = false;
           this.mostrarCancelarTransferenciaDialogo = false;
           this.errorCancelarTransferencia = false;
-          // Akira: Quizás aquí deberia limpiar el filtro pa ver el registro.
+          this.router.navigate(['/almacen/transferencia-almacen/ver/'+respuesta.id]);
         }, error =>{
           console.log(error);
           this.errorCancelarTransferencia = true;

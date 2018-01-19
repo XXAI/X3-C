@@ -23,13 +23,7 @@ import { PedidosService } from '../../pedidos/pedidos.service';
 import { EntregasService } from '../../entregas/entregas.service';
 import { StockService } from '../../stock/stock.service';
 
-
-
-
 import { TransferenciaAlmacenService } from '../transferencia-almacen.service';
-
-
-
 
 import { Pedido } from '../../pedidos/pedido';
 import { Mensaje } from '../../../mensaje';
@@ -46,15 +40,15 @@ import { Almacen } from '../../../catalogos/almacenes/almacen';
 })
 export class TransferenciaComponent implements OnInit {
 
-  @ViewChildren('searchBoxStock') searchBoxStockViewChildren;
+  //@ViewChildren('searchBoxStock') searchBoxStockViewChildren;
   
   
     id:string ;
     cargando: boolean = false;
-	cargandoStock: boolean = false;
-	
-	guardando:boolean = false;
-	finalizando:boolean = false;
+    cargandoStock: boolean = false;
+    
+    guardando:boolean = false;
+    finalizando:boolean = false;
 
     cluesSinAlmacenes:boolean = false;
     
@@ -69,23 +63,15 @@ export class TransferenciaComponent implements OnInit {
     mostrarModalInsumos = false;
     
     // Akira: Lo volvy tipo any en lugar de string porque en pedidos jurisdiccionales se agregan más datos :P
-    listaClaveAgregadas: any[] = [];
+    listaLotesAgregados: any = {};
     // # FIN SECCION
-
 
     private listaStock: any[] = [];  
 
-    
-
-
-	pedido: Pedido; 
-	datosPedido: any = {};
-	movimiento: any;
-
-
-
-
-
+    pedido: Pedido; 
+    datosPedido: any = {};
+    movimiento: any;
+  
     private lotesSurtidos:any[] = [];
     
     private claveInsumoSeleccionado:string = null;
@@ -97,18 +83,16 @@ export class TransferenciaComponent implements OnInit {
     almacenes: any[];
 
     cargandoUnidadesMedicas:boolean = false;
-	unidadesMedicas: any [];
+	  unidadesMedicas: any [];
 	
-	errores:any = {
-		clues_destino: null,
-		almacen_solicitante: null,
-		descripcion: null,
-		fecha: null,
-		observaciones: null,
-		insumos: null
-	}
-    
-  
+    errores:any = {
+      clues_destino: null,
+      almacen_solicitante: null,
+      descripcion: null,
+      fecha: null,
+      observaciones: null,
+      insumos: null
+    }
     
     constructor(private title: Title, 
       private route:ActivatedRoute, 
@@ -185,6 +169,7 @@ export class TransferenciaComponent implements OnInit {
             this.datosPedido.descripcion = respuesta.descripcion;
             this.datosPedido.observaciones =  respuesta.observaciones;
             console.log("aqui")
+
             for(let i in respuesta.insumos){
               let dato = respuesta.insumos[i];
               let insumo = dato.insumos_con_descripcion;
@@ -209,11 +194,17 @@ export class TransferenciaComponent implements OnInit {
                     fecha_caducidad: this.movimiento.insumos[j].stock.fecha_caducidad,
                     codigo_barras: this.movimiento.insumos[j].stock.codigo_barras,
                     existencia: this.movimiento.insumos[j].stock.existencia
-                  })
+                  });
+
+                  if(!this.listaLotesAgregados[this.movimiento.insumos[j].stock.id]){
+                    this.listaLotesAgregados[this.movimiento.insumos[j].stock.id] = this.movimiento.insumos[j].cantidad;
+                  }else{
+                    console.log('################################################ lote duplicado ################################################');
+                  }
                 }
               }
-              //for(let j in this)
             }
+            console.log(this.listaLotesAgregados);
             this.pedido.indexar();
             this.pedido.listar(1);
             
@@ -227,7 +218,59 @@ export class TransferenciaComponent implements OnInit {
     }
   
     agregarItem(item:any = {}){
-      return item;
+      console.log('agregado');
+      console.log(item);
+
+      var item_previamente_agregado = false;
+      for(var i in this.pedido.lista){
+        if(this.pedido.lista[i].clave == item.insumo.clave){
+          this.itemSeleccionado = this.pedido.lista[i];
+          item_previamente_agregado = true;
+        }
+      }
+      
+      this.listaStock = [];
+
+      if(!item_previamente_agregado){
+        //console.log(item);
+        var last = this.pedido.lista.push({
+            clave: item.insumo.clave,
+            tipo: item.insumo.tipo,
+            informacion: item.insumo.informacion,
+            descripcion: item.insumo.descripcion,
+            generico_nombre: item.insumo.generico.nombre,
+            cantidad: 0,
+            totalStockAsignado: 0,
+            es_causes: item.insumo.es_causes,
+            es_cuadro_basico: item.es_cuadro_basico,
+            listaStockAsignado:[]
+        });
+        this.pedido.indexar();
+        this.pedido.listar(1);
+        this.itemSeleccionado = this.pedido.lista[last-1];
+      }
+      
+      if( this.itemSeleccionado.listaStockAsignado == null ){
+        this.itemSeleccionado.listaStockAsignado = [];
+        this.itemSeleccionado.totalStockAsignado = 0;
+      }
+      
+      for(var i in this.itemSeleccionado.listaStockAsignado) {
+        if(item.id == this.itemSeleccionado.listaStockAsignado[i].id){
+          // No podemos asignar dos veces el mismo item
+          return;
+        }
+      }
+      this.itemSeleccionado.cantidad += item.cantidad;
+      this.itemSeleccionado.totalStockAsignado += item.cantidad;
+      item.lote.cantidad = item.cantidad;
+      item.lote.precio = item.insumo.precio;
+      item.lote.tipo_insumo_id = item.insumo.tipo_insumo_id;
+
+      this.itemSeleccionado.listaStockAsignado.push(item.lote)
+
+      //console.log(this.pedido.lista);
+      console.log(this.listaLotesAgregados);
     }
     
     seleccionarItem(item){  
@@ -339,52 +382,41 @@ export class TransferenciaComponent implements OnInit {
     buscarStockApi(term:string, clave:string = null){
       this.cargandoStock = true;
       this.stockService.buscar(term, clave).subscribe(
-          resultado => {
-            this.cargandoStock = false;
-            this.claveNoSolicitada = false;
-  
-            this.listaStock = resultado ;
-  
-            if(resultado.length>0){
-              this.claveInsumoSeleccionado = resultado[0].clave_insumo_medico;
-  
-  
-              var existeClaveEnPedido = false;
-  
-              for(var  i = 0; i < this.pedido.lista.length ; i++){
-            
-                if(this.pedido.lista[i].clave == this.claveInsumoSeleccionado){
-                  // Calculamos la pagina
-                  this.pedido.filtro.activo = false;
-                  let pag = Math.ceil((i + 1) /this.pedido.paginacion.resultadosPorPagina);
-                  this.pedido.listar(pag);
-                  this.itemSeleccionado = this.pedido.lista[i] ;
-                  
-                  // Akira
-                  //existeClaveEnPedido = true;
-                }
+        resultado => {
+          this.cargandoStock = false;
+          this.claveNoSolicitada = false;
+          this.listaStock = resultado ;
+
+          if(resultado.length>0){
+            this.claveInsumoSeleccionado = resultado[0].clave_insumo_medico;
+            var existeClaveEnPedido = false;
+
+            for(var  i = 0; i < this.pedido.lista.length ; i++){
+              if(this.pedido.lista[i].clave == this.claveInsumoSeleccionado){
+                // Calculamos la pagina
+                this.pedido.filtro.activo = false;
+                let pag = Math.ceil((i + 1) /this.pedido.paginacion.resultadosPorPagina);
+                this.pedido.listar(pag);
+                this.itemSeleccionado = this.pedido.lista[i] ;
+                // Akira
+                existeClaveEnPedido = true;
               }
-  
-              if(!existeClaveEnPedido){
-                //Akira
-                //this.claveNoSolicitada = true;
-                //this.listaStock =[];
-              } else {
-                this.verificarItemsAsignadosStockApi();
-              }
-  
-            } else {
-              if( this.searchBoxStockViewChildren.first.nativeElement.value != ""){
-                this.itemSeleccionado = null;
-              }
-              
             }
-  
             
-            
-            console.log("Stock cargado.");
-            
-          },
+            if(!existeClaveEnPedido){
+              //Akira
+              this.claveNoSolicitada = true;
+              this.listaStock =[];
+            } else {
+              this.verificarItemsAsignadosStockApi();
+            }
+          } else {
+            /*if( this.searchBoxStockViewChildren.first.nativeElement.value != ""){
+              this.itemSeleccionado = null;
+            }*/
+          }
+          console.log("Stock cargado.");
+        },
           error => {
             this.cargandoStock = false;
             this.mensajeError.mostrar = true;
@@ -405,7 +437,7 @@ export class TransferenciaComponent implements OnInit {
             }
   
           }
-        );
+      );
     }
 
     buscarStock(e: KeyboardEvent, input:HTMLInputElement, term:string){
@@ -425,19 +457,35 @@ export class TransferenciaComponent implements OnInit {
     limpiarStock(){
       this.listaStock = [];
       this.itemSeleccionado = null;
-      this.searchBoxStockViewChildren.first.nativeElement.value = "";
+      //this.searchBoxStockViewChildren.first.nativeElement.value = "";
     }
   
 	eliminarInsumo(index): void {
+    if(this.pedido.lista[index] == this.itemSeleccionado){
+      this.itemSeleccionado = null;
+      this.listaStock = [];
+    }
+
+    let lotes = this.pedido.lista[index].listaStockAsignado;
+
+    for(let i in lotes){
+      delete this.listaLotesAgregados[lotes[i].id];
+    }
+
 		this.pedido.lista.splice(index, 1);  
 		this.pedido.indexar();
-		this.pedido.listar(1);
+    this.pedido.listar(1);
 	}
 	
-	eliminarStock(index): void {
-      
-    this.itemSeleccionado.listaStockAsignado.splice(index, 1);  
-      
+	eliminarStock(item): void {
+    let index = this.itemSeleccionado.listaStockAsignado.indexOf(item);
+    
+    let stock_id = this.itemSeleccionado.listaStockAsignado[index].id;
+    
+    delete this.listaLotesAgregados[stock_id];
+
+    this.itemSeleccionado.listaStockAsignado.splice(index, 1);
+
     this.calcularTotalStockItem();
     if(this.itemSeleccionado.cantidad <= 0){
       var indice = 0;
@@ -447,13 +495,10 @@ export class TransferenciaComponent implements OnInit {
         }
         indice++;
       } 
-      
       this.itemSeleccionado = null;
-
     } else{
       this.verificarItemsAsignadosStockApi();
     }
-    
   }
 
   
@@ -466,6 +511,7 @@ export class TransferenciaComponent implements OnInit {
         item_previamente_agregado = true;
       }
     }
+
     if(!item_previamente_agregado){
       var last = this.pedido.lista.push({
           clave: item.insumo.clave,
@@ -481,17 +527,14 @@ export class TransferenciaComponent implements OnInit {
       this.pedido.indexar();
       this.pedido.listar(1);
       this.itemSeleccionado = this.pedido.lista[last-1];
-      
     }
     
     if( this.itemSeleccionado.listaStockAsignado == null ){
-      
       this.itemSeleccionado.listaStockAsignado = [];
     }
     
     for(var i in this.itemSeleccionado.listaStockAsignado) {
       if(item.id == this.itemSeleccionado.listaStockAsignado[i].id){
-
         // No podemos asignar dos veces el mismo item
         return;
       }
@@ -503,86 +546,77 @@ export class TransferenciaComponent implements OnInit {
   }
   
   
-    validarItemStock(item:any, setMaxVal:boolean = false){
-  
-     
-      if(item.cantidad == null){
-        item.cantidad = 0;
-        this.calcularTotalStockItem();
-        return;
-      }
-  
-      var cantidad = parseInt(item.cantidad);
-  
-      if(isNaN(cantidad)){
-        item.cantidad = 0;
-        this.calcularTotalStockItem();
-        return;
-      }
-  
-      if(cantidad <= 0){
-        item.cantidad = 0;
-        this.calcularTotalStockItem();
-        return;
-      }
-  
-      
-  
-      if( cantidad > item.existencia){
-        item.cantidad = item.existencia;
-      }
-  
+  validarItemStock(item:any, setMaxVal:boolean = false){ 
+    if(item.cantidad == null){
+      item.cantidad = 0;
       this.calcularTotalStockItem();
-      
+      return;
     }
-    verificarItemsAsignadosStockApi(){
-      
-      for(var i in this.listaStock){
-        this.listaStock[i].asignado = false;
-        for(var j in this.itemSeleccionado.listaStockAsignado){
-          if(this.itemSeleccionado.listaStockAsignado[j].id == this.listaStock[i].id){
-            this.listaStock[i].asignado = true;
-            break;
-          } 
-        }
-      }
-  
-    }
-    calcularTotalStockItem(){
-      
-      var acumulado = 0;
-      for(var i in this.itemSeleccionado.listaStockAsignado) {
-        acumulado += this.itemSeleccionado.listaStockAsignado[i].cantidad;
-      }
-      if (acumulado == 0){
-        var indice = 0;
-        for(var i  in this.lotesSurtidos) {
-          if(this.lotesSurtidos[i].clave == this.itemSeleccionado.clave){
-            
-            this.lotesSurtidos.splice(indice,1);
-          }
-          indice++;
-        }
-      } else {
-       
-        var bandera = false;
-        for(var i  in this.lotesSurtidos) {
-          if(this.lotesSurtidos[i].clave == this.itemSeleccionado.clave){
-            bandera = true;
-            this.lotesSurtidos[i].cantidad = acumulado;
-          }
-        }
-        if(!bandera){
-          
-          this.lotesSurtidos.push({ clave: this.itemSeleccionado.clave, cantidad:  acumulado});
-        }
-      }
 
-    
-      this.itemSeleccionado.totalStockAsignado = acumulado;
-      this.itemSeleccionado.cantidad = acumulado;
-      
+    var cantidad = parseInt(item.cantidad);
+
+    if(isNaN(cantidad)){
+      item.cantidad = 0;
+      this.calcularTotalStockItem();
+      return;
     }
+
+    if(cantidad <= 0){
+      item.cantidad = 0;
+      this.calcularTotalStockItem();
+      return;
+    }
+
+    if( cantidad > item.existencia){
+      item.cantidad = item.existencia;
+    }
+
+    this.listaLotesAgregados[item.id] = item.cantidad;
+
+    this.calcularTotalStockItem();
+  }
+
+  verificarItemsAsignadosStockApi(){
+    for(var i in this.listaStock){
+      this.listaStock[i].asignado = false;
+      for(var j in this.itemSeleccionado.listaStockAsignado){
+        if(this.itemSeleccionado.listaStockAsignado[j].id == this.listaStock[i].id){
+          this.listaStock[i].asignado = true;
+          break;
+        } 
+      }
+    }
+  }
+
+  calcularTotalStockItem(){
+    var acumulado = 0;
+    for(var i in this.itemSeleccionado.listaStockAsignado) {
+      acumulado += this.itemSeleccionado.listaStockAsignado[i].cantidad;
+    }
+    if (acumulado == 0){
+      var indice = 0;
+      for(var i  in this.lotesSurtidos) {
+        if(this.lotesSurtidos[i].clave == this.itemSeleccionado.clave){
+          
+          this.lotesSurtidos.splice(indice,1);
+        }
+        indice++;
+      }
+    } else {
+      var bandera = false;
+      for(var i  in this.lotesSurtidos) {
+        if(this.lotesSurtidos[i].clave == this.itemSeleccionado.clave){
+          bandera = true;
+          this.lotesSurtidos[i].cantidad = acumulado;
+        }
+      }
+      if(!bandera){
+        this.lotesSurtidos.push({ clave: this.itemSeleccionado.clave, cantidad:  acumulado});
+      }
+    }
+    this.itemSeleccionado.totalStockAsignado = acumulado;
+    this.itemSeleccionado.cantidad = acumulado;
+  }
 
     cargarUnidadesMedicas(){
       this.cargandoUnidadesMedicas = true;
@@ -616,142 +650,143 @@ export class TransferenciaComponent implements OnInit {
       )
     }
 
-	guardar(finalizar:boolean = false){
-		if(finalizar){
-			this.finalizando = true;
-		} else {
-			this.guardando = true;
-		}
-		
-		
-		this.errores = {
-			clues_destino: null,
-			almacen_solicitante: null,
-			descripcion: null,
-			fecha: null,
-			observaciones: null,
-			insumos: null
-		}
-
-		var fecha = null;
-		if(this.datosPedido.fecha != null){
-			fecha = this.datosPedido.fecha.getFullYear() + "-" + ('0' + (this.datosPedido.fecha.getMonth() + 1) ).slice(-2)  + "-" + ('0' + this.datosPedido.fecha.getDate()).slice(-2)
-		}
-		// Vamos a dar formato a la lista del pedido 
-		var listaStock = [];
-		var insumos = [];
-		console.log(this.pedido.lista);
-		for(var i in this.pedido.lista){
-			// Vamos a obtener todos lo del movimiento
-			var precio = 0.00;
-			var tipo_insumo_id = null;
-			for( var j in this.pedido.lista[i].listaStockAsignado){
-				
-				listaStock.push({
-					stock_id: this.pedido.lista[i].listaStockAsignado[j].id,
-					clave: this.pedido.lista[i].listaStockAsignado[j].clave_insumo_medico,
-					cantidad: this.pedido.lista[i].listaStockAsignado[j].cantidad != null ? this.pedido.lista[i].listaStockAsignado[j].cantidad : 0,
-					precio: this.pedido.lista[i].listaStockAsignado[j].precio,
-					tipo: this.pedido.lista[i].tipo,
-					tipo_insumo_id: this.pedido.lista[i].listaStockAsignado[j].tipo_insumo_id		
-				});
-				// Asignamos el ultimo precio
-				precio = this.pedido.lista[i].listaStockAsignado[j].precio	;
-				tipo_insumo_id = this.pedido.lista[i].listaStockAsignado[j].tipo_insumo_id;
-			}
-
-			insumos.push({
-				clave: this.pedido.lista[i].clave,
-				cantidad : this.pedido.lista[i].cantidad != null ? this.pedido.lista[i].cantidad : 0,
-				precio : precio,
-				tipo: this.pedido.lista[i].tipo,
-				tipo_insumo_id : tipo_insumo_id
-			});
-		}
-
-		var payload = {
-			finalizar: finalizar? true : null,
-			almacen_proveedor:this.datosPedido.almacen_proveedor,
-			almacen_solicitante: this.datosPedido.almacen_solicitante,
-			clues: this.datosPedido.clues,
-			clues_destino: this.datosPedido.clues_destino,
-			fecha: fecha,
-			descripcion: this.datosPedido.descripcion,
-			observaciones: this.datosPedido.observaciones,
-			insumos : insumos,
-			movimiento: this.movimiento,
-			movimiento_insumos: listaStock
-		}
-		this.apiService.guardarTransferencia(this.id != null? this.id : null,payload).subscribe(
-			respuesta => {
-				if(finalizar){
-					this.finalizando = false;
-				} else {
-					this.guardando = false;
-				}
-				console.log(respuesta);
-				if(respuesta.pedido.status == 'BR'){
-					this.router.navigate(['/almacen/transferencia-almacen/editar/'+respuesta.pedido.id]);
-				} else {
-					this.router.navigate(['/almacen/transferencia-almacen/']);
-				}
-				console.log(respuesta);
-			}, error => {
-				if(finalizar){
-					this.finalizando = false;
-				} else {
-					this.guardando = false;
-				}
-				try {
-					let e = error.json();
-					this.mensajeError = new Mensaje(true)
-					switch(error.status){
-					  case 401: 
-						this.mensajeError.texto =  "No tiee permiso para realizar esta acción.";
-						break;
-					  case 409:
-						this.mensajeError.texto = "Verifique la información marcada de color rojo";
-						for (var input in e.error){
-						  // Iteramos todos los errores
-						  for (var i in e.error[input]){
-							this.errores[input] = e.error[input][i];
-						  }                      
-						}
-						break;
-					  case 500:
-						this.mensajeError.texto = "500 (Error interno del servidor)";
-						break;
-					  default: 
-						this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
-					}
-					console.log(this.errores);
-				  } catch (e){
-					this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
-				  }
-				  this.mensajeError.mostrar = true;
-			}
-		);
-	}
-	finalizar() {
-    var validacion_palabra = prompt("Atención la transferencia ya no podra editarse, para confirmar que desea concluir el movimiento por favor escriba: CONCLUIR TRANSFERENCIA");
-    if(validacion_palabra == 'CONCLUIR TRANSFERENCIA'){
-      this.guardar(true);
-    }else{
-      if(validacion_palabra != null){
-        alert("Error al ingresar el texto para confirmar la acción.");
+    guardar(finalizar:boolean = false){
+      if(finalizar){
+        this.finalizando = true;
+      } else {
+        this.guardando = true;
       }
-      return false;
+      
+      
+      this.errores = {
+        clues_destino: null,
+        almacen_solicitante: null,
+        descripcion: null,
+        fecha: null,
+        observaciones: null,
+        insumos: null
+      }
+
+      var fecha = null;
+      if(this.datosPedido.fecha != null){
+        fecha = this.datosPedido.fecha.getFullYear() + "-" + ('0' + (this.datosPedido.fecha.getMonth() + 1) ).slice(-2)  + "-" + ('0' + this.datosPedido.fecha.getDate()).slice(-2)
+      }
+      // Vamos a dar formato a la lista del pedido 
+      var listaStock = [];
+      var insumos = [];
+      console.log(this.pedido.lista);
+      for(var i in this.pedido.lista){
+        // Vamos a obtener todos lo del movimiento
+        var precio = 0.00;
+        var tipo_insumo_id = null;
+        for( var j in this.pedido.lista[i].listaStockAsignado){
+          
+          listaStock.push({
+            stock_id: this.pedido.lista[i].listaStockAsignado[j].id,
+            clave: this.pedido.lista[i].listaStockAsignado[j].clave_insumo_medico,
+            cantidad: this.pedido.lista[i].listaStockAsignado[j].cantidad != null ? this.pedido.lista[i].listaStockAsignado[j].cantidad : 0,
+            precio: this.pedido.lista[i].listaStockAsignado[j].precio,
+            tipo: this.pedido.lista[i].tipo,
+            tipo_insumo_id: this.pedido.lista[i].listaStockAsignado[j].tipo_insumo_id		
+          });
+          // Asignamos el ultimo precio
+          precio = this.pedido.lista[i].listaStockAsignado[j].precio	;
+          tipo_insumo_id = this.pedido.lista[i].listaStockAsignado[j].tipo_insumo_id;
+        }
+
+        insumos.push({
+          clave: this.pedido.lista[i].clave,
+          cantidad : this.pedido.lista[i].cantidad != null ? this.pedido.lista[i].cantidad : 0,
+          precio : precio,
+          tipo: this.pedido.lista[i].tipo,
+          tipo_insumo_id : tipo_insumo_id
+        });
+      }
+
+      var payload = {
+        finalizar: finalizar? true : null,
+        almacen_proveedor:this.datosPedido.almacen_proveedor,
+        almacen_solicitante: this.datosPedido.almacen_solicitante,
+        clues: this.datosPedido.clues,
+        clues_destino: this.datosPedido.clues_destino,
+        fecha: fecha,
+        descripcion: this.datosPedido.descripcion,
+        observaciones: this.datosPedido.observaciones,
+        insumos : insumos,
+        movimiento: this.movimiento,
+        movimiento_insumos: listaStock
+      }
+      this.apiService.guardarTransferencia(this.id != null? this.id : null,payload).subscribe(
+        respuesta => {
+          if(finalizar){
+            this.finalizando = false;
+          } else {
+            this.guardando = false;
+          }
+          console.log(respuesta);
+          if(respuesta.pedido.status == 'BR'){
+            this.router.navigate(['/almacen/transferencia-almacen/editar/'+respuesta.pedido.id]);
+          } else {
+            this.router.navigate(['/almacen/transferencia-almacen/']);
+          }
+          console.log(respuesta);
+        }, error => {
+          if(finalizar){
+            this.finalizando = false;
+          } else {
+            this.guardando = false;
+          }
+          try {
+            let e = error.json();
+            this.mensajeError = new Mensaje(true)
+            switch(error.status){
+              case 401: 
+              this.mensajeError.texto =  "No tiee permiso para realizar esta acción.";
+              break;
+              case 409:
+              this.mensajeError.texto = "Verifique la información marcada de color rojo";
+              for (var input in e.error){
+                // Iteramos todos los errores
+                for (var i in e.error[input]){
+                this.errores[input] = e.error[input][i];
+                }                      
+              }
+              break;
+              case 500:
+              this.mensajeError.texto = "500 (Error interno del servidor)";
+              break;
+              default: 
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }
+            console.log(this.errores);
+            } catch (e){
+            this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }
+            this.mensajeError.mostrar = true;
+        }
+      );
     }
-	}
+
+    finalizar() {
+      var validacion_palabra = prompt("Atención la transferencia ya no podra editarse, para confirmar que desea concluir el movimiento por favor escriba: CONCLUIR TRANSFERENCIA");
+      if(validacion_palabra == 'CONCLUIR TRANSFERENCIA'){
+        this.guardar(true);
+      }else{
+        if(validacion_palabra != null){
+          alert("Error al ingresar el texto para confirmar la acción.");
+        }
+        return false;
+      }
+    }
     // # SECCION: Eventos del teclado
     keyboardInput(e: KeyboardEvent) {
       
-      if(e.keyCode == 32 &&  e.ctrlKey){ // Ctrl + barra espaciadora
+      /*if(e.keyCode == 32 &&  e.ctrlKey){ // Ctrl + barra espaciadora
         event.preventDefault();
         event.stopPropagation();
         
          this.searchBoxStockViewChildren.first.nativeElement.focus();
-      }
+      }*/
       
           
     }
