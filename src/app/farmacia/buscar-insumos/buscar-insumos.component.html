@@ -1,10 +1,7 @@
 <div class="modal is-active" >
   <div class="modal-background" (click)="cerrar()"></div>
   <div class="modal-card" style="width:95%; height: 100%;">
-   
     <header class="modal-card-head" style="background: #00d1b2;">
-      
-                    
       <div class="container is-fluid"  style="width:100%;">
           <h1 class="title" style="color:#FFF;">
             <span class="icon is-medium"><i class="fa fa-search"></i></span> Insumos médicos 
@@ -16,7 +13,6 @@
       <a class="button  is-primary" style="position:absolute; top:1em; right:1em;" (click)="cerrar()"><span class="icon "><i class="fa fa-close"></i></span></a>
     </header>
     <section class="modal-card-body" style="padding:0px;" >
-      
       <div class="is-fullwidth has-text-centered" *ngIf="cargando">
           <br>
           <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
@@ -25,27 +21,22 @@
       </div>
       <table class="table" *ngIf="!cargando" style="font-size: 0.8em;" >
         <thead>
-        
             <tr>
             <th></th>
             <th class="is-hidden-mobile">Clave</th>
-            <!--th>Generico</th-->
-            <!--th class="is-hidden-mobile">Descripción</th-->
             <th>Descripción</th>
             <th style="text-align:center" class="is-hidden-mobile">Grupo(s)</th>
             <th style="text-align:center"><abbr title="Tipo de insumo">Tipo</abbr></th>
             <th style="text-align:left" *ngIf="conPrecios">Precio</th>
-            <!--th style="text-align:center"><abbr title="Información">Info</abbr></th-->
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let item of insumos" class="is-unselectable" [ngClass]="{'item-seleccionado': item == insumoSeleccionado, 'is-disabled': (!conClues && listaAgregados.indexOf(item.clave) >= 0)}" style="cursor: pointer" (click)="seleccionar(item)">
+            <tr *ngFor="let item of insumos" class="is-unselectable" [ngClass]="{'item-seleccionado': item == insumoSeleccionado, 'is-disabled': (!conClues && !conStock && listaAgregados.indexOf(item.clave) >= 0)}" style="cursor: pointer" (click)="seleccionar(item)">
               <td valign="middle">
                 <span *ngIf="item != insumoSeleccionado" class="icon is-small" style="color:#999"><i class="fa fa-circle-thin"></i></span>
                 <span *ngIf="item == insumoSeleccionado" class="icon is-small" style="color:#00d1b2"><i class="fa fa-check-circle"></i></span>
               </td>                      
               <td class="is-hidden-mobile">{{ item.clave }}</td>
-
               <td>
                 <small class="is-hidden-tablet">{{ item.clave }} <br></small>
                 <!--div *ngIf="item.tipo != 'ME'" style="line-height:1em;"-->
@@ -138,8 +129,7 @@
             </tr>      
         </tbody>  
       </table>
-    <br>
-            
+      <br>
     </section>
     <footer class="" style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em " >
       
@@ -153,9 +143,6 @@
                 (onAnterior)="paginaAnterior(searchBox.value)" 
                 (onListar)="listar(searchBox.value,$event)" 
                 *ngIf="total > 0 && total > resultadosPorPagina "></paginacion>
-
-    
-        
       <div class="notification is-dark is-unselectable mensaje-agregar" [ngClass]="{ 'mostrar': mensajeAgregado.mostrar}"    *ngIf="mensajeAgregado.mostrar" (click)="mensajeAgregado.mostrar=false">
         <span class="icon"><i class="fa fa-check-circle"></i></span> <span>Agregado</span>
       </div>
@@ -163,7 +150,6 @@
       <form (submit)="enviar($event)" >
         <div class="columns">
           <div class="column" *ngIf="conClues">
-           
                <div class="field">
                 <label>Unidad médica:</label>
                 <p class="control is-expanded">                  
@@ -176,6 +162,22 @@
                   </span>
                 </p>
               </div>                   
+          </div>
+          <div class="column" *ngIf="conStock">
+            <div class="field">
+              <label>Stock:</label>
+              <p class="control is-expanded">                  
+                <span class="select is-fullwidth" *ngIf="!cargandoStock">              
+                  <select (change)="seleccionarStock($event.target.value)" #stockSelect>
+                    <option value="-1">Seleccione un elemento</option>
+                    <option *ngFor="let stock of listaStock" value="{{ stock.id }}" [disabled]="listaAgregadosConStock[stock.id]">L: {{ stock.lote }} - Cad: {{ stock.fecha_caducidad }} - E: {{ stock.existencia }} {{ (listaAgregadosConStock[stock.id])?'( -'+listaAgregadosConStock[stock.id]+' )':'' }}</option>
+                  </select>
+                </span>
+                <span class="is-fullwidth" *ngIf="cargandoStock">
+                  <span class="icon"><i class="fa fa-refresh fa-spin"></i></span> Cargando lotes...
+                </span>
+              </p>
+            </div>                   
           </div>
           <div class="column">
            
@@ -193,12 +195,8 @@
               </div>
           </div>
         </div>
-        
       </form>
-      
-
     </footer>
-      
     <div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeError.mostrar">
         <button class="delete" (click)="mensajeError.mostrar = false"></button>        
         <b>Error:</b> {{ mensajeError.texto }}

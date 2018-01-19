@@ -71,7 +71,7 @@ export class ListaComponent implements OnInit {
       case 'en-transito': this.status = "ET"; this.titulo = "En transito"; this.icono = "fa-clock-o"; break;
       case 'por-finalizar': this.status = "PFI"; this.titulo = "Por finalizar"; this.icono = "fa-check"; break;
       case 'finalizados': this.status = "FI"; this.titulo = "Finalizados"; this.icono = "fa-check-circle"; break;
-      case 'cancelados': this.status = "CA"; this.titulo = "Cancelados"; this.icono = "fa-times-circle"; break;
+      case 'cancelados': this.status = "EX-CA"; this.titulo = "Cancelados"; this.icono = "fa-times-circle"; break;
       default: this.titulo = "Transferencias"; this.icono = "fa-file"; break;
     }
     console.log('inicializar lista de pedidos');

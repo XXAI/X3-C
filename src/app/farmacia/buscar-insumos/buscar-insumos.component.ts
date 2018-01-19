@@ -16,8 +16,6 @@ import { Mensaje } from '../../mensaje';
 import { BuscarInsumosService } from './buscar-insumos.service';
 import { InsumoMedico } from '../insumo-medico';
 
-
-
 @Component({
   selector: 'buscar-insumos',
   templateUrl: './buscar-insumos.component.html',
@@ -30,6 +28,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   @ViewChildren('searchBox') searchBoxViewChildren;
   @ViewChildren('cantidadBox') cantidadBoxViewChildren;
   @ViewChildren('cluesSelect') cluesSelectViewChildren;
+  @ViewChildren('stockSelect') stockSelectViewChildren;
   
   @Output() onCerrar = new EventEmitter<void>();
   @Output() onEnviar = new EventEmitter<any>();
@@ -37,9 +36,11 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   //Harima: Para evitar agregar insumos que ya estan en la lista
   @Input() listaAgregados: Array<string>;
   @Input() listaAgregadosConClues: any[] = [];
+  @Input() listaAgregadosConStock: any = {}; 
   @Input() conPrecios: boolean = false;
   @Input() conCantidad: boolean = true;
   @Input() conClues: boolean = false;
+  @Input() conStock: boolean = false;
   @Input() tipo: string = null;
 
   cargando: boolean = false;
@@ -64,6 +65,14 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   private listaCluesUtilizadasConInsumo:any[] = [];
 
    // # FIN SECCION
+   
+  // # SECCION: stock
+  cargandoStock:boolean = false;
+  private listaStock:any[] = [];
+  private stockSeleccionado:any = -1;
+
+  private listaStockActualizadoConInsumo:any = {};
+  // # FIN SECCION
   
   // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
@@ -92,7 +101,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       this.ultimoTerminoBuscado = term;
       this.paginaActual = 1;
       this.cargando = true;
-      return term  ? this.buscarInsumosService.buscar(term, this.paginaActual, this.resultadosPorPagina, this.conPrecios,this.tipo) : Observable.of<any>({data:[]}) 
+      return term  ? this.buscarInsumosService.buscar(term, this.paginaActual, this.resultadosPorPagina, this.conPrecios, this.tipo) : Observable.of<any>({data:[]}) 
     }
       
     
@@ -181,10 +190,49 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
     this.insumoSeleccionado = null;
     this.cantidadValida = false;
   }
+
   seleccionar(item:InsumoMedico){
     this.insumoSeleccionado = item;
     this.cantidadBoxViewChildren.first.nativeElement.disabled = false;
     
+    if(this.conStock){
+      this.cargandoStock = true;
+      this.buscarInsumosService.obtenerStock(item.clave).subscribe(
+        resultado => {
+          this.cargandoStock = false;
+          this.listaStock = resultado;
+          setTimeout(() => { this.stockSelectViewChildren.first.nativeElement.focus();} ); 
+          /*try{
+            
+          } catch(e){
+            console.log(e);
+          }  */
+        },
+        error => {
+          this.cargando = false;
+          this.mensajeError.mostrar = true;
+          
+          try {
+            let e = error.json();
+            if (error.status == 401 ){
+              this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
+            }else{
+              this.mensajeError.texto = e.error;
+            }
+          } catch(e){
+            console.log("No se puede interpretar el error");
+            
+            if (error.status == 500 ){
+              this.mensajeError.texto = "500 (Error interno del servidor)";
+            } else {
+              this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }            
+          }
+
+        }
+      );
+      let stocks_seleccionados = this.listaAgregadosConStock[item.clave];
+    }
 
     if(this.conClues){
       this.listaCluesUtilizadasConInsumo = [];
@@ -196,14 +244,15 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
           break;          
         }
       }
-
       try{
           setTimeout(() => { this.cluesSelectViewChildren.first.nativeElement.focus();} ); 
           
         } catch(e){
           console.log(e);
         }  
-    } else {
+    } 
+    
+    if(!this.conStock && !this.conClues){
       this.cantidadBoxViewChildren.first.nativeElement.focus();
     }
     
@@ -227,13 +276,12 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
     return true;
 
   }
+
   enviar(e){
     e.preventDefault();
     console.log(this.clues);
-    
-
     //Harima: Checamos si el insumo que seleccionamos no se encuentra agregado
-    if(!this.conClues && this.listaAgregados.indexOf(this.insumoSeleccionado.clave) >= 0 ){
+    if(!this.conClues && !this.conStock && this.listaAgregados.indexOf(this.insumoSeleccionado.clave) >= 0 ){
       //Harima: Mostramos un mensaje de error al intentar agregar un insumo ya presente en la lista
       this.mensajeError = new Mensaje(true,2);
       this.mensajeError.texto = "El insumo seleccionado ya se encuentra en la lista";
@@ -242,11 +290,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
     }
    
     if(this.conClues){
-
       var existe = false;
-      
-      
-
       if(this.clues == "TODAS"){
         this.listaAgregadosConClues.push({
             clave: this.insumoSeleccionado.clave,
@@ -281,10 +325,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
         } catch(e){
           console.log(e);
         } 
-
       } else {
-
-        
         for(var i in this.listaAgregadosConClues){
           if(this.listaAgregadosConClues[i].clave == this.insumoSeleccionado.clave){
             existe = true;
@@ -336,9 +377,51 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
           console.log(e);
         }  
       }
-       
+    } 
 
-    } else {
+    if(this.conStock){
+      let cantidad = Number(this.cantidadBoxViewChildren.first.nativeElement.value);
+      
+      let stockSeleccionado = {existencia:0};
+      for(var i in this.listaStock){
+        if(this.listaStock[i].id == this.stockSeleccionado){
+          stockSeleccionado = this.listaStock[i];
+          break;
+        }
+      }
+
+      if(this.stockSelectViewChildren.first.nativeElement.value == -1){
+        this.mensajeError.texto = 'No se ha seleccionado lote.';
+        this.mensajeError.mostrar = true;
+        return false;
+      }
+
+      if(cantidad > stockSeleccionado.existencia){
+        this.mensajeError.texto = 'La cantidad no puede exceder de las existencias.';
+        this.mensajeError.mostrar = true;
+        return false;
+      }
+
+      this.listaAgregadosConStock[this.stockSeleccionado] = cantidad;
+
+      this.mensajeAgregado = new Mensaje(true, 2);
+      this.mensajeAgregado.mostrar = true;    
+      //this.insumoSeleccionado.cantidad = this.cantidadBoxViewChildren.first.nativeElement.value;
+      let item = {
+        insumo: this.insumoSeleccionado,
+        lote: stockSeleccionado,
+        cantidad: cantidad
+      };
+      
+      this.onEnviar.emit(item);
+      //this.searchBoxViewChildren.first.nativeElement.focus();
+      this.cantidadBoxViewChildren.first.nativeElement.value = '';
+      this.stockSelectViewChildren.first.nativeElement.value = -1;
+      this.stockSelectViewChildren.first.nativeElement.focus();
+      //this.resetItemSeleccionado();
+    }
+
+    if(!this.conClues && !this.conStock){
       this.mensajeAgregado = new Mensaje(true, 2);
       this.mensajeAgregado.mostrar = true;    
       this.insumoSeleccionado.cantidad = this.cantidadBoxViewChildren.first.nativeElement.value;
@@ -348,15 +431,6 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       this.listaAgregados.push(this.insumoSeleccionado.clave);
       this.resetItemSeleccionado();
     }
-
-
-    
-    
-
-    
-    
-    
-    
   }
   
   buscar(term: string): void {
@@ -453,27 +527,33 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
     }
     // Cambiar página hacia adelante ctrl + shift + <-
     if (e.keyCode == 37 && ((e.ctrlKey && e.shiftKey) || e.ctrlKey )){
-      
       event.preventDefault();
       event.stopPropagation();
-
       this.paginaAnterior(this.searchBoxViewChildren.first.nativeElement.value);
-      
     }
-    
-        
   }
 
   seleccionarClues(value){
     this.clues = value;
-
     try{
           // Por alguna razón si no implemento un setTimeout me lanza error
           // investigar porque ocurre esto
 
           // Poner el focus en la barra de busqueda
           setTimeout(() => { this.cantidadBoxViewChildren.first.nativeElement.focus();} ); 
-          
+        } catch(e){
+          console.log(e);
+        }  
+  }
+
+  seleccionarStock(value){
+    this.stockSeleccionado = value;
+    try{
+          // Por alguna razón si no implemento un setTimeout me lanza error
+          // investigar porque ocurre esto
+
+          // Poner el focus en la barra de busqueda
+          setTimeout(() => { this.cantidadBoxViewChildren.first.nativeElement.focus();} ); 
         } catch(e){
           console.log(e);
         }  

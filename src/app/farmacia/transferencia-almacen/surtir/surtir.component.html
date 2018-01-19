@@ -25,16 +25,15 @@
             </div>
           </div>
           <div class="column is-5" style="text-align:right; ">
-            <div style="margin:1em;" *ngIf="pedidoPorSurtir">
-              <a *ngIf="puedeCancelarTransferencia" class="button is-danger" style="margin-right:5%;"  (click)="mostrarDialogoCancelarTransferencia()"> <span class="icon"><i class="fa fa-ban"></i></span> <span>Cancelar Transferencia</span></a>
-              <a class="button is-primary" style="margin-right:5%;" (click)="surtir()"> <span class="icon"><i class="fa fa-check-circle"></i></span> <span>Surtir</span></a>
+            <div class="block" style="margin:1em;" *ngIf="pedidoPorSurtir">
+              <a class="button is-primary" (click)="surtir()"> <span class="icon"><i class="fa fa-check-circle"></i></span> <span>Surtir</span></a>
               <a *ngIf="!permitirResurtir" class="button is-white"  routerLink="/almacen/transferencia-almacen/en-transito"> Regresar</a>
-              <a *ngIf="permitirResurtir" class="button is-white"  (click)="cancelarVolverASurtir()"> Regresar</a>
+              <a *ngIf="permitirResurtir" class="button is-white"  (click)="cancelarVolverASurtir()"> No surtir</a>
             </div>
-            <div style="margin:1em;" *ngIf="!pedidoPorSurtir">
-              <a *ngIf="permitirResurtir"  class="button is-primary" style="width:45%; margin-right:5%;" (click)="volverASurtir()"> <span class="icon"><i class="fa fa-repeat"></i></span> <span>Volver a Surtir</span></a>
-              <!--a class="button is-primary"  style="width:45%" (click)="finalizarPedido()">Finalizar Pedido</a-->
-              <a  class="button is-white"  style="width:45%" routerLink="/almacen/transferencia-almacen/en-transito"> Regresar</a>
+            <div class="block" style="margin:1em;" *ngIf="!pedidoPorSurtir">
+              <a *ngIf="permitirResurtir"  class="button is-primary" (click)="volverASurtir()"> <span class="icon"><i class="fa fa-repeat"></i></span> <span>Volver a Surtir</span></a>
+              <a *ngIf="permitirResurtir" class="button is-danger"  (click)="mostrarDialogoCancelarTransferencia()"> <span class="icon"><i class="fa fa-ban"></i></span> <span>Cancelar Transferencia</span></a>
+              <a  class="button is-white"  routerLink="/almacen/transferencia-almacen/en-transito"> Regresar</a>
             </div>
           </div>
         </div>       
