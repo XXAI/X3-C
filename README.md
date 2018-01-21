@@ -89,6 +89,8 @@ echo dist-offline/scripts >> .git/info/sparse-checkout
 echo dist-offline/web-workers >> .git/info/sparse-checkout
 ```
 
+## Configuración apache para servidores offline
+
 En el servidor apache hay que agregar al archivo **/etc/httpd/conf/httpd.conf** lo siguiente:  
 
 ```
