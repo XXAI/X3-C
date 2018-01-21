@@ -69,3 +69,58 @@ git pull github master
     </Directory>
 </VirtualHost>
 ```
+
+## Instrucciones para publicar offline
+
+Cuando se hagan cambios para producción y se quiera llevar estos cambios a las unidades offline compile la carpeta **dist-offline**
+
+```
+ng build environment=offline --output-path=dist-offline
+```
+## Instrucciones para hacer pull en servidores offline que tienen internet
+
+En el caso que se trabaje offline pero se cuente con una conexión a internet, podemos configurar para hacer pull solo la carpeta offline como lo hariamos en producción:
+
+```
+git config core.sparsecheckout true
+echo dist-offline/ >> .git/info/sparse-checkout
+echo dist-offline/assets >> .git/info/sparse-checkout
+echo dist-offline/scripts >> .git/info/sparse-checkout
+echo dist-offline/web-workers >> .git/info/sparse-checkout
+```
+
+En el servidor apache hay que agregar al archivo **/etc/httpd/conf/httpd.conf** lo siguiente:  
+
+```
+<VirtualHost *:80>
+
+        #Angular
+        DocumentRoot /var/www/html/cliente/dist-offline
+
+        #Laravel
+        Alias /api /var/www/html/api/public
+
+        <Directory /var/www/html/cliente/dist-offline>
+                RewriteEngine on
+
+                # No reescribir archivos o directorios
+                RewriteCond %{REQUEST_FILENAME} -f [OR]
+                RewriteCond %{REQUEST_FILENAME} -d
+                RewriteRule ^ - [L]
+
+                # Reescribir todo lo demas a index.html para permitir html5 state links
+                RewriteRule ^ index.html [L]
+        </Directory>
+
+        <Location /api>
+                RewriteEngine On
+                RewriteCond %{REQUEST_FILENAME} !-d
+                RewriteCond %{REQUEST_FILENAME} !-f
+                RewriteRule ^ /api/index.php [L]
+                RewriteCond %{HTTP:Authorization} .
+                RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+        </Location>
+</VirtualHost>
+```
+
+Nótese que también se agrega la configuración para la **api** puesto están en el mismo servidor.
