@@ -75,7 +75,7 @@ git pull github master
 Cuando se hagan cambios para producción y se quiera llevar estos cambios a las unidades offline compile la carpeta **dist-offline**
 
 ```
-ng build environment=offline --output-path=dist-offline
+ng build --prod --aot=false --environment=offline  --output-path=dist-offline
 ```
 ## Instrucciones para hacer pull en servidores offline que tienen internet
 
