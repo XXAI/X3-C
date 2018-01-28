@@ -2,16 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Params, Router } from '@angular/router'
 
-import { SyncService } from '../../sync.service';
-import { Mensaje } from '../../../../mensaje';
+import { PermisosService } from '../permisos.service';
+import { Mensaje } from '../../../mensaje';
 
 @Component({
-  selector: 'app-nuevo',
-  templateUrl: './nuevo.component.html',
-  styleUrls: ['./nuevo.component.css']
+  selector: 'app-editar',
+  templateUrl: './editar.component.html',
+  styleUrls: ['./editar.component.css']
 })
-export class NuevoComponent implements OnInit {
+export class EditarComponent implements OnInit {
 
+  private id:number = null;
   
   enviando: boolean = false;
   cargando: boolean = false;
@@ -23,57 +24,59 @@ export class NuevoComponent implements OnInit {
   // # FIN SECCION
 
   errores = {
-    id: null,
-    nombre: null,
-    secret_key: null,
-    tiene_internet : null,
-    version : null,
-    periodo_sincronizacion : null,
-    ip:null,
-    clues:null 
+    descripcion: null,
+    grupo: null,
+    su : null,
   }
-
-  listaClues:any[] = [];
-
-  servidor: any = { id:'',nombre: '', secret_key: '', tiene_internet: false, version: '', ip:null, periodo_sincronizacion: null, clues:null , principal: false }
-
+  
+  permiso: any = { id:null, descripcion: '', grupo: '', su: false }
 
 
   constructor(    
     private title: Title, 
     private router: Router,
     private route: ActivatedRoute,
-    private apiService: SyncService) { }
+    private apiService: PermisosService) { }
 
   ngOnInit() {
-    this.title.setTitle("Nuevo servidor / Panel de control");
+    this.title.setTitle("Editar permiso / Panel de control");
     
     this.mensajeError = new Mensaje();
     this.mensajeExito = new Mensaje();
 
-    this.cargarUnidadesMedicas();
+
+    this.route.params.subscribe(params => {
+      this.id = params['id'];
+    });
+  
+    this.cargando = true;
+      this.apiService.ver(this.id).subscribe( 
+        respuesta => {
+      this.permiso.grupo = respuesta.grupo;
+      this.permiso.descripcion = respuesta.descripcion;
+      this.permiso.id = respuesta.id;
+      this.permiso.su = respuesta.su;
+          this.cargando = false;
+        }, error=>{
+          console.log(error);
+          this.cargando = false;
+      });
     
   }
   
   guardar(){
     this.enviando = true;
     this.errores = {
-		id: null,
-		nombre: null,
-		secret_key: null,
-		tiene_internet : null,
-		version : null,
-		periodo_sincronizacion : null,
-    ip:null,
-    clues:null 
+      descripcion: null,
+      grupo: null,
+      su : null,
     }
 
 
 
-    this.apiService.crearServidor(this.servidor).subscribe(
+    this.apiService.editar(this.id,this.permiso).subscribe(
       respuesta => {
         this.enviando = false;
-        this.router.navigate(['/panel-control/sync/servidores']);
       
       }, error => {
         try {
@@ -107,19 +110,6 @@ export class NuevoComponent implements OnInit {
     )
   }
 
-  generarSecretKey(){
-    this.servidor.secret_key = Math.random().toString().slice(2,12);
-  }
 
-  cargarUnidadesMedicas(){
-    
-    this.apiService.unidadesMedicas().subscribe(
-      respuesta => {
-        this.listaClues = respuesta;
-      }, error => {
-        console.log(error)
-      }
-    );
-  }
 
 }

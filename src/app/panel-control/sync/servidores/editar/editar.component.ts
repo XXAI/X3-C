@@ -30,14 +30,13 @@ export class EditarComponent implements OnInit {
     tiene_internet : null,
     version : null,
     periodo_sincronizacion : null,
-    
+    ip:null,
+    clues:null 
   }
 
+  listaClues:any[] = [];
 
-  permisos:any[] = [];
-  todosSeleccionados: boolean = false;
-
-  servidor: any = { id:'',nombre: '', secret_key: '', tiene_internet: false, version: '', periodo_sincronizacion: null, principal: false }
+  servidor: any = { id:'',nombre: '', secret_key: '', tiene_internet: false, version: '', periodo_sincronizacion: null, ip:null, clues:null, principal: false }
 
 
 
@@ -52,7 +51,7 @@ export class EditarComponent implements OnInit {
     
     this.mensajeError = new Mensaje();
     this.mensajeExito = new Mensaje();
-
+    this.cargarUnidadesMedicas();
 	
 	this.route.params.subscribe(params => {
 		this.id = params['id'];
@@ -65,7 +64,9 @@ export class EditarComponent implements OnInit {
 		this.servidor.principal = respuesta.principal;
 		this.servidor.secret_key = respuesta.secret_key;
 		this.servidor.periodo_sincronizacion = respuesta.periodo_sincronizacion;
-		this.servidor.nombre = respuesta.nombre;
+    this.servidor.nombre = respuesta.nombre;
+    this.servidor.ip = respuesta.ip;
+    this.servidor.clues = respuesta.clues;
 		this.servidor.id = respuesta.id;
         this.cargando = false;
       }, error=>{
@@ -74,12 +75,7 @@ export class EditarComponent implements OnInit {
     });
     
   }
-  seleccionarTodos(){
-    this.todosSeleccionados = !this.todosSeleccionados;
-    for(var i in this.permisos){
-      this.permisos[i].seleccionado = this.todosSeleccionados;
-    }
-  }
+ 
   
   	guardar(){
 		this.enviando = true;
@@ -90,7 +86,8 @@ export class EditarComponent implements OnInit {
 		tiene_internet : null,
 		version : null,
 		periodo_sincronizacion : null,
-      
+    ip:null,
+    clues:null 
     }
 
 
@@ -130,6 +127,21 @@ export class EditarComponent implements OnInit {
         this.enviando = false;
       }
     )
+  }
+
+  cargarUnidadesMedicas(){
+    
+    this.apiService.unidadesMedicas().subscribe(
+      respuesta => {
+        this.listaClues = respuesta;
+      }, error => {
+        console.log(error)
+      }
+    );
+  }
+
+  generarSecretKey(){
+    this.servidor.secret_key = Math.random().toString().slice(2,12);
   }
 
 }

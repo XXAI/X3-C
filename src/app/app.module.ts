@@ -39,8 +39,10 @@ import { AdministradorProveedoresModule } from './administrador-proveedores/admi
 // # Hub Panel de control
 import { UsuariosModule } from './panel-control/usuarios/usuarios.module';
 import { RolesModule    } from './panel-control/roles/roles.module';
+import { PermisosModule     } from './panel-control/permisos/permisos.module';
 import { SyncModule     } from './panel-control/sync/sync.module';
 import { OpcionesAvanzadasModule  } from './panel-control/opciones-avanzadas/opciones-avanzadas.module';
+
 
 // # Hub Configuracion
 import { MisAlmacenesModule} from './configuracion/almacenes/almacenes.module';
@@ -171,6 +173,7 @@ export function highchartsFactory() {
     SyncModule,
     OpcionesAvanzadasModule,
     RolesModule,
+    PermisosModule,
     UsuariosModule,
     MisAlmacenesModule,
     MisTurnosModule,

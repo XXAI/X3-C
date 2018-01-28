@@ -55,5 +55,9 @@ export class SyncService {
     return this.jwtRequest.get(SyncService.URL+"/auto",null,{}).map( (response: Response) => response.json().data ) as Observable<any>;
   }
 
+  unidadesMedicas(parametros:any = {}): Observable<any>{    
+    return this.jwtRequest.get("unidades-medicas",null,parametros).map( (response: Response) => response.json().data);
+  }
+
   
 }

@@ -119,6 +119,11 @@ export class VerComponent implements OnInit {
   errorPDFActa:boolean = false;
   // # FIN SECCION
 
+  usuario:any = {};
+  permisos:any[] = []; 
+
+  permisoCancelarPedido = false;
+
   private cambiarEntornoSuscription: Subscription;
 
   constructor(
@@ -135,6 +140,15 @@ export class VerComponent implements OnInit {
 
   ngOnInit() {
     this.title.setTitle('Nuevo pedido / Almacén');
+    this.usuario = JSON.parse(localStorage.getItem("usuario"));
+
+    this.permisos = this.usuario.permisos.split('|');
+
+    for(var i in this.permisos){
+      if(this.permisos[i] == 'pVJrPewkPFwidvmECcgg8BqVXn7FtH7E'){        
+        this.permisoCancelarPedido = true;
+      }
+    }
 
     this.cambiarEntornoSuscription = this.cambiarEntornoService.entornoCambiado$.subscribe(evento => {
       this.router.navigate(['/almacen/pedidos']);

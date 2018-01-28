@@ -4,7 +4,7 @@
     <div class="column is-one-quarter is-hidden-mobile">
         <panel-control-menu-aside></panel-control-menu-aside>
     </div>
-    <div class="column" style="padding:2em;">
+    <div class="column" style="padding:2em; overflow:auto;">
         <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
             <section class="hero" [ngClass] = " {'is-dark': busquedaActivada, 'is-primary': !busquedaActivada } " >
                 
@@ -15,7 +15,7 @@
                     <div class="container is-fluid">
                         
                         <h1 class="title" *ngIf="!busquedaActivada">
-                            <span class="icon is-medium"><i class="fa fa-server"></i></span> Servidores
+                            <span class="icon is-medium"><i class="fa fa-shield"></i></span> Permisos
                         </h1>
                         <h1 class="title" *ngIf="busquedaActivada">
                             <span class="icon is-medium"><i class="fa fa-search"></i></span> Búsqueda 
@@ -25,7 +25,7 @@
                             <input class="input is-medium" type="text" placeholder="Buscar" #searchBox id="search-box" (keyup)="buscar(searchBox.value)">
                         </p>
                         <p class="control">
-                            <a class="button is-medium is-primary is-inverted " routerLink="/panel-control/sync/servidores/nuevo">
+                            <a class="button is-medium is-primary is-inverted " routerLink="/panel-control/permisos/nuevo">
                             <span class="icon"><i class="fa fa-plus"></i></span><span>Nuevo</span>
                             </a>
                         </p>
@@ -43,30 +43,20 @@
             <table class="table" *ngIf="!cargando">
                 <thead>
                     <tr>
-						<th>ID</th>
-                        <th>Nombre</th>
-                        <th>CLUES</th>
-                        <th>IP</th>
-						<th>¿Internet?</th>
-						<th>¿Cat. act.?</th>
-						<th>Ver.</th>
-						<th>Periodo Sync</th>
-						<th>Última Sync</th>
+					            	<th>ID</th>
+                        <th>Descripcion</th>
+                        <th>Grupo</th>
+                        <th>Es Super Usuario</th>
                     <th style="text-align:center; width:60px"></th>
                     </tr>
                 </thead>
                 <tbody  *ngIf="!busquedaActivada">
                     <tr *ngFor="let item of lista; let i=index">                        
-						<td style="vertical-align: middle;"><a routerLink="/panel-control/sync/servidores/editar/{{item.id}}">{{ item.id }}</a></td>   
-						<td style="vertical-align: middle;"><a routerLink="/panel-control/sync/servidores/editar/{{item.id}}"><span class="icon" *ngIf="item.principal"><i class="fa fa-home"></i></span> {{ item.nombre }}</a></td>    
-                        <td style="vertical-align: middle;">{{ item.clues }}</td>
-                        <td style="vertical-align: middle;">{{ item.ip }}</td>
-                        <td style="vertical-align: middle;">{{ item.tiene_internet ? 'Sí': 'No' }}</td>
-						<td style="vertical-align: middle;">{{ item.catalogos_actualizados ? 'Sí': 'No' }}</td>                       
-						<td style="vertical-align: middle;">{{ item.version}}</td>
-						<td style="vertical-align: middle;">{{ item.periodo_sincronizacion }} Hrs</td>
-						<td style="vertical-align: middle;">{{ item.ultima_sincronizacion }}</td>
-                        <td style="vertical-align: middle;" class="has-text-centered"><span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>                        
+						          <td style="vertical-align: middle;"><a routerLink="/panel-control/permisos/editar/{{item.id}}">{{ item.id }}</a></td>            
+                      <td >{{ item.descripcion}}</td>
+                      <td style="vertical-align: middle;">{{ item.grupo}}</td>
+                      <td style="vertical-align: middle;">{{ item.su ? 'Sí': 'No' }}</td>  
+						          <td style="vertical-align: middle;" class="has-text-centered"><span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>                        
                     </tr>
                     <tr *ngIf="lista.length == 0">
                         <td colspan="7" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
@@ -74,16 +64,11 @@
                 </tbody>
                 <tbody *ngIf="busquedaActivada">
                     <tr *ngFor="let item of resultadosBusqueda; let i=index">
-							<td style="vertical-align: middle;"><a routerLink="/panel-control/sync/servidores/editar/{{item.id}}">{{ item.id }}</a></td>   
-                            <td style="vertical-align: middle;"><a routerLink="/panel-control/sync/servidores/editar/{{item.id}}">{{ item.nombre }}</a></td> 
-                            <td style="vertical-align: middle;">{{ item.clues }}</td>
-                            <td style="vertical-align: middle;">{{ item.ip }}</td>   
-							<td style="vertical-align: middle;">{{ item.tiene_internet ? 'Sí': 'No' }}</td>
-							<td style="vertical-align: middle;">{{ item.catalogos_actualizados ? 'Sí': 'No' }}</td>                       
-							<td style="vertical-align: middle;">{{ item.version}}</td>
-							<td style="vertical-align: middle;">{{ item.periodo_sincronizacion }} Hrs</td>
-							<td style="vertical-align: middle;">{{ item.ultima_sincronizacion }}</td>
-                        <td style="vertical-align: middle;" class="has-text-centered"><span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/panel-control/permisos/editar/{{item.id}}">{{ item.id }}</a></td>            
+                        <td >{{ item.descripcion}}</td>
+                        <td style="vertical-align: middle;">{{ item.grupo}}</td>
+                        <td style="vertical-align: middle;">{{ item.su ? 'Sí': 'No' }}</td>  
+                        <td style="vertical-align: middle;" class="has-text-centered"><span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>                        
                     </tr>
 
                     <tr *ngIf="resultadosBusqueda.length == 0 && busquedaActivada">

@@ -45,7 +45,12 @@
                         <span class="icon is-small" *ngIf="errores.secret_key == 'required'">
                         <i class="fa fa-warning"></i>
                         </span>
-                        <span class="help is-danger" *ngIf="errores.secret_key == 'required'">Por favor especifique el ID del servidor.</span>                            
+                        <span class="help is-danger" *ngIf="errores.secret_key == 'required'">Por favor especifique el Secret Key del servidor.</span>                            
+                    </p>
+                    <p class="control">
+                        <a class="button  is-medium is-primary" (click)="generarSecretKey()">
+                        <span class="icon"><i class="fa fa-key"></i></span>
+                        </a>
                     </p>
                     <p class="control is-expanded  has-icon has-icon-right">
                         <input class="input is-medium" [(ngModel)]="servidor.periodo_sincronizacion"  [ngClass]="{ 'is-danger': errores.periodo_sincronizacion != null}"  type="text" placeholder="Periodo de sincronización (Horas)" >
@@ -55,6 +60,36 @@
                         </span>
                         <span class="help is-danger" *ngIf="errores.periodo_sincronizacion == 'required'">Por favor especifique el periodo de sincronización.</span>                            
                         <span class="help is-danger" *ngIf="errores.periodo_sincronizacion == 'integer'">Por favor el periodo de sincronizacion debe estar expresado en horas y en números enteros. Por ejemplo: 24.</span>                            
+                    </p>
+                </div>
+                <div class="control is-grouped">
+
+                    <p class="control is-expanded">
+                        <span class="select is-fullwidth is-medium ">
+                        <select #clues [(ngModel)]="servidor.clues">
+                            <!--option [ngValue]="{clues:''}" [selected]="true">Elija una unidad médica</option-->
+                            <option *ngFor="let item of listaClues" [ngValue]="item.clues">{{ item.clues }} - {{ item.nombre }}</option>
+                        </select>
+                        </span>
+                        <span class="help is-danger" *ngIf="errores.clues == 'required'">Por favor especifique la clues del servidor.</span>   
+                    </p> 
+
+                    <!--
+                    <p class="control is-expanded  has-icon has-icon-right">
+                        <input class="input is-medium" [(ngModel)]="servidor.clues"  [ngClass]="{ 'is-danger': errores.clues != null}"  type="text" placeholder="CLUES" >
+                        
+                        <span class="icon is-small" *ngIf="errores.clues == 'required'">
+                        <i class="fa fa-warning"></i>
+                        </span>
+                        <span class="help is-danger" *ngIf="errores.clues == 'required'">Por favor especifique la clues del servidor.</span>                            
+                    </p>-->
+                    <p class="control is-expanded  has-icon has-icon-right">
+                        <input class="input is-medium" [(ngModel)]="servidor.ip"  [ngClass]="{ 'is-danger': errores.ip != null}"  type="text" placeholder="Dirección IP" >
+                        
+                        <span class="icon is-small" *ngIf="errores.ip == 'required'">
+                        <i class="fa fa-warning"></i>
+                        </span>
+                        <span class="help is-danger" *ngIf="errores.ip == 'required'">Por favor especifique la dirección ip.</span>                                                    
                     </p>
                 </div>
                 <div class="field">
