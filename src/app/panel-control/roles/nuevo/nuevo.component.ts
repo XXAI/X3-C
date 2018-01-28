@@ -32,7 +32,7 @@ export class NuevoComponent implements OnInit {
   permisos:any[] = [];
   todosSeleccionados: boolean = false;
 
-  rol: any = { nombre: '', permisos: [] }
+  rol: any = { nombre: '', es_offline: false, permisos: [] }
 
 
 

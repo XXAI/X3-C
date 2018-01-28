@@ -7,6 +7,8 @@ import { BloquearPantallaService }     from '../bloquear-pantalla/bloquear-panta
 import { CambiarEntornoService }     from '../perfil/cambiar-entorno.service';
 import { EditarPerfilService }     from '../perfil/editar-perfil.service';
 
+import { environment } from 'environments/environment';
+
 @Component({
   selector: 'app-perfil',
   templateUrl: './perfil.component.html',
@@ -15,6 +17,8 @@ import { EditarPerfilService }     from '../perfil/editar-perfil.service';
 export class PerfilComponent implements OnInit {
   mostrar: boolean = false;
   usuario: any = {};
+  server_info:any = {};
+  cliente_version:string = '';
   mostrarCambiarEntorno:boolean = false;
   
   edicionPerfil:boolean = false;
@@ -57,7 +61,8 @@ export class PerfilComponent implements OnInit {
 
   ngOnInit() {
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
-
+    this.server_info = JSON.parse(localStorage.getItem("server_info"));
+    this.cliente_version = environment.VERSION;
     this.nuevoPerfil.id = this.usuario.id;
     this.nuevoPerfil.avatar = this.usuario.avatar;
     this.nuevoPerfil.nombre = this.usuario.nombre;

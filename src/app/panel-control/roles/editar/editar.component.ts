@@ -34,7 +34,7 @@ export class EditarComponent implements OnInit {
   private permisos:any[] = [];
   private todosSeleccionados: boolean = false;
 
-  private rol: any = { nombre: '', permisos: [] }
+  private rol: any = { nombre: '', es_offline: false, permisos: [] }
 
 
 
@@ -61,6 +61,7 @@ export class EditarComponent implements OnInit {
     this.apiService.ver(this.id).subscribe( 
       respuesta => {
         this.rol.nombre = respuesta.nombre
+        this.rol.es_offline = respuesta.es_offline
         this.cargarPermisos(respuesta.permisos);
         this.cargando = false;
       }, error=>{

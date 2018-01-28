@@ -77,7 +77,6 @@ export class AuthService {
               json.usuario.clues_activa = json.usuario.unidades_medicas[0];
             }
           } else {
-            console.log("OOO aqui.")
             json.usuario.clues_activa = json.usuario.unidades_medicas[0];
           }
 

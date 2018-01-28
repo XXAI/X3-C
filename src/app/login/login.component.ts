@@ -8,6 +8,7 @@ import { BloquearPantallaService }     from '../bloquear-pantalla/bloquear-panta
 
 
 import { ESTA_SALUD_ID_DISPONIBLE } from 'app/config';
+import { environment } from 'environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -31,6 +32,7 @@ export class LoginComponent implements OnInit {
     id:null,
     reset_token:null
   }
+  cliente_version:string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -59,8 +61,9 @@ export class LoginComponent implements OnInit {
       this.resetPasswordPayload.reset_token = this.route.snapshot.queryParams['reset_token'] || '';
       this.mostrarRecuperarPassword = true;
       this.resetPasswordViaToken = true;
-      console.log(this.resetPasswordPayload)
     }
+
+    this.cliente_version = environment.VERSION;
     
   }
   login() {

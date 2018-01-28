@@ -132,6 +132,8 @@
             </div>
 
             <a *ngIf="mostrarCambiarEntorno" class="button  is-medium is-fullwidth is-primary" (click)="cambiarEntorno()"><span class="icon"><i class="fa fa-exchange"></i></span><span>Cambiar entorno</span></a>
+
+            <p class="has-text-centered"><small>Cliente Versión {{ cliente_version }} &nbsp;&nbsp; Servidor API Versión {{ server_info.api_version }}</small></p>
         </section>
         
         <footer class="modal-card-foot" *ngIf="!edicionPerfil">
