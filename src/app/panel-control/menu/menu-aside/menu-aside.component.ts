@@ -29,8 +29,8 @@ export class MenuAsideComponent implements OnInit {
       {
         titulo: 'Opciones avanzadas',
         modulos: [
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'fa-wrench', titulo: 'Actualizar sistema', url: '/panel-control/opciones-avanzadas/actualizar-sistema' },
-          { permiso: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f', icono: 'fa-database', titulo: 'Base de datos', url: '/panel-control/opciones-avanzadas/base-datos' },
+          { permiso: 'tFcVVgwywaPvfj4ZdOoCZfBpcTtZAST0', icono: 'fa-wrench', titulo: 'Actualizar sistema', url: '/panel-control/opciones-avanzadas/actualizar-sistema' },
+          { permiso: 'WcIjPIhPWGJbLyb4OiYe91sRKP7NGTAK', icono: 'fa-database', titulo: 'Base de datos', url: '/panel-control/opciones-avanzadas/base-datos' },
         ]
       },
       {

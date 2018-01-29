@@ -100,6 +100,8 @@ export class HubComponent implements OnInit {
         'NNN3YYcmuXdZYVSGCk0CJFjcx3ATnRQ5', // Sincronización local
         '3DMVRdBv4cLGzdfAqXO7oqTvAMbEdhI7', // Sincronización con servidor central
         '8DDwGNuZOZfoFfaDOsQvBBhVzmnlU4PA', // Ver Servidores
+        'tFcVVgwywaPvfj4ZdOoCZfBpcTtZAST0', // Actualizar sistema
+        'WcIjPIhPWGJbLyb4OiYe91sRKP7NGTAK', // Respaldo y restauracion base de datos
       ]
     },
     {

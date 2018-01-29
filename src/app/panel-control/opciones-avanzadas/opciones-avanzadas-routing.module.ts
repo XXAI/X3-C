@@ -12,8 +12,8 @@ const routes: Routes = [
     path: 'panel-control/opciones-avanzadas',
     children: [
        { path: '',  redirectTo: '/panel-control/opciones-avanzadas/actualizar-sistema', pathMatch: 'full' },
-       { path: 'actualizar-sistema', component: ActualizarSistemaComponent , canActivate: [PermisosGuard], data: { key: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f'} },
-       { path: 'base-datos', component: BaseDatosComponent , canActivate: [PermisosGuard], data: { key: '2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f'} },
+       { path: 'actualizar-sistema', component: ActualizarSistemaComponent , canActivate: [PermisosGuard], data: { key: 'tFcVVgwywaPvfj4ZdOoCZfBpcTtZAST0'} },
+       { path: 'base-datos', component: BaseDatosComponent , canActivate: [PermisosGuard], data: { key: 'WcIjPIhPWGJbLyb4OiYe91sRKP7NGTAK'} },
        
        
     ],
