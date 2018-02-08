@@ -449,18 +449,20 @@ export class FormularioComponent {
   select_medico_autocomplete(data) {
     let usuario = JSON.parse(localStorage.getItem('usuario'));
     const control_receta = <FormArray>this.dato.controls['receta'];
-    const ctrlDr = <FormArray>control_receta.controls['doctor'];
+    //const ctrlDr = <FormArray>control_receta.controls['doctor'];
     const ctrlPersonalClues = <FormArray>control_receta.controls['personal_clues_id'];
-    ctrlDr.patchValue(data.nombre);
+    //ctrlDr.patchValue(data.nombre);
     ctrlPersonalClues.patchValue(data.id);
   }
 
-  asignarDoctor() {
+  
+  DoctorBuscador() {
     const control_receta = <FormArray>this.dato.controls['receta'];
     const ctrlDr = <FormArray>control_receta.controls['doctor'];
-    const ctrlPersonalClues = <FormArray>control_receta.controls['personal_clues_id'];
-    ctrlDr.patchValue(this.campoDr.first.nativeElement.value);
-    ctrlPersonalClues.patchValue(null);
+    //const ctrlPersonalClues = <FormArray>control_receta.controls['personal_clues_id'];
+    //ctrlDr.patchValue(this.campoDr.first.nativeElement.value);
+    //ctrlPersonalClues.patchValue(null);
+    //console.log(ctrlPersonalClues);
   }
 
   /**
@@ -834,6 +836,7 @@ export class FormularioComponent {
           lotes = false;
         }
       }
+      console.log(lotes);
       if (lotes) {
         document.getElementById('guardarMovimiento').classList.add('is-active');
       } else {
