@@ -160,13 +160,13 @@ export class ListaEntradasComponent {
               this.mensajeResponse.mostrar = true;
               try {
                   let e = error.json();
-                  if (error.status === 401) {
+                  if (error.estatus === 401) {
                       this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
                       this.mensajeResponse.clase = 'danger';
                       this.mensaje(2);
                   }
               } catch (e) {
-                  if (error.status === 500) {
+                  if (error.estatus === 500) {
                       this.mensajeResponse.texto = '500 (Error interno del servidor)';
                   } else {
                       this.mensajeResponse.texto =

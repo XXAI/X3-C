@@ -13,7 +13,7 @@ export class HubComponent implements OnInit {
 
   itemsProtegidos = [
     {
-      title: 'Almacén de insumos medicos', routerLink: '/almacen', icono: 'assets/hub-farmacia.svg',
+      title: 'Insumos médicos tercerizados', routerLink: '/almacen', icono: 'assets/hub-farmacia.svg',
       permisos: [
         'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
         //'r6REUnVWlsQ00zVYXakLUxdKtGArcenY', // Ver pedidos jurisdiccionales
@@ -25,10 +25,10 @@ export class HubComponent implements OnInit {
       ]
     },
     {
-      title: 'Almacén estandar', routerLink: '/almacen-estandar', icono: 'assets/hub-almacen-general.svg',
+      title: 'Insumos médicos tradicional', routerLink: '/almacen-estandar', icono: 'assets/hub-estandar.svg',
       permisos: [
-        'qQvNeb1UFPOfVMKQnNkvxyqjCIUgFuEG', // Ver salidas de almacen
-        'a1OMZVn7dveOf5aUK8V0VsvvSCxz8EMw' // Ver entradas de almacen
+        'fO4NLBvm5IAv5zouJ24rS0qVI2cHpm44', // Ver salidas de almacen
+        'J1mYtHwF7WVbie5dCZhFptvYzNEtqHXQ' // Ver entradas de almacen
 
       ]
     },

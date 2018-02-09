@@ -54,7 +54,13 @@ export class FormularioComponent {
    * @type {array}
    */
   array_servicios;
+  /**
+   * Variable que contiene un valor _true_ si al sumar la cantidad de los lotes es mayor a cero.
+   */
   sum_cant_lotes = false;
+  /**
+   * Array que contiene valores booleanos para ver o no, el detalle de cada insumo en la lista.
+   */
   mostrar_lote = [];
   cantidad_error = 0;
   public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
@@ -82,7 +88,15 @@ export class FormularioComponent {
   cargando = false;
   fecha_movimiento;
   mostrarCancelado;
+  /**
+   * Contiene la información del insumo elegido por el usuario, y que posteriormente será agregado a la lista de insumos médicos
+   * de la entrada estándar, los valores se asignan a los campos correspondientes del formulario reactivo.
+   */
   insumo;
+  /**
+  * Si el insumo seleccionado contiene el valor unidosis.
+  * @type boolean
+  */
   es_unidosis = false;
   // # SECCION: Reportes
     pdfworker: Worker;

@@ -16,6 +16,13 @@ export class AuthService {
 
   login(id: string, password: string) {
     const url: string = 'obtener-token';
+    if (url.indexOf("http") > -1) {
+      console.log(url.indexOf("http"))
+      // headersJson['X-Clues']='application/x-www-form-urlencoded;charset=UTF-8';
+      this.headers['Content-type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
+    } else {
+      this.headers['Content-type'] = 'application/json';
+    }
     return this.http.post(`${environment.API_URL}/${url}`,JSON.stringify({id: id, password: password}),{ headers: this.headers }).map( (response: Response) => {
    
       let json = response.json();

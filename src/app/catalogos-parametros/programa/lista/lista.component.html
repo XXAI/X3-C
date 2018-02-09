@@ -33,6 +33,7 @@
                             <th><abbr title="Usuario ID">ID</abbr></th>
                             <th>Nombre</th>
                             <th>Estatus</th>
+                            <th>Multiprograma</th>
                             <th style="text-align:center;">Opciones</th>
                         </tr>
                     </thead>
@@ -44,6 +45,12 @@
                                 <span class="tag is-success is-medium" *ngIf="item.status == 1">Activo</span>
                                 <span class="tag is-danger is-medium" *ngIf="item.status == 0">Inactivo</span>
                             </a></td>
+                            <td style="vertical-align: middle;">
+                                <a routerLink="/catalogos-parametros/programas/editar/{{item.id}}">
+                                    <span class="tag is-info is-medium" *ngIf="item.es_multiprograma == 1">Multiprograma</span>
+                                    <span  *ngIf="item.es_multiprograma == 0"></span>
+                                </a>
+                            </td>
                             <td style="vertical-align: middle;" class="has-text-centered"><span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando"
                                     class="is-danger" (click)="ctrl.eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>
 

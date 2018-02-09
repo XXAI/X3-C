@@ -90,7 +90,7 @@ export class FormularioComponent {
    * es necesario la variable. Cuando se intenta finalizar la entrada a partir de un borrador
    * si no se tiene la variable marca error porque al actualizar el valor del __status__ intenta mostrar la sección.
    * ```html
-   * <section *ngIf="tieneid && ctrl.dato.get('status').value == 'FI' && estoymodificando == false">
+   * <section *ngIf="tieneid && ctrl.dato.get('estatus').value == 'FI' && estoymodificando == false">
    * ```
    * @type {boolean}
    */
@@ -225,7 +225,7 @@ export class FormularioComponent {
       id: [''],
       actualizar: [false],
       tipo_movimiento_id: [1, [Validators.required]],
-      status: ['FI'],
+      estatus: ['FI'],
       fecha_movimiento: ['', [Validators.required]],
       observaciones: [''],
       programa_id: [''],
@@ -252,7 +252,7 @@ export class FormularioComponent {
           if (val) {
             this.llenando_formulario = true;
             setTimeout(() => {
-              if (this.dato.controls.status.value === 'BR') {
+              if (this.dato.controls.estatus.value === 'BR') {
                 this.llenarFormulario();
               }else {
                 this.llenando_formulario = false;
@@ -284,7 +284,7 @@ export class FormularioComponent {
   /**
    * Función local para cargar el catalogo de programas, no se utilizó el cargarCatalogo del CRUD,
    * debido a que este catálogo no existen 'mis-programas', sino que es un catálogo general y se agregan
-   * al arreglo únicamente aquellos programas que se encuentran activos (status = 1).
+   * al arreglo únicamente aquellos programas que se encuentran activos (estatus = 1).
    * @param url Contiene la cadena con la URL de la API a consultar para cargar el catalogo del select.
    */
   cargarCatalogo(url) {
@@ -294,7 +294,7 @@ export class FormularioComponent {
         this.cargandoProgramas = false;
         let contador = 0;
         for (let item of resultado) {
-          if (item.status === 1 || item.status === '1') {
+          if (item.estatus === 1 || item.estatus === '1') {
             this.lista_programas.push(item);
           }
         }
@@ -367,7 +367,7 @@ export class FormularioComponent {
    * cuando el modal que se va a abrir es un modal de confirmación de borrado.
    */
   abrirModal(id, index?) {
-    if (index) {
+    if (index || index === 0) {
       this.index_borrar = index;
     }
     document.getElementById(id).classList.add('is-active');
@@ -381,7 +381,7 @@ export class FormularioComponent {
   cancelarModal(id) {
     document.getElementById(id).classList.remove('is-active');
     if (id === 'guardarMovimiento') {
-      this.dato.controls.status.patchValue('BR');
+      this.dato.controls.estatus.patchValue('BR');
     }
   }
 
@@ -603,20 +603,20 @@ export class FormularioComponent {
       this.notificacion.warn('Insumos', 'Debe agregar por lo menos un insumo', this.objeto);
     }else {
       this.estoymodificando = true;
-      this.dato.controls['status'].patchValue('FI');
+      this.dato.controls['estatus'].patchValue('FI');
       document.getElementById('guardarMovimiento').classList.add('is-active');
     }
   }
   /**
    * Método que es llamado cuando va a guardarse un avance.
-   * Coloca 'BR' al status de la entrada y activa el botón
+   * Coloca 'BR' al estatus de la entrada y activa el botón
    * ```html
    * <span id="borrador" (click)="ctrl.enviar(false, '/almacen/entradas-estandar/editar');"></span>
    * ```
    * que envía al CRUD los datos correspondientes para guardar un borrador.
    */
   guardarBorrador() {
-    this.dato.controls.status.patchValue('BR');
+    this.dato.controls.estatus.patchValue('BR');
     document.getElementById('borrador').click();
   }
 
@@ -653,13 +653,13 @@ export class FormularioComponent {
               this.mensaje(2);
               try {
                   let e = error.json();
-                  if (error.status == 401) {
+                  if (error.estatus == 401) {
                       this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
                       this.mensajeResponse.clase = 'error';
                       this.mensaje(2);
                   }
                   // Problema de validación
-                  if (error.status == 409) {
+                  if (error.estatus == 409) {
                       this.mensajeResponse.texto = 'Por favor verfique los campos marcados en rojo.';
                       this.mensajeResponse.clase = 'error';
                       this.mensaje(8);
@@ -674,7 +674,7 @@ export class FormularioComponent {
                       }
                   }
               } catch (e) {
-                  if (error.status == 500) {
+                  if (error.estatus == 500) {
                       this.mensajeResponse.texto = '500 (Error interno del servidor)';
                   } else {
                       this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor ' +

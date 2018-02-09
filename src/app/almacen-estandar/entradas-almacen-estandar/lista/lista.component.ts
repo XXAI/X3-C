@@ -99,7 +99,7 @@ export class ListaComponent {
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
 
     // Inicializamos el objeto para los reportes con web Webworkers
-    this.pdfworker = new Worker('web-workers/farmacia/movimientos/lista-entradas.js');
+    this.pdfworker = new Worker('web-workers/almacen-estandar/entradas/lista-entradas-estandar.js');
 
     // Este es un hack para poder usar variables del componente dentro de una funcion del worker
     let self = this;
@@ -140,7 +140,7 @@ export class ListaComponent {
    */
   imprimir() {
     this.cargandoPdf = true;
-    this.crudService.lista_general('entrada-almacen?fecha_desde=' + this.fecha_desde
+    this.crudService.lista_general('entrada-almacen-standard?fecha_desde=' + this.fecha_desde
     + '&fecha_hasta=' + this.fecha_hasta + '&recibe=' + this.recibe).subscribe(
       resultado => {
               this.cargando = false;
@@ -163,13 +163,13 @@ export class ListaComponent {
               this.mensajeResponse.mostrar = true;
               try {
                   let e = error.json();
-                  if (error.status === 401) {
+                  if (error.estatus === 401) {
                       this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
                       this.mensajeResponse.clase = 'danger';
                       this.mensaje(2);
                   }
               } catch (e) {
-                  if (error.status === 500) {
+                  if (error.estatus === 500) {
                       this.mensajeResponse.texto = '500 (Error interno del servidor)';
                   } else {
                       this.mensajeResponse.texto =

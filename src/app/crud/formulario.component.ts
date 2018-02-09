@@ -38,6 +38,9 @@ import { NotificationsService } from 'angular2-notifications';
 })
 export class FormularioComponent implements OnInit {
     borrarCargando: boolean = false;
+    /**
+     * Calcula el tamaño de la pantalla
+     */
     tamano = document.body.clientHeight;
 
     id: string;
@@ -116,10 +119,10 @@ export class FormularioComponent implements OnInit {
                 if (regresar) {
                     this.location.back();
                 }
-                if (editar && json.status === 'BR') {
+                if (editar && json.estatus === 'BR') {
                     this.router.navigate([editar, resultado.id]);
                 }
-                if (editar && json.status === 'FI') {
+                if (editar && json.estatus === 'FI') {
                     this.router.navigate([editar]);
                 }
 
@@ -218,7 +221,7 @@ export class FormularioComponent implements OnInit {
             //         this.location.back();
             //         this.router.navigate(['almacen/entradas-estandar']);
             //     }
-                if (editar && dato.status === 'FI') {
+                if (editar && dato.estatus === 'FI') {
                     this.router.navigate([editar]);
                 }
                 this.cargando = false;

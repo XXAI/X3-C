@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, HostListener } from '@angular/core';
+import { Component, OnInit, NgZone, HostListener, Input } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Params } from '@angular/router';
@@ -11,6 +11,7 @@ import  * as FileSaver    from 'file-saver';
 
 import { Mensaje } from '../../../mensaje';
 import { NotificationsService } from 'angular2-notifications'; 
+import { ModalProgramasComponent } from "./modal-programas.component";
 /**
  * Componente que muestra el formulario para crear una entrada estandar.
  */
@@ -24,6 +25,21 @@ import { NotificationsService } from 'angular2-notifications';
 })
 
 export class FormularioComponent {
+  /**
+   * Variable que contienen el total de la suma de los precios de los insumos más iva.
+   * @type {Number}
+   */
+  total_precio: Number = 0;
+  /**
+   * Variable que contienen el total del iva de los insumos que son material de curación.
+   * @type {Number}
+   */
+  total_iva: Number = 0;
+  /**
+   * Variable que contienen el total de la suma de los precios sin iva.
+   * @type {Number}
+   */
+  subtotal_precios: Number = 0;
   /**
    * Formulario reactivo que contiene los datos que se enviarán a la API,
    * y son los mismos datos que podemos ver al consultar una entrada de almacén.
@@ -90,7 +106,7 @@ export class FormularioComponent {
    * es necesario la variable. Cuando se intenta finalizar la entrada a partir de un borrador
    * si no se tiene la variable marca error porque al actualizar el valor del __status__ intenta mostrar la sección.
    * ```html
-   * <section *ngIf="tieneid && ctrl.dato.get('status').value == 'FI' && estoymodificando == false">
+   * <section *ngIf="tieneid && ctrl.dato.get('estatus').value == 'FI' && estoymodificando == false">
    * ```
    * @type {boolean}
    */
@@ -100,6 +116,11 @@ export class FormularioComponent {
    * el catálogo de programas y no cada vez que se esté cargando otros elementos.
    */
   cargandoCatalogo = false;
+
+  /**
+   * Contiene el arreglo de importes temporales de medicamentos.
+   */
+  importes = [];
 
   /**
    * Variable que contiene un valor _true_ para mostrar la opción de cancelar entrada.
@@ -113,12 +134,21 @@ export class FormularioComponent {
    * Variable que vale true cuando se está cargando el PDF, false en caso contrario.
    * @type {boolean} */
   cargandoPdf = false;
+  /**
+   * Contiene la información del insumo elegido por el usuario, y que posteriormente será agregado a la lista de insumos médicos
+   * de la entrada estándar, los valores se asignan a los campos correspondientes del formulario reactivo.
+   */
   insumo;
   /**
    * Variable que contiene un valor _true_ si el medicamento tiene valor unidosis y _false_ en caso contrario.
    * @type {boolean}
    */
   es_unidosis = false;
+
+  /**
+   * Contiene la lista de lotes que el usuario ingresa en una entrada estandar.
+   * @type {Array}
+   */
   lotes_insumo;
 
   /**
@@ -184,6 +214,12 @@ export class FormularioComponent {
   };
 
   /**
+   * Variable que contiene un valor _true_ o _false_.
+   * @type {boolean}
+   */
+  time_cambio_cantidad_stoc;
+
+  /**
    * Este método inicializa la carga de las dependencias
    * que se necesitan para el funcionamiento del modulo
    */
@@ -213,7 +249,7 @@ export class FormularioComponent {
     }
 
     // Inicializamos el objeto para los reportes con web Webworkers
-    this.pdfworker = new Worker('web-workers/farmacia/movimientos/imprimir-entrada.js');
+    this.pdfworker = new Worker('web-workers/almacen-estandar/entradas/entrada-estandar.js');
 
     // Este es un hack para poder usar variables del componente dentro de una funcion del worker
     var self = this;
@@ -233,15 +269,21 @@ export class FormularioComponent {
       id: [''],
       actualizar: [false],
       tipo_movimiento_id: [1, [Validators.required]],
-      status: ['FI'],
+      estatus: ['FI'],
       fecha_movimiento: ['', [Validators.required]],
+      fecha_referencia: ['', [Validators.required]],
       observaciones: [''],
-      programa_id: [''],
-      proveedor_id: [''],
+      programa_id: [{value: '', disabled: false}, [Validators.required]],
+      multiprograma: [''],
       cancelado: [''],
       observaciones_cancelacion: [''],
       movimiento_metadato: this.fb.group({
-        persona_recibe: ['', [Validators.required]],
+        proveedor_id: [{value: '', disabled: false}, [Validators.required]],
+        numero_pedido: [{value: '', disabled: false}, [Validators.required]],
+        folio_factura: [{value: '', disabled: false}, [Validators.required]],
+        donante: [{value: '', disabled: true}, [Validators.required]],
+        donacion: [false, []],
+        persona_entrega: [''],
         servicio_id: [null],
         turno_id: [null],
       }),
@@ -261,9 +303,10 @@ export class FormularioComponent {
           if (val) {
             this.llenando_formulario = true;
             setTimeout(() => {
-              if (this.dato.controls.status.value === 'BR') {
+              if (this.dato.controls.estatus.value === 'BR') {
                 this.llenarFormulario();
               }else {
+                this.sumaTotal();
                 this.llenando_formulario = false;
               }
             }, 500);
@@ -288,17 +331,19 @@ export class FormularioComponent {
     } else {
       this.fecha_actual = this.dato.get('fecha_movimiento').value;
     }
-    this.cargarCatalogo('programa', 'lista_programas', 'status');
+    this.cargarCatalogo('programa', 'lista_programas', 'estatus');
     this.cargarCatalogo('proveedores', 'lista_proveedores', 'activo');
   }
   /**
    * Función local para cargar el catalogo de programas, no se utilizó el cargarCatalogo del CRUD,
    * debido a que este catálogo no existen 'mis-programas', sino que es un catálogo general y se agregan
-   * al arreglo únicamente aquellos programas que se encuentran activos (status = 1).
+   * al arreglo únicamente aquellos programas que se encuentran activos (estatus = 1).
    * @param url Contiene la cadena con la URL de la API a consultar para cargar el catalogo del select.
    * @param modelo Contiene el nombre de la variable en la que se guardan los resultados de la consulta a la API.
+   * @param estado Contiene el valor de la variable que representa el estado de cada item.
    */
   cargarCatalogo(url, modelo, estado) {
+    this[modelo] = [];
     this.cargandoCatalogo = true;
     this.crudService.lista_general(url).subscribe(
       resultado => {
@@ -339,6 +384,9 @@ export class FormularioComponent {
             'codigo_barras': [lotes_item.codigo_barras, [Validators.required]],
             'fecha_caducidad': [lotes_item.fecha_caducidad, [Validators.required]],
             'cantidad': [Number(lotes_item.cantidad), [Validators.required]],
+            'precio_unitario': [Number(lotes_item.precio_unitario), [Validators.required]],
+            'tipo': item.tipo,
+            'importe': [Number(lotes_item.importe), [Validators.required]],
             'cantidad_x_envase': Number(item.detalles.informacion_ampliada.cantidad_x_envase),
             'cantidad_surtida': 1,
             'movimiento_insumo_id': [lotes_item.movimiento_insumo_id],
@@ -354,6 +402,22 @@ export class FormularioComponent {
     for (let item of insumos_temporal.value) {
       control_insumos2.insert(0, this.fb.group(item));
     }
+    this.sumaTotal();
+    console.log(this.dato.controls.movimiento_metadato['controls']['donacion'].value);
+    if (this.dato.controls.movimiento_metadato['controls']['donacion'].value === '1' ||
+      this.dato.controls.movimiento_metadato['controls']['donacion'].value === 1) {
+      this.dato.controls.movimiento_metadato['controls']['donacion'].patchValue(true);
+      this.dato.controls.movimiento_metadato['controls']['donante'].enable();
+      this.no_requerirCampo('numero_pedido', 'movimiento_metadato');
+      this.no_requerirCampo('folio_factura', 'movimiento_metadato');
+      this.no_requerirCampo('programa_id');
+      this.no_requerirCampo('proveedor_id', 'movimiento_metadato');
+    } else {
+      this.dato.controls.movimiento_metadato['controls']['donacion'].patchValue(false);
+      this.dato.controls.movimiento_metadato['controls']['donante'].disable();
+    }
+    console.log(this.dato.controls.movimiento_metadato['controls']['donacion'].value);
+
     this.llenando_formulario = false;
   }
 
@@ -378,7 +442,7 @@ export class FormularioComponent {
    * cuando el modal que se va a abrir es un modal de confirmación de borrado.
    */
   abrirModal(id, index?) {
-    if (index) {
+    if (index || index === 0) {
       this.index_borrar = index;
     }
     document.getElementById(id).classList.add('is-active');
@@ -392,7 +456,7 @@ export class FormularioComponent {
   cancelarModal(id) {
     document.getElementById(id).classList.remove('is-active');
     if (id === 'guardarMovimiento') {
-      this.dato.controls.status.patchValue('BR');
+      this.dato.controls.estatus.patchValue('BR');
     }
   }
 
@@ -483,6 +547,17 @@ export class FormularioComponent {
         break;
       }
     }*/
+
+    /**
+     * Operación que nos ayuda a comprobar si ya existe la clave para asignar el mismo precio unitario, en caso contrario
+     * la variable precio_unitario_temporal mantiene el valor de cero.
+     */
+    let precio_unitario_temporal = 0;
+    for (let item of control.value) {
+      if (item.clave == this.insumo.clave) {
+        precio_unitario_temporal = item.precio_unitario;
+      }
+    }
     // crear el json que se pasara al formulario reactivo tipo insumos
     let temporal_cantidad_x_envase;
     if (this.insumo.cantidad_x_envase == null){
@@ -496,10 +571,13 @@ export class FormularioComponent {
       'descripcion': this.insumo.descripcion,
       'es_causes': this.insumo.es_causes,
       'es_unidosis': this.insumo.es_unidosis,
+      'tipo':this.insumo.tipo,
       'lote': ['', [Validators.required]],
       'id': null,
       'codigo_barras': [''],
       'fecha_caducidad': ['', [Validators.required]],
+      'precio_unitario': [precio_unitario_temporal === 0 ? '' : precio_unitario_temporal, [Validators.required]],
+      'importe': [0],
       'cantidad': ['', [Validators.required]],
       'cantidad_x_envase': parseInt(temporal_cantidad_x_envase),
       'cantidad_surtida': 1,
@@ -603,6 +681,157 @@ export class FormularioComponent {
   }
 
   /**
+   * Este método valida que en el campo de la cantidad no pueda escribir puntos o signo negativo
+   * @param event Parametro que contiene el valor de la tecla presionada
+   * @return void
+   */
+  validar_precio(event) {
+    if (this.is_precio(event.key ) ) {
+      return true;
+    }else {
+      return false;
+    }
+  }
+
+  /**
+   * Devuelve un valor Boolean que indica si ingresa una cantidad válida del precio del producto.
+   * @param str Valor de la tecla presionada por el usuario.
+   */
+  is_precio(str) {
+//    return /^\d+$/.test(str);
+    return /^(\d|-)?(\d|,)*\.?\d*$/.test(str);
+  }
+
+  /**
+   * Método para calcular subtotal del insumo.
+   * @param item Variable que contiene el objeto del insumo al que pertenece el precio y la cantidad.
+   * @param pos Contiene la posición del arreglo a la que se agregará la cantidad.
+   */
+  calcular_cantidad_subtotal (item, pos) {
+    const control = <FormArray>this.dato.controls['insumos'];
+    const ctrlLotes = <FormArray>control.controls[pos];
+
+    if (item.precio_unitario.value === '' || item.precio_unitario.value == null) {
+      this.importes[pos] = 0;
+    } if (item.cantidad.value  === '' || item.cantidad.value == null) {
+      this.importes[pos] = 0;
+    } else {
+      let temporal = item.cantidad.value * item.precio_unitario.value;
+      this.importes[pos] = temporal;
+      ctrlLotes.controls['importe'].patchValue(temporal);
+    }
+    return this.importes[pos];
+  }
+
+  /**
+   * Método que evalúa las teclas presionadas en los campos de cantidad y precio unitario para
+   * mandar a llamar la función calcular_cantidad_subtotal (item, pos) si son valores válidos.
+   * @param event Parametro que contiene el valor de la tecla presionada.
+   * @param item Variable que contiene el objeto del insumo al que pertenece el precio y la cantidad.
+   * @param pos Contiene la posición a la que pertenece el insumo.
+   */
+  cambio_cantidad_stock_key(event, item, pos) {
+    if (event.key == 'Backspace' || event.key == 'Delete') {
+      this.calcular_cantidad_subtotal(item, pos);
+      this.sumaTotal();
+    }
+    if (event.key != 'Backspace'
+      && event.key != 'Delete'
+      && event.key != 'ArrowLeft'
+      && event.key != 'ArrowRight'
+      && event.key != 'ArrowUp'
+      && event.key != 'ArrowDown'
+      && event.key != '.') {
+      clearTimeout(this.time_cambio_cantidad_stoc);
+      this.time_cambio_cantidad_stoc = setTimeout(() => {
+        this.calcular_cantidad_subtotal(item, pos);
+        this.sumaTotal();
+      }, 800);
+    }
+  }
+
+  /**
+   * Método en el que se hace la suma de los precios de los insumos, debemos sacar el IVA en caso de que sea Material de Curación
+   * y sumar todo para obtener el total de la factura.
+   */
+  sumaTotal() {
+    const control = <FormArray>this.dato.controls['insumos'];
+    let temporal_total_iva = 0, temporal_total_precio = 0, temporal_subtotal_precios = 0;
+
+
+    if (this.dato.value.estatus === 'FI' && this.tieneid) {
+      for (let c = 0; c < control.value.length; c++) {
+        for (let item of control.value[c].lotes) {
+          temporal_subtotal_precios = temporal_subtotal_precios + Number(item.importe);
+          if (control.value[c].tipo === 'MC') {
+            temporal_total_iva = temporal_total_iva + ( item.importe * .16);
+          }
+        }
+      }
+    } else {
+      for (let i = 0; i < control.value.length; i++) {
+        temporal_subtotal_precios = temporal_subtotal_precios + control.value[i].importe;
+        if (control.value[i].tipo === 'MC') {
+          temporal_total_iva = temporal_total_iva + ( control.value[i].importe * .16);
+        }
+      }
+    }
+
+    this.subtotal_precios = temporal_subtotal_precios;
+    this.total_iva = temporal_total_iva;
+    this.total_precio = Number(this.subtotal_precios) + Number(this.total_iva);
+  }
+
+
+  /**
+   * Método para volver NO requerido campos del formulario. Se llama al método
+   * cuando se da click al checkbox tiene_seguro_popular.
+   * @param campo Contiene el campo que se limpiará, activará o desactivará.
+   * @param formgroup_nombre Si el campo a desactivar forma parte de un formgroup, se envía el nombre del formgroup al que pertenece.
+   */
+  no_requerirCampo (campo, formgroup_nombre?) {
+    let temporal;
+    if (formgroup_nombre) {
+      temporal = <FormGroup>this.dato.controls[formgroup_nombre];
+    } else {
+      temporal = <FormGroup>this.dato;
+    }
+    const formEntrada = temporal;
+    console.log(this.dato.controls.movimiento_metadato['controls']['donacion'].value);
+    // if (!this.dato.controls.movimiento_metadato['controls']['donacion'].value ||
+    //     this.dato.controls.movimiento_metadato['controls']['donacion'].value === '0' ||
+    //     this.dato.controls.movimiento_metadato['controls']['donacion'].value === 0 ||
+    //     this.dato.controls.movimiento_metadato['controls']['donacion'].value === false) {
+    //   formEntrada.get(campo).disable();
+    //   // Se limpian los campos cuando se activa la donación
+    //   formEntrada.get(campo).patchValue('');
+    //   this.dato.controls.movimiento_metadato['controls']['donante'].enable();
+    // } else {
+    //   formEntrada.get(campo).enable();
+    //   this.dato.controls.movimiento_metadato['controls']['donante'].disable();
+    //   // Se limpia el campo DONANTE cuando se desactiva la donación
+    //   this.dato.controls.movimiento_metadato['controls']['donante'].patchValue('');
+    // }
+    if (this.dato.controls.movimiento_metadato['controls']['donacion'].value === true ||
+        this.dato.controls.movimiento_metadato['controls']['donacion'].value === 1 ||
+        this.dato.controls.movimiento_metadato['controls']['donacion'].value === '1') {
+        formEntrada.get(campo).disable();
+        // Se limpian los campos cuando se activa la donación
+        formEntrada.get(campo).patchValue('');
+        this.dato.controls.movimiento_metadato['controls']['donante'].enable();
+    }
+    if ( this.dato.controls.movimiento_metadato['controls']['donacion'].value === false ||
+      this.dato.controls.movimiento_metadato['controls']['donacion'].value === 0 ||
+      this.dato.controls.movimiento_metadato['controls']['donacion'].value === '0') {
+      formEntrada.get(campo).enable();
+      this.dato.controls.movimiento_metadato['controls']['donante'].disable();
+      // Se limpia el campo DONANTE cuando se desactiva la donación
+      this.dato.controls.movimiento_metadato['controls']['donante'].patchValue('');
+    }
+    console.log(this.dato);
+  }
+
+  /**
    * Compureba que los insumos de la entrada sean mayores a 0.
    * Abre el modal 'guardarMovimiento' para confirmar que guarda la entrada como finalizada,
    * sin poder hacer cambios después.
@@ -614,20 +843,20 @@ export class FormularioComponent {
       this.notificacion.warn('Insumos', 'Debe agregar por lo menos un insumo', this.objeto);
     }else {
       this.estoymodificando = true;
-      this.dato.controls['status'].patchValue('FI');
+      this.dato.controls['estatus'].patchValue('FI');
       document.getElementById('guardarMovimiento').classList.add('is-active');
     }
   }
   /**
    * Método que es llamado cuando va a guardarse un avance.
-   * Coloca 'BR' al status de la entrada y activa el botón
+   * Coloca 'BR' al estatus de la entrada y activa el botón
    * ```html
    * <span id="borrador" (click)="ctrl.enviar(false, '/almacen/entradas-estandar/editar');"></span>
    * ```
    * que envía al CRUD los datos correspondientes para guardar un borrador.
    */
   guardarBorrador() {
-    this.dato.controls.status.patchValue('BR');
+    this.dato.controls.estatus.patchValue('BR');
     document.getElementById('borrador').click();
   }
 
@@ -645,7 +874,7 @@ export class FormularioComponent {
           dato = this.dato.value;
       }
 
-      this.crudService.editar(this.dato.controls.id.value, dato, 'entrada-almacen').subscribe(
+      this.crudService.editar(this.dato.controls.id.value, dato, 'entrada-almacen-standard').subscribe(
           resultado => {
               document.getElementById('actualizar').click();
               this.cargando = false;
@@ -664,13 +893,13 @@ export class FormularioComponent {
               this.mensaje(2);
               try {
                   let e = error.json();
-                  if (error.status == 401) {
+                  if (error.estatus == 401) {
                       this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
                       this.mensajeResponse.clase = 'error';
                       this.mensaje(2);
                   }
                   // Problema de validación
-                  if (error.status == 409) {
+                  if (error.estatus == 409) {
                       this.mensajeResponse.texto = 'Por favor verfique los campos marcados en rojo.';
                       this.mensajeResponse.clase = 'error';
                       this.mensaje(8);
@@ -685,7 +914,7 @@ export class FormularioComponent {
                       }
                   }
               } catch (e) {
-                  if (error.status == 500) {
+                  if (error.estatus == 500) {
                       this.mensajeResponse.texto = '500 (Error interno del servidor)';
                   } else {
                       this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor ' +
@@ -699,6 +928,18 @@ export class FormularioComponent {
       );
   }
 
+  /**
+   * Función que asigna un valor al multiprograma.
+   * @param arg Elemento que recibe de otro documento y contiene la lista de programas que conforman el multiprograma.
+   */
+  llenarJson (arg) {
+    this.dato.get('multiprograma').patchValue(arg[0]);
+    this.cancelarModal('modal_multiprograma');
+    if(arg === 'borrarInsumo') {
+      this.sumaTotal();
+    }
+  }
+
 
 /***************************************** IMPRESION DE REPORTES ********************************************/
 
@@ -707,14 +948,58 @@ export class FormularioComponent {
    * Método que permite imprimir la salida manual de medicamentos por PDF.
    */
   imprimir() {
+    let entrada;
+
     try {
       this.cargandoPdf = true;
-      let entrada_imprimir = {
-        datos: this.dato.value,
-        lista: this.dato.value.insumos,
-        usuario: this.usuario
-      };
-      this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
+        this.cargando = true;
+
+        this.crudService.ver(this.dato.controls.id.value, 'entrada-almacen-standard').subscribe(
+            resultado => {
+              entrada = resultado;
+              this.cargando = false;
+              let entrada_imprimir = {
+                datos: entrada,
+                lista: this.dato.value.insumos,
+                usuario: this.usuario,
+                monto_total: this.total_precio
+              };
+              this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
+              this.sumaTotal();
+
+              this.mensajeResponse.titulo = 'Modificar';
+              this.mensajeResponse.texto = 'Los datos se cargaron';
+              this.mensajeResponse.clase = 'success';
+              this.mensaje(2);
+            },
+            error => {
+                this.cargando = false;
+
+                this.mensajeResponse = new Mensaje(true);
+                this.mensajeResponse = new Mensaje(true);
+                this.mensajeResponse.mostrar;
+
+                try {
+                    let e = error.json();
+                    if (error.status == 401) {
+                        this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
+                        this.mensajeResponse.clase = 'success';
+                        this.mensaje(2);
+                    }
+
+                } catch (e) {
+
+                    if (error.status == 500) {
+                        this.mensajeResponse.texto = '500 (Error interno del servidor)';
+                    } else {
+                        this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
+                    }
+                    this.mensajeResponse.clase = 'error';
+                    this.mensaje(2);
+                }
+
+            }
+        );
     } catch (e) {
       this.cargandoPdf = false;
     }

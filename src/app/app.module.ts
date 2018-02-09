@@ -76,6 +76,7 @@ import { AjusteMenosInventarioModule    } from './inventario/ajuste-menos-invent
 import { CorreccionesModule             } from './inventario/correcciones/correcciones.module';
 import { MovimientosGeneralesModule     }  from './inventario/movimientos-generales/movimientos-generales.module';
 import { MonitorCaducidadesModule       }  from './inventario/monitor-caducidades/monitor-caducidades.module';
+import { IniciarInventarioModule        }  from './inventario/iniciar-inventario/iniciar-inventario.module';
 
 // # Hub almacén artículos
 import { IndexAlmacenArticulosModule } from './almacen-articulos/index-almacen-articulos/index-almacen-articulos.module';
@@ -85,6 +86,7 @@ import { IndexCatalogoModule      } from './almacen-articulos/catalogos/index-ca
 // # Hub almacén estandar
 import { IndexAlmacenEstandarModule }  from './almacen-estandar/index-almacen-estandar/index-almacen-estandar.module';
 import { EntradasAlmacenEstandarModule } from './almacen-estandar/entradas-almacen-estandar/entradas-almacen-estandar.module';
+import { SalidasAlmacenEstandarModule } from './almacen-estandar/salidas-almacen-estandar/salidas-almacen-estandar.module';
 
 // # Hub laboratorio
 import { IndexLaboratorioModule   } from './laboratorio/index-laboratorio/index-laboratorio.module';
@@ -202,6 +204,7 @@ export function highchartsFactory() {
     CorreccionesModule,
     MovimientosGeneralesModule,
     MonitorCaducidadesModule,
+    IniciarInventarioModule,
     SalidasRecetasModule,
     DashboardSalidasModule,
     ClavesBasicasModule,
@@ -213,6 +216,7 @@ export function highchartsFactory() {
     // Hub Almacen estandar -inicio
     IndexAlmacenEstandarModule,
     EntradasAlmacenEstandarModule,
+    SalidasAlmacenEstandarModule,
     // fin-
     ViasAdministracionModule,
     ServiciosModule,

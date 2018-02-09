@@ -49,7 +49,6 @@ export class LoginComponent implements OnInit {
   login() {
     this.loading = true;
     this.mostrarMensaje = false;
-    
 
     this.authService.login(this.credenciales.id, this.credenciales.password)
       .subscribe(
