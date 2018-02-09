@@ -38,11 +38,7 @@ export class EditarComponent implements OnInit {
   permisos:any[] = [];
   todosSeleccionados: boolean = false;
 
-<<<<<<< HEAD
   private rol: any = { nombre: '', es_offline: false, permisos: [] }
-=======
-  rol: any = { nombre: '', permisos: [] }
->>>>>>> helen_sial
 
 
 
