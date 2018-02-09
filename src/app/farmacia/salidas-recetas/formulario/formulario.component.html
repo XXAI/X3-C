@@ -4,8 +4,8 @@
 <form name="form" novalidate [formGroup]="dato">
     <div class="contenedor columns " style="height:90%">
         <div class="column is-one-third" style="padding:1em; height:90%">
-            <div style="background: #FFF; border-radius: 1em; height:100%">
-                <section class="hero is-primary" style="height:20%">
+            <div style="background: #FFF; border-radius: 1em;">
+                <section class="hero is-primary" style="">
                     <h1 *ngIf="!tieneid" class="title" style="margin:0.5em; ">
                         <span class="icon is-medium">
                             <i class="fa fa-file-text"></i>
@@ -23,7 +23,7 @@
 
                     <h3 class="title">
                         <i class="fa fa-file"></i>
-                         Datos del movimiento
+                         Datos del movimientox
                     </h3>
                     <div >
                         <div class="field">
@@ -183,23 +183,30 @@
                                     <div class="field">
                                         <label class="label">Doctor:</label>
                                         <p class="control is-expanded  has-icon has-icon-right">
-                                            <input class="input" type="text" *ngIf="tieneid"
+                                            <!--<input class="input" type="text" *ngIf="tieneid"
                                                 [ngClass]="{'is-hidden':!tieneid, 'is-disabled': tieneid, 'is-danger': ctrl.dato.get('receta').get('doctor').hasError('required') || ctrl.dato.get('receta').get('personal_clues_id').hasError('required')}"
-                                                placeholder="Doctor" formControlName="doctor" id="doctor">
+                                                placeholder="Doctor" formControlName="doctor" id="doctor">-->
 
-                                            <input #campoDr *ngIf="!tieneid" ngui-auto-complete [source]="medicos_term" [list-formatter]="autocompleListFormatMedico"
+                                            <!--<input #campoDr *ngIf="!tieneid" ngui-auto-complete [source]="medicos_term" [list-formatter]="autocompleListFormatMedico"
                                                 display-property-name="nombre" path-to-data="" loading-text="Cargando..." no-match-found-text="No hay resultados."
                                                 (valueChanged)="select_medico_autocomplete($event)" min-chars="1" class="input is-success"
-                                                (keyup)="asignarDoctor()" id="buscarMedico" value-property-name="nombre"
+                                                (keyup)="DoctorBuscador()" id="buscarMedico" value-property-name="nombre"
                                                 [ngClass]="{'is-danger': ctrl.dato.get('receta').get('doctor').hasError('required') || ctrl.dato.get('receta').get('personal_clues_id').hasError('required')}"
-                                                type="text" placeholder="Doctor">
+                                                type="text" placeholder="Doctor" formControl>-->
+
+                                            <input #campoDr ngui-auto-complete [source]="medicos_term" [list-formatter]="autocompleListFormatMedico"
+                                                display-property-name="nombre" path-to-data="" loading-text="Cargando..." no-match-found-text="No hay resultados."
+                                                (valueChanged)="select_medico_autocomplete($event)" min-chars="1" class="input"
+                                                id="buscarMedico" value-property-name="nombre"
+                                                [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('receta').get('doctor').hasError('required') }"
+                                                type="text" placeholder="Doctor" formControlName="doctor">    
 
                                             <span class="icon is-small" *ngIf="ctrl.dato.get('receta').get('doctor').hasError('required')">
                                                 <i class="fa fa-warning"></i>
                                             </span>
-                                            <span class="help is-danger" *ngIf="ctrl.dato.get('receta').get('personal_clues_id').hasError('required')">
+                                            <!--<span class="help is-danger" *ngIf="ctrl.dato.get('receta').get('personal_clues_id').hasError('required')">
                                                 Ingrese el nombre de un médico registrado.
-                                            </span>
+                                            </span>-->
                                             <span class="help is-danger" *ngIf="ctrl.dato.get('receta').get('doctor').hasError('required')">Este campo es requerido.</span>
                                         </p>
                                     </div>
