@@ -13,14 +13,29 @@ export class FormularioComponent {
 
   ngOnInit() {
     this.dato = this.fb.group({
-      id: [''],      
+      id: [''],
       tipo: ['E', [Validators.required]] ,
       nombre: ['', [Validators.required]],
-      numero: ['', [Validators.required]]    
+      numero: [{value: '', disabled: true}, [Validators.required]]
     });  
-    this.tipo=[{id:"ME", nombre:"Medicamentos"}, {id:"MC", nombre:"Material de curación"}, {id:"AD", nombre:"Auxiliares de diagnósticos"}];
+    this.tipo=[
+      {id:"ME", nombre:"Medicamentos"},
+      {id:"MC", nombre:"Material de curación"},
+      {id:"AD", nombre:"Auxiliares de diagnósticos"}
+    ];
     //Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
     //document.getElementById("catalogos").click();  
   }
-  
+  /**
+   * Método para volver requerido el campo de número cuando el tipo de insumo es medicamento 'ME'. 
+   */
+  requerirCampo () {
+    if (this.dato.controls['tipo'].value === 'ME') {
+      this.dato.get('numero').enable();
+    } else {
+      this.dato.get('numero').disable();
+      console.log(this.dato.controls['tipo'].value);
+    }
+  }
+
 }

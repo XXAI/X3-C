@@ -48,11 +48,11 @@ export class VerComponent implements OnInit {
   // # FIN SECCION  
 
   pedido: Pedido; 
-  private lotesSurtidos:any[] = [];
-  private listaStock: any[] = [];  
-  private claveInsumoSeleccionado:string = null;
-  private claveNoSolicitada:boolean = false;
-  private itemSeleccionado: any = null;
+  lotesSurtidos:any[] = [];
+  listaStock: any[] = [];  
+  claveInsumoSeleccionado:string = null;
+  claveNoSolicitada:boolean = false;
+  itemSeleccionado: any = null;
   
 
   

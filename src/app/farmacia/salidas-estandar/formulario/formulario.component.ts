@@ -25,7 +25,15 @@ import  * as FileSaver    from 'file-saver';
 })
 
 export class FormularioComponent {
+  /**
+   * Variable que contiene la cantidad solicitada, su tipo es para que se pueda modificar en el DOM y en typescript.
+   * @type ViewChildren
+   */
   @ViewChildren('cantidad_solicitada') cantidad_solicitadaBoxViewChildren;
+  /**
+   * Variable que contiene la cantidad solicitada en forma de unidosis, su tipo es para que se pueda modificar en el DOM y en typescript.
+   * @type ViewChildren
+   */
   @ViewChildren('cantidad_solicitada_unidosis') cantidad_solicitada_unidosisBoxViewChildren;
 
   /**
@@ -42,27 +50,47 @@ export class FormularioComponent {
    * Variable que contiene un valor _true_ si la cantidad solicitada es mayor a cero.
    * @type {boolean} */
   cant_solicitada_valida = false;
+  /**
+   * Variable que contiene un valor _true_ si al sumar la cantidad de los lotes es mayor a cero.
+   */
   sum_cant_lotes = false;
   /**
    * Contiene el valor de la tecla presionada por el usuario.
    * @type {any} */
   key;
+  /**
+   * Contiene la unidad de medida del insumo médico.
+   */
   unidad_medida;
   /**
    * Contiene la lista de turnos disponibles en la CLUES.
    * @type {array}
    */
   array_turnos;
+  /**
+   * Contiene la lista de servicios disponibles en la CLUES.
+   * @type {array}
+   */
   array_servicios;
+  /**
+   * Contiene el index del insumo a borrar.
+   */
   index_borrar;
   /**
    * Contiene los datos de inicio de sesión del usuario.
    * @type {any} */
   usuario;
 
-  // Máscara para validar la entrada de la fecha de caducidad
+  /**
+   * Máscara para validar la entrada de la fecha de caducidad.
+   */
   mask = [/[2]/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/];
   autoCorrectedDatePipe: any = createAutoCorrectedDatePipe('yyyy-mm-dd');
+  /**
+   * Contiene la URL donde se hace la búsqueda de insumos médicos, cuyos resultados posteriormente
+   * se guarda en [res_busq_insumos]{@link FormularioComponent#res_busq_insumos}
+   * @type {string}
+   */
   public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
 
   objeto = {
@@ -73,7 +101,6 @@ export class FormularioComponent {
   };
 
   MinDateCaducidad;
-  ;
   /**
    * Contiene la fecha MÍNIMA que puede ingresar el usuario para la fecha que fue hecha la salida de almacen.
    * @type {Date} */
@@ -88,23 +115,48 @@ export class FormularioComponent {
    * fecha máxima [MaxDate]{@link FormularioComponent#MaxDate}
    * @type {Date} */
   fecha_actual;
+  /**
+   * Variable que sirve como bandera para saber si la fecha ingresada por el usuario es válida.
+   */
   fecha_invalida = true;
+  /**
+   * Variable que si tiene un valor verdadero quiere decir que es un movimiento creado.
+   */
   tieneid = false;
+  /**
+   * La variable toma un valor true cuando un proceso está activo.
+   */
   cargando = false;
   mostrarCancelado;
+  /**
+   * Variable que guarda el resultado de la consulta a la API del insumo seleccionado.
+   */
   lotes_insumo;
   /**
    * Guarda el resultado de la búsqueda de insumos médicos.
    * @type {array} */
   res_busq_insumos= [];
 
-  // # SECCION: Reportes
-  pdfworker:Worker;
-   cargandoPdf:boolean = false;
-  // # FIN SECCION
+// # SECCION: Reportes
 
-  // Crear la variable que mustra las notificaciones
+  /**
+   * Objeto para los reportes con web Webworkers.
+   * @type {Worker} */
+  pdfworker: Worker;
+  /**
+   * Variable que vale true cuando se está cargando el PDF, false en caso contrario.
+   * @type {boolean} */
+  cargandoPdf: boolean = false;
+
+// # FIN SECCION
+
+  /**
+   * Crear la variable que mustra las notificaciones
+   **/
   mensajeResponse: Mensaje = new Mensaje();
+  /**
+   * Texto que se muestra en las notificaciones.
+   */
   titulo= 'Salidas estándar';
 
   /**
@@ -117,7 +169,17 @@ export class FormularioComponent {
     timeOut: 2000,
     lastOnBottom: true
   };
+  insumo;
+  /**
+   * Si el insumo seleccionado contiene el valor unidosis.
+   * @type boolean
+   */
+  es_unidosis = false;
 
+  /**
+   * Este método inicializa la carga de las dependencias
+   * que se necesitan para el funcionamiento del módulo
+   */
   constructor(
     private fb: FormBuilder,
     private crudService: CrudService,
@@ -283,8 +345,7 @@ export class FormularioComponent {
     </div>`;
     return this._sanitizer.bypassSecurityTrustHtml(html);
   }
-  insumo;
-  es_unidosis = false;
+
   /**
      * Este método carga los datos de un elemento de la api con el id que se pase por la url
      * @param data json con los datos del objetop seleccionado del autocomplete
@@ -620,6 +681,9 @@ export class FormularioComponent {
     ctrlLotes.controls['cantidad_surtida'].patchValue(cantidad);
   }
 
+  /**
+   * Comprueba que la suma de la cantidad a entregar de los lotes sea mayor a cero.
+   */
   comprobar_cant_lotes() {
     let cantidad = 0;
     for (let l of this.lotes_insumo) {
@@ -633,6 +697,10 @@ export class FormularioComponent {
     }
   }
 
+  /**
+   * 
+   * @param value Comprueba que la cantidad solicitada sea mayor a cero.
+   */
   comprobar_cant_solicitada(value) {
     if (value>0) {
       this.cant_solicitada_valida = true;

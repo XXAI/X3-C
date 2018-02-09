@@ -11,8 +11,6 @@ const routes: Routes = [
     component: IndexFarmaciaComponent,
     canActivate: [AuthGuard]
   }
- 
-  
 ];
 
 @NgModule({

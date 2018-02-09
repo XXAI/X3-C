@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Params, ActivatedRoute } from '@angular/router';
 
+import { CrudService } from '../../../crud/crud.service';
+/**
+ * Componente que muestra el formulario para crear o editar un programa.
+ */
 @Component({
   selector: 'app-programa-formulario',
   templateUrl: './formulario.component.html',
@@ -108,8 +112,32 @@ export class FormularioComponent {
    * existente. Cuando su valor es __false__ quiere decir que mostraremos la vista para crear una nueva salida.
    * @type {Boolean} */
   tieneid = false;
+
+  /**
+   * Contiene la lista de programas que crean el multiprograma.
+   * @type {any}
+   */
+  multiprograma= [];
+  /**
+   * Se tuvo que crear la variable debido a que se debe hacer referencia únicamente cuando se esté actualizando
+   * el catálogo de programas y no cada vez que se esté cargando otros elementos.
+   */
+  cargandoCatalogo = false;
+
+  /**
+   * Contiene la lista de programas
+   * @type {any}
+   */
+  lista_programas= [];
+
+  /**
+   * Variable que contiene el id del programa a editar
+   */
+  id_programa;
+
   constructor(
     private fb: FormBuilder,
+    private crudService: CrudService,
     private route: ActivatedRoute) { }
 
   ngOnInit() {
@@ -117,12 +145,77 @@ export class FormularioComponent {
       id: [''],
       clave: ['', [Validators.required]],
       nombre: ['', [Validators.required]],
-      status: ['', [Validators.required]]
+      programas: [''],
+      estatus: ['', [Validators.required]],
+      es_multiprograma: ['0']
+      // programas: this.fb.array([])
     });
     this.route.params.subscribe(params => {
       if (params['id']) {
         this.tieneid = true;
+        this.id_programa = params['id'];
       }
     });
+    document.getElementById('catalogoPrograma').click();
   }
+  /**
+   * Función local para cargar el catalogo de programas, no se utilizó el cargarCatalogo del CRUD,
+   * debido a que este catálogo no existen 'mis-programas', sino que es un catálogo general y se agregan
+   * al arreglo únicamente aquellos programas que se encuentran activos (estatus = 1).
+   * @param url Contiene la cadena con la URL de la API a consultar para cargar el catalogo del select.
+   * @param modelo Contiene el nombre de la variable en la que se guardan los resultados de la consulta a la API.
+   * @param estado Contiene el valor de la variable que representa el estado de cada item.
+   */
+  cargarCatalogo(url, modelo, estado) {
+    this.multiprograma = [];
+    this[modelo] = [];
+    this.cargandoCatalogo = true;
+    this.crudService.lista_general(url).subscribe(
+      resultado => {
+        this.cargandoCatalogo = false;
+        let contador = 0;
+        let id_temporal = this.dato.controls.id.value;
+        for (let item of resultado) {
+          if ((item[estado] === 1 || item[estado] === '1') && item['es_multiprograma'] !== 1 && item.id !== Number(this.id_programa)) {
+            this[modelo].push(item);
+          }
+        }
+      }
+    );
+  }
+
+  /**
+   * Este método se utiliza para limpiar un array que contiene datos.
+   * @param array Nombre del array que ha de limpiarse.
+   */
+  limpiar_array(nombre_array, multiprograma) {
+    // this[nombre_array] = [];
+    this[multiprograma] = [];
+    this.dato.get(nombre_array).patchValue('');
+    console.log(nombre_array, this.dato.value);
+  }
+
+  /**
+     * Este método agrega un objeto a un array de elementos.
+     * ejemplo <code>(click)="agregarLista('multiprograma', lista_programas, item)"</code>
+     * @param json Lista a la que agrega los datos.
+     * @param modelo  modelo que corresponde al array a agregar los elementos
+     * @param valor valor a agregar al array
+     * @return void
+     */
+    agregarLista(json, modelo, valor) {
+      let i = this[json].indexOf(valor);
+      if (i > -1) {
+          this[json].splice(i, 1);
+      } else {
+          this[json].push(valor);
+      }
+      // Esta operación nos permite guardar únicamente el id de cada programa seleccionado en un arreglo.
+      let arreglo = [];
+      for (let c = 0; c < this[json].length; c++) {
+        arreglo.push(this[json][c].id);
+      }
+      this.dato.get('programas').patchValue(arreglo);
+    }
+
 }

@@ -9,48 +9,103 @@ import { NotificationsService } from 'angular2-notifications';
 import { Mensaje } from '../../../mensaje';
 
 import  * as FileSaver    from 'file-saver';
-
+/**
+ * Componente que contiene el formulario para un ajuste más de inventario.
+ */
 @Component({
   selector: 'app-ajuste-mas-formulario',
-  templateUrl: './formulario.component.html',
+  templateUrl: './formulario.component.html', 
   styleUrls: ['./../../../../../src/styles.css'],
   styles: ['ngui-auto-complete {z-index: 999999 !important}'],
   host: {
         '(document:keydown)': 'handleKeyboardEvents($event)'
     }
 })
-
+/**
+ * Clase que contiene los métodos para un ajuste más de inventario.
+ */
 export class FormularioComponent {
   key;
+  /**
+   * Contiene los lotes del insumo.
+   */
   lotes_insumo;
+  /**
+   * Formulario reactivo que contiene los datos que se enviarán a la API,
+   * y son los mismos datos que podemos ver al consultar una salida de almacén.
+   * @type {FormGroup} */
   dato: FormGroup;
   form_insumos: any;
+  /**
+   * El tipo de salida del insumo, puede ser normal (N) o por unidosis.
+   * @type String
+   */
   modo = 'N';
-  tab = 1;
+
   cant_solicitada_valida = false;
   unidad_medida;
+  /**
+   * Contiene la lista de turnos disponibles en la CLUES.
+   * @type {array}
+   */
   array_turnos;
+  /**
+   * Contiene la lista de turnos disponibles en la CLUES.
+   * @type {array}
+   */
   array_servicios;
+  /**
+   * Variable que contiene un valor _true_ si al sumar la cantidad de los lotes es mayor a cero.
+   */
   sum_cant_lotes = false;
+  /**
+   * Array que contiene valores booleanos para ver o no, el detalle de cada insumo en la lista.
+   */
   mostrar_lote = [];
   cantidad_error = 0;
   public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
-
+  /**
+   * Contiene la fecha MÍNIMA que puede ingresar el usuario para la fecha que fue hecha la salida de almacen.
+   * @type {Date} */
   MinDate = new Date();
+  /**
+   * Contiene la fecha MÁXIMA que puede ingresar el usuario para la fecha que fue hecha la salida de almacen.
+   * @type {Date} */
   MaxDate = new Date();
+  /**
+   * Contiene la fecha del día de hoy y es la que automáticamente se asigna a la fecha del movimiento, aunque el usuario puede
+   * cambiarla hay un límite de una fecha mínima [MinDate]{@link FormularioComponent#MinDate} y
+   * fecha máxima [MaxDate]{@link FormularioComponent#MaxDate}
+   * @type {Date} */
   fecha_actual;
+  /**
+   * Variable que si tiene un valor verdadero quiere decir que es un movimiento creado.
+   */
   tieneid = false;
+  /**
+   * La variable toma un valor true cuando un proceso está activo.
+   */
   cargando = false;
   fecha_movimiento;
   mostrarCancelado;
+  /**
+   * Contiene la información del insumo elegido por el usuario, y que posteriormente será agregado a la lista de insumos médicos
+   * de la entrada estándar, los valores se asignan a los campos correspondientes del formulario reactivo.
+   */
   insumo;
+  /**
+  * Si el insumo seleccionado contiene el valor unidosis.
+  * @type boolean
+  */
   es_unidosis = false;
   // # SECCION: Reportes
     pdfworker: Worker;
     cargandoPdf = false;
   // # FIN SECCION
 
-  // Crear la variable que mustra las notificaciones
+  /**
+   * Crear la variable que mustra las notificaciones
+   */
   mensajeResponse: Mensaje = new Mensaje();
   titulo= 'Ajuste más de inventario';
 

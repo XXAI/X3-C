@@ -19,11 +19,11 @@ export class LoginComponent implements OnInit {
   saludIdDisponible: boolean;
   credenciales: any = {};
   loading: boolean = false;
-  private returnUrl: string;
+  returnUrl: string;
   mensaje: string = "";
   mostrarMensaje: boolean = false;
-  private bloquearPantallaSuscription: Subscription;
-  private tamano = document.body.clientHeight;
+  bloquearPantallaSuscription: Subscription;
+  tamano = document.body.clientHeight;
 
   mostrarRecuperarPassword:boolean = false;
   resetPasswordViaToken:boolean = false;
@@ -69,7 +69,6 @@ export class LoginComponent implements OnInit {
   login() {
     this.loading = true;
     this.mostrarMensaje = false;
-    
 
     this.authService.login(this.credenciales.id, this.credenciales.password)
       .subscribe(

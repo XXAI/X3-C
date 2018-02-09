@@ -11,23 +11,26 @@ export class FormularioOpcionesComponent {
    * Contiene el nombre de la carpeta/hub donde se encuentra.
    * @type {string}
    */
-  private carpeta;
+  carpeta;
   /**
    * Contiene el nombre del módulo donde se encuentra.
    * @type {string}
    */
-  private modulo;
+  modulo;
   /**
    * Contiene la ruta para crear un registro nuevo.
    * @type {string}
    */
-  private url_nuevo;
+  url_nuevo;
   /**
    * Contiene la ruta para ir al listado.
    * @type {string}
    */
-  private url_lista;
+  url_lista;
 
+  /**
+   * Método que inicializa y obtiene valores para el funcionamiento del componente.
+   */
   ngOnInit() {
     let url = location.href.split('/');
     this.carpeta = url[4];

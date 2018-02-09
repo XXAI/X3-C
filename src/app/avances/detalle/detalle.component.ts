@@ -53,11 +53,11 @@ export class DetalleComponent implements OnInit {
 	// # FIN SECCION
 
 	// # SECCION: Lista de pacinetes
-	private paginaActual = 1;
+	paginaActual = 1;
 	resultadosPorPagina = 25;
 	total = 0;
-	private paginasTotales = 0;
-	private indicePaginas:number[] = [];
+	paginasTotales = 0;
+	indicePaginas:number[] = [];
 
   detalles: Detalle[] = [];
   usuarios:any = [];
@@ -66,15 +66,15 @@ export class DetalleComponent implements OnInit {
 	// # FIN SECCION
 	
 	// # SECCION: Resultados de búsqueda
-	private ultimoTerminoBuscado = "";
-	private terminosBusqueda = new Subject<string>();
-	private resultadosBusqueda: Detalle[] = [];
+	ultimoTerminoBuscado = "";
+	terminosBusqueda = new Subject<string>();
+	resultadosBusqueda: Detalle[] = [];
 	busquedaActivada:boolean = false;
-	private paginaActualBusqueda = 1;
+	paginaActualBusqueda = 1;
 	resultadosPorPaginaBusqueda = 25;
 	totalBusqueda = 0;
-	private paginasTotalesBusqueda = 0;
-	private indicePaginasBusqueda:number[] = [];
+	paginasTotalesBusqueda = 0;
+	indicePaginasBusqueda:number[] = [];
 
   //Subir archivo
   tag:any;

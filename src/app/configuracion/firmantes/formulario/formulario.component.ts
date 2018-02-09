@@ -28,25 +28,25 @@ export class FormularioComponent implements OnInit {
   personal_seleccionado:number = 0;
   buscarPersonal:string = "";
 
-  private paginaActual = 1;
+  paginaActual = 1;
 	resultadosPorPagina = 25;
 	total = 0;
   personal:any[] = [];
   pedidos:any[] = [];
   pedidos_check:any[] = [];
 
-	private paginasTotales = 0;
-	private indicePaginas:number[] = [];
+	paginasTotales = 0;
+	indicePaginas:number[] = [];
 	// # SECCION: Resultados de búsqueda
-	private ultimoTerminoBuscado = "";
-	private terminosBusqueda = new Subject<string>();
-	private resultadosBusqueda: any;
+	ultimoTerminoBuscado = "";
+	terminosBusqueda = new Subject<string>();
+	resultadosBusqueda: any;
 	busquedaActivada:boolean = false;
-	private paginaActualBusqueda = 1;
+	paginaActualBusqueda = 1;
 	resultadosPorPaginaBusqueda = 10;
 	totalBusqueda = 0;
-	private paginasTotalesBusqueda = 0;
-	private indicePaginasBusqueda:number[] = [];
+	paginasTotalesBusqueda = 0;
+	indicePaginasBusqueda:number[] = [];
 
 	mensajeError: Mensaje = new Mensaje();
 	mensajeExito: Mensaje = new Mensaje();
@@ -54,14 +54,17 @@ export class FormularioComponent implements OnInit {
   
   constructor(
   	private title: Title, 
-	private location: Location, 
-	private router: Router,
-	private route: ActivatedRoute,
-	private _ngZone: NgZone, 
-	private fb: FormBuilder,
-	private firmanteService: FirmanteService
-  ) { }
+    private location: Location, 
+    private router: Router,
+    private route: ActivatedRoute,
+    private _ngZone: NgZone, 
+    private fb: FormBuilder,
+    private firmanteService: FirmanteService
+    ) { }
 
+  /**
+   * Método que inicializa y obtiene valores para el funcionamiento del componente.
+   */
   ngOnInit() {
   	this.firmantes = this.fb.group({
         firma_director:     ['', []],

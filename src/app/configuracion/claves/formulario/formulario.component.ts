@@ -10,18 +10,72 @@ import { environment } from '../../../../environments/environment';
 })
 
 export class FormularioComponent {
-  tipo='ME';
-  es_causes=1;
+  /**
+   * Contiene el tipo de insumo médico para mostrar la etiqueta correcta en la vista.
+   * @type {string}
+   */
+  tipo= 'ME';
+  /**
+   * Contiene el valor 1 cuando el insumo médico es CAUSES y 0 cuando es NO CAUSES.
+   * @type {number}
+   */
+  es_causes= 1;
+  /**
+   * Formulario reactivo que contiene los datos que se enviarán a la API,
+   * y son los mismos datos que podemos ver al consultar las claves de la unidad médica.
+   * @type {FormGroup} */
   dato: FormGroup;
+  /**
+   * Variable que contien el valor _true_ cuando se está ejecutando un procesos para cargar datos.
+   * @type {boolean}
+   */
   cargando_claves_disponibles = false;
+  /**
+   * Variable que contien el valor _true_ cuando se está ejecutando un procesos para cargar datos.
+   * @type {boolean}
+   */
   cargando = true;
+  /**
+   * Contiene la información del insumo médico que se está agregando.
+   * @type {array}
+   */
   insumo;
+  /**
+   * Contiene el valor 1 cuando el insumo médico es UNIDOSIS y 0 cuando NO ES UNIDOSIS.
+   * @type {number}
+   */
   es_unidosis;
+  /**
+   * Variable que sirve como bandera para identificar si los datos de las
+   * fechas de última actualización han sido cargadas satisfactoriamente.
+   * @type {boolean}
+   */
   actualizado;
+  /**
+   * Variable que sirve como bandera para identificar si ha ocurrido un error
+   * al cargar los datos de la última actualización.
+   * @type {boolean}
+   */
   error_actualizacion;
+  /**
+   * Variable que contiene la última fecha de actualización de las claves.
+   * @type {date}
+   */
   actualizacion;
+  /**
+   * Contiene el nombre del usuario que realizó la última actualización.
+   * @type {string}
+   */
   actualizacion_usuario;
+  /**
+   * Contiene __true__ cuando el formulario recibe el parámetro id, lo que significa que ha de mostrarse una salida por receta
+   * existente. Cuando su valor es __false__ quiere decir que mostraremos la vista para crear una nueva salida.
+   * @type {Boolean}
+   */
   tieneid;
+  /**
+   * Contiene la URL donde se hace la búsqueda de insumos médicos
+   * @type {string} */
   public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
 
   constructor(

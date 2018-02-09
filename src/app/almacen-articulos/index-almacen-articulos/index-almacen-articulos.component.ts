@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Title }     from '@angular/platform-browser';
 
 import { BuscarModuloPipe } from '../../pipes/buscar-modulo.pipe';
-
+/**
+ * Componente que muestra los módulos disponibles para esta sección.
+ */
 @Component({
   selector: 'app-index-almacen-articulos',
   templateUrl: './index-almacen-articulos.component.html',
@@ -24,7 +26,7 @@ export class IndexAlmacenArticulosComponent implements OnInit {
    * Contiene la lista de los módulos en general que se agregan en este archivo.
    * @type {array}
    */
-  private modulos: any[] = [];
+  modulos: any[] = [];
   /**
    * Contiene los módulos que van a mostrarse en la vista de acuerdo a los permisos.
    * @type {array}
@@ -34,7 +36,7 @@ export class IndexAlmacenArticulosComponent implements OnInit {
    * Contiene la lista de los módulos que se agregan a la lista de accesos directos.
    * @type {array}
    */
-  private accesosDirectos: any[] = [];
+  accesosDirectos: any[] = [];
   /**
    * Contiene la lista de los módulos con acceso directo que se mostrarán en la vista
    * de acuerdo al rol del usuario.
@@ -44,6 +46,9 @@ export class IndexAlmacenArticulosComponent implements OnInit {
 
   constructor(private title: Title) { }
 
+  /**
+   * Método que inicializa y obtiene valores para el funcionamiento del componente.
+   */
   ngOnInit() {
     this.title.setTitle('Almacén / Artículos');
     this.usuario = JSON.parse(localStorage.getItem('usuario'));

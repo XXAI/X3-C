@@ -23,29 +23,29 @@ import { Lote } from '../insumo-movimientos';
 @Component({
   selector: 'buscar-insumos-movimientos',
   templateUrl: './buscar-insumos-movimientos.component.html',
-  styleUrls: ['./buscar-insumos-movimientos.component.css'], 
+  styleUrls: ['./buscar-insumos-movimientos.component.css'],
   host: { '(document:keydown)' : 'keyboardInput($event)'}
 })
 
 export class BuscarInsumosComponent implements OnInit, AfterViewInit {
 
-  
+
   @ViewChildren('searchBox') searchBoxViewChildren;
   @ViewChildren('cantidadBox') cantidadBoxViewChildren;
   @ViewChildren('codigoBarrasBox') codigoBarrasViewChildren;
   @ViewChildren('fechaBox') fechaViewChildren;
   @ViewChildren('loteBox') loteViewChildren;
-  
+
   @Output() onCerrar = new EventEmitter<void>();
   @Output() onEnviar = new EventEmitter<any>();
 
 
-  private cantidadAPI: boolean = true;
-  private lote: boolean = true;
+  cantidadAPI: boolean = true;
+  lote: boolean = true;
   mostrarModalLote: boolean = false;
 
-  private lotes_insumo: any[] = [];
-  private existencia: boolean = true;
+  lotes_insumo: any[] = [];
+  existencia: boolean = true;
 
   //Harima: Para evitar agregar insumos que ya estan en la lista
   @Input() listaAgregados: Array<string>;
@@ -57,17 +57,17 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   insumos: InsumoMedico[] = [];
 
   //insumosMovs: InsumoMedico[] = [];
-  private ultimoTerminoBuscado = "";
-  private terminosBusqueda = new Subject<string>();
-  private paginaActual = 1;
+  ultimoTerminoBuscado = "";
+  terminosBusqueda = new Subject<string>();
+  paginaActual = 1;
   resultadosPorPagina = 25;
   total = 0;
-  private paginasTotales = 0;
-  private indicePaginas:number[] = [];
+  paginasTotales = 0;
+  indicePaginas:number[] = [];
   insumo_stock: InsumoStock[] = [];
   // # FIN SECCION
 
-  
+
   // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
  // mensajeExito: Mensaje = new Mensaje();
@@ -75,35 +75,38 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   ultimaPeticion:any;
   // # FIN SECCION
 
-  private cantidadValida: boolean = false;
+  cantidadValida: boolean = false;
 
-  private insumoSeleccionado:InsumoMedico;
-  private usuario: any = {}
+  insumoSeleccionado:InsumoMedico;
+  usuario: any = {}
 
   constructor(private buscarInsumosService: BuscarInsumosService) { }
 
+  /**
+   * Método que inicializa y obtiene valores para el funcionamiento del componente.
+   */
   ngOnInit() {
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
-    
+
     var self = this;
 
     var busquedaSubject = this.terminosBusqueda
     .debounceTime(300) // Esperamos 300 ms pausando eventos
     .distinctUntilChanged() // Ignorar si la busqueda es la misma que la ultima
-    .switchMap((term:string)  =>  { 
+    .switchMap((term:string)  =>  {
       console.log("Cargando búsqueda.");
       //this.busquedaActivada = term != "" ? true: false;
 
       this.ultimoTerminoBuscado = term;
       this.paginaActual = 1;
       this.cargando = true;
-      return term  ? this.buscarInsumosService.buscar(term, this.paginaActual, this.resultadosPorPagina) : Observable.of<any>({data:[]}) 
+      return term  ? this.buscarInsumosService.buscar(term, this.paginaActual, this.resultadosPorPagina) : Observable.of<any>({data:[]})
     }
-      
-    
-    ).catch( function handleError(error){ 
-     
-      self.cargando = false;      
+
+
+    ).catch( function handleError(error){
+
+      self.cargando = false;
       self.mensajeError =  new Mensaje();
       self.mensajeError.mostrar = true;
       self.ultimaPeticion = function(){self.listar(self.ultimoTerminoBuscado,self.paginaActual);};//OJO
@@ -112,22 +115,22 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
         if (error.status == 401 ){
           self.mensajeError.texto = "No tiene permiso para hacer esta operación.";
         }
-        
+
         if (error.status == 0 ){
           self.mensajeError.texto = "El servidor no responde.";
         }
       } catch(e){
         console.log("No se puede interpretar el error");
-        
+
         if (error.status == 500 ){
           self.mensajeError.texto = "500 (Error interno del servidor)";
         } else {
           self.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
-        }            
+        }
       }
-      // Devolvemos el subject porque si no se detiene el funcionamiento del stream 
+      // Devolvemos el subject porque si no se detiene el funcionamiento del stream
       return busquedaSubject
-    
+
     });
 
     busquedaSubject.subscribe(
@@ -142,7 +145,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
         for(let i=0; i< this.paginasTotales; i++){
           this.indicePaginas.push(i+1);
         }
-        
+
         console.log("Búsqueda cargada.");
       }
 
@@ -154,12 +157,12 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       // investigar porque ocurre esto
 
       // Poner el focus en la barra de busqueda
-      setTimeout(() => { this.searchBoxViewChildren.first.nativeElement.focus();} ); 
-      
+      setTimeout(() => { this.searchBoxViewChildren.first.nativeElement.focus();} );
+
     } catch(e){
       console.log(e);
-    }           
-      
+    }
+
   }
 
   cerrar(){
@@ -198,7 +201,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
         this.loteViewChildren.first.nativeElement.disabled = false;
       }
     }
-    
+
     //this.codigoBarrasViewChildren.first.nativeElement.focus();
   }
 
@@ -247,11 +250,11 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
     }
 
     this.cantidadValida = true;
-    
+
     return true;
   }
   comprobarExistencia(cantidad:any, existencia: number, nuevo ?){
-    
+
     var disabledCant=0;
     for(let lote of this.lotes_insumo){
       if(lote.nuevo){
@@ -300,9 +303,9 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       var lotesNOvalidos: any[] = [];
       var lotesValidos: any[] = [];
      for(let lote of this.lotes_insumo)
-      {        
+      {
         if(lote.nuevo)
-        {  
+        {
             if(lote.lote=='')
             {
               lotesNOvalidos.push(lote);
@@ -337,7 +340,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
 
   enviar(e){
       this.mensajeAgregado = new Mensaje(true, 2);
-      this.mensajeAgregado.mostrar = true;    
+      this.mensajeAgregado.mostrar = true;
       this.insumoSeleccionado.cantidad = this.cantidadBoxViewChildren.first.nativeElement.value;
       this.insumoSeleccionado.codigo_barras = this.codigoBarrasViewChildren.first.nativeElement.value;
       this.insumoSeleccionado.fecha_caducidad = this.fechaViewChildren.first.nativeElement.value;
@@ -349,7 +352,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       this.listaAgregados.push(this.insumoSeleccionado.clave);
       this.resetItemSeleccionado();
   }
-  
+
   buscar(term: string): void {
     this.terminosBusqueda.next(term);
     this.mensajeError.mostrar = false;
@@ -359,7 +362,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
     this.paginaActual = pagina;
     this.resetItemSeleccionado();
     console.log("Cargando insumos.");
-   
+
     this.cargando = true;
     this.buscarInsumosService.buscar(term, pagina, this.resultadosPorPagina).subscribe(
         resultado => {
@@ -388,19 +391,19 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
             }
           } catch(e){
             console.log("No se puede interpretar el error");
-            
+
             if (error.status == 500 ){
               this.mensajeError.texto = "500 (Error interno del servidor)";
             } else {
               this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
-            }            
+            }
           }
 
         }
       );
   }
 
-  mostrarFichaInformativa(e, clave: string){    
+  mostrarFichaInformativa(e, clave: string){
     e.preventDefault();
     e.stopPropagation();
 
@@ -432,7 +435,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       event.stopPropagation();
       this.cerrar();
     }
-        
+
 
     // Cambiar página hacia adelante ctrl + shift + ->
     if (e.keyCode == 39 && ((e.ctrlKey && e.shiftKey) || e.ctrlKey )){
@@ -440,18 +443,18 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       event.stopPropagation();
 
       this.paginaSiguiente(this.searchBoxViewChildren.first.nativeElement.value);
-      
+
     }
     // Cambiar página hacia adelante ctrl + shift + <-
     if (e.keyCode == 37 && ((e.ctrlKey && e.shiftKey) || e.ctrlKey )){
-      
+
       event.preventDefault();
       event.stopPropagation();
 
       this.paginaAnterior(this.searchBoxViewChildren.first.nativeElement.value);
-      
+
     }
-    
-        
+
+
   }
 }

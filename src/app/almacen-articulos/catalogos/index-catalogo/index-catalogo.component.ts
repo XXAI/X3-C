@@ -10,11 +10,11 @@ import { BuscarModuloPipe } from '../../../pipes/buscar-modulo.pipe';
 })
 export class IndexCatalogoComponent implements OnInit {
 
-  private usuario: any = {}
-  private busqueda: string = "";
+  usuario: any = {}
+  busqueda: string = "";
 
-  private modulos:any[] = [];
-  private accesosDirectos:any[] = [];
+  modulos:any[] = [];
+  accesosDirectos:any[] = [];
 
   constructor(private title: Title) { }
 

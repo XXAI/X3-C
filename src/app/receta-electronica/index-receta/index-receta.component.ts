@@ -13,13 +13,16 @@ export class IndexRecetaComponent implements OnInit {
   usuario: any = {};
   busqueda = '';
 
-  private modulos: any[] = [];
+  modulos: any[] = [];
   modulosAutorizados: any[] = [];
-  private accesosDirectos: any[] = [];
+  accesosDirectos: any[] = [];
   accesosDirectosAutorizados: any[] = [];
 
   constructor(private title: Title) { }
 
+  /**
+   * Método que inicializa y obtiene valores para el funcionamiento del componente.
+   */
   ngOnInit() {
     this.title.setTitle('Receta Electrónica');
     this.usuario = JSON.parse(localStorage.getItem('usuario'));

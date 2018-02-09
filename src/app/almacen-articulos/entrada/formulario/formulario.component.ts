@@ -28,7 +28,7 @@ export class FormularioComponent {
    * si es una entrada nueva.
    * @type {boolean}
    */
-  private tieneid: boolean = false;
+  tieneid: boolean = false;
   /**
    * Contiene el valor de la altura del navegador web.
    */
@@ -273,7 +273,7 @@ export class FormularioComponent {
     inv.valido.patchValue(valido);
   }
 
-  private time_cambio_cantidad;
+  time_cambio_cantidad;
   cambio_cantidad_key(event, index, articulos) {
     clearTimeout(this.time_cambio_cantidad);
     this.time_cambio_cantidad = setTimeout(() => {
@@ -281,7 +281,7 @@ export class FormularioComponent {
     }, 500);
   }
 
-  private time_cambio_precio_unitario;
+  time_cambio_precio_unitario;
   cambio_precio_unitario_key(event, articulos) {
     if (event.key != 'Backspace' && event.key != 'Delete' && event.key != 'ArrowLeft' && event.key != 'ArrowRight' && event.key != 'ArrowUp' && event.key != 'ArrowDown' && event.key != '.') {
       clearTimeout(this.time_cambio_precio_unitario);

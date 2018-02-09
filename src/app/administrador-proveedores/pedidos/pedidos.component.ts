@@ -73,7 +73,7 @@ export class PedidosComponent implements OnInit {
   // # FIN SECCION
 
   // # SECCION: Reportes
-  private pdfworker:Worker;
+  pdfworker:Worker;
   cargandoPdf:any = {};
   errorEnPDF:boolean = false;
   // # FIN SECCION
@@ -85,7 +85,7 @@ export class PedidosComponent implements OnInit {
     
     
 
-  private cambiarEntornoSuscription: Subscription;
+  cambiarEntornoSuscription: Subscription;
 
   constructor(private title: Title, private apiService: AdministradorProveedoresService, private _ngZone: NgZone, private cambiarEntornoService:CambiarEntornoService) { }
 

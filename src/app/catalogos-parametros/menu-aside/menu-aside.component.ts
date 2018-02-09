@@ -8,19 +8,30 @@ import {Router} from '@angular/router';
 })
 export class MenuAsideComponent implements OnInit {
   /**
-   * Calcula el tamaño de la 
+   * Calcula el tamaño de la altura de la pantalla.
    * @type {number}
    */
   tamano = document.body.clientHeight;
   /**
-   * Contiene los datos de sesión del ususario
+   * Contiene los datos de sesión del usuario.
    * @type {any}
    */
   usuario: any = {};
+  /**
+   * Contiene las opciones de menú agregados al array.
+   * @type {array}
+   */
   menu: any[] = [];
+  /**
+   * Contiene las opciones de menú agregados al array, pero que el usuario tiene permiso para verlos.
+   * @type {array}
+   */
   menuAutorizado: any[] = [];
   constructor() { }
 
+  /**
+   * Método que se ejecuta de manera inicial cuando se utiliza el componente.
+   */
   ngOnInit() {
     let usuario = JSON.parse(localStorage.getItem('usuario'));
     var permisos =  usuario.permisos.split('|');
@@ -61,8 +72,7 @@ export class MenuAsideComponent implements OnInit {
           for (var k in permisos){
             if (permisos[k] == this.menu[i].modulos[j].permiso){
               var item = this.initMenuAutorizadoPorItem(this.menu[i].titulo)
-              item.modulos.push(this.menu[i].modulos[j]);      
-
+              item.modulos.push(this.menu[i].modulos[j]);
               break siguienteItemProtegido;
             }           
           }
@@ -72,16 +82,18 @@ export class MenuAsideComponent implements OnInit {
     } 
   }
 
+  /**
+   * Método que agrega los ítems autoorizados a la lista del menuAutorizado que se muestra al usuario.
+   * @param titulo Variable que contiene el nombre del item del menú que va agregarse al menú autorizado.
+   */
   initMenuAutorizadoPorItem(titulo: string){
      for (var i in this.menuAutorizado){
        if (titulo == this.menuAutorizado[i].titulo){
         return this.menuAutorizado[i];
        }
      }
-     
-     this.menuAutorizado.push({ titulo: titulo, modulos: []})
+     this.menuAutorizado.push({ titulo: titulo, modulos: []});
      return this.menuAutorizado[this.menuAutorizado.length - 1];
-     
   }
 
 }

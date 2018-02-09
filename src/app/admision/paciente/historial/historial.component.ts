@@ -43,11 +43,11 @@ export class HistorialComponent implements OnInit {
 
 	// # SECCION: Lista de pacinetes
 	pacientes: Paciente[] = [];
-	private paginaActual = 1;
+	paginaActual = 1;
 	resultadosPorPagina = 25;
 	total = 0;
-	private paginasTotales = 0;
-	private indicePaginas:number[] = []
+	paginasTotales = 0;
+	indicePaginas:number[] = []
 	// # FIN SECCION
 
 	  id_paciente:number;

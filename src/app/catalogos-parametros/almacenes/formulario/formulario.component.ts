@@ -12,7 +12,7 @@ import { environment } from '../../../../environments/environment';
 export class FormularioComponent {
   dato: FormGroup;
   form_almacen_tipos_movimientos: any;
-  private tieneid: boolean = false;
+  tieneid: boolean = false;
   tipos_almacen: any[] = [
                             { id: "ALMPAL", nombre: "ALMPAL"},
                             { id: "JURIS", nombre: "JURIS"},
@@ -30,7 +30,10 @@ export class FormularioComponent {
   public clues_term: string = `${environment.API_URL}/clues-auto?term=:keyword`;
 
   constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute, private _sanitizer: DomSanitizer) { }
-  
+
+  /**
+   * Método que inicializa y obtiene valores para el funcionamiento del componente.
+   */
   ngOnInit() {
     this.dato = this.fb.group({
       id: ['', [Validators.required]],
@@ -42,10 +45,10 @@ export class FormularioComponent {
       proveedor_id: [''] ,
       unidosis: [''] ,
       almacen_tipos_movimientos: this.fb.array([])
-    });  
+    });
 
     this.form_almacen_tipos_movimientos = {
-      tipo_movimiento_id:['', [Validators.required]]
+      tipo_movimiento_id: ['', [Validators.required]]
     };
    this.route.params.subscribe(params => {
       if (params['id']) {

@@ -14,22 +14,24 @@ import { CambiarEntornoService } from '../../perfil/cambiar-entorno.service';
 export class MenuComponent implements OnInit {
 
   usuario: any = {}
-  
+
     @Input() modulo:string;
     @Input() icono:string;
     @Input() url:string;
-  
-    private cambiarEntornoSuscription: Subscription;
-  
+
+    cambiarEntornoSuscription: Subscription;
+
     constructor(private cambiarEntornoService:CambiarEntornoService) { }
-  
+    /**
+     * Método que inicializa y obtiene valores para el funcionamiento del componente.
+     */
     ngOnInit() {
       this.usuario = JSON.parse(localStorage.getItem("usuario"));
       this.cambiarEntornoSuscription = this.cambiarEntornoService.entornoCambiado$.subscribe(evento => {
         this.usuario = JSON.parse(localStorage.getItem("usuario"));
       });
     }
-  
+
     ngOnDestroy(){
       this.cambiarEntornoSuscription.unsubscribe();
     }

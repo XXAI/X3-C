@@ -104,7 +104,10 @@
                 </p>
                 <p class="control">
                     <span class="select">
-                        <select name="tipo_insumo" #tipoInsumo (change)="tipo_insumo = tipoInsumo.value">
+                        <select name="tipo_insumo" #tipoInsumo title="Tipo de insumo"
+                            (change)="tipo_insumo = tipoInsumo.value; tipoInsumo.value == 'MC' ? tipoCauses.value = 'TODO' : ''; 
+                            tipoInsumo.value == 'MC' ? tipo_causes = 'TODO' : ''; tipoInsumo.value == 'MC' ? tipoControlado.value = 'TODO' : '';
+                            tipoInsumo.value == 'MC' ? tipo_controlado = 'TODO' : '';">
                             <option value="TODO">TODO</option>
                             <option value="ME">MEDICAMENTOS</option>
                             <option value="MC">MATERIAL DE CURACIÓN</option>
@@ -113,7 +116,7 @@
                 </p>
                 <p class="control">
                     <span class="select">
-                        <select style="width: 150px" name="tipo_causes" #tipoCauses (change)="tipo_causes = tipoCauses.value"
+                        <select style="width: 150px"  name="tipo_causes" title="Clasificación de CAUSES" #tipoCauses (change)="tipo_causes = tipoCauses.value"
                             [ngClass]="{'is-disabled': tipoInsumo.value == 'MC'}">
                             <option value="TODO">TODO</option>
                             <option value="CAUSES">CAUSES</option>
@@ -123,7 +126,7 @@
                 </p>
                 <p class="control">
                     <span class="select">
-                        <select name="tipo_controlados" #tipoControlado (change)="tipo_controlado = tipoControlado.value"
+                        <select name="tipo_controlados" title="Tipo de controlado" #tipoControlado (change)="tipo_controlado = tipoControlado.value"
                             [ngClass]="{'is-disabled': tipoInsumo.value == 'MC'}">>
                             <option value="TODO">TODO</option>
                             <option value="CONTROLADOS">CONTROLADOS</option>

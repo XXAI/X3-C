@@ -22,8 +22,8 @@
       "mobile": false,
       "styles": ["../node_modules/bulma/css/bulma.css",
         "../node_modules/font-awesome/css/font-awesome.css",
-        "styles.sass",
-        "styles.css"
+        "styles.css",
+        "styles.sass"
       ],
       "scripts": ["../node_modules/jquery/dist/jquery.js",
         "../node_modules/select2/dist/js/select2.full.js",
@@ -39,8 +39,16 @@
   ],
   "addons": [
     "../node_modules/font-awesome/fonts/*.+(otf|eot|svg|ttf|woff|woff2)"
-  ],
-  "packages": [],
+  ],  
+  "packages": {
+    "angular2-notifications": {
+        "main": "components.js",
+        "defaultExtension": "js"
+      }
+  },
+  "map": {
+    "angular2-notifications": "vendor/angular2-notifications"
+  },
   "e2e": {
     "protractor": {
       "config": "./protractor.conf.js"

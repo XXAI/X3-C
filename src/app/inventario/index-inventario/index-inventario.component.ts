@@ -13,9 +13,9 @@ export class IndexInventarioComponent implements OnInit {
   usuario: any = {};
   busqueda = '';
 
-  private modulos: any[] = [];
+  modulos: any[] = [];
   modulosAutorizados: any[] = [];
-  private accesosDirectos: any[] = [];
+  accesosDirectos: any[] = [];
   accesosDirectosAutorizados: any[] = [];
 
   constructor(private title: Title) { }
@@ -28,6 +28,10 @@ export class IndexInventarioComponent implements OnInit {
       {
         permiso: '7KbTARF2kpnO4Lfqv8hmYP8QGMcgJBwU', icono: 'assets/icono-ajustes-inventario.svg',
         titulo: 'Inicialización Inventario', url: '/inventario/inicializacion-inventario'
+      },
+      {
+        permiso: 'H5IV7Z6CAj8V2CRIQ2wnbXrYhvjLsSBk', icono: 'assets/icono-iniciar-inventario.svg',
+        titulo: 'Iniciar Inventario', url: '/inventario/iniciar-inventario'
       },
       {
         permiso: 'H5IV7Z6CAj8V2CRIQ2wnbXrYhvjLsSBk', icono: 'assets/icono-stock.svg',

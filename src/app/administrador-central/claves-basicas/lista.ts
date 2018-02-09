@@ -14,7 +14,7 @@ export class Lista {
   public paginacion:Paginacion = new Paginacion();
   public filtro: Lista;
   //Harima: Para tener acceso al objeto que contiene la items principal sin filtro
-  private padre: Lista;
+  padre: Lista;
   public activo:boolean = false;
   public cargando:boolean = false;
 

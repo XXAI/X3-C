@@ -73,11 +73,11 @@ export class SurtirComponent implements OnInit {
   puedeCancelarTransferencia:boolean = false;
 
   pedido: Pedido; 
-  private lotesSurtidos:any[] = [];
-  private listaStock: any[] = [];  
-  private claveInsumoSeleccionado:string = null;
-  private claveNoSolicitada:boolean = false;
-  private itemSeleccionado: any = null;
+  lotesSurtidos:any[] = [];
+  listaStock: any[] = [];  
+  claveInsumoSeleccionado:string = null;
+  claveNoSolicitada:boolean = false;
+  itemSeleccionado: any = null;
   
   itemsDevueltos: any = null;
   clavesDevueltasStatus: any = null;

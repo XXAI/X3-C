@@ -64,8 +64,18 @@ export class JwtRequestService {
     var token = this.jwtHelper.decodeToken(localStorage.getItem('token'));
     var usuario = JSON.parse(localStorage.getItem("usuario"));
     
-    var headersJson = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('token') };
-    
+    var headersJson = {};
+    if (url.indexOf("http") > -1) {
+      // headersJson['X-Clues']='application/x-www-form-urlencoded;charset=UTF-8';
+      headersJson = {
+        'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8', 'Authorization': 'Bearer ' + localStorage.getItem('token') 
+     };
+    } else {
+      headersJson = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('token'),
+     };
+    }
     if (usuario.clues_activa ) {      
       headersJson['X-Clues'] = usuario.clues_activa.clues; 
     }
@@ -75,7 +85,6 @@ export class JwtRequestService {
     if (usuario.proveedor_activo ) {      
       headersJson['X-Proveedor-Id'] = usuario.proveedor_activo.id; 
     }
-    
     var headers = new Headers(headersJson);
    
  

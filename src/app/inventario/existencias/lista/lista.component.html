@@ -129,6 +129,7 @@
                                 <th title="Consumo Promedio Mensual">C.P.M.</th>
                                 <th style="text-align: right;">Existencia</th>
                                 <th style="text-align: right;">Existencia Unidosis</th>
+                                <th style="text-align: right;">Valor</th>
                                 <th style="text-align: center;">Actualizado</th>
                             </tr>
                         </thead>
@@ -152,7 +153,8 @@
                                 <td>--</td>
                                 <td>--</td>
                                 <td style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)" style="font-size:1.2em;" class="help" [ngClass]="{'is-danger': item.existencia == 0}">{{ item.existencia }} </a></td>
-                                <td style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)" style="font-size:1.2em;" class="help" [ngClass]="{'is-danger': item.existencia_unidosis == 0}">{{ item.existencia_unidosis }} </a></td>
+                                <td style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)" style="font-size:1.2em;" class="help" [ngClass]="{'is-danger': item.existencia_unidosis == 0}">{{ item.existencia_unidosis}} </a></td>
+                                <td style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)" style="font-size:1.2em;" class="help" [ngClass]="{'is-danger': item.existencia == 0}">{{ item.importe_con_iva  | currency:''}} </a></td>
                                 <td style="vertical-align: middle; text-align: center;"><a (click)="select_insumo_autocomplete(item)">{{ item.updated_at | date}} </a></td>
                             </tr>
                             <tr *ngIf="ctrl.dato.length == 0">

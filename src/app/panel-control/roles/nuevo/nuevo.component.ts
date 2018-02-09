@@ -12,6 +12,10 @@ import { Mensaje } from '../../../mensaje';
   styleUrls: ['./nuevo.component.css']
 })
 export class NuevoComponent implements OnInit {
+  /**
+   * Calcula el tamaño de la pantalla
+   */
+  tamano = document.body.clientHeight;
 
   enviando: boolean = false;
   cargando: boolean = false;

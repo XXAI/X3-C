@@ -11,9 +11,9 @@ export class HubComponent implements OnInit {
 
   // Se debe indicar los permisos para que el usuario tenga al menos uno para mostrar el item
 
-  private itemsProtegidos = [
+  itemsProtegidos = [
     {
-      title: 'Almacén de insumos medicos', routerLink: '/almacen', icono: 'assets/hub-farmacia.svg',
+      title: 'Insumos médicos tercerizados', routerLink: '/almacen', icono: 'assets/hub-farmacia.svg',
       permisos: [
         'z9MQHY1YAIlYWsPLPF9OZYN94HKjOuDk', // Ver pedidos
         //'r6REUnVWlsQ00zVYXakLUxdKtGArcenY', // Ver pedidos jurisdiccionales
@@ -21,6 +21,14 @@ export class HubComponent implements OnInit {
         'GPSDLmXckXcdfdj7lD4rdacwMivsTp9g', // Ver salidas recetas
         'qQvNeb1UFPOfVMKQnNkvxyqjCIUgFuEG', // Ver salidas de almacen
         'a1OMZVn7dveOf5aUK8V0VsvvSCxz8EMw' // Ver entradas de almacen
+
+      ]
+    },
+    {
+      title: 'Insumos médicos tradicional', routerLink: '/almacen-estandar', icono: 'assets/hub-estandar.svg',
+      permisos: [
+        'fO4NLBvm5IAv5zouJ24rS0qVI2cHpm44', // Ver salidas de almacen
+        'J1mYtHwF7WVbie5dCZhFptvYzNEtqHXQ' // Ver entradas de almacen
 
       ]
     },

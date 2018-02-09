@@ -12,7 +12,7 @@ export class FormularioComponent {
 
   ngOnInit() {
     this.dato = this.fb.group({
-      id: ['', [Validators.required]],      
+      id: [''],
       nombre: ['', [Validators.required]],
       clave: ['', [Validators.required]]     
     });  

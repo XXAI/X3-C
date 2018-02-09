@@ -52,15 +52,15 @@ export class ListaComponent implements OnInit {
   	// # FIN SECCION
 
 	// # SECCION: Resultados de búsqueda
-	private ultimoTerminoBuscado = "";
-	private terminosBusqueda = new Subject<string>();
-	private resultadosBusqueda: any[] = [];
+	ultimoTerminoBuscado = "";
+	terminosBusqueda = new Subject<string>();
+	resultadosBusqueda: any[] = [];
 	busquedaActivada:boolean = false;
-	private paginaActualBusqueda = 1;
+	paginaActualBusqueda = 1;
 	resultadosPorPaginaBusqueda = 25;
 	totalBusqueda = 0;
-	private paginasTotalesBusqueda = 0;
-	private indicePaginasBusqueda:number[] = []
+	paginasTotalesBusqueda = 0;
+	indicePaginasBusqueda:number[] = []
 	// # FIN SECCION
 
 	constructor(    

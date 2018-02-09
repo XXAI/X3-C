@@ -25,7 +25,7 @@ export class FormularioComponent implements OnInit {
 
 	lista: Lista;
 
-	private errores = {
+	errores = {
 		nombre: null,
 		items: null
 	}
@@ -44,7 +44,7 @@ export class FormularioComponent implements OnInit {
 
 
 	// # SECCION: Cambios de Entorno
-	private cambiarEntornoSuscription: Subscription;
+	cambiarEntornoSuscription: Subscription;
 	// # FIN SECCION
 
 	constructor(

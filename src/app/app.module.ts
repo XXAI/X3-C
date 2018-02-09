@@ -1,12 +1,14 @@
 import { BrowserModule, Title } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { LocationStrategy, HashLocationStrategy} from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { ChartModule } from 'angular2-highcharts';
-import { HighchartsStatic } from "angular2-highcharts/dist/HighchartsService";
-import { Uploader }      from 'angular2-http-file-upload';
+import { HighchartsStatic } from 'angular2-highcharts/dist/HighchartsService';
+// import { Uploader }      from 'angular2-http-file-upload';
+import { SimpleNotificationsModule } from 'angular2-notifications';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -40,8 +42,8 @@ import { AdministradorProveedoresModule } from './administrador-proveedores/admi
 import { UsuariosModule } from './panel-control/usuarios/usuarios.module';
 import { RolesModule    } from './panel-control/roles/roles.module';
 import { PermisosModule     } from './panel-control/permisos/permisos.module';
-import { SyncModule     } from './panel-control/sync/sync.module';
-import { OpcionesAvanzadasModule  } from './panel-control/opciones-avanzadas/opciones-avanzadas.module';
+// import { SyncModule     } from './panel-control/sync/sync.module';
+// import { OpcionesAvanzadasModule  } from './panel-control/opciones-avanzadas/opciones-avanzadas.module';
 
 
 // # Hub Configuracion
@@ -76,11 +78,17 @@ import { AjusteMenosInventarioModule    } from './inventario/ajuste-menos-invent
 import { CorreccionesModule             } from './inventario/correcciones/correcciones.module';
 import { MovimientosGeneralesModule     }  from './inventario/movimientos-generales/movimientos-generales.module';
 import { MonitorCaducidadesModule       }  from './inventario/monitor-caducidades/monitor-caducidades.module';
+import { IniciarInventarioModule        }  from './inventario/iniciar-inventario/iniciar-inventario.module';
 
 // # Hub almacén artículos
 import { IndexAlmacenArticulosModule } from './almacen-articulos/index-almacen-articulos/index-almacen-articulos.module';
 import { IndexCatalogoModule      } from './almacen-articulos/catalogos/index-catalogo/index-catalogo.module';
 // import { ProveedoresModule } from './almacen-articulos/catalogos/proveedores/proveedores.module';
+
+// # Hub almacén estandar
+import { IndexAlmacenEstandarModule }  from './almacen-estandar/index-almacen-estandar/index-almacen-estandar.module';
+import { EntradasAlmacenEstandarModule } from './almacen-estandar/entradas-almacen-estandar/entradas-almacen-estandar.module';
+import { SalidasAlmacenEstandarModule } from './almacen-estandar/salidas-almacen-estandar/salidas-almacen-estandar.module';
 
 // # Hub laboratorio
 import { IndexLaboratorioModule   } from './laboratorio/index-laboratorio/index-laboratorio.module';
@@ -139,6 +147,7 @@ import { EntradaModule } from './almacen-articulos/entrada/entrada.module';
 import { SalidaModule } from './almacen-articulos/salida/salida.module';
 import { ConfiguracionGeneralModule } from './almacen-articulos/configuracion-general/configuracion-general.module';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { AyudaSialModule } from './ayuda-sial/ayuda-sial.module';
 
 //import { CrudModule } from './crud/crud.module';
 export function highchartsFactory() {
@@ -170,8 +179,8 @@ export function highchartsFactory() {
     PerfilModule,
     BloquearPantallaModule,
     PipesModule,
-    SyncModule,
-    OpcionesAvanzadasModule,
+    // SyncModule,
+    // OpcionesAvanzadasModule,
     RolesModule,
     PermisosModule,
     UsuariosModule,
@@ -199,6 +208,7 @@ export function highchartsFactory() {
     CorreccionesModule,
     MovimientosGeneralesModule,
     MonitorCaducidadesModule,
+    IniciarInventarioModule,
     SalidasRecetasModule,
     DashboardSalidasModule,
     ClavesBasicasModule,
@@ -207,6 +217,11 @@ export function highchartsFactory() {
     RecetaModule,
     IndexAlmacenArticulosModule,
     IndexCatalogoModule,
+    // Hub Almacen estandar -inicio
+    IndexAlmacenEstandarModule,
+    EntradasAlmacenEstandarModule,
+    SalidasAlmacenEstandarModule,
+    // fin-
     ViasAdministracionModule,
     ServiciosModule,
     GruposInsumosModule,
@@ -249,7 +264,11 @@ export function highchartsFactory() {
     ConfiguracionGeneralModule,
 
     MedicosRecetasModule,
+    AyudaSialModule,
 
+    // Animations need to be imported in to your project to use the library
+    BrowserAnimationsModule,
+    SimpleNotificationsModule.forRoot(),
     WildcardRoutingModule, // Este siempre debe ir al final para que no haga conflicto con otras rutas
 
   ],
@@ -260,7 +279,7 @@ export function highchartsFactory() {
     AuthService,
     JwtHelper,
     JwtRequestService,
-    Uploader,
+    // Uploader,
     { provide: HighchartsStatic, useFactory: highchartsFactory},
     { provide: LocationStrategy, useClass: HashLocationStrategy}
   ],

@@ -38,25 +38,28 @@ export class FormComponent implements OnInit {
 
   tab:number = 1;
   unidadesMedicasAgregadas: any[] = [];
-  private cluesAgregadas: string[] = [];
+  cluesAgregadas: string[] = [];
   unidadMedicaSeleccionada = null;
 
-  
 
-  private idsAlmacenesSeleccionados: string[] = [];
 
+  idsAlmacenesSeleccionados: string[] = [];
+
+  /**
+   * Método que inicializa y obtiene valores para el funcionamiento del componente.
+   */
   ngOnInit() {
     var ums:FormArray = this.usuario.get('unidades_medicas') as FormArray;
     var almacenes:FormArray = this.usuario.get('almacenes') as FormArray;
     console.log(this.usuario.get('medico_id'))
 
-    
+
     this.cluesAgregadas = ums.value;
-    
+
     this.idsAlmacenesSeleccionados = almacenes.value;
-    
+
     if(this.unidadesMedicasEdicion != null){
-    
+
       this.unidadesMedicasAgregadas = this.unidadesMedicasEdicion;
 
       for(var i in this.unidadesMedicasAgregadas){
@@ -66,12 +69,12 @@ export class FormComponent implements OnInit {
               this.unidadesMedicasAgregadas[i].almacenes[j].seleccionado = true;
               break;
             }
-          }          
+          }
         }
       }
     }
   }
- 
+
   enviar() {
     this.onEnviar.emit();
   }
@@ -90,10 +93,10 @@ export class FormComponent implements OnInit {
     this.onToggleCambiarPassword.emit();
   }
 
-  
+
 
   agregarUnidadMedica(clues){
-    
+
 
     for(var i in this.unidadesMedicas){
       if(this.unidadesMedicas[i].clues == clues){
@@ -112,24 +115,24 @@ export class FormComponent implements OnInit {
   toggleAlmacen(item){
     var bandera = false;
     for(var i = 0; i < this.idsAlmacenesSeleccionados.length; i++){
-      if(this.idsAlmacenesSeleccionados[i]== item.id){        
+      if(this.idsAlmacenesSeleccionados[i]== item.id){
         this.idsAlmacenesSeleccionados.splice(i,1);
         item.seleccionado = false;
         bandera = true;
         break;
       }
     }
-    if(!bandera) {      
+    if(!bandera) {
       this.idsAlmacenesSeleccionados.push(item.id)
       item.seleccionado = true;
     }
 
     this.usuario.controls['almacenes'].setValue(this.idsAlmacenesSeleccionados);
-    
+
   }
 
-  
-  
 
-  
+
+
+
 }

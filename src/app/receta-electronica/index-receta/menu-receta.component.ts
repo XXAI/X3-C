@@ -19,10 +19,13 @@ export class MenuRecetaComponent implements OnInit {
   @Input() icono: string;
   @Input() url: string;
 
-  private cambiarEntornoSuscription: Subscription;
+  cambiarEntornoSuscription: Subscription;
 
   constructor(private cambiarEntornoService:CambiarEntornoService) { }
 
+  /**
+   * Método que inicializa y obtiene valores para el funcionamiento del componente.
+   */
   ngOnInit() {
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
     this.cambiarEntornoSuscription = this.cambiarEntornoService.entornoCambiado$.subscribe(evento => {

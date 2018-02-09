@@ -3,7 +3,9 @@ import { CrudService } from '../../../crud/crud.service';
 import { Mensaje } from '../../../mensaje';
 import { NotificationsService } from 'angular2-notifications';
 import  * as FileSaver    from 'file-saver';
-
+/**
+ * Componente que lista las entradas estandar.
+ */
 @Component({
   selector: 'app-entradas-lista',
   templateUrl: './lista.component.html'
@@ -57,6 +59,8 @@ export class ListaEntradasComponent {
      * @type {boolean} */
     cargandoPdf = false;
   // # FIN SECCION
+
+
   /**
    * Variable que muestra las notificaciones.
    * @type {Mensaje}
@@ -71,8 +75,13 @@ export class ListaEntradasComponent {
     timeOut: 2000,
     lastOnBottom: true
   };
-
+  /**
+   * Variable que contiene el valor del turno.
+   */
   @ViewChildren('tr') tr;
+  /**
+   * Variable que contiene el valor del servicio.
+   */
   @ViewChildren('sr') sr;
   /**
    * Este método inicializa la carga de las dependencias
@@ -84,7 +93,7 @@ export class ListaEntradasComponent {
     private notificacion: NotificationsService) { }
 
   ngOnInit() {
-      this.usuario = JSON.parse(localStorage.getItem('usuario'));
+    this.usuario = JSON.parse(localStorage.getItem('usuario'));
 
     // Inicializamos el objeto para los reportes con web Webworkers
     this.pdfworker = new Worker('web-workers/farmacia/movimientos/lista-entradas.js');
@@ -151,13 +160,13 @@ export class ListaEntradasComponent {
               this.mensajeResponse.mostrar = true;
               try {
                   let e = error.json();
-                  if (error.status === 401) {
+                  if (error.estatus === 401) {
                       this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
                       this.mensajeResponse.clase = 'danger';
                       this.mensaje(2);
                   }
               } catch (e) {
-                  if (error.status === 500) {
+                  if (error.estatus === 500) {
                       this.mensajeResponse.texto = '500 (Error interno del servidor)';
                   } else {
                       this.mensajeResponse.texto =

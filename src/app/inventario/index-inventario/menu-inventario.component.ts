@@ -19,7 +19,7 @@ export class MenuInventarioComponent implements OnInit {
   @Input() icono: string;
   @Input() url: string;
 
-  private cambiarEntornoSuscription: Subscription;
+  cambiarEntornoSuscription: Subscription;
 
   constructor(private cambiarEntornoService:CambiarEntornoService) { }
 

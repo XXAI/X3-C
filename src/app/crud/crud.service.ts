@@ -51,6 +51,7 @@ export class CrudService {
    * @param URL  ruta de la api donde se obtiene los valores
    * @return Respuesta tipo object que obtiene de la api
    */
+
   busquedaInsumos(term: string, URL: string, parametros_adicionales: any = null): Observable<any> {
 
     var payload:any = {};
@@ -65,6 +66,14 @@ export class CrudService {
 
     return this.jwtRequest.get(URL, null,
       payload).map(
+
+  // busquedaInsumos(term: string, URL: string, programa?: string): Observable<any> {
+  //   return this.jwtRequest.get(URL, null,
+  //     {
+  //       term: term,
+  //       programa_id: programa
+  //     }).map(
+
         (response: Response) => response.json().data
       );
   }
@@ -112,6 +121,22 @@ export class CrudService {
       let jsonData = response.json().data;
 
       var data = jsonData as any;
+      return data;
+    }) as Observable<any>;
+  }
+
+  /**
+   * Este método obtiene el valor de un elementos de la
+   * api con el id del elemento que se especifiquen en la vista
+   * @param URL  ruta de la api donde se obtiene los valores
+   * @return Respuesta tipo object que obtiene de la api
+   */
+  verIniciar(URL: string): Observable<any> {
+    return this.jwtRequest.get(URL).map((response: Response) => {
+
+      let jsonData = response.json().data;
+
+      let data = jsonData as any;
       return data;
     }) as Observable<any>;
   }

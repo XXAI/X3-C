@@ -13,6 +13,9 @@ export class DashboardComponent implements OnInit {
   
   constructor(private title: Title) { }
 
+  /**
+   * Método que inicializa y obtiene valores para el funcionamiento del componente.
+   */
   ngOnInit() {
     this.title.setTitle("Dashboard");
     this.usuario = JSON.parse(localStorage.getItem("usuario"));

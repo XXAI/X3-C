@@ -29,10 +29,10 @@ export class VerComponent implements OnInit {
 	cargandoActa: boolean = false;
 	cargandoPresupuesto: boolean = false;
 
-	private pdfworker:Worker;
+	pdfworker:Worker;
 	errorPDFActa:boolean = false;
 	
-	private cambiarEntornoSuscription: Subscription;
+	cambiarEntornoSuscription: Subscription;
 
   	constructor(
 		  	private title: Title, 

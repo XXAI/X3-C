@@ -28,7 +28,7 @@ export class MenuLateralComponent implements OnInit {
     no_causes:0
   };
 
-  private cambiarEntornoSuscription: Subscription;
+  cambiarEntornoSuscription: Subscription;
 
   constructor(private transferenciaAlmacenService:TransferenciaAlmacenService, private cambiarEntornoService:CambiarEntornoService) { }
 

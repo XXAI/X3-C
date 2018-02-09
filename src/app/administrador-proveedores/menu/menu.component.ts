@@ -12,7 +12,7 @@ import { CambiarEntornoService } from '../../perfil/cambiar-entorno.service';
 export class MenuComponent implements OnInit {
 
   usuario: any = {};
-  private cambiarEntornoSuscription: Subscription;
+  cambiarEntornoSuscription: Subscription;
 
   constructor(private cambiarEntornoService:CambiarEntornoService) { }
 

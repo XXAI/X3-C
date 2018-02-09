@@ -1,12 +1,12 @@
 <listar #ctrl URL="programa" titulo="Programa / Catalogo"></listar>
 <app-menu-catalogo></app-menu-catalogo>
 <div style="height:50px;"></div>
-<div class="contenedor columns" style="padding-top: 1em;">
+<div class="contenedor columns" style="height: 90%; padding-top: 1em;">
     <div class="column is-one-quarter is-hidden-mobile">
         <panel-control-menu-aside></panel-control-menu-aside>
     </div>
-    <div class="column" style="padding: 0em 2em 0em 0em" style="height: 100%">
-        <div style="background: #FFF; border-radius: 1em; " style="height: 100%">
+    <div class="column" style="padding: 0em 2em 0em 0em">
+        <div style="background: #FFF;" style="height: 100%">
 
             <!-- Opciones y busqueda -->
             <tabla-opciones 
@@ -33,6 +33,7 @@
                             <th><abbr title="Usuario ID">ID</abbr></th>
                             <th>Nombre</th>
                             <th>Estatus</th>
+                            <th>Multiprograma</th>
                             <th style="text-align:center;">Opciones</th>
                         </tr>
                     </thead>
@@ -44,6 +45,12 @@
                                 <span class="tag is-success is-medium" *ngIf="item.status == 1">Activo</span>
                                 <span class="tag is-danger is-medium" *ngIf="item.status == 0">Inactivo</span>
                             </a></td>
+                            <td style="vertical-align: middle;">
+                                <a routerLink="/catalogos-parametros/programas/editar/{{item.id}}">
+                                    <span class="tag is-info is-medium" *ngIf="item.es_multiprograma == 1">Multiprograma</span>
+                                    <span  *ngIf="item.es_multiprograma == 0"></span>
+                                </a>
+                            </td>
                             <td style="vertical-align: middle;" class="has-text-centered"><span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando"
                                     class="is-danger" (click)="ctrl.eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>
 
