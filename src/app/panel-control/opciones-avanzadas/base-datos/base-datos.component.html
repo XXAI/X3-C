@@ -41,8 +41,21 @@
         <p class="modal-card-title"><span class="icon"><i class="fa fa-cloud-upload"></i></span> Subir respaldo de la base datos</p>
         <button class="delete" (click)="mostrarModalSubirArchivoSQL = !mostrarModalSubirArchivoSQL; progreso = 0"></button>
       </header>
-      <section class="modal-card-body">        
-          <div class="notification is-danger" *ngIf="mensajeErrorSync!=''"><span class="icon"><i class="fa fa-exclamation-circle"></i></span> {{ mensajeErrorSync }}</div>
+      <section class="modal-card-body">    
+            <div class="notification is-danger" *ngIf="mensajeErrorSync!=''"><span class="icon"><i class="fa fa-exclamation-circle"></i></span> {{ mensajeErrorSync }}</div>
+
+            <div class="field" [ngClass]="{ 'is-hidden' : enviandoDatos || archivoSubido }">
+                    <label for="sql" class="label" [ngClass]="{ 'is-danger': errores.archivo != null }">Elige el archivo .sql</label>                         
+                    <input type="file"  class="input-file" #archivoInput style="width:100%" name="sql" is="sql" (change)="fileChange($event)"  accept=".sql">
+            </div>
+
+            <div *ngIf="enviandoDatos || archivoSubido">
+                    <h1 class="subtitle" *ngIf="enviandoDatos">Subiendo respaldo...</h1>
+                    <h1 class="subtitle" *ngIf="archivoSubido "><span class="icon"><i class="fa fa-check-circle"></i></span> ¡El respaldo se ha subido exitosamente!</h1>
+                    <progress class="progress is-primary" value="{{ progreso }}" max="100">{{ progreso}}%</progress>
+                </div>
+                  
+          <!--
          
           <div class="field" [ngClass]="{ 'is-hidden' : enviandoDatos || archivoSubido }">
               <label for="sync" class="label" [ngClass]="{ 'is-danger': errores.archivo != null }">Elige el archivo .sql</label>            
@@ -50,14 +63,11 @@
               <p class="help is-danger" *ngIf="errores.archivo == 'required'">Debe elegir un archivo.</p>
               <p class="help is-danger" *ngIf="errores.archivo == 'mimetypes'">El tipo de archivo no es valido, verifique que tenga las siguientes extensiones: .zip</p>
           </div>
-          <div *ngIf="enviandoDatos || archivoSubido">
-              <h1 class="subtitle" *ngIf="enviandoDatos">Subiendo respaldo...</h1>
-              <h1 class="subtitle" *ngIf="archivoSubido && !enviandoDatos"><span class="icon"><i class="fa fa-check-circle"></i></span> ¡El respaldo se ha subido exitosamente!</h1>
-              <progress class="progress is-primary" value="{{ progreso }}" max="100">{{ progreso}}%</progress>
-          </div>
+          -->
       </section>
       <footer class="modal-card-foot">
-          <a class="button is-primary" [ngClass]="{ 'is-disabled' : !archivo || enviandoDatos  }" *ngIf="!archivoSubido" (click)="importar()">Importar</a>          
+            <a class="button is-primary" [ngClass]="{ 'is-disabled' : enviandoDatos || !archivo  }" *ngIf="!archivoSubido" (click)="adjuntar()">Importar</a>  
+        <!--<a class="button is-primary" [ngClass]="{ 'is-disabled' : !archivo || enviandoDatos  }" *ngIf="!archivoSubido" (click)="importar()">Importar</a>          -->
           <a class="button" [ngClass]="{ 'is-disabled' : enviandoDatos  }" (click)="mostrarModalSubirArchivoSQL = !mostrarModalSubirArchivoSQL">Cerrar</a>      
       </footer>
     </div>

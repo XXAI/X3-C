@@ -10,8 +10,10 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/catch';
 
-import { Uploader }      from 'angular2-http-file-upload';
-import { SubirArchivoConfirmacion }  from '../subir-archivo-confirmacion';
+import { Headers, Http, Response, RequestOptions, ResponseContentType } from '@angular/http';
+
+//import { Uploader }      from 'angular2-http-file-upload';
+//import { SubirArchivoConfirmacion }  from '../subir-archivo-confirmacion';
 
 import { environment } from '../../../../environments/environment';
 
@@ -67,7 +69,7 @@ export class LocalComponent implements OnInit {
   	enviandoDatos: boolean = false;
   	progreso: number = 0;
 
-	constructor(private apiService: SyncService,  private uploaderService: Uploader) { }
+	constructor(private apiService: SyncService,private http:Http) { }
 	cargando: boolean = false;
 	sincronizandoEnLinea:boolean = false;
 	subiendoConfirmacion:boolean = false;
@@ -279,36 +281,52 @@ export class LocalComponent implements OnInit {
 			this.mensajeErrorSync = "";
 			this.archivoSubido = false;
 			this.enviandoDatos = true;
-				
-			let miArchivo = new SubirArchivoConfirmacion(this.archivo);
 			
-
-			this.uploaderService.onSuccessUpload = (item, response, status, headers) => {             
-				this.archivoSubido = true;
-				this.listar(1);
-				this.mostrarModalSubirArchivoSync = false;
-			};
-
-			this.uploaderService.onErrorUpload = (item, response, status, headers) => {
-				var error = response.error;
-				this.mensajeErrorSync = error;
-			};
-			this.uploaderService.onCompleteUpload = (item, response, status, headers) => {
-				// complete callback, called regardless of success or failure        
-				this.enviandoDatos = false;        
-			};
-
-			this.uploaderService.onProgressUpload = (item, percentComplete) => {
-				// progress callback
-				console.log(percentComplete)
-				this.progreso = percentComplete;
-			};
+			let formData:FormData = new FormData();
+			formData.append('sync', this.archivo, this.archivo.name);
 			
-			this.uploaderService.upload(miArchivo);
+			let headers = new Headers();
+			headers.delete('Content-Type');
+			headers.append('Authorization',  'Bearer ' + localStorage.getItem('token'));
+			let options = new RequestOptions({ headers: headers });
+			//let options = new RequestOptions({ headers: headers });
+
+			
+			var responseHeaders:any;
+			var contentDisposition:any;
+			this.http.post(`${environment.API_URL}/sync/confirmar`, formData, options)			
+				.subscribe(
+					response => {
+						
+						this.archivoSubido = true;
+						this.listar(1);
+						this.mostrarModalSubirArchivoSync = false;
+						this.progreso = 100;
+						this.enviandoDatos = false;
+						this.archivo = null;
+					},					
+					error => {
+						console.log(error);
+						if(error.status == 409){
+							this.mensajeErrorSync = "No se pudo subir el archivo, verifica que el archivo que tratas de subir sea correcto, que el nombre no haya sido modificado. Verifica que el archivo que intentas subir ya ha sido sincronizado previamente.";
+						} else if(error.status == 401){
+							this.mensajeErrorSync = "El archivo que intentas subir ya ha sido sincronizado previamente";
+						} else {
+							this.mensajeErrorSync = "Hubo un problema al sincronizar, prueba recargar el sitio de lo contrario llama a soporte técnico.";
+						}
+						
+						this.progreso = 100;
+						this.enviandoDatos = false;
+					}
+					
+				)
+			
+			
 			
 		}
 	
 	}
+
 
 	sincronizarEnLinea(){
 		if(!confirm("¿Estás seguro que quieres sincronizar con el servidor central?")){

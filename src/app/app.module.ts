@@ -7,7 +7,6 @@ import { HttpModule } from '@angular/http';
 
 import { ChartModule } from 'angular2-highcharts';
 import { HighchartsStatic } from 'angular2-highcharts/dist/HighchartsService';
-// import { Uploader }      from 'angular2-http-file-upload';
 import { SimpleNotificationsModule } from 'angular2-notifications';
 
 import { AppComponent } from './app.component';
@@ -42,8 +41,8 @@ import { AdministradorProveedoresModule } from './administrador-proveedores/admi
 import { UsuariosModule } from './panel-control/usuarios/usuarios.module';
 import { RolesModule    } from './panel-control/roles/roles.module';
 import { PermisosModule     } from './panel-control/permisos/permisos.module';
-// import { SyncModule     } from './panel-control/sync/sync.module';
-// import { OpcionesAvanzadasModule  } from './panel-control/opciones-avanzadas/opciones-avanzadas.module';
+import { SyncModule     } from './panel-control/sync/sync.module';
+import { OpcionesAvanzadasModule  } from './panel-control/opciones-avanzadas/opciones-avanzadas.module';
 
 
 // # Hub Configuracion
@@ -149,6 +148,9 @@ import { ConfiguracionGeneralModule } from './almacen-articulos/configuracion-ge
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { AyudaSialModule } from './ayuda-sial/ayuda-sial.module';
 
+
+
+
 //import { CrudModule } from './crud/crud.module';
 export function highchartsFactory() {
   const hc = require('highcharts');
@@ -174,13 +176,14 @@ export function highchartsFactory() {
     FormsModule,
     HttpModule,
     ChartModule,
+  
     AppRoutingModule,
     HubModule,
     PerfilModule,
     BloquearPantallaModule,
     PipesModule,
-    // SyncModule,
-    // OpcionesAvanzadasModule,
+    SyncModule,
+    OpcionesAvanzadasModule,
     RolesModule,
     PermisosModule,
     UsuariosModule,

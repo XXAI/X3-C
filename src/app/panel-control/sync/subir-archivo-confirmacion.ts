@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { UploadItem }      from 'angular2-http-file-upload';
+//import { UploadItem }      from 'angular2-http-file-upload';
 
 import { environment } from '../../../environments/environment';
 
 @Injectable()
-export class SubirArchivoConfirmacion extends UploadItem {
-
+export class SubirArchivoConfirmacion  {
+/*
   constructor(file: any) {
         super();
         this.url = `${environment.API_URL}/sync/confirmar`;
@@ -15,5 +15,5 @@ export class SubirArchivoConfirmacion extends UploadItem {
     
         
     }
-
+*/
 }
