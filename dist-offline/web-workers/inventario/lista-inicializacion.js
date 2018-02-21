@@ -1,82 +1,122 @@
 var document = { 'createElementNS': function() { return {} } };
 var window = this;
-importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js');
+var fecha_optima, fecha_media, fecha_hoy;
+importScripts(
+    '../../../scripts/pdfmake.min.js',
+    '../../../scripts/vfs_fonts.js',
+    '../../../scripts/moment.min.js'
+);
 
 (function() {
     'use strict';
 
     onmessage = function(evt) {
-        let data = JSON.parse(evt.data)
+        let data = JSON.parse(evt.data);
+        console.log(data);
         pdf(data);
+        fechas();
+    };
+
+    function fechas() {
+        fecha_optima = moment().add(365, 'days').format('YYYY-MM-DD');
+        fecha_media = moment().add(183, 'days').format('YYYY-MM-DD');
+        fecha_hoy = moment().format('YYYY-MM-DD');
+        moment.locale('es');
+        // console.log(moment().format('llll'));
     };
 
     function pdf(data) {
         var contadorLineasHorizontalesV = 0;
         var COLOR_CELDA = '#eaf1dd';
+        var COLOR_PROGRAMA = '#ddeaf1';
         var dd = {
             content: [{
                 style: 'Movimiento',
                 table: {
                     headerRows: 10,
                     dontBreakRows: true,
-                    //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
-                    widths: [70, 'auto', 50, 50, 50, 'auto', 40, 50],
+                    widths: [80, 70, 20, 'auto', 'auto', 40, 'auto', 40, 'auto'],
                     body: [
                         [{
                             image: 'header',
                             width: 500,
                             style: 'tableHeaderTop',
-                            colSpan: 8,
+                            colSpan: 9,
                             alignment: 'center'
-                        }, {}, {}, {}, {}, {},{},{}],
-                        [{ text: 'SIAL', style: 'titulo', colSpan: 8, alignment: 'center' },
-                            {}, {}, {}, {}, {}, {},{}
+                        }, {}, {}, {}, {}, {},{},{},{}],
+                        [{ text: 'SIAL', style: 'titulo', colSpan: 9, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {},{},{}
                         ],
-                        [{ text: 'LISTA DE EXISTENCIAS', style: 'tableHeaderTop', colSpan: 8, alignment: 'center' },
-                            {}, {}, {}, {}, {}, {},{}
+                        [{ text: 'REPORTE DE INICIALIZACION DE INVENTARIO', style: 'tableHeaderTop', colSpan: 9, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {},{}, {} 
                         ],
                         [
                             { text: 'CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
                             {},
-                            { text: data.usuario.clues_activa.clues, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
-                            { text: 'NOMBRE DE CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' }, {},
-                            { text: data.usuario.clues_activa.nombre, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {}
+                            { text: data.usuario.clues_activa.clues, style: 'tableHeader', colSpan: 2, alignment: 'left' }, 
+                            {},
+                            { text: 'NOMBRE DE CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' }, 
+                            {},
+                            { text: data.usuario.clues_activa.nombre, style: 'tableHeader', colSpan: 3, alignment: 'left' }, 
+                            {}, {} 
                         ],
                         [
-                            { text: '', style: 'tableHeaderVerde', colSpan: 4, alignment: 'right' },
-                            {},{}, {},
+                            { text: 'MONTO TOTAL DEL INVENTARIO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
+                            {},
+                            { text: data.datos.monto_total ? ('$ ' + data.datos.monto_total.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')) : 'No disponible', style: 'tableHeader', colSpan: 2, alignment: 'left' }, 
+                            {},
                             { text: 'NOMBRE DE ALMACÉN', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
                             {},
-                            { text: data.usuario.almacen_activo.nombre, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {}
+                            { text: data.usuario.almacen_activo.nombre, style: 'tableHeader', colSpan: 3, alignment: 'left' }, 
+                            {}, {} 
                         ],
-                        [{ text: ' ', style: 'celdaEspacio', colSpan: 8, alignment: 'center' },
-                            {}, {}, {}, {}, {}, {}, {}
+                        [{ text: ' ', style: 'celdaEspacio', colSpan: 9, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {}, {}, {} 
                         ],
-                        [{ text: 'DETALLES DE EXISTENCIA', style: 'tableHeaderLeyenda', colSpan: 8, alignment: 'center' },
-                            {}, {}, {}, {}, {}, {}, {}
+                        [{ text: 'DETALLES DE LA INICIALIZACION', style: 'tableHeaderLeyenda', colSpan: 9, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {}, {}, {} 
                         ],
+
+                        /**
+                         * 
+            clave_insumo: this.clave_insumo,
+            tipo_controlado: this.tipo_controlado
+                         */
                         [ 
-                            { text: 'BUSCAR EN:', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.buscar_en == "TODAS_LAS_CLAVES" ? 'TODAS LAS CLAVES' : 'MIS CLAVES', style: 'tableHeader', colSpan: 2, alignment: 'left' },
+                            { text: 'TOTAL DE PROGRAMAS:', style: 'tableHeaderVerde', alignment: 'right' },
+                            { text: data.datos.cantidad_programas ? data.datos.cantidad_programas : 'No disponible', style: 'tableHeader', alignment: 'left' },
+                            { text: 'TOTAL DE CLAVES:', style: 'tableHeaderVerde', colSpan:2, alignment: 'right' },
                             {},
-                            { text: 'EXISTENCIA:', style: 'tableHeaderVerde',    alignment: 'right' },
-                            { text: data.seleccionar == "TODO" ? 'TODO' : data.seleccionar, style: 'tableHeader', alignment: 'left' },
-                            { text: 'INSUMOS:', style: 'tableHeaderVerde',  alignment: 'right' },
-                            { text: data.tipo == "TODO" ? 'TODOS LOS INSUMOS' : data.tipo, style: 'tableHeader', colSpan: 2, alignment: 'left' },
+                            { text: data.datos.cantidad_claves ? data.datos.cantidad_claves : 'No disponible', style: 'tableHeader', alignment: 'left' },
+                            { text: 'TOTAL DE INSUMOS:', style: 'tableHeaderVerde', colSpan:2, alignment: 'right' },
+                            { },
+                            { text: data.datos.cantidad_insumos ? data.datos.cantidad_insumos : 'No disponible', colSpan:2,  style: 'tableHeader', alignment: 'left'  },
                             {}
                         ],
-                        [{ text: ' ', style: 'celdaEspacio', colSpan: 8, alignment: 'center' },
-                            {}, {}, {}, {}, {}, {}, {}
+                        [ 
+                            { text: 'TOTAL DE LOTES:', style: 'tableHeaderVerde', alignment: 'right'},
+                            { text: data.datos.cantidad_lotes ? data.datos.cantidad_lotes : 'No disponible', style: 'tableHeader', alignment: 'left' },
+                            { text: 'FECHA INICIO:', style: 'tableHeaderVerde', colSpan:2, alignment: 'right' },
+                            {},
+                            { text: data.datos.fecha_inicio ? data.datos.fecha_inicio : 'No disponible', style: 'tableHeader', alignment: 'left' },
+                            { text: 'FECHA FINAL:', style: 'tableHeaderVerde', colSpan:2, alignment: 'right' },
+                            { },
+                            { text: data.datos.fecha_fin ? data.datos.fecha_fin : 'No disponible', style: 'tableHeader', colSpan:2, alignment: 'left' },
+                            { },
+                        ],
+                        [{ text: ' ', style: 'celdaEspacio', colSpan: 9, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {}, {}, {} 
                         ],
                         [
                             { text: 'CLAVE', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'DESCRIPCION', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'CPD', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'CPS', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'CPM', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'LOTE', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'CADUCIDAD', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
+                            { },
                             { text: 'EXISTENCIA', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'EXISTENCIA UNIDOSIS', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'VALOR', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'PRECIO UNITARIO', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'IMPORTE', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'IVA', style: 'tableHeaderVerde', alignment: 'center' },
                         ]
                         //Body -> Salidas estandar
                     ]
@@ -153,7 +193,13 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     color: 'black',
                     fillColor: COLOR_CELDA,
                     margin: [3, 3, 3, 3]
-
+                },
+                tableHeaderAzul: {
+                    bold: true,
+                    fontSize: 6,
+                    color: 'black',
+                    fillColor: COLOR_PROGRAMA,
+                    margin: [3, 3, 3, 3]
                 },
                 tableHeaderData: {
                     bold: false,
@@ -186,27 +232,80 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
             }
         };
 
-        var suma_total_insumos = 0;
+        fecha_optima = moment().add(365, 'days').format('YYYY-MM-DD');
+        fecha_media = moment().add(183, 'days').format('YYYY-MM-DD');
+        fecha_hoy = moment().format('YYYY-MM-DD');
 
-        for (var i in data.lista) {
-            var movimiento = data.lista[i];
-            /* Este if es cuando mandan en la última posicion datos que no son del listado]
-            if(i == data.lista.length-1){
-                break;
-            }*/
-                dd.content[0].table.body.push([
-                    { text: movimiento.clave_insumo_medico ? movimiento.clave_insumo_medico : 'No disponible' , style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.descripcion ? movimiento.descripcion : 'No disponible', style: 'tableRow', alignment: 'left' },
-                    { text: movimiento.movimiento_metadato == null ? 'No disponible' : movimiento.movimiento_metadato.turno.nombre, style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.numero_claves == null || movimiento.numero_insumos == null ? 'No disponible' : 'Claves: ' + movimiento.numero_claves + '\n Insumos: ' + movimiento.numero_insumos, style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.movimiento_metadato == null ? 'No disponible' :  movimiento.movimiento_metadato.persona_recibe, style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.existencia == null ? 'No disponible' : movimiento.existencia, style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.existencia_unidosis  != null ? movimiento.existencia_unidosis : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.importe_con_iva  != null ? '$ ' + movimiento.importe_con_iva.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') : 'No disponible', style: 'tableRow', alignment: 'right' }
-                ]);
+        for (var i in data.programas) {
+            var programa = data.programas[i];
+            
+            dd.content[0].table.body.push([
+                { text: programa.nombre ? ' PROGRAMA: ' + programa.nombre + '. CLAVE: ' + programa.clave  : 'No disponible', style: 'tableHeaderAzul', colSpan: 9, alignment: 'left' },
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {}
+            ]);
+            moment.locale('es');
+                for (var j in programa.insumos) {
+                    var insumo = programa.insumos[j];
+                    console.log(insumo);
+                    dd.content[0].table.body.push([
+                        { text: insumo.clave_insumo_medico ? insumo.clave_insumo_medico : 'No disponible' , style: 'tableHeaderVerde', alignment: 'center' },
+                        { text: insumo.descripcion ? insumo.descripcion : 'No disponible', style: 'tableHeaderVerde', colSpan:5, alignment: 'left' },
+                        {},
+                        {},
+                        {},
+                        {},
+                        { text: insumo.subtotal == null ? 'No disponible' : '$ ' + insumo.subtotal.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'), style: 'tableHeaderVerde', colSpan:3, alignment: 'right' },
+                        {},
+                        {}
+                    ]);
+                    
+                    for (var l in insumo.lotes) {
+                        var lote = insumo.lotes[l];
+                        var color_circulo;  
+                        if (lote.fecha_caducidad > fecha_optima) {
+                            color_circulo = 'green';
+                        }
+                        if(lote.fecha_caducidad >= fecha_media && lote.fecha_caducidad < fecha_optima){
+                            color_circulo = 'yellow';
+                        }
+                        if(lote.fecha_caducidad >= fecha_hoy && lote.fecha_caducidad < fecha_media){
+                            color_circulo = 'red';
+                        }
+                        if(lote.fecha_caducidad < fecha_hoy){
+                            color_circulo = 'black';
+                        }
+                        console.log(lote);
+                        dd.content[0].table.body.push([
+                            { text: '' , style: 'tableRow', alignment: 'center' },
+                            { text: lote.lote == null ? 'No disponible' : lote.lote, style: 'tableRow', alignment: 'left' },
+                            { canvas: [{
+                                    type: 'ellipse',
+                                    x: 12, y: 6.5,
+                                    color: color_circulo,
+                                    fillOpacity: 0.5,
+                                    r1: 5, r2: 5,
+                                    lineColor: 'black'
+                                }]},
+                            { text: lote.fecha_caducidad ? moment(lote.fecha_caducidad).format('LL') : 'No disponible', style: 'tableRow', alignment: 'right' },
+                            { text: lote.existencia == null ? 'No disponible' : lote.existencia, style: 'tableRow', alignment: 'right' },
+                            { text: lote.existencia_unidosis  != null ? lote.existencia_unidosis : 'No disponible', style: 'tableRow', alignment: 'right' },
+                            { text: lote.precio_unitario == null ? 'No disponible' : ('$ ' + Number(lote.precio_unitario).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')), style: 'tableRow', alignment: 'right' },
+                            { text: lote.importe == null ? 'No disponible' : ('$ ' + Number(lote.importe).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')), style: 'tableRow', alignment: 'right' },
+                            { text: lote.iva_importe == null ? 'No disponible' : ('$ ' + Number(lote.iva_importe).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')), style: 'tableRow', alignment: 'right' }
+                        ]);
+                    }
+
+                }
         }
         pdfMake.createPdf(dd).getBase64(function(base64) {
-            postMessage({ fileName: 'Existencia_insumos_medicos.pdf', base64: base64 });
+            postMessage({ fileName: 'INICIALIZACION_INVENTARIO.pdf', base64: base64 });
         });
     }
 
