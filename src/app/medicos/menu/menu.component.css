@@ -18,5 +18,6 @@ nav a:hover .title { color:#FFF !important; }
 	font-size: 0.7em;
 	text-align: right !important;
 	padding: 1em;
-	vertical-align: middle;
+    vertical-align: middle;
+    text-shadow: 2px 2px slategray;
 }

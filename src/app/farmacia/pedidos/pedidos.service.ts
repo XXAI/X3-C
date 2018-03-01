@@ -22,14 +22,12 @@ export class PedidosService {
     return this.jwtRequest.get(PedidosService.URL_STATS,null,null).map( (response: Response) => response.json());
   }
 
-  presupuesto(mes:number = 0,almacen:string = ''): Observable<any>{
+  presupuesto(mes:number = 0, anio:number = 0, almacen:string = '', presupuesto:number = 0): Observable<any>{
     let parametros:any = {};
-    if(mes){
-      parametros.mes = mes;
-    }
-    if(almacen){
-      parametros.almacen = almacen;
-    }
+    if(mes){ parametros.mes = mes; }
+    if(anio){ parametros.anio = anio; }
+    if(almacen){ parametros.almacen = almacen; }
+    if(presupuesto){ parametros.presupuesto = presupuesto; }
     return this.jwtRequest.get(PedidosService.URL_PRESUPUESTO,null,parametros).map( (response: Response) => response.json());
   }
 
@@ -43,17 +41,10 @@ export class PedidosService {
 
   ver(id:any): Observable<any>{
     return this.jwtRequest.get(PedidosService.URL,id,{}).map( (response: Response) => {
-     
-       let jsonData = response.json().data;
-       /* var roles:string[] = []
-        jsonData.roles.map(item => {
-          roles.push(""+item.id)
-        })*/
-
-        var pedido = jsonData as any;
-        //usuario.roles = roles;
-        return pedido;
-      }) as Observable<Pedido>;
+      let jsonData = response.json().data;
+      var pedido = jsonData as any;
+      return pedido;
+    }) as Observable<Pedido>;
   }
 
   crear(pedido: Pedido[]): Observable<Pedido> {
@@ -65,7 +56,7 @@ export class PedidosService {
   } 
 
   eliminar(id:any): Observable<Pedido> {
-    return this.jwtRequest.delete('pedido-alteno',id).map( (response: Response) => response.json().data) as Observable<Pedido>;
+    return this.jwtRequest.delete(PedidosService.URL,id).map( (response: Response) => response.json().data) as Observable<Pedido>;
   }
 
   cancelarPedidoTransferir(id:any, parametros:any = {}): Observable<any>{

@@ -18,9 +18,11 @@
             </a>
         </div>
 
-        <div class="nav-center">
-            <span *ngIf="usuario.almacen_activo" class="nav-item is-small">
-                <span>{{usuario.clues_activa.clues}}&nbsp;-&nbsp;</span><span class="is-hidden-mobile">{{usuario.clues_activa.nombre}}<!---&nbsp;</span><span>{{usuario.almacen_activo.nombre}}</span>--></span>
+        <div class="nav-center"></div>
+        <div class="nav-right is-hidden-mobile">
+            <span class="unidad-trabajo">
+                {{usuario.clues_activa.clues}} <span *ngIf="usuario.almacen_activo"> - {{usuario.almacen_activo.nombre}}</span><br>            
+                <span>{{usuario.clues_activa.nombre}}</span>
             </span>
         </div>
 

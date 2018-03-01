@@ -42,6 +42,7 @@ export class ListaComponent implements OnInit {
   icono = "fa-file";
   pedidos: Pedido[] = [];
   presupuesto:any = false;
+  presupuestoActual:any = null;
   paginaActual = 1;
   resultadosPorPagina = 10;
   total = 0;
@@ -181,8 +182,34 @@ export class ListaComponent implements OnInit {
         this.cargando = false;
         //this.presupuesto = response.data;
         this.presupuesto = {};
+
+        if(response.data){
+          this.presupuesto.insumos_modificado = +response.data.insumos_modificado;
+          this.presupuesto.insumos_comprometido = +response.data.insumos_comprometido;
+          this.presupuesto.insumos_devengado = +response.data.insumos_devengado;
+          this.presupuesto.insumos_disponible = +response.data.insumos_disponible;
+
+          this.presupuesto.no_causes_modificado = +response.data.no_causes_modificado;
+          this.presupuesto.no_causes_comprometido = +response.data.no_causes_comprometido;
+          this.presupuesto.no_causes_devengado = +response.data.no_causes_devengado;
+          this.presupuesto.no_causes_disponible = +response.data.no_causes_disponible;
+        }else{
+          this.presupuesto.insumos_modificado = 0;
+          this.presupuesto.insumos_comprometido = 0;
+          this.presupuesto.insumos_devengado = 0;
+          this.presupuesto.insumos_disponible = 0;
+
+          this.presupuesto.no_causes_modificado = 0;
+          this.presupuesto.no_causes_comprometido = 0;
+          this.presupuesto.no_causes_devengado = 0;
+          this.presupuesto.no_causes_disponible = 0;
+        }
+
+        if(response.presupuesto){
+          this.presupuestoActual = response.presupuesto;
+        }
         
-        this.presupuesto.causes_modificado = +response.data.causes_modificado;
+        /*this.presupuesto.causes_modificado = +response.data.causes_modificado;
         this.presupuesto.causes_comprometido = +response.data.causes_comprometido;
         this.presupuesto.causes_devengado = +response.data.causes_devengado;
         this.presupuesto.causes_disponible = +response.data.causes_disponible;
@@ -190,12 +217,7 @@ export class ListaComponent implements OnInit {
         this.presupuesto.material_curacion_modificado = +response.data.material_curacion_modificado;
         this.presupuesto.material_curacion_comprometido = +response.data.material_curacion_comprometido;
         this.presupuesto.material_curacion_devengado = +response.data.material_curacion_devengado;
-        this.presupuesto.material_curacion_disponible = +response.data.material_curacion_disponible;
-        
-        this.presupuesto.no_causes_modificado = +response.data.no_causes_modificado;
-        this.presupuesto.no_causes_comprometido = +response.data.no_causes_comprometido;
-        this.presupuesto.no_causes_devengado = +response.data.no_causes_devengado;
-        this.presupuesto.no_causes_disponible = +response.data.no_causes_disponible;
+        this.presupuesto.material_curacion_disponible = +response.data.material_curacion_disponible;*/
       },
       error => {
         this.cargando = false;

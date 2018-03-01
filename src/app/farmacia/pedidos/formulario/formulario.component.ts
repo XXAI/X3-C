@@ -80,8 +80,9 @@ export class FormularioComponent implements OnInit {
 
   // # SECCION: Pedido
   almacenes: Almacen[];
-  presupuesto:any = {causes_disponible:0,no_causes_disponible:0,material_curacion_disponible:0};
+  presupuesto:any = {causes_disponible:0,no_causes_disponible:0,material_curacion_disponible:0,insumos_disponible:0};
   mes:number = 0;
+  anio:number = 0;
   subrogados: {} = {};
   es_almacen_subrogado: boolean = false;
   almacenSeleccionado: any = {};
@@ -239,7 +240,7 @@ export class FormularioComponent implements OnInit {
             //this.datosCargados = true;
             this.pedido.datos.patchValue(pedido);
             this.pedido.status = pedido.status;
-
+            this.pedido.presupuesto_id = (pedido.presupuesto_id)?pedido.presupuesto_id:0;
             this.proveedor = pedido.proveedor;
 
             //let fecha = pedido.fecha.split('-');
@@ -661,7 +662,7 @@ export class FormularioComponent implements OnInit {
       guardar_pedido.datos.status = 'CONCLUIR';
 
       if(this.almacenDelUsuario.tipo_almacen == 'ALMPAL'){
-        let causes_material_disponible = this.totalMontoComprometidoCausesMaterial + (this.presupuesto.causes_disponible - +this.pedido.totalMontoCauses.toFixed(2)) + (this.presupuesto.material_curacion_disponible - +this.pedido.totalMontoMaterialCuracion.toFixed(2));
+        let causes_material_disponible = this.totalMontoComprometidoCausesMaterial + (this.presupuesto.insumos_disponible - (+this.pedido.totalMontoCauses.toFixed(2) + +this.pedido.totalMontoMaterialCuracion.toFixed(2)));
         let no_causes_disponible = this.totalMontoComprometidoNoCauses + this.presupuesto.no_causes_disponible - +this.pedido.totalMontoNoCauses.toFixed(2);
   
         //if((this.presupuesto.causes_disponible - +this.pedido.totalMontoCauses.toFixed(2)) < 0 || (this.presupuesto.no_causes_disponible - +this.pedido.totalMontoNoCauses.toFixed(2)) < 0 || (this.presupuesto.material_curacion_disponible - +this.pedido.totalMontoMaterialCuracion.toFixed(2)) < 0){
@@ -805,7 +806,7 @@ export class FormularioComponent implements OnInit {
     }else{
       this.es_almacen_subrogado = false;
     }
-    this.cargarPresupuesto(this.mes);
+    this.cargarPresupuesto(this.mes,this.anio);
 
     this.almacenSeleccionado = {id:almacen_seleccionado,subrogado:this.es_almacen_subrogado};
 
@@ -901,33 +902,49 @@ export class FormularioComponent implements OnInit {
   }
 
   recargarPresupuesto(fecha:string){
+    console.log(fecha);
     let fecha_valida = fecha.split('-');
     if(fecha_valida.length == 3){
       let mes:any = fecha_valida[1];
-      if(mes.length == 2){
+      let anio:any = fecha_valida[0];
+      if(mes.length == 2 && anio.length == 4){
         mes = parseInt(mes);
-        if(mes != this.mes && (mes > 0 && mes < 13)){
-          this.cargarPresupuesto(mes);
+        anio = parseInt(anio);
+        if((mes != this.mes || anio != this.anio) && (mes > 0 && mes < 13)){
+          this.cargarPresupuesto(mes,anio);
         }
       }
     }
   }
 
-  cargarPresupuesto(mes:number = 0){
+  cargarPresupuesto(mes:number = 0, anio:number = 0){
     if(mes == 0){
       let now = new Date();
       mes = (now.getMonth() + 1);
     }
+
+    if(anio == 0){
+      let now = new Date();
+      anio = now.getFullYear();
+    }
+
     this.mes = mes;
+    this.anio = anio;
+
     let almacen_seleccionado = this.pedido.datos.get('almacen_solicitante').value;
     if(almacen_seleccionado){
       this.cargandoPresupuestos = true;
-      this.pedidosService.presupuesto(mes,almacen_seleccionado).subscribe(
+      let presupuesto_id = 0;
+      if(this.esEditar){
+        presupuesto_id = this.pedido.presupuesto_id;
+      }
+      this.pedidosService.presupuesto(mes,anio,almacen_seleccionado,presupuesto_id).subscribe(
         response => {
           this.cargando = false;
           if(response.data){
             this.presupuesto = response.data;
           }else{
+            this.presupuesto.insumos_disponible = 0;
             this.presupuesto.causes_disponible = 0;
             this.presupuesto.no_causes_disponible = 0;
             this.presupuesto.material_curacion_disponible = 0;

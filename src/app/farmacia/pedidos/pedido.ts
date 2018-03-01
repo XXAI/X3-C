@@ -9,6 +9,7 @@ export class Pedido {
   public id:String;
   public status: string;
   public recepcionPermitida: boolean;
+  public presupuesto_id: number = 0;
   public tipo_pedido: string;
   public datos: FormGroup; //Harima: Agregamos los datos para el formulario y la validación
   public datosImprimir?: any;

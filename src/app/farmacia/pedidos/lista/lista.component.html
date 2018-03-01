@@ -10,7 +10,7 @@
             <table class="table" style="min-width:100%; font-size:0.8em; margin-bottom:0.2em;margin-top:0.2em;">
                 <thead>
                     <tr>
-                        <th>Presupuesto anual</th>
+                        <th>Presupuesto <span *ngIf="presupuestoActual">{{presupuestoActual.anio}}</span></th>
                         <th style="text-align:center">Autorizado</th>
                         <th style="text-align:center">Comprometido</th>
                         <th style="text-align:center">Devengado</th>
@@ -23,10 +23,10 @@
                     </tr>
                     <tr *ngIf="presupuesto">
                         <th>Causes y Material de Curación</th>
-                        <td style="text-align:center"><span class="tag is-primary">$ {{ (presupuesto.causes_modificado + presupuesto.material_curacion_modificado) | number:'1.2-2' }}</span></td>
-                        <td style="text-align:center"><span class="tag is-warning">$ {{ (presupuesto.causes_comprometido + presupuesto.material_curacion_comprometido) | number:'1.2-2' }}</span></td>
-                        <td style="text-align:center"><span class="tag is-danger">$ {{ (presupuesto.causes_devengado + presupuesto.material_curacion_devengado) | number:'1.2-2' }}</span></td>
-                        <td style="text-align:center"><span class="tag is-success">$ {{ (presupuesto.causes_disponible + presupuesto.material_curacion_disponible) | number:'1.2-2' }}</span></td>
+                        <td style="text-align:center"><span class="tag is-primary">$ {{ presupuesto.insumos_modificado | number:'1.2-2' }}</span></td>
+                        <td style="text-align:center"><span class="tag is-warning">$ {{ (presupuesto.insumos_comprometido) | number:'1.2-2' }}</span></td>
+                        <td style="text-align:center"><span class="tag is-danger">$ {{ (presupuesto.insumos_devengado) | number:'1.2-2' }}</span></td>
+                        <td style="text-align:center"><span class="tag is-success">$ {{ (presupuesto.insumos_disponible) | number:'1.2-2' }}</span></td>
                     </tr>
                     <tr *ngIf="presupuesto">
                         <th>No causes</th>
@@ -37,10 +37,10 @@
                     </tr>
                     <tr *ngIf="presupuesto">
                         <th>Total</th>
-                        <td style="text-align:center"><span class="tag is-primary">$ {{ ( presupuesto.no_causes_modificado + presupuesto.causes_modificado + presupuesto.material_curacion_modificado) | number:'1.2-2' }}</span></td>
-                        <td style="text-align:center"><span class="tag is-warning">$ {{ ( presupuesto.no_causes_comprometido + presupuesto.causes_comprometido + presupuesto.material_curacion_comprometido) | number:'1.2-2' }}</span></td>
-                        <td style="text-align:center"><span class="tag is-danger">$ {{ ( presupuesto.no_causes_devengado + presupuesto.causes_devengado + presupuesto.material_curacion_devengado) | number:'1.2-2' }}</span></td>
-                        <td style="text-align:center"><span class="tag is-success">$ {{ ( presupuesto.no_causes_disponible + presupuesto.causes_disponible + presupuesto.material_curacion_disponible) | number:'1.2-2' }}</span></td>
+                        <td style="text-align:center"><span class="tag is-primary">$ {{ ( presupuesto.no_causes_modificado + presupuesto.insumos_modificado) | number:'1.2-2' }}</span></td>
+                        <td style="text-align:center"><span class="tag is-warning">$ {{ ( presupuesto.no_causes_comprometido + presupuesto.insumos_comprometido) | number:'1.2-2' }}</span></td>
+                        <td style="text-align:center"><span class="tag is-danger">$ {{ ( presupuesto.no_causes_devengado + presupuesto.insumos_devengado) | number:'1.2-2' }}</span></td>
+                        <td style="text-align:center"><span class="tag is-success">$ {{ ( presupuesto.no_causes_disponible + presupuesto.insumos_disponible) | number:'1.2-2' }}</span></td>
                     </tr>
                 </tbody>
             </table>

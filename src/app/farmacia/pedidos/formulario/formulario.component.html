@@ -133,11 +133,11 @@
             <div class="tile is-parent" style="padding:0px;">
                 <article class="tile is-child notification is-info has-text-centered" style="padding:0.5rem 0.5rem 0.5rem 0.5rem">
                     <div class="content" *ngIf="!cargandoPresupuestos">
-                        <span *ngIf="(totalMontoComprometidoCausesMaterial + (presupuesto.causes_disponible + presupuesto.material_curacion_disponible) - (pedido.totalMontoCauses + pedido.totalMontoMaterialCuracion)) < 0" class="icon is-large pull-right"><i class="fa fa-warning"></i></span>
+                        <span *ngIf="(totalMontoComprometidoCausesMaterial + (presupuesto.insumos_disponible) - (pedido.totalMontoCauses + pedido.totalMontoMaterialCuracion)) < 0" class="icon is-large pull-right"><i class="fa fa-warning"></i></span>
                         <p class="subtitle" style="font-weight:bold;">
                             <small>
                                 Disponible Causes y Material de Curación:<br> 
-                                $ {{ totalMontoComprometidoCausesMaterial + (presupuesto.causes_disponible - pedido.totalMontoCauses.toFixed(2)) + (presupuesto.material_curacion_disponible - pedido.totalMontoMaterialCuracion.toFixed(2)) | number: '1.2-2' }}
+                                $ {{ totalMontoComprometidoCausesMaterial + (presupuesto.insumos_disponible - (pedido.totalMontoCauses  + pedido.totalMontoMaterialCuracion).toFixed(2)) | number: '1.2-2' }}
                             </small>
                         </p>
                     </div>

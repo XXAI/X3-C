@@ -11,7 +11,7 @@
             <table class="table" *ngIf="!cargando" style="min-width:100%; font-size:0.8em; margin-bottom:0.2em;margin-top:0.2em;">
                 <thead>
                     <tr>
-                        <th>Presupuesto anual</th>
+                        <th>Presupuesto {{ <span>{{presupuestoActual.anio}}</span> }}</th>
                         <th style="text-align:center">Autorizado</th>
                         <th style="text-align:center">Comprometido</th>
                         <th style="text-align:center">Devengado</th>
@@ -20,11 +20,11 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <th>Causes</th>
-                        <td style="text-align:center"><span class="tag is-primary">$ {{ presupuesto.causes_modificado | number:'1.2-2' }}</span></td>
-                        <td style="text-align:center"><span class="tag is-warning"> $ {{ presupuesto.causes_comprometido | number:'1.2-2' }}</span></td>
-                        <td style="text-align:center"><span class="tag is-danger">$ {{ presupuesto.causes_devengado | number:'1.2-2' }}</span></td>
-                        <td style="text-align:center"><span class="tag is-success">$ {{ presupuesto.causes_disponible | number:'1.2-2' }}</span></td>
+                        <th>Causes y Material de Curación</th>
+                        <td style="text-align:center"><span class="tag is-primary">$ {{ presupuesto.insumos_modificado | number:'1.2-2' }}</span></td>
+                        <td style="text-align:center"><span class="tag is-warning"> $ {{ presupuesto.insumos_comprometido | number:'1.2-2' }}</span></td>
+                        <td style="text-align:center"><span class="tag is-danger">$ {{ presupuesto.insumos_devengado | number:'1.2-2' }}</span></td>
+                        <td style="text-align:center"><span class="tag is-success">$ {{ presupuesto.insumos_disponible | number:'1.2-2' }}</span></td>
                     </tr>
                     <tr>
                         <th>No causes</th>
@@ -33,13 +33,20 @@
                         <td style="text-align:center"><span class="tag is-danger">$ {{ presupuesto.no_causes_devengado | number:'1.2-2' }}</span></td>
                         <td style="text-align:center"><span class="tag is-success">$ {{ presupuesto.no_causes_disponible | number:'1.2-2' }}</span></td>
                     </tr>
+                    <!--tr>
+                        <th>Causes</th>
+                        <td style="text-align:center"><span class="tag is-primary">$ {{ presupuesto.causes_modificado | number:'1.2-2' }}</span></td>
+                        <td style="text-align:center"><span class="tag is-warning"> $ {{ presupuesto.causes_comprometido | number:'1.2-2' }}</span></td>
+                        <td style="text-align:center"><span class="tag is-danger">$ {{ presupuesto.causes_devengado | number:'1.2-2' }}</span></td>
+                        <td style="text-align:center"><span class="tag is-success">$ {{ presupuesto.causes_disponible | number:'1.2-2' }}</span></td>
+                    </tr>
                     <tr>
                         <th>Material de curación</th>
                         <td style="text-align:center"><span class="tag is-primary">$ {{ presupuesto.material_curacion_modificado | number:'1.2-2' }}</span></td>
                         <td style="text-align:center"><span class="tag is-warning"> $ {{ presupuesto.material_curacion_comprometido | number:'1.2-2' }}</span></td>
                         <td style="text-align:center"><span class="tag is-danger">$ {{ presupuesto.material_curacion_devengado | number:'1.2-2' }}</span></td>
                         <td style="text-align:center"><span class="tag is-success">$ {{ presupuesto.material_curacion_disponible | number:'1.2-2' }}</span></td>
-                    </tr>
+                    </tr-->
                     <tr>
                         <th>Total</th>
                         <td style="text-align:center"><span class="tag is-primary">$ {{ presupuesto.total_modificado | number:'1.2-2' }}</span></td>

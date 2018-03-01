@@ -30,7 +30,7 @@ export class IndexInventarioComponent implements OnInit {
         titulo: 'Inicialización Inventario', url: '/inventario/inicializacion-inventario'
       },
       {
-        permiso: 'H5IV7Z6CAj8V2CRIQ2wnbXrYhvjLsSBk', icono: 'assets/icono-iniciar-inventario.svg',
+        permiso: '7KbTARF2kpnO4Lfqv8hmYP8QGMcgJBwU', icono: 'assets/icono-iniciar-inventario.svg',
         titulo: 'Iniciar Inventario', url: '/inventario/iniciar-inventario'
       },
       {
@@ -60,10 +60,10 @@ export class IndexInventarioComponent implements OnInit {
       /**
        * Temporales
        */
-      {
+      /*{
         permiso: '--cE81erieaVjvmhcb9GCYI4doqYGtTcj1', icono: 'assets/icono-movimientos.svg',
         titulo: 'Movimientos generales', url: '/inventario/movimientos-generales'
-      },
+      },*/
 
     ];
     this.accesosDirectos = [

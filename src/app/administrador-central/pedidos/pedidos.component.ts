@@ -44,6 +44,7 @@ export class PedidosComponent implements OnInit {
 
   // # SECCION: Resumen presupuesto
   presupuesto:any = {};
+  presupuestoActual:any = {};
   // # FIN SECCION
 
   // # SECCION: Lista
@@ -505,10 +506,12 @@ export class PedidosComponent implements OnInit {
         this.cargandoPresupuestos = false;
         this.presupuesto = response.data;
 
-        this.presupuesto.total_modificado = (+response.data.causes_modificado) + (+response.data.no_causes_modificado) + (+response.data.material_curacion_modificado);
-        this.presupuesto.total_comprometido = (+response.data.causes_comprometido) + (+response.data.no_causes_comprometido) + (+response.data.material_curacion_comprometido);
-        this.presupuesto.total_devengado = (+response.data.causes_devengado) + (+response.data.no_causes_devengado) + (+response.data.material_curacion_devengado);
-        this.presupuesto.total_disponible = (+response.data.causes_disponible) + (+response.data.no_causes_disponible) + (+response.data.material_curacion_disponible);
+        this.presupuesto.total_modificado = (+response.data.insumos_modificado) + (+response.data.no_causes_modificado);
+        this.presupuesto.total_comprometido = (+response.data.insumos_comprometido) + (+response.data.no_causes_comprometido);
+        this.presupuesto.total_devengado = (+response.data.insumos_devengado) + (+response.data.no_causes_devengado);
+        this.presupuesto.total_disponible = (+response.data.insumos_disponible) + (+response.data.no_causes_disponible);
+
+        this.presupuestoActual = response.presupuesto;
       },
       error => {
         this.cargandoPresupuestos = false;

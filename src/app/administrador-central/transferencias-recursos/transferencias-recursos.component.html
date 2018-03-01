@@ -1,10 +1,10 @@
 <administrador-central-menu></administrador-central-menu>
 <div style="height:50px;"></div>
-<div class="contenedor columns " style="height:100%; ">
+<div class="contenedor columns " style="height:100%">
     <div class="column is-narrow is-hidden-mobile">
         <administrador-central-menu-lateral></administrador-central-menu-lateral>
     </div>
-    <div class="column">
+    <div class="column" style="overflow:scroll;">
       
         <div style="background: #FFF; border-radius: 1em; overflow: hidden; margin:1em;" >
             <section class="hero is-primary"  >
@@ -131,9 +131,9 @@
                         <th style="text-align: center;">Clues</th>
                         <th style="text-align: center;">Mes</th>
                         <th style="text-align: center;">Año</th>
-                        <th style="text-align: center;"><abbr title="Causes">CA</abbr></th>
+                        <th style="text-align: center;"><abbr title="Causes y Material de Curación">CA y MC</abbr></th>
                         <th style="text-align: center;"><abbr title="No causes">NCA</abbr></th>
-                        <th style="text-align: center;"><abbr title="Material de curación">MC</abbr></th>                        
+                        <!--th style="text-align: center;"><abbr title="Material de curación">MC</abbr></th-->
                         <th style="text-align: center;">Usuario</th>
                         <th style="text-align: center;">Fecha</th>                    
                     </tr>
@@ -153,9 +153,9 @@
                         </td>
                         <td style="vertical-align: middle; text-align: center;">{{ item.mes_destino }}</td>
                         <td style="vertical-align: middle; text-align: center;">{{ item.anio_destino }}</td>
-                        <td style="vertical-align: middle; text-align: right;">{{ item.causes  | currency:'USD':true:'1.2-2' }}</td>
+                        <td style="vertical-align: middle; text-align: right;">{{ item.insumos  | currency:'USD':true:'1.2-2' }}</td>
                         <td style="vertical-align: middle; text-align: right;">{{ item.no_causes  | currency:'USD':true:'1.2-2'}}</td>
-                        <td style="vertical-align: middle; text-align: right;">{{ item.material_curacion | currency:'USD':true:'1.2-2' }}</td>
+                        <!--td style="vertical-align: middle; text-align: right;">{{ item.material_curacion | currency:'USD':true:'1.2-2' }}</td-->
                         <td style="vertical-align: middle; text-align: center;">{{ item.usuario_id }}</td>
                         <td style="vertical-align: middle; text-align: center;">{{ item.created_at }}</td>
                     </tr>
@@ -262,17 +262,21 @@
                     </thead>
                     <tbody>
                         <tr *ngIf="conPresupuestoOrigen">
-                            <th>Causes</th>
-                            <td [ngClass]="{'rojo':presupuestoOrigen.causes < 0}"> <span *ngIf="cargandoPresupuestoOrigen"><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>&nbsp;Cargando...</span> <span *ngIf="!cargandoPresupuestoOrigen">{{ presupuestoOrigen.causes | currency:'USD':true:'1.2-2' }}</span></td>
+                            <th>Causes y Material de Curación</th>
+                            <td [ngClass]="{'rojo':presupuestoOrigen.insumos < 0}"> <span *ngIf="cargandoPresupuestoOrigen"><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>&nbsp;Cargando...</span> <span *ngIf="!cargandoPresupuestoOrigen">{{ presupuestoOrigen.insumos | currency:'USD':true:'1.2-2' }}</span></td>
                         </tr>
                         <tr *ngIf="conPresupuestoOrigen">
                             <th>No causes</th>
                             <td [ngClass]="{'rojo':presupuestoOrigen.no_causes < 0}"> <span *ngIf="cargandoPresupuestoOrigen"><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>&nbsp;Cargando...</span> <span *ngIf="!cargandoPresupuestoOrigen">{{ presupuestoOrigen.no_causes | currency:'USD':true:'1.2-2' }}</span></td>
                         </tr>
+                        <!--tr *ngIf="conPresupuestoOrigen">
+                            <th>Causes</th>
+                            <td [ngClass]="{'rojo':presupuestoOrigen.causes < 0}"> <span *ngIf="cargandoPresupuestoOrigen"><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>&nbsp;Cargando...</span> <span *ngIf="!cargandoPresupuestoOrigen">{{ presupuestoOrigen.causes | currency:'USD':true:'1.2-2' }}</span></td>
+                        </tr>
                         <tr *ngIf="conPresupuestoOrigen">
                             <th>Material de curación</th>
                             <td [ngClass]="{'rojo':presupuestoOrigen.material_curacion < 0}"> <span *ngIf="cargandoPresupuestoOrigen"><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>&nbsp;Cargando...</span> <span *ngIf="!cargandoPresupuestoOrigen">{{ presupuestoOrigen.material_curacion | currency:'USD':true:'1.2-2' }}</span></td>
-                        </tr>
+                        </tr-->
                     </tbody>                    
                 </table>
             </div>
@@ -347,17 +351,21 @@
                     </thead>
                      <tbody>
                         <tr *ngIf="conPresupuestoDestino">
-                            <th>Causes</th>
-                            <td [ngClass]="{'rojo':presupuestoDestino.causes < 0}"> <span *ngIf="cargandoPresupuestoDestino"><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>&nbsp;Cargando...</span> <span *ngIf="!cargandoPresupuestoDestino">{{ presupuestoDestino.causes | currency:'USD':true:'1.2-2' }}</span></td>
+                            <th>Causes y Material de Curación</th>
+                            <td [ngClass]="{'rojo':presupuestoDestino.insumos < 0}"> <span *ngIf="cargandoPresupuestoDestino"><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>&nbsp;Cargando...</span> <span *ngIf="!cargandoPresupuestoDestino">{{ presupuestoDestino.insumos | currency:'USD':true:'1.2-2' }}</span></td>
                         </tr>
                         <tr *ngIf="conPresupuestoDestino">
                             <th>No causes</th>
                             <td [ngClass]="{'rojo':presupuestoDestino.no_causes < 0}"> <span *ngIf="cargandoPresupuestoDestino"><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>&nbsp;Cargando...</span> <span *ngIf="!cargandoPresupuestoDestino">{{ presupuestoDestino.no_causes | currency:'USD':true:'1.2-2' }}</span></td>
                         </tr>
+                        <!--tr *ngIf="conPresupuestoDestino">
+                            <th>Causes</th>
+                            <td [ngClass]="{'rojo':presupuestoDestino.causes < 0}"> <span *ngIf="cargandoPresupuestoDestino"><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>&nbsp;Cargando...</span> <span *ngIf="!cargandoPresupuestoDestino">{{ presupuestoDestino.causes | currency:'USD':true:'1.2-2' }}</span></td>
+                        </tr>
                         <tr *ngIf="conPresupuestoDestino">
                             <th>Material de curación</th>
                             <td [ngClass]="{'rojo':presupuestoDestino.material_curacion < 0}"> <span *ngIf="cargandoPresupuestoDestino"><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>&nbsp;Cargando...</span> <span *ngIf="!cargandoPresupuestoDestino">{{ presupuestoDestino.material_curacion | currency:'USD':true:'1.2-2' }}</span></td>
-                        </tr>
+                        </tr-->
                     </tbody>                    
                 </table>
             </div>
@@ -367,11 +375,11 @@
             <div class="columns">
                 <div class="column">
                     <div class="field">
-                        <label for="monto">Causes:</label>
+                        <label for="monto">Causes y Material de Curación:</label>
                         <p class="control is-expanded">
-                            <input class="input is-medium" type="text" placeholder="$ 0.00" [(ngModel)] = "monto_transferir_causes" [ngClass]="{ 'is-danger': errores_transferencia.causes != '' }" >
+                            <input class="input is-medium" type="text" placeholder="$ 0.00" [(ngModel)] = "monto_transferir_insumos" [ngClass]="{ 'is-danger': errores_transferencia.insumos != '' }" >
                         </p>
-                        <p class="help is-danger" *ngIf="errores_transferencia.causes != ''">{{ errores_transferencia.causes }}</p>
+                        <p class="help is-danger" *ngIf="errores_transferencia.insumos != ''">{{ errores_transferencia.insumos }}</p>
                     </div>        
                 </div>
                 <div class="column">
@@ -383,6 +391,15 @@
                         <p class="help is-danger" *ngIf="errores_transferencia.no_causes != ''">{{ errores_transferencia.no_causes }}</p>
                     </div>        
                 </div>
+                <!--div class="column">
+                    <div class="field">
+                        <label for="monto">Causes:</label>
+                        <p class="control is-expanded">
+                            <input class="input is-medium" type="text" placeholder="$ 0.00" [(ngModel)] = "monto_transferir_causes" [ngClass]="{ 'is-danger': errores_transferencia.causes != '' }" >
+                        </p>
+                        <p class="help is-danger" *ngIf="errores_transferencia.causes != ''">{{ errores_transferencia.causes }}</p>
+                    </div>        
+                </div>
                 <div class="column">
                     <div class="field">
                         <label for="monto">Material de curación:</label>
@@ -391,14 +408,14 @@
                         </p> 
                         <p class="help is-danger" *ngIf="errores_transferencia.material_curacion != ''">{{ errores_transferencia.material_curacion }}</p>
                     </div>        
-                </div>
+                </div-->
             </div>
         </div>
       
       
     </section>
     <footer class="modal-card-foot">
-      <a class="button is-danger" (click)="realizarTransferencia()" [ngClass]=" { 'is-loading': enviando_transferencia, 'is-disabled': !datosDestinoValidos || !datosOrigenValidos || ( (monto_transferir_causes == 0 || !monto_transferir_causes) && (monto_transferir_no_causes == 0 || !monto_transferir_no_causes) && (monto_transferir_material_curacion == 0 || !monto_transferir_material_curacion)  ) }"><span class="icon"><i class="fa fa-exchange"></i></span> <span>Realizar transferencia</span></a>
+      <a class="button is-danger" (click)="realizarTransferencia()" [ngClass]=" { 'is-loading': enviando_transferencia, 'is-disabled': !datosDestinoValidos || !datosOrigenValidos || ( (monto_transferir_insumos == 0 || !monto_transferir_insumos) && (monto_transferir_no_causes == 0 || !monto_transferir_no_causes)  ) }"><span class="icon"><i class="fa fa-exchange"></i></span> <span>Realizar transferencia</span></a>
       <a class="button" (click)="mostrarVentanaNuevaTransferencia = false">Cerrar</a>
     </footer>
   </div>

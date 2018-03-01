@@ -180,9 +180,10 @@ export class TransferenciasRecursosComponent implements OnInit {
 
   mostrarVentanaNuevaTransferencia:boolean = false;
 
-  monto_transferir_causes:any = null;
+  monto_transferir_insumos:any = null;
   monto_transferir_no_causes:any = null;
-  monto_transferir_material_curacion:any = null;  
+  //monto_transferir_causes:any = null;
+  //monto_transferir_material_curacion:any = null;  
 
   transaccion_clues_origen: any = {clues:''}; //string = '';
   transaccion_clues_destino: any = {clues:''};
@@ -206,27 +207,31 @@ export class TransferenciasRecursosComponent implements OnInit {
   cargandoPresupuestoDestino:boolean = false;  
 
   presupuestoOrigen = {
-    causes: 0,
-    no_causes: 0,
-    material_curacion: 0
+    insumos: 0,
+    no_causes: 0
+    //causes: 0,
+    //material_curacion: 0
   }
 
   presupuestoDestino = {
-    causes: 0,
-    no_causes: 0,
-    material_curacion: 0
+    insumos: 0,
+    no_causes: 0
+    //causes: 0,
+    //material_curacion: 0
   }
 
   errores_transferencia = {
-    causes: '',
-    no_causes: '',
-    material_curacion: ''
+    insumos: '',
+    no_causes: ''
+    //causes: '',
+    //material_curacion: ''
   }
 
   nuevaTransferencia(){
-    this.monto_transferir_causes = null;
+    this.monto_transferir_insumos = null;
     this.monto_transferir_no_causes = null;
-    this.monto_transferir_material_curacion = null;  
+    //this.monto_transferir_causes = null;
+    //this.monto_transferir_material_curacion = null;  
 
     this.transaccion_clues_origen = {clues:''}; //"";
     this.transaccion_almacen_origen = "";
@@ -239,9 +244,10 @@ export class TransferenciasRecursosComponent implements OnInit {
     this.transaccion_mes_destino = -1;
 
     this.errores_transferencia = {
-      causes: '',
-      no_causes: '',
-      material_curacion: ''
+      insumos: '',
+      no_causes: ''
+      //causes: '',
+      //material_curacion: ''
     }
 
     this.mostrarVentanaNuevaTransferencia = true;
@@ -258,23 +264,24 @@ export class TransferenciasRecursosComponent implements OnInit {
     }
 
     this.errores_transferencia = {
-      causes: '',
-      no_causes: '',
-      material_curacion: ''
+      insumos: '',
+      no_causes: ''
+      //causes: '',
+      //material_curacion: ''
     }
     
-    if(this.monto_transferir_causes != null){
-      if(isNaN(Number(this.monto_transferir_causes))){
-        this.errores_transferencia.causes = "El monto debe ser un número válido (sólo numeros decimales sin coma).";
+    if(this.monto_transferir_insumos != null){
+      if(isNaN(Number(this.monto_transferir_insumos))){
+        this.errores_transferencia.insumos = "El monto debe ser un número válido (sólo numeros decimales sin coma).";
       }
 
-      if(this.monto_transferir_causes > this.presupuestoOrigen.causes){
-        console.log(this.monto_transferir_causes + ":"+this.presupuestoOrigen.causes);
-        this.errores_transferencia.causes = "El monto no puede ser mayor al presupuesto disponible del origen.";
+      if(this.monto_transferir_insumos > this.presupuestoOrigen.insumos){
+        console.log(this.monto_transferir_insumos + ":"+this.presupuestoOrigen.insumos);
+        this.errores_transferencia.insumos = "El monto no puede ser mayor al presupuesto disponible del origen.";
       }
       
-      if(this.monto_transferir_causes < 0){
-        this.errores_transferencia.causes = "El monto no puede ser menor a 0.";      
+      if(this.monto_transferir_insumos < 0){
+        this.errores_transferencia.insumos = "El monto no puede ser menor a 0.";      
       }
     }
 
@@ -292,6 +299,21 @@ export class TransferenciasRecursosComponent implements OnInit {
       }
     }
 
+    /*if(this.monto_transferir_causes != null){
+      if(isNaN(Number(this.monto_transferir_causes))){
+        this.errores_transferencia.causes = "El monto debe ser un número válido (sólo numeros decimales sin coma).";
+      }
+
+      if(this.monto_transferir_causes > this.presupuestoOrigen.causes){
+        console.log(this.monto_transferir_causes + ":"+this.presupuestoOrigen.causes);
+        this.errores_transferencia.causes = "El monto no puede ser mayor al presupuesto disponible del origen.";
+      }
+      
+      if(this.monto_transferir_causes < 0){
+        this.errores_transferencia.causes = "El monto no puede ser menor a 0.";      
+      }
+    }
+
     if(this.monto_transferir_material_curacion != null){
       if(isNaN(Number(this.monto_transferir_material_curacion))){
         this.errores_transferencia.material_curacion = "El monto debe ser un número válido (sólo numeros decimales sin coma).";
@@ -304,9 +326,10 @@ export class TransferenciasRecursosComponent implements OnInit {
       if(this.monto_transferir_material_curacion < 0){
         this.errores_transferencia.material_curacion = "El monto no puede ser menor a 0.";
       }
-    }
+    }*/
 
-    if(this.errores_transferencia.causes != "" || this.errores_transferencia.no_causes != "" || this.errores_transferencia.material_curacion != ""){
+    //if(this.errores_transferencia.causes != "" || this.errores_transferencia.no_causes != "" || this.errores_transferencia.material_curacion != ""){
+    if(this.errores_transferencia.insumos != "" || this.errores_transferencia.no_causes != ""){
       return;
     }
     var payload = {
@@ -318,9 +341,10 @@ export class TransferenciasRecursosComponent implements OnInit {
       mes_destino: this.transaccion_mes_destino,
       anio_origen: this.transaccion_anio_origen,
       anio_destino: this.transaccion_anio_destino,
-      causes: this.monto_transferir_causes,
+      insumos: this.monto_transferir_insumos,
       no_causes: this.monto_transferir_no_causes,
-      material_curacion: this.monto_transferir_material_curacion
+      //causes: this.monto_transferir_causes,
+      //material_curacion: this.monto_transferir_material_curacion
     }
 
     // Quizás haya que hacer una pausa para darle tiempo refrescar a la pantalla antes de sacar el modal y borrar los mensajes de error
@@ -398,9 +422,10 @@ export class TransferenciasRecursosComponent implements OnInit {
         if(origen){
           //this.datosOrigenValidos = true;
           if(respuesta){
-            this.presupuestoOrigen.causes = Number(respuesta.causes_disponible);
+            this.presupuestoOrigen.insumos = Number(respuesta.insumos_disponible);
             this.presupuestoOrigen.no_causes = Number(respuesta.no_causes_disponible);
-            this.presupuestoOrigen.material_curacion = Number(respuesta.material_curacion_disponible);
+            //this.presupuestoOrigen.causes = Number(respuesta.causes_disponible);
+            //this.presupuestoOrigen.material_curacion = Number(respuesta.material_curacion_disponible);
           }else{
             this.conPresupuestoOrigen = false;
             this.datosOrigenValidos = false;
@@ -411,9 +436,10 @@ export class TransferenciasRecursosComponent implements OnInit {
         if(destino){
           //this.datosDestinoValidos = true;
           if(respuesta){
-            this.presupuestoDestino.causes = Number(respuesta.causes_disponible);
+            this.presupuestoDestino.insumos = Number(respuesta.insumos_disponible);
             this.presupuestoDestino.no_causes = Number(respuesta.no_causes_disponible);
-            this.presupuestoDestino.material_curacion = Number(respuesta.material_curacion_disponible);
+            //this.presupuestoDestino.causes = Number(respuesta.causes_disponible);
+            //this.presupuestoDestino.material_curacion = Number(respuesta.material_curacion_disponible);
           }else{
             this.conPresupuestoDestino = false;
             this.datosDestinoValidos = false;

@@ -139,7 +139,7 @@ export class VerComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.title.setTitle('Nuevo pedido / Almacén');
+    this.title.setTitle('Ver pedido');
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
 
     this.permisos = this.usuario.permisos.split('|');
@@ -147,6 +147,7 @@ export class VerComponent implements OnInit {
     for(var i in this.permisos){
       if(this.permisos[i] == 'pVJrPewkPFwidvmECcgg8BqVXn7FtH7E'){        
         this.permisoCancelarPedido = true;
+        break;
       }
     }
 
