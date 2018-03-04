@@ -78,7 +78,7 @@ export class ActualizarSistemaComponent implements OnInit {
 
   }
 
-  adjuntarParche(){
+  adjuntarParche(){		
 		if(this.archivo){
 
 			this.errores = {
@@ -114,24 +114,31 @@ export class ActualizarSistemaComponent implements OnInit {
 						//this.mostrarModalSubirArchivoSQL = false;
 						this.progreso = 100;
 						this.archivo = null;
-						this.listarParches();
+						//this.listarParches();
+						window.location.reload();
 					},					
 					error => {
             
             if(error.status == 500){
-              this.mensajeErrorSync = "Error interno del servidor";
-            } else {
+							try{
+								let e = error.json();
+								this.mensajeErrorSync = e.error;
+							} catch(e){
+								this.mensajeErrorSync = "Error interno del servidor";
+							}
+							
+						} else if(error.status == 409){
+							let e = error.json();
+							this.mensajeErrorSync = "Error en el parche";
+							this.logActualizacion = e.error;
+            	this.mostrarLog = true;
+						}
+						else {
               let e = error.json();
               this.mensajeErrorSync = e.error;
             }
             
-						/*if(error.status == 409){
-							this.mensajeErrorSync = "No se pudo subir el archivo, verifica que el archivo que tratas de subir sea correcto, que el nombre no haya sido modificado. Verifica que el archivo que intentas subir ya ha sido sincronizado previamente.";
-						} else if(error.status == 401){
-							this.mensajeErrorSync = "El archivo que intentas subir ya ha sido sincronizado previamente";
-						} else {
-							this.mensajeErrorSync = "Hubo un problema al sincronizar, prueba recargar el sitio de lo contrario llama a soporte técnico.";
-						}*/
+						this.archivoSubido = false;
 						
 						this.progreso = 100;
 						this.enviandoDatos = false;
