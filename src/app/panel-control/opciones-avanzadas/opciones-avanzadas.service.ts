@@ -9,6 +9,7 @@ import { JwtRequestService } from '../../jwt-request.service';
 export class OpcionesAvanzadasService {
 
   static readonly URL: string = "opciones-avanzadas";
+  static readonly URL_PARCHES: string = "patches";
   
   constructor(private http: Http,   private jwtRequest:JwtRequestService) { }
   
@@ -19,6 +20,10 @@ export class OpcionesAvanzadasService {
 
   exportarBaseDatos(): Observable<any>{
     return this.jwtRequest.get(OpcionesAvanzadasService.URL+"/exportar-base-datos",null,{}).map( (response: Response) => response.json().data ) as Observable<any>;
+  }
+
+  listarParches(): Observable<any>{
+    return this.jwtRequest.get(OpcionesAvanzadasService.URL_PARCHES+"/lista",null,{}).map( (response: Response) => response.json().data ) as Observable<any>;
   }
 
   
