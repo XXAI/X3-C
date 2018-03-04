@@ -72,9 +72,9 @@
                         <tr><th>Número de parche</th> <th>Fecha</th></tr>
                     </thead>
                     <tbody>
-                            <tr *ngIf="cargandoParches"><td colspan="2" style="text-align:center;"><i class="fa  fa-spin fa-cog"></i> Cargando parches... </td></tr>
+                        
                         <tr *ngFor="let item of parches_cliente"><td>{{ item.nombre }}</td><td>{{ item.fecha }}</td></tr>  
-                        <tr *ngIf="!cargandoParches && parches_cliente.length == 0"><td colspan="2">No se ha ejecutado ningún parche nunca.</td></tr>                        
+                        <tr *ngIf="parches_cliente.length == 0"><td colspan="2">No se ha ejecutado ningún parche nunca.</td></tr>                        
                     </tbody>
                 </table>
                 <table class="table" *ngIf="tabParchesAPI">

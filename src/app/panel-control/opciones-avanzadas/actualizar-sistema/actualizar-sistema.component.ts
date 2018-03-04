@@ -5,6 +5,7 @@ import { Headers, Http, Response, RequestOptions, ResponseContentType } from '@a
 
 import { OpcionesAvanzadasService } from '../opciones-avanzadas.service';
 import { environment } from '../../../../environments/environment';
+import { PATCHES } from '../../../patches';
 
 @Component({
   selector: 'app-actualizar-sistema',
@@ -39,7 +40,8 @@ export class ActualizarSistemaComponent implements OnInit {
   constructor(private apiService:OpcionesAvanzadasService, private http:Http) {}
 
   ngOnInit() {
-    this.listarParches();
+		this.listarParches();
+		this.parches_cliente = PATCHES;
   }
 
   actualizarViaGit() {
@@ -64,8 +66,7 @@ export class ActualizarSistemaComponent implements OnInit {
     this.apiService.listarParches().subscribe(
 			respuesta => {
 				this.cargandoParches = false;							
-        this.parches_cliente = respuesta.cliente;
-        this.parches_api = respuesta.api;
+        this.parches_api = respuesta;
 			
 			},
 			error => {
