@@ -222,6 +222,22 @@ export class EstatusComponent implements OnInit {
 	
 			}
 		  );
-	  }
+		}
+		
+
+	// # SECCION: Paginación
+	paginaSiguiente():void {
+		this.listar(this.paginaActual+1);
+	}
+	paginaAnterior():void {
+		this.listar(this.paginaActual-1);
+	}
+
+	paginaSiguienteBusqueda(term:string):void {
+		this.listarBusqueda(term,this.paginaActualBusqueda+1);
+	}
+	paginaAnteriorBusqueda(term:string):void {
+		this.listarBusqueda(term,this.paginaActualBusqueda-1);
+	}
 
 }

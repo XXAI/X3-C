@@ -4,7 +4,7 @@
     <div class="column is-one-quarter is-hidden-mobile">
         <panel-control-menu-aside></panel-control-menu-aside>
     </div>
-    <div class="column" style="padding:2em;">
+    <div class="column" style="padding:2em; overflow:auto;">
         <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
             <section class="hero" [ngClass] = " {'is-dark': busquedaActivada, 'is-primary': !busquedaActivada } " >
                     
@@ -44,9 +44,9 @@
                         <th>¿Internet?</th>
                         <th><abbr title="¿Catálogos Actualizados?">¿C.A.?</abbr></th>
                         <th><abbr title="Versión del servidor">Ver.</abbr></th>
-                        <th>Periodo Sync</th>
+                        <th>Periodo</th>
                         <th>Última Sync</th>
-                        <th>Tiempo s/Sync</th>
+                        <th style="width:60px">Retraso</th>
                     </tr>
                 </thead>
                 <tbody  *ngIf="!busquedaActivada">
@@ -58,7 +58,7 @@
                         <td style="vertical-align: middle;">{{ item.catalogos_actualizados ? 'Sí': 'No' }}</td>                       
                         <td style="vertical-align: middle;">{{ item.version}}</td>
                         <td style="vertical-align: middle;">{{ item.periodo_sincronizacion }} Hrs</td>
-                        <td style="vertical-align: middle;">{{ item.ultima_sincronizacion == null ? 'Nunca' :  item.ultima_sincronizacion }}</td>     
+                        <td style="vertical-align: middle;"><small>{{ item.ultima_sincronizacion == null ? 'Nunca' :  item.ultima_sincronizacion }}</small></td>     
                         <td style="vertical-align: middle;">{{ item.horas_sin_sincronizar }}</td>                            
                     </tr>
                     <tr *ngIf="lista.length == 0">
@@ -74,7 +74,7 @@
                         <td style="vertical-align: middle;">{{ item.catalogos_actualizados ? 'Sí': 'No' }}</td>                       
                         <td style="vertical-align: middle;">{{ item.version}}</td>
                         <td style="vertical-align: middle;">{{ item.periodo_sincronizacion }} Hrs</td>
-                        <td style="vertical-align: middle;">{{ item.ultima_sincronizacion }}</td>
+                        <td style="vertical-align: middle;"><small>{{ item.ultima_sincronizacion == null ? 'Nunca' :  item.ultima_sincronizacion }}</small></td>  
                         <td style="vertical-align: middle;">{{ item.horas_sin_sincronizar }}</td>                            
                     </tr>
 
@@ -107,7 +107,7 @@
                 *ngIf="totalBusqueda > 0 && totalBusqueda > resultadosPorPaginaBusqueda && busquedaActivada"></paginacion>
 
         </div>
-        
+        <br>
        
        
     </div>
