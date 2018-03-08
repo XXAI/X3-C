@@ -728,7 +728,9 @@ export class FormularioComponent {
 
   validar_fecha() {
     let fecha_ingresada;
-    let fecha_hoy = moment();
+    //let fecha_hoy = moment();
+    let fecha_hoy = moment(this.dato.get('fecha_movimiento').value,'YYY-MM-DD');
+    
     let cont = 0;
     for (let valor of this.lotes_insumo) {
       fecha_ingresada = moment(valor.fecha_caducidad, 'YYYY-MM-DD');

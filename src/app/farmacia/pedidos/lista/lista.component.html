@@ -46,7 +46,7 @@
             </table>
          </div>
 
-        <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
+        <div style="background: #FFF; border-radius: 1em; margin-bottom:80px;">
             <section class="hero" [ngClass] = " {'is-dark': busquedaActivada, 'is-primary': !busquedaActivada } " >
                 
                 <div class="hero-body" style="position:relative;">
@@ -114,7 +114,7 @@
                         </a></td>
                         <td style="vertical-align: middle;" class="has-text-centered">
                             <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
-                            <a *ngIf="!item.cargando && item.status == 'BR'" class="status-rojo" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
+                            <a *ngIf="!item.cargando && item.status == 'BR' && !esCluesOffline" class="status-rojo" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
                             <a *ngIf="!item.cargando && item.status == 'PS' && item.expira_en_dias >= 0" routerLink="/almacen/pedidos/recepcion/{{item.id}}" title="Recibir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
                             <span *ngIf="!item.cargando && item.status == 'PS' && item.expira_en_dias < 0" class="tag is-danger" title="Expirado"><span class="icon"><i class="fa fa-exclamation"></i></span></span>
                             <span *ngIf="!item.cargando && item.status == 'FI'" class="estatus-verde" title="Finalizado"><span class="icon"><i class="fa fa-check-circle"></i></span></span>
@@ -147,7 +147,7 @@
                         </a></td>
                         <td style="vertical-align: middle;" class="has-text-centered">
                             <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
-                            <a *ngIf="!item.cargando && item.status == 'BR'" class="status-rojo" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
+                            <a *ngIf="!item.cargando && item.status == 'BR' && !esCluesOffline" class="status-rojo" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
                             <a *ngIf="!item.cargando && item.status == 'PS' && item.expira_en_dias >= 0" routerLink="/almacen/pedidos/recepcion/{{item.id}}" title="Recibir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
                             <span *ngIf="!item.cargando && item.status == 'PS' && item.expira_en_dias < 0" class="tag is-danger" title="Expirado"><span class="icon"><i class="fa fa-exclamation"></i></span></span>
                             <span *ngIf="!item.cargando && item.status == 'FI'" class="estatus-verde" title="Finalizado"><span class="icon"><i class="fa fa-check-circle"></i></span></span>

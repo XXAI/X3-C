@@ -1,8 +1,8 @@
 <listar #ctrl URL="movimientos?tipo=2&fecha_desde={{fecha_desde}}&fecha_hasta={{fecha_hasta}}&turno={{turno}}&servicio={{servicio}}&recibe={{recibe}}" titulo="Salida  de almacén"></listar>
 <menu-farmacia [modulo]="'Salidas  de almacén'" [icono]="'assets/icono-salidas.svg'" [url]="'/almacen/salidas-estandar'"></menu-farmacia>
 <div style="height:50px;"></div>
-<div class="contenedor columns " style="height:80%; ">
-    <div class="column" style="padding:2em;">
+<div class="contenedor columns " style="height:100%; ">
+    <div class="column" style="padding:2em; overflow:auto;">
         <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
             <section class="hero" [ngClass]=" {'is-dark': ctrl.busquedaActivada, 'is-primary': !ctrl.busquedaActivada } ">
 

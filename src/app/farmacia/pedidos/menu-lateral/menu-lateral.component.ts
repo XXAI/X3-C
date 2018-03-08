@@ -11,6 +11,7 @@ import { CambiarEntornoService } from '../../../perfil/cambiar-entorno.service';
   styleUrls: ['./menu-lateral.component.css']
 })
 export class MenuLateralComponent implements OnInit {
+  usuario:any;
   cargando: boolean = false;
   stats: any = {
     todos: 0, 
@@ -45,8 +46,10 @@ export class MenuLateralComponent implements OnInit {
         actas:0
       };
       this.cargarStatsPedidos();
+      this.usuario = JSON.parse(localStorage.getItem("usuario"));
     });
     this.cargarStatsPedidos();
+    this.usuario = JSON.parse(localStorage.getItem("usuario"));
   }
 
   cargarStatsPedidos(){

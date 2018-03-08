@@ -1,7 +1,7 @@
 <menu-farmacia [modulo]="'Pedidos'" [icono]="'assets/icono-pedidos.svg'" [url]="'/almacen/pedidos'"></menu-farmacia>
 
-<div style="position:relative; padding-top:70px; margin-left: 1.5%; display:block; width:97%; height:100% !important; overflow:auto;" *ngIf="pedido">    
-  <div class="tile is-ancestor is-vertical" style="height:100% !important; max-height:100% !important;">
+<div style="position:relative; margin-top:50px; padding-top:10px; padding-left:10px; padding-right:10px; display:block; height:100% !important; overflow:auto;" *ngIf="pedido">    
+  <div class="tile is-ancestor is-vertical" style="height:100% !important; max-height:100% !important; padding-bottom: 30px;">
     <div class="tile">
       <div class="tile is-4 is-parent is-vertical ">
         <div class="tile is-child">
@@ -116,8 +116,8 @@
                 <!--a class="button is-primary  is-pulled-right" [ngClass]="{ 'is-inverted': pedido.filtro.activo }" style="margin-top:-0.25em;" title="Recepciones" (click)="toggleModalRecepciones(); ">
                     <span class="icon"><i class="fa fa-file"></i></span><span>Recepciones: {{pedido.datosImprimir.recepciones.length}}</span>
                 </a-->
-                <a *ngIf="pedido.status == 'EX' && permisoCancelarPedido" class="button is-danger is-pulled-right" (click)="mostrarDialogoCancelarPedido()"> <span class="icon"><i class="fa fa-ban"></i></span> <span>Cancelar Pedido</span></a>
-                <a *ngIf="pedido.tipo_pedido == 'PEA' && puedeCancelarTransferencia" class="button is-danger is-pulled-right" (click)="mostrarDialogoCancelarTransferencia()"> <span class="icon"><i class="fa fa-ban"></i></span> <span>Cancelar Transferencia</span></a>
+                <a *ngIf="pedido.status == 'EX' && permisoCancelarPedido && !esCluesOffline" class="button is-danger is-pulled-right" (click)="mostrarDialogoCancelarPedido()"> <span class="icon"><i class="fa fa-ban"></i></span> <span>Cancelar Pedido</span></a>
+                <a *ngIf="pedido.tipo_pedido == 'PEA' && puedeCancelarTransferencia && !esCluesOffline" class="button is-danger is-pulled-right" (click)="mostrarDialogoCancelarTransferencia()"> <span class="icon"><i class="fa fa-ban"></i></span> <span>Cancelar Transferencia</span></a>
                 <!--a *ngIf="pedido.status == 'EX'" class="button is-warning is-pulled-right" (click)="mostrarDialogoPedidoAlternoPedido()"> <span class="icon"><i class="fa fa-retweet"></i></span> <span>Pedido Alterno</span></a-->
             </div> 
 
