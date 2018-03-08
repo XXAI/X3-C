@@ -42,6 +42,8 @@ export class VerComponent implements OnInit {
   cargando: boolean = false;
   cargandoAlmacenes: boolean = false;
   cargandoInsumos: boolean = false;
+  esCluesOffline:boolean = false;
+
   // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
   mensajeAdvertencia: Mensaje = new Mensaje()
@@ -141,6 +143,8 @@ export class VerComponent implements OnInit {
   ngOnInit() {
     this.title.setTitle('Ver pedido');
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
+
+    this.esCluesOffline = this.usuario.clues_activa.es_offline;
 
     this.permisos = this.usuario.permisos.split('|');
 

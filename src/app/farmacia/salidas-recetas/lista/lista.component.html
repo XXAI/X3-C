@@ -2,7 +2,7 @@
 <menu-farmacia [modulo]="'Salidas por recetas'" [icono]="'assets/icono-salidas.svg'" [url]="'/almacen/salidas-recetas'"></menu-farmacia>
 <div style="height:50px;"></div>
 <div class="contenedor columns " style="height:95%; "> <!-- 85% -->
-    <div class="column" style="padding:2em; height:100%; ">
+    <div class="column" style="padding:2em; height:100%; overflow:auto;">
         <div style="background: #FFF;">
             <section class="hero" [ngClass]="{'is-dark': ctrl.busquedaActivada, 'is-primary': !ctrl.busquedaActivada}" 
                     style="min-height:200px; height: 25%;">
@@ -11,8 +11,8 @@
                         <div class="level-left"></div>
                         <!-- Right side -->
                         <div class="level-right">
-                            <p class="level-item"><a class="button is-dark is-medium" routerLink="nuevo" *ngIf="ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva receta</span></a></p>
-                            <p class="level-item"><a class="button is-primary is-medium" routerLink="nuevo" *ngIf="!ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva receta</span></a></p>
+                            <p class="level-item"><a class="button is-dark is-medium" routerLink="nuevo" *ngIf="ctrl.busquedaActivada && !usuario.clues_activa.es_offline"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva receta</span></a></p>
+                            <p class="level-item"><a class="button is-primary is-medium" routerLink="nuevo" *ngIf="!ctrl.busquedaActivada && !usuario.clues_activa.es_offline"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva receta</span></a></p>
                             <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" (click)="ctrl.busquedaActivada=false;searchBox.value=''; ctrl.resultadosBusqueda=[]"><span class="icon "><i class="fa fa-close"></i></span></a></p>
                             <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="Actualizar" (click)="ctrl.listarBusqueda(searchBox.value,1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
                             <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="Actualizar" (click)="ctrl.listar(1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>

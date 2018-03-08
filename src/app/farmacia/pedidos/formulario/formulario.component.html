@@ -1,6 +1,6 @@
 <menu-farmacia [modulo]="'Pedidos'" [icono]="'assets/icono-pedidos.svg'" [url]="'/almacen/pedidos'"></menu-farmacia>
 
-<div style="position:relative; padding-top:70px; margin-left: 1.5%; display:block; width:97%; height:100% !important; overflow:auto;" *ngIf="pedido">    
+<div style="position:relative; margin-top:50px; padding-top:10px; padding-left:10px; padding-right:10px; display:block; height:100% !important; overflow:auto;" *ngIf="pedido">    
   <div class="tile is-ancestor is-vertical" style="height:100% !important; max-height:100% !important;">
     <div class="tile">
       <div class="tile is-4 is-parent is-vertical ">
@@ -91,10 +91,10 @@
                         <a class="button is-success " [ngClass]="{ 'is-loading': cargando, 'is-inverted': !cargando }" (click)="imprimirExcel()" title="Imprimir Excel" ><span class="icon"><i class="fa fa-file-excel-o"></i></span></a>
                     </p-->
 
-                    <p class="control">
+                    <p class="control" *ngIf="!esCluesOffline">
                         <a class="button is-primary " (click)="guardar()" [ngClass]="{'is-loading': guardando}" >Guardar</a>
                     </p>
-                    <p class="control" *ngIf="esEditar">
+                    <p class="control" *ngIf="esEditar && !esCluesOffline">
                         <a class="button is-danger " (click)="finalizar()" [ngClass]="{'is-loading': guardando}" ><span class="icon"><i class="fa fa-check"></i></span><span>Concluir</span></a>
                     </p>
                 
@@ -110,7 +110,7 @@
             <br>
         </div>
         
-        <div class="tile is-child">
+        <div class="tile is-child is-vertical">
             <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
                 <table class="table is-unselectable" *ngIf="!cargando" style="font-size: 0.8em;">
                     <thead>

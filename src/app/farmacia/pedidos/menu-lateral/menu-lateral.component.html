@@ -2,7 +2,7 @@
     <!--  <p class="menu-label">
         Pedidos
     </p>-->
-    <a routerLink="/almacen/pedidos/nuevo" routerLinkActive="is-active" class="button is-primary is-inverted is-medium is-fullwidth"><span class="icon"  ><i class="fa fa-plus"></i></span> <span>Nuevo Pedido</span></a>
+    <a routerLink="/almacen/pedidos/nuevo" routerLinkActive="is-active" class="button is-primary is-inverted is-medium is-fullwidth" *ngIf="!usuario.clues_activa.es_offline"><span class="icon"  ><i class="fa fa-plus"></i></span> <span>Nuevo Pedido</span></a>
     <br>
     <ul class="menu-list">
         <li>
@@ -62,7 +62,7 @@
         </li>
         <li>
             <a routerLink="/almacen/pedidos/expirados-cancelados" #expiradosCancelados routerLinkActive="is-active">
-                <span class="icon"><i class="fa fa-times-circle"></i></span> Expirados - Cancelados
+                <span class="icon"><i class="fa fa-times-circle"></i></span> Cancelados
                 <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
                 <span *ngIf="stats.expirados_cancelados>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': expiradosCancelados.className == 'is-active', 'is-danger': expiradosCancelados.className != 'is-active' }">{{  stats.expirados_cancelados }}</span>
             </a>

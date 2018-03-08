@@ -557,7 +557,9 @@ export class FormularioComponent {
     const control = <FormArray>this.dato.controls['insumos'];
     const ctrlLotes = <FormArray>control.controls[i];
 
-    let fecha_hoy = moment();
+    //let fecha_hoy = moment();
+    let fecha_hoy = moment(this.dato.get('fecha_movimiento').value,'YYY-MM-DD');
+    console.log(fecha_hoy);
     if (!moment(fecha, 'YYYY-MM-DD', true).isValid()) {
       this.notificacion.alert('Fecha inválida', 'Debe ingresar una fecha válida', this.objeto);
       ctrlLotes.controls['fecha_caducidad'].patchValue('');

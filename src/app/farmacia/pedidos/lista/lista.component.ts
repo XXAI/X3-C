@@ -28,6 +28,7 @@ import { Mensaje } from '../../../mensaje';
 })
 export class ListaComponent implements OnInit {
   cargando: boolean = false;
+  esCluesOffline: boolean = false;
 
   // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
@@ -67,6 +68,8 @@ export class ListaComponent implements OnInit {
   constructor(private title: Title, private route: ActivatedRoute, private pedidosService: PedidosService, private cambiarEntornoService:CambiarEntornoService) { }
 
   ngOnInit() {
+    var usuario =  JSON.parse(localStorage.getItem("usuario"));
+    
     switch(this.route.snapshot.url[0].path){
       //case 'todos': this.status = "TODO"; this.titulo = "Todos"; this.icono = "fa-file"; break;
       case 'borradores': this.status = "BR"; this.titulo = "Borradores"; this.icono = "fa-pencil-square-o"; break;
@@ -105,7 +108,10 @@ export class ListaComponent implements OnInit {
       console.log('subscripcion en lista de pedidos');
       this.listar(this.paginaActual);
       this.cargarPresupuestoAnual();
+      this.esCluesOffline = usuario.clues_activa.es_offline;
     });
+
+    this.esCluesOffline = usuario.clues_activa.es_offline;
 
     this.listar(1);
     this.mensajeError = new Mensaje();
