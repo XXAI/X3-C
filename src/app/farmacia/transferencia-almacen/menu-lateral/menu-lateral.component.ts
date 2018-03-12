@@ -13,6 +13,9 @@ import { CambiarEntornoService } from '../../../perfil/cambiar-entorno.service';
 })
 export class MenuLateralComponent implements OnInit {
   cargando: boolean = false;
+
+  soloLectura: boolean = false;
+
   stats: any = {
     todos:0,
     borradores:0,
@@ -48,8 +51,14 @@ export class MenuLateralComponent implements OnInit {
         no_causes: 0
       }
       this.cargarStatsTransferencias();
+
+      var usuario =  JSON.parse(localStorage.getItem("usuario"));
+      this.soloLectura = usuario.solo_lectura;
     });
     this.cargarStatsTransferencias();
+
+    var usuario =  JSON.parse(localStorage.getItem("usuario"));
+    this.soloLectura = usuario.solo_lectura;
   }
 
   cargarStatsTransferencias(){

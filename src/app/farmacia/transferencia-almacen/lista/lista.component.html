@@ -73,7 +73,7 @@
                             $ {{ (item.total_monto_recibido || 0) | number:'1.2-2' }} / $ {{ item.total_monto_solicitado | number:'1.2-2' }} [{{(item.total_monto_recibido/item.total_monto_solicitado)*100 | number:'1.0-2'}}%]
                         </a></td>
                         <td style="vertical-align: middle;" class="has-text-centered">
-                            <a *ngIf="!item.cargando && item.status == 'SD'" routerLink="/almacen/transferencia-almacen/surtir/{{item.id}}" title="Surtir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
+                            <a *ngIf="!item.cargando && item.status == 'SD' && !soloLectura" routerLink="/almacen/transferencia-almacen/surtir/{{item.id}}" title="Surtir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
                             <!--a *ngIf="!item.cargando && item.status == 'BR'" class="status-rojo" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a-->
 
                             <!--span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
@@ -107,7 +107,7 @@
                             $ {{ (item.total_monto_recibido || 0) | number:'1.2-2' }} / $ {{ item.total_monto_solicitado | number:'1.2-2' }} [{{(item.total_monto_recibido/item.total_monto_solicitado)*100 | number:'1.0-2'}}%]
                         </a></td>
                         <td style="vertical-align: middle;" class="has-text-centered">
-                            <a *ngIf="!item.cargando && item.status == 'SD'" routerLink="/almacen/transferencia-almacen/surtir/{{item.id}}" title="Surtir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
+                            <a *ngIf="!item.cargando && item.status == 'SD' && !soloLectura" routerLink="/almacen/transferencia-almacen/surtir/{{item.id}}" title="Surtir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
                             <!--a *ngIf="!item.cargando && item.status == 'BR'" class="status-rojo" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a-->
                         </td>
                     </tr>

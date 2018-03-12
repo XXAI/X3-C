@@ -2,7 +2,7 @@
     <!--  <p class="menu-label">
         Pedidos
     </p>-->
-    <a routerLink="/almacen/pedidos/nuevo" routerLinkActive="is-active" class="button is-primary is-inverted is-medium is-fullwidth" *ngIf="!usuario.clues_activa.es_offline"><span class="icon"  ><i class="fa fa-plus"></i></span> <span>Nuevo Pedido</span></a>
+    <a routerLink="/almacen/pedidos/nuevo" routerLinkActive="is-active" class="button is-primary is-inverted is-medium is-fullwidth" *ngIf="!usuario.solo_lectura"><span class="icon"  ><i class="fa fa-plus"></i></span> <span>Nuevo Pedido</span></a>
     <br>
     <ul class="menu-list">
         <li>

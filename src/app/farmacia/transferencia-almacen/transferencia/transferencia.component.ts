@@ -42,8 +42,9 @@ export class TransferenciaComponent implements OnInit {
 
   //@ViewChildren('searchBoxStock') searchBoxStockViewChildren;
   
-  
     id:string ;
+
+    soloLectura: boolean = false;
     cargando: boolean = false;
     cargandoStock: boolean = false;
     
@@ -122,6 +123,8 @@ export class TransferenciaComponent implements OnInit {
 
       var usuario =  JSON.parse(localStorage.getItem("usuario"));
       this.almacenDelUsuario = usuario.almacen_activo;
+
+      this.soloLectura = usuario.solo_lectura;
 
       this.cargarUnidadesMedicas();
       this.pedido = new Pedido(true);

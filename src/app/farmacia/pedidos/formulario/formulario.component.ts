@@ -44,7 +44,7 @@ export class FormularioComponent implements OnInit {
   cargandoAlmacenes: boolean = false;
   cargandoInsumos: boolean = false;
   cargandoPresupuestos: boolean = false;
-  esCluesOffline: boolean = false;
+  soloLectura: boolean = false;
 
   almacenDelUsuario:any = {};
 
@@ -133,7 +133,7 @@ export class FormularioComponent implements OnInit {
 
     // ############################################
     
-    this.esCluesOffline = usuario.clues_activa.es_offline;
+    this.soloLectura = usuario.solo_lectura;
     
     //Harima: actualizacion para pedidos entre almacenes
     this.almacenDelUsuario = usuario.almacen_activo;

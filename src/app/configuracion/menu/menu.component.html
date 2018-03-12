@@ -41,8 +41,11 @@
                     
                     <figure class="image" style="width:26px;"><img src="assets/{{ usuario.avatar || 'avatar-unknow' }}.svg" alt="avatar"></figure>
                 </a>
-               
-                
+                <a class="nav-item" *ngIf="usuario.solo_lectura">
+                    <span class="nav-item is-small" title="Solo Lectura">
+                        <i class="fa fa-lock" aria-hidden="true"></i>
+                    </span>
+                </a> 
             </nav>
         </div>
     </div>

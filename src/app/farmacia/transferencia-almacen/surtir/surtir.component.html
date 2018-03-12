@@ -26,13 +26,13 @@
           </div>
           <div class="column is-5" style="text-align:right; ">
             <div class="block" style="margin:1em;" *ngIf="pedidoPorSurtir">
-              <a class="button is-primary" (click)="surtir()"> <span class="icon"><i class="fa fa-check-circle"></i></span> <span>Surtir</span></a>
+              <a *ngIf="!soloLectura" class="button is-primary" (click)="surtir()"> <span class="icon"><i class="fa fa-check-circle"></i></span> <span>Surtir</span></a>
               <a *ngIf="!permitirResurtir" class="button is-white"  routerLink="/almacen/transferencia-almacen/en-transito"> Regresar</a>
               <a *ngIf="permitirResurtir" class="button is-white"  (click)="cancelarVolverASurtir()"> No surtir</a>
             </div>
             <div class="block" style="margin:1em;" *ngIf="!pedidoPorSurtir">
-              <a *ngIf="permitirResurtir"  class="button is-primary" (click)="volverASurtir()"> <span class="icon"><i class="fa fa-repeat"></i></span> <span>Volver a Surtir</span></a>
-              <a *ngIf="permitirResurtir" class="button is-danger"  (click)="mostrarDialogoCancelarTransferencia()"> <span class="icon"><i class="fa fa-ban"></i></span> <span>Cancelar Transferencia</span></a>
+              <a *ngIf="permitirResurtir && !soloLectura"  class="button is-primary" (click)="volverASurtir()"> <span class="icon"><i class="fa fa-repeat"></i></span> <span>Volver a Surtir</span></a>
+              <a *ngIf="permitirResurtir && !soloLectura" class="button is-danger"  (click)="mostrarDialogoCancelarTransferencia()"> <span class="icon"><i class="fa fa-ban"></i></span> <span>Cancelar Transferencia</span></a>
               <a  class="button is-white"  routerLink="/almacen/transferencia-almacen/en-transito"> Regresar</a>
             </div>
           </div>
@@ -286,7 +286,7 @@
           </div>
         </div>
 
-        <div class="tile is-child box notification is-white is-12"  *ngIf="pedidoEntregado && !permitirResurtir">
+        <div class="tile is-child box notification is-white is-12"  *ngIf="pedidoEntregado && !permitirResurtir && !soloLectura">
           <a class="button is-danger is-pulled-right" (click)="eliminarDelInventario()">Eliminar del inventario</a>
           <a class="button is-info is-pulled-left" (click)="reintegrarAlInventario()">Reintegrar al inventario</a>
         </div>

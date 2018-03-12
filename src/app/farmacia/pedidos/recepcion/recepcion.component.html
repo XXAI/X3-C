@@ -22,8 +22,8 @@
           </div>
           <div class="column is-4" style="text-align:right; " *ngIf="statusRecepcion != 'FI'">
             <div style="margin:1em;">
-            <a *ngIf="!guardando && statusRecepcion == 'BR'" class="button is-primary" style="width:45%; margin-right:5%;" (click)="finalizar()"> <span class="icon"><i class="fa fa-check"></i></span> <span>Concluir</span></a>
-            <a  class="button is-white"  style="width:45%"  [ngClass]="{ 'is-loading': guardando }"  (click)="guardar()"> <span class="icon"><i class="fa fa-save"></i></span> <span>Guardar</span></a>
+            <a *ngIf="!guardando && statusRecepcion == 'BR' && !soloLectura" class="button is-primary" style="width:45%; margin-right:5%;" (click)="finalizar()"> <span class="icon"><i class="fa fa-check"></i></span> <span>Concluir</span></a>
+            <a *ngIf="!soloLectura" class="button is-white"  style="width:45%"  [ngClass]="{ 'is-loading': guardando }"  (click)="guardar()"> <span class="icon"><i class="fa fa-save"></i></span> <span>Guardar</span></a>
             </div>
           </div>
         </div>       

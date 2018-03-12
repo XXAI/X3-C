@@ -42,7 +42,7 @@ export class VerComponent implements OnInit {
   cargando: boolean = false;
   cargandoAlmacenes: boolean = false;
   cargandoInsumos: boolean = false;
-  esCluesOffline:boolean = false;
+  soloLectura:boolean = false;
 
   // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
@@ -144,7 +144,7 @@ export class VerComponent implements OnInit {
     this.title.setTitle('Ver pedido');
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
 
-    this.esCluesOffline = this.usuario.clues_activa.es_offline;
+    this.soloLectura = this.usuario.solo_lectura;
 
     this.permisos = this.usuario.permisos.split('|');
 

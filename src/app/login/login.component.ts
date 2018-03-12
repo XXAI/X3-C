@@ -6,7 +6,7 @@ import { Subscription }   from 'rxjs/Subscription';
 import { AuthService } from 'app/auth.service';
 import { BloquearPantallaService }     from '../bloquear-pantalla/bloquear-pantalla.service';
 
-
+import { VERSION } from 'app/config';
 import { ESTA_SALUD_ID_DISPONIBLE } from 'app/config';
 import { environment } from 'environments/environment';
 
@@ -63,7 +63,7 @@ export class LoginComponent implements OnInit {
       this.resetPasswordViaToken = true;
     }
 
-    this.cliente_version = environment.VERSION;
+    this.cliente_version = VERSION;
     
   }
   login() {

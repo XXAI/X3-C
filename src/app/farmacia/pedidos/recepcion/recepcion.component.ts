@@ -34,6 +34,9 @@ import { Mensaje } from '../../../mensaje';
 export class RecepcionComponent implements OnInit {
   id: string;
   folio: string;
+
+  soloLectura: boolean = false;
+
   cargando: boolean = false;
   guardando: boolean = false;
   cargandoStock: boolean = false;
@@ -92,6 +95,9 @@ export class RecepcionComponent implements OnInit {
       this.router.navigate(['/almacen/pedidos']);
     });
 
+    let usuario = JSON.parse(localStorage.getItem("usuario"));
+
+    this.soloLectura = usuario.solo_lectura;
     /*if(this.marcas.length == 1){
       this.formStock.marca = this.marcas[0];
     }*/

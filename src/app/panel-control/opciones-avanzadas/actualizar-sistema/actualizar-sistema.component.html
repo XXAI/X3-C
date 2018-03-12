@@ -121,6 +121,7 @@
         </div>
     </section>
     <footer class="modal-card-foot">
+        <a class="button is-success" [ngClass]="{ 'is-disabled' : !archivoSubido }" *ngIf="archivoSubido" (click)="recargarCliente()"><span class="icon"><i class="fa fa-refresh"></i></span> <span>Recargar Página</span></a>  
         <a class="button is-primary" [ngClass]="{ 'is-disabled' : enviandoDatos || !archivo  }" *ngIf="!archivoSubido" (click)="adjuntarParche()">Subir parche</a>  
         <a class="button" [ngClass]="{ 'is-disabled' : enviandoDatos  }" (click)="mostrarModalSubirParche = !mostrarModalSubirParche">Cerrar</a>      
     </footer>

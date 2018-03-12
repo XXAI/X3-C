@@ -28,7 +28,7 @@ import { Mensaje } from '../../../mensaje';
 })
 export class ListaComponent implements OnInit {
   cargando: boolean = false;
-  esCluesOffline: boolean = false;
+  soloLectura: boolean = false;
 
   // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
@@ -108,10 +108,10 @@ export class ListaComponent implements OnInit {
       console.log('subscripcion en lista de pedidos');
       this.listar(this.paginaActual);
       this.cargarPresupuestoAnual();
-      this.esCluesOffline = usuario.clues_activa.es_offline;
+      this.soloLectura = usuario.solo_lectura;
     });
 
-    this.esCluesOffline = usuario.clues_activa.es_offline;
+    this.soloLectura = usuario.solo_lectura;
 
     this.listar(1);
     this.mensajeError = new Mensaje();

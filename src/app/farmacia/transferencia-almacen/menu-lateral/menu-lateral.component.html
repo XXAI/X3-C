@@ -27,7 +27,7 @@
         </table>
     </div>  
     <br>
-    <a routerLink="/almacen/transferencia-almacen/nueva" routerLinkActive="is-active" class="button is-primary is-inverted is-medium is-fullwidth"><span class="icon"  ><i class="fa fa-plus"></i></span> <span>Nueva Transferencia</span></a>
+    <a *ngIf="!soloLectura" routerLink="/almacen/transferencia-almacen/nueva" routerLinkActive="is-active" class="button is-primary is-inverted is-medium is-fullwidth"><span class="icon"  ><i class="fa fa-plus"></i></span> <span>Nueva Transferencia</span></a>
     <br>
   <!--  <p class="menu-label">
       Pedidos

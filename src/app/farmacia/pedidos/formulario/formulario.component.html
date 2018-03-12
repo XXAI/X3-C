@@ -91,10 +91,10 @@
                         <a class="button is-success " [ngClass]="{ 'is-loading': cargando, 'is-inverted': !cargando }" (click)="imprimirExcel()" title="Imprimir Excel" ><span class="icon"><i class="fa fa-file-excel-o"></i></span></a>
                     </p-->
 
-                    <p class="control" *ngIf="!esCluesOffline">
+                    <p class="control" *ngIf="!soloLectura">
                         <a class="button is-primary " (click)="guardar()" [ngClass]="{'is-loading': guardando}" >Guardar</a>
                     </p>
-                    <p class="control" *ngIf="esEditar && !esCluesOffline">
+                    <p class="control" *ngIf="esEditar && !soloLectura">
                         <a class="button is-danger " (click)="finalizar()" [ngClass]="{'is-loading': guardando}" ><span class="icon"><i class="fa fa-check"></i></span><span>Concluir</span></a>
                     </p>
                 
