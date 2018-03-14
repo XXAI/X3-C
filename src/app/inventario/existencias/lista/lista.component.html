@@ -34,15 +34,19 @@
                             <p class="level-item b-checkbox is-info is-circular">
                                 <input class="styled" type="radio" id="buscar_en_mis_claves" #claves [checked]="buscar_en == 'MIS_CLAVES'" (click)="buscar_en = 'MIS_CLAVES'" [value]="'MIS_CLAVES'" name="buscar_en">                                    
                                 <label for="buscar_en_mis_claves">
-                                    <span class="tag is-large" [ngClass]="{'is-dark':buscar_en == 'MIS_CLAVES'}">Mis claves</span>
+                                    Mis claves <!--span class="tag is-medium" [ngClass]="{'is-dark':buscar_en == 'MIS_CLAVES'}">Mis claves</span-->
                                 </label> 
                             </p>
                             <p class="level-item  b-checkbox is-circular">
                                 <input class="styled" type="radio" id="buscar_en_todas_claves" #claves [checked]="buscar_en == 'TODAS_LAS_CLAVES'" (click)="buscar_en = 'TODAS_LAS_CLAVES'" [value]="'TODAS_LAS_CLAVES'" name="buscar_en">                                    
                                 <label for="buscar_en_todas_claves">
-                                    <span class="tag is-large" [ngClass]="{'is-dark':buscar_en == 'TODAS_LAS_CLAVES'}">Todas las claves</span>
+                                    Todas las claves <!--span class="tag is-medium" [ngClass]="{'is-dark':buscar_en == 'TODAS_LAS_CLAVES'}">Todas las claves</span-->
                                 </label>    
                             </p>
+                        </div>
+                    </nav>
+                    <nav class="level">
+                        <div class="level-left">
                             <p class="level-item">&nbsp;</p>
                             <p class="level-item field">
                                 <span class="control">
