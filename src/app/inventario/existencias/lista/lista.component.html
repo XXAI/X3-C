@@ -1,9 +1,9 @@
 <listar #ctrl URL="inventario-insumos?buscar_en={{buscar_en}}&seleccionar={{seleccionar}}&tipo={{tipo}}&clave_insumo={{clave_insumo}}" titulo="Inventario"></listar>
 <app-menu-inventario [modulo]="'Existencia de insumos médicos'" [icono]="'assets/icono-salidas.svg'" [url]="'/inventario'"></app-menu-inventario>
 <div style="height:50px;"></div>
-<div class="contenedor columns " style="height:80%;">
-    <div class="column" style="padding:2em;">
-        <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
+<div class="contenedor columns " style="height:100%;">
+    <div class="column" style="padding:2em; overflow: auto;">
+        <div style="background: #FFF; border-radius: 1em;">
             <section class="hero" [ngClass]=" {'is-dark': ctrl.busquedaActivada, 'is-primary': !ctrl.busquedaActivada } ">
 
                 <div class="hero-body" style="position:relative;">
@@ -116,7 +116,7 @@
                 <br>
             </div>
             <span id="exportable">
-                <div style="overflow: scroll; overflow-x: hidden; height: 630px;">
+                <div style="overflow: scroll; height: 630px;">
                     <div class="is-fullwidth has-text-centered" *ngIf="cargandoPdf">
                         <br>
                         <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Generando PDF...</span></span>

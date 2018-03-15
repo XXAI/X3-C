@@ -184,7 +184,7 @@
               <div class="control is-grouped is-pulled-right" >            
                 <p class="control is-expanded" [ngClass]=" {'is-hidden': !conCantidad }" >
                     <label>Consumo promedio mensual: 0</label>
-                    <input class="input is-medium" [disabled]="insumoSeleccionado == null" type="number" placeholder="Cantidad" #cantidadBox id="cantidad" (keyup)="comprobarCantidad(cantidadBox.value)" >
+                    <input class="input is-medium" [disabled]="insumoSeleccionado == null" type="number" placeholder="Cantidad" #cantidadBox id="cantidad" (keyup)="comprobarCantidad(cantidadBox.value)" autocomplete="off">
                 </p>
                 <p class="control">
                     <label>&nbsp;</label>

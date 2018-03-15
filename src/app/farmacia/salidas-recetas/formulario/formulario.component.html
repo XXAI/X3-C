@@ -199,7 +199,7 @@
                                                 (valueChanged)="select_medico_autocomplete($event)" min-chars="1" class="input"
                                                 id="buscarMedico" value-property-name="nombre"
                                                 [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('receta').get('doctor').hasError('required') }"
-                                                type="text" placeholder="Doctor" formControlName="doctor">    
+                                                type="text" placeholder="Doctor" formControlName="doctor" autocomplete="off">    
 
                                             <span class="icon is-small" *ngIf="ctrl.dato.get('receta').get('doctor').hasError('required')">
                                                 <i class="fa fa-warning"></i>

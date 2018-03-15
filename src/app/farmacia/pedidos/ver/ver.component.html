@@ -5,7 +5,7 @@
     <div class="tile">
       <div class="tile is-4 is-parent is-vertical ">
         <div class="tile is-child">
-            <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
+            <div style="background: #FFF; border-radius: 1em; overflow: hidden; font-size: 0.7em;">
                 <section class="hero is-primary" [ngClass]="{'is-primary':pedido.status=='PS','is-success':pedido.status=='FI','is-info':pedido.status=='EF','is-warning':pedido.status=='EX', 'is-danger': pedido.status=='EX-CA', 'is-primary':(pedido.status == 'VAL' || pedido.status == 'PV')}" >
                     <h1 *ngIf="pedido.status == 'PS'" class="title" style="margin:0.5em;" >
                         <span class="icon is-medium"><i class="fa fa-file-text"></i></span> Pedido Por Surtir <span class="is-pulled-right">{{porcentageTotalPedido | number:'1.0-2'}} %</span>
@@ -20,7 +20,7 @@
                         <span class="icon is-medium"><i class="fa fa-file-text"></i></span> Pedido Finalizado <span class="is-pulled-right">{{porcentageTotalPedido | number:'1.0-2'}} %</span>
                     </h1>
                     <h1 *ngIf="pedido.status == 'EF'" class="title" style="margin:0.5em;" >
-                        <span class="icon is-medium"><i class="fa fa-file-text"></i></span> Pedido En Farmacia <span class="is-pulled-right">{{porcentageTotalPedido | number:'1.0-2'}} %</span>
+                        <span class="icon is-medium"><i class="fa fa-file-text"></i></span> Pedido/Farmacia <span class="is-pulled-right">{{porcentageTotalPedido | number:'1.0-2'}} %</span>
                     </h1>
                     <h1 *ngIf="pedido.status == 'EX'" class="title" style="margin:0.5em;" >
                         <span class="icon is-medium"><i class="fa fa-exclamation-circle"></i></span> Pedido Expirado <span class="is-pulled-right">{{porcentageTotalPedido | number:'1.0-2'}} %</span>
@@ -85,7 +85,7 @@
                     </div>
                     <hr>
                     <div class="control is-grouped" style="padding-top:10px;" *ngIf="!cargando">
-                        <p class="control" *ngIf="pedido.recepcionPermitida && pedido.status != 'FI' && !soloLectura">
+                        <p class="control" *ngIf="mostrarBotonRecibir">
                             <a class="button is-primary" routerLink="/almacen/pedidos/recepcion/{{pedido.id}}"> <span class="icon"><i class="fa fa-truck"></i></span> <span *ngIf="!tieneRecepcionIniciada">Recibir Pedido</span><span *ngIf="tieneRecepcionIniciada">Continuar Recepción</span></a>
                         </p>
 

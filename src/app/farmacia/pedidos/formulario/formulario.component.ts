@@ -134,6 +134,10 @@ export class FormularioComponent implements OnInit {
     // ############################################
     
     this.soloLectura = usuario.solo_lectura;
+
+    if(usuario.almacen_activo.subrogado){
+      this.soloLectura = true;
+    }
     
     //Harima: actualizacion para pedidos entre almacenes
     this.almacenDelUsuario = usuario.almacen_activo;
