@@ -65,9 +65,15 @@ export class ActualizarSistemaComponent implements OnInit {
     this.cargandoParches = true;
     this.apiService.listarParches().subscribe(
 			respuesta => {
-				this.cargandoParches = false;							
-        this.parches_api = respuesta;
-			
+				this.cargandoParches = false;
+				console.log(respuesta);
+				
+				this.parches_api = respuesta.api;
+				for(let i in this.parches_cliente){
+					if(respuesta.cliente[this.parches_cliente[i].nombre]){
+						this.parches_cliente[i].fecha_aplicacion = respuesta.cliente[this.parches_cliente[i].nombre]+'';
+					}
+				}
 			},
 			error => {
 				this.cargandoParches = false;				
@@ -75,7 +81,22 @@ export class ActualizarSistemaComponent implements OnInit {
 
 			}
 		);
+  }
 
+  ejecutarParcheApi(parche){
+	this.enviandoDatos = true;
+	this.apiService.ejecutarParche(parche).subscribe(
+		respuesta => {
+			this.enviandoDatos = false;
+			console.log(respuesta);
+			parche.fecha_ejecucion = true;
+		},
+		error => {
+			this.enviandoDatos = false;				
+			console.log(error);
+
+		}
+	);
   }
 
   adjuntarParche(){		
