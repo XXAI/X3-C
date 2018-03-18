@@ -24,6 +24,7 @@ export class MenuAsideComponent implements OnInit {
           { permiso: '3DMVRdBv4cLGzdfAqXO7oqTvAMbEdhI7', icono: 'fa-cloud', titulo: 'Servidor central', url: '/panel-control/sync/central' },
           { permiso: 'NNN3YYcmuXdZYVSGCk0CJFjcx3ATnRQ5', icono: 'fa-desktop', titulo: 'Servidor local', url: '/panel-control/sync/local' },
           { permiso: '8DDwGNuZOZfoFfaDOsQvBBhVzmnlU4PA', icono: 'fa-server', titulo: 'Servidores', url: '/panel-control/sync/servidores' },
+          { permiso: 'NNN3YYcmuXdZYVSGCk0CJFjcx3ATnRQ5', icono: 'fa-file-code-o', titulo: 'Log sync', url: '/panel-control/sync/log' },
         ]
       },
       {
