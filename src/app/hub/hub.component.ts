@@ -163,9 +163,16 @@ export class HubComponent implements OnInit {
         'DbpT0VqR0DcNcqmCnwRbK7XvgWqDY2yc', // Servidores
         '56R2ES2GDbpovdiLAwFEjj75Rl975MsR', // Unidades médicas
       ]
+    },
+    {
+      title: 'Compra Consolidada', routerLink: '/dam', icono: 'assets/hub-dam.svg',
+      permisos: [
+        '3WPZ93a8W0346y1hlpwLUVo3VRF5TVI4', // DAM
+        'bsIbPL3qv6XevcAyrRm1GxJufDbzLOax', // PRUEBA DAM
+      ]
     }
   ];
-  hubAutorizado = [ { title: 'Dashboard', routerLink: '/dashboard', icono: 'assets/hub-dashboard.svg' } ]
+  hubAutorizado = [ { title: 'Dashboard', routerLink: '/dashboard', icono: 'assets/hub-dashboard.svg' } ];
 
   constructor() { }
 

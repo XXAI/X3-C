@@ -11,9 +11,8 @@ export class Mensaje {
             this.iniciarCuentaAtras();
         }
         this.cuentaAtras = cuentaAtras;
-        
     }
-    
+
     iniciarCuentaAtras = function(){
         let finish = Observable.timer(7000);
         let timer = Observable.timer(0,1000).takeUntil(finish);

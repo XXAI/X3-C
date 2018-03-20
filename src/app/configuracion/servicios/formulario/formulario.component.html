@@ -15,8 +15,8 @@
                             <div class="level-left">
                                 <div class="container is-fluid">
                                     <h1 class="title">
-                                        <span *ngIf="!ctrl.cargando" class="icon is-medium"><i class="fa fa-edit"></i></span>
-                                        <span *ngIf="ctrl.cargando" class="icon is-medium"><i class="fa fa-refresh fa-spin"></i></span>                            
+                                        <span *ngIf="ctrl.cargando" class="icon is-medium"><i class="fa fa-refresh fa-spin"></i></span> 
+                                        <span *ngIf="!ctrl.cargando" class="icon is-medium"><i class="fa fa-hospital-o"></i></span>                           
                                         <!-- --> Mis servicios
                                     </h1>
                                     <span style="text-align: right">
@@ -140,10 +140,10 @@
                                                         <label class="panel-block" *ngFor="let item of ctrl.dato.controls.clues_servicios.controls; let i2=index">          
                                                             <div class="field" [formGroupName]="i2">
                                                                 <div class="b-checkbox">
-                                                                    <input id="{{item.value.id}}" class="styled" type="checkbox"
+                                                                    <input id="miservicio{{item.value.id}}" class="styled" type="checkbox"
                                                                     [checked]="ctrl.derecha.indexOf(item) > -1"
                                                                     (click)="ctrl.agregarMover('derecha', ctrl.dato.controls.clues_servicios.controls, item)">
-                                                                    <label for="{{item.value.id}}">
+                                                                    <label for="miservicio{{item.value.id}}">
                                                                         {{item.value.nombre}} 
                                                                     </label>
                                                                 </div>

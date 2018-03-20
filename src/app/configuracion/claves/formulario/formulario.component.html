@@ -16,7 +16,7 @@
                               <div class="level-left">
                                 <div class="container is-fluid">
                                   <h1 class="title">
-                                    <span *ngIf="!ctrl.cargando" class="icon is-medium"><i class="fa fa-edit"></i></span>
+                                    <span *ngIf="!ctrl.cargando" class="icon is-medium"><i class="fa fa-medkit"></i></span>
                                     <span *ngIf="ctrl.cargando" class="icon is-medium"><i class="fa fa-refresh fa-spin"></i></span>
                                     <!-- -->Mis claves
                                   </h1>
@@ -112,10 +112,10 @@
                             </div>
                             <!-- AGRUPADO POR CAUSES/NOCAUSES -->
                             <div> 
-                              <div *ngIf="cargando_claves_disponibles || ctrl.cargando" class="has-text-centered" style="overflow: hidden; overflow-x: hidden; height: 350px;">
+                              <div *ngIf="ctrl.cargando" class="has-text-centered" style="overflow: hidden; overflow-x: hidden; height: 350px;">
                                   <span class="tag is-primary is-large"><i class="fa fa-refresh fa-spin"></i> &nbsp; Cargando... </span>
                               </div>
-                              <div *ngIf="!cargando_claves_disponibles && !ctrl.cargando" style="overflow: scroll; overflow-x: hidden; height: 350px;">
+                              <div *ngIf="!ctrl.cargando" style="overflow: scroll; overflow-x: hidden; height: 350px;">
                                 <div class="content" formArrayName="clues_claves"  *ngIf="ctrl.dato.get('clues_claves').length > 0">
                                   <table class="table is-striped" style="padding: 20px;">
                                     <tbody *ngFor="let val of  ctrl.dato.controls.clues_claves.controls ; let i=index;" >
@@ -138,7 +138,7 @@
             </div>
             </article>
           </div>
-           <a (click)="ctrl.initMover(ctrl.dato.controls.clues_claves.controls, ctrl.tipos_claves, 'clave');  cargarValidar();" id="initMover"></a>
+           <!-- <a (click)="ctrl.initMover(ctrl.dato.controls.clues_claves.controls, ctrl.tipos_claves, 'clave');  cargarValidar();" id="initMover"></a> -->
         </section>
       </div>
     </div>

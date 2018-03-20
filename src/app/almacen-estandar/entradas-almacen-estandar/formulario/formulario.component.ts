@@ -5,7 +5,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 
 import { environment } from '../../../../environments/environment';
 import { CrudService } from '../../../crud/crud.service';
-import { createAutoCorrectedDatePipe } from 'text-mask-addons';
+import { createAutoCorrectedDatePipe, createNumberMask } from 'text-mask-addons';
 import * as moment from 'moment';
 import  * as FileSaver    from 'file-saver';
 
@@ -185,6 +185,16 @@ export class FormularioComponent {
   mask = [/[2]/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/];
 
   /**
+   * Se crea la máscara que contiene la configuración deseada.
+   */
+  numberMask: any = createNumberMask({
+    prefix: '',
+    includeThousandsSeparator: false,
+    allowLeadingZeroes: false,
+    allowDecimal: true
+  });
+
+  /**
    * Contiene los permisos del usuario, que posteriormente sirven para verificar si puede realizar o no
    * algunas acciones en este módulo.
    * @type {any} */
@@ -268,17 +278,19 @@ export class FormularioComponent {
     this.dato = this.fb.group({
       id: [''],
       actualizar: [false],
-      tipo_movimiento_id: [1, [Validators.required]],
+      tipo_movimiento_id: [17, [Validators.required]],
       estatus: ['FI'],
       fecha_movimiento: ['', [Validators.required]],
       fecha_referencia: ['', [Validators.required]],
       observaciones: [''],
+      programa: [],
       programa_id: [{value: '', disabled: false}, [Validators.required]],
       multiprograma: [''],
       cancelado: [''],
       observaciones_cancelacion: [''],
       movimiento_metadato: this.fb.group({
         proveedor_id: [{value: '', disabled: false}, [Validators.required]],
+        proveedor: [],
         numero_pedido: [{value: '', disabled: false}, [Validators.required]],
         folio_factura: [{value: '', disabled: false}, [Validators.required]],
         donante: [{value: '', disabled: true}, [Validators.required]],
@@ -373,6 +385,7 @@ export class FormularioComponent {
     for ( let item of control_insumos.value) {
       if (item.lotes) {
         for (let lotes_item of item.lotes) {
+          console.log(lotes_item);
           lotes = {
             'clave': item.clave,
             'nombre': item.nombre,
@@ -381,10 +394,12 @@ export class FormularioComponent {
             'es_unidosis': item.es_unidosis,
             'lote': [lotes_item.lote, [Validators.required]],
             'id': lotes_item.id,
+            'exclusivo': lotes_item.exclusivo ? Number(lotes_item.exclusivo) : true ,
             'codigo_barras': [lotes_item.codigo_barras, [Validators.required]],
             'fecha_caducidad': [lotes_item.fecha_caducidad, [Validators.required]],
-            'cantidad': [Number(lotes_item.cantidad), [Validators.required]],
+            'cantidad': [Number(lotes_item.cantidad) == 0 ? '' : Number(lotes_item.cantidad), [Validators.required]],
             'precio_unitario': [Number(lotes_item.precio_unitario), [Validators.required]],
+            'precio_unitario_base': [Number(lotes_item.precio_unitario_base), [Validators.required]],
             'tipo': item.tipo,
             'importe': [Number(lotes_item.importe), [Validators.required]],
             'cantidad_x_envase': Number(item.detalles.informacion_ampliada.cantidad_x_envase),
@@ -403,7 +418,6 @@ export class FormularioComponent {
       control_insumos2.insert(0, this.fb.group(item));
     }
     this.sumaTotal();
-    console.log(this.dato.controls.movimiento_metadato['controls']['donacion'].value);
     if (this.dato.controls.movimiento_metadato['controls']['donacion'].value === '1' ||
       this.dato.controls.movimiento_metadato['controls']['donacion'].value === 1) {
       this.dato.controls.movimiento_metadato['controls']['donacion'].patchValue(true);
@@ -416,7 +430,6 @@ export class FormularioComponent {
       this.dato.controls.movimiento_metadato['controls']['donacion'].patchValue(false);
       this.dato.controls.movimiento_metadato['controls']['donante'].disable();
     }
-    console.log(this.dato.controls.movimiento_metadato['controls']['donacion'].value);
 
     this.llenando_formulario = false;
   }
@@ -558,9 +571,12 @@ export class FormularioComponent {
         precio_unitario_temporal = item.precio_unitario;
       }
     }
+    if (this.insumo.precio_unitario) {
+      precio_unitario_temporal = this.insumo.precio_unitario;
+    }
     // crear el json que se pasara al formulario reactivo tipo insumos
     let temporal_cantidad_x_envase;
-    if (this.insumo.cantidad_x_envase == null){
+    if (this.insumo.cantidad_x_envase == null) {
       temporal_cantidad_x_envase = 1;
     }else {
       temporal_cantidad_x_envase = this.insumo.cantidad_x_envase;
@@ -575,13 +591,15 @@ export class FormularioComponent {
       'lote': ['', [Validators.required]],
       'id': null,
       'codigo_barras': [''],
-      'fecha_caducidad': ['', [Validators.required]],
-      'precio_unitario': [precio_unitario_temporal === 0 ? '' : precio_unitario_temporal, [Validators.required]],
+      'fecha_caducidad': [null, [Validators.required]],
+      'precio_unitario': [precio_unitario_temporal === 0 ? '' : Number( precio_unitario_temporal), [Validators.required]],
       'importe': [0],
       'cantidad': ['', [Validators.required]],
       'cantidad_x_envase': parseInt(temporal_cantidad_x_envase),
       'cantidad_surtida': 1,
       'movimiento_insumo_id': null,
+      'precio_unitario_base': this.insumo.precio_unitario_base ? this.insumo.precio_unitario_base : '',
+      'exclusivo': true,
       'stock_id': null,
     };
 
@@ -589,6 +607,7 @@ export class FormularioComponent {
     if (!existe) {
       control.insert(0, this.fb.group(lotes));
     }
+    console.log(lotes);
   }
 
   /**
@@ -601,7 +620,7 @@ export class FormularioComponent {
         id: '' + Math.floor(Math.random() * (999)) + 1,
         codigo_barras: '',
         lote: '',
-        fecha_caducidad: '',
+        fecha_caducidad: null,
         existencia: '',
         cantidad: '',
         nuevo: 1,
@@ -649,10 +668,10 @@ export class FormularioComponent {
     let fecha_hoy = moment();
     if (!moment(fecha, 'YYYY-MM-DD', true).isValid()) {
       this.notificacion.alert('Fecha inválida', 'Debe ingresar una fecha válida', this.objeto);
-      ctrlLotes.controls['fecha_caducidad'].patchValue('');
+      ctrlLotes.controls['fecha_caducidad'].patchValue(null);
     } else {
       if (moment(fecha, 'YYYY-MM-DD', true) <= fecha_hoy.add(14, 'days')) {
-        ctrlLotes.controls['fecha_caducidad'].patchValue('');
+        ctrlLotes.controls['fecha_caducidad'].patchValue(null);
         this.notificacion.alert('Fecha inválida', 'La fecha de caducidad debe ser mayor al ' +
          fecha_hoy.format('YYYY-MM-DD'), this.objeto);
       }
@@ -797,7 +816,6 @@ export class FormularioComponent {
       temporal = <FormGroup>this.dato;
     }
     const formEntrada = temporal;
-    console.log(this.dato.controls.movimiento_metadato['controls']['donacion'].value);
     // if (!this.dato.controls.movimiento_metadato['controls']['donacion'].value ||
     //     this.dato.controls.movimiento_metadato['controls']['donacion'].value === '0' ||
     //     this.dato.controls.movimiento_metadato['controls']['donacion'].value === 0 ||
@@ -828,7 +846,6 @@ export class FormularioComponent {
       // Se limpia el campo DONANTE cuando se desactiva la donación
       this.dato.controls.movimiento_metadato['controls']['donante'].patchValue('');
     }
-    console.log(this.dato);
   }
 
   /**
@@ -953,15 +970,16 @@ export class FormularioComponent {
     try {
       this.cargandoPdf = true;
         this.cargando = true;
-
-        this.crudService.ver(this.dato.controls.id.value, 'entrada-almacen-standard').subscribe(
+        console.log(this.dato.value);
+        // this.crudService.ver(this.dato.controls.id.value, 'entrada-almacen-standard').subscribe(
+          this.crudService.verIniciar('documentos-firmantes/2').subscribe(
             resultado => {
-              entrada = resultado;
               this.cargando = false;
               let entrada_imprimir = {
-                datos: entrada,
+                datos: this.dato.value,
                 lista: this.dato.value.insumos,
                 usuario: this.usuario,
+                firmas: resultado,
                 monto_total: this.total_precio
               };
               this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));

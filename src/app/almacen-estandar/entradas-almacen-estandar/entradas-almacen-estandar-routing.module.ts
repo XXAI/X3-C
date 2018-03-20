@@ -15,25 +15,25 @@ const routes: Routes = [
         path: '',
         component: ListaComponent,
         canActivate: [PermisosGuard],
-        data: { key: 'a1OMZVn7dveOf5aUK8V0VsvvSCxz8EMw'}
+        data: { key: 'J1mYtHwF7WVbie5dCZhFptvYzNEtqHXQ'}
       },
       {
         path: 'nuevo',
         component: FormularioComponent,
         canActivate: [PermisosGuard],
-        data: { key: 'a1OMZVn7dveOf5aUK8V0VsvvSCxz8EMw'}
+        data: { key: 'J1mYtHwF7WVbie5dCZhFptvYzNEtqHXQ'}
       },
       {
         path: 'editar/:id',
         component: FormularioComponent,
         canActivate: [PermisosGuard],
-        data: { key: 'a1OMZVn7dveOf5aUK8V0VsvvSCxz8EMw'}
+        data: { key: 'J1mYtHwF7WVbie5dCZhFptvYzNEtqHXQ'}
       },
       {
         path: 'ver/:id',
         component: FormularioComponent,
         canActivate: [PermisosGuard],
-        data: { key: 'a1OMZVn7dveOf5aUK8V0VsvvSCxz8EMw'}
+        data: { key: 'J1mYtHwF7WVbie5dCZhFptvYzNEtqHXQ'}
       },
     ],
     canActivate: [AuthGuard]

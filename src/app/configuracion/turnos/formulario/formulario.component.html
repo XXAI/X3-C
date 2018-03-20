@@ -16,8 +16,8 @@
                                 <div class="level-left">
                                     <div class="container is-fluid">
                                         <h1 class="title">
-                                            <span *ngIf="!ctrl.cargando" class="icon is-medium"><i class="fa fa-edit"></i></span>
-                                            <span *ngIf="ctrl.cargando" class="icon is-medium"><i class="fa fa-refresh fa-spin"></i></span>                            
+                                            <span *ngIf="ctrl.cargando" class="icon is-medium"><i class="fa fa-refresh fa-spin"></i></span> 
+                                            <span *ngIf="!ctrl.cargando" class="icon is-medium"><i class="fa fa-clock-o"></i></span>                           
                                             <!-- --> Mis turnos
                                         </h1>
                                         <span style="text-align: right">Última actualización: <span *ngIf="!actualizado" class="icon is-small"><i class="fa fa-refresh fa-spin"></i></span>
@@ -121,10 +121,10 @@
                                                 <div class="panel-heading">
                                                     <div class="field">
                                                         <div class="b-checkbox is-info">
-                                                            <input id="MisServicios" class="styled" type="checkbox" 
+                                                            <input id="MisTurnos" class="styled" type="checkbox" 
                                                             [checked]="ctrl.todosSeleccionados.derecha"
                                                             (click)="ctrl.seleccionarTodosMover('derecha', ctrl.dato.controls.clues_turnos.controls)">
-                                                            <label for="MisServicios">
+                                                            <label for="MisTurnos">
                                                             Mis turnos
                                                         </label>
                                                         </div>
@@ -139,10 +139,10 @@
                                                     <label class="panel-block" *ngFor="let item of ctrl.dato.controls.clues_turnos.controls; let i2=index">          
                                                         <div class="field" [formGroupName]="i2">
                                                             <div class="b-checkbox">
-                                                                <input id="{{item.value.id}}" class="styled" type="checkbox"
+                                                                <input id="MiTurno{{item.value.id}}" class="styled" type="checkbox"
                                                                 [checked]="ctrl.derecha.indexOf(item) > -1"
                                                                 (click)="ctrl.agregarMover('derecha', ctrl.dato.controls.clues_turnos.controls, item)">
-                                                                <label for="{{item.value.id}}">
+                                                                <label for="MiTurno{{item.value.id}}">
                                                                     {{item.value.nombre}} 
                                                                 </label>
                                                             </div>

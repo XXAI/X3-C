@@ -7,7 +7,7 @@ import { environment } from '../../../../environments/environment';
 import { CrudService } from '../../../crud/crud.service';
 import * as moment from 'moment';
 import  * as FileSaver    from 'file-saver';
-import { createAutoCorrectedDatePipe } from 'text-mask-addons';
+import { createAutoCorrectedDatePipe, createNumberMask } from 'text-mask-addons';
 
 import { Mensaje } from '../../../mensaje';
 import { NotificationsService } from 'angular2-notifications';
@@ -26,7 +26,7 @@ export class InicialComponent {
   /**
    * Variable que tiene un valor verdadero mientras cargan los datos del inventario.
    */
-  cargarInventario = true;
+  cargarInventario = false;
   /**
    * Variable que contienen el total de la suma de los precios de los insumos más iva_importe.
    * @type {Number}
@@ -85,7 +85,11 @@ export class InicialComponent {
   json_articulos;
   cat = [];
 
-  cargando: boolean = false;
+  /**
+   * Variable que contiene un valor true si hay un proceso en ejecución o si está cargando datos.
+   * @type {boolean}
+   */
+  cargando = false;
   /**
    * Calcula el tamaño de la pantalla
    */
@@ -158,6 +162,14 @@ export class InicialComponent {
    */
   autoCorrectedDatePipe: any = createAutoCorrectedDatePipe('yyyy-mm-dd');
   /**
+   * Se crea la máscara que contiene la configuración deseada.
+   */
+  numberMask: any = createNumberMask({
+    prefix: '',
+    includeThousandsSeparator: false,
+    allowLeadingZeroes: false
+  });
+  /**
    * Máscara para validar la entrada de la fecha de caducidad con el formato siguiente AAAA-MM-DD
    * @type {array}
    */
@@ -199,6 +211,7 @@ export class InicialComponent {
 
   constructor(
     private fb: FormBuilder,
+    private router: Router,
     private notificacion: NotificationsService,
     private route: ActivatedRoute,
     private crudService: CrudService,
@@ -225,20 +238,7 @@ export class InicialComponent {
       programas: []
     };
 
-    this.dato = this.fb.group({
-      id:	[''],
-      clues:	[this.usuario.clues_activa.clues, Validators.required],
-      almacen_id:	[this.usuario.almacen_activo.id, Validators.required],
-      estatus	:	['NOINICIALIZADO'],
-      fecha_inicio: [''],
-      fecha_fin: [''],
-      observaciones: [''],
-      usuario_id: [this.usuario.id, Validators.required],
-      programas: this.fb.array([ ]),
-      movimientos_articulos: this.fb.array([]),
-    });
     this.cargarCatalogo('programa', 'lista_programas', 'estatus');
-    this.agregarPrograma();
     // this.iniciarPrograma();
 
     let date = new Date();
@@ -253,14 +253,23 @@ export class InicialComponent {
       this.form_dato.fecha_inicio = this.fecha_actual;
       this.form_dato.fecha_fin = this.fecha_actual;
     } else {
-      this.fecha_actual = this.form_dato.fecha_inicio;
+      // this.fecha_actual = this.form_dato.fecha_inicio;
+      this.fecha_actual = date.getFullYear() + '-' + ('00' + (date.getMonth() + 1)).slice(-2) + '-' + date.getDate();
       this.form_dato.fecha_fin = date.getFullYear() + '-' + ('00' + (date.getMonth() + 1)).slice(-2) + '-' + date.getDate();
     }
-    this.cargarDatos();
+    // Identificar si se reciben el parámetro ID
+    this.route.params.subscribe(params => {
+      if (params['id']) {
+        this.tieneid = true;
+        this.cargarInventario = true;
+        this.cargarDatos(params['id']);
+      }
+    });
+
 
     /* **********************IMPRIMIR******************************* */
         // Inicializamos el objeto para los reportes con web Webworkers
-        this.pdfworker = new Worker('web-workers/inventario/lista-inicializacion.js');
+        this.pdfworker = new Worker('web-workers/inventario/inicializacion-inventario.js');
 
         // Este es un hack para poder usar variables del componente dentro de una funcion del worker
         var self = this;
@@ -276,6 +285,9 @@ export class InicialComponent {
         };
   }
 
+  /**
+   * Metodo que ssirve para agregar programa.
+   */
   iniciarPrograma() {
         this.form_dato.programas.push({
             'id': '',
@@ -307,17 +319,7 @@ export class InicialComponent {
       }
     );
   }
-  /**
-   * Método para inciar el formulario reactivo del array de programas
-   */
-  arrayPrograma(): FormGroup {
-    return this.fb.group({
-      id: ['', Validators.required],
-      clave: ['', Validators.required],
-      nombre: ['', Validators.required],
-      insumos: this.fb.array([ ]),
-    });
-  }
+
   /**
    * Método para inciar el formulario reactivo del array de insumos
    */
@@ -340,21 +342,11 @@ export class InicialComponent {
   }
 
 
-  /**
-   * Método para agregar programas al formulario reactivo
-   */
-  agregarPrograma(): void {
-    const programas = this.dato.get('programas') as FormArray;
-    programas.push(this.arrayPrograma());
-  }
 
   /**
-   * Método para agregar programas al formulario reactivo
+   * Método para agregar programas al formulario
    */
   agregarInsumo(i): void {
-    /*** Forma para agregar a reactivo ***/
-    // const insumos = this.dato.controls.programas['controls'][0].get('insumos') as FormArray;
-    // insumos.insert(0, this.arrayInsumos());
     let existe = false;
 
     for (let item of this.form_dato.programas[i].insumos) {
@@ -373,6 +365,7 @@ export class InicialComponent {
       es_unidosis: this.insumo.es_unidosis,
       cantidad_x_envase: this.insumo.cantidad_x_envase,
       tipo: this.insumo.tipo,
+      precio_unitario: this.insumo.precio_unitario,
       subtotal: '',
       lotes: []
     };
@@ -381,8 +374,6 @@ export class InicialComponent {
       let start_index = 0;
       let number_of_elements_to_remove = 0;
       this.form_dato.programas[i].insumos.splice(start_index, number_of_elements_to_remove, ob_temporal);
-      // this.form_dato.programas[i].insumos.push(ob_temporal);
-      // this.form_dato.programas[i].insumos.reverse();
     }
   }
   /**
@@ -468,10 +459,10 @@ export class InicialComponent {
    * Seleccionar programa para cambiar la vista al usuario
    * @param id variable que contiene el id del programa
    */
-  seleccionarPrograma() {
-    let programa_id = (<HTMLInputElement>document.getElementById('programa_agregado')).value;
+  seleccionarPrograma(programa_id) {
+    // let programa_id = (<HTMLInputElement>document.getElementById('programa_agregado')).value;
     for (let p = 0; p < this.form_dato.programas.length; p++) {
-      if (String(this.form_dato.programas[p].id) === programa_id) {
+      if (String(this.form_dato.programas[p].id) === programa_id || Number(this.form_dato.programas[p].id) === programa_id) {
         this.i_programa = p;
         break;
       }
@@ -501,11 +492,24 @@ export class InicialComponent {
             'clave': obj.clave,
             'insumos': []
           });
-          this.i_programa = this.form_dato.programas.length-1;
+          this.i_programa = this.form_dato.programas.length - 1;
           // this.seleccionarPrograma(this.form_dato.programas.length-1);
           break;
         }
       }
+    }
+  }
+  /**
+   * Metodo que calcula el preupuesto de cada CLUES.
+   * @param i_programa Index del programa al que pertenece el insumo.
+   * @param i_insumo Index del insumo al que pertenece el lote.
+   * @param i_lote Index del lote al que pertenece el precio unitario a capturar.
+   */
+  validar_precio_unitario(i_programa, i_insumo, i_lote) {
+    if (isNaN(this.form_dato.programas[i_programa].insumos[i_insumo].lotes[i_lote].precio_unitario)) {
+      this.form_dato.programas[i_programa].insumos[i_insumo].lotes[i_lote].requerir_pu = true;
+    } else {
+      this.form_dato.programas[i_programa].insumos[i_insumo].lotes[i_lote].requerir_pu = false;
     }
   }
   /**
@@ -611,12 +615,15 @@ export class InicialComponent {
    * @param pos Contiene la posición del arreglo a la que se agregará la existencia.
    */
   calcular_importes (item, i_prog, i_insumo, i_lote) {
-    if (item.precio_unitario === '' || item.precio_unitario == null) {
+    this.form_dato.programas[i_prog].insumos[i_insumo].lotes[i_lote].existencia = Number(item.existencia);
+    if (isNaN(item.precio_unitario)) {
       this.form_dato.programas[i_prog].insumos[i_insumo].lotes[i_lote].importe = 0;
-    } if (item.existencia  === '' || item.existencia == null) {
+    } else if (item.precio_unitario === '' || item.precio_unitario == null || isNaN(item.precio_unitario)) {
+      this.form_dato.programas[i_prog].insumos[i_insumo].lotes[i_lote].importe = 0;
+    } else if (item.existencia  === '' || item.existencia == null) {
       this.form_dato.programas[i_prog].insumos[i_insumo].lotes[i_lote].importe = 0;
     } else {
-      let temporal = item.existencia * item.precio_unitario;
+      let temporal = Number(item.existencia) * Number(item.precio_unitario);
       this.form_dato.programas[i_prog].insumos[i_insumo].lotes[i_lote].importe = temporal;
     }
   }
@@ -681,95 +688,31 @@ export class InicialComponent {
    * Método con el que se agregan lotes al array.
    */
   agregarLote(i_prog, i_insumo) {
+    let tiene_precio = false;
+    if (this.form_dato.programas[i_prog].insumos[i_insumo].precio_unitario) {
+      tiene_precio = true;
+    }
+    if (this.form_dato.programas[i_prog].insumos[i_insumo].precio_unitario === null ) {
+      tiene_precio = false;
+    }
       let lote_temporal = {
                             id: null,
                             lote: '',
                             codigo_barras: '',
                             fecha_caducidad: '',
                             existencia: '',
-                            precio_unitario: '',
+                            precio_unitario: tiene_precio ? Number(this.form_dato.programas[i_prog].insumos[i_insumo].precio_unitario) : null,
                             importe: 0,
-                            iva_importe: 0
+                            iva_importe: 0,
+                            exclusivo: 1,
+                            requerir_pu: tiene_precio ? false : true
                           };
-
-      // this.form_dato.programas[i_prog].insumos[i_insumo].lotes.push(lote_temporal);
-      // this.form_dato.programas[i_prog].insumos[i_insumo].lotes.reverse();
 
       let start_index = 0;
       let number_of_elements_to_remove = 0;
       this.form_dato.programas[i_prog].insumos[i_insumo].lotes.splice(start_index, number_of_elements_to_remove, lote_temporal);
   }
 
-  /**
-   * 
-   * @param iniciar
-   */
-  cargarArticulos(iniciar = '') {
-    this.reset_form();
-    this.cargando = true;
-    this.dato.controls.tipos_movimientos_id.patchValue(7);
-    this.dato.controls.status_movimientos_id.patchValue(1);
-    let url = 'articulos-stock-inicial';
-    if (iniciar !== '') {
-      url += '?iniciar';
-    }
-    this.json_articulos = [];
-    document.getElementById('cerra_restablecer').click();
-    this.crudService.lista(0, 0, url).subscribe(
-      resultado => {
-        let c = 0;
-        this.json_articulos = resultado.data;
-        this.json_articulos.forEach(element => {
-          element.contador = c;
-          let categorias = element.categorias;
-          if (!element.categorias){
-            categorias = { 'nombre': 'Sin categoria' };
-          }
-          element.categorias = categorias;
-          this.cat[c] = false;
-          c++;
-        });
-        c = 0;
-        resultado.data.forEach(item => {
-          item.precio_venta = '';
-          item.contador = c;
-          item.lotes = this.fb.array([]);
-
-          const a: FormArray = <FormArray>this.dato.controls.movimientos_articulos;
-          a.controls.push(this.fb.group(item));
-          this.agregar_lote(c);
-          c++;
-        });
-
-        this.cargando = false;
-      },
-      error => {
-        this.cargando = false;
-      }
-    );
-  }
-  guardarDatos(regresar, reset_form) {
-
-    this.cargando = true;
-    this.guardado = false;
-    this.error = false;
-    let json = this.dato.getRawValue();
-    this.crudService.crear(json, 'articulos-stock-inicial').subscribe(
-      resultado => {
-        this.guardado = true;
-        setTimeout(()=> {
-          this.guardado = false;
-        }, 2500);
-        this.cargarArticulos();
-      },
-      error => {
-        this.error = true;
-        setTimeout(()=> {
-          this.error = false;
-        }, 3000);
-      }
-    );
-  }
   initLote() {
     return this.fb.group({
       lote: ['UNICO', [Validators.required]],
@@ -794,21 +737,27 @@ export class InicialComponent {
     control.removeAt(i2);
   }
 
+  /**
+   * Método para recargar el formulario.
+   */
   reset_form() {
-    this.dato.reset();
-    for (let item in this.dato.controls) {
-        const ctrl = <FormArray>this.dato.controls[item];
-        if (ctrl.controls) {
-            if (typeof ctrl.controls.length == 'number') {
-                while (ctrl.length) {
-                    ctrl.removeAt(ctrl.length - 1);
-                }
-                ctrl.reset();
-            }
-        }
-    }
+    this.form_dato = {
+      id: '',
+      clues: this.usuario.clues_activa.clues,
+      almacen_id:	this.usuario.almacen_activo.id,
+      estatus	:	'NOINICIALIZADO',
+      fecha_inicio: '',
+      fecha_fin: '',
+      observaciones: '',
+      usuario_id: this.usuario.id,
+      cantidad_programas: 0,
+      cantidad_claves: 0,
+      cantidad_insumos: 0,
+      cantidad_lotes: 0,
+      monto_total: 0,
+      programas: []
+    };
     return true;
-  
   }
   /**
    * Este método quita un formgrupo a un formarray, para crear un formulario dinamico
@@ -852,7 +801,7 @@ export class InicialComponent {
   cancelarModal(id) {
     document.getElementById(id).classList.remove('is-active');
     if (id === 'guardarMovimiento') {
-      this.dato.controls.estatus.patchValue('BR');
+      this.dato.controls.estatus.patchValue('NOINICIALIZADO');
     }
   }
   /**
@@ -889,7 +838,7 @@ export class InicialComponent {
       error_detener_envio = true;
     }
     if (this.form_dato.fecha_fin === '' || this.form_dato.fecha_fin == null || this.form_dato.fecha_fin === undefined) {
-      this.mensajeResponse.texto = 'Formulario no enviado. Completar la Fecha de inicio ' + this.form_dato.fecha_fin;
+      this.mensajeResponse.texto = 'Formulario no enviado. Completar la Fecha de fin ' + this.form_dato.fecha_fin;
       this.mensajeResponse.mostrar = true;
       this.mensajeResponse.clase = 'warning';
       this.form_dato.fecha_fin = '';
@@ -933,7 +882,9 @@ export class InicialComponent {
           if (this.form_dato.programas[p].insumos[i].lotes[l].lote === '' ||
           this.form_dato.programas[p].insumos[i].lotes[l].lote == null ||
           this.form_dato.programas[p].insumos[i].lotes[l].lote === undefined) {
-            this.mensajeResponse.texto = 'Error en lote del insumo: ' + this.form_dato.programas[p].insumos[i].descripcion + '. Del programa ' + this.form_dato.programas[p].nombre;
+            this.mensajeResponse.texto = 'Error en ' + `<strong> lote </strong>` + ' del insumo: '
+                                        + this.form_dato.programas[p].insumos[i].descripcion
+                                        + '. Del programa ' + `<strong> ` + this.form_dato.programas[p].nombre + `</strong> `;
             this.mensajeResponse.mostrar = true;
             this.mensajeResponse.clase = 'warning';
             this.mensaje(2);
@@ -941,26 +892,39 @@ export class InicialComponent {
             break;
           }
           if (this.form_dato.programas[p].insumos[i].lotes[l].fecha_caducidad === '' ||
-          this.form_dato.programas[p].insumos[i].lotes[l].fecha_caducidad == null ||
-          this.form_dato.programas[p].insumos[i].lotes[l].fecha_caducidad === undefined) {
-            this.mensajeResponse.texto = 'Error en fecha de caducidad del insumo: ' + this.form_dato.programas[p].insumos[i].descripcion +
-              '. Del programa ' + this.form_dato.programas[p].nombre;
-            this.mensajeResponse.mostrar = true;
-            this.mensajeResponse.clase = 'warning';
-            this.mensaje(2);
-            error_detener_envio = true;
-            break;
+              this.form_dato.programas[p].insumos[i].lotes[l].fecha_caducidad == null ||
+              this.form_dato.programas[p].insumos[i].lotes[l].fecha_caducidad === undefined) {
+                this.mensajeResponse.texto = 'Error en ' + `<strong> fecha de caducidad </strong>` + ' del insumo: '
+                                              + this.form_dato.programas[p].insumos[i].descripcion
+                                              +  '. Del programa ' + `<strong> ` + this.form_dato.programas[p].nombre + `</strong> `;
+                this.mensajeResponse.mostrar = true;
+                this.mensajeResponse.clase = 'warning';
+                this.mensaje(2);
+                error_detener_envio = true;
+                break;
           }
           if (this.form_dato.programas[p].insumos[i].lotes[l].existencia === '' ||
-          this.form_dato.programas[p].insumos[i].lotes[l].existencia == null ||
-          this.form_dato.programas[p].insumos[i].lotes[l].existencia === undefined) {
-            this.mensajeResponse.texto = 'Error en existencia del insumo: ' + this.form_dato.programas[p].insumos[i].descripcion +
-              '. Del programa ' + this.form_dato.programas[p].nombre;
-            this.mensajeResponse.mostrar = true;
-            this.mensajeResponse.clase = 'warning';
-            this.mensaje(2);
-            error_detener_envio = true;
-            break;
+              this.form_dato.programas[p].insumos[i].lotes[l].existencia == null ||
+              this.form_dato.programas[p].insumos[i].lotes[l].existencia === undefined) {
+                this.mensajeResponse.texto = 'Error en existencia del insumo: ' + this.form_dato.programas[p].insumos[i].descripcion +
+                  '. Del programa ' + `<strong> ` + this.form_dato.programas[p].nombre + `</strong> `;
+                this.mensajeResponse.mostrar = true;
+                this.mensajeResponse.clase = 'warning';
+                this.mensaje(2);
+                error_detener_envio = true;
+                break;
+          }
+          if (this.form_dato.programas[p].insumos[i].lotes[l].precio_unitario === '' ||
+              this.form_dato.programas[p].insumos[i].lotes[l].precio_unitario == null ||
+              this.form_dato.programas[p].insumos[i].lotes[l].precio_unitario === undefined ||
+              isNaN(this.form_dato.programas[p].insumos[i].lotes[l].precio_unitario)) {
+                this.mensajeResponse.texto = 'Error en precio unitario del insumo: ' + this.form_dato.programas[p].insumos[i].descripcion +
+                  '. Del programa ' + this.form_dato.programas[p].nombre;
+                this.mensajeResponse.mostrar = true;
+                this.mensajeResponse.clase = 'warning';
+                this.mensaje(2);
+                error_detener_envio = true;
+                break;
           }
 
         }
@@ -986,26 +950,40 @@ export class InicialComponent {
     }
   }
 
+
+  /**
+   * Método para refrescar la pagina y si tiene id, hace la peticion a la API, para cargar los datos.
+   */
+  actualizar() {
+    if (this.tieneid){
+      this.cargarDatos(this.form_dato.id);
+    }
+  }
+
+  /**
+   * Método para enviar el modelo a la API según si es para crear un nuevo registro o para actualizarlo.
+   */
+  enviar() {
+    if (this.form_dato.id) {
+      this.actualizarDatos(this.form_dato.id);
+    } else {
+      this.guardarDatos();
+    }
+  }
   /**
    * Metodo que envia la peticion a la API para crear un nuevo registro.
    */
-  enviar() {
+  guardarDatos() {
+    let editar = '/inventario/iniciar-inventario';
     this.cargando = true;
     this.crudService.crear(this.form_dato, 'inicializar-inventario-me').subscribe(
       resultado => {
         this.cargando = false;
-        console.log(this.form_dato);
         this.form_dato.id = resultado.id;
-        console.log(this.form_dato);
-        // if (regresar) {
-        //     this.location.back();
-        // }
-        // if (editar && json.estatus === 'BR') {
-        //     this.router.navigate([editar, resultado.id]);
-        // }
-        // if (editar && json.estatus === 'FI') {
-        //     this.router.navigate([editar]);
-        // }
+        if (this.form_dato.estatus === 'NOINICIALIZADO') {
+            this.router.navigate(['/inventario/iniciar-inventario/editar', resultado.id]);
+            this.cargarDatos(resultado.id);
+        }
 
         this.mensajeResponse.texto = 'Se han guardado los cambios.';
         this.mensajeResponse.mostrar = true;
@@ -1024,7 +1002,7 @@ export class InicialComponent {
 
         try {
             let e = error.json();
-            if (error.status == 401) {
+            if (error.status === 401) {
                 this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
             }
             // Problema de validación
@@ -1081,36 +1059,118 @@ export class InicialComponent {
       }
     )
   }
+  
+  /**
+     * Este método envia los datos para actualizar un elemento con el id
+     * que se envia por la url
+     * @return void
+     */
+    actualizarDatos(id) {
+      let editar = '/inventario/iniciar-inventario';
+      this.cargando = true;
+
+      this.crudService.editar(id, this.form_dato, 'inicializar-inventario-me').subscribe(
+           resultado => {
+              this.reset_form();
+              if (resultado.estatus === 'INICIALIZADO') {
+                  this.router.navigate([editar]);
+              }
+              if (resultado.estatus === 'NOINICIALIZADO') {
+                  this.router.navigate(['/inventario/iniciar-inventario/editar', resultado.id]);
+                  this.cargarDatos(resultado.id);
+              }
+              this.cargando = false;
+
+              this.mensajeResponse.texto = 'Se han guardado los cambios.';
+              this.mensajeResponse.mostrar = true;
+              this.mensajeResponse.clase = 'success';
+              this.mensaje(2);
+          },
+          error => {
+              this.cargando = false;
+
+              this.mensajeResponse.texto = 'No especificado.';
+              this.mensajeResponse.mostrar = true;
+              this.mensajeResponse.clase = 'alert';
+              this.mensaje(2);
+              try {
+                  let e = error.json();
+                  if (error.status == 401) {
+                      this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
+                      this.mensajeResponse.clase = 'error';
+                      this.mensaje(2);
+                  }
+                  // Problema de validación
+                  if (error.status == 409) {
+                      this.mensajeResponse.texto = 'Por favor verfique los campos marcados en rojo.';
+                      this.mensajeResponse.clase = 'error';
+                      this.mensaje(8);
+                      for (let input in e.error) {
+                          // Iteramos todos los errores
+                          for (let i in e.error[input]) {
+                              this.mensajeResponse.titulo = input;
+                              this.mensajeResponse.texto = e.error[input][i];
+                              this.mensajeResponse.clase = 'error';
+                              this.mensaje(3);
+                          }
+                      }
+                  }
+              } catch (e) {
+                  if (error.status == 500) {
+                      this.mensajeResponse.texto = '500 (Error interno del servidor)';
+                  } else {
+                      this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
+                  }
+                  this.mensajeResponse.clase = 'error';
+                  this.mensaje(2);
+              }
+
+          }
+      );
+  }
 
   /**
      * Este método carga los datos de un elemento de la api con el id que se pase por la url
      * en la api, abre una ventana modal para confirmar la acción
      * @return void
      */
-    cargarDatos() {
+    cargarDatos(id) {
+      if (this.reset_form()) {
           try {
               this.cargando = true;
 
-              this.crudService.verIniciar('inicializar-inventario-me').subscribe(
+              this.crudService.ver(id, 'inicializar-inventario-me').subscribe(
                   resultado => {
                     this.form_dato = resultado;
-                    console.log(this.form_dato);
-                    console.log('Resultado', resultado);
                       this.cargando = false;
                       this.cargarInventario = false;
 
                       if (resultado.programas) {
                         if (resultado.programas.length > 0) {
                           this.i_programa = 0;
-                          for ( let i = 0; i< resultado.programas.length; i++) {
+                          for ( let i = 0; i < resultado.programas.length; i++) {
                             if (resultado.programas[i].insumos.length > 0) {
-                              for ( let j = 0; j< resultado.programas[i].insumos.length; j++) {
+                              for ( let j = 0; j < resultado.programas[i].insumos.length; j++) {
                                 this.calcularSubtotal(i, j);
+                                for ( let l = 0; l < resultado.programas[i].insumos[j].lotes.length; l++) {
+                                  this.form_dato.programas[i].insumos[j].lotes[l].exclusivo = Number(this.form_dato.programas[i].insumos[j].lotes[l].exclusivo);
+                                  if (this.form_dato.programas[i].insumos[j].lotes[l].existencia === 0 ||
+                                      this.form_dato.programas[i].insumos[j].lotes[l].existencia === '0') {
+                                      this.form_dato.programas[i].insumos[j].lotes[l].existencia = '';
+                                  }
+                                  if (this.form_dato.programas[i].insumos[j].lotes[l].fecha_caducidad === '0000-00-00') {
+                                      this.form_dato.programas[i].insumos[j].lotes[l].fecha_caducidad = '';
+                                  }
+                                  if (this.form_dato.programas[i].insumos[j].lotes[l].precio_unitario === null) {
+                                      this.form_dato.programas[i].insumos[j].lotes[l].requerir_pu = true;
+                                  }
+                                }
                               }
                             }
                           }
                         }
                       }
+                      this.form_dato.fecha_fin = this.fecha_actual;
                             this.sumaTotal();
 
                       this.mensajeResponse.titulo = 'Modificar';
@@ -1150,6 +1210,7 @@ export class InicialComponent {
           } catch (e) {
               console.log(0, e);
           }
+        }
   }
 /**************************************NOTIFICATIONS******************************* */
 /**
@@ -1168,11 +1229,12 @@ export class InicialComponent {
 
     this.options = {
         position: posicion,
-        timeOut: cuentaAtras * 1000,
+        // timeOut: cuentaAtras * 1000,
+        timeOut: 0,
         lastOnBottom: true
     };
     if (this.mensajeResponse.titulo === '') {
-        this.mensajeResponse.titulo = 'Entradas de almacén';
+        this.mensajeResponse.titulo = 'Inicialización de inventario';
       }
     if (this.mensajeResponse.clase === 'alert') {
         this.notificacion.alert(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
@@ -1213,7 +1275,7 @@ export class InicialComponent {
   base64ToBlob( base64, type ) {
       let bytes = atob( base64 ), len = bytes.length;
       let buffer = new ArrayBuffer( len ), view = new Uint8Array( buffer );
-      for ( var i=0 ; i < len ; i++ )
+      for ( var i = 0 ; i < len ; i++ )
       view[i] = bytes.charCodeAt(i) & 0xff;
       return new Blob( [ buffer ], { type: type } );
   }

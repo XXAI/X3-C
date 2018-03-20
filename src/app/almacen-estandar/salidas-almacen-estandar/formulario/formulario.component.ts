@@ -204,7 +204,7 @@ export class FormularioComponent {
   /**
    * Contiene la lista de programas
    * @type {any}
-   */ 
+   */
   lista_programas= [];
   /**
    * Si el insumo seleccionado contiene el valor unidosis.
@@ -216,7 +216,12 @@ export class FormularioComponent {
    * de que el usuario intente cambiar el programa cuando hay insumos capturados.
    * @type {any}
    */
-  programa_elegido;
+  programa_elegido= null;
+  /**
+   * Contiene el nombre del programa elegido por el usuario, nos sirve para mostrar el nombre en la vista para el usuario
+   * @type {any}
+   */
+  nombre_programa_elegido= '';
 
   /**
    * Este método inicializa la carga de las dependencias
@@ -269,16 +274,19 @@ export class FormularioComponent {
     // inicializar el formulario reactivo
     this.dato = this.fb.group({
       id: [''],
-      tipo_movimiento_id: ['2', [Validators.required]],
+      tipo_movimiento_id: ['18', [Validators.required]],
       estatus: ['FI'],
       fecha_movimiento: ['', [Validators.required]],
       observaciones: [''],
       cancelado: [''],
-      programa_id: ['', [Validators.required]],
+      programa_id: [null],
+      subtotal: [''],
+      total: [''],
+      iva: [''],
       observaciones_cancelacion: [''],
       movimiento_metadato: this.fb.group({
         turno_id: ['', [Validators.required]],
-        servicio_id: ['', [Validators.required]],
+        servicio_id: [''],
         persona_recibe: ['', [Validators.required]],
       }),
       insumos: this.fb.array([]),
@@ -288,6 +296,10 @@ export class FormularioComponent {
     this.route.params.subscribe(params => {
       if (params['id']) {
         this.tieneid = true;
+
+        // this.subtotal_precios = temporal_subtotal_precios;
+        // this.total_iva = temporal_total_iva;
+        // this.total_precio = Number(this.subtotal_precios) + Number(this.total_iva);
       }
     });
 
@@ -399,9 +411,9 @@ export class FormularioComponent {
     if (this.usuario.almacen_activo) {
       cabecera += '&almacen=' + this.usuario.almacen_activo.id;
     }
-    let programa = this.dato.controls.programa_id.value;
+    let programa = this.dato.controls.programa_id.value ? this.dato.controls.programa_id.value : '';
     let url: string = '' + environment.API_URL + '/insumos-auto?term=' + keyword + '&programa_id=' + programa + cabecera;
-    this.crudService.busquedaInsumos(keyword, 'insumos-auto', programa).subscribe(
+    this.crudService.busquedaInsumos(keyword, 'insumos-auto', {programa_id: programa}).subscribe(
       resultado => {
         this.cargando = false;
         this.res_busq_insumos = resultado;
@@ -488,6 +500,7 @@ export class FormularioComponent {
         }
 
         this.lotes_insumo = resultado;
+        console.log(this.lotes_insumo);
         this.insumo = data;
 
         // limpiar el autocomplete
@@ -519,6 +532,8 @@ export class FormularioComponent {
     // obtener el formulario reactivo para agregar los elementos
     const control = <FormArray>this.dato.controls['insumos'];
 
+    console.log(this.insumo);
+
     // crear el json que se pasara al formulario reactivo tipo insumos
     var lotes = {
       'clave': this.insumo.clave,
@@ -532,6 +547,7 @@ export class FormularioComponent {
       'cantidad_x_envase': this.insumo.cantidad_x_envase ? parseInt(this.insumo.cantidad_x_envase) : 1,
       'cantidad_surtida': 1,
       'modo_salida': this.modo,
+      'programa_nombre': '',
       'cantidad_solicitada': cantidad_solicitada, // this.modo == 'N' ? cantidad_solicitada : 0,
       'cantidad_solicitada_unidosis': cantidad_solicitada,// this.modo == 'U' ? cantidad_solicitada : 0,
       'tipo': this.insumo.tipo,
@@ -582,6 +598,7 @@ export class FormularioComponent {
     };
     //recorrer la tabla de lotes del modal para obtener la cantidad 
     for (let item of this.lotes_insumo) {
+      console.log(item);
       //agregar unicamente aquellos que tiene cantidad normal o unidosis
       if (item.cantidad > 0) {
         var existe_lote = false;
@@ -617,10 +634,10 @@ export class FormularioComponent {
           }
           this.sumaTotal();
         }
-        //si el lote no existe agregarlo
+        // si el lote no existe agregarlo
         if (!existe_lote) {
-          //validar que la cantidad escrita no sea mayor que la existencia si no poner la existencia como la cantidad maxima
-          //Para Cantidad normal y unidosis        
+          // validar que la cantidad escrita no sea mayor que la existencia si no poner la existencia como la cantidad maxima
+          // Para Cantidad normal y unidosis
           if(item.nuevo){
             item.existencia = item.cantidad * 1;
           }
@@ -639,7 +656,8 @@ export class FormularioComponent {
             }
           }
 
-          //agregar al formulario reactivo de lote
+          console.log(item);
+          // agregar al formulario reactivo de lote
           ctrlLotes.controls['lotes'].push(this.fb.group(
             {
               id: item.id,
@@ -648,10 +666,13 @@ export class FormularioComponent {
               lote: item.lote,
               fecha_caducidad: item.fecha_caducidad,
               existencia: item.nuevo ? item.cantidad : item.existencia,
+              exclusivo: this.dato.controls.programa_id == null ? 0 : 1,
               cantidad: item.cantidad,
               existencia_unidosis: item.nuevo ? item.cantidad : item.existencia_unidosis,
               modo_salida: this.modo,
-              precio_unitario: item.movimiento_insumo.precio_unitario
+              programa_id: this.programa_elegido == null ? Number(item.programa_id) : this.programa_elegido,
+              programa_nombre: item.programa ? item.programa.nombre : '',
+              precio_unitario: item.movimiento_insumo ? item.movimiento_insumo.precio_unitario : 0
             }
           ));
           this.sumaTotal();
@@ -706,9 +727,18 @@ export class FormularioComponent {
      */
   agregarNuevoLote() {
     this.lotes_insumo.push(
-      { id: '' + Math.floor(Math.random() * (999)) + 1, codigo_barras: '', lote: '', fecha_caducidad: '',
-      existencia: '', cantidad: '', nuevo: 1, existencia_unidosis: '', cantidad_unidosis: '' });
-    // this.lotes_insumo.push({ id: "" + Math.floor(Math.random() * (999)) + 1, codigo_barras: "", lote: "", fecha_caducidad: "", existencia: '', cantidad: '', nuevo: 1});
+      {
+        id: '' + Math.floor(Math.random() * (999)) + 1,
+        codigo_barras: '', lote: '',
+        fecha_caducidad: '',
+        exclusivo: this.dato.controls.programa_id == null ? 0 : 1,
+        existencia: '',
+        cantidad: '',
+        nuevo: 1,
+        programa_nombre: this.dato.controls.programa_id == null ? '' : this.dato.controls.programa_id,
+        existencia_unidosis: '',
+        cantidad_unidosis: ''
+      });
   }
 
   /**
@@ -992,35 +1022,54 @@ export class FormularioComponent {
   /******************************* IMPRESION DE REPORTES *********************************** */
 
   imprimir() {
+    this.cargando= true;
     let usuario = JSON.parse(localStorage.getItem('usuario'));
-
     let turno;
-    for (let item of this.array_turnos.clues_turnos){
-      if (this.dato.value.movimiento_metadato.turno_id === item.id) {
-        turno = item;
-        break;
-      }
-    };
-    let servicio;
-    for (let item of this.array_servicios.clues_servicios){
-      if (this.dato.value.movimiento_metadato.servicio_id === item.id) {
-        servicio = item;
-        break;
-      }
-    };
-    try {
-      this.cargandoPdf = true;
-      let entrada_imprimir = {
-        datos: this.dato.value,
-        lista: this.dato.value.insumos,
-        turno: turno ? turno : 'No disponible',
-        servicio: servicio ? servicio : 'No disponible',
-        usuario: usuario
-      };
-      this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
-    } catch (e) {
-      this.cargandoPdf = false;
-    }
+    this.crudService.verIniciar('documentos-firmantes/2').subscribe(
+      resultado => {
+              for (let item of this.array_turnos.clues_turnos){
+                if (this.dato.value.movimiento_metadato.turno_id === item.id) {
+                  turno = item;
+                  break;
+                }
+              };
+              try {
+                this.cargandoPdf = true;
+                let entrada_imprimir = {
+                  datos: this.dato.value,
+                  lista: this.dato.value.insumos,
+                  turno: turno ? turno : 'No disponible',
+                  firmas: resultado,
+                  usuario: usuario
+                };
+                this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
+              } catch (e) {
+                this.cargandoPdf = false;
+              }
+              this.cargando = false;
+            },
+            error => {
+              this.cargandoPdf = false;
+              this.mensajeResponse.mostrar = true;
+              try {
+                  let e = error.json();
+                  if (error.estatus === 401) {
+                      this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
+                      this.mensajeResponse.clase = 'danger';
+                      this.mensaje(2);
+                  }
+              } catch (e) {
+                  if (error.estatus === 500) {
+                      this.mensajeResponse.texto = '500 (Error interno del servidor)';
+                  } else {
+                      this.mensajeResponse.texto =
+                        'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
+                  }
+                  this.mensajeResponse.clase = 'danger';
+                  this.mensaje(2);
+              }
+            }
+    );
   }
 
   base64ToBlob( base64, type ) {

@@ -51,6 +51,7 @@ import { MisAlmacenesModule} from './configuracion/almacenes/almacenes.module';
 import { MisServiciosModule} from './configuracion/servicios/servicios.module';
 import { MisTurnosModule   } from './configuracion/turnos/turnos.module';
 import { MisClavesModule   } from './configuracion/claves/claves.module';
+import { DocumentosModule   } from './configuracion/documentos/documentos.module';
 import { MisFirmantesModule} from './configuracion/firmantes/firmantes.module';
 
 // # Hub Farmacia subrrogada
@@ -89,6 +90,7 @@ import { IndexCatalogoModule      } from './almacen-articulos/catalogos/index-ca
 import { IndexAlmacenEstandarModule }  from './almacen-estandar/index-almacen-estandar/index-almacen-estandar.module';
 import { EntradasAlmacenEstandarModule } from './almacen-estandar/entradas-almacen-estandar/entradas-almacen-estandar.module';
 import { SalidasAlmacenEstandarModule } from './almacen-estandar/salidas-almacen-estandar/salidas-almacen-estandar.module';
+import { PedidosEstandarModule } from './almacen-estandar/pedidos-estandar/pedidos.module';
 
 // # Hub laboratorio
 import { IndexLaboratorioModule   } from './laboratorio/index-laboratorio/index-laboratorio.module';
@@ -149,6 +151,10 @@ import { ConfiguracionGeneralModule } from './almacen-articulos/configuracion-ge
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { AyudaSialModule } from './ayuda-sial/ayuda-sial.module';
 
+// DAM
+import { IndexDamModule } from './dam/index-dam/index-dam.module';
+import { PedidosDamCCModule } from './dam/pedidos-cc/pedidos-cc.module';
+
 //import { CrudModule } from './crud/crud.module';
 export function highchartsFactory() {
   const hc = require('highcharts');
@@ -187,6 +193,7 @@ export function highchartsFactory() {
     MisAlmacenesModule,
     MisTurnosModule,
     MisClavesModule,
+    DocumentosModule,
     MisServiciosModule,
     MisFirmantesModule,
     AdministradorCentralModule,
@@ -221,6 +228,7 @@ export function highchartsFactory() {
     IndexAlmacenEstandarModule,
     EntradasAlmacenEstandarModule,
     SalidasAlmacenEstandarModule,
+    PedidosEstandarModule,
     // fin-
     ViasAdministracionModule,
     ServiciosModule,
@@ -265,6 +273,8 @@ export function highchartsFactory() {
 
     MedicosRecetasModule,
     AyudaSialModule,
+    IndexDamModule,
+    PedidosDamCCModule,
 
     // Animations need to be imported in to your project to use the library
     BrowserAnimationsModule,

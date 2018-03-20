@@ -1,4 +1,4 @@
-<listar #ctrl URL="salida-almacen-standard?tipo=2&fecha_desde={{fecha_desde}}&fecha_hasta={{fecha_hasta}}&turno={{turno}}&servicio={{servicio}}&recibe={{recibe}}" titulo="Salida  de almacén"></listar>
+<listar #ctrl URL="salida-almacen-standard?tipo=18&fecha_desde={{fecha_desde}}&fecha_hasta={{fecha_hasta}}&turno={{turno}}&recibe={{recibe}}" titulo="Salida  de almacén"></listar>
 <app-menu-almacen-estandar [modulo]="'Salida  de medicamentos'" [icono]="'assets/icono-salidas.svg'" [url]="'/almacen-estandar/salidas'"></app-menu-almacen-estandar>
 <div style="height:50px;"></div>
 <div class="contenedor columns " style="height:80%; ">
@@ -63,20 +63,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="control is-expanded" *ngIf="!ctrl.cargando">
-                                <div class="field ">
-                                    <label class="label">Servicio:</label>
-                                    <div class="select is-medium ">
-                                        <select *ngIf="ctrl.dato" class="select is-medium" [(ngModel)]="servicio" #sr>
-                                            <option value="">Todos</option>
-                                            <option *ngFor="let val of ctrl.dato[ctrl.dato.length-1].servicios_disponibles" value="{{val.id}}" >{{ val.nombre }}</option>
-                                        </select>
-                                        <select *ngIf="!ctrl.dato" class="select is-medium" [(ngModel)]="servicio" #sr>
-                                            <option value="">Todos</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="control is-expanded">
                                 <div class="field">   
                                     <label class="label">Recibe:</label>                         
@@ -86,7 +72,7 @@
                             <div class="control">
                                 <div class="field">  
                                 <label class="label">&nbsp;</label>
-                                <button class="button is-default is-medium" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="recibe='';servicio=''; turno=''; fecha_desde=''; fecha_hasta='';" >Limpiar</button>
+                                <button class="button is-default is-medium" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="recibe=''; turno=''; fecha_desde=''; fecha_hasta='';" >Limpiar</button>
                                 </div>
                             </div>
                             <div class="control">
@@ -119,7 +105,6 @@
                         <tr>
                             <th style=" text-align: center;"><abbr title="Fecha">Fecha</abbr></th>
                             <th style=" text-align: center;"><abbr title="Folio">Folio</abbr></th>
-                            <th title="Servicio">Servicio</th>
                             <th>Turno</th>
                             <th>Insumos</th>
                             <th>Recibe</th>
@@ -131,8 +116,6 @@
                         <tr *ngFor="let item of ctrl.dato; let i=index">
                             <th *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle; text-align: center;"><a routerLink="/almacen-estandar/salidas/ver/{{item.id}}">{{ item.fecha_movimiento }}</a></th>
                             <th *ngIf="(i+1)<ctrl.dato.length" style="vertical-align: middle; text-align: center;"><a routerLink="/almacen-estandar/salidas/ver/{{item.id}}">{{ item.id }}</a></th>
-                            <td *ngIf="item.movimiento_metadato && (i+1)<ctrl.dato.length" style="vertical-align: middle;" ><a *ngIf="item.movimiento_metadato.servicio.nombre"  routerLink="/almacen-estandar/salidas/ver/{{item.id}}" >{{ item.movimiento_metadato.servicio.nombre }} </a></td>
-                            <td *ngIf="!item.movimiento_metadato && (i+1)<ctrl.dato.length" style="vertical-align: middle;" >No disponible</td>
                             <td *ngIf="item.movimiento_metadato && (i+1)<ctrl.dato.length" style="vertical-align: middle;"><a *ngIf="item.movimiento_metadato.turno.nombre"  routerLink="/almacen-estandar/salidas/ver/{{item.id}}">{{ item.movimiento_metadato.turno.nombre }} </a></td>
                             <td *ngIf="!item.movimiento_metadato && (i+1)<ctrl.dato.length" style="vertical-align: middle;" >No disponible</td>
                             <td *ngIf="(i+1)<ctrl.dato.length"> <a routerLink="/almacen-estandar/salidas/ver/{{item.id}}"> <p> Lotes: {{item.numero_claves}}</p> <p> Insumos: {{item.numero_insumos}}</p> </a> </td>
@@ -152,7 +135,6 @@
                     <tbody *ngIf="ctrl.busquedaActivada && ctrl.dato">
                         <tr *ngFor="let item of ctrl.resultadosBusqueda; let i=index">
                             <th style="vertical-align: middle; text-align: center;"><a routerLink="/almacen-estandar/salidas/ver/{{item.id}}">{{ item.id }}</a></th>
-                            <td style="vertical-align: middle;" *ngIf="item.movimiento_metadato"><a *ngIf="item.movimiento_metadato.servicio.nombre" routerLink="/almacen-estandar/salidas/ver/{{item.id}}">{{ item.movimiento_metadato.servicio.nombre }}</a></td>
                             <td style="vertical-align: middle;" *ngIf="!item.movimiento_metadato">No disponible</td>
                             <td style="vertical-align: middle;" *ngIf="item.movimiento_metadato"><a *ngIf="item.movimiento_metadato.turno.nombre" routerLink="/almacen-estandar/salidas/ver/{{item.id}}">{{ item.movimiento_metadato.turno.nombre }} </a></td>
                             <td style="vertical-align: middle;" *ngIf="!item.movimiento_metadato">No disponible</td>
