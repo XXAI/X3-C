@@ -78,6 +78,10 @@ export class FormularioComponent {
    * @type {string} */
   public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
 
+  /**
+   * Este método inicializa la carga de las dependencias
+   * que se necesitan para el funcionamiento del módulo
+   */
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -85,6 +89,9 @@ export class FormularioComponent {
     private _sanitizer: DomSanitizer,
     private cdr: ChangeDetectorRef  ) { }
 
+  /**
+   * Método que inicializa y obtiene valores para el funcionamiento del componente.
+   */
   ngOnInit() {
     this.cargando_claves_disponibles = true;
 
@@ -103,6 +110,7 @@ export class FormularioComponent {
       this.route.params.subscribe(params => {
         if (params['clues']) {
           this.tieneid = true;
+          console.log(this.dato);
         }
       });
     } catch (e) {
@@ -123,52 +131,6 @@ export class FormularioComponent {
     document.getElementById('actualizar').click();
   }
 
-
-  cargarValidar() {
-    this.cargando_claves_disponibles = true;
-    
-      // obtener el formulario reactivo para agregar los elementos
-      const control = <FormArray>this.dato.controls['clues_claves'];
-      let c = 0, c1;
-      let tempUpdateAt = '';
-      let temp_usuario_id = '';
-
-      // Solo si se tiene el control mover izquierda-derecha poner un 
-      // <a id="initMover" 
-      // (click)="ctrl.initMover(ctrl.dato.controls.almacen_tipos_movimientos.controls, ctrl.tipos_movimientos)>refresh</a>
-      // incrementar el tiempo segun sea el caso para que cargue el catalogo en este caso va a acrgar 2 catalogos por eso pongo 5000
-      if (control) {
-        // document.getElementById('catalogos').click();
-        this.cargando_claves_disponibles = false;
-      }
-      // Comprobar si el arreglo no está vacío
-      if (control.value.length !== 0) {
-        // Comprobacion de la última fecha en la que se modificó y el usuario que lo hizo
-        if (control.value[c].updated_at) {
-          tempUpdateAt = control.value[c].updated_at;
-          this.error_actualizacion = false;
-        } else if (control.value[c].created_at) {
-          tempUpdateAt = control.value[c].created_at;
-          this.error_actualizacion = false;
-        } else {
-          this.error_actualizacion = true;
-        }
-        temp_usuario_id = control.value[c].usuario_id;
-        for (c = 0; c < control.length; ) {
-          if (control.value[c].updated_at > tempUpdateAt) {
-            tempUpdateAt = control.value[c].updated_at;
-            temp_usuario_id = control.value[c].usuario_id;
-          }
-          c = c + 1;
-        }
-        this.actualizacion = tempUpdateAt;
-        this.actualizacion_usuario = temp_usuario_id;
-        this.actualizado = true;
-      }else {
-        this.error_actualizacion = true;
-        this.actualizacion_usuario = 'Sin actualización';
-      }
-  }
 
   /**
    * Este método formatea los resultados de la busqueda en el autocomplete
@@ -210,10 +172,14 @@ export class FormularioComponent {
      */
   select_insumo_autocomplete(data) {
 
-    let usuario = JSON.parse(localStorage.getItem("usuario"));
+    let usuario = JSON.parse(localStorage.getItem('usuario'));
     this.cargando = true;
     this.insumo = data;
-    this.agregarClave();
+    // Si es un objeto, quiere decir que trae los datos del insumo, entonces debe agregarse la clave
+    // si no es objeto no debe agregarse porque los valores del insumo irían en null hacia la api.
+    if (typeof this.insumo === 'object') {
+      this.agregarClave();
+    }
     (<HTMLInputElement>document.getElementById('buscarInsumo')).value = '';
     this.es_unidosis = data.es_unidosis;
     this.cargando = false;
@@ -261,115 +227,3 @@ export class FormularioComponent {
     }
   }
 }
-
-/*
-import { Component, OnInit } from '@angular/core';
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { FormGroup, FormControl, FormBuilder, FormArray, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { ActivatedRoute, Params } from '@angular/router';
-import { environment } from '../../../../environments/environment';
-@Component({
-  selector: 'almacenes-formulario',
-  templateUrl: './formulario.component.html',
-  styleUrls: ['./formulario.component.css']
-})
-
-export class FormularioComponent {
-  tipo='ME';
-  es_causes=1;
-  actualizado=false;
-  actualizacion;
-  actualizacion_usuario;
-  dato: FormGroup;
-  cargando = false;
-  insumo;
-  es_unidosis = false;
-  form_almacen_tipos_servicios: any;
-  tieneid: boolean = false;
-
-  public insumos_term: string = `${environment.API_URL}/insumos-auto?term=:keyword`;
-  tab: number = 1;
-  
-
-  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute, private _sanitizer: DomSanitizer) { }
-
-  ngOnInit() {
-    
-    let usuario = JSON.parse(localStorage.getItem("usuario"));
-    
-    this.dato = this.fb.group({
-      clues: [usuario.clues_activa.clues],
-      jurisdiccion_id:[usuario.clues_activa.jurisdiccion_id],
-      nombre:[usuario.clues_activa.nombre],
-      activa:[usuario.clues_activa.activa],
-      director_id:[usuario.clues_activa.director_id],
-      clues_claves: this.fb.array([])
-    });
-
-    this.route.params.subscribe(params => {
-      if (params['clues']) {
-        this.tieneid = true;
-      }
-    });
-
-    
-    if (usuario.clues_activa) {
-      this.insumos_term += "&clues=" + usuario.clues_activa.clues;
-    }
-    if (usuario.almacen_activo) {
-      this.insumos_term += "&almacen=" + usuario.almacen_activo.id;
-    }
-
-    //obtener el formulario reactivo para agregar los elementos
-    const control = <FormArray>this.dato.controls['clues_claves'];
-
-    //comprobar que el isumo no este en la lista cargada, si está en la lista no se agrega
-    let c, c1;
-    
-    for(c=0; c < control.length; c++){
-      for(c1=0; c1 < control.length; c1++){
-        if(control.value[c].updated_at > control.value[c].updated_at)
-          this.actualizacion=control.value[c].updated_at;
-      }
-    }
-
-  }
-
-  ngAfterViewInit() {
-    //<a class="button" (click)="ctrl.cargarDatos();"  id="actualizar"></a>
-    //Para poder cargar mis-claves
-    document.getElementById("actualizar").click();
-    setTimeout(() => {
-    //obtener el formulario reactivo para agregar los elementos
-    const control = <FormArray>this.dato.controls['clues_claves'];
-    let c=0, c1;
-    let tempUpdateAt="";
-    let temp_usuario_id="";
-
-    //Comprobar si el arreglo no está vacío
-    if(control.value.length != 0){
-      //Comprobacion de la última fecha en la que se modificó y el usuario que lo hizo
-      if(control.value[c].updated_at){
-        tempUpdateAt =control.value[c].updated_at;
-      }else{
-        tempUpdateAt =control.value[c].created_at;
-      }
-      temp_usuario_id =control.value[c].usuario_id;
-      for(c=0; c < control.length;){
-        if(control.value[c].updated_at > tempUpdateAt){
-          tempUpdateAt =control.value[c].updated_at;
-          temp_usuario_id =control.value[c].usuario_id;
-        }
-        c=c+1;
-      }
-      this.actualizacion=tempUpdateAt;
-      this.actualizacion_usuario=temp_usuario_id;
-      this.actualizado = true;
-    }else{
-      this.actualizacion="Sin actualización";
-      this.actualizacion_usuario="Sin actualización";
-    }
-      }, 4000);
-  }
-*/

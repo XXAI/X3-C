@@ -13,7 +13,7 @@ import { IndexInventarioModule } from '../index-inventario/index-inventario.modu
 import { IniciarInventarioServiceRoutingModule } from './iniciar-inventario-routing.module';
 
 import { IniciarInventarioService } from './iniciar-inventario.service';
-// import { ListaComponent } from './lista/lista.component';
+import { ListaComponent } from './lista/lista.component';
 import { InicialComponent } from './formulario/formulario.component';
 // import { VerComponent } from './ver/ver.component';
 //crud
@@ -23,6 +23,7 @@ import { TextMaskModule } from 'angular2-text-mask';
 import { MomentModule   } from 'angular2-moment';
 import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
 import { SimpleNotificationsModule } from 'angular2-notifications';
+import { CurrencyMaskModule } from 'ng2-currency-mask';
 
 @NgModule({
   imports: [
@@ -40,10 +41,11 @@ import { SimpleNotificationsModule } from 'angular2-notifications';
     TextMaskModule,
     MomentModule,
     NguiDatetimePickerModule,
+    CurrencyMaskModule,
     SimpleNotificationsModule.forRoot()
   ],
   declarations: [
-    // ListaComponent,
+    ListaComponent,
     InicialComponent,
     // VerComponent
   ],

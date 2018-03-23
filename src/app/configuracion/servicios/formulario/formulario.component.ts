@@ -48,8 +48,6 @@ export class FormularioComponent {
     } catch (e) {
       console.log('Error');
     }
-    // Solo si se va a cargar catalogos poner un <a id="catalogos" (click)="ctl.cargarCatalogo('modelo','ruta')">refresh</a>
-    document.getElementById('catalogos').click();
   }
 
   ngAfterViewInit() {

@@ -415,6 +415,7 @@
                                         <table *ngIf="tieneid && ctrl.dato.get('estatus').value == 'FI'" class="table is-narrow is-bordered is-striped">
                                             <thead>
                                                 <tr>
+                                                    <th></th>
                                                     <th>Lote</th>
                                                     <th>Caducidad</th>
                                                     <th>Codigo de barras</th>
@@ -427,6 +428,9 @@
                                             </thead>
                                             <tbody formArrayName="lotes">
                                                 <tr *ngFor="let val of ctrl.dato.controls.insumos.controls[i].controls.lotes.controls;  let i2 = index;">
+                                                    <td>
+                                                        <span *ngIf="val.value.exclusivo == '1'"> Exclusivo </span>
+                                                    </td>
                                                     <td>{{val.value.lote}}</td>
                                                     <td>{{val.value.fecha_caducidad}}</td>
                                                     <td>{{val.value.codigo_barras}}</td>
@@ -450,18 +454,31 @@
                                     <!-- || ctrl.dato.get('estatus').value == 'BR' -->
                                     <div *ngIf="!tieneid || ctrl.dato.get('estatus').value == 'BR'"  class="level-left">
                                         <div class="columns is-flex-desktop" style="width: 100%">
+                                            <div class="column is-1">
+                                                <p class="b-checkbox control is-expanded  has-icon has-icon-right" style="margin-left: 1em;">
+                                                    <input class="styled" type="checkbox"
+                                                        id="exclusivo{{i}}"
+                                                        class="input is-small" formControlName="exclusivo"
+                                                        [checked]="ctrl.dato.controls.insumos.controls[i].controls.exclusivo.value == true ? true : false">
+                                                    <label for="exclusivo{{i}}" title="Para distribución exclusiva del programa">Exclusivo</label>
+                                                </p>
+                                            </div>
                                             <div class="column is-3">
                                                 <p class="control is-expanded">
                                                     <label class="label">Lote:</label>
                                                     <input type="text" class="input" formControlName="lote"
-                                                    [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.lote.hasError('required')}">
+                                                    [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.lote.hasError('required') ||
+                                                                             ctrl.dato.controls.insumos.controls[i].controls.lote.value == '' ||
+                                                                             ctrl.dato.controls.insumos.controls[i].controls.lote.value == null}">
                                                 </p>
                                                 <span class="help is-danger" 
-                                                *ngIf="ctrl.dato.controls.insumos.controls[i].controls.lote.hasError('required')">Este campo es requerido.</span>
+                                                      *ngIf="ctrl.dato.controls.insumos.controls[i].controls.lote.hasError('required') ||
+                                                             ctrl.dato.controls.insumos.controls[i].controls.lote.value == '' ||
+                                                             ctrl.dato.controls.insumos.controls[i].controls.lote.value == null">Este campo es requerido.</span>
                                             </div>                       
                                             <div class="column is-2">
                                                 <p class="control is-expanded">
-                                                    <label class="label">Caducidad:</label>
+                                                    <label class="label">Caducidad:{{ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.value}} </label>
 <!--
                                                         <input class="input" type="date" [textMask]="{mask:mask, keepCharPositions: true, pipe: autoCorrectedDatePipe}"
                                                             formControlName="fecha_caducidad" ngui-datetime-picker (blur)="validar_fecha(ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.value)"
@@ -471,13 +488,15 @@
 -->
                                                     <input class="input" formControlName="fecha_caducidad" (blur)="validar_fecha(ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.value, i)"
                                                         min="MinDateCaducidad" date-only="true" 
-                                                        [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.hasError('required')}"
+                                                        [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.hasError('required') ||
+                                                                                 ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.value == '' ||
+                                                                                 ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.value == null}"
                                                         placeholder="YYYY-MM-DD" [textMask]="{mask:mask, keepCharPositions: true, pipe: autoCorrectedDatePipe}"/>
                                                 </p>
                                                 <span class="help is-danger" 
-                                                *ngIf="ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.hasError('required')">Este campo es requerido.</span>
+                                                *ngIf="ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.hasError('required') || ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.value == '' || ctrl.dato.controls.insumos.controls[i].controls.fecha_caducidad.value == null">Este campo es requerido.</span>
                                             </div>                          
-                                            <div class="column is-3">
+                                            <div class="column is-2">
                                                 <p class="control is-expanded">
                                                     <label class="label">Codigo de barras:</label>
                                                     <input type="text" class="input" formControlName="codigo_barras">
@@ -490,19 +509,30 @@
                                                     (keyup)="cambio_cantidad_stock_key($event, ctrl.dato.controls.insumos.controls[i].controls, i)"
                                                     (change)="calcular_cantidad_subtotal(ctrl.dato.controls.insumos.controls[i].controls, i)"
                                                     (blur)="calcular_cantidad_subtotal(ctrl.dato.controls.insumos.controls[i].controls, i)"
-                                                    [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad.hasError('required')}">
+                                                    [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.cantidad.hasError('required') ||
+                                                                             ctrl.dato.controls.insumos.controls[i].controls.cantidad.value == '' ||
+                                                                             ctrl.dato.controls.insumos.controls[i].controls.cantidad.value == null}">
                                                 </p>
                                                 <span class="help is-danger" 
-                                                *ngIf="ctrl.dato.controls.insumos.controls[i].controls.cantidad.hasError('required')">Este campo es requerido.</span>
+                                                *ngIf="ctrl.dato.controls.insumos.controls[i].controls.cantidad.hasError('required') || ctrl.dato.controls.insumos.controls[i].controls.cantidad.value == '' || ctrl.dato.controls.insumos.controls[i].controls.cantidad.value == null">Este campo es requerido.</span>
                                             </div> 
                                             <div class="column is-2">                                                
                                                 <p class="control is-expanded">
-                                                    <label class="label">Precio unitario:</label>
-                                                    <input type="number" class="input" formControlName="precio_unitario" (keypress)="validar_precio($event); "
+                                                    <label class="label">Precio unitario: </label>
+                                                    <!-- <input type="number" class="input" formControlName="precio_unitario" (keypress)="validar_precio($event); "
                                                     (keyup)="cambio_cantidad_stock_key($event, ctrl.dato.controls.insumos.controls[i].controls, i)"
                                                     (change)="calcular_cantidad_subtotal(ctrl.dato.controls.insumos.controls[i].controls, i)"
                                                     (blur)="calcular_cantidad_subtotal(ctrl.dato.controls.insumos.controls[i].controls, i)"
-                                                    [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.precio_unitario.hasError('required')}">
+                                                    [ngClass]="{'is-danger'  : ctrl.dato.controls.insumos.controls[i].controls.precio_unitario.hasError('required'),
+                                                                'is-disabled': ctrl.dato.controls.insumos.controls[i].controls.precio_unitario.value != ''}"> -->
+
+                                                    <input class="input" formControlName="precio_unitario" (keypress)="validar_precio($event);"
+                                                        [textMask]="{mask:numberMask}"
+                                                        (keyup)="cambio_cantidad_stock_key($event, ctrl.dato.controls.insumos.controls[i].controls, i)"
+                                                        (change)="calcular_cantidad_subtotal(ctrl.dato.controls.insumos.controls[i].controls, i)"
+                                                        (blur)="calcular_cantidad_subtotal(ctrl.dato.controls.insumos.controls[i].controls, i)"
+                                                        [ngClass]="{'is-danger'  : ctrl.dato.controls.insumos.controls[i].controls.precio_unitario.hasError('required'),
+                                                                    'is-disabled': ctrl.dato.controls.insumos.controls[i].controls.precio_unitario_base.value != '' && ctrl.dato.controls.insumos.controls[i].controls.precio_unitario_base.value != null}">
                                                 </p>
                                                 <span class="help is-danger" 
                                                 *ngIf="ctrl.dato.controls.insumos.controls[i].controls.precio_unitario.hasError('required')">Este campo es requerido.</span>

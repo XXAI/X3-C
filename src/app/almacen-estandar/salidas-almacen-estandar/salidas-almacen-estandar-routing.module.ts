@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { ListaComponent } from '../salidas-almacen-estandar/lista/lista.component';
 import { FormularioComponent } from './formulario/formulario.component';
+import { AyudaComponent } from './ayuda/ayuda.component';
 
 import { AuthGuard } from '../../auth-guard.service';
 import { PermisosGuard } from '../../permisos.guard';
@@ -15,19 +16,25 @@ const routes: Routes = [
         path: '',
         component: ListaComponent,
         canActivate: [PermisosGuard],
-        data: { key: 'qQvNeb1UFPOfVMKQnNkvxyqjCIUgFuEG'}
+        data: { key: 'fO4NLBvm5IAv5zouJ24rS0qVI2cHpm44'}
+      },
+      {
+        path: 'ayuda',
+        component: AyudaComponent,
+        canActivate: [PermisosGuard],
+        data: { key: 'fO4NLBvm5IAv5zouJ24rS0qVI2cHpm44'}
       },
       {
         path: 'nuevo',
         component: FormularioComponent,
         canActivate: [PermisosGuard],
-        data: { key: 'qQvNeb1UFPOfVMKQnNkvxyqjCIUgFuEG'}
+        data: { key: 'fO4NLBvm5IAv5zouJ24rS0qVI2cHpm44'}
       },
       {
         path: 'ver/:id',
         component: FormularioComponent,
         canActivate: [PermisosGuard],
-        data: { key: 'qQvNeb1UFPOfVMKQnNkvxyqjCIUgFuEG'}
+        data: { key: 'fO4NLBvm5IAv5zouJ24rS0qVI2cHpm44'}
       },
     ],
     canActivate: [AuthGuard]

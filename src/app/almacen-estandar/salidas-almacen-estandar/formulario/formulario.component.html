@@ -1,5 +1,5 @@
 <formulario #ctrl URL="salida-almacen-standard" titulo="Salida  de almacén" [dato]="dato"></formulario>
-<app-menu-almacen-estandar [modulo]="'Salida  de medicamentos'" [icono]="'assets/icono-salidas.svg'" [url]="'/almacen-estandar/salidas'"></app-menu-almacen-estandar>
+<app-menu-almacen-estandar [modulo]="'Salida  de medicamentos'" [icono]="'assets/icono-salidas.svg'" [url]="'/almacen-estandar/salidas'" [urlAyuda]="'/almacen-estandar/salidas/ayuda'"></app-menu-almacen-estandar>
 <div style="height:50px;"></div>
 <form name="form" novalidate [formGroup]="dato">
     <div class="contenedor columns " style="height:85%">
@@ -24,14 +24,25 @@
                     <!-- <i class="fa fa-file"></i>
                         Datos del movimiento -->
                         <div class="columns" style="font-size: 22px; text-align: right">
-                            <strong class="column">Subtotal: </strong><strong class="column">{{   ( subtotal_precios | currency:'' ) }}  &nbsp;  &nbsp;  </strong>
+                            <strong class="column">Subtotal: </strong><strong class="column">{{  ctrl.dato.get('subtotal').value ? (ctrl.dato.get('subtotal').value | currency:'') : ( subtotal_precios | currency:'' ) }}  &nbsp;  &nbsp;  </strong>
                         </div>
                         <div class="columns" style="font-size: 22px; text-align: right">
-                            <strong class="column">IVA: </strong><strong class="column">{{   ( total_iva | currency:'' ) }}  &nbsp;  &nbsp;  </strong>
+                            <strong class="column">IVA: </strong><strong class="column">{{ ctrl.dato.get('iva').value ? ( ctrl.dato.get('iva').value | currency:'' ) : ( total_iva | currency:'' ) }}  &nbsp;  &nbsp;  </strong>
                         </div>
                         <div class="columns" style="font-size: 30px; text-align: right">
-                            <strong class="column">TOTAL: </strong><strong class="column">{{   ( total_precio | currency:'' ) }}  &nbsp;  &nbsp;  </strong>
+                            <strong class="column">TOTAL: </strong><strong class="column">{{ ctrl.dato.get('total').value ? ( ctrl.dato.get('total').value | currency:'' ) : ( total_precio | currency:'' ) }}  &nbsp;  &nbsp;  </strong>
                         </div>
+                        <!-- 
+                             <div class="columns" style="font-size: 22px; text-align: right">
+                            <strong class="column">Subtotal: </strong><strong class="column">{{ (ctrl.dato.get('subtotal').value | currency:'') }}  &nbsp;  &nbsp;  </strong>
+                        </div>
+                        <div class="columns" style="font-size: 22px; text-align: right">
+                            <strong class="column">IVA: </strong><strong class="column">{{   ( ctrl.dato.get('iva').value | currency:'' ) }}  &nbsp;  &nbsp;  </strong>
+                        </div>
+                        <div class="columns" style="font-size: 30px; text-align: right">
+                            <strong class="column">TOTAL: </strong><strong class="column">{{   ( ctrl.dato.get('total').value | currency:'' ) }}  &nbsp;  &nbsp;  </strong>
+                        </div>
+                         -->
                 </h3>
             </div>
             <div style="padding: 1em; overflow: scroll; overflow-x: hidden;" [style.height.px]="ctrl.tamano-300"> 
@@ -50,7 +61,7 @@
                         </p>
                     </div>
                     <br>
-                    <div class="control">
+                    <div class="control" *ngIf="!tieneid || ctrl.dato.get('programa_id').value != null" [ngClass]="{'is-hidden': !ctrl.dato.get('programa_id').value && tieneid}">
                         <div class="field">
                             <label class="label">Programa:</label>
                         </div><!-- SI carga los turnos -->
@@ -62,7 +73,7 @@
                                 <select class="select" name="programa" formControlName="programa_id" 
                                     [ngClass]="{'is-disabled': tieneid}"
                                     (click)="comprobar_lista()" (change)="comprobar_lista()">
-                                    <option value="">Seleccione un programa</option>
+                                    <option value="null">Seleccione un programa</option>
                                     <option *ngFor="let item of lista_programas" value="{{item.id}}">{{ item.nombre }}</option>
                                 </select>
                                 <span class="icon is-small" *ngIf="ctrl.dato.get('programa_id').hasError('required')">
@@ -143,19 +154,19 @@
                                 </p>
                             </div>
                             <!-- SERVICIOS -->
-                            <div class="field">
-                                <label class="label">Servicio que recibe:</label>
+                            <!-- <div class="field">
+                                <label class="label">Servicio que recibe:</label> -->
                                 <!-- NO carga los SERVICIOS -->
-                                <div class="field" *ngIf="!ctrl.servicios || ctrl.cargando || cargando">
+                                <!-- <div class="field" *ngIf="!ctrl.servicios || ctrl.cargando || cargando">
                                     <span *ngIf="ctrl.cargando" class="tag is-primary is-medium">Cargando servicios. <i class="fa fa-refresh fa-spin" aria-hidden="true"></i></span>
                                     <span *ngIf="!ctrl.cargando"class="tag is-medium">
                                         <a id="actualizar" *ngIf="!ctrl.cargando" (click)="ctrl.cargarCatalogo('servicios', 'mis-servicios'); ">
                                             No se pudieron cargar los servicios. &nbsp; <i class="fa fa-refresh is-medium" aria-hidden="true"></i>
                                         </a>
                                     </span>
-                                </div>
+                                </div> -->
                                 <!-- SI carga los SERVICIOS -->
-                                <p *ngIf="ctrl.servicios &&!ctrl.cargando && !cargando" class="control is-expanded  has-icon has-icon-right">
+                                <!-- <p *ngIf="ctrl.servicios &&!ctrl.cargando && !cargando" class="control is-expanded  has-icon has-icon-right">
                                     <select class="select" name="servicio_id" formControlName="servicio_id" [ngClass]="{'is-disabled': tieneid, 'is-danger': ctrl.dato.get('movimiento_metadato').get('servicio_id').hasError('required')}">
                                         <option value="">Seleccione un servicio.</option>
                                         <option *ngFor="let item of ctrl.servicios.clues_servicios" value="{{item.id}}">{{ item.nombre }}</option>
@@ -168,7 +179,7 @@
                                     </span>
                                     <span class="help is-danger" *ngIf="ctrl.dato.get('movimiento_metadato').get('servicio_id').hasError('required') && ctrl.servicios.clues_servicios.length > 0">Este campo es requerido.</span>
                                 </p>
-                            </div>
+                            </div> -->
 
                             <div class="field">
                                 <label class="label">Persona que recibe:</label>
@@ -245,7 +256,7 @@
                         <!-- *****************     INPUT DE BUSQUEDA DE INSUMO     ****************** -->   
                         <div class="control is-grouped">
                             <div class="control is-expanded">
-                                <span class="help is-danger" *ngIf="ctrl.dato.get('programa_id').hasError('required')">Para buscar insumos debe elegir un programa.</span>
+                                <!-- <span class="help is-danger" *ngIf="ctrl.dato.get('programa_id').hasError('required')">Para buscar insumos debe elegir un programa.</span> -->
                                 <input 
                                     (keyup.enter)="buscarInsumo.value != '' ?  enviarAutocomplete(buscarInsumo.value) : buscarInsumo.value = ''" 
                                     id="buscarInsumo"
@@ -253,8 +264,7 @@
                                     #buscarInsumo
                                     class="input is-success is-medium"
                                     type="text"
-                                    placeholder="Escriba la clave o el nombre del insumo y presione la tecla ENTER"
-                                    [ngClass]="{'is-disabled': ctrl.dato.get('programa_id').hasError('required') }"/>
+                                    placeholder="Escriba la clave o el nombre del insumo y presione la tecla ENTER"/>
                             </div>
                             <div class="control">
                                 <a class="button is-success is-medium" title="Buscar insumo" (click)="buscarInsumo.value != '' ?  enviarAutocomplete(buscarInsumo.value) : buscarInsumo.value = ''">
@@ -407,6 +417,7 @@
                                                     <th>Lote</th>
                                                     <th>Caducidad</th>
                                                     <th>Codigo de barras</th>
+                                                    <th>Programa</th>
                                                     <th title="Precio unitario">Precio</th>
                                                     <th *ngIf="ctrl.dato.controls.insumos.controls[i].controls.modo_salida.value == 'N'">Existencia</th>
                                                     <th *ngIf="ctrl.dato.controls.insumos.controls[i].controls.modo_salida.value == 'U'">Existencia Unidosis</th>
@@ -421,15 +432,17 @@
                                                     <td>{{val.value.lote}}</td>
                                                     <td>{{val.value.fecha_caducidad}}</td>
                                                     <td>{{val.value.codigo_barras}}</td>
+                                                    <td>{{val.value.programa_nombre}}</td>
                                                     <td style="text-align: right">{{ val.value.precio_unitario | currency:''  }}</td>
-                                                    <td *ngIf="ctrl.dato.controls.insumos.controls[i].controls.modo_salida.value == 'N'">{{val.value.existencia}}</td>
+                                                    <td style="text-align: right" *ngIf="ctrl.dato.controls.insumos.controls[i].controls.modo_salida.value == 'N'">{{val.value.existencia}}</td>
                                                     <td *ngIf="ctrl.dato.controls.insumos.controls[i].controls.modo_salida.value == 'U'">{{val.value.existencia_unidosis}}</td>
                                                     <td [formGroupName]="i2">
                                                         <input  *ngIf="val.value.modo_salida == 'N'" [ngClass]="{'is-disabled': tieneid}" class="input has-text-centered" 
                                                             (blur)="validar_cantidad_lote(i, val, i2, modo)" type="number" step="1" min="0" max="{{val.value.existencia}}"
                                                             placeholder="Cantidad" formControlName="cantidad" (keypress)="quitar_punto($event)">
                                                         <input  *ngIf="val.value.modo_salida == 'U'" [ngClass]="{'is-disabled': tieneid}" class="input has-text-centered" (blur)="validar_cantidad_lote(i, val, i2, modo)" type="number" step="1" min="0" max="{{val.value.existencia_unidosis}}"
-                                                            placeholder="Cantidad unidosis" formControlName="cantidad" (keypress)="quitar_punto($event)"></td>
+                                                            placeholder="Cantidad unidosis" formControlName="cantidad" (keypress)="quitar_punto($event)">
+                                                    </td>
                                                     <td *ngIf="!tieneid">
                                                         <a class="is-danger" title="Quitar este lote" (click)="quitar_lote_insumo(i, val.value, i2)">
                                                             <span class="icon">
@@ -578,8 +591,22 @@
                                     placeholder="YYYY-MM-DD" [textMask]="{mask:mask, keepCharPositions: true, pipe: autoCorrectedDatePipe}"/>
                                 </td>
                                 <td *ngIf="!item.nuevo">{{item.codigo_barras}}</td>
-                                <td *ngIf="!item.nuevo"><strong style="color: midnightblue;">{{item.programa.nombre}}</strong></td>
                                 <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Codigo de barras" [(ngModel)]="item.codigo_barras"></td>
+                                <td *ngIf="!item.nuevo"><strong style="color: midnightblue;">{{item.programa?.nombre ? item.programa.nombre : ''}}</strong></td>
+                                <td *ngIf="item.nuevo">
+                                    <div  *ngIf="!ctrl.cargando && !cargandoCatalogo && ctrl.dato.get('programa_id').value == null" class="control is-expanded  has-icon has-icon-right">
+                                        <select class="select" name="programa" [(ngModel)]="item.programa_id"
+                                            [ngClass]="{'is-disabled': tieneid}">
+                                            <option value="null">Seleccione un programa</option>
+                                            <option *ngFor="let programa_lote of lista_programas" value="{{programa_lote.id}}">{{ programa_lote.nombre }}</option>
+                                        </select>
+                                        <!-- <span class="icon is-small" *ngIf="ctrl.dato.get('programa_id').hasError('required')">
+                                            <i class="fa fa-warning"></i>
+                                        </span>
+                                        <span class="help is-danger" *ngIf="ctrl.dato.get('programa_id').hasError('required')">Este campo es requerido.</span>
+                                        <span class="help is-danger" *ngIf="lista_programas.length == 0"> No se cargaron programas, contacte al administrador.</span> -->
+                                    </div>
+                                </td>
                                 <td *ngIf="!item.nuevo && modo == 'N'">{{item.existencia}}</td>
                                 <td *ngIf="!item.nuevo && modo == 'U'">{{item.existencia_unidosis}}</td>
                                 <td *ngIf="item.nuevo "></td>
