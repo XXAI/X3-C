@@ -1077,7 +1077,7 @@ export class FormularioComponent {
         this.form_dato.id = resultado.id;
         this.cargarDatos(resultado.id);
         if (this.form_dato.estatus === 'NOINICIALIZADO') {
-          this.router.navigate(['/dam/pedidos/editar', resultado.id]);
+          this.router.navigate(['/pedidos/dam/editar', resultado.id]);
           this.cargarDatos(resultado.id);
         }
 
@@ -1156,7 +1156,7 @@ export class FormularioComponent {
      * @return void
      */
     actualizarDatos(id) {
-      let editar = '/dam/pedidos';
+      let editar = '/pedidos/dam';
       this.cargando = true;
 
       this.crudService.editar(id, this.form_dato, 'pedidos-cc-dam').subscribe(
@@ -1167,7 +1167,7 @@ export class FormularioComponent {
                   this.router.navigate([editar]);
               }
               if (resultado.estatus === 'NOINICIALIZADO') {
-                  this.router.navigate(['/dam/pedidos/editar', resultado.id]);
+                  this.router.navigate(['/pedidos/dam/editar', resultado.id]);
                   console.log('cargarDatos');
                   this.cargarDatos(resultado.id);
               }

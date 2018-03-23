@@ -3,17 +3,24 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { ListaComponent } from './lista/lista.component';
 import { FormularioComponent } from './formulario/formulario.component';
+import { AyudaComponent } from './ayuda/ayuda.component';
 
 import { AuthGuard } from '../../auth-guard.service';
 import { PermisosGuard } from '../../permisos.guard';
 
 const routes: Routes = [
   {
-    path: 'dam/pedidos',
+    path: 'pedidos/UM',
     children: [
       {
         path: '',
         component: ListaComponent,
+        canActivate: [PermisosGuard],
+        data: { key: '3WPZ93a8W0346y1hlpwLUVo3VRF5TVI4'}
+      },
+      {
+        path: 'ayuda',
+        component: AyudaComponent,
         canActivate: [PermisosGuard],
         data: { key: '3WPZ93a8W0346y1hlpwLUVo3VRF5TVI4'}
       },
@@ -45,5 +52,5 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: []
 })
-export class PedidosDamCCRoutingModule { }
+export class PedidosUMRoutingModule { }
 

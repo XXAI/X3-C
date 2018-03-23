@@ -1,6 +1,5 @@
-<listar #ctrl URL="inicializar-inventario-me?fecha_desde={{fecha_desde}}&fecha_hasta={{fecha_hasta}}&q={{query}}" titulo="Pedido  de medicamentos"></listar>
-<!-- <app-menu-dam [modulo]="'Pedidos DAM'" [icono]="'assets/hub-estandar.svg'" [url]="'/pedidos/dam'" [urlAyuda]="'ayuda'"></app-menu-dam> -->
-<app-menu-inventario [modulo]="'Inicialización de inventario de insumos médicos'" [icono]="'assets/icono-salidas.svg'" [url]="'/inventario/iniciar-inventario'"></app-menu-inventario>
+<listar #ctrl URL="pedidos-cc-dam?fecha_desde={{fecha_desde}}&fecha_hasta={{fecha_hasta}}&recibe={{recibe}}&estatus={{estatus}}" titulo="Pedido  de medicamentos"></listar>
+<app-menu-dam [modulo]="'Pedidos DAM'" [icono]="'assets/hub-estandar.svg'" [url]="'/pedidos/dam'" [urlAyuda]="'ayuda'"></app-menu-dam>
 <div style="height:40px;"></div>
 <div class="contenedor columns " >
     <div class="column" style="padding:2em;  z-index: initial; height:100%;">
@@ -12,8 +11,8 @@
                         <div class="level-left"></div>
                         <!-- Right side -->
                         <div class="level-right">
-                            <p class="level-item"><a class="button is-dark is-medium" routerLink="nuevo" *ngIf="ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva inicialización</span></a></p>
-                            <p class="level-item"><a class="button is-primary is-medium" routerLink="nuevo" *ngIf="!ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva inicialización</span></a></p>
+                            <p class="level-item"><a class="button is-dark is-medium" routerLink="nuevo" *ngIf="ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Aperturar pedido</span></a></p>
+                            <p class="level-item"><a class="button is-primary is-medium" routerLink="nuevo" *ngIf="!ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Aperturar pedido</span></a></p>
                             <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" (click)="ctrl.busquedaActivada=false;searchBox.value=''; ctrl.resultadosBusqueda=[]"><span class="icon "><i class="fa fa-close"></i></span></a></p>
                             <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="Actualizar" (click)="ctrl.listarBusqueda(searchBox.value,1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
                             <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="Actualizar" (click)="ctrl.listar(1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
@@ -95,7 +94,47 @@
                             <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="Excel" (click)="export_excel()"><span class="icon "><i class="fa fa-file-excel-o"></i></span></a></p>
                             <p class="level-item">&nbsp;</p>
                         </div>
-                    </nav>
+                    </nav>               
+                    <div class="container is-fluid">
+                        <span></span>
+                        <h1 class="title" *ngIf="ctrl.busquedaActivada">
+                            <span class="icon is-medium"><i class="fa fa-search"></i></span> Búsqueda
+                        </h1>
+                        <div class="control is-grouped">
+                            <div class="control" style="z-index: 1000;">
+                                <div class="field">   
+                                    <label class="label">Desde:</label>                         
+                                    <input  style="width: 150px; z-index: 1000;" class="input is-medium" [(ngModel)]='fecha_desde' ngui-datetime-picker date-only="true" placeholder="YYYY-MM-DD" />
+                                </div>
+                            </div>
+                            <div class="control is-expanded" style="z-index: 1000;">
+                                <div class="field">   
+                                    <label class="label">Hasta:</label>                         
+                                    <input style="width: 150px; z-index: 1000;" class="input is-medium" [(ngModel)]='fecha_hasta' ngui-datetime-picker date-only="true" placeholder="YYYY-MM-DD" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">Entrega:</label>
+                            <div class="control">
+                                <input class="input is-medium" type="text" placeholder="Persona que entrega" [(ngModel)]="recibe">
+                            </div>
+                        </div>
+                        <div class="control is-grouped">
+                            <div class="control is-expanded">
+                                <div class="field">  
+                                <label class="label">&nbsp;</label>
+                                <button class="button is-expanded is-default is-medium" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="recibe='';fecha_desde=''; fecha_hasta='';" >Limpiar</button>
+                                </div>
+                            </div>
+                            <div class="control">
+                                <div class="field">  
+                                <label class="label">&nbsp;</label>
+                                <button class="button is-info is-medium" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="ctrl.listar(1)" >Filtrar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
             
@@ -117,80 +156,79 @@
                     <table class="table" *ngIf="!ctrl.cargando && !cargandoPdf">
                         <thead>
                             <tr>
+                                <th style=" text-align: center;"><abbr title="Fecha">Fecha</abbr></th>
                                 <th style=" text-align: center;"><abbr title="Folio">Folio</abbr></th>
-                                <th>Programas</th>
-                                <th>Claves</th>
-                                <th>Lotes</th>
-                                <th>Insumos</th>
-                                <th style=" text-align: center;">Monto</th>
-                                <th style=" text-align: center;">Estatus</th>
+                                <th>COMPRA</th>
+                                <th>CAUSES</th>
+                                <th>NO CAUSES</th>
+                                <th>Estatus</th>
+                                <th style=" text-align: center;">Capturado</th>
                             </tr>
                         </thead>
                         <tbody *ngIf="!ctrl.busquedaActivada && ctrl.dato">
                             <tr *ngFor="let item of ctrl.dato; let i=index">
+                                <!-- Fecha -->
+                                <th style="vertical-align: middle; text-align: center;">
+                                    <a *ngIf="item.estatus == 'INICIALIZADO'" routerLink="/pedidos/dam/ver/{{item.id}}">{{ item.fecha }}</a>
+                                    <a *ngIf="item.estatus == 'NOINICIALIZADO'" routerLink="/pedidos/dam/editar/{{item.id}}">{{ item.fecha }}</a>
+                                </th>
                                 <!-- Folio -->
-                                <th style="vertical-align: middle; text-align: center;" *ngIf="(item.estatus == 'INICIALIZADO' || item.estatus == 'NOINICIALIZADO')">
-                                    <a *ngIf="item.estatus == 'INICIALIZADO'" routerLink="/inventario/iniciar-inventario/ver/{{item.id}}">{{ item.id ? item.id : 'No disponible' }}</a>
-                                    <a *ngIf="item.estatus == 'NOINICIALIZADO'" routerLink="/inventario/iniciar-inventario/editar/{{item.id}}">{{ item.id ? item.id : 'No disponible' }}</a>
+                                <th style="vertical-align: middle; text-align: center;">
+                                    <a *ngIf="item.estatus == 'INICIALIZADO'" routerLink="/pedidos/dam/ver/{{item.id}}">{{ item.id }}</a>
+                                    <a *ngIf="item.estatus == 'NOINICIALIZADO'" routerLink="/pedidos/dam/editar/{{item.id}}">{{ item.id }}</a>
                                 </th>
-                                <!-- Programas -->
-                                <td *ngIf="item.cantidad_programas && (item.estatus == 'INICIALIZADO' || item.estatus == 'NOINICIALIZADO')">
-                                    <a *ngIf="item.estatus == 'INICIALIZADO'" routerLink="/inventario/iniciar-inventario/ver/{{item.id}}"> 
-                                        <p> {{item.cantidad_programas}}</p>
+                                <!-- Presupuesto COMPRA -->
+                                <td *ngIf="item.metadato_compra_consolidada">
+                                    <a *ngIf="item.estatus == 'INICIALIZADO'" routerLink="/pedidos/dam/ver/{{item.id}}"> 
+                                        <p> {{item.metadato_compra_consolidada.presupuesto_compra | currency:''}}</p>
                                     </a>
-                                    <a *ngIf="item.estatus == 'NOINICIALIZADO'" routerLink="/inventario/iniciar-inventario/editar/{{item.id}}"> 
-                                        <p> {{item.cantidad_programas}}</p>
-                                    </a>
-                                </td>
-                                <td *ngIf="!item.cantidad_programas && (item.estatus == 'INICIALIZADO' || item.estatus == 'NOINICIALIZADO')">
-                                    Programas no disponibles
-                                </td>
-                                <!-- Claves -->
-                                <td *ngIf="item.cantidad_claves && (item.estatus == 'INICIALIZADO' || item.estatus == 'NOINICIALIZADO')">
-                                    <a *ngIf="item.estatus == 'INICIALIZADO'" routerLink="/inventario/iniciar-inventario/ver/{{item.id}}"> 
-                                        <p> {{item.cantidad_claves}}</p>
-                                    </a>
-                                    <a *ngIf="item.estatus == 'NOINICIALIZADO'" routerLink="/inventario/iniciar-inventario/editar/{{item.id}}"> 
-                                        <p> {{item.cantidad_claves}}</p>
+                                    <a *ngIf="item.estatus == 'NOINICIALIZADO'" routerLink="/pedidos/dam/editar/{{item.id}}"> 
+                                        <p> {{item.metadato_compra_consolidada.presupuesto_compra | currency:''}}</p>
                                     </a>
                                 </td>
-                                <td *ngIf="!item.cantidad_claves && (item.estatus == 'INICIALIZADO' || item.estatus == 'NOINICIALIZADO')">
-                                    Claves no disponible
-                                </td>
-                                <!-- Lotes -->
-                                <td *ngIf="item.cantidad_lotes && (item.estatus == 'INICIALIZADO' || item.estatus == 'NOINICIALIZADO')">
-                                    <a *ngIf="item.estatus == 'INICIALIZADO'" routerLink="/inventario/iniciar-inventario/ver/{{item.id}}"> 
-                                        <p> {{item.cantidad_lotes}}</p>
+                                <td *ngIf="!item.metadato_compra_consolidada"> No disponible</td>
+                                <!-- Presupuesto CAUSES -->
+                                <td *ngIf="item.metadato_compra_consolidada">
+                                    <a *ngIf="item.estatus == 'INICIALIZADO'" routerLink="/pedidos/dam/ver/{{item.id}}"> 
+                                        <p> {{item.metadato_compra_consolidada.presupuesto_causes | currency:''}}</p>
                                     </a>
-                                    <a *ngIf="item.estatus == 'NOINICIALIZADO'" routerLink="/inventario/iniciar-inventario/editar/{{item.id}}"> 
-                                        <p> {{item.cantidad_lotes}}</p>
+                                    <a *ngIf="item.estatus == 'NOINICIALIZADO'" routerLink="/pedidos/dam/editar/{{item.id}}"> 
+                                        <p> {{item.metadato_compra_consolidada.presupuesto_causes | currency:''}}</p>
                                     </a>
                                 </td>
-                                <td *ngIf="!item.cantidad_lotes && (item.estatus == 'INICIALIZADO' || item.estatus == 'NOINICIALIZADO')">
-                                    Lotes no disponibles
-                                </td>
-                                <!-- Insumos -->
-                                <td *ngIf="item.cantidad_insumos && (item.estatus == 'INICIALIZADO' || item.estatus == 'NOINICIALIZADO')">
-                                    <a *ngIf="item.estatus == 'INICIALIZADO'" routerLink="/inventario/iniciar-inventario/ver/{{item.id}}"> 
-                                        <p> {{item.cantidad_insumos}}</p>
+                                <td *ngIf="!item.metadato_compra_consolidada"> No disponible</td>
+                                <!-- Presupuesto NO CAUSES -->
+                                <td *ngIf="item.metadato_compra_consolidada" style="vertical-align: middle;" >
+                                    <a *ngIf="item.estatus == 'INICIALIZADO'" routerLink="/pedidos/dam/ver/{{item.id}}"> 
+                                        <p> {{item.metadato_compra_consolidada.presupuesto_no_causes | currency:''}}</p>
                                     </a>
-                                    <a *ngIf="item.estatus == 'NOINICIALIZADO'" routerLink="/inventario/iniciar-inventario/editar/{{item.id}}"> 
-                                        <p> {{item.cantidad_insumos}}</p>
+                                    <a *ngIf="item.estatus == 'NOINICIALIZADO'" routerLink="/pedidos/dam/editar/{{item.id}}"> 
+                                        <p> {{item.metadato_compra_consolidada.presupuesto_no_causes | currency:''}}</p>
                                     </a>
                                 </td>
-                                <td *ngIf="!item.cantidad_insumos && (item.estatus == 'INICIALIZADO' || item.estatus == 'NOINICIALIZADO')">
-                                    Insumos no disponibles
+                                <td *ngIf="!item.metadato_compra_consolidada" style="vertical-align: middle;" >No disponible</td>
+                                <!-- Presupuesto NO CAUSES -->
+                                <!-- <td style="vertical-align: middle;">
+                                    <a *ngIf="item.estatus == 'INICIALIZADO'" routerLink="/pedidos/dam/ver/{{item.id}}">{{ item.movimiento_usuario.nombre }} {{ item.movimiento_usuario.apellidos }} </a>
+                                    <a *ngIf="item.estatus == 'NOINICIALIZADO'" routerLink="/pedidos/dam/editar/{{item.id}}">{{ item.movimiento_usuario.nombre }} {{ item.movimiento_usuario.apellidos }} </a>
                                 </td>
-                                <!-- Monto -->
-                                <th style="vertical-align: middle; text-align: right;" *ngIf="(item.estatus == 'INICIALIZADO' || item.estatus == 'NOINICIALIZADO')">
-                                    <a *ngIf="item.estatus == 'INICIALIZADO'" routerLink="/inventario/iniciar-inventario/ver/{{item.id}}">{{ item.monto_total ? (item.monto_total | currency:'') : 'No disponible' }}</a>
-                                    <a *ngIf="item.estatus == 'NOINICIALIZADO'" routerLink="/inventario/iniciar-inventario/editar/{{item.id}}">{{ item.monto_total ? (item.monto_total | currency:'') : 'No disponible' }}</a>
-                                </th>
-                                <!-- Estatus -->
-                                <td style=" text-align: center;" *ngIf="(item.estatus == 'INICIALIZADO' || item.estatus == 'NOINICIALIZADO')">
-                                    <a *ngIf="item.estatus == 'INICIALIZADO'" routerLink="/inventario/iniciar-inventario/ver/{{item.id}}"><span class="tag is-success is-medium" *ngIf="item.estatus == 'INICIALIZADO'">Finalizado</span></a>
-                                    <a *ngIf="item.estatus == 'NOINICIALIZADO'" routerLink="/inventario/iniciar-inventario/editar/{{item.id}}"><span class="tag is-warning is-medium" *ngIf="item.estatus == 'NOINICIALIZADO'">Borrador</span></a>
+                                <td *ngIf="!item.movimiento_usuario" style="vertical-align: middle;" >No disponible</td>                         -->
+                                <!-- ESTATUS -->
+                                <td >
+                                    <a *ngIf="item.estatus == 'INICIALIZADO'" routerLink="/pedidos/dam/ver/{{item.id}}">
+                                        <span class="tag is-success is-medium" *ngIf="item.estatus == 'INICIALIZADO'">INICIALIZADO</span>
+                                    </a>
+                                    <a *ngIf="item.estatus == 'NOINICIALIZADO'" routerLink="/pedidos/dam/editar/{{item.id}}">
+                                        <span class="tag is-warning is-medium" *ngIf="item.estatus == 'NOINICIALIZADO'">NOINICIALIZADO</span>
+                                    </a>
                                 </td>
+                                <td style="vertical-align: middle; text-align: center;">
+                                    <a *ngIf="item.estatus == 'INICIALIZADO'" routerLink="/pedidos/dam/ver/{{item.id}}">{{ item.created_at | date:'medium'}} </a>
+                                    <a *ngIf="item.estatus == 'NOINICIALIZADO'" routerLink="/pedidos/dam/editar/{{item.id}}">{{ item.created_at | date:'medium'}} </a>
+                                </td>
+                            </tr>
+                            <tr *ngIf="!ctrl.dato">
+                                <td colspan="6" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>
                             </tr>
                         </tbody>
                         <tbody *ngIf="!ctrl.dato">
@@ -200,15 +238,15 @@
                         </tbody>
                         <tbody *ngIf="ctrl.busquedaActivada && ctrl.dato">
                             <tr *ngFor="let item of ctrl.resultadosBusqueda; let i=index">
-                                <th style="vertical-align: middle; text-align: center;"><a routerLink="/inventario/iniciar-inventario/ver/{{item.id}}">{{ item.id }}</a></th>
-                                <td style="vertical-align: middle;" *ngIf="item.movimiento_metadato"><a *ngIf="item.movimiento_metadato.servicio.nombre" routerLink="/inventario/iniciar-inventario/ver/{{item.id}}">{{ item.movimiento_metadato.servicio.nombre }}</a></td>
+                                <th style="vertical-align: middle; text-align: center;"><a routerLink="/pedidos/dam/ver/{{item.id}}">{{ item.id }}</a></th>
+                                <td style="vertical-align: middle;" *ngIf="item.movimiento_metadato"><a *ngIf="item.movimiento_metadato.servicio.nombre" routerLink="/pedidos/dam/ver/{{item.id}}">{{ item.movimiento_metadato.servicio.nombre }}</a></td>
                                 <td style="vertical-align: middle;" *ngIf="!item.movimiento_metadato">No disponible</td>
-                                <td style="vertical-align: middle;" *ngIf="item.movimiento_metadato"><a *ngIf="item.movimiento_metadato.turno.nombre" routerLink="/inventario/iniciar-inventario/ver/{{item.id}}">{{ item.movimiento_metadato.turno.nombre }} </a></td>
+                                <td style="vertical-align: middle;" *ngIf="item.movimiento_metadato"><a *ngIf="item.movimiento_metadato.turno.nombre" routerLink="/pedidos/dam/ver/{{item.id}}">{{ item.movimiento_metadato.turno.nombre }} </a></td>
                                 <td style="vertical-align: middle;" *ngIf="!item.movimiento_metadato">No disponible</td>
-                                <td style="vertical-align: middle;"><a routerLink="/inventario/iniciar-inventario/ver/{{item.id}}">{{ item.movimiento_usuario.nombre }} {{ item.movimiento_usuario.apellidos }} </a></td>
-                                <td style="vertical-align: middle;"><a routerLink="/inventario/iniciar-inventario/ver/{{item.id}}">{{ item.estatus }} </a></td>
-                                <td style="vertical-align: middle; text-align: center;"><a routerLink="/inventario/iniciar-inventario/ver/{{item.id}}">{{ item.created_at | date}} </a></td>
-                                <td style="vertical-align: middle; text-align: center;"><a routerLink="/inventario/iniciar-inventario/ver/{{item.id}}">{{ item.updated_at | date}} </a></td>
+                                <td style="vertical-align: middle;"><a routerLink="/pedidos/dam/ver/{{item.id}}">{{ item.movimiento_usuario.nombre }} {{ item.movimiento_usuario.apellidos }} </a></td>
+                                <td style="vertical-align: middle;"><a routerLink="/pedidos/dam/ver/{{item.id}}">{{ item.estatus }} </a></td>
+                                <td style="vertical-align: middle; text-align: center;"><a routerLink="/pedidos/dam/ver/{{item.id}}">{{ item.created_at | date}} </a></td>
+                                <td style="vertical-align: middle; text-align: center;"><a routerLink="/pedidos/dam/ver/{{item.id}}">{{ item.updated_at | date}} </a></td>
                             </tr>
 
                             <tr *ngIf="ctrl.resultadosBusqueda.length == 0 && ctrl.busquedaActivada">

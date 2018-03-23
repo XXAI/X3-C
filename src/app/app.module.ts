@@ -151,9 +151,10 @@ import { ConfiguracionGeneralModule } from './almacen-articulos/configuracion-ge
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { AyudaSialModule } from './ayuda-sial/ayuda-sial.module';
 
-// DAM
-import { IndexDamModule } from './dam/index-dam/index-dam.module';
-import { PedidosDamCCModule } from './dam/pedidos-cc/pedidos-cc.module';
+// PEDIDOS DAM, DAF, UM
+import { IndexDamModule } from './pedidos/index-dam/index-dam.module';
+import { PedidosDamCCModule } from './pedidos/dam-cc/pedidos-cc.module';
+import { PedidosUMModule } from './pedidos/pedidos-um/pedidos-um.module';
 
 //import { CrudModule } from './crud/crud.module';
 export function highchartsFactory() {
@@ -275,6 +276,7 @@ export function highchartsFactory() {
     AyudaSialModule,
     IndexDamModule,
     PedidosDamCCModule,
+    PedidosUMModule,
 
     // Animations need to be imported in to your project to use the library
     BrowserAnimationsModule,
