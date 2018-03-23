@@ -13,6 +13,11 @@ export class AuthService {
 
   constructor(private http: Http,  private router:Router) { }
 
+  obtenerInfoServidor(){
+    const url: string = 'informacion-servidor';
+    return this.http.get(`${environment.API_URL}/${url}`,null).map( (response: Response) => response.json() );
+  }
+
   login(id: string, password: string) {
     const url: string = 'obtener-token';
     if (url.indexOf("http") > -1) {

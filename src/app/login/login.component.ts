@@ -25,6 +25,9 @@ export class LoginComponent implements OnInit {
   bloquearPantallaSuscription: Subscription;
   tamano = document.body.clientHeight;
 
+  servidor:any = {};
+  listaServidores: any[] = [];
+
   mostrarRecuperarPassword:boolean = false;
   resetPasswordViaToken:boolean = false;
 
@@ -65,12 +68,38 @@ export class LoginComponent implements OnInit {
 
     this.cliente_version = VERSION;
     
+    this.authService.obtenerInfoServidor().subscribe(
+    response=>{
+      console.log(response.data);
+      this.servidor = response.data.servidor;
+
+      if(this.servidor.principal){
+        this.credenciales.servidor_id = this.servidor.id;
+        this.listaServidores = response.data.lista_servidores;
+      }
+    },error=>{
+      //
+    });
   }
+
   login() {
     this.loading = true;
     this.mostrarMensaje = false;
 
-    this.authService.login(this.credenciales.id, this.credenciales.password)
+    let credenciales: any = {};
+
+    credenciales.id = this.credenciales.id;
+    credenciales.password = this.credenciales.password;
+
+    if(!this.servidor.principal){
+      credenciales.id = this.servidor.id + ':' + credenciales.id;
+    }else{
+      if(this.credenciales.servidor_id != '0001'){
+        credenciales.id = this.credenciales.servidor_id + ':' + credenciales.id;
+      }
+    }
+
+    this.authService.login(credenciales.id, credenciales.password)
       .subscribe(
         data => {
           let usuario = JSON.parse(localStorage.getItem("usuario"));
