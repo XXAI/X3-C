@@ -66,8 +66,8 @@
             </div>
             <div class="column">
 				<div style="margin-left:1em;margin-right:1em;">
-					<a  class="button is-primary is-medium" style="width:30%; " (click)="finalizar()" [ngClass]="{ 'is-disabled' : guardando }"> <span class="icon"><i class="fa fa-check-circle"></i></span> <span>Finalizar</span></a>
-					<a  class="button is-primary is-outlined is-medium" style="width:30%; margin-right:4%; margin-left:4%;" [ngClass]="{ 'is-loading' : guardando }" (click)="guardar()"> <span class="icon"><i class="fa fa-save"></i></span> <span>Guardar</span></a>
+					<a *ngIf="!soloLectura" class="button is-primary is-medium" style="width:30%; " (click)="finalizar()" [ngClass]="{ 'is-disabled' : guardando }"> <span class="icon"><i class="fa fa-check-circle"></i></span> <span>Finalizar</span></a>
+					<a *ngIf="!soloLectura" class="button is-primary is-outlined is-medium" style="width:30%; margin-right:4%; margin-left:4%;" [ngClass]="{ 'is-loading' : guardando }" (click)="guardar()"> <span class="icon"><i class="fa fa-save"></i></span> <span>Guardar</span></a>
 					<a  class="button is-white is-medium"  style="width:30%"  routerLink="/almacen/transferencia-almacen/" [ngClass]="{ 'is-disabled' : guardando }"> Cancelar</a>
 				</div>
             </div>

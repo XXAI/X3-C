@@ -1,11 +1,11 @@
 <menu-farmacia [modulo]="'Pedidos'" [icono]="'assets/icono-pedidos.svg'" [url]="'/almacen/pedidos'"></menu-farmacia>
 
-<div style="position:relative; padding-top:70px; margin-left: 1.5%; display:block; width:97%; height:100% !important; overflow:auto;" *ngIf="pedido">    
+<div style="position:relative; margin-top:50px; padding-top:10px; padding-left:10px; padding-right:10px; display:block; height:100% !important; overflow:auto;" *ngIf="pedido">    
   <div class="tile is-ancestor is-vertical" style="height:100% !important; max-height:100% !important;">
     <div class="tile">
       <div class="tile is-4 is-parent is-vertical ">
         <div class="tile is-child">
-            <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
+            <div style="background: #FFF; border-radius: 1em; overflow: hidden; font-size: 0.7em;">
                 <section class="hero is-primary" >
                 <h1 class="title" style="margin:0.5em;" >
                     <span class="icon is-medium"><i class="fa fa-file-text"></i></span> {{formularioTitulo}} 
@@ -16,101 +16,101 @@
                 </section>
 
                 <div style="padding: 1em;">
-                <form name="form" novalidate [formGroup]="pedido.datos">
-                    <label class="label">Pedido para:</label>
-                    <p *ngIf="almacenDelUsuario.tipo_almacen == 'ALMPAL'" class="control">
-                        <span class="select is-fullwidth">
-                            <select name="almacen_solicitante" formControlName="almacen_solicitante" [ngClass]="{'is-warning': almacenes?.length == 0 }" (change)="cambioAlmacen()"> 
-                                <option *ngFor="let item of almacenes" value="{{item.id}}" [disabled]="deshabilitarAlmacen(item)">{{ item.nombre }}</option>
-                            </select>
-                        </span>
-                        <span class="help is-danger" *ngIf="pedido.tieneError('almacen_solicitante','required')">Debe elegir el almacen solicitante.</span>
-                    </p>
-                    <p *ngIf="almacenDelUsuario.tipo_almacen != 'ALMPAL'" class="is-6 is-info">
-                        {{almacenDelUsuario.nombre}}
-                    </p>
-                    <p *ngIf="es_almacen_subrogado" class="subtitle is-6 is-info">
-                        Al concluir el pedido, los insumos capturados serán  asignados al inventario de la farmacia subrogada.
-                    </p>
-
-                    <label *ngIf="almacenDelUsuario.tipo_almacen != 'ALMPAL'"  class="label">Solicitar a:</label>
-                    <p *ngIf="almacenDelUsuario.tipo_almacen != 'ALMPAL'"  class="control">
-                        <span class="select is-fullwidth">
-                            <select name="almacen_proveedor" formControlName="almacen_proveedor" [ngClass]="{'is-warning': almacenes?.length == 0 }"> 
-                                <option *ngFor="let item of almacenes" value="{{item.id}}">{{ item.nombre }}</option>
-                            </select>
-                        </span>
-                        <span class="help is-danger" *ngIf="pedido.tieneError('almacen_proveedor','required')">Debe elegir el almacen proveedor.</span>
-                    </p>
-
-                    <label class="label">Nombre del Pedido:</label>
-                    <p class="control is-expanded  has-icon has-icon-right">
-                        <input type="text" class="input is-fullwidth" placeholder="Ej. Pedido del mes de Mayo" [ngClass]="{'is-danger': pedido.tieneError('descripcion','required')}" formControlName="descripcion"/>
-                        <span class="icon is-small" *ngIf="pedido.tieneError('descripcion','required')">
-                            <i class="fa fa-warning"></i>
-                        </span>
-                        <span class="help is-danger" *ngIf="pedido.tieneError('descripcion','required')">Este campo es requerido.</span>
-                    </p>
-
-                    <label class="label">Fecha:</label>
-                    <p class="control is-expanded  has-icon has-icon-right">
-                        <!--input type="text" class="input is-fullwidth" placeholder="aaaa-mm-dd" [ngClass]="{'is-danger': pedido.tieneError('fecha','required')}" formControlName="fecha" #fecha id="fecha" (keyup)="recargarPresupuesto(fecha.value)"/-->
-                        <span class="icon is-small" *ngIf="pedido.tieneError('fecha','required')">
-                            <i class="fa fa-warning"></i>
-                        </span>
-                        <span class="select is-fullwidth">
-                            <select [ngClass]="{'is-danger': pedido.tieneError('fecha','required')}" formControlName="fecha" #fecha id="fecha" (change)="recargarPresupuesto(fecha.value)">
-                                <option *ngFor="let item of fechasValidas" value="{{item.fecha}}">{{ item.descripcion }}</option>
-                            </select>
-                        </span>
-                        <span class="help is-danger" *ngIf="pedido.tieneError('fecha','required')">Este campo es requerido.</span>
-                    </p>
-
-                    <div class="control">
-                        <textarea name="observaciones" class="textarea" placeholder="Observaciones"  formControlName="observaciones"></textarea>
-                    </div>
-                </form>
-
-                <label *ngIf="pedido.tipo_pedido != 'PEA' && esEditar  && proveedor" class="label">Datos del Proveedor:</label>
-                <div *ngIf="pedido.tipo_pedido != 'PEA' && esEditar" class="level-item">
-                    <div *ngIf="esEditar && proveedor" >
-                        <p class="subtitle is-5">
-                            {{proveedor.nombre}}<br>
-                            <small>
-                            {{proveedor.contacto}}<br>
-                            {{proveedor.email}}<br>
-                            Cel: {{proveedor.celular}}
-                            </small>
+                    <form name="form" novalidate [formGroup]="pedido.datos">
+                        <label class="label">Pedido para:</label>
+                        <p *ngIf="almacenDelUsuario.tipo_almacen == 'ALMPAL'" class="control">
+                            <span class="select is-fullwidth">
+                                <select name="almacen_solicitante" formControlName="almacen_solicitante" [ngClass]="{'is-warning': almacenes?.length == 0 }" (change)="cambioAlmacen()"> 
+                                    <option *ngFor="let item of almacenes" value="{{item.id}}" [disabled]="deshabilitarAlmacen(item)">{{ item.nombre }}</option>
+                                </select>
+                            </span>
+                            <span class="help is-danger" *ngIf="pedido.tieneError('almacen_solicitante','required')">Debe elegir el almacen solicitante.</span>
                         </p>
+                        <p *ngIf="almacenDelUsuario.tipo_almacen != 'ALMPAL'" class="is-6 is-info">
+                            {{almacenDelUsuario.nombre}}
+                        </p>
+                        <p *ngIf="es_almacen_subrogado" class="subtitle is-6 is-info">
+                            La recepción de este pedido sera reailzado por la farmacia subrogada.
+                        </p>
+
+                        <label *ngIf="almacenDelUsuario.tipo_almacen != 'ALMPAL'"  class="label">Solicitar a:</label>
+                        <p *ngIf="almacenDelUsuario.tipo_almacen != 'ALMPAL'"  class="control">
+                            <span class="select is-fullwidth">
+                                <select name="almacen_proveedor" formControlName="almacen_proveedor" [ngClass]="{'is-warning': almacenes?.length == 0 }"> 
+                                    <option *ngFor="let item of almacenes" value="{{item.id}}">{{ item.nombre }}</option>
+                                </select>
+                            </span>
+                            <span class="help is-danger" *ngIf="pedido.tieneError('almacen_proveedor','required')">Debe elegir el almacen proveedor.</span>
+                        </p>
+
+                        <label class="label">Nombre del Pedido:</label>
+                        <p class="control is-expanded  has-icon has-icon-right">
+                            <input type="text" class="input is-fullwidth" placeholder="Ej. Pedido del mes de Mayo" [ngClass]="{'is-danger': pedido.tieneError('descripcion','required')}" formControlName="descripcion"/>
+                            <span class="icon is-small" *ngIf="pedido.tieneError('descripcion','required')">
+                                <i class="fa fa-warning"></i>
+                            </span>
+                            <span class="help is-danger" *ngIf="pedido.tieneError('descripcion','required')">Este campo es requerido.</span>
+                        </p>
+
+                        <label class="label">Fecha:</label>
+                        <p class="control is-expanded  has-icon has-icon-right">
+                            <!--input type="text" class="input is-fullwidth" placeholder="aaaa-mm-dd" [ngClass]="{'is-danger': pedido.tieneError('fecha','required')}" formControlName="fecha" #fecha id="fecha" (keyup)="recargarPresupuesto(fecha.value)"/-->
+                            <span class="icon is-small" *ngIf="pedido.tieneError('fecha','required')">
+                                <i class="fa fa-warning"></i>
+                            </span>
+                            <span class="select is-fullwidth">
+                                <select [ngClass]="{'is-danger': pedido.tieneError('fecha','required')}" formControlName="fecha" #fecha id="fecha" (change)="recargarPresupuesto(fecha.value)">
+                                    <option *ngFor="let item of fechasValidas" value="{{item.fecha}}">{{ item.descripcion }}</option>
+                                </select>
+                            </span>
+                            <span class="help is-danger" *ngIf="pedido.tieneError('fecha','required')">Este campo es requerido.</span>
+                        </p>
+
+                        <div class="control">
+                            <textarea name="observaciones" class="textarea" placeholder="Observaciones"  formControlName="observaciones"></textarea>
+                        </div>
+                    </form>
+
+                    <label *ngIf="pedido.tipo_pedido != 'PEA' && esEditar  && proveedor" class="label">Datos del Proveedor:</label>
+                    <div *ngIf="pedido.tipo_pedido != 'PEA' && esEditar" class="level-item">
+                        <div *ngIf="esEditar && proveedor" >
+                            <p class="subtitle is-5">
+                                {{proveedor.nombre}}<br>
+                                <small>
+                                {{proveedor.contacto}}<br>
+                                {{proveedor.email}}<br>
+                                Cel: {{proveedor.celular}}
+                                </small>
+                            </p>
+                        </div>
                     </div>
-                </div>
-                <hr>
+                    <hr>    
 
-                <div class="control is-grouped" style="padding-top:10px;" *ngIf="!cargando">
-                    <!--p class="control" *ngIf="esEditar">
-                        <a class="button is-success " [ngClass]="{ 'is-loading': cargando, 'is-inverted': !cargando }" (click)="imprimirExcel()" title="Imprimir Excel" ><span class="icon"><i class="fa fa-file-excel-o"></i></span></a>
-                    </p-->
+                    <div class="control is-grouped" style="padding-top:10px;" *ngIf="!cargando">
+                        <!--p class="control" *ngIf="esEditar">
+                            <a class="button is-success " [ngClass]="{ 'is-loading': cargando, 'is-inverted': !cargando }" (click)="imprimirExcel()" title="Imprimir Excel" ><span class="icon"><i class="fa fa-file-excel-o"></i></span></a>
+                        </p-->
 
-                    <p class="control">
-                        <a class="button is-primary " (click)="guardar()" [ngClass]="{'is-loading': guardando}" >Guardar</a>
-                    </p>
-                    <p class="control" *ngIf="esEditar">
-                        <a class="button is-danger " (click)="finalizar()" [ngClass]="{'is-loading': guardando}" ><span class="icon"><i class="fa fa-check"></i></span><span>Concluir</span></a>
-                    </p>
-                
-                    <!--p class="control" *ngIf="esEditar">
-                    <a class="button is-primary " [ngClass]="{ 'is-loading': cargandoPdf, 'is-inverted': !cargandoPdf }" (click)="imprimir()" ><span class="icon"><i class="fa fa-print"></i></span></a>
-                    </p-->
-                    <p class="control">
-                    <a class="button is-white" [ngClass]="{'is-loading': guardando}" routerLink="{{obtenerDireccion()}}" >Ir a la lista</a>
-                    </p>                
-                </div>
+                        <p class="control" *ngIf="!soloLectura">
+                            <a class="button is-primary " (click)="guardar()" [ngClass]="{'is-loading': guardando}" >Guardar</a>
+                        </p>
+                        <p class="control" *ngIf="esEditar && !soloLectura">
+                            <a class="button is-danger " (click)="finalizar()" [ngClass]="{'is-loading': guardando}" ><span class="icon"><i class="fa fa-check"></i></span><span>Concluir</span></a>
+                        </p>
+                    
+                        <!--p class="control" *ngIf="esEditar">
+                        <a class="button is-primary " [ngClass]="{ 'is-loading': cargandoPdf, 'is-inverted': !cargandoPdf }" (click)="imprimir()" ><span class="icon"><i class="fa fa-print"></i></span></a>
+                        </p-->
+                        <p class="control">
+                        <a class="button is-white" [ngClass]="{'is-loading': guardando}" routerLink="{{obtenerDireccion()}}" >Ir a la lista</a>
+                        </p>                
+                    </div>
                 </div>
             </div>
             <br>
         </div>
         
-        <div class="tile is-child">
+        <div class="tile is-child is-vertical">
             <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
                 <table class="table is-unselectable" *ngIf="!cargando" style="font-size: 0.8em;">
                     <thead>

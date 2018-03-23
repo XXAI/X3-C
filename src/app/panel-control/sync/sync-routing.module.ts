@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { EstatusComponent } from './estatus/estatus.component';
 import { LocalComponent } from './local/local.component';
+import { LogComponent } from './log/log.component';
 import { CentralComponent } from './central/central.component';
 import { ServidoresComponent } from './servidores/servidores.component';
 import { NuevoComponent as NuevoServidorComponent} from './servidores/nuevo/nuevo.component';
@@ -18,6 +19,7 @@ const routes: Routes = [
     children: [
        { path: '',  redirectTo: '/panel-control/sync/estatus', pathMatch: 'full' },
        { path: 'estatus', component: EstatusComponent },
+       { path: 'log', component: LogComponent , canActivate: [PermisosGuard], data: { key: 'NNN3YYcmuXdZYVSGCk0CJFjcx3ATnRQ5'} },
        { path: 'local', component: LocalComponent , canActivate: [PermisosGuard], data: { key: 'NNN3YYcmuXdZYVSGCk0CJFjcx3ATnRQ5'} },
        { path: 'central', component: CentralComponent, canActivate: [PermisosGuard], data: { key: '3DMVRdBv4cLGzdfAqXO7oqTvAMbEdhI7'}  },
        { path: 'servidores', component: ServidoresComponent, canActivate: [PermisosGuard], data: { key: '8DDwGNuZOZfoFfaDOsQvBBhVzmnlU4PA'}  },

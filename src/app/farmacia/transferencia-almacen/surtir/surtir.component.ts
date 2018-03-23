@@ -40,6 +40,8 @@ export class SurtirComponent implements OnInit {
   id:string ;
   cargando: boolean = false;
   cargandoStock: boolean = false;
+
+  soloLectura: boolean = false;
   
   pedidoPorSurtir:boolean = false;
   pedidoSurtido:boolean = false;
@@ -94,7 +96,12 @@ export class SurtirComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.id = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number      
     });
+
     this.cargando = true;
+
+    var usuario =  JSON.parse(localStorage.getItem("usuario"));
+    this.soloLectura = usuario.solo_lectura;
+
     this.transferenciaAlmacenService.ver(this.id).subscribe(
           pedido => {
             this.cargando = false;

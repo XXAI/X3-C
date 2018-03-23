@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
-import { API_URL } from './config';
 import { environment } from '../environments/environment';
 
 
@@ -13,6 +12,11 @@ export class AuthService {
   headers = new Headers({'Content-Type': 'application/json'});
 
   constructor(private http: Http,  private router:Router) { }
+
+  obtenerInfoServidor(){
+    const url: string = 'informacion-servidor';
+    return this.http.get(`${environment.API_URL}/${url}`,null).map( (response: Response) => response.json() );
+  }
 
   login(id: string, password: string) {
     const url: string = 'obtener-token';
@@ -112,6 +116,15 @@ export class AuthService {
         } else {
           json.usuario.clues_activa = null;
           json.usuario.almacen_activo = null;
+        }
+
+        json.usuario.solo_lectura = false;
+        if(json.server_info.data.id != json.usuario.servidor.id){
+          console.log('Usuario de diferente servidor...');
+          json.usuario.solo_lectura = true;
+        }else if(json.server_info.data.principal && json.usuario.clues_activa.es_offline){
+          console.log('Usuario mismo servidor, con clues offline...');
+          json.usuario.solo_lectura = true;
         }
         
         localStorage.setItem('token', json.token)

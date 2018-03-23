@@ -9,6 +9,7 @@ import { PaginacionModule } from '../../paginacion/paginacion.module';
 import { SyncRoutingModule } from './sync-routing.module';
 import { EstatusComponent } from './estatus/estatus.component';
 import { LocalComponent } from './local/local.component';
+import { LogComponent } from './log/log.component';
 
 import { SyncService } from './sync.service';
 import { CentralComponent } from './central/central.component';
@@ -24,7 +25,7 @@ import { EditarComponent } from './servidores/editar/editar.component';
     MenuModule,
     PaginacionModule
   ],
-  declarations: [ EstatusComponent, LocalComponent, CentralComponent, ServidoresComponent, NuevoComponent, EditarComponent],
+  declarations: [ EstatusComponent, LocalComponent, LogComponent, CentralComponent, ServidoresComponent, NuevoComponent, EditarComponent],
   providers:[SyncService]
 })
 export class SyncModule { }

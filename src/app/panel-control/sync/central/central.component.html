@@ -4,7 +4,7 @@
     <div class="column is-one-quarter is-hidden-mobile">
         <panel-control-menu-aside></panel-control-menu-aside>
     </div>
-    <div class="column" style="padding:2em;">
+    <div class="column" style="padding:2em; overflow:auto">
         <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
             <section class="hero is-primary">
                 <div class="hero-body">
@@ -29,15 +29,15 @@
                 </div>
             </section>
             <section >
-                <table class="table">
+                <table class="table" style="font-size:0.9em;">
 					<thead>
 						<tr>
 							<th>ID</th>
-							<th>SERVIDOR</th>
-							<th>NOMBRE</th>
-							<th>FECHA DE GENERACIÓN</th>
-							<th>FECHA DE SINCRONIZACIÓN</th>
-                            <th>USUARIO</th>
+							<th>Servidor</th>
+							<th>Nombre</th>
+							<th>Generado</th>
+							<th>Sincronizado</th>
+                            <th>Usuario</th>
                         </tr>
                     </thead>
                     <tbody  *ngIf="!busquedaActivada">
@@ -45,8 +45,8 @@
                             <td>{{ item.id }}</td>   
                             <td>{{ item.servidor_id }}</td>                      
                             <td>{{ item.servidor_nombre }}</td> 
-                            <td>{{ item.fecha_generacion }}</td>  
-                            <td>{{ item.created_at }}</td>    
+                            <td><small>{{ item.fecha_generacion }}</small></td>  
+                            <td><small>{{ item.created_at }}</small></td>    
                             <td>{{ item.usuario_id }}</td>                                                  
                         </tr>
                         <tr *ngIf="lista.length == 0">
@@ -58,8 +58,8 @@
                             <td>{{ item.id }}</td>   
                             <td>{{ item.servidor_id }}</td>                      
                             <td>{{ item.servidor_nombre }}</td> 
-                            <td>{{ item.fecha_generacion }}</td>  
-                            <td>{{ item.created_at }}</td> 
+                            <td><small>{{ item.fecha_generacion }}</small></td>  
+                            <td><small>{{ item.created_at }}</small></td> 
                             <td>{{ item.usuario_id }}</td>                                                  
                         </tr>
 
@@ -91,9 +91,10 @@
                     (onListar)="listarBusqueda(searchBox.value,$event)" 
                     *ngIf="totalBusqueda > 0 && totalBusqueda > resultadosPorPaginaBusqueda && busquedaActivada"></paginacion>
             </section>
+          
         </div>
         
-       
+        <br>
        
     </div>
 </div>

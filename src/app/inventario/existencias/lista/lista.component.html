@@ -1,9 +1,9 @@
 <listar #ctrl URL="inventario-insumos?buscar_en={{buscar_en}}&seleccionar={{seleccionar}}&tipo={{tipo}}&clave_insumo={{clave_insumo}}" titulo="Inventario"></listar>
 <app-menu-inventario [modulo]="'Existencia de insumos médicos'" [icono]="'assets/icono-salidas.svg'" [url]="'/inventario'"></app-menu-inventario>
 <div style="height:50px;"></div>
-<div class="contenedor columns " style="height:80%;">
-    <div class="column" style="padding:2em;">
-        <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
+<div class="contenedor columns " style="height:100%;">
+    <div class="column" style="padding:2em; overflow: auto;">
+        <div style="background: #FFF; border-radius: 1em;">
             <section class="hero" [ngClass]=" {'is-dark': ctrl.busquedaActivada, 'is-primary': !ctrl.busquedaActivada } ">
 
                 <div class="hero-body" style="position:relative;">
@@ -34,15 +34,19 @@
                             <p class="level-item b-checkbox is-info is-circular">
                                 <input class="styled" type="radio" id="buscar_en_mis_claves" #claves [checked]="buscar_en == 'MIS_CLAVES'" (click)="buscar_en = 'MIS_CLAVES'" [value]="'MIS_CLAVES'" name="buscar_en">                                    
                                 <label for="buscar_en_mis_claves">
-                                    <span class="tag is-large" [ngClass]="{'is-dark':buscar_en == 'MIS_CLAVES'}">Mis claves</span>
+                                    Mis claves <!--span class="tag is-medium" [ngClass]="{'is-dark':buscar_en == 'MIS_CLAVES'}">Mis claves</span-->
                                 </label> 
                             </p>
                             <p class="level-item  b-checkbox is-circular">
                                 <input class="styled" type="radio" id="buscar_en_todas_claves" #claves [checked]="buscar_en == 'TODAS_LAS_CLAVES'" (click)="buscar_en = 'TODAS_LAS_CLAVES'" [value]="'TODAS_LAS_CLAVES'" name="buscar_en">                                    
                                 <label for="buscar_en_todas_claves">
-                                    <span class="tag is-large" [ngClass]="{'is-dark':buscar_en == 'TODAS_LAS_CLAVES'}">Todas las claves</span>
+                                    Todas las claves <!--span class="tag is-medium" [ngClass]="{'is-dark':buscar_en == 'TODAS_LAS_CLAVES'}">Todas las claves</span-->
                                 </label>    
                             </p>
+                        </div>
+                    </nav>
+                    <nav class="level">
+                        <div class="level-left">
                             <p class="level-item">&nbsp;</p>
                             <p class="level-item field">
                                 <span class="control">
@@ -112,7 +116,7 @@
                 <br>
             </div>
             <span id="exportable">
-                <div style="overflow: scroll; overflow-x: hidden; height: 630px;">
+                <div style="overflow: scroll; height: 630px;">
                     <div class="is-fullwidth has-text-centered" *ngIf="cargandoPdf">
                         <br>
                         <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Generando PDF...</span></span>

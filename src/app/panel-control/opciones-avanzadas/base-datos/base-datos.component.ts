@@ -128,7 +128,7 @@ export class BaseDatosComponent implements OnInit {
 			this.archivoSubido = false;
 			this.enviandoDatos = true;
 
-			
+			let usuario = JSON.parse(localStorage.getItem("usuario"));			
 			
 			let formData:FormData = new FormData();
 			formData.append('sql', this.archivo, this.archivo.name);
@@ -136,6 +136,8 @@ export class BaseDatosComponent implements OnInit {
 			let headers = new Headers();
 			headers.delete('Content-Type');
 			headers.append('Authorization',  'Bearer ' + localStorage.getItem('token'));
+			headers.append('X-Clues',usuario.clues_activa.clues);
+			headers.append('X-Almacen-Id',usuario.almacen_activo.id);
 			let options = new RequestOptions({ headers: headers });
 			//let options = new RequestOptions({ headers: headers });
 

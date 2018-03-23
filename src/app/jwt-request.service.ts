@@ -7,7 +7,6 @@ import { JwtHelper } from 'angular2-jwt';
 import { AuthService } from  './auth.service';
 import { BloquearPantallaService }     from './bloquear-pantalla/bloquear-pantalla.service';
 
-import { API_URL } from './config';
 import { environment } from '../environments/environment';
 
 

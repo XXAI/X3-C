@@ -6,7 +6,7 @@
       <menu-lateral></menu-lateral>
     </div>
     <div class="column" style="padding:2em;">
-        <div style="background: #FFF; overflow:hidden; border-radius:1em; width:100%;margin-bottom:1em;">
+        <div style="background: #FFF; overflow:hidden; border-radius:1em; width:100%;margin-bottom:1em;" *ngIf="almacenSeleccionado.tipo_almacen == 'ALMPAL' && !almacenSeleccionado.subrogado">
             <table class="table" style="min-width:100%; font-size:0.8em; margin-bottom:0.2em;margin-top:0.2em;">
                 <thead>
                     <tr>
@@ -46,7 +46,7 @@
             </table>
          </div>
 
-        <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
+        <div style="background: #FFF; border-radius: 1em; margin-bottom:80px;">
             <section class="hero" [ngClass] = " {'is-dark': busquedaActivada, 'is-primary': !busquedaActivada } " >
                 
                 <div class="hero-body" style="position:relative;">
@@ -82,7 +82,7 @@
             </div>
 
             <table class="table" *ngIf="!cargando">
-                <thead>
+                <thead style="font-size: 0.7em;">
                     <tr>
                         <th><abbr title="Folio del pedido">Folio</abbr></th>
                         <th>Nombre del Pedido</th>
@@ -93,7 +93,7 @@
                         <th style="text-align:center;" width="1">Opciones</th>
                     </tr>
                 </thead>
-                <tbody  *ngIf="!busquedaActivada">
+                <tbody  *ngIf="!busquedaActivada" style="font-size: 0.7em;">
                     <tr *ngFor="let item of pedidos; let i=index" [ngClass]="{'proyecto-estatus-normal':(item.status == 'BR' || item.status == 'PS'),'proyecto-estatus-azul':item.status == 'EF','proyecto-estatus-rojo':item.status == 'EX-CA','proyecto-estatus-amarillo':item.status == 'EX','proyecto-estatus-verde':item.status == 'FI'}">
                         <th style="vertical-align: middle;"><a routerLink="{{obtenerDireccion(item.id,item.status)}}">
                             <span class="icon" *ngIf="item.tipo_pedido_id=='PA'"><i class="fa fa-hospital-o"></i></span>
@@ -114,8 +114,9 @@
                         </a></td>
                         <td style="vertical-align: middle;" class="has-text-centered">
                             <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
-                            <a *ngIf="!item.cargando && item.status == 'BR'" class="status-rojo" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
-                            <a *ngIf="!item.cargando && item.status == 'PS' && item.expira_en_dias >= 0" routerLink="/almacen/pedidos/recepcion/{{item.id}}" title="Recibir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
+                            <a *ngIf="!item.cargando && item.status == 'BR' && !soloLectura" class="status-rojo" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
+                            <a *ngIf="!item.cargando && item.status == 'PS' && item.expira_en_dias >= 0 && item.recepcion_permitida && !soloLectura" routerLink="/almacen/pedidos/recepcion/{{item.id}}" title="Recibir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
+                            <a *ngIf="!item.cargando && item.status == 'EF' && item.almacen_solicitante == almacenSeleccionado.id && item.recepcion_permitida && !soloLectura" routerLink="/almacen/pedidos/recepcion/{{item.id}}" title="Recibir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
                             <span *ngIf="!item.cargando && item.status == 'PS' && item.expira_en_dias < 0" class="tag is-danger" title="Expirado"><span class="icon"><i class="fa fa-exclamation"></i></span></span>
                             <span *ngIf="!item.cargando && item.status == 'FI'" class="estatus-verde" title="Finalizado"><span class="icon"><i class="fa fa-check-circle"></i></span></span>
                             <span *ngIf="!item.cargando && item.status == 'EX-CA'" class="estatus-rojo" title="Expirado - Cancelado"><span class="icon"><i class="fa fa-times-circle"></i></span></span>
@@ -126,7 +127,7 @@
                         <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
                     </tr>
                 </tbody>
-                <tbody *ngIf="busquedaActivada">
+                <tbody *ngIf="busquedaActivada" style="font-size: 0.7em;">
                     <tr *ngFor="let item of resultadosBusqueda; let i=index" [ngClass]="{'proyecto-estatus-normal':item.status == 'BR','proyecto-estatus-azul':item.status == 'EF','proyecto-estatus-rojo':item.status == 'EX-CA','proyecto-estatus-amarillo':item.status == 'EX','proyecto-estatus-verde':item.status == 'FI'}">
                         <th style="vertical-align: middle;"><a routerLink="{{obtenerDireccion(item.id,item.status)}}">
                             <span class="icon" *ngIf="item.tipo_pedido_id=='PA'"><i class="fa fa-hospital-o"></i></span>
@@ -147,8 +148,9 @@
                         </a></td>
                         <td style="vertical-align: middle;" class="has-text-centered">
                             <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
-                            <a *ngIf="!item.cargando && item.status == 'BR'" class="status-rojo" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
-                            <a *ngIf="!item.cargando && item.status == 'PS' && item.expira_en_dias >= 0" routerLink="/almacen/pedidos/recepcion/{{item.id}}" title="Recibir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
+                            <a *ngIf="!item.cargando && item.status == 'BR' && !soloLectura" class="status-rojo" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a>
+                            <a *ngIf="!item.cargando && item.status == 'PS' && item.expira_en_dias >= 0 && item.recepcion_permitida && !soloLectura" routerLink="/almacen/pedidos/recepcion/{{item.id}}" title="Recibir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
+                            <a *ngIf="!item.cargando && item.status == 'EF' && item.almacen_solicitante == almacenSeleccionado.id && item.recepcion_permitida && !soloLectura" routerLink="/almacen/pedidos/recepcion/{{item.id}}" title="Recibir pedido"><span class="icon"><i class="fa fa-truck"></i></span></a>
                             <span *ngIf="!item.cargando && item.status == 'PS' && item.expira_en_dias < 0" class="tag is-danger" title="Expirado"><span class="icon"><i class="fa fa-exclamation"></i></span></span>
                             <span *ngIf="!item.cargando && item.status == 'FI'" class="estatus-verde" title="Finalizado"><span class="icon"><i class="fa fa-check-circle"></i></span></span>
                             <span *ngIf="!item.cargando && item.status == 'EX-CA'" class="estatus-rojo" title="Expirado - Cancelado"><span class="icon"><i class="fa fa-times-circle"></i></span></span>

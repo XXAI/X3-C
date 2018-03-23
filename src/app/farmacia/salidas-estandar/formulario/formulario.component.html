@@ -175,9 +175,9 @@
                                 (click)="ctrl.regresar()"-->
                             <div class="level-right">
                                 <p class="level-item"><a class="button is-primary" routerLink="/almacen/salidas-estandar">Regresar</a></p>
-                                <p class="level-item" *ngIf="tieneid"><a class="button is-primary" routerLink="/almacen/salidas-estandar/nuevo" *ngIf="!ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva salida</span></a></p>
+                                <p class="level-item" *ngIf="tieneid && !usuario.solo_lectura"><a class="button is-primary" routerLink="/almacen/salidas-estandar/nuevo" *ngIf="!ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva salida</span></a></p>
                                 <p class="level-item" *ngIf="tieneid"><a *ngIf="tieneid" class="button is-primary" (click)="array_servicios = ctrl.servicios; array_turnos = ctrl.turnos; imprimir();"><span class="icon"><i class="fa fa-print"></i></span></a></p>
-                                <p class="level-item" *ngIf="!tieneid">
+                                <p class="level-item" *ngIf="!tieneid && !usuario.solo_lectura">
                                         <button class="button is-primary" [ngClass]="{'is-loading': ctrl.cargando}" (click)="guardar_movimiento()" [disabled]="ctrl.dato.invalid"> <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar</button>
                                 </p>
                                 <p *ngIf="tieneid" class="level-item"><a class="button is-primary" title="Actualizar" (click)="ctrl.cargarDatos();"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
@@ -604,7 +604,7 @@
             </div>
         </section>
         <footer class="modal-card-foot">
-            <a class="button is-success" (click)="ctrl.enviar(false, 'almacen/salidas-estandar'); cancelarModal('guardarMovimiento')">Continuar</a>
+            <a class="button is-success" (click)="ctrl.enviar(false, 'almacen/salidas-estandar', 'almacen/salidas-estandar/ver'); cancelarModal('guardarMovimiento')">Continuar</a>
             <a class="button" (click)="cancelarModal('guardarMovimiento')">Cancelar</a>
         </footer>
     </div>

@@ -7,6 +7,7 @@ import { BloquearPantallaService }     from '../bloquear-pantalla/bloquear-panta
 import { CambiarEntornoService }     from '../perfil/cambiar-entorno.service';
 import { EditarPerfilService }     from '../perfil/editar-perfil.service';
 
+import { VERSION } from 'app/config';
 import { environment } from 'environments/environment';
 
 @Component({
@@ -62,7 +63,7 @@ export class PerfilComponent implements OnInit {
   ngOnInit() {
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
     this.server_info = JSON.parse(localStorage.getItem("server_info"));
-    this.cliente_version = environment.VERSION;
+    this.cliente_version = VERSION;
     this.nuevoPerfil.id = this.usuario.id;
     this.nuevoPerfil.avatar = this.usuario.avatar;
     this.nuevoPerfil.nombre = this.usuario.nombre;
@@ -133,6 +134,16 @@ export class PerfilComponent implements OnInit {
   }
 
   cambiarEntorno(){
+    this.usuario.solo_lectura = false;
+
+    if(this.server_info.data.id != this.usuario.servidor.id){
+      console.log('Usuario de diferente servidor...');
+      this.usuario.solo_lectura = true;
+    }else if(this.server_info.data.principal && this.usuario.clues_activa.es_offline){
+      console.log('Usuario mismo servidor, con clues offline...');
+      this.usuario.solo_lectura = true;
+    }
+    
     localStorage.setItem('usuario', JSON.stringify(this.usuario));
     this.mostrarCambiarEntorno = false;
     this.cambiarEntornoService.cambiarEntorno();

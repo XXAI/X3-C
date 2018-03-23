@@ -17,8 +17,6 @@ import { Observable } from 'rxjs';
 
 import { JwtRequestService } from '../jwt-request.service';
 
-import { API_URL } from '../config';
-
 
 @Injectable()
 export class CrudService {

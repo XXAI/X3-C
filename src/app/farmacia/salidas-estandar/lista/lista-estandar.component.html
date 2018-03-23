@@ -1,8 +1,8 @@
 <listar #ctrl URL="movimientos?tipo=2&fecha_desde={{fecha_desde}}&fecha_hasta={{fecha_hasta}}&turno={{turno}}&servicio={{servicio}}&recibe={{recibe}}" titulo="Salida  de almacén"></listar>
 <menu-farmacia [modulo]="'Salidas  de almacén'" [icono]="'assets/icono-salidas.svg'" [url]="'/almacen/salidas-estandar'"></menu-farmacia>
 <div style="height:50px;"></div>
-<div class="contenedor columns " style="height:80%; ">
-    <div class="column" style="padding:2em;">
+<div class="contenedor columns " style="height:100%; ">
+    <div class="column" style="padding:2em; overflow:auto;">
         <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
             <section class="hero" [ngClass]=" {'is-dark': ctrl.busquedaActivada, 'is-primary': !ctrl.busquedaActivada } ">
 
@@ -11,8 +11,8 @@
                         <div class="level-left"></div>
                         <!-- Right side -->
                         <div class="level-right">
-                            <p class="level-item"><a class="button is-dark is-medium" routerLink="nuevo" *ngIf="ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva salida</span></a></p>
-                            <p class="level-item"><a class="button is-primary is-medium" routerLink="nuevo" *ngIf="!ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva salida</span></a></p>
+                            <p class="level-item"><a class="button is-dark is-medium" routerLink="nuevo" *ngIf="ctrl.busquedaActivada && !usuario.solo_lectura"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva salida</span></a></p>
+                            <p class="level-item"><a class="button is-primary is-medium" routerLink="nuevo" *ngIf="!ctrl.busquedaActivada && !usuario.solo_lectura"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva salida</span></a></p>
                             <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" (click)="ctrl.busquedaActivada=false;searchBox.value=''; ctrl.resultadosBusqueda=[]"><span class="icon "><i class="fa fa-close"></i></span></a></p>
                             <p class="level-item"><a class="button  is-dark" *ngIf="ctrl.busquedaActivada" title="Actualizar" (click)="ctrl.listarBusqueda(searchBox.value,1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
                             <p class="level-item"><a class="button  is-primary" *ngIf="!ctrl.busquedaActivada" title="Actualizar" (click)="ctrl.listar(1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>

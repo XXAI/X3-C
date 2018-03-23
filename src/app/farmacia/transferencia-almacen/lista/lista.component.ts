@@ -28,6 +28,8 @@ import { Mensaje } from '../../../mensaje';
 export class ListaComponent implements OnInit {
   cargando: boolean = false;
 
+  soloLectura: boolean = false;
+
   // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
   mensajeExito: Mensaje = new Mensaje();
@@ -80,11 +82,17 @@ export class ListaComponent implements OnInit {
     this.cambiarEntornoSuscription = this.cambiarEntornoService.entornoCambiado$.subscribe(evento => {
       console.log('subscripcion en lista de pedidos');
       this.listar(this.paginaActual);
+
+      var usuario =  JSON.parse(localStorage.getItem("usuario"));
+      this.soloLectura = usuario.solo_lectura;
     });
 
     this.listar(1);
     this.mensajeError = new Mensaje();
     this.mensajeExito = new Mensaje();
+
+    var usuario =  JSON.parse(localStorage.getItem("usuario"));
+    this.soloLectura = usuario.solo_lectura;
 
     var self = this;
 

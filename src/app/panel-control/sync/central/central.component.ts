@@ -276,6 +276,8 @@ export class CentralComponent implements OnInit {
 			this.mensajeErrorSync = "";
 			this.archivoSubido = false;
 			this.enviandoDatos = true;
+
+			let usuario = JSON.parse(localStorage.getItem("usuario"));
 			
 			let formData:FormData = new FormData();
 			formData.append('sync', this.archivo, this.archivo.name);
@@ -283,6 +285,8 @@ export class CentralComponent implements OnInit {
 			let headers = new Headers();
 			headers.delete('Content-Type');
 			headers.append('Authorization',  'Bearer ' + localStorage.getItem('token'));
+			headers.append('X-Clues',usuario.clues_activa.clues);
+			headers.append('X-Almacen-Id',usuario.almacen_activo.id);
 			let options = new RequestOptions({ headers: headers, responseType: ResponseContentType.Blob });
 			//let options = new RequestOptions({ headers: headers });
 

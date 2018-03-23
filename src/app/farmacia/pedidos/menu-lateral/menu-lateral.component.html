@@ -2,7 +2,7 @@
     <!--  <p class="menu-label">
         Pedidos
     </p>-->
-    <a routerLink="/almacen/pedidos/nuevo" routerLinkActive="is-active" class="button is-primary is-inverted is-medium is-fullwidth"><span class="icon"  ><i class="fa fa-plus"></i></span> <span>Nuevo Pedido</span></a>
+    <a routerLink="/almacen/pedidos/nuevo" routerLinkActive="is-active" class="button is-primary is-inverted is-medium is-fullwidth" *ngIf="!usuario.solo_lectura && !usuario.almacen_activo.subrogado"><span class="icon"  ><i class="fa fa-plus"></i></span> <span>Nuevo Pedido</span></a>
     <br>
     <ul class="menu-list">
         <li>
@@ -40,6 +40,13 @@
                 <span *ngIf="stats.por_surtir>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': porSurtir.className == 'is-active', 'is-primary': porSurtir.className != 'is-active' }">{{  stats.por_surtir }}</span>
             </a>
         </li>
+        <li>
+            <a routerLink="/almacen/pedidos/farmacia-subrogada" #farmacia routerLinkActive="is-active">
+                <span class="icon"><i class="fa fa-building"></i></span> Farmacia Subrogada
+                <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                <span *ngIf="stats.farmacia>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': farmacia.className == 'is-active', 'is-info': farmacia.className != 'is-active' }">{{  stats.farmacia }}</span>
+            </a>
+        </li>
         <hr>
         <li>
             <a routerLink="/almacen/pedidos/finalizados" #finalizados routerLinkActive="is-active">
@@ -62,7 +69,7 @@
         </li>
         <li>
             <a routerLink="/almacen/pedidos/expirados-cancelados" #expiradosCancelados routerLinkActive="is-active">
-                <span class="icon"><i class="fa fa-times-circle"></i></span> Expirados - Cancelados
+                <span class="icon"><i class="fa fa-times-circle"></i></span> Cancelados
                 <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
                 <span *ngIf="stats.expirados_cancelados>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': expiradosCancelados.className == 'is-active', 'is-danger': expiradosCancelados.className != 'is-active' }">{{  stats.expirados_cancelados }}</span>
             </a>
@@ -80,14 +87,6 @@
                 <span class="icon"><i class="fa fa-code-fork"></i></span> Alternos
                 <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
                 <span *ngIf="stats.alternos>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': alternos.className == 'is-active', 'is-primary': alternos.className != 'is-active' }">{{  stats.alternos }}</span>
-            </a>
-        </li>        
-        <hr>
-        <li>
-            <a routerLink="/almacen/pedidos/farmacia-subrogada" #farmacia routerLinkActive="is-active">
-                <span class="icon"><i class="fa fa-building"></i></span> Farmacia Subrogada
-                <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
-                <span *ngIf="stats.farmacia>0" class="tag is-pulled-right" [ngClass]="{ 'is-white': farmacia.className == 'is-active', 'is-info': farmacia.className != 'is-active' }">{{  stats.farmacia }}</span>
             </a>
         </li>
     </ul>

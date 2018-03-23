@@ -49,6 +49,14 @@ export class SyncService {
     return this.jwtRequest.get(SyncService.URL+"/lista",null,{page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
   }
 
+
+  buscarLog(term: string, pagina:number = 1, resultados_por_pagina:number =20 ): Observable<any>{
+    return this.jwtRequest.get(SyncService.URL+"/log",null,{q: term, page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
+  }
+  logPaginado(pagina:number = 1, resultados_por_pagina:number =20 ): Observable<any>{
+    return this.jwtRequest.get(SyncService.URL+"/log",null,{page: pagina, per_page: resultados_por_pagina}).map( (response: Response) => response.json().data);
+  }
+
   
 
   auto(): Observable<any>{

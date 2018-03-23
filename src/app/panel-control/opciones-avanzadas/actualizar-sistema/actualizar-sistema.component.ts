@@ -65,9 +65,15 @@ export class ActualizarSistemaComponent implements OnInit {
     this.cargandoParches = true;
     this.apiService.listarParches().subscribe(
 			respuesta => {
-				this.cargandoParches = false;							
-        this.parches_api = respuesta;
-			
+				this.cargandoParches = false;
+				console.log(respuesta);
+				
+				this.parches_api = respuesta.api;
+				for(let i in this.parches_cliente){
+					if(respuesta.cliente[this.parches_cliente[i].nombre]){
+						this.parches_cliente[i].fecha_aplicacion = respuesta.cliente[this.parches_cliente[i].nombre]+'';
+					}
+				}
 			},
 			error => {
 				this.cargandoParches = false;				
@@ -75,39 +81,55 @@ export class ActualizarSistemaComponent implements OnInit {
 
 			}
 		);
+  }
 
+  ejecutarParcheApi(parche){
+	this.enviandoDatos = true;
+	this.apiService.ejecutarParche(parche).subscribe(
+		respuesta => {
+			this.enviandoDatos = false;
+			console.log(respuesta);
+			parche.fecha_ejecucion = true;
+		},
+		error => {
+			this.enviandoDatos = false;				
+			console.log(error);
+
+		}
+	);
   }
 
   adjuntarParche(){		
 		if(this.archivo){
 
 			this.errores = {
-			archivo: null
+				archivo: null
 			}
 			this.mensajeErrorSync = "";
 			this.archivoSubido = false;
 			this.enviandoDatos = true;
-
-			
 			
 			let formData:FormData = new FormData();
 			formData.append('patch', this.archivo, this.archivo.name);
+
+			let usuario = JSON.parse(localStorage.getItem("usuario"));
 			
 			let headers = new Headers();
 			headers.delete('Content-Type');
 			headers.append('Authorization',  'Bearer ' + localStorage.getItem('token'));
+			headers.append('X-Clues',usuario.clues_activa.clues);
+			headers.append('X-Almacen-Id',usuario.almacen_activo.id);
 			let options = new RequestOptions({ headers: headers });
 			//let options = new RequestOptions({ headers: headers });
-
 			
 			var responseHeaders:any;
-      var contentDisposition:any;
-      
+      		var contentDisposition:any;
+			
 			this.http.post(`${environment.API_URL}/patches/ejecutar`, formData, options)										
 				.subscribe(
 					response => {
-            this.logActualizacion = response.json().data;
-            this.mostrarLog = true;
+            			this.logActualizacion = response.json().data;
+            			this.mostrarLog = true;
 
 						this.archivoSubido = true;
 						this.enviandoDatos = false;
@@ -115,11 +137,10 @@ export class ActualizarSistemaComponent implements OnInit {
 						this.progreso = 100;
 						this.archivo = null;
 						//this.listarParches();
-						window.location.reload();
+						//window.location.reload();
 					},					
 					error => {
-            
-            if(error.status == 500){
+            			if(error.status == 500){
 							try{
 								let e = error.json();
 								this.mensajeErrorSync = e.error;
@@ -131,12 +152,11 @@ export class ActualizarSistemaComponent implements OnInit {
 							let e = error.json();
 							this.mensajeErrorSync = "Error en el parche";
 							this.logActualizacion = e.error;
-            	this.mostrarLog = true;
+            				this.mostrarLog = true;
+						} else {
+							let e = error.json();
+							this.mensajeErrorSync = e.error;
 						}
-						else {
-              let e = error.json();
-              this.mensajeErrorSync = e.error;
-            }
             
 						this.archivoSubido = false;
 						
@@ -144,13 +164,15 @@ export class ActualizarSistemaComponent implements OnInit {
 						this.enviandoDatos = false;
 					}
 					
-				)
-			
-			
-			
+				);
 		}
 
   }
+
+  recargarCliente(){
+	window.location.reload();
+  }
+
   fileChange(event){
 		let fileList: FileList = event.target.files;
 		if(fileList.length > 0) {

@@ -140,26 +140,26 @@
                             <!-- Right side -->
                             <div class="level-right"> <!-- (click)="ctrl.regresar()" -->
                                 <p class="level-item"><a class="button is-primary" routerLink="/almacen/entradas-estandar">Regresar</a></p>
-                                <p class="level-item" *ngIf="tieneid && ctrl.dato.get('estatus').value == 'FI'"><a class="button is-primary" routerLink="/almacen/entradas-estandar/nuevo" *ngIf="!ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva entrada</span></a></p>
+                                <p class="level-item" *ngIf="tieneid && ctrl.dato.get('estatus').value == 'FI' && !usuario.solo_lectura"><a class="button is-primary" routerLink="/almacen/entradas-estandar/nuevo" *ngIf="!ctrl.busquedaActivada"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<span>Nueva entrada</span></a></p>
                                 <p class="level-item" *ngIf="tieneid && ctrl.dato.get('estatus').value == 'FI'"><a *ngIf="tieneid" class="button is-primary" (click)="imprimir()"><span class="icon"><i class="fa fa-print"></i></span></a></p>
                                 <!--
                                 <p class="level-item" *ngIf="!tieneid">
                                     <button class="button is-primary" type="submit" [ngClass]="{'is-loading': ctrl.cargando}" [disabled]="ctrl.dato.invalid"> <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar</button>
                                 </p>
                                 -->
-                                <p class="level-item" *ngIf="!tieneid || ctrl.dato.get('estatus').value == 'BR'">
+                                <p class="level-item" *ngIf="(!tieneid || ctrl.dato.get('estatus').value == 'BR') && !usuario.solo_lectura">
                                     <button class="button is-primary" type="button" [ngClass]="{'is-loading': ctrl.cargando}" 
                                     (click)="guardar_movimiento()" [disabled]="ctrl.dato.invalid">
                                         <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Finalizar entrada
                                     </button>
                                 </p>
-                                <p class="level-item" *ngIf="!tieneid">
+                                <p class="level-item" *ngIf="!tieneid && !usuario.solo_lectura">
                                     <button class="button is-primary" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="guardarBorrador();">
                                         <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar avance
                                         <span id="borrador" (click)="ctrl.enviar(false, '/almacen/entradas-estandar/editar'); tieneid ? ctrl.cargarDatos() : '';"></span>
                                     </button>
                                 </p>
-                                <p class="level-item" *ngIf="ctrl.dato.get('estatus').value == 'BR'">
+                                <p class="level-item" *ngIf="ctrl.dato.get('estatus').value == 'BR' && !usuario.solo_lectura">
                                     <button class="button is-primary" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="actualizarDatos();">
                                         <span class="icon"><i class="fa fa-floppy-o" aria-hidden="true"></i></span> &nbsp; Guardar avance
                                     </button>

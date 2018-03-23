@@ -9,7 +9,8 @@
                             <figure class="image" style="height:60px">
                                 <img src="assets/sial.svg" style="height:60px">
                             </figure>
-                            <small>Cliente Versión {{cliente_version}}</small>
+                            <small>Cliente Versión {{cliente_version}}</small> 
+                            <small *ngIf="servidor.principal"> - Servidor Principal</small>
                         </div>
                         
                     </div>
@@ -28,6 +29,15 @@
                         <a class="delete" (click)="mostrarMensaje = false"></a>
                         <b>Error:</b> {{ mensaje }}
                     </div>
+
+                    <div *ngIf="listaServidores.length" class="control is-expanded">
+                        <div class="select is-fullwidth">
+                            <select name="servidor_id" id="servidor_id" [ngClass]="{'is-danger': mensaje}" [(ngModel)]="credenciales.servidor_id"> 
+                                <option *ngFor="let item of listaServidores" value="{{item.id}}">{{ item.nombre }}</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <p class="control has-icon">
                         <input class="input is-medium" [ngClass]="{'is-danger': mensaje}" type="text" name="id" id="id" placeholder="Usuario" [(ngModel)]="credenciales.id"  autofocus>
                         <span class="icon is-small">

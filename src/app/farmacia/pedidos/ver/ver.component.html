@@ -1,11 +1,11 @@
 <menu-farmacia [modulo]="'Pedidos'" [icono]="'assets/icono-pedidos.svg'" [url]="'/almacen/pedidos'"></menu-farmacia>
 
-<div style="position:relative; padding-top:70px; margin-left: 1.5%; display:block; width:97%; height:100% !important; overflow:auto;" *ngIf="pedido">    
-  <div class="tile is-ancestor is-vertical" style="height:100% !important; max-height:100% !important;">
+<div style="position:relative; margin-top:50px; padding-top:10px; padding-left:10px; padding-right:10px; display:block; height:100% !important; overflow:auto;" *ngIf="pedido">    
+  <div class="tile is-ancestor is-vertical" style="height:100% !important; max-height:100% !important; padding-bottom: 30px;">
     <div class="tile">
       <div class="tile is-4 is-parent is-vertical ">
         <div class="tile is-child">
-            <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
+            <div style="background: #FFF; border-radius: 1em; overflow: hidden; font-size: 0.7em;">
                 <section class="hero is-primary" [ngClass]="{'is-primary':pedido.status=='PS','is-success':pedido.status=='FI','is-info':pedido.status=='EF','is-warning':pedido.status=='EX', 'is-danger': pedido.status=='EX-CA', 'is-primary':(pedido.status == 'VAL' || pedido.status == 'PV')}" >
                     <h1 *ngIf="pedido.status == 'PS'" class="title" style="margin:0.5em;" >
                         <span class="icon is-medium"><i class="fa fa-file-text"></i></span> Pedido Por Surtir <span class="is-pulled-right">{{porcentageTotalPedido | number:'1.0-2'}} %</span>
@@ -20,7 +20,7 @@
                         <span class="icon is-medium"><i class="fa fa-file-text"></i></span> Pedido Finalizado <span class="is-pulled-right">{{porcentageTotalPedido | number:'1.0-2'}} %</span>
                     </h1>
                     <h1 *ngIf="pedido.status == 'EF'" class="title" style="margin:0.5em;" >
-                        <span class="icon is-medium"><i class="fa fa-file-text"></i></span> Pedido En Farmacia <span class="is-pulled-right">{{porcentageTotalPedido | number:'1.0-2'}} %</span>
+                        <span class="icon is-medium"><i class="fa fa-file-text"></i></span> Pedido/Farmacia <span class="is-pulled-right">{{porcentageTotalPedido | number:'1.0-2'}} %</span>
                     </h1>
                     <h1 *ngIf="pedido.status == 'EX'" class="title" style="margin:0.5em;" >
                         <span class="icon is-medium"><i class="fa fa-exclamation-circle"></i></span> Pedido Expirado <span class="is-pulled-right">{{porcentageTotalPedido | number:'1.0-2'}} %</span>
@@ -85,7 +85,7 @@
                     </div>
                     <hr>
                     <div class="control is-grouped" style="padding-top:10px;" *ngIf="!cargando">
-                        <p class="control" *ngIf="pedido.recepcionPermitida && pedido.status != 'FI'">
+                        <p class="control" *ngIf="mostrarBotonRecibir">
                             <a class="button is-primary" routerLink="/almacen/pedidos/recepcion/{{pedido.id}}"> <span class="icon"><i class="fa fa-truck"></i></span> <span *ngIf="!tieneRecepcionIniciada">Recibir Pedido</span><span *ngIf="tieneRecepcionIniciada">Continuar Recepción</span></a>
                         </p>
 
@@ -116,8 +116,8 @@
                 <!--a class="button is-primary  is-pulled-right" [ngClass]="{ 'is-inverted': pedido.filtro.activo }" style="margin-top:-0.25em;" title="Recepciones" (click)="toggleModalRecepciones(); ">
                     <span class="icon"><i class="fa fa-file"></i></span><span>Recepciones: {{pedido.datosImprimir.recepciones.length}}</span>
                 </a-->
-                <a *ngIf="pedido.status == 'EX' && permisoCancelarPedido" class="button is-danger is-pulled-right" (click)="mostrarDialogoCancelarPedido()"> <span class="icon"><i class="fa fa-ban"></i></span> <span>Cancelar Pedido</span></a>
-                <a *ngIf="pedido.tipo_pedido == 'PEA' && puedeCancelarTransferencia" class="button is-danger is-pulled-right" (click)="mostrarDialogoCancelarTransferencia()"> <span class="icon"><i class="fa fa-ban"></i></span> <span>Cancelar Transferencia</span></a>
+                <a *ngIf="pedido.status == 'EX' && permisoCancelarPedido && !soloLectura" class="button is-danger is-pulled-right" (click)="mostrarDialogoCancelarPedido()"> <span class="icon"><i class="fa fa-ban"></i></span> <span>Cancelar Pedido</span></a>
+                <a *ngIf="pedido.tipo_pedido == 'PEA' && puedeCancelarTransferencia && !soloLectura" class="button is-danger is-pulled-right" (click)="mostrarDialogoCancelarTransferencia()"> <span class="icon"><i class="fa fa-ban"></i></span> <span>Cancelar Transferencia</span></a>
                 <!--a *ngIf="pedido.status == 'EX'" class="button is-warning is-pulled-right" (click)="mostrarDialogoPedidoAlternoPedido()"> <span class="icon"><i class="fa fa-retweet"></i></span> <span>Pedido Alterno</span></a-->
             </div> 
 

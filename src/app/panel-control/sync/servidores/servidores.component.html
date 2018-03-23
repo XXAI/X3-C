@@ -4,7 +4,7 @@
     <div class="column is-one-quarter is-hidden-mobile">
         <panel-control-menu-aside></panel-control-menu-aside>
     </div>
-    <div class="column" style="padding:2em;">
+    <div class="column" style="padding:2em; overflow:auto;">
         <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
             <section class="hero" [ngClass] = " {'is-dark': busquedaActivada, 'is-primary': !busquedaActivada } " >
                 
@@ -40,7 +40,7 @@
                 <br>
             </div>
         
-            <table class="table" *ngIf="!cargando">
+            <table class="table" style="font-size:0.9em;" *ngIf="!cargando">
                 <thead>
                     <tr>
 						<th>ID</th>
@@ -65,7 +65,7 @@
 						<td style="vertical-align: middle;">{{ item.catalogos_actualizados ? 'Sí': 'No' }}</td>                       
 						<td style="vertical-align: middle;">{{ item.version}}</td>
 						<td style="vertical-align: middle;">{{ item.periodo_sincronizacion }} Hrs</td>
-						<td style="vertical-align: middle;">{{ item.ultima_sincronizacion }}</td>
+						<td style="vertical-align: middle;"><small>{{ item.ultima_sincronizacion }}</small></td>
                         <td style="vertical-align: middle;" class="has-text-centered"><span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>                        
                     </tr>
                     <tr *ngIf="lista.length == 0">
@@ -82,7 +82,7 @@
 							<td style="vertical-align: middle;">{{ item.catalogos_actualizados ? 'Sí': 'No' }}</td>                       
 							<td style="vertical-align: middle;">{{ item.version}}</td>
 							<td style="vertical-align: middle;">{{ item.periodo_sincronizacion }} Hrs</td>
-							<td style="vertical-align: middle;">{{ item.ultima_sincronizacion }}</td>
+							<td style="vertical-align: middle;"><small>{{ item.ultima_sincronizacion }}</small></td>
                         <td style="vertical-align: middle;" class="has-text-centered"><span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando" class="is-danger" (click)="eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>
                     </tr>
 

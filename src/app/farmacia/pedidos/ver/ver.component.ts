@@ -42,6 +42,9 @@ export class VerComponent implements OnInit {
   cargando: boolean = false;
   cargandoAlmacenes: boolean = false;
   cargandoInsumos: boolean = false;
+  soloLectura: boolean = false;
+  mostrarBotonRecibir: boolean = false;
+
   // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
   mensajeAdvertencia: Mensaje = new Mensaje()
@@ -141,6 +144,8 @@ export class VerComponent implements OnInit {
   ngOnInit() {
     this.title.setTitle('Ver pedido');
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
+
+    this.soloLectura = this.usuario.solo_lectura;
 
     this.permisos = this.usuario.permisos.split('|');
 
@@ -313,6 +318,14 @@ export class VerComponent implements OnInit {
             this.porcentageTotalPedido = (porcentajeCantidad + porcentajeClaves + porcentajeMonto)/3;
 
             this.cargando = false;
+
+            this.mostrarBotonRecibir = this.pedido.recepcionPermitida && this.pedido.status != 'FI' && !this.soloLectura;
+
+            //Harima: si es pedido a farmacia subrogada agegamos una validación extra, para que solo usuarios de esta farmacia puedan hacer recepciones
+            if(this.pedido.tipo_pedido == 'PFS'){
+              this.mostrarBotonRecibir = this.mostrarBotonRecibir && this.pedido.datosImprimir.almacen_solicitante.id == this.usuario.almacen_activo.id;
+            }
+            
           },
           error => {
             this.cargando = false;

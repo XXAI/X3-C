@@ -28,6 +28,9 @@ import { Mensaje } from '../../../mensaje';
 })
 export class ListaComponent implements OnInit {
   cargando: boolean = false;
+  soloLectura: boolean = false;
+
+  almacenSeleccionado: string;
 
   // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
@@ -67,6 +70,8 @@ export class ListaComponent implements OnInit {
   constructor(private title: Title, private route: ActivatedRoute, private pedidosService: PedidosService, private cambiarEntornoService:CambiarEntornoService) { }
 
   ngOnInit() {
+    let usuario =  JSON.parse(localStorage.getItem("usuario"));
+    
     switch(this.route.snapshot.url[0].path){
       //case 'todos': this.status = "TODO"; this.titulo = "Todos"; this.icono = "fa-file"; break;
       case 'borradores': this.status = "BR"; this.titulo = "Borradores"; this.icono = "fa-pencil-square-o"; break;
@@ -102,10 +107,16 @@ export class ListaComponent implements OnInit {
     this.cargarPresupuestoAnual();
 
     this.cambiarEntornoSuscription = this.cambiarEntornoService.entornoCambiado$.subscribe(evento => {
-      console.log('subscripcion en lista de pedidos');
-      this.listar(this.paginaActual);
+      let usuario =  JSON.parse(localStorage.getItem("usuario"));
+      this.soloLectura = usuario.solo_lectura;
+      this.almacenSeleccionado = usuario.almacen_activo;
+
+      this.listar(1);
       this.cargarPresupuestoAnual();
     });
+
+    this.soloLectura = usuario.solo_lectura;
+    this.almacenSeleccionado = usuario.almacen_activo;
 
     this.listar(1);
     this.mensajeError = new Mensaje();

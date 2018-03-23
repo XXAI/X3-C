@@ -22,8 +22,8 @@
           </div>
           <div class="column is-4" style="text-align:right; " *ngIf="statusRecepcion != 'FI'">
             <div style="margin:1em;">
-            <a *ngIf="!guardando && statusRecepcion == 'BR'" class="button is-primary" style="width:45%; margin-right:5%;" (click)="finalizar()"> <span class="icon"><i class="fa fa-check"></i></span> <span>Concluir</span></a>
-            <a  class="button is-white"  style="width:45%"  [ngClass]="{ 'is-loading': guardando }"  (click)="guardar()"> <span class="icon"><i class="fa fa-save"></i></span> <span>Guardar</span></a>
+            <a *ngIf="!guardando && statusRecepcion == 'BR' && !soloLectura" class="button is-primary" style="width:45%; margin-right:5%;" (click)="finalizar()"> <span class="icon"><i class="fa fa-check"></i></span> <span>Concluir</span></a>
+            <a *ngIf="!soloLectura" class="button is-white"  style="width:45%"  [ngClass]="{ 'is-loading': guardando }"  (click)="guardar()"> <span class="icon"><i class="fa fa-save"></i></span> <span>Guardar</span></a>
             </div>
           </div>
         </div>       
@@ -162,7 +162,7 @@
         </div>
       </div>
       <div class="tile is-parent is-vertical ">
-        <div *ngIf="(capturarStock && (itemSeleccionado.cantidad_recibida < itemSeleccionado.cantidad)) && pedido.datosImprimir.tipo_pedido_id != 'PEA' && statusRecepcion != 'FI'" class="tile is-child notification">
+        <div *ngIf="(capturarStock && (itemSeleccionado.cantidad_recibida < itemSeleccionado.cantidad)) && pedido.datosImprimir.tipo_pedido_id != 'PEA' && statusRecepcion != 'FI'" class="tile is-child notification" style="font-size: 0.8em;">
           <div class="control is-grouped">
             <p class="control is-expanded  has-icon has-icon-right">
               <label class="label">Código de Barras</label>
@@ -330,7 +330,7 @@
           </p>
           
           <div class="control">
-            <textarea name="observaciones" class="textarea" placeholder="Observaciones"  formControlName="observaciones"></textarea>
+            <textarea name="observaciones" class="textarea" placeholder="Observaciones"  formControlName="observaciones" rows="15" style="height:auto;"></textarea>
           </div>
         </form>
       </div>
@@ -340,7 +340,7 @@
           <div class="column" ></div>
           <div class="column is-4" style="text-align:right; " *ngIf="statusRecepcion != 'FI'">
             <div style="margin:1em;">
-            <a  class="button is-primary" style="width:45%; margin-right:5%;" [ngClass]="{ 'is-loading': guardando }"   (click)="guardar(true)"> <span class="icon"><i class="fa fa-check"></i></span> <span>Concluir</span></a>
+            <a  class="button is-primary" style="margin-right:5%;" [ngClass]="{ 'is-loading': guardando }"   (click)="guardar(true)"> <span class="icon"><i class="fa fa-check"></i></span> <span>Concluir</span></a>
             </div>
           </div>
         </div> 
