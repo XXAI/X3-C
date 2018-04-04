@@ -1,7 +1,7 @@
 <section  class="top-nav">
             
     <nav class="nav">
-        <a title="Almacen" class="nav-item pull-left nav-hub-active"  routerLink="/dam">
+        <a title="Almacen" class="nav-item pull-left nav-hub-active"  routerLink="/pedidos">
             
             <img src="assets/hub-dam.svg" alt="icono">
         
@@ -39,7 +39,7 @@
             
             <figure class="image" style="width:26px;"><img src="assets/{{ usuario.avatar || 'avatar-unknow' }}.svg" alt="avatar"></figure>
         </a>
-        <a routerLink="{{ urlAyuda }}" class="nav-item">
+        <a (click)="ayuda('ayuda')" class="nav-item">
             <span class="nav-item is-small" title="Ayuda">
                 <i class="fa fa-question-circle" aria-hidden="true"></i>
             </span>

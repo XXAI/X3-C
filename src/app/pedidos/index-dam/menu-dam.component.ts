@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { BuscarModuloPipe } from '../../pipes/buscar-modulo.pipe';
 
@@ -42,6 +42,7 @@ export class MenuDamComponent implements OnInit {
    * @type string
    */
   @Input() urlAyuda= '';
+  @Output() ayudaModal = new EventEmitter<String>();
   /**
    * Variable para cambiar de entorno
    */
@@ -67,5 +68,10 @@ export class MenuDamComponent implements OnInit {
    */
   ngOnDestroy(){
     this.cambiarEntornoSuscription.unsubscribe();
+  }
+
+  ayuda(evt) {
+    this.ayudaModal.emit(evt);
+    console.log(evt);
   }
 }

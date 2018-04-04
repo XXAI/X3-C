@@ -39,7 +39,7 @@ importScripts(
                         [{ text: 'SIAL', style: 'titulo', colSpan: 8, alignment: 'center' },
                             {}, {}, {}, {}, {}, {},{}
                         ],
-                        [{ text: 'PEDIDOS DE ATENCIÓN MÉDICA', style: 'tableHeaderTop', colSpan: 8, alignment: 'center' },
+                        [{ text: 'PEDIDOS DE UNIDAD MÉDICA', style: 'tableHeaderTop', colSpan: 8, alignment: 'center' },
                             {}, {}, {}, {}, {}, {},{}
                         ],
                         [
@@ -203,18 +203,20 @@ importScripts(
                 dd.content[0].table.body.push([
                     { text: movimiento.fecha ? movimiento.fecha : 'No disponible' , style: 'tableRow', alignment: 'center' },
                     { text: movimiento.id ? movimiento.id : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.metadato_compra_consolidada.presupuesto_compra == null ? 'No disponible' : ('$ ' + Number(movimiento.metadato_compra_consolidada.presupuesto_compra).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')), colSpan: 2, style: 'tableRow', alignment: 'right' },
+                    { text: 'movimiento.metadato_compra_consolidada.presupuesto_compra' == null ? 'No disponible' : ('$ ' + Number(100).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')), colSpan: 2, style: 'tableRow', alignment: 'right' },
                     {},
-                    { text: movimiento.metadato_compra_consolidada.presupuesto_causes == null ? 'No disponible' : ('$ ' + Number(movimiento.metadato_compra_consolidada.presupuesto_causes).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')), colSpan: 2, style: 'tableRow', alignment: 'right' },
+                    // movimiento.metadato_compra_consolidada.presupuesto_causes == null ? 'No disponible' : ('$ ' + Number(movimiento.metadato_compra_consolidada.presupuesto_causes).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'))
+                    { text: '', colSpan: 2, style: 'tableRow', alignment: 'right' },
                     {},
-                    { text: movimiento.metadato_compra_consolidada.presupuesto_no_causes == null ? 'No disponible' : ('$ ' + Number(movimiento.metadato_compra_consolidada.presupuesto_no_causes).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')), style: 'tableRow', alignment: 'right' },
+                    // text: movimiento.metadato_compra_consolidada.presupuesto_no_causes == null ? 'No disponible' : ('$ ' + Number(movimiento.metadato_compra_consolidada.presupuesto_no_causes).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'))
+                    { text: '', style: 'tableRow', alignment: 'right' },
                     { text: movimiento.estatus == null ? 'No disponible' :  movimiento.estatus, style: 'tableRow', alignment: 'center' }
                 ]);
         }
 
         pdfMake.createPdf(dd).getBase64(function(base64) {
             fecha_hoy = moment().format('YYYY-MM-DD');
-            postMessage({ fileName: 'LISTA_INICIALIZACION_'+ fecha_hoy +'.pdf', base64: base64 });
+            postMessage({ fileName: 'LISTA_PEDIDOS_UM_'+ fecha_hoy +'.pdf', base64: base64 });
         });
     }
 

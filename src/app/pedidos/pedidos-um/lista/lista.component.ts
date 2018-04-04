@@ -99,7 +99,7 @@ export class ListaComponent {
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
 
     // Inicializamos el objeto para los reportes con web Webworkers
-    this.pdfworker = new Worker('web-workers/pedidos-dam/lista-pedidos-dam.js');
+    this.pdfworker = new Worker('web-workers/pedidos-cc/lista-pedidos-um.js');
 
     // Este es un hack para poder usar variables del componente dentro de una funcion del worker
     let self = this;
@@ -140,7 +140,7 @@ export class ListaComponent {
    */
   imprimir() {
     this.cargandoPdf = true;
-    this.crudService.lista_general('pedidos-cc-dam?fecha_desde=' + this.fecha_desde
+    this.crudService.lista_general('pedidos-cc-um?fecha_desde=' + this.fecha_desde
     + '&fecha_hasta=' + this.fecha_hasta + '&q=' + this.query).subscribe(
       resultado => {
               this.cargando = false;

@@ -61,17 +61,17 @@ export class IndexDamComponent implements OnInit {
     this.modulos = [
       {
         permiso: 'pIvKddpfJ6qJG8GNpraY2fcfjZUhgddb',
-        icono: 'assets/icono-pagina-lista.svg', titulo: 'Pedido UM',
+        icono: 'assets/icono-pedido-um.svg', titulo: 'Pedido UM',
         url: '/pedidos/UM'
       },
       {
         permiso: 'PrgJ11YXS86gwh0QYXrIDbHERJ6O83wa',
-        icono: 'assets/icono-pagina-lista.svg', titulo: 'Pedido DAF',
-        url: '/pedidos/dam'
+        icono: 'assets/icono-pedido-daf.svg', titulo: 'Pedido DAF',
+        url: '/pedidos/daf'
       },
       {
         permiso: '3WPZ93a8W0346y1hlpwLUVo3VRF5TVI4',
-        icono: 'assets/icono-pagina-lista.svg', titulo: 'Pedido DAM',
+        icono: 'assets/icono-pedido-dam.svg', titulo: 'Pedido DAM',
         url: '/pedidos/dam'
       },
     ];

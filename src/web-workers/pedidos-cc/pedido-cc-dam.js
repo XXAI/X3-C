@@ -12,7 +12,6 @@ importScripts(
 
     onmessage = function(evt) {
         let data = JSON.parse(evt.data);
-        console.log(data);
         pdf(data);
         fechas();
     };

@@ -1,9 +1,9 @@
 <!-- crud asignar url de la api URL="url de la api" titulo="un titulo para la pestaña de la pagina" [dato]="variable que contiene el formulario]-->
-<!-- <formulario #ctrl URL="entrada-almacen" titulo="DAM / Apertura pedido" [dato]="dato"></formulario> -->
+<!-- <formulario #ctrl URL="entrada-almacen" titulo="DAF / Apertura pedido" [dato]="dato"></formulario> -->
 
 <!-- Menu principal  menutitulo="titulo del modulo en el que estamos con el nombre como se encuentra en enviroment" menuactual="nombre del hub donde estamos como se especifico en el routing"-->
 <div style="height: 50px">
-    <app-menu-dam [modulo]="'Pedidos DAM'" [icono]="'assets/hub-estandar.svg'" [url]="'/pedidos/dam'" [urlAyuda]="'ayuda'"></app-menu-dam>
+    <app-menu-dam [modulo]="'Pedidos DAF'" [icono]="'assets/hub-estandar.svg'" [url]="'/pedidos/daf'" [urlAyuda]="'ayuda'"></app-menu-dam>
 </div>
 
 <div class="contenedor columns " style="padding: 1em;">
@@ -29,7 +29,6 @@
                                 <p class="control is-expanded  has-icon has-icon-right">
                                     <input class="input"  currencyMask [(ngModel)]='form_dato.metadato_compra_consolidada.presupuesto_causes' 
                                         [options]="{ prefix: '$ ', thousands: ',', decimal: '.' }"
-                                        [ngClass]="{'is-disabled': form_dato.estatus === 'INICIALIZADO'}"
                                         (keypress)="validar_input_currency('presupuesto_causes'); calcular_presupuesto_asignado()"
                                         (blur)="validar_input_currency('presupuesto_causes'); calcular_presupuesto_asignado()"/>
                                 </p>
@@ -39,7 +38,6 @@
                                 <p class="control is-expanded  has-icon has-icon-right">
                                     <input class="input"  currencyMask [(ngModel)]='form_dato.metadato_compra_consolidada.presupuesto_no_causes' 
                                         [options]="{ prefix: '$ ', thousands: ',', decimal: '.' }"
-                                        [ngClass]="{'is-disabled': form_dato.estatus === 'INICIALIZADO'}"
                                         (keypress)="validar_input_currency('presupuesto_no_causes'); calcular_presupuesto_asignado()"
                                         (blur)="validar_input_currency('presupuesto_no_causes'); calcular_presupuesto_asignado()"/>
                                 </p>
@@ -51,15 +49,13 @@
                 <div class="field">
                     <label class="label" >Entregar en:</label>
                     <div class="control">
-                        <label class="radio" [ngClass]="{'is-disabled': form_dato.estatus === 'INICIALIZADO'}">
-                            <input type="radio" value="ESTATAL" [(ngModel)]='form_dato.metadato_compra_consolidada.lugar_entrega' name="lugar_entrega"
-                                [ngClass]="{'is-disabled': form_dato.estatus === 'INICIALIZADO'}">
-                            Almacén Estatal
+                        <label class="radio">
+                        <input type="radio" value="ESTATAL" [(ngModel)]='form_dato.metadato_compra_consolidada.lugar_entrega' name="lugar_entrega">
+                        Almacén Estatal
                         </label>
-                        <label class="radio" [ngClass]="{'is-disabled': form_dato.estatus === 'INICIALIZADO'}">
-                            <input type="radio" value="UM" [(ngModel)]='form_dato.metadato_compra_consolidada.lugar_entrega' name="lugar_entrega"
-                                [ngClass]="{'is-disabled': form_dato.estatus === 'INICIALIZADO'}">
-                            Almacén Unidad Médica
+                        <label class="radio">
+                        <input type="radio" value="UM" [(ngModel)]='form_dato.metadato_compra_consolidada.lugar_entrega' name="lugar_entrega">
+                        Almacén Unidad Médica
                         </label>
                     </div>
                 </div>
@@ -106,7 +102,7 @@
                             <label class="label">Observaciones:</label>
                             <p class="control is-expanded  has-icon has-icon-right">
                                 <textarea class="textarea" type="text"
-                                    [ngClass]="{'is-disabled': form_dato.estatus === 'INICIALIZADO'}"
+                                    [ngClass]="{'is-disabled': form_dato.estatus === 'CONCLUIDO'}"
                                     placeholder="Observaciones" [(ngModel)]='form_dato.observaciones' ></textarea>
                             </p>
                         </div>
@@ -138,7 +134,7 @@
                                 </div>
                             
                                 <div class="level-right">
-                                    <button class="button is-primary tooltip"  routerLink="/pedidos/dam">
+                                    <button class="button is-primary tooltip"  routerLink="/pedidos/daf">
                                         <span class="icon fa-2x">
                                             <i class="fa fa-arrow-left"> </i>
                                         </span>
@@ -325,8 +321,7 @@
                                                 <span class="tag is-warning is-medium" *ngIf="clues.estatus == 'BR'">Borrador</span>
                                             </th>
                                             <th style=" text-align: right;">
-                                                {{(clues.presupuesto_no_causes_asignado * 1) + (clues.presupuesto_causes_asignado * 1) | currency: '' }}
-                                                <!-- {{(clues.presupuesto_no_causes_asignado | currency: '' ) + (clues.presupuesto_causes_asignado | currency: '' )}} -->
+                                                {{clues.presupuesto_utilizado}}
                                             </th>
                                             <th>
                                                 <p class="control" [ngClass]="{'is-hidden': form_dato.estatus === 'INICIALIZADO' }">    

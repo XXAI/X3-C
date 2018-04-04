@@ -1051,70 +1051,7 @@ export class FormularioComponent {
    * Método que nos
    */
   concentrar_pedido() {
-    this.cargando = true;
-    this.form_dato.estatus = 'CONCENTRADO';
 
-    this.crudService.crear(this.form_dato, 'concentrar-pedido-cc-dam').subscribe(
-      resultado => {
-         this.reset_form();
-         console.log(resultado);
-         if (resultado.estatus === 'CONCENTRADO') {
-             this.router.navigate(['/pedidos/dam']);
-         }
-         if (resultado.estatus === 'INICIALIZADO') {
-             this.router.navigate(['/pedidos/dam/editar', resultado.id]);
-             console.log('FALLA AL CONCENTRAR PEDIDO');
-             this.cargarDatos(resultado.id);
-         }
-         this.cargando = false;
-
-         this.mensajeResponse.texto = 'Se han guardado los cambios.';
-         this.mensajeResponse.mostrar = true;
-         this.mensajeResponse.clase = 'success';
-         this.mensaje(2);
-     },
-     error => {
-         this.cargando = false;
-         this.form_dato.estatus = 'INICIALIZADO';
-         console.log('FALLA AL CONCENTRAR PEDIDO');
-
-         this.mensajeResponse.texto = 'No especificado.';
-         this.mensajeResponse.mostrar = true;
-         this.mensajeResponse.clase = 'alert';
-         this.mensaje(2);
-         try {
-             let e = error.json();
-             if (error.status == 401) {
-                 this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
-                 this.mensajeResponse.clase = 'error';
-                 this.mensaje(2);
-             }
-             // Problema de validación
-             if (error.status == 409) {
-                 this.mensajeResponse.texto = 'Por favor verfique los campos marcados en rojo.';
-                 this.mensajeResponse.clase = 'error';
-                 this.mensaje(8);
-                 for (let input in e.error) {
-                     // Iteramos todos los errores
-                     for (let i in e.error[input]) {
-                         this.mensajeResponse.titulo = input;
-                         this.mensajeResponse.texto = e.error[input][i];
-                         this.mensajeResponse.clase = 'error';
-                         this.mensaje(3);
-                     }
-                 }
-             }
-         } catch (e) {
-             if (error.status == 500) {
-                 this.mensajeResponse.texto = '500 (Error interno del servidor)';
-             } else {
-                 this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
-             }
-             this.mensajeResponse.clase = 'error';
-             this.mensaje(2);
-         }
-        }
-    );
   }
 
   /**

@@ -7,7 +7,7 @@ import { AuthGuard } from '../../auth-guard.service';
 
 const routes: Routes = [
   {
-    path: 'dam',
+    path: 'pedidos',
     component: IndexDamComponent,
     canActivate: [AuthGuard]
   }

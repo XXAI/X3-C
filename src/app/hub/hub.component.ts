@@ -165,7 +165,7 @@ export class HubComponent implements OnInit {
       ]
     },
     {
-      title: 'Compra Consolidada', routerLink: '/dam', icono: 'assets/hub-dam.svg',
+      title: 'Compra Consolidada', routerLink: '/pedidos', icono: 'assets/hub-dam.svg',
       permisos: [
         '3WPZ93a8W0346y1hlpwLUVo3VRF5TVI4', // DAM
         'bsIbPL3qv6XevcAyrRm1GxJufDbzLOax', // PRUEBA DAM

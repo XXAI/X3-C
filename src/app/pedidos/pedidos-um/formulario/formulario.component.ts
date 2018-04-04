@@ -1,7 +1,7 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray, FormsModule, COMPOSITION_BUFFER_MODE } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
@@ -198,6 +198,11 @@ export class FormularioComponent {
   fecha_actual;
 
   /**
+   * Variable para el enlace en las secciones de ayuda
+   */
+  enlaceAyuda = '';
+
+  /**
    * Variable que contiene el id del programa a mostrar
    */
   i_programa;
@@ -219,10 +224,25 @@ export class FormularioComponent {
     private route: ActivatedRoute,
     private crudService: CrudService,
     private _sanitizer: DomSanitizer,
-    private _ngZone: NgZone) { }
+    private _ngZone: NgZone) {
+
+      /**
+       * Para poder ir a las secciones de ayuda.
+       **/
+      router.events.subscribe(s => {
+        if (s instanceof NavigationEnd) {
+          const tree = router.parseUrl(router.url);
+          if (tree.fragment) {
+            const element = document.querySelector('#' + tree.fragment);
+            if (element) { element.scrollIntoView(true); }
+          }
+        }
+      });
+  
+    }
 
   ngOnInit() {
-    // obtener los datos del usiario logueado almacen y clues
+    // obtener los datos del usiario logueado almacen
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
 
     this.form_dato = {
@@ -282,9 +302,7 @@ export class FormularioComponent {
         activa	:	'',
         director_id	:	''
       },
-      unidades_medicas: [],
     };
-    console.log(this.form_dato);
 
     this.cargarCatalogo('programa', 'lista_programas', 'estatus');
 
@@ -308,7 +326,7 @@ export class FormularioComponent {
 
     /* **********************IMPRIMIR******************************* */
         // Inicializamos el objeto para los reportes con web Webworkers
-        this.pdfworker = new Worker('web-workers/pedidos-dam/pedido-cc-um.js');
+        this.pdfworker = new Worker('web-workers/pedidos-cc/pedido-cc-um.js');
 
         // Este es un hack para poder usar variables del componente dentro de una funcion del worker
         var self = this;
@@ -322,7 +340,7 @@ export class FormularioComponent {
           });
           FileSaver.saveAs( self.base64ToBlob( evt.data.base64, 'application/pdf' ), evt.data.fileName );
         };
-
+    this.enlaceAyuda = '/pedidos/UM/editar/' + this.form_dato.id;
     this.route.params.subscribe(params => {
       if (params['id']) {
         this.tieneid = true;
@@ -366,19 +384,6 @@ export class FormularioComponent {
   }
 
   /**
-   * Metodo que calcula el preupuesto de cada CLUES.
-   * @param i_clues Index de la CLUES a capturar presupuesto.
-   */
-  calcular_presupuesto_clues(i_clues) {
-    if (this.form_dato.unidades_medicas[i_clues].presupuesto_causes === '' || isNaN(this.form_dato.unidades_medicas[i_clues].presupuesto_causes)) {
-      this.form_dato.unidades_medicas[i_clues].presupuesto_causes = 0;
-    }
-    if (this.form_dato.unidades_medicas[i_clues].presupuesto_no_causes === '' || isNaN(this.form_dato.unidades_medicas[i_clues].presupuesto_no_causes)) {
-      this.form_dato.unidades_medicas[i_clues].presupuesto_no_causes = 0;
-    }
-    this.form_dato.unidades_medicas[i_clues].presupuesto_clues = Number(this.form_dato.unidades_medicas[i_clues].presupuesto_causes ) + Number(this.form_dato.unidades_medicas[i_clues].presupuesto_no_causes);
-  }
-  /**
    * Metodo que calcula el preupuesto global.
    */
   calcular_presupuesto_asignado() {
@@ -405,26 +410,6 @@ export class FormularioComponent {
       clave: ['', Validators.required],
       nombre: ['', Validators.required],
       insumos: this.fb.array([ ]),
-    });
-  }
-  /**
-   * Método para inciar el formulario reactivo del array de insumos
-   */
-  arrayInsumos(): FormGroup {
-    let temporal_cantidad_x_envase;
-    if (this.insumo.cantidad_x_envase == null){
-      temporal_cantidad_x_envase = 1;
-    }else {
-      temporal_cantidad_x_envase = this.insumo.cantidad_x_envase;
-    }
-    return this.fb.group({
-      insumo_medico_clave: this.insumo.clave,
-      descripcion: this.insumo.descripcion,
-      nombre: this.insumo.nombre,
-      es_causes: this.insumo.es_causes,
-      es_unidosis: this.insumo.es_unidosis,
-      tipo: this.insumo.tipo,
-      cantidad_x_envase: temporal_cantidad_x_envase
     });
   }
 
@@ -534,13 +519,16 @@ export class FormularioComponent {
    * @param pos Contiene la posición del arreglo a la que se agregará la existencia.
    */
   calcular_importes (item, i_insumo) {
+    for (let c = 0; c < this.form_dato.insumos.length; c++) {
+
+    }
     if (item.precio_unitario === '' || item.precio_unitario == null) {
-      this.form_dato.insumos[i_insumo].importe = 0;
-    } if (item.cantidad  === '' || item.cantidad == null) {
-      this.form_dato.insumos[i_insumo].importe = 0;
+      this.form_dato.insumos[i_insumo].monto_solicitado = 0;
+    } if (item.cantidad_solicitada  === '' || item.cantidad_solicitada == null) {
+      this.form_dato.insumos[i_insumo].monto_solicitado = 0;
     } else {
-      let temporal = Number(item.cantidad) * Number(item.precio_unitario);
-      this.form_dato.insumos[i_insumo].importe = temporal;
+      let temporal = Number(item.cantidad_solicitada) * Number(item.precio_unitario);
+      this.form_dato.insumos[i_insumo].monto_solicitado = temporal;
     }
   }
 
@@ -548,20 +536,17 @@ export class FormularioComponent {
     let total_asignado_causes_insumos = 0, total_asignado_no_causes_insumos = 0, total_insumo = 0;
 
     for (let c = 0; c < this.form_dato.insumos.length; c++) {
-      console.log(this.form_dato.insumos[c]);
-      if (this.form_dato.insumos[c].es_causes === 1 || this.form_dato.insumos[c].es_causes === '1') {
-        total_asignado_causes_insumos = total_asignado_causes_insumos + Number(this.form_dato.insumos[c].importe);
+      if (this.form_dato.insumos[c].info_insumo.es_causes === 1 || this.form_dato.insumos[c].info_insumo.es_causes === '1' || this.form_dato.insumos[c].info_insumo.es_causes === true) {
+        total_asignado_causes_insumos = total_asignado_causes_insumos + Number(this.form_dato.insumos[c].monto_solicitado);
       }
-      if (this.form_dato.insumos[c].es_causes === 0 || this.form_dato.insumos[c].es_causes === '0') {
-        total_asignado_no_causes_insumos = total_asignado_no_causes_insumos + Number(this.form_dato.insumos[c].importe);
+      if (this.form_dato.insumos[c].info_insumo.es_causes === 0 || this.form_dato.insumos[c].info_insumo.es_causes === '0' || this.form_dato.insumos[c].info_insumo.es_causes === false) {
+        total_asignado_no_causes_insumos = total_asignado_no_causes_insumos + Number(this.form_dato.insumos[c].monto_solicitado);
       }
     }
     this.form_dato.metadato_compra_consolidada.presupuesto_no_causes_asignado = total_asignado_no_causes_insumos;
     this.form_dato.metadato_compra_consolidada.presupuesto_causes_asignado = total_asignado_causes_insumos;
-    this.form_dato.metadato_compra_consolidada.presupuesto_no_causes_asignado = total_asignado_no_causes_insumos;
-    console.log(this.form_dato);
     //   this.form_dato.programas[i_prog].insumos[i_insumo].subtotal  = Number(temporal_subtotal_precios) + Number(temporal_total_iva);
-
+    this.calcular_presupuesto_asignado();
     this.sumaTotal();
   }
 
@@ -642,15 +627,17 @@ export class FormularioComponent {
     /*** Forma para agregar a modelo ***/
     let ob_temporal = {
       insumo_medico_clave: this.insumo.clave,
-      descripcion: this.insumo.descripcion,
       nombre: '',
-      es_causes: this.insumo.es_causes,
+      info_insumo : {
+        descripcion: this.insumo.descripcion,
+        es_causes: this.insumo.es_causes
+      },
       es_unidosis: '',
       cantidad_x_envase: '',
       tipo: '',
       precio_unitario: this.insumo.precio_unitario,
-      cantidad: '',
-      importe: 0
+      cantidad_solicitada: '',
+      monto_solicitado: 0
     };
 
     for (let c = 0; c < this.form_dato.insumos.length; c++) {
@@ -730,7 +717,6 @@ export class FormularioComponent {
         activa	:	'',
         director_id	:	''
       },
-      unidades_medicas: [],
     };
 
     return true;
@@ -746,7 +732,8 @@ export class FormularioComponent {
   quitar_form_array(modelo, i: number) {
     modelo.splice(i, 1);
 
-    this.calcular_presupuesto_asignado();
+    // this.calcular_presupuesto_asignado();
+    this.calcularSubtotal();
   }
   /**
    * Este método abre una modal
@@ -758,6 +745,10 @@ export class FormularioComponent {
       this.index_borrar = index;
     }
     document.getElementById(id).classList.add('is-active');
+  }
+
+  probarModal(arg) {
+    console.log(arg);
   }
 
   /**
@@ -780,13 +771,6 @@ export class FormularioComponent {
     let txt;
     let person;
     let error_detener_envio = false;
-    // if (this.form_dato.clues === '' || this.form_dato.clues == null || this.form_dato.clues === undefined) {
-    //   this.mensajeResponse.texto = 'Problema con la CLUES que genera la apertura del pedido';
-    //   this.mensajeResponse.mostrar = true;
-    //   this.mensajeResponse.clase = 'warning';
-    //   this.mensaje(0);
-    //   error_detener_envio = true;
-    // }
     if (this.form_dato.estatus === '' || this.form_dato.estatus == null || this.form_dato.estatus === undefined) {
       this.mensajeResponse.texto = 'Formulario no enviado';
       this.mensajeResponse.mostrar = true;
@@ -894,18 +878,18 @@ export class FormularioComponent {
       error_detener_envio = true;
     }
 
-    if (this.form_dato.unidades_medicas.length === 0) {
-      this.mensajeResponse.texto = 'Debe capturar al menos una CLUES';
+    if (this.form_dato.insumos.length === 0) {
+      this.mensajeResponse.texto = 'Debe capturar al menos un insumo';
       this.mensajeResponse.mostrar = true;
       this.mensajeResponse.clase = 'warning';
       this.mensaje(0);
       error_detener_envio = true;
     } else {
-      for (let c = 0; c < this.form_dato.unidades_medicas.length; c++) {
-        if (this.form_dato.unidades_medicas[c].clues === '' ||
-            this.form_dato.unidades_medicas[c].clues == null ||
-            this.form_dato.unidades_medicas[c].clues === undefined) {
-              this.mensajeResponse.texto = 'Error al capturar la CLUES';
+      for (let c = 0; c < this.form_dato.insumos.length; c++) {
+        if (this.form_dato.insumos[c].insumo_medico_clave === '' ||
+            this.form_dato.insumos[c].insumo_medico_clave == null ||
+            this.form_dato.insumos[c].insumo_medico_clave === undefined) {
+              this.mensajeResponse.texto = 'Error en el listado de insumos';
               this.mensajeResponse.mostrar = true;
               this.mensajeResponse.clase = 'warning';
               this.mensaje(0);
@@ -920,8 +904,8 @@ export class FormularioComponent {
       this.mensaje(3);
       this.error_formulario = true;
     } else {
-      person = prompt('Por favor ingresa la palabra INICIALIZAR, para continuar:', '');
-      if (person === 'INICIALIZAR') {
+      person = prompt('Por favor ingresa la palabra FINALIZAR, para continuar:', '');
+      if (person === 'FINALIZAR') {
         this.form_dato.estatus = 'FI';  // y llamar a la función
         this.enviar();
           txt = 'User cancelled the prompt.';
@@ -1117,11 +1101,14 @@ export class FormularioComponent {
           this.crudService.ver(id, 'pedidos-cc-um').subscribe(
               resultado => {
                 this.form_dato = resultado;
-                if (!this.form_dato.unidades_medicas) {
-                  this.form_dato.unidades_medicas = [];
-                }
                 if (!this.form_dato.insumos || this.form_dato.insumos == null) {
                   this.form_dato.insumos = [];
+                }
+                if(this.form_dato.estatus === 'FI') {
+                  this.enlaceAyuda = '/pedidos/UM/ver/' + this.form_dato.id;
+                }
+                if(this.form_dato.estatus === 'BR') {
+                  this.enlaceAyuda = '/pedidos/UM/editar/' + this.form_dato.id;
                 }
 
                 if (this.form_dato.metadato_compra_consolidada == null) {
@@ -1149,6 +1136,7 @@ export class FormularioComponent {
                 this.cargando = false;
                 this.cargarPedido = false;
                 this.calcular_presupuesto_asignado();
+                this.calcularSubtotal();
 
                 this.mensajeResponse.titulo = 'Modificar';
                 this.mensajeResponse.texto = 'Los datos se cargaron';
@@ -1240,7 +1228,7 @@ export class FormularioComponent {
       this.cargandoPdf = true;
       let impresion_inicializacion = {
         datos: this.form_dato,
-        lista: this.form_dato.unidades_medicas,
+        lista: this.form_dato.insumos,
         usuario: this.usuario
       };
       this.pdfworker.postMessage(JSON.stringify(impresion_inicializacion));
