@@ -503,6 +503,30 @@ export class FormularioComponent {
   }
 
   /**
+   * Funcion para comprobar que se ingresen lotes diferentes
+   */
+  comprobarLote(insumo, i) {
+    insumo = insumo.value;
+    const control = <FormArray>this.dato.controls['insumos'];
+    const ctrlLotes = <FormArray>control.controls[i];
+    let lote_temporal = ''
+    let existe = false;
+    // for (let item of control.value) {
+      for ( let c = 0; c < control.value.length; c++) {
+      console.log(control.value[c]);
+      if (control.value[c].clave === insumo.clave && control.value[c].lote === insumo.lote && c !== i) {
+        this.notificacion.warn('Lote ' + ` <strong>` + insumo.lote + ` </strong>` + ' inválido',
+                                'Error en clave ' + `<strong>` + insumo.clave + ` </strong>`
+                                + '. El lote ' + ` <strong>` + insumo.lote + ` </strong>` + 'ya fue '
+                                + `<strong> capturado anteriormente</strong>` , this.objeto);
+        ctrlLotes.controls['lote'].patchValue('');
+        existe = true;
+        break;
+      }
+    }
+  }
+
+  /**
    * Este método agrega una nueva fila para los lotes nuevos
    * @return void
    */

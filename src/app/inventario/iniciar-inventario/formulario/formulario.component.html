@@ -349,11 +349,13 @@
                                                         <label>Existencia:</label>
                                                         <input class="input is-small" [(ngModel)]="lote.existencia" [ngModelOptions]="{standalone: true}"
                                                             [textMask]="{mask:numberMask}"
-                                                            (keypress)="quitar_punto($event);"
                                                             (keyup)="cambio_cantidad_stock_key($event, form_dato.programas[i_programa].insumos[i].lotes[i_lote], i_programa, i, i_lote)"
-                                                            (blur)="cambio_cantidad_stock_key($event, form_dato.programas[i_programa].insumos[i].lotes[i_lote], i_programa, i, i_lote)"
-                                                            (change)="cambio_cantidad_stock_key($event, form_dato.programas[i_programa].insumos[i].lotes[i_lote], i_programa, i, i_lote)"
+                                                            
                                                             [ngClass]="{'is-danger': form_dato.programas[i_programa].insumos[i].lotes[i_lote].existencia == '' || form_dato.programas[i_programa].insumos[i].lotes[i_lote].existencia == null || form_dato.programas[i_programa].insumos[i].lotes[i_lote].existencia < 1, 'is-disabled': form_dato.estatus === 'INICIALIZADO'}">
+                                                            <!-- 
+                                                                (change)="cambio_cantidad_stock_key($event, form_dato.programas[i_programa].insumos[i].lotes[i_lote], i_programa, i, i_lote)"
+                                                                (keyup)="cambio_cantidad_stock_key($event, form_dato.programas[i_programa].insumos[i].lotes[i_lote], i_programa, i, i_lote)"
+                                                                (blur)="cambio_cantidad_stock_key($event, form_dato.programas[i_programa].insumos[i].lotes[i_lote], i_programa, i, i_lote)" -->
                                                     </p>
                                                 </div> 
                                                 <div class="column is-2">                                                

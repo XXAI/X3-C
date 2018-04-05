@@ -323,6 +323,7 @@
                                                 <p class="control is-expanded">
                                                     <label class="label">Lote:</label>
                                                     <input type="text" class="input" formControlName="lote"
+                                                    (blur)="comprobarLote(item, i)"
                                                     [ngClass]="{'is-danger': ctrl.dato.controls.insumos.controls[i].controls.lote.hasError('required')}">
                                                 </p>
                                                 <span class="help is-danger" 

@@ -20,7 +20,11 @@
 
         <div class="nav-center">
             <span *ngIf="usuario.almacen_activo" class="nav-item is-small">
-                <span>{{usuario.clues_activa.clues}}&nbsp;-&nbsp;</span><span class="is-hidden-mobile">{{usuario.clues_activa.nombre}}&nbsp;-&nbsp;</span><span>{{usuario.almacen_activo.nombre}}</span>
+                <!-- <span>{{usuario.clues_activa.clues}}&nbsp;-&nbsp;</span><span class="is-hidden-mobile">{{usuario.clues_activa.nombre}}&nbsp;-&nbsp;</span><span>{{usuario.almacen_activo.nombre}}</span> -->
+                <span class="unidad-trabajo">
+                    {{usuario.clues_activa.clues}} <span *ngIf="usuario.almacen_activo"> - {{usuario.almacen_activo.nombre}}</span><br>            
+                    <span>{{usuario.clues_activa.nombre}}</span>
+                </span>
             </span>
         </div>
 

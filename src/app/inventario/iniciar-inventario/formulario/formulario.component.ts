@@ -601,11 +601,11 @@ export class InicialComponent {
       && event.key != 'ArrowUp'
       && event.key != 'ArrowDown'
       && event.key != '.') {
-      clearTimeout(this.time_cambio_cantidad_stoc);
-      this.time_cambio_cantidad_stoc = setTimeout(() => {
+      // clearTimeout(this.time_cambio_cantidad_stoc);
+      // this.time_cambio_cantidad_stoc = setTimeout(() => {
         this.calcular_importes(item, i_prog, i_insumo, i_lote);
         this.calcularSubtotal(i_prog, i_insumo);
-      }, 800);
+      // }, 800);
     }
   }
 
@@ -620,7 +620,7 @@ export class InicialComponent {
       this.form_dato.programas[i_prog].insumos[i_insumo].lotes[i_lote].importe = 0;
     } else if (item.precio_unitario === '' || item.precio_unitario == null || isNaN(item.precio_unitario)) {
       this.form_dato.programas[i_prog].insumos[i_insumo].lotes[i_lote].importe = 0;
-    } else if (item.existencia  === '' || item.existencia == null) {
+    } else if (item.existencia  === '' || item.existencia == null || item.existencia === 0) {
       this.form_dato.programas[i_prog].insumos[i_insumo].lotes[i_lote].importe = 0;
     } else {
       let temporal = Number(item.existencia) * Number(item.precio_unitario);
@@ -883,6 +883,7 @@ export class InicialComponent {
           this.form_dato.programas[p].insumos[i].lotes[l].lote == null ||
           this.form_dato.programas[p].insumos[i].lotes[l].lote === undefined) {
             this.mensajeResponse.texto = 'Error en ' + `<strong> lote </strong>` + ' del insumo: '
+                                        + `<strong> ` + this.form_dato.programas[p].insumos[i].clave_insumo_medico + ` </strong>` 
                                         + this.form_dato.programas[p].insumos[i].descripcion
                                         + '. Del programa ' + `<strong> ` + this.form_dato.programas[p].nombre + `</strong> `;
             this.mensajeResponse.mostrar = true;
@@ -905,6 +906,7 @@ export class InicialComponent {
           }
           if (this.form_dato.programas[p].insumos[i].lotes[l].existencia === '' ||
               this.form_dato.programas[p].insumos[i].lotes[l].existencia == null ||
+              this.form_dato.programas[p].insumos[i].lotes[l].existencia === 0 ||
               this.form_dato.programas[p].insumos[i].lotes[l].existencia === undefined) {
                 this.mensajeResponse.texto = 'Error en existencia del insumo: ' + this.form_dato.programas[p].insumos[i].descripcion +
                   '. Del programa ' + `<strong> ` + this.form_dato.programas[p].nombre + `</strong> `;

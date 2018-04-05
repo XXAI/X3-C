@@ -168,7 +168,9 @@ export class HubComponent implements OnInit {
       title: 'Compra Consolidada', routerLink: '/pedidos', icono: 'assets/hub-dam.svg',
       permisos: [
         '3WPZ93a8W0346y1hlpwLUVo3VRF5TVI4', // DAM
-        'bsIbPL3qv6XevcAyrRm1GxJufDbzLOax', // PRUEBA DAM
+        'pIvKddpfJ6qJG8GNpraY2fcfjZUhgddb', // UM
+        'PrgJ11YXS86gwh0QYXrIDbHERJ6O83wa', // DAF
+        // 'bsIbPL3qv6XevcAyrRm1GxJufDbzLOax', // PRUEBA DAM
       ]
     }
   ];
