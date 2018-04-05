@@ -72,7 +72,7 @@ import { TransferenciaAlmacenModule  } from './farmacia/transferencia-almacen/tr
 // # Hub Inventario
 import { IndexInventarioModule          } from './inventario/index-inventario/index-inventario.module';
 import { InventarioModule               } from './inventario/existencias/inventario.module';
-import { InicializacionInventarioModule } from './inventario/inicializacion-inventario/inicializacion-inventario.module';
+// import { InicializacionInventarioModule } from './inventario/inicializacion-inventario/inicializacion-inventario.module';
 import { AjusteMasInventarioModule      } from './inventario/ajuste-mas-inventario/ajuste-mas-inventario.module';
 import { AjusteMenosInventarioModule    } from './inventario/ajuste-menos-inventario/ajuste-menos-inventario.module';
 import { CorreccionesModule             } from './inventario/correcciones/correcciones.module';
@@ -205,8 +205,8 @@ export function highchartsFactory() {
     IndexFarmaciaSubrrogadaModule,
     IndexFarmaciaModule,
     PedidosModule,
-    InicializacionInventarioModule,
-    //PedidosJurisdiccionalesModule,
+    // InicializacionInventarioModule,
+    // PedidosJurisdiccionalesModule,
     EntregasModule,
     EntradasEstandarModule,
     SalidasEstandarModule,
