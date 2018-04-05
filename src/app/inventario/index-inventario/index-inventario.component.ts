@@ -25,10 +25,10 @@ export class IndexInventarioComponent implements OnInit {
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
 
     this.modulos = [
-      /*{
+      {
         permiso: '7KbTARF2kpnO4Lfqv8hmYP8QGMcgJBwU', icono: 'assets/icono-iniciar-inventario.svg',
         titulo: 'Iniciar Inventario', url: '/inventario/iniciar-inventario'
-      },*/
+      },
       {
         permiso: 'H5IV7Z6CAj8V2CRIQ2wnbXrYhvjLsSBk', icono: 'assets/icono-stock.svg',
         titulo: 'Existencia de insumos médicos', url: '/inventario/existencias'
