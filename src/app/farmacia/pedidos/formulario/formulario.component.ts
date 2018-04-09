@@ -949,7 +949,9 @@ export class FormularioComponent implements OnInit {
           this.cargando = false;
           if(response.data){
             this.presupuesto = response.data;
+            console.log(this.presupuesto);
           }else{
+            
             this.presupuesto.insumos_disponible = 0;
             this.presupuesto.causes_disponible = 0;
             this.presupuesto.no_causes_disponible = 0;

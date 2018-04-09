@@ -106,7 +106,10 @@ export class PerfilComponent implements OnInit {
         this.usuario.clues_activa = this.usuario.unidades_medicas[i];
         if(this.usuario.clues_activa.almacenes.length >0){
           this.usuario.almacen_activo = this.usuario.clues_activa.almacenes[0];
-        } else {
+        } else if(this.usuario.clues_activa.almacenes_externos.length >0){
+          this.usuario.almacen_activo = this.usuario.clues_activa.almacenes_externos[0];
+        }else {
+
           this.usuario.almacen_activo = null;
         }        
       }
