@@ -47,7 +47,7 @@ export class AuthService {
         json.usuario.clues_activa = null;
         json.usuario.almacen_activo = null;
         json.usuario.proveedor_activo = null; //Harima: Se agrego proveedor activo, para acceder a los modulos de proveedores
-        
+
         if(json.usuario.proveedores){
           if(usuarioAnterior && usuarioAnterior.id == json.usuario.id ){
             var bandera = false;
@@ -140,7 +140,7 @@ export class AuthService {
         if(json.server_info.data.id != json.usuario.servidor.id){
           console.log('Usuario de diferente servidor...');
           json.usuario.solo_lectura = true;
-        }else if(json.server_info.data.principal && json.usuario.clues_activa.es_offline){
+        }else if(json.server_info.data.principal && json.usuario.clues_activa && json.usuario.clues_activa.es_offline){
           console.log('Usuario mismo servidor, con clues offline...');
           json.usuario.solo_lectura = true;
         }
