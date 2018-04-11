@@ -16,6 +16,7 @@ export class FormComponent implements OnInit {
   @Input() roles: Rol[];
   @Input() unidadesMedicas: any[];
   @Input() medicos: any[];
+  @Input() proveedores: any[];
   @Input() usuario:FormGroup;
 
   @Input()  respuestaRequerida:boolean;
@@ -31,6 +32,7 @@ export class FormComponent implements OnInit {
   @Output() onToggleCambiarPassword = new EventEmitter<void>();
   @Output() onCargarRoles = new EventEmitter<void>();
   @Output() onCargarMedicos = new EventEmitter<void>();
+  @Output() onCargarProveedores = new EventEmitter<void>();
 
   // # Esto es solo para listar las unidades medicas que ya estan relacionadas
   // al usuario, en el modulo de edicion
@@ -40,8 +42,6 @@ export class FormComponent implements OnInit {
   unidadesMedicasAgregadas: any[] = [];
   cluesAgregadas: string[] = [];
   unidadMedicaSeleccionada = null;
-
-
 
   idsAlmacenesSeleccionados: string[] = [];
 
@@ -84,6 +84,10 @@ export class FormComponent implements OnInit {
   cargarMedicos(){
     this.onCargarMedicos.emit();
  }
+
+ cargarProveedores(){
+  this.onCargarProveedores.emit();
+}
 
   regresar() {
     this.onRegresar.emit();
@@ -128,11 +132,5 @@ export class FormComponent implements OnInit {
     }
 
     this.usuario.controls['almacenes'].setValue(this.idsAlmacenesSeleccionados);
-
   }
-
-
-
-
-
 }

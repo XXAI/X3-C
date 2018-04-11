@@ -83,6 +83,7 @@
                   <li [ngClass]="{ 'is-active' : tab == 2}"><a (click)="tab=2">Clues / Almacenes</a></li>
                   <li [ngClass]="{ 'is-active' : tab == 3}"><a (click)="tab=3">Avatar</a></li>
                   <li [ngClass]="{ 'is-active' : tab == 4}"><a (click)="tab=4">Médico</a></li>
+                  <li [ngClass]="{ 'is-active' : tab == 5}"><a (click)="tab=5">Proveedor</a></li>
                 </ul>
               </div>
        
@@ -225,7 +226,18 @@
                     </span>
                   </p>   
               </div>
-              
+              <div [ngClass]="{ 'is-hidden': tab != 5}">
+                <p class="control is-expanded">
+                  <label for="proveedor">Enlazar cuenta con un proveedor:</label>
+                  <span class="select is-fullwidth">
+                  <select #proveedor id="proveedor" formControlName="proveedor_id">
+                    <option value="-1">Ninguno</option>
+                    <option *ngFor="let item of proveedores" [value]="item.id">{{ item.nombre }}</option>
+                  </select>
+                  </span>
+                </p>   
+            </div>
+
               <br><br>
               <div class="control is-grouped">
                 <p class="control">
