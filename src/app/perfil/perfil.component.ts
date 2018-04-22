@@ -6,6 +6,7 @@ import { AuthService } from 'app/auth.service';
 import { BloquearPantallaService }     from '../bloquear-pantalla/bloquear-pantalla.service';
 import { CambiarEntornoService }     from '../perfil/cambiar-entorno.service';
 import { EditarPerfilService }     from '../perfil/editar-perfil.service';
+import { CambiarFechaHoraService  } from '../perfil/cambiar-fecha-hora.service';
 
 import { VERSION } from 'app/config';
 import { environment } from 'environments/environment';
@@ -41,6 +42,11 @@ export class PerfilComponent implements OnInit {
     passwordAnterior:null,
     passwordNuevo:null
   }
+
+  erroresFechaHora = {
+    fecha: null,
+    hora: null
+  }
   nuevoPerfil: any = {
     id:"",
     avatar:"",
@@ -51,13 +57,19 @@ export class PerfilComponent implements OnInit {
     passwordNuevo:"",
     passwordNuevoConfirmacion:""
   }
+  
+  keyPermisoCambiarFechaHora:string = "2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f"; //Akira: cambiar por una llave creada por ustedes
+  permisos:any = null;
+  fechaServidor:Date = null;
+  horaServidor:Date = null;
 
   constructor(
     private router: Router,
     private authService:AuthService,
     private bloquearPantallaService: BloquearPantallaService,
     private cambiarEntornoService: CambiarEntornoService,
-    private editarPerfilService: EditarPerfilService
+    private editarPerfilService: EditarPerfilService,
+    private cambiarFechaHoraService: CambiarFechaHoraService
   ) { }
 
   ngOnInit() {
@@ -71,6 +83,9 @@ export class PerfilComponent implements OnInit {
     if(this.usuario.su == 1){
       this.avatars.push({value: 'avatar-circled-root', title: "Super administrador"})
     }
+    this.permisos = this.usuario.permisos;
+    
+    
   }
 
   toggle() {
@@ -86,7 +101,10 @@ export class PerfilComponent implements OnInit {
     this.mostrar = !this.mostrar;
     if(this.mostrar){
       this.usuario = JSON.parse(localStorage.getItem("usuario"));
+      this.cargarFechaHora();
     }
+
+   
   }
   logout() {
     this.authService.logout();
@@ -150,6 +168,89 @@ export class PerfilComponent implements OnInit {
     localStorage.setItem('usuario', JSON.stringify(this.usuario));
     this.mostrarCambiarEntorno = false;
     this.cambiarEntornoService.cambiarEntorno();
+  }
+  
+  enviandoDatosFechaHora:boolean = false;
+  mostrarMensajeExitosoFechaHora:boolean = false;
+  mensajeErrorFechaHora:string = '';
+  editarFechaHora(){
+    var frase = prompt("La fecha y hora del servidor son muy importantes para la sincronización de datos. Realice este procedimiento solo en caso de que el servidor tenga la hora incorrecta. Para confirmar la operación escriba: ACTUALIZAR");
+    if(frase == "ACTUALIZAR"){
+      
+      this.enviandoDatosFechaHora = true;
+      this.mostrarMensajeExitosoFechaHora = false;
+      this.mensajeErrorFechaHora = '';
+
+      var data = {
+        fecha : this.fechaServidor.getFullYear() + "-" + this.pad(this.fechaServidor.getMonth(),2) + "-" + this.pad(this.fechaServidor.getDate(),2),
+        hora: this.horaServidor.getHours() + ":" + this.pad(this.horaServidor.getMinutes(),2) + ":00"
+      };
+      
+      this.cambiarFechaHoraService.editar(data).subscribe(
+        respuesta => {
+          this.enviandoDatosFechaHora = false;
+          this.mostrarMensajeExitosoFechaHora = true;
+          console.log(respuesta);
+        }, error => {
+          try {
+            let e = error.json();
+         
+            switch(error.status){
+              case 401: 
+                this.mensajeErrorFechaHora =  "No tiee permiso para realizar esta acción.";
+                break;
+              case 409:
+                this.mensajeErrorFechaHora = "Verifique la información marcada de color rojo";
+                for (var input in e.error){
+                  // Iteramos todos los errores
+                  for (var i in e.error[input]){
+                    this.erroresFechaHora[input] = e.error[input][i];
+                  }                      
+                }
+                break;
+              case 500:
+                this.mensajeErrorFechaHora = "500 (Error interno del servidor)";
+                break;
+              default: 
+                this.mensajeErrorFechaHora = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+            }
+          } catch (e){
+            this.mensajeErrorFechaHora = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+          }
+        
+          
+          this.enviandoDatosFechaHora = false;
+        }
+      )
+
+    } else {
+      alert("Frase de confirmación incorrecta.")
+    }
+  }
+  pad(num, size) {
+      var s = num+"";
+      while (s.length < size) s = "0" + s;
+      return s;
+  }
+  cargandoFechaHora:boolean = false;
+  cargarFechaHora(){
+    this.cargandoFechaHora = true;
+
+    this.cambiarFechaHoraService.ver().subscribe(      
+      respuesta => {
+        this.cargandoFechaHora = false;
+        console.log(respuesta);
+        var datetime = respuesta.split(" ");
+        var date = datetime[0].split("-");
+        var time = datetime[1].split(":");
+
+        this.fechaServidor = new Date(date[0],+date[1]-1,date[2]);
+        this.horaServidor = new Date(date[0],date[1],+date[2]-1,time[0],time[1]);
+      }, error => {
+        this.cargandoFechaHora = false;
+        console.log(error);
+      }
+    )
   }
 
   enviandoDatosPerfil:boolean = false;

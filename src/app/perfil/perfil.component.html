@@ -3,9 +3,39 @@
     <div class="modal-content">
 
         <header class="modal-card-head" style="background: white !important;">
-            <p class="modal-card-title"><span class="icon"><i class="fa fa-{{ edicionPerfil? 'edit':'user-circle' }}"></i></span> <span *ngIf="!edicionPerfil">Mi cuenta</span><span *ngIf="edicionPerfil">Editar perfil</span></p>
+            <p class="modal-card-title"><span class="icon"><i class="fa fa-{{ configurarFechaHora ? 'clock-o' : edicionPerfil? 'edit':'user-circle' }}"></i></span> <span *ngIf="!edicionPerfil && !configurarFechaHora">Mi cuenta</span><span *ngIf="edicionPerfil">Editar perfil</span><span *ngIf="configurarFechaHora">Configurar fecha y hora del servidor</span></p>
             <button class="delete"  (click)="toggle()"></button>
         </header>
+        <section class="modal-card-body" *ngIf="configurarFechaHora">
+            <div class="notification is-primary" *ngIf="mostrarMensajeExitosoFechaHora">
+                <button class="delete" (click)="mostrarMensajeExitosoFechaHora = false"></button>
+                Fecha y hora del servidor actualizada exitosamente.
+            </div>
+            <div class="notification is-danger" *ngIf="mensajeErrorFechaHora!=''">
+                <button class="delete" (click)="mensajeErrorFechaHora = ''"></button>
+                {{mensajeErrorFechaHora}}
+            </div>
+            <div class="field"> 
+                <label>Fecha y hora:</label>
+                <div class="control is-grouped">
+                    <p class="control is-expanded ">
+                        <input class="input" autofocus type="date" [ngClass]="{'is-danger': false, 'is-disabled': enviandoDatosFechaHora}"  placeholder="AAAA/MM/DD" [ngModel] = "fechaServidor | date:'yyyy-MM-dd'" (ngModelChange)=" fechaServidor = $event">
+                        
+                        <span class="help is-danger" *ngIf="errores.fecha == 'required'">Este campo es requerido.</span>
+                    </p>
+                    <p class="control is-expanded">
+                        <input class="input" type="time"  [ngClass]="{'is-danger': false, 'is-disabled': enviandoDatosFechaHora}" placeholder="HH:MM 24hrs" [ngModel]="horaServidor | date:'HH:mm:ss'" (ngModelChange)=" fechaServidor = $event">
+                        
+                        <span class="help is-danger" *ngIf="errores.hora == 'required'">Este campo es requerido.</span>
+                    </p>
+                </div>
+                <a class="button is-white is-small" [ngClass]="{ 'is-loading':cargandoFechaHora }" (click)="cargarFechaHora()"><span class="icon is-small"><i class="fa fa-refresh"></i></span><span>Cargar fecha y hora del servidor de nuevo</span></a>    
+            </div>
+        </section>
+        <footer class="modal-card-foot" *ngIf="configurarFechaHora">
+            <a class="button is-warning is-medium is-fullwidth " [ngClass]="{ 'is-loading':enviandoDatosFechaHora, 'is-disabled': (fechaServidor == '' || horaServidor == '')}" (click)="editarFechaHora()"><span class="icon"><i class="fa fa-save"></i></span><span>Aplicar cambios</span></a>
+            <a class="button  is-medium is-fullwidth " [ngClass]="{ 'is-disabled': enviandoDatosFechaHora}"(click)="configurarFechaHora=false"><span class="icon"><i class="fa fa-arrow-left"></i></span><span>Atrás</span></a><br>    
+        </footer>
         <section class="modal-card-body" *ngIf="edicionPerfil">
             <div class="notification is-primary" *ngIf="mostrarMensajeExitoso">
                 <button class="delete" (click)="mostrarMensajeExitoso = false"></button>
@@ -81,13 +111,14 @@
             </div>
             
         </section>
-
         <footer class="modal-card-foot" *ngIf="edicionPerfil">
-            <a class="button is-primary is-medium is-fullwidth " [ngClass]="{ 'is-loading':enviandoDatosPerfil, 'is-disabled': ((nuevoPerfil.passwordNuevo != nuevoPerfil.passwordNuevoConfirmacion || nuevoPerfil.passwordAnterior == '' || nuevoPerfil.passwordNuevo == ''   ) && nuevoPerfil.cambiarPassword ) || nuevoPerfil.nombre == '' || nuevoPerfil.apellidos == '' }" (click)="editarPerfil()"><span class="icon"><i class="fa fa-lock"></i></span><span>Guardar cambios</span></a>
+            <a class="button is-primary is-medium is-fullwidth " [ngClass]="{ 'is-loading':enviandoDatosPerfil, 'is-disabled': ((nuevoPerfil.passwordNuevo != nuevoPerfil.passwordNuevoConfirmacion || nuevoPerfil.passwordAnterior == '' || nuevoPerfil.passwordNuevo == ''   ) && nuevoPerfil.cambiarPassword ) || nuevoPerfil.nombre == '' || nuevoPerfil.apellidos == '' }" (click)="editarPerfil()"><span class="icon"><i class="fa fa-save"></i></span><span>Guardar cambios</span></a>
             <a class="button  is-medium is-fullwidth " [ngClass]="{ 'is-disabled': enviandoDatosPerfil}"(click)="edicionPerfil=false"><span class="icon"><i class="fa fa-arrow-left"></i></span><span>Atrás</span></a><br>
 
         </footer>
-        <section class="modal-card-body has-text-centered" *ngIf="!edicionPerfil">
+
+        <section class="modal-card-body has-text-centered" *ngIf="!edicionPerfil&&!configurarFechaHora">            
+            <p class="has-text-right"><small *ngIf="cargandoFechaHora">Cargando fecha y hora del servidor...</small><small *ngIf="!cargandoFechaHora">{{ fechaServidor | date: 'dd/MM/yyyy' }} <strong>{{ horaServidor | date:'HH:mm' }}</strong></small><a class="button is-white is-small" *ngIf="permisos.indexOf(keyPermisoCambiarFechaHora) > -1" [ngClass]="{'is-disabled': cargandoFechaHora}" title="Cambiar fecha y hora del servidor" (click)="configurarFechaHora = true;" ><span class="icon"><i class="fa fa-cog" [ngClass]="{'fa-spin': cargandoFechaHora}"></i></span></a></p>
             <nav class="level">
                 <div class="level-item has-text-centered">
                     <figure class="image is-128x128" style="position:relative;">
@@ -136,12 +167,11 @@
                 </p>
             </div>
 
-            <a *ngIf="mostrarCambiarEntorno" class="button  is-medium is-fullwidth is-primary" (click)="cambiarEntorno()"><span class="icon"><i class="fa fa-exchange"></i></span><span>Cambiar entorno</span></a>
-
+            <a *ngIf="mostrarCambiarEntorno" class="button  is-medium is-fullwidth is-primary" (click)="cambiarEntorno()"><span class="icon"><i class="fa fa-exchange"></i></span><span>Cambiar entorno</span></a>            
+            
             <p class="has-text-centered"><small>Cliente Versión {{ cliente_version }} &nbsp;&nbsp; Servidor API Versión {{ server_info.api_version }}</small></p>
-        </section>
-        
-        <footer class="modal-card-foot" *ngIf="!edicionPerfil">
+        </section>        
+        <footer class="modal-card-foot" *ngIf="!edicionPerfil && !configurarFechaHora">
             <a class="button  is-medium is-fullwidth " (click)="bloquear()"><span class="icon"><i class="fa fa-lock"></i></span><span>Bloquear aplicación</span></a>
             <a class="button is-danger is-medium is-fullwidth is-outlined" (click)="logout()"><span class="icon"><i class="fa fa-sign-out"></i></span><span>Cerrar sesión</span></a><br>
 
