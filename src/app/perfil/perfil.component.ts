@@ -60,8 +60,8 @@ export class PerfilComponent implements OnInit {
   
   keyPermisoCambiarFechaHora:string = "2EA8UKzKrNFzxQxBBSjQ2fHggyrScu9f"; //Akira: cambiar por una llave creada por ustedes
   permisos:any = null;
-  fechaServidor:Date = null;
-  horaServidor:Date = null;
+  fechaServidor:Date = new Date();
+  horaServidor:string = null;
 
   constructor(
     private router: Router,
@@ -183,7 +183,7 @@ export class PerfilComponent implements OnInit {
 
       var data = {
         fecha : this.fechaServidor.getFullYear() + "-" + this.pad(this.fechaServidor.getMonth(),2) + "-" + this.pad(this.fechaServidor.getDate(),2),
-        hora: this.horaServidor.getHours() + ":" + this.pad(this.horaServidor.getMinutes(),2) + ":00"
+        hora: this.horaServidor +":00"
       };
       
       this.cambiarFechaHoraService.editar(data).subscribe(
@@ -245,7 +245,7 @@ export class PerfilComponent implements OnInit {
         var time = datetime[1].split(":");
 
         this.fechaServidor = new Date(date[0],+date[1]-1,date[2]);
-        this.horaServidor = new Date(date[0],date[1],+date[2]-1,time[0],time[1]);
+        this.horaServidor = time[0]+":"+time[1];
       }, error => {
         this.cargandoFechaHora = false;
         console.log(error);

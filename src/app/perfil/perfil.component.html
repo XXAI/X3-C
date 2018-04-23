@@ -3,7 +3,7 @@
     <div class="modal-content">
 
         <header class="modal-card-head" style="background: white !important;">
-            <p class="modal-card-title"><span class="icon"><i class="fa fa-{{ configurarFechaHora ? 'clock-o' : edicionPerfil? 'edit':'user-circle' }}"></i></span> <span *ngIf="!edicionPerfil && !configurarFechaHora">Mi cuenta</span><span *ngIf="edicionPerfil">Editar perfil</span><span *ngIf="configurarFechaHora">Configurar fecha y hora del servidor</span></p>
+            <p class="modal-card-title"><span class="icon"><i class="fa fa-{{ configurarFechaHora ? 'clock-o' : edicionPerfil? 'edit':'user-circle' }}"></i></span> <span *ngIf="!edicionPerfil && !configurarFechaHora">Mi cuenta</span><span *ngIf="edicionPerfil">Editar perfil</span><span *ngIf="configurarFechaHora">Configuración manual de fecha y hora del servidor</span></p>
             <button class="delete"  (click)="toggle()"></button>
         </header>
         <section class="modal-card-body" *ngIf="configurarFechaHora">
@@ -24,12 +24,12 @@
                         <span class="help is-danger" *ngIf="errores.fecha == 'required'">Este campo es requerido.</span>
                     </p>
                     <p class="control is-expanded">
-                        <input class="input" type="time"  [ngClass]="{'is-danger': false, 'is-disabled': enviandoDatosFechaHora}" placeholder="HH:MM 24hrs" [ngModel]="horaServidor | date:'HH:mm:ss'" (ngModelChange)=" fechaServidor = $event">
+                        <input class="input" type="time"  [ngClass]="{'is-danger': false, 'is-disabled': enviandoDatosFechaHora}" placeholder="HH:MM 24hrs" [ngModel]="horaServidor" (ngModelChange)=" horaServidor = $event">
                         
                         <span class="help is-danger" *ngIf="errores.hora == 'required'">Este campo es requerido.</span>
                     </p>
                 </div>
-                <a class="button is-white is-small" [ngClass]="{ 'is-loading':cargandoFechaHora }" (click)="cargarFechaHora()"><span class="icon is-small"><i class="fa fa-refresh"></i></span><span>Cargar fecha y hora del servidor de nuevo</span></a>    
+                <a class="button is-white is-small" [ngClass]="{ 'is-loading':cargandoFechaHora }" (click)="cargarFechaHora()"><span class="icon is-small"><i class="fa fa-refresh"></i></span><span>Cargar fecha del servidor</span></a>    
             </div>
         </section>
         <footer class="modal-card-foot" *ngIf="configurarFechaHora">
@@ -118,7 +118,7 @@
         </footer>
 
         <section class="modal-card-body has-text-centered" *ngIf="!edicionPerfil&&!configurarFechaHora">            
-            <p class="has-text-right"><small *ngIf="cargandoFechaHora">Cargando fecha y hora del servidor...</small><small *ngIf="!cargandoFechaHora">{{ fechaServidor | date: 'dd/MM/yyyy' }} <strong>{{ horaServidor | date:'HH:mm' }}</strong></small><a class="button is-white is-small" *ngIf="permisos.indexOf(keyPermisoCambiarFechaHora) > -1" [ngClass]="{'is-disabled': cargandoFechaHora}" title="Cambiar fecha y hora del servidor" (click)="configurarFechaHora = true;" ><span class="icon"><i class="fa fa-cog" [ngClass]="{'fa-spin': cargandoFechaHora}"></i></span></a></p>
+            <p class="has-text-right"><small *ngIf="cargandoFechaHora">Cargando fecha y hora del servidor...</small><small *ngIf="!cargandoFechaHora">{{ fechaServidor | date: 'dd/MM/yyyy' }} <strong>{{ horaServidor  }}</strong></small><a class="button is-white is-small" *ngIf="permisos.indexOf(keyPermisoCambiarFechaHora) > -1" [ngClass]="{'is-disabled': cargandoFechaHora}" title="Cambiar fecha y hora del servidor" (click)="configurarFechaHora = true;" ><span class="icon"><i class="fa fa-cog" [ngClass]="{'fa-spin': cargandoFechaHora}"></i></span></a></p>
             <nav class="level">
                 <div class="level-item has-text-centered">
                     <figure class="image is-128x128" style="position:relative;">
