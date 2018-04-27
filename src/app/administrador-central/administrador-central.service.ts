@@ -16,6 +16,9 @@ export class AdministradorCentralService {
   proveedores(): Observable<any[]>{
     return this.jwtRequest.get("proveedores").map( (response: Response) => response.json().data) as Observable<any[]>;
   }
+  mes(): Observable<any[]>{
+    return this.jwtRequest.get("administrador-central/mes-disponible").map( (response: Response) => response.json().data) as Observable<any[]>;
+  }
   abasto(parametros:any = {}): Observable<any>{
     return this.jwtRequest.get("administrador-central/abasto",null,parametros).map( (response: Response) => response.json().data) as Observable<any[]>;
   }
