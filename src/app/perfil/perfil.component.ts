@@ -137,9 +137,18 @@ export class PerfilComponent implements OnInit {
 
   seleccionarAlmacen(value){
     this.mostrarCambiarEntorno = true;
+    var bandera = false;
     for(var i in this.usuario.clues_activa.almacenes){
       if(value == this.usuario.clues_activa.almacenes[i].id){
+        bandera = true;
         this.usuario.almacen_activo = this.usuario.clues_activa.almacenes[i];
+      }
+    }
+    if(!bandera){
+      for(var i in this.usuario.clues_activa.almacenes_externos){
+        if(value == this.usuario.clues_activa.almacenes_externos[i].id){
+          this.usuario.almacen_activo = this.usuario.clues_activa.almacenes_externos[i];
+        }
       }
     }
   }
