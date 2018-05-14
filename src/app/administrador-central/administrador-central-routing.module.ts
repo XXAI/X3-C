@@ -7,6 +7,7 @@ import { TransferenciasRecursosComponent } from './transferencias-recursos/trans
 import { EntregasMesComponent } from './entregas-mes/entregas-mes.component';
 import { CumplimientoComponent } from './cumplimiento/cumplimiento.component';
 import { ReporteFinancieroComponent } from './reporte-financiero/reporte-financiero.component';
+import { PenasConvencionalesComponent } from './penas-convencionales/penas-convencionales.component';
 
 import { AuthGuard } from '../auth-guard.service';
 import { PermisosGuard } from '../permisos.guard';
@@ -22,6 +23,7 @@ const routes: Routes = [
        { path: 'entregas-mes', component: EntregasMesComponent, canActivate: [PermisosGuard], data: { key: 'fWA5oDswZ2Ra4O8YaCy6nEY8OeCOxg9C'}},
        { path: 'cumplimiento', component: CumplimientoComponent, canActivate: [PermisosGuard], data: { key: 'BBg7HSOEmjjOsVl48s8wSz8AxXhmBXA1'}},
        { path: 'reporte-financiero', component: ReporteFinancieroComponent, canActivate: [PermisosGuard], data: { key: 'BBg7HSOEmjjOsVl48s8wSz8AxXhmBXA1'}},
+       { path: 'penas-convencionales', component: PenasConvencionalesComponent, canActivate: [PermisosGuard], data: { key: 'bsIbPL3qv6XevcAyrRm1GxJufDbzLOax'}},
     ],
     canActivate: [AuthGuard]
   }

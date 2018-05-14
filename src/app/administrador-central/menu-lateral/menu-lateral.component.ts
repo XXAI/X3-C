@@ -32,6 +32,7 @@ export class MenuLateralComponent implements OnInit {
           { permiso: 'fWA5oDswZ2Ra4O8YaCy6nEY8OeCOxg9C', icono: 'fa-bar-chart', titulo:"Entregas por mes", url:"/administrador-central/entregas-mes" }, 
           { permiso: 'BBg7HSOEmjjOsVl48s8wSz8AxXhmBXA1', icono: 'fa-thumbs-o-up', titulo:"Cumplimiento", url:"/administrador-central/cumplimiento" },          
           { permiso: 'BBg7HSOEmjjOsVl48s8wSz8AxXhmBXA1', icono: 'fa-money', titulo:"Financiero", url:"/administrador-central/reporte-financiero" },          
+          { permiso: 'bsIbPL3qv6XevcAyrRm1GxJufDbzLOax', icono: 'fa-legal', titulo:"Penas convencionales", url:"/administrador-central/penas-convencionales" }, 
         ]
       },
       {
