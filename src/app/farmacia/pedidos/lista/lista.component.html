@@ -3,7 +3,7 @@
 <div style="height:50px;"></div>
 <div class="contenedor columns " style="height:100%; overflow:auto;">
     <div class="column is-one-quarter is-hidden-mobile">
-      <menu-lateral></menu-lateral>
+      <menu-lateral (onCambiarPresupuesto)="actualizarListaPedidos()" ></menu-lateral>
     </div>
     <div class="column" style="padding:2em;">
         <div style="background: #FFF; overflow:hidden; border-radius:1em; width:100%;margin-bottom:1em;" *ngIf="almacenSeleccionado.tipo_almacen == 'ALMPAL' && !almacenSeleccionado.subrogado">

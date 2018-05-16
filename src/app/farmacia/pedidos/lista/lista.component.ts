@@ -187,8 +187,14 @@ export class ListaComponent implements OnInit {
     );
   }
 
+  actualizarListaPedidos(){
+    this.listar(1);
+    this.cargarPresupuestoAnual();
+  }
+
   cargarPresupuestoAnual(){
-    this.pedidosService.presupuesto().subscribe(
+    let presupuesto = +localStorage.getItem('presupuestoSeleccionado');
+    this.pedidosService.presupuesto(0,0,'',presupuesto).subscribe(
       response => {
         this.cargando = false;
         //this.presupuesto = response.data;
@@ -253,8 +259,10 @@ export class ListaComponent implements OnInit {
     this.paginaActualBusqueda = pagina;
     console.log("Cargando búsqueda.");
    
+    let presupuesto = +localStorage.getItem('presupuestoSeleccionado');
+
     this.cargando = true;
-    this.pedidosService.buscar(this.status, term, pagina, this.resultadosPorPaginaBusqueda, this.tipo).subscribe(
+    this.pedidosService.buscar(this.status, term, pagina, this.resultadosPorPaginaBusqueda, this.tipo,presupuesto).subscribe(
         resultado => {
           this.cargando = false;
 
@@ -303,9 +311,11 @@ export class ListaComponent implements OnInit {
   listar(pagina:number): void {
     this.paginaActual = pagina;
     console.log("Cargando pedidos.");
-   
+    
+    let presupuesto = +localStorage.getItem('presupuestoSeleccionado');
+
     this.cargando = true;
-    this.pedidosService.lista(this.status, pagina,this.resultadosPorPagina, this.tipo).subscribe(
+    this.pedidosService.lista(this.status, pagina,this.resultadosPorPagina, this.tipo, presupuesto).subscribe(
         resultado => {
           this.cargando = false;
           this.pedidos = resultado.data as Pedido[];
