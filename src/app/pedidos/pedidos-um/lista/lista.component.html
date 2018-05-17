@@ -158,12 +158,9 @@
                             <tr>
                                 <th style=" text-align: center;"><abbr title="Fecha">Fecha</abbr></th>
                                 <th style=" text-align: center;"><abbr title="Folio">Folio</abbr></th>
-                                <th>Total solicitado</th>
-                                <th>Total recibido</th>
-                                <th>Total claves solicitadas</th>
-                                <th>Total claves recibidas</th>
-                                <th>Monto solicitado</th>
-                                <th>Monto recibido</th>
+                                <th>Presupuesto total</th>
+                                <th>Presupuesto CAUSES</th>
+                                <th>Presupuesto NO CAUSES</th>
                                 <th style=" text-align: center;">Estatus</th>
                                 <th style=" text-align: center;">Capturado</th>
                             </tr>
@@ -180,78 +177,38 @@
                                     <a *ngIf="item.estatus == 'FI'" routerLink="/pedidos/UM/ver/{{item.id}}">{{ item.id }}</a>
                                     <a *ngIf="item.estatus == 'BR'" routerLink="/pedidos/UM/editar/{{item.id}}">{{ item.id }}</a>
                                 </th>
-                                <!-- Total cantidad solicitado -->
-                                <td *ngIf="item.total_cantidad_solicitada">
+                                <!-- ************************ Total presupuesto ********************************* -->
+                                <td *ngIf="item.metadato_compra_consolidada?.presupuesto_compra">
                                     <a *ngIf="item.estatus == 'FI'" routerLink="/pedidos/UM/ver/{{item.id}}"> 
                                         <!-- <p> {{item.total_cantidad_solicitada | currency:''}}</p> -->
-                                        <p> {{item.total_cantidad_solicitada}}</p>
+                                        <p> {{item.metadato_compra_consolidada.presupuesto_compra | currency:''}}</p>
                                     </a>
                                     <a *ngIf="item.estatus == 'BR'" routerLink="/pedidos/UM/editar/{{item.id}}"> 
                                         <!-- <p> {{item.total_cantidad_solicitada | currency:''}}</p> -->
-                                        <p> {{item.total_cantidad_solicitada}}</p>
+                                        <p> {{item.metadato_compra_consolidada.presupuesto_compra | currency:''}}</p>
                                     </a>
                                 </td>
-                                <td *ngIf="!item.total_cantidad_solicitada"> No disponible</td>
-                                <!-- Total cantidad recibido -->
-                                <td *ngIf="item.total_cantidad_recibida">
+                                <td *ngIf="!item.metadato_compra_consolidada?.presupuesto_compra"> No disponible</td>
+                                <!-- ************************ Presupuesto CAUSES  ********************** -->
+                                <td *ngIf="item.metadato_compra_consolidada?.presupuesto_causes">
                                     <a *ngIf="item.estatus == 'FI'" routerLink="/pedidos/UM/ver/{{item.id}}"> 
-                                        <!-- <p> {{item.total_cantidad_recibida | currency:''}}</p> -->
-                                        <p> {{item.total_cantidad_recibida}}</p>
+                                        <p> {{item.metadato_compra_consolidada.presupuesto_causes | currency:''}}</p>
                                     </a>
                                     <a *ngIf="item.estatus == 'BR'" routerLink="/pedidos/UM/editar/{{item.id}}"> 
-                                        <!-- <p> {{item.total_cantidad_recibida | currency:''}}</p> -->
-                                        <p> {{item.total_cantidad_recibida}}</p>
+                                        <p> {{item.metadato_compra_consolidada.presupuesto_causes | currency:''}}</p>
                                     </a>
                                 </td>
-                                <td *ngIf="!item.total_cantidad_recibida"> No disponible</td>
-                                <!-- Total claves solicitada -->
-                                <td *ngIf="item.total_claves_solicitadas">
+                                <td *ngIf="!item.metadato_compra_consolidada"> No disponible</td>
+                                <!-- *************************** Total monto solicitado *************************** -->
+                                <td *ngIf="item.metadato_compra_consolidada?.presupuesto_no_causes">
                                     <a *ngIf="item.estatus == 'FI'" routerLink="/pedidos/UM/ver/{{item.id}}"> 
-                                        <!-- <p> {{item.total_claves_solicitadas | currency:''}}</p> -->
-                                        <p> {{item.total_claves_solicitadas}}</p>
+                                        <p> {{item.metadato_compra_consolidada.presupuesto_no_causes | currency:''}}</p>
                                     </a>
                                     <a *ngIf="item.estatus == 'BR'" routerLink="/pedidos/UM/editar/{{item.id}}"> 
-                                        <!-- <p> {{item.total_claves_solicitadas | currency:''}}</p> -->
-                                        <p> {{item.total_claves_solicitadas}}</p>
+                                        <p> {{item.metadato_compra_consolidada.presupuesto_no_causes | currency:''}}</p>
                                     </a>
                                 </td>
-                                <td *ngIf="!item.total_claves_solicitadas"> No disponible</td>
-                                <!-- Total claves recibidas -->
-                                <td *ngIf="item.total_claves_recibidas">
-                                    <a *ngIf="item.estatus == 'FI'" routerLink="/pedidos/UM/ver/{{item.id}}"> 
-                                        <!-- <p> {{item.total_claves_recibidas | currency:''}}</p> -->
-                                        <p> {{item.total_claves_recibidas}}</p>
-                                    </a>
-                                    <a *ngIf="item.estatus == 'BR'" routerLink="/pedidos/UM/editar/{{item.id}}"> 
-                                        <!-- <p> {{item.total_claves_recibidas | currency:''}}</p> -->
-                                        <p> {{item.total_claves_recibidas}}</p>
-                                    </a>
-                                </td>
-                                <td *ngIf="!item.total_claves_recibidas"> No disponible</td>
-                                <!-- Total monto solicitado -->
-                                <td *ngIf="item.total_monto_solicitado">
-                                    <a *ngIf="item.estatus == 'FI'" routerLink="/pedidos/UM/ver/{{item.id}}"> 
-                                        <!-- <p> {{item.total_monto_solicitado | currency:''}}</p> -->
-                                        <p> {{item.total_monto_solicitado}}</p>
-                                    </a>
-                                    <a *ngIf="item.estatus == 'BR'" routerLink="/pedidos/UM/editar/{{item.id}}"> 
-                                        <!-- <p> {{item.total_monto_solicitado | currency:''}}</p> -->
-                                        <p> {{item.total_monto_solicitado}}</p>
-                                    </a>
-                                </td>
-                                <td *ngIf="!item.total_monto_solicitado"> No disponible</td>
-                                <!-- Total monto recibido -->
-                                <td *ngIf="item.total_monto_recibido">
-                                    <a *ngIf="item.estatus == 'FI'" routerLink="/pedidos/UM/ver/{{item.id}}"> 
-                                        <!-- <p> {{item.total_monto_recibido | currency:''}}</p> -->
-                                        <p> {{item.total_monto_recibido}}</p>
-                                    </a>
-                                    <a *ngIf="item.estatus == 'BR'" routerLink="/pedidos/UM/editar/{{item.id}}"> 
-                                        <!-- <p> {{item.total_monto_recibido | currency:''}}</p> -->
-                                        <p> {{item.total_monto_recibido}}</p>
-                                    </a>
-                                </td>
-                                <td *ngIf="!item.total_monto_recibido"> No disponible</td>
+                                <td *ngIf="!item.metadato_compra_consolidada?.presupuesto_no_causes"> No disponible</td>
                                 <!-- ESTATUS -->
                                 <td >
                                     <a *ngIf="item.estatus == 'FI'" routerLink="/pedidos/UM/ver/{{item.id}}">

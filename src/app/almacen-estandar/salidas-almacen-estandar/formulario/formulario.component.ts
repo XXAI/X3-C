@@ -1,7 +1,7 @@
 import { Component, OnInit, NgZone, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router, NavigationEnd } from '@angular/router';
 
 import { environment } from '../../../../environments/environment';
 import { CrudService } from '../../../crud/crud.service';
@@ -116,6 +116,12 @@ export class FormularioComponent {
    */
   public insumos_term = `${environment.API_URL}/insumos-auto?term=:keyword`;
 
+  /**
+   * Contiene la URL donde se hace la búsqueda de insumos médicos, cuyos resultados posteriormente
+   * se guarda en [res_busq_insumos]{@link FormularioComponent#res_busq_insumos}
+   * @type {string} */
+  public clues_term = `${environment.API_URL}/clues-auto?term=:keyword`;
+
   objeto = {
     showProgressBar: true,
     pauseOnHover: true,
@@ -222,6 +228,14 @@ export class FormularioComponent {
    * @type {any}
    */
   nombre_programa_elegido= '';
+  /**
+   * Variable para el enlace en las secciones de ayuda
+   */
+  enlaceAyuda = '';
+  /**
+   * Calcula el tamaño de la pantalla
+   */
+  tamano = document.body.clientHeight;
 
   /**
    * Este método inicializa la carga de las dependencias
@@ -231,9 +245,23 @@ export class FormularioComponent {
     private fb: FormBuilder,
     private crudService: CrudService,
     private route: ActivatedRoute,
+    private router: Router,
     private _sanitizer: DomSanitizer,
     private notificacion: NotificationsService,
-    private _ngZone: NgZone) { }
+    private _ngZone: NgZone) {
+      /**
+       * Para poder ir a las secciones de ayuda.
+       **/
+      router.events.subscribe(s => {
+        if (s instanceof NavigationEnd) {
+          const tree = router.parseUrl(router.url);
+          if (tree.fragment) {
+            const element = document.querySelector('#' + tree.fragment);
+            if (element) { element.scrollIntoView(true); }
+          }
+        }
+      });
+    }
 
 
   ngOnInit() {
@@ -288,14 +316,21 @@ export class FormularioComponent {
         turno_id: ['', [Validators.required]],
         servicio_id: [''],
         persona_recibe: ['', [Validators.required]],
+        unidad_medica_destino: ['', [Validators.required]],
+        unidad_medica: this.fb.group({
+          clues: [''],
+          nombre: [''],
+        })
       }),
       insumos: this.fb.array([]),
       insumos_negados: this.fb.array([])
     });
 
+    this.enlaceAyuda = '/almacen-estandar/salidas/nuevo';
     this.route.params.subscribe(params => {
       if (params['id']) {
         this.tieneid = true;
+        this.enlaceAyuda = '/almacen-estandar/salidas/ver/' + params['id'];
 
         // this.subtotal_precios = temporal_subtotal_precios;
         // this.total_iva = temporal_total_iva;
@@ -397,6 +432,53 @@ export class FormularioComponent {
       this.cantidad_solicitadaBoxViewChildren.first.nativeElement.focus();
     }
   }
+
+  /*************************INICIA AUTOCOMPLETE*************************** */
+
+    /**
+     * Este método formatea los resultados de la busqueda en el autocomplte
+     * @param data resultados de la busqueda
+     * @return void
+     */
+    autocompleListFormatCLUES = (data: any) => {
+      let html = `
+      <div class="card">
+          <div class="card-content">
+              <div class="media">
+                  <div class="media-content">
+                      <p class="title is-4" style="color: black;">
+                        <i class="fa fa-hospital-o" aria-hidden="true"></i>
+                        &nbsp; ${data.clues}
+                      </p>
+                      <p class="subtitle is-6" style="color: black;">
+                          <strong style="color: black;">&nbsp; Nombre: </strong>
+                          <span style="color: black;"> ${data.nombre ? data.nombre : 'No disponible'} </span>
+                      </p>
+                  </div>
+              </div>
+          </div>
+      </div>`;
+      return this._sanitizer.bypassSecurityTrustHtml(html);
+  }
+
+    /**
+     * Este método carga los datos de un elemento de la api con el id que se pase por la url
+     * @param data json con los datos del objeto seleccionado del autocomplete
+     * @return void
+     */
+    select_clues_autocomplete(data) {
+      this.dato.controls.movimiento_metadato['controls']['unidad_medica_destino'].patchValue(data.clues);
+      this.dato.controls.movimiento_metadato['controls']['unidad_medica'].controls.clues.patchValue(data.clues);
+      this.dato.controls.movimiento_metadato['controls']['unidad_medica'].controls.nombre.patchValue(data.nombre);
+      if (data.clues === undefined) {
+        this.dato.controls.movimiento_metadato['controls']['unidad_medica_destino'].patchValue('');
+        this.mensajeResponse.texto = 'Error al capturar la CLUES ' + `<strong>${data.clues}</strong>`;
+        this.mensajeResponse.mostrar = true;
+        this.mensajeResponse.clase = 'warning';
+        this.mensaje(0);
+      }
+    }
+    /*************************************FINALIZA AUTOCOMPLETE*********************************** */
 
   /**
    * Método de búsqueda de insumos en la API.
@@ -500,7 +582,6 @@ export class FormularioComponent {
         }
 
         this.lotes_insumo = resultado;
-        console.log(this.lotes_insumo);
         this.insumo = data;
 
         // limpiar el autocomplete
@@ -532,7 +613,6 @@ export class FormularioComponent {
     // obtener el formulario reactivo para agregar los elementos
     const control = <FormArray>this.dato.controls['insumos'];
 
-    console.log(this.insumo);
 
     // crear el json que se pasara al formulario reactivo tipo insumos
     var lotes = {
@@ -598,7 +678,6 @@ export class FormularioComponent {
     };
     //recorrer la tabla de lotes del modal para obtener la cantidad 
     for (let item of this.lotes_insumo) {
-      console.log(item);
       //agregar unicamente aquellos que tiene cantidad normal o unidosis
       if (item.cantidad > 0) {
         var existe_lote = false;
@@ -656,7 +735,6 @@ export class FormularioComponent {
             }
           }
 
-          console.log(item);
           // agregar al formulario reactivo de lote
           ctrlLotes.controls['lotes'].push(this.fb.group(
             {
@@ -938,7 +1016,6 @@ export class FormularioComponent {
     let temporal_total_iva = 0, temporal_total_precio = 0, temporal_subtotal_precios = 0, importe = 0;
 
     for (let c = 0; c < control.value.length; c++) {
-      console.log(control.value[c]);
       for (let item of control.value[c].lotes) {
         importe = Number(item.cantidad) * Number(item.precio_unitario);
         temporal_subtotal_precios = temporal_subtotal_precios + Number(importe);

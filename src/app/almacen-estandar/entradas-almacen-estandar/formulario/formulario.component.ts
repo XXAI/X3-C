@@ -1,7 +1,7 @@
 import { Component, OnInit, NgZone, HostListener, Input } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router, NavigationEnd  } from '@angular/router';
 
 import { environment } from '../../../../environments/environment';
 import { CrudService } from '../../../crud/crud.service';
@@ -25,6 +25,10 @@ import { ModalProgramasComponent } from "./modal-programas.component";
 })
 
 export class FormularioComponent {
+  /**
+   * Calcula el tamaño de la pantalla
+   */
+  tamano = document.body.clientHeight;
   /**
    * Variable que contienen el total de la suma de los precios de los insumos más iva.
    * @type {Number}
@@ -228,6 +232,10 @@ export class FormularioComponent {
    * @type {boolean}
    */
   time_cambio_cantidad_stoc;
+  /**
+   * Variable para el enlace en las secciones de ayuda
+   */
+  enlaceAyuda = '';
 
   /**
    * Este método inicializa la carga de las dependencias
@@ -237,10 +245,24 @@ export class FormularioComponent {
     private fb: FormBuilder,
     private crudService: CrudService,
     private route: ActivatedRoute,
+    private router: Router,
     private _sanitizer: DomSanitizer,
     private notificacion: NotificationsService,
     private _ngZone: NgZone
-    ) {}
+    ) {
+    /**
+    * Para poder ir a las secciones de ayuda.
+    **/
+    router.events.subscribe(s => {
+      if (s instanceof NavigationEnd) {
+        const tree = router.parseUrl(router.url);
+        if (tree.fragment) {
+          const element = document.querySelector('#' + tree.fragment);
+          if (element) { element.scrollIntoView(true); }
+        }
+      }
+    });
+    }
 
   /**
    * Método que inicializa y obtiene valores para el funcionamiento del componente.
@@ -317,9 +339,11 @@ export class FormularioComponent {
             setTimeout(() => {
               if (this.dato.controls.estatus.value === 'BR') {
                 this.llenarFormulario();
+                this.enlaceAyuda = '/almacen-estandar/entradas/editar/' + this.dato.controls.id.value;
               }else {
                 this.sumaTotal();
                 this.llenando_formulario = false;
+                this.enlaceAyuda = '/almacen-estandar/entradas/ver/' + this.dato.controls.id.value;
               }
             }, 500);
           }
@@ -345,6 +369,7 @@ export class FormularioComponent {
     }
     this.cargarCatalogo('programa', 'lista_programas', 'estatus');
     this.cargarCatalogo('proveedores', 'lista_proveedores', 'activo');
+    this.enlaceAyuda = '/almacen-estandar/entradas/nuevo/' + this.dato.controls.id.value;
   }
   /**
    * Función local para cargar el catalogo de programas, no se utilizó el cargarCatalogo del CRUD,
@@ -385,7 +410,6 @@ export class FormularioComponent {
     for ( let item of control_insumos.value) {
       if (item.lotes) {
         for (let lotes_item of item.lotes) {
-          console.log(lotes_item);
           lotes = {
             'clave': item.clave,
             'nombre': item.nombre,
@@ -607,7 +631,6 @@ export class FormularioComponent {
     if (!existe) {
       control.insert(0, this.fb.group(lotes));
     }
-    console.log(lotes);
   }
 
   /**

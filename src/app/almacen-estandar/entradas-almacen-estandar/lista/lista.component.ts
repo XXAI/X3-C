@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChildren, NgZone } from '@angular/core';
 import { CrudService } from '../../../crud/crud.service';
 import { Mensaje } from '../../../mensaje';
+import { Router, NavigationEnd  } from '@angular/router';
 import { NotificationsService } from 'angular2-notifications';
 import  * as FileSaver    from 'file-saver';
 /**
@@ -15,6 +16,10 @@ import  * as FileSaver    from 'file-saver';
  */
 export class ListaComponent {
 
+  /**
+   * Calcula el tamaño de la pantalla
+   */
+  tamano = document.body.clientHeight;
   /**
    * Fecha inicial de periodo de tiempo para filtro.
    * @type {string} */
@@ -60,6 +65,10 @@ export class ListaComponent {
     cargandoPdf = false;
   // # FIN SECCION
 
+  /**
+   * Variable para el enlace en las secciones de ayuda
+   */
+  enlaceAyuda = '';
 
   /**
    * Variable que muestra las notificaciones.
@@ -90,7 +99,21 @@ export class ListaComponent {
   constructor(
     private _ngZone: NgZone,
     private crudService: CrudService,
-    private notificacion: NotificationsService) { }
+    private router: Router,
+    private notificacion: NotificationsService) {
+      /**
+      * Para poder ir a las secciones de ayuda.
+      **/
+      router.events.subscribe(s => {
+        if (s instanceof NavigationEnd) {
+          const tree = router.parseUrl(router.url);
+          if (tree.fragment) {
+            const element = document.querySelector('#' + tree.fragment);
+            if (element) { element.scrollIntoView(true); }
+          }
+        }
+      });
+    }
 
   /**
    * Método que inicializa y obtiene valores para el funcionamiento del componente.
@@ -115,6 +138,24 @@ export class ListaComponent {
       FileSaver.saveAs( self.base64ToBlob( evt.data.base64, 'application/pdf' ), evt.data.fileName );
       // open( 'data:application/pdf;base64,' + evt.data.base64 ); // Popup PDF
     };
+
+    this.enlaceAyuda = '/almacen-estandar/entradas';
+  }
+  /**
+   * Este método abre una modal
+   * @param id identificador del elemento de la modal
+   * @return void
+   */
+  abrirModal(id) {
+    document.getElementById(id).classList.add('is-active');
+  }
+  /**
+   * Este método cierra una modal
+   * @param id identificador del elemento de la modal
+   * @return void
+   */
+  cancelarModal(id) {
+    document.getElementById(id).classList.remove('is-active');
   }
   /**
    * Método que genera una lista general de los registros en formato EXCEL, con los filtros correspondientes
