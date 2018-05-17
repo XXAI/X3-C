@@ -25,7 +25,6 @@ import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
 import { TextMaskModule } from 'angular2-text-mask';
 import { MomentModule   } from 'angular2-moment';
 import { SimpleNotificationsModule } from 'angular2-notifications';
-import { AyudaComponent } from './ayuda/ayuda.component';
 
 @NgModule({
   imports: [
@@ -48,8 +47,7 @@ import { AyudaComponent } from './ayuda/ayuda.component';
   ],
   declarations: [
     ListaComponent,
-    FormularioComponent,
-    AyudaComponent
+    FormularioComponent
   ],
   providers: [ AuthService, CrudService ]
 })

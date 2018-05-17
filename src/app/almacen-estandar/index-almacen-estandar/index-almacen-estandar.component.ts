@@ -70,7 +70,7 @@ export class IndexAlmacenEstandarComponent implements OnInit {
         url: '/almacen-estandar/salidas'
       },
       {
-        permiso: 'fO4NLBvm5IAv5zouJ24rS0qVI2cHpm44',
+        permiso: 'fO4NLBvm5IAv5zouJ24rS0qVI2cHpm44--',
         icono: 'assets/icono-pagina-lista.svg', titulo: 'Pedido de insumos',
         url: '/almacen-estandar/pedidos'
       },

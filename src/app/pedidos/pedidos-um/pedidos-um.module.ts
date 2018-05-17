@@ -27,7 +27,6 @@ import { MomentModule   } from 'angular2-moment';
 import { from } from 'rxjs/observable/from';
 import { SimpleNotificationsModule } from 'angular2-notifications';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
-import { AyudaComponent } from './ayuda/ayuda.component';
 
 @NgModule({
   imports: [
@@ -52,7 +51,6 @@ import { AyudaComponent } from './ayuda/ayuda.component';
   declarations: [
     ListaComponent,
     FormularioComponent,
-    AyudaComponent,
   ],
   providers: [ AuthService, CrudService ]
 })

@@ -34,8 +34,18 @@ export class IndexLaboratorioComponent implements OnInit {
         url: '/laboratorio/entradas-laboratorio'
       },
       {
+        permiso: 'PzmTtCd1MbMWVBPwVmttQQWdNfqwzp7p',
+        icono: 'assets/icono-entradas-laboratorio.svg', titulo: 'Entradas de laboratorio (Actualización)',
+        url: '/laboratorio-estandar/entradas'
+      },
+      {
         permiso: '7GkcqRllVy4Z371KMLPsX0d04dqv3vBE', icono: 'assets/icono-salidas-laboratorio.svg',
-        titulo: 'Salidas de laboratorio', url: '/laboratorio/salidas-laboratorio'
+        titulo: 'Salidas de laboratorio (Actualización)',
+        url: '/laboratorio-estandar/salidas'
+      },
+      {
+        permiso: '7GkcqRllVy4Z371KMLPsX0d04dqv3vBE', icono: 'assets/icono-salidas-laboratorio.svg',
+        titulo: 'Salida de laboratorio', url: '/laboratorio/salidas-laboratorio'
       },
       {
         permiso: 'mJ2E55G7moiDdV3VpY2u7g5obUzeop7p', icono: 'assets/icono-stock-lab.svg',

@@ -20,31 +20,31 @@
                     Datos del movimiento -->
                     <div class="columns" style="font-size: 22px; text-align: right">
                         <strong class="column">Presupuesto Total: </strong>
-                        <strong class="column">{{ ( this.form_dato.metadato_compra_consolidada?.presupuesto_compra | currency:'' ) }}  &nbsp;  &nbsp;  </strong>
+                        <strong class="column">{{ ( form_dato.metadato_compra_consolidada?.presupuesto_compra | currency:'' ) }}  </strong>
+                    </div>
+                    <div class="columns" style="font-size: 18px; text-align: right">
+                        <label class="column">Presupuesto Total utilizado : </label>
+                        <strong class="column">
+                            <span [ngStyle]="{'color': total_precio > this.form_dato.metadato_compra_consolidada?.presupuesto_compra ? 'red' : ''}">
+                                {{ ( total_precio | currency:'' ) }}
+                            </span>
+                        </strong>
                     </div>
                     <span class="help is-danger" *ngIf="error_formulario">El presupuesto total no puede ser $0.00.</span>
-                    <div>
+                    <!-- <div>
                             <div class="field">
                                 <label class="label">Presupuesto Causes:</label>
                                 <p class="control is-expanded  has-icon has-icon-right" style="text-align: right;" *ngIf="form_dato.metadato_compra_consolidada != null" >
                                     {{ this.form_dato.metadato_compra_consolidada.presupuesto_causes ? (this.form_dato.metadato_compra_consolidada.presupuesto_causes | currency:'') : ( 0 | currency:'')}}
-                                    <!-- <input class="input"  currencyMask [(ngModel)]='form_dato.metadato_compra_consolidada.presupuesto_causes' 
-                                        [options]="{ prefix: '$ ', thousands: ',', decimal: '.' }"
-                                        (keypress)="validar_input_currency('presupuesto_causes'); calcular_presupuesto_asignado()"
-                                        (blur)="validar_input_currency('presupuesto_causes'); calcular_presupuesto_asignado()"/> -->
                                 </p>
                             </div>
                             <div class="field">
                                 <label class="label">Presupuesto No Causes:</label>
                                 <p class="control is-expanded  has-icon has-icon-right" style="text-align: right;" *ngIf="form_dato.metadato_compra_consolidada != null">
                                         {{ this.form_dato.metadato_compra_consolidada.presupuesto_no_causes ? (this.form_dato.metadato_compra_consolidada.presupuesto_no_causes | currency:'') : ( 0 | currency:'')}}
-                                    <!-- <input class="input"  currencyMask [(ngModel)]='form_dato.metadato_compra_consolidada.presupuesto_no_causes' 
-                                        [options]="{ prefix: '$ ', thousands: ',', decimal: '.' }"
-                                        (keypress)="validar_input_currency('presupuesto_no_causes'); calcular_presupuesto_asignado()"
-                                        (blur)="validar_input_currency('presupuesto_no_causes'); calcular_presupuesto_asignado()"/> -->
                                 </p>
                             </div>
-                    </div>
+                    </div> -->
         </div>
         <div style="background: #FFF; padding: 1em; overflow: scroll; overflow-x: hidden;" [style.height.px]="tamano-420"> 
             <div>
@@ -53,7 +53,7 @@
                     <p class="control is-expanded  has-icon has-icon-right">
                         <input class="input"  [(ngModel)]='form_dato.metadato_compra_consolidada.fecha_limite_captura' ngui-datetime-picker 
                             [min-date]="capturaDate" date-only="true"
-                            [ngClass]="{'is-disabled': form_dato.estatus === 'FI', 'is-danger': form_dato.fecha_inicio == ''}" name="fecha_inicio"
+                            [ngClass]="{'is-disabled': form_dato.estatus === 'FI' || form_dato.estatus === 'BR', 'is-danger': form_dato.fecha_inicio == ''}" name="fecha_inicio"
                             placeholder="YYYY-MM-DD" readonly/>
 
                         <span class="icon is-small">
@@ -73,7 +73,8 @@
                         <div  *ngIf="!cargando && !cargandoCatalogo" class="select control is-expanded  has-icon has-icon-right">
                             <select class="select is-medium" name="seleccionar_programa" id="seleccionar_programa" required
                                 [(ngModel)]='form_dato.metadato_compra_consolidada.programa_id'
-                                [ngClass]="{'is-disabled': tieneid && form_dato.estatus == 'FI'}">
+                                [ngClass]="{'is-disabled': tieneid}">
+                                <!-- && form_dato.estatus == 'FI' -->
                                 <option value="">Seleccione un programa</option>
                                 <option *ngFor="let item of lista_programas" value="{{item.id}}">{{ item.nombre }}</option>
                             </select>
@@ -141,7 +142,7 @@
                                         <span id="borrador" (click)="enviar();"></span>
                                     </button>
     
-                                    <button class="button is-primary tooltip" (click)="crearApertura()" type="submit"
+                                    <button class="button is-primary tooltip" (click)="finalizar_pedido()" type="submit"
                                             [ngClass]="{'is-loading': cargando, 'is-hidden': form_dato.estatus === 'FI'}" [disabled]="form_dato.invalid">
                                         <span class="icon" style="color: blue">
                                             <i class="fa fa-unlock-alt fa-2x"> </i>
@@ -149,8 +150,8 @@
                                         <span class="tooltiptext" style="color: blue">Finalizar</span>
                                     </button>
                                     <button class="button is-primary tooltip"  (click)="imprimir()" title="PDF" type="submit"
-                                        [ngClass]="{'is-loading': cargando}" [disabled]="form_dato.invalid">
-                                        <!-- , 'is-hidden': form_dato.estatus === 'BR' -->
+                                        [ngClass]="{'is-loading': cargando, 'is-hidden': form_dato.estatus === 'BR'}"
+                                        [disabled]="form_dato.invalid">                                        
                                         <span class="icon">
                                             <i class="fa fa-file-pdf-o fa-2x"></i>
                                         </span>
@@ -177,7 +178,7 @@
                                             <th style="text-align: right; width: 33%"> {{(form_dato.metadato_compra_consolidada.presupuesto_no_causes | currency:'' )}}</th>
                                         </tr>
                                         <tr>
-                                            <th>Asignado</th>
+                                            <th>Utilizado</th>
                                             <td style="text-align: right; width: 33%">
                                                 <span [ngStyle]="{'color': form_dato.metadato_compra_consolidada.presupuesto_causes_asignado > form_dato.metadato_compra_consolidada.presupuesto_causes ? 'red' : ''}">
                                                     {{(form_dato.metadato_compra_consolidada.presupuesto_causes_asignado | currency:'' )}}
@@ -261,7 +262,7 @@
                                             <th style=" text-align: center;">Precio</th>
                                             <th style=" text-align: center;">Cantidad</th>
                                             <th style=" text-align: center;">Importe</th>
-                                            <th style=" text-align: center;">Opciones</th>
+                                            <th style=" text-align: center;" [ngClass]="{'is-hidden': form_dato.estatus === 'FI' }">Opciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -270,6 +271,9 @@
                                             <th style=" text-align: center;"><span>{{insumo.insumo_medico_clave}}&nbsp;</span></th>
                                             <th>
                                                 <span>{{insumo.info_insumo.descripcion}}&nbsp;</span>
+                                                <label class="tag is-success" *ngIf="insumo.info_insumo.es_causes == true"><strong>Cause </strong></label>
+                                                <label class="tag" *ngIf="insumo.info_insumo.es_causes == 0" style="background: #B8FB7E; border-color: #B8FB7E; color: rgba(0,0,0,0.7);" ><strong>No Cause </strong> </label>
+                                                <span *ngIf="insumo.info_insumo.tipo == 'MC'" class="tag is-warning" style="font-size: 0.7em !important;">MATERIAL CURACIÓN</span>
                                             </th>
                                             <th style="text-align: right;">
                                                 {{insumo.precio_unitario | currency:''}}
@@ -291,7 +295,7 @@
                                             <th style=" text-align: right;">
                                                 {{insumo.monto_solicitado | currency:''}}
                                             </th>
-                                            <th>
+                                            <th [ngClass]="{'is-hidden': form_dato.estatus === 'FI' }">
                                                 <p class="control" [ngClass]="{'is-hidden': form_dato.estatus === 'FI' }">    
                                                     <span style="float:right;" >
                                                         <a  class="button is-small" style="color: red; padding-left: 12px;" title="Quitar este elemento de la lista" (click)="abrirModal('borrarInsumo', i_insumos)">
@@ -328,25 +332,26 @@
     </div>
 </div>
 
-<div class="modal" id="confirmarReestablecer">
+<div class="modal" id="finalizarPedidoUM">
     <div class="modal-background"></div>
     <div class="modal-card">
         <header class="modal-card-head">
-        <p class="modal-card-title"><i class="fa fa-warning"></i> Alerta</p>
-        <button class="delete" (click)="cancelarModal('confirmarReestablecer')"></button>
+            <p class="modal-card-title"><i class="fa fa-warning"></i> Alerta</p>
+            <button class="delete" (click)="cancelarModal('finalizarPedidoUM')"></button>
         </header>
         <section class="modal-card-body">
             <div class="content">
-                <h1>¿Esta seguro de resetear el inventario?</h1>
-                <p>esta acción cargaratodos los productos que tienen inventario para susutituirlo, es necesario llenar y guardar la inicialización de inventario para que se refleje en el stock</p>
+                <h1>¿Esta seguro de finalizar el pedido de Unidad Médica?</h1>
+                <p>Ya no se podrá realizar cambios</p>
             </div>
         </section>
         <footer class="modal-card-foot">
-        <a class="button is-success" (click)="cargarArticulos('iniciar')" >Continuar</a>
-        <a class="button" (click)="cancelarModal('confirmarReestablecer')" id="cerra_restablecer">Cancelar</a>
+            <a class="button is-success" (click)="finalizar(); cancelarModal('finalizarPedidoUM')">Continuar</a>
+            <a class="button" (click)="cancelarModal('finalizarPedidoUM')">Cancelar</a>
         </footer>
     </div>
 </div>
+
 <div class="modal" id="borrarInsumo">
     <div class="modal-background"></div>
     <div class="modal-card">
@@ -389,7 +394,7 @@
 </div>
 
 <!-- 
-    /**************************************************************************************************************************/
+    /***************************************************MODAL AYUDA***********************************************************************/
  -->
 
  <div class="modal" id="ayuda">

@@ -387,7 +387,8 @@ export class FormularioComponent {
    * Metodo que calcula el preupuesto global.
    */
   calcular_presupuesto_asignado() {
-    this.form_dato.metadato_compra_consolidada.presupuesto_compra = this.form_dato.metadato_compra_consolidada.presupuesto_causes + this.form_dato.metadato_compra_consolidada.presupuesto_no_causes;
+    // this.form_dato.metadato_compra_consolidada.presupuesto_compra = this.form_dato.metadato_compra_consolidada.presupuesto_causes + this.form_dato.metadato_compra_consolidada.presupuesto_no_causes;
+    this.total_precio = Number(this.form_dato.metadato_compra_consolidada.presupuesto_causes_asignado) + Number(this.form_dato.metadato_compra_consolidada.presupuesto_no_causes_asignado);
 
     this.form_dato.metadato_compra_consolidada.presupuesto_causes_disponible = Number(this.form_dato.metadato_compra_consolidada.presupuesto_causes) - Number(this.form_dato.metadato_compra_consolidada.presupuesto_causes_asignado);
     this.form_dato.metadato_compra_consolidada.presupuesto_no_causes_disponible = Number(this.form_dato.metadato_compra_consolidada.presupuesto_no_causes) - Number(this.form_dato.metadato_compra_consolidada.presupuesto_no_causes_asignado);
@@ -519,15 +520,16 @@ export class FormularioComponent {
    * @param pos Contiene la posición del arreglo a la que se agregará la existencia.
    */
   calcular_importes (item, i_insumo) {
-    for (let c = 0; c < this.form_dato.insumos.length; c++) {
-
-    }
+    let iva = 1;
     if (item.precio_unitario === '' || item.precio_unitario == null) {
       this.form_dato.insumos[i_insumo].monto_solicitado = 0;
     } if (item.cantidad_solicitada  === '' || item.cantidad_solicitada == null) {
       this.form_dato.insumos[i_insumo].monto_solicitado = 0;
     } else {
-      let temporal = Number(item.cantidad_solicitada) * Number(item.precio_unitario);
+      if (item.info_insumo.tipo === 'MC') {
+        iva = 1.16;
+      }
+      let temporal = Number(item.cantidad_solicitada) * Number(item.precio_unitario) * iva;
       this.form_dato.insumos[i_insumo].monto_solicitado = temporal;
     }
   }
@@ -556,7 +558,8 @@ export class FormularioComponent {
    */
   sumaTotal() {
 
-    this.form_dato.metadato_compra_consolidada.presupuesto_compra = this.form_dato.metadato_compra_consolidada.presupuesto_causes_asignado + this.form_dato.metadato_compra_consolidada.presupuesto_no_causes_asignado;
+    // this.form_dato.metadato_compra_consolidada.presupuesto_compra
+    this.total_precio = this.form_dato.metadato_compra_consolidada.presupuesto_causes_asignado + this.form_dato.metadato_compra_consolidada.presupuesto_no_causes_asignado;
 
   }
 
@@ -566,6 +569,22 @@ export class FormularioComponent {
    */
   is_numeric(str) {
     return /^\d+$/.test(str);
+  }
+
+  /**
+   * Compureba que los presupuestos asignados no sean mayores a los presupuestos autorizados.
+   * Abre el modal 'finalizarPedidoUM' para confirmar que guarda el pedido como finalizado,
+   * sin poder hacer cambios posteriormente.
+   */
+  finalizar_pedido() {
+    if (
+    this.form_dato.metadato_compra_consolidada.presupuesto_causes_asignado > this.form_dato.metadato_compra_consolidada.presupuesto_causes
+    || this.form_dato.metadato_compra_consolidada.presupuesto_no_causes_asignado > this.form_dato.metadato_compra_consolidada.presupuesto_no_causes
+  ) {
+      this.notificacion.warn('Presupuesto', 'El presupuesto asignado rebasa el presupuesto Autorizado', this.objeto);
+    }else {
+      document.getElementById('finalizarPedidoUM').classList.add('is-active');
+    }
   }
 
 
@@ -630,11 +649,12 @@ export class FormularioComponent {
       nombre: '',
       info_insumo : {
         descripcion: this.insumo.descripcion,
-        es_causes: this.insumo.es_causes
+        es_causes: this.insumo.es_causes,
+        tipo: this.insumo.tipo
       },
       es_unidosis: '',
       cantidad_x_envase: '',
-      tipo: '',
+      tipo: this.insumo.tipo,
       precio_unitario: this.insumo.precio_unitario,
       cantidad_solicitada: '',
       monto_solicitado: 0
@@ -765,7 +785,7 @@ export class FormularioComponent {
   /**
    * Método que nos ayuda a comprobar que todos los campos de inicialización seean válidos, y a confirmar que se inicialice.
    */
-  crearApertura () {
+  finalizar () {
     this.error_formulario = false;
 
     let txt;
@@ -904,25 +924,20 @@ export class FormularioComponent {
       this.mensaje(3);
       this.error_formulario = true;
     } else {
-      person = prompt('Por favor ingresa la palabra FINALIZAR, para continuar:', '');
-      if (person === 'FINALIZAR') {
+      person = prompt('Por favor ingresa la palabra FINALIZAR PEDIDO, para continuar:', '');
+      if (person === 'FINALIZAR PEDIDO') {
         this.form_dato.estatus = 'FI';  // y llamar a la función
         this.enviar();
           txt = 'User cancelled the prompt.';
       } else {
-        this.mensajeResponse.texto = 'Formulario no enviado';
+        this.mensajeResponse.texto = 'Formulario no enviado. La frase capturada no coincide con FINALIZAR PEDIDO';
         this.mensajeResponse.mostrar = true;
         this.mensajeResponse.clase = 'warning';
+        this.mensaje(3);
       }
     }
   }
 
-  /**
-   * Método que nos
-   */
-  concentrar_pedido() {
-
-  }
 
   /**
    * Método para enviar el modelo a la API según si es para crear un nuevo registro o para actualizarlo.

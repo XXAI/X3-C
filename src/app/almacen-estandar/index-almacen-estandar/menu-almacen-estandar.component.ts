@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { BuscarModuloPipe } from '../../pipes/buscar-modulo.pipe';
 
@@ -42,6 +42,11 @@ export class MenuAlmacenEstandarComponent implements OnInit {
    * @type string
    */
   @Input() urlAyuda= '';
+
+  /**
+   * Variable que contiene el nombre del modal a abrir.
+   */
+  @Output() ayudaModal = new EventEmitter<String>();
   /**
    * Variable para cambiar de entorno
    */
@@ -67,5 +72,13 @@ export class MenuAlmacenEstandarComponent implements OnInit {
    */
   ngOnDestroy(){
     this.cambiarEntornoSuscription.unsubscribe();
+  }
+
+  /**
+   * Método para activar el modal de ayuda en los módulos.
+   * @param evt activa el botón y contiene el nombre del modal.
+   */
+  ayuda(evt) {
+    this.ayudaModal.emit(evt);
   }
 }
