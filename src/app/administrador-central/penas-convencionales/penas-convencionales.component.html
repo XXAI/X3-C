@@ -104,12 +104,12 @@
 			<br>
 			<br>
 		</div>
-		
+		<div style="overflow-x: scroll;">
 		<table class="table" *ngIf="!cargandoResumen" style="font-size:0.8em;">
 			<thead>
-				<tr><th colspan="7"style="font-size:1.2em;">Resumen</th></tr>
+				<tr><th colspan="13"style="font-size:1.2em;">Resumen</th></tr>
 				<tr>
-					<th>Proveedor</th><th>Periodo</th><th>Tipo unidad</th><th>Pedidos</th><th>Pedidos incumplidos</th><th>$ Pena convencional</th><th>Descargar</th>
+					<th>Proveedor</th><th>Periodo</th><th>Tipo unidad</th><th>Pedidos</th><th>Pedidos incumplidos</th><th>$ Monto solicitado</th><th>$ Monto recibido</th><th>% No cumplido</th><th>$ Pena convencional</th><th>Descargar</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -120,14 +120,18 @@
 					<td>{{ item.tipo_unidad }}</td>
 					<td>{{ item.pedidos }}</td>
 					<td>{{ item.pedidos_incumplidos }}</td>
+					<td>${{ item.total_monto_solicitado | number:'1.2-2'}}</td>
+					<td>${{ item.total_monto_recibido | number:'1.2-2'}}</td>
+					<td>{{  100 - (item.total_monto_recibido * 100 / item.total_monto_solicitado) | number:'1.2-2'}}%</td>
 					<td>${{ item.monto_pena_convencional | number:'1.2-2' }}</td>
 					<td><a (click)="imprimirExcelResumen(item.anio, item.mes, item.proveedor_id, item.tipo_unidad)"><span class="icon"><i class="fa fa-file-excel-o"></i></span></a> </td>
 				</tr>
 				<tr *ngIf="resumen.length == 0">
-					<td colspan=10 style="vertical-align: middle; color:#888;">No hay resultados.</td>                    
+					<td colspan=13 style="vertical-align: middle; color:#888;">No hay resultados.</td>                    
 				</tr>
 			</tbody>
 		</table>
+		</div>
 		<br>
 		
 		<div class="is-fullwidth has-text-centered" *ngIf="cargando">
