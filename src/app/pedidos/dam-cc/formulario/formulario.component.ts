@@ -57,6 +57,14 @@ export class FormularioComponent {
    */
   form_dato;
   /**
+   * Contiene los datos de los insumos del pedido global.
+   */
+  insumos_pedido = [];
+  /**
+   * Contiene los datos de los insumos del pedido de la Unidad Médica.
+   */
+  detalle_CLUES = [];
+  /**
    * Contiene la clave del programa elegido por el usuario, nos sirve para hacer comparaciones en caso
    * de que el usuario intente cambiar el programa cuando hay insumos capturados.
    * @type {any}
@@ -212,7 +220,6 @@ export class FormularioComponent {
   ngOnInit() {
     // obtener los datos del usiario logueado almacen y clues
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
-    console.log(this.usuario.clues_activa.clues);
 
     this.form_dato = {
       id	:	'',
@@ -310,7 +317,6 @@ export class FormularioComponent {
         this.cargarDatos(params['id']);
       }
     });
-    console.log(this.form_dato);
   }
 
   /**
@@ -365,7 +371,6 @@ export class FormularioComponent {
     this.form_dato.metadato_compra_consolidada.presupuesto_no_causes_asignado = total_asignado_no_causes;
     this.form_dato.metadato_compra_consolidada.presupuesto_causes_disponible = Number(this.form_dato.metadato_compra_consolidada.presupuesto_causes) - Number(this.form_dato.metadato_compra_consolidada.presupuesto_causes_asignado);
     this.form_dato.metadato_compra_consolidada.presupuesto_no_causes_disponible = Number(this.form_dato.metadato_compra_consolidada.presupuesto_no_causes) - Number(this.form_dato.metadato_compra_consolidada.presupuesto_no_causes_asignado);
-    console.log(this.form_dato);
   }
   /**
    * Debido a que la librería no acepta null o NaN, debemos sustituirlo por un valor 0.
@@ -775,7 +780,6 @@ export class FormularioComponent {
      * @return void
      */
     select_clues_autocomplete(data, i_clues) {
-      console.log(data);
       this.form_dato.unidades_medicas[i_clues].clues = data.clues;
       this.form_dato.unidades_medicas[i_clues].unidad_medica.nombre = data.nombre;
       this.form_dato.unidades_medicas[i_clues].unidad_medica.clues = data.clues;
@@ -809,7 +813,6 @@ export class FormularioComponent {
         this.mensajeResponse.clase = 'warning';
         this.mensaje(0);
       }
-      console.log(this.form_dato);
     }
     /*************************************FINALIZA AUTOCOMPLETE*********************************** */
   /**
@@ -1018,7 +1021,6 @@ export class FormularioComponent {
         if (this.form_dato.unidades_medicas[c].clues === '' ||
             this.form_dato.unidades_medicas[c].clues == null ||
             this.form_dato.unidades_medicas[c].clues === undefined) {
-              console.log(this.form_dato.unidades_medicas[c]);
               this.mensajeResponse.texto = 'Error al capturar la CLUES';
               this.mensajeResponse.mostrar = true;
               this.mensajeResponse.clase = 'warning';
@@ -1034,21 +1036,22 @@ export class FormularioComponent {
       this.mensaje(3);
       this.error_formulario = true;
     } else {
-      person = prompt('Por favor ingresa la palabra INICIALIZAR, para continuar:', '');
-      if (person === 'INICIALIZAR') {
+      person = prompt('Por favor ingresa la frase APERTURAR PEDIDO, para continuar:', '');
+      if (person === 'APERTURAR PEDIDO') {
         this.form_dato.estatus = 'INICIALIZADO';  // y llamar a la función
         this.enviar();
-          txt = 'User cancelled the prompt.';
+        txt = 'User cancelled the prompt.';
       } else {
-        this.mensajeResponse.texto = 'Formulario no enviado';
+        this.mensajeResponse.texto = 'Formulario no enviado. La frase capturada no coincide con APERTURAR PEDIDO';
         this.mensajeResponse.mostrar = true;
         this.mensajeResponse.clase = 'warning';
+        this.mensaje(3);
       }
     }
   }
 
   /**
-   * Método que nos
+   * Método que nos permite concentrar el pedido de las diferentes UM en uno solo para la DAF.
    */
   concentrar_pedido() {
     this.cargando = true;
@@ -1057,13 +1060,11 @@ export class FormularioComponent {
     this.crudService.crear(this.form_dato, 'concentrar-pedido-cc-dam').subscribe(
       resultado => {
          this.reset_form();
-         console.log(resultado);
          if (resultado.estatus === 'CONCENTRADO') {
              this.router.navigate(['/pedidos/dam']);
          }
          if (resultado.estatus === 'INICIALIZADO') {
              this.router.navigate(['/pedidos/dam/editar', resultado.id]);
-             console.log('FALLA AL CONCENTRAR PEDIDO');
              this.cargarDatos(resultado.id);
          }
          this.cargando = false;
@@ -1076,7 +1077,6 @@ export class FormularioComponent {
      error => {
          this.cargando = false;
          this.form_dato.estatus = 'INICIALIZADO';
-         console.log('FALLA AL CONCENTRAR PEDIDO');
 
          this.mensajeResponse.texto = 'No especificado.';
          this.mensajeResponse.mostrar = true;
@@ -1118,6 +1118,125 @@ export class FormularioComponent {
   }
 
   /**
+   * Método para mostrar el pedido concentrado de medicamentos de las diferentes UM.
+   */
+  consultar_pedido() {
+    this.cargando = true;
+    this.crudService.ver(this.form_dato.id, 'pedido-concentrado-cc-dam').subscribe(
+      resultado => {
+         // this.reset_form();
+         this.cargando = false;
+         this.abrirModal('pedidoGlobal');
+         this.insumos_pedido = resultado.insumos;
+
+         this.mensajeResponse.texto = 'Se han guardado los cambios.';
+         this.mensajeResponse.mostrar = true;
+         this.mensajeResponse.clase = 'success';
+         this.mensaje(2);
+     },
+     error => {
+         this.cargando = false;
+         this.form_dato.estatus = 'INICIALIZADO';
+
+         this.mensajeResponse.texto = 'No especificado.';
+         this.mensajeResponse.mostrar = true;
+         this.mensajeResponse.clase = 'alert';
+         this.mensaje(2);
+         try {
+             let e = error.json();
+             if (error.status == 401) {
+                 this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
+                 this.mensajeResponse.clase = 'error';
+                 this.mensaje(2);
+             }
+             // Problema de validación
+             if (error.status == 409) {
+                 this.mensajeResponse.texto = 'Por favor verfique los campos marcados en rojo.';
+                 this.mensajeResponse.clase = 'error';
+                 this.mensaje(8);
+                 for (let input in e.error) {
+                     // Iteramos todos los errores
+                     for (let i in e.error[input]) {
+                         this.mensajeResponse.titulo = input;
+                         this.mensajeResponse.texto = e.error[input][i];
+                         this.mensajeResponse.clase = 'error';
+                         this.mensaje(3);
+                     }
+                 }
+             }
+         } catch (e) {
+             if (error.status == 500) {
+                 this.mensajeResponse.texto = '500 (Error interno del servidor)';
+             } else {
+                 this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
+             }
+             this.mensajeResponse.clase = 'error';
+             this.mensaje(2);
+         }
+        }
+    );
+  }
+
+  /**
+   * Método para mostrar el DETALLE DE LOS INSUMOS DE LA CLUES
+   */
+  consultar_pedido_CLUES(pedido_id) {
+    this.cargando = true;
+    this.crudService.ver(pedido_id, 'pedidos-cc-um').subscribe(
+      resultado => {
+         // this.reset_form();
+         this.detalle_CLUES = resultado;
+         this.cargando = false;
+         this.abrirModal('detalleCLUES');
+
+         this.mensajeResponse.texto = 'Se han guardado los cambios.';
+         this.mensajeResponse.mostrar = true;
+         this.mensajeResponse.clase = 'success';
+         this.mensaje(2);
+     },
+     error => {
+         this.cargando = false;
+         this.form_dato.estatus = 'INICIALIZADO';
+
+         this.mensajeResponse.texto = 'No especificado.';
+         this.mensajeResponse.mostrar = true;
+         this.mensajeResponse.clase = 'alert';
+         this.mensaje(2);
+         try {
+             let e = error.json();
+             if (error.status == 401) {
+                 this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
+                 this.mensajeResponse.clase = 'error';
+                 this.mensaje(2);
+             }
+             // Problema de validación
+             if (error.status == 409) {
+                 this.mensajeResponse.texto = 'Por favor verfique los campos marcados en rojo.';
+                 this.mensajeResponse.clase = 'error';
+                 this.mensaje(8);
+                 for (let input in e.error) {
+                     // Iteramos todos los errores
+                     for (let i in e.error[input]) {
+                         this.mensajeResponse.titulo = input;
+                         this.mensajeResponse.texto = e.error[input][i];
+                         this.mensajeResponse.clase = 'error';
+                         this.mensaje(3);
+                     }
+                 }
+             }
+         } catch (e) {
+             if (error.status == 500) {
+                 this.mensajeResponse.texto = '500 (Error interno del servidor)';
+             } else {
+                 this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
+             }
+             this.mensajeResponse.clase = 'error';
+             this.mensaje(2);
+         }
+        }
+    );
+  }
+  /**
    * Método para enviar el modelo a la API según si es para crear un nuevo registro o para actualizarlo.
    */
   enviar() {
@@ -1135,8 +1254,6 @@ export class FormularioComponent {
     this.crudService.crear(this.form_dato, 'pedidos-cc-dam').subscribe(
       resultado => {
         this.cargando = false;
-        console.log(this.form_dato);
-        console.log(resultado);
         this.form_dato.id = resultado.id;
         this.cargarDatos(resultado.id);
         if (this.form_dato.estatus === 'NOINICIALIZADO') {
@@ -1225,13 +1342,11 @@ export class FormularioComponent {
       this.crudService.editar(id, this.form_dato, 'pedidos-cc-dam').subscribe(
            resultado => {
               this.reset_form();
-              console.log(resultado);
               if (resultado.estatus === 'INICIALIZADO') {
                   this.router.navigate([editar]);
               }
               if (resultado.estatus === 'NOINICIALIZADO') {
                   this.router.navigate(['/pedidos/dam/editar', resultado.id]);
-                  console.log('cargarDatos');
                   this.cargarDatos(resultado.id);
               }
               this.cargando = false;
@@ -1301,10 +1416,7 @@ export class FormularioComponent {
                 this.form_dato = resultado;
                 if (!this.form_dato.unidades_medicas) {
                   this.form_dato.unidades_medicas = [];
-                  console.log('No hay unidades m[edicas');
                 }
-                console.log(this.form_dato);
-                console.log('Resultado', resultado);
                 this.form_dato.metadato_compra_consolidada.presupuesto_compra = Number(this.form_dato.metadato_compra_consolidada.presupuesto_compra);
                 this.form_dato.metadato_compra_consolidada.presupuesto_causes = Number(this.form_dato.metadato_compra_consolidada.presupuesto_causes);
                 this.form_dato.metadato_compra_consolidada.presupuesto_no_causes = Number(this.form_dato.metadato_compra_consolidada.presupuesto_no_causes);

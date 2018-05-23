@@ -1,4 +1,4 @@
-<listar #ctrl URL="pedidos-cc-dam?fecha_desde={{fecha_desde}}&fecha_hasta={{fecha_hasta}}&recibe={{recibe}}&estatus={{estatus}}" titulo="Pedido  de medicamentos"></listar>
+<listar #ctrl URL="pedidos-cc-dam?fecha_desde={{fecha_desde}}&fecha_hasta={{fecha_hasta}}&q={{query}}&estatus={{estatus}}" titulo="Pedido  de medicamentos"></listar>
 <app-menu-dam [modulo]="'Pedidos DAM'" [icono]="'assets/hub-estandar.svg'" [url]="'/pedidos/dam'" [urlAyuda]="'ayuda'"></app-menu-dam>
 <div style="height:40px;"></div>
 <div class="contenedor columns " >
@@ -57,7 +57,7 @@
                             <div class="control">
                                 <div class="field">  
                                 <label class="label">&nbsp;</label>
-                                <button class="button is-default is-medium" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="recibe='';fecha_desde=''; fecha_hasta='';" >Limpiar</button>
+                                <button class="button is-default is-medium" type="button" [ngClass]="{'is-loading': ctrl.cargando}" (click)="query='';fecha_desde=''; fecha_hasta='';" >Limpiar</button>
                                 </div>
                             </div>
                             <div class="control">
@@ -168,52 +168,67 @@
                         <tbody *ngIf="!ctrl.busquedaActivada && ctrl.dato">
                             <tr *ngFor="let item of ctrl.dato; let i=index">
                                 <!-- Fecha -->
-                                <th style="vertical-align: middle; text-align: center;">
+                                <th style="vertical-align: middle; text-align: center;" >
                                     <a *ngIf="item.estatus == 'INICIALIZADO'" routerLink="/pedidos/dam/ver/{{item.id}}">{{ item.fecha }}</a>
                                     <a *ngIf="item.estatus == 'NOINICIALIZADO'" routerLink="/pedidos/dam/editar/{{item.id}}">{{ item.fecha }}</a>
+                                    <a *ngIf="item.estatus == 'CONCENTRADO'" routerLink="/pedidos/dam/ver/{{item.id}}">{{ item.fecha }}</a>
+                                    <a *ngIf="item.estatus == 'AJUSTADO'" routerLink="/pedidos/dam/ver/{{item.id}}">{{ item.fecha }}</a>
                                 </th>
                                 <!-- Folio -->
-                                <th style="vertical-align: middle; text-align: center;">
+                                <th style="vertical-align: middle; text-align: center;" >
                                     <a *ngIf="item.estatus == 'INICIALIZADO'" routerLink="/pedidos/dam/ver/{{item.id}}">{{ item.id }}</a>
                                     <a *ngIf="item.estatus == 'NOINICIALIZADO'" routerLink="/pedidos/dam/editar/{{item.id}}">{{ item.id }}</a>
+                                    <a *ngIf="item.estatus == 'CONCENTRADO'" routerLink="/pedidos/dam/ver/{{item.id}}">{{ item.id }}</a>
+                                    <a *ngIf="item.estatus == 'AJUSTADO'" routerLink="/pedidos/dam/ver/{{item.id}}">{{ item.id }}</a>
                                 </th>
                                 <!-- Presupuesto COMPRA -->
-                                <td *ngIf="item.metadato_compra_consolidada">
+                                <td *ngIf="item.metadato_compra_consolidada ">
                                     <a *ngIf="item.estatus == 'INICIALIZADO'" routerLink="/pedidos/dam/ver/{{item.id}}"> 
                                         <p> {{item.metadato_compra_consolidada.presupuesto_compra | currency:''}}</p>
                                     </a>
                                     <a *ngIf="item.estatus == 'NOINICIALIZADO'" routerLink="/pedidos/dam/editar/{{item.id}}"> 
                                         <p> {{item.metadato_compra_consolidada.presupuesto_compra | currency:''}}</p>
                                     </a>
+                                    <a *ngIf="item.estatus == 'CONCENTRADO'" routerLink="/pedidos/dam/ver/{{item.id}}"> 
+                                        <p> {{item.metadato_compra_consolidada.presupuesto_compra | currency:''}}</p>
+                                    </a>
+                                    <a *ngIf="item.estatus == 'AJUSTADO'" routerLink="/pedidos/dam/ver/{{item.id}}"> 
+                                        <p> {{item.metadato_compra_consolidada.presupuesto_compra | currency:''}}</p>
+                                    </a>
                                 </td>
-                                <td *ngIf="!item.metadato_compra_consolidada"> No disponible</td>
+                                <td *ngIf="!item.metadato_compra_consolidada "> No disponible</td>
                                 <!-- Presupuesto CAUSES -->
-                                <td *ngIf="item.metadato_compra_consolidada">
+                                <td *ngIf="item.metadato_compra_consolidada ">
                                     <a *ngIf="item.estatus == 'INICIALIZADO'" routerLink="/pedidos/dam/ver/{{item.id}}"> 
                                         <p> {{item.metadato_compra_consolidada.presupuesto_causes | currency:''}}</p>
                                     </a>
                                     <a *ngIf="item.estatus == 'NOINICIALIZADO'" routerLink="/pedidos/dam/editar/{{item.id}}"> 
                                         <p> {{item.metadato_compra_consolidada.presupuesto_causes | currency:''}}</p>
                                     </a>
+                                    <a *ngIf="item.estatus == 'CONCENTRADO'" routerLink="/pedidos/dam/ver/{{item.id}}"> 
+                                        <p> {{item.metadato_compra_consolidada.presupuesto_causes | currency:''}}</p>
+                                    </a>
+                                    <a *ngIf="item.estatus == 'AJUSTADO'" routerLink="/pedidos/dam/ver/{{item.id}}"> 
+                                        <p> {{item.metadato_compra_consolidada.presupuesto_causes | currency:''}}</p>
+                                    </a>
                                 </td>
-                                <td *ngIf="!item.metadato_compra_consolidada"> No disponible</td>
+                                <td *ngIf="!item.metadato_compra_consolidada "> No disponible</td>
                                 <!-- Presupuesto NO CAUSES -->
-                                <td *ngIf="item.metadato_compra_consolidada" style="vertical-align: middle;" >
+                                <td *ngIf="item.metadato_compra_consolidada " style="vertical-align: middle;" >
                                     <a *ngIf="item.estatus == 'INICIALIZADO'" routerLink="/pedidos/dam/ver/{{item.id}}"> 
                                         <p> {{item.metadato_compra_consolidada.presupuesto_no_causes | currency:''}}</p>
                                     </a>
                                     <a *ngIf="item.estatus == 'NOINICIALIZADO'" routerLink="/pedidos/dam/editar/{{item.id}}"> 
                                         <p> {{item.metadato_compra_consolidada.presupuesto_no_causes | currency:''}}</p>
                                     </a>
+                                    <a *ngIf="item.estatus == 'CONCENTRADO'" routerLink="/pedidos/dam/ver/{{item.id}}"> 
+                                        <p> {{item.metadato_compra_consolidada.presupuesto_no_causes | currency:''}}</p>
+                                    </a>
+                                    <a *ngIf="item.estatus == 'AJUSTADO'" routerLink="/pedidos/dam/ver/{{item.id}}"> 
+                                        <p> {{item.metadato_compra_consolidada.presupuesto_no_causes | currency:''}}</p>
+                                    </a>
                                 </td>
-                                <td *ngIf="!item.metadato_compra_consolidada" style="vertical-align: middle;" >No disponible</td>
-                                <!-- Presupuesto NO CAUSES -->
-                                <!-- <td style="vertical-align: middle;">
-                                    <a *ngIf="item.estatus == 'INICIALIZADO'" routerLink="/pedidos/dam/ver/{{item.id}}">{{ item.movimiento_usuario.nombre }} {{ item.movimiento_usuario.apellidos }} </a>
-                                    <a *ngIf="item.estatus == 'NOINICIALIZADO'" routerLink="/pedidos/dam/editar/{{item.id}}">{{ item.movimiento_usuario.nombre }} {{ item.movimiento_usuario.apellidos }} </a>
-                                </td>
-                                <td *ngIf="!item.movimiento_usuario" style="vertical-align: middle;" >No disponible</td>                         -->
-                                <!-- ESTATUS -->
+                                <td *ngIf="!item.metadato_compra_consolidada " style="vertical-align: middle;" >No disponible</td>
                                 <td >
                                     <a *ngIf="item.estatus == 'INICIALIZADO'" routerLink="/pedidos/dam/ver/{{item.id}}">
                                         <span class="tag is-success is-medium" *ngIf="item.estatus == 'INICIALIZADO'">INICIALIZADO</span>
@@ -221,10 +236,17 @@
                                     <a *ngIf="item.estatus == 'NOINICIALIZADO'" routerLink="/pedidos/dam/editar/{{item.id}}">
                                         <span class="tag is-warning is-medium" *ngIf="item.estatus == 'NOINICIALIZADO'">NOINICIALIZADO</span>
                                     </a>
+                                    <a *ngIf="item.estatus == 'CONCENTRADO'" routerLink="/pedidos/dam/ver/{{item.id}}">
+                                        <span class="tag is-info is-medium" *ngIf="item.estatus == 'CONCENTRADO'">CONCENTRADO</span>
+                                    </a>
+                                    <a *ngIf="item.estatus == 'AJUSTADO'" routerLink="/pedidos/dam/ver/{{item.id}}">
+                                        <span class="tag is-danger is-medium" *ngIf="item.estatus == 'AJUSTADO'">AJUSTADO</span>
+                                    </a>
                                 </td>
-                                <td style="vertical-align: middle; text-align: center;">
-                                    <a *ngIf="item.estatus == 'INICIALIZADO'" routerLink="/pedidos/dam/ver/{{item.id}}">{{ item.created_at | date:'medium'}} </a>
-                                    <a *ngIf="item.estatus == 'NOINICIALIZADO'" routerLink="/pedidos/dam/editar/{{item.id}}">{{ item.created_at | date:'medium'}} </a>
+                                <td style="vertical-align: middle; text-align: center;" >
+                                    <a *ngIf="item.estatus == 'INICIALIZADO' || item.estatus == 'CONCENTRADO'" routerLink="/pedidos/dam/ver/{{item.id}}">{{ item.created_at | date:'medium'}} </a>
+                                    <a *ngIf="item.estatus == 'NOINICIALIZADO' || item.estatus == 'AJUSTADO'" routerLink="/pedidos/dam/editar/{{item.id}}">{{ item.created_at | date:'medium'}} </a>
+                                    <!-- <a *ngIf="" routerLink="/pedidos/dam/ver/{{item.id}}">{{ item.created_at | date:'medium'}} </a> -->
                                 </td>
                             </tr>
                             <tr *ngIf="!ctrl.dato">

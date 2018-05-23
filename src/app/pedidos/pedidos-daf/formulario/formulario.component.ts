@@ -8,7 +8,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CrudService } from '../../../crud/crud.service';
 import * as moment from 'moment';
 import  * as FileSaver    from 'file-saver';
-import { createAutoCorrectedDatePipe } from 'text-mask-addons';
+import { createAutoCorrectedDatePipe, createNumberMask } from 'text-mask-addons';
 
 import { Mensaje } from '../../../mensaje';
 import { NotificationsService } from 'angular2-notifications';
@@ -56,6 +56,14 @@ export class FormularioComponent {
    * Contiene los datos del modelo que se enviarán a la API.
    */
   form_dato;
+  /**
+   * Contiene los datos de los insumos del pedido global.
+   */
+  insumos_pedido = [];
+  /**
+   * Contiene los datos de los insumos del pedido de la Unidad Médica.
+   */
+  detalle_CLUES = [];
   /**
    * Contiene la clave del programa elegido por el usuario, nos sirve para hacer comparaciones en caso
    * de que el usuario intente cambiar el programa cuando hay insumos capturados.
@@ -162,6 +170,14 @@ export class FormularioComponent {
    */
   mask = [/[2]/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/];
   /**
+   * Se crea la máscara que contiene la configuración deseada.
+   */
+  numberMask: any = createNumberMask({
+    prefix: '',
+    includeThousandsSeparator: false,
+    allowLeadingZeroes: false
+  });
+  /**
    * Contiene __true__ cuando el formulario recibe el parámetro id, lo que significa que ha de mostrarse una salida por receta
    * existente. Cuando su valor es __false__ quiere decir que mostraremos la vista para crear una nueva salida.
    * @type {Boolean} */
@@ -212,11 +228,10 @@ export class FormularioComponent {
   ngOnInit() {
     // obtener los datos del usiario logueado almacen y clues
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
-    console.log(this.usuario.clues_activa.clues);
 
     this.form_dato = {
       id	:	'',
-      estatus	:	'NOINICIALIZADO',
+      estatus	:	'CONCENTRADO',
       incremento	:	'',
       servidor_id	:	'',
       clues	:	'', // this.usuario.clues_activa.clues,
@@ -264,6 +279,7 @@ export class FormularioComponent {
           presupuesto_no_causes_disponible: 0
         },
       unidades_medicas: [],
+      insumos: [],
     };
 
     this.cargarCatalogo('programa', 'lista_programas', 'estatus');
@@ -288,7 +304,7 @@ export class FormularioComponent {
 
     /* **********************IMPRIMIR******************************* */
         // Inicializamos el objeto para los reportes con web Webworkers
-        this.pdfworker = new Worker('web-workers/pedidos-cc/pedido-cc-dam.js');
+        this.pdfworker = new Worker('web-workers/pedidos-cc/pedido-cc-daf.js');
 
         // Este es un hack para poder usar variables del componente dentro de una funcion del worker
         var self = this;
@@ -310,7 +326,6 @@ export class FormularioComponent {
         this.cargarDatos(params['id']);
       }
     });
-    console.log(this.form_dato);
   }
 
   /**
@@ -365,7 +380,6 @@ export class FormularioComponent {
     this.form_dato.metadato_compra_consolidada.presupuesto_no_causes_asignado = total_asignado_no_causes;
     this.form_dato.metadato_compra_consolidada.presupuesto_causes_disponible = Number(this.form_dato.metadato_compra_consolidada.presupuesto_causes) - Number(this.form_dato.metadato_compra_consolidada.presupuesto_causes_asignado);
     this.form_dato.metadato_compra_consolidada.presupuesto_no_causes_disponible = Number(this.form_dato.metadato_compra_consolidada.presupuesto_no_causes) - Number(this.form_dato.metadato_compra_consolidada.presupuesto_no_causes_asignado);
-    console.log(this.form_dato);
   }
   /**
    * Debido a que la librería no acepta null o NaN, debemos sustituirlo por un valor 0.
@@ -418,44 +432,6 @@ export class FormularioComponent {
   }
 
   /**
-   * Método para agregar programas al formulario reactivo
-   */
-  agregarInsumo(i): void {
-    /*** Forma para agregar a reactivo ***/
-    // const insumos = this.dato.controls.programas['controls'][0].get('insumos') as FormArray;
-    // insumos.insert(0, this.arrayInsumos());
-    let existe = false;
-
-    for (let item of this.form_dato.programas[i].insumos) {
-      if (item.clave_insumo_medico === this.insumo.clave) {
-        existe = true;
-        break;
-      }
-    }
-
-    /*** Forma para agregar a modelo ***/
-    let ob_temporal = {
-      clave_insumo_medico: this.insumo.clave,
-      descripcion: this.insumo.descripcion,
-      nombre: this.insumo.nombre,
-      es_causes: this.insumo.es_causes,
-      es_unidosis: this.insumo.es_unidosis,
-      cantidad_x_envase: this.insumo.cantidad_x_envase,
-      tipo: this.insumo.tipo,
-      subtotal: '',
-      lotes: []
-    };
-
-    if (!existe) {
-      let start_index = 0;
-      let number_of_elements_to_remove = 0;
-      this.form_dato.programas[i].insumos.splice(start_index, number_of_elements_to_remove, ob_temporal);
-      // this.form_dato.programas[i].insumos.push(ob_temporal);
-      // this.form_dato.programas[i].insumos.reverse();
-    }
-  }
-
-  /**
    * Método con el que se agregan CLUES al array.
    */
   agregarCLUES() {
@@ -501,12 +477,12 @@ export class FormularioComponent {
     let fecha_hoy = moment();
     if (!moment(fecha, 'YYYY-MM-DD', true).isValid()) {
       this.notificacion.alert('Fecha inválida', 'Debe ingresar una fecha válida', this.objeto);
-      this.form_dato.programas[i_programa].insumos[i_insumo].lotes[i_lote].fecha_caducidad = '';
+      this.form_dato.programas[i_programa].insumos[i_insumo].fecha_caducidad = '';
       // ctrlLotes.controls['fecha_caducidad'].patchValue('');
     } else {
       if (moment(fecha, 'YYYY-MM-DD', true) <= fecha_hoy.add(14, 'days')) {
         // ctrlLotes.controls['fecha_caducidad'].patchValue('');
-        this.form_dato.programas[i_programa].insumos[i_insumo].lotes[i_lote].fecha_caducidad = '';
+        this.form_dato.programas[i_programa].insumos[i_insumo].fecha_caducidad = '';
         this.notificacion.alert('Fecha inválida', 'La fecha de caducidad debe ser mayor al ' +
          fecha_hoy.format('YYYY-MM-DD'), this.objeto);
       }
@@ -523,69 +499,6 @@ export class FormularioComponent {
     if (event.keyCode === 13) {
       event.preventDefault();
       return false;
-    }
-  }
-
-
-  /**
-   * Seleccionar programa para cambiar la vista al usuario
-   * @param id variable que contiene el id del programa
-   */
-  seleccionarPrograma() {
-    let programa_id = (<HTMLInputElement>document.getElementById('programa_agregado')).value;
-    for (let p = 0; p < this.form_dato.programas.length; p++) {
-      if (String(this.form_dato.programas[p].id) === programa_id) {
-        this.i_programa = p;
-        break;
-      }
-    }
-  }
-
-    /**
-   * Método para asignar los datos del programa al formulario.
-   * @param programa_id Objeto que contiene el id del programa seleccionado.
-   */
-  addPrograma() {
-    let programa_id = (<HTMLInputElement>document.getElementById('seleccionar_programa')).value;
-    let existe_programa = false, indice;
-    for (let p = 0; p < this.form_dato.programas.length; p++) {
-      if (String(this.form_dato.programas[p].id) === programa_id) {
-        existe_programa = true;
-        indice = p;
-        break;
-      }
-    }
-    if (!existe_programa) {
-      for (let obj of this.lista_programas) {
-        if (Number(obj.id) === Number(programa_id)) {
-          this.form_dato.programas.push({
-            'id': obj.id,
-            'nombre': obj.nombre,
-            'clave': obj.clave,
-            'insumos': []
-          });
-          this.i_programa = this.form_dato.programas.length-1;
-          // this.seleccionarPrograma(this.form_dato.programas.length-1);
-          break;
-        }
-      }
-    }
-  }
-  /**
-   * Método para asignar los datos del programa al formulario reactivo.
-   * @param programa_id Objeto que contiene los datos del programa.
-   * @param i Variable que contiene la posición del programa.
-   */
-  asignarPrograma(programa_id, i) {
-    const control = <FormArray>this.dato.controls['programas'];
-    for (let obj of this.lista_programas) {
-      if (Number(obj.id) === Number(programa_id)) {
-        this.form_dato.programas[i].clave = obj.clave;
-        this.form_dato.programas[i].nombre = obj.nombre;
-        this.form_dato.programas[i].id = obj.id;
-    //     control.controls[i]['controls']['clave'].patchValue(obj.clave);
-    //     control.controls[i]['controls']['nombre'].patchValue(obj.nombre);
-      }
     }
   }
 
@@ -621,7 +534,6 @@ export class FormularioComponent {
  select_insumo_autocomplete(data, i) {
    this.cargando = true;
    this.insumo = data;
-   this.agregarInsumo(i);
    (<HTMLInputElement>document.getElementById('buscarInsumo')).value = '';
    this.res_busq_insumos = [];
    this.es_unidosis = data.es_unidosis;
@@ -648,10 +560,10 @@ export class FormularioComponent {
    * @param item Variable que contiene el objeto del insumo al que pertenece el precio y la existencia.
    * @param pos Contiene la posición a la que pertenece el insumo.
    */
-  cambio_cantidad_stock_key(event, item, i_prog, i_insumo, i_lote) {
+  cambio_cantidad_stock_key(event, item, i_insumo, i_lote) {
       if (event.key == 'Backspace' || event.key == 'Delete') {
-      this.calcular_importes(item, i_prog, i_insumo, i_lote);
-      this.calcularSubtotal(i_prog, i_insumo);
+      this.calcular_importes(item, i_insumo);
+      this.calcularSubtotal(i_insumo);
     }
     if (event.key != 'Backspace'
       && event.key != 'Delete'
@@ -662,39 +574,44 @@ export class FormularioComponent {
       && event.key != '.') {
       clearTimeout(this.time_cambio_cantidad_stoc);
       this.time_cambio_cantidad_stoc = setTimeout(() => {
-        this.calcular_importes(item, i_prog, i_insumo, i_lote);
-        this.calcularSubtotal(i_prog, i_insumo);
+        this.calcular_importes(item, i_insumo);
+        this.calcularSubtotal(i_insumo);
       }, 800);
     }
   }
 
     /**
    * Método para calcular subtotal del insumo.
-   * @param item Variable que contiene el objeto del insumo al que pertenece el precio y la existencia.
-   * @param pos Contiene la posición del arreglo a la que se agregará la existencia.
+   * @param item Variable que contiene el objeto del insumo al que pertenece el precio y la cantidad_solicitada.
+   * @param i_insumo Contiene la posición del arreglo a la que se agregará la cantidad_solicitada.
    */
-  calcular_importes (item, i_prog, i_insumo, i_lote) {
+  calcular_importes (item, i_insumo) {
+    let iva = 1;
     if (item.precio_unitario === '' || item.precio_unitario == null) {
-      this.form_dato.programas[i_prog].insumos[i_insumo].lotes[i_lote].importe = 0;
-    } if (item.existencia  === '' || item.existencia == null) {
-      this.form_dato.programas[i_prog].insumos[i_insumo].lotes[i_lote].importe = 0;
+      this.form_dato.insumos[i_insumo].monto_solicitado = 0;
+    } if (item.cantidad_solicitada  === '' || item.cantidad_solicitada == null) {
+      this.form_dato.insumos[i_insumo].monto_solicitado = 0;
     } else {
-      let temporal = item.existencia * item.precio_unitario;
-      this.form_dato.programas[i_prog].insumos[i_insumo].lotes[i_lote].importe = temporal;
+      if (item.info_insumo.tipo === 'MC') {
+        iva = 1.16;
+      }
+      let temporal = Number(item.cantidad_solicitada) * Number(item.precio_unitario) * iva;
+      this.form_dato.insumos[i_insumo].monto_solicitado = temporal;
     }
   }
 
-  calcularSubtotal(i_prog, i_insumo) {
+  calcularSubtotal(i_insumo) {
     let temporal_total_iva = 0, temporal_subtotal_precios = 0, total_insumo = 0;
 
-    for (let i = 0; i < this.form_dato.programas[i_prog].insumos[i_insumo].lotes.length; i++) {
-      temporal_subtotal_precios = temporal_subtotal_precios + Number(this.form_dato.programas[i_prog].insumos[i_insumo].lotes[i].importe);
-      if (this.form_dato.programas[i_prog].insumos[i_insumo].tipo === 'MC') {
-        this.form_dato.programas[i_prog].insumos[i_insumo].lotes[i].iva_importe = Number(this.form_dato.programas[i_prog].insumos[i_insumo].lotes[i].importe) * .16;
-        temporal_total_iva = Number(temporal_total_iva) + ( Number(this.form_dato.programas[i_prog].insumos[i_insumo].lotes[i].importe) * .16);
+    for (let i = 0; i < this.form_dato.insumos.length; i++) {
+      temporal_subtotal_precios = temporal_subtotal_precios + Number(this.form_dato.insumos[i_insumo].monto_solicitado);
+      if (this.form_dato.insumos[i_insumo].tipo === 'MC') {
+        this.form_dato.insumos[i_insumo].iva_monto_solicitado = Number(this.form_dato.insumos[i_insumo].monto_solicitado) * .16;
+        temporal_total_iva = Number(temporal_total_iva) + ( Number(this.form_dato.insumos[i_insumo].monto_solicitado) * .16);
       }
     }
-      this.form_dato.programas[i_prog].insumos[i_insumo].subtotal  = Number(temporal_subtotal_precios) + Number(temporal_total_iva);
+      this.form_dato.total_monto_solicitado  = Number(temporal_subtotal_precios) + Number(temporal_total_iva);
+      console.log(this.form_dato.total_monto_solicitado);
 
     this.sumaTotal();
   }
@@ -707,29 +624,25 @@ export class FormularioComponent {
 
     let suma_insumo = 0, iva_insumos = 0, cantidad_claves = 0, cantidad_lotes = 0, cantidad_insumos = 0;
 
-    for (let p = 0; p < this.form_dato.programas.length; p++) {
-      for (let c = 0; c < this.form_dato.programas[p].insumos.length; c++) {
-        for (let i = 0; i < this.form_dato.programas[p].insumos[c].lotes.length; i++) {
-          suma_insumo = suma_insumo + Number(this.form_dato.programas[p].insumos[c].lotes[i].importe);
-          if (this.form_dato.programas[p].insumos[c].tipo === 'MC') {
-            iva_insumos = Number(iva_insumos) + Number(this.form_dato.programas[p].insumos[c].lotes[i].iva_importe);
+      for (let c = 0; c < this.form_dato.insumos.length; c++) {
+          suma_insumo = suma_insumo + Number(this.form_dato.insumos[c].monto_solicitado);
+          if (this.form_dato.insumos[c].tipo === 'MC') {
+            iva_insumos = Number(iva_insumos) + Number(this.form_dato.insumos[c].iva_importe);
           }
-          cantidad_insumos = cantidad_insumos + Number(this.form_dato.programas[p].insumos[c].lotes[i].existencia);
+          cantidad_insumos = cantidad_insumos + Number(this.form_dato.insumos[c].cantidad_solicitada);
           cantidad_lotes++;
-        }
-        cantidad_claves++;
+          cantidad_claves++;
       }
-    }
+    
 
     this.subtotal_precios = Number(suma_insumo);
     this.total_iva        = iva_insumos;
     this.total_precio     = Number(this.subtotal_precios) + Number(this.total_iva);
 
-    this.form_dato.cantidad_programas = this.form_dato.programas.length;
-    this.form_dato.cantidad_claves    = cantidad_claves;
-    this.form_dato.cantidad_insumos   = cantidad_insumos;
-    this.form_dato.cantidad_lotes     = cantidad_lotes;
-    this.form_dato.monto_total        = this.total_precio;
+    this.form_dato.cantidad_claves        = cantidad_claves;
+    this.form_dato.cantidad_insumos       = cantidad_insumos;
+    this.form_dato.cantidad_lotes         = cantidad_lotes;
+    this.form_dato.total_monto_solicitado = this.total_precio;
   }
 
   /**
@@ -775,7 +688,6 @@ export class FormularioComponent {
      * @return void
      */
     select_clues_autocomplete(data, i_clues) {
-      console.log(data);
       this.form_dato.unidades_medicas[i_clues].clues = data.clues;
       this.form_dato.unidades_medicas[i_clues].unidad_medica.nombre = data.nombre;
       this.form_dato.unidades_medicas[i_clues].unidad_medica.clues = data.clues;
@@ -809,7 +721,6 @@ export class FormularioComponent {
         this.mensajeResponse.clase = 'warning';
         this.mensaje(0);
       }
-      console.log(this.form_dato);
     }
     /*************************************FINALIZA AUTOCOMPLETE*********************************** */
   /**
@@ -819,7 +730,7 @@ export class FormularioComponent {
     this.form_dato = {
       id: '',
       clues: this.usuario.clues_activa.clues,
-      estatus	:	'NOINICIALIZADO',
+      estatus	:	'CONCENTRADO',
       fecha: '',
       observaciones: '',
       programa_id: '',
@@ -878,19 +789,12 @@ export class FormularioComponent {
   /**
    * Método que nos ayuda a comprobar que todos los campos de inicialización seean válidos, y a confirmar que se inicialice.
    */
-  crearApertura () {
+  finalizar () {
     this.error_formulario = false;
 
     let txt;
     let person;
     let error_detener_envio = false;
-    // if (this.form_dato.clues === '' || this.form_dato.clues == null || this.form_dato.clues === undefined) {
-    //   this.mensajeResponse.texto = 'Problema con la CLUES que genera la apertura del pedido';
-    //   this.mensajeResponse.mostrar = true;
-    //   this.mensajeResponse.clase = 'warning';
-    //   this.mensaje(0);
-    //   error_detener_envio = true;
-    // }
     if (this.form_dato.estatus === '' || this.form_dato.estatus == null || this.form_dato.estatus === undefined) {
       this.mensajeResponse.texto = 'Formulario no enviado';
       this.mensajeResponse.mostrar = true;
@@ -1018,7 +922,6 @@ export class FormularioComponent {
         if (this.form_dato.unidades_medicas[c].clues === '' ||
             this.form_dato.unidades_medicas[c].clues == null ||
             this.form_dato.unidades_medicas[c].clues === undefined) {
-              console.log(this.form_dato.unidades_medicas[c]);
               this.mensajeResponse.texto = 'Error al capturar la CLUES';
               this.mensajeResponse.mostrar = true;
               this.mensajeResponse.clase = 'warning';
@@ -1034,9 +937,9 @@ export class FormularioComponent {
       this.mensaje(3);
       this.error_formulario = true;
     } else {
-      person = prompt('Por favor ingresa la palabra INICIALIZAR, para continuar:', '');
-      if (person === 'INICIALIZAR') {
-        this.form_dato.estatus = 'INICIALIZADO';  // y llamar a la función
+      person = prompt('Por favor ingresa la frase FINALIZAR PEDIDO, para continuar:', '');
+      if (person === 'FINALIZAR PEDIDO') {
+        this.form_dato.estatus = 'AJUSTADO';  // y llamar a la función
         this.enviar();
           txt = 'User cancelled the prompt.';
       } else {
@@ -1048,12 +951,124 @@ export class FormularioComponent {
   }
 
   /**
-   * Método que nos
+   * Método para mostrar el pedido concentrado de medicamentos de las diferentes UM.
    */
-  concentrar_pedido() {
+  consultar_pedido() {
+    this.cargando = true;
+    this.crudService.ver(this.form_dato.id, 'pedido-concentrado-cc-dam').subscribe(
+      resultado => {
+         // this.reset_form();
+         this.cargando = false;
+         this.abrirModal('pedidoGlobal');
+         this.insumos_pedido = resultado.insumos;
 
+         this.mensajeResponse.texto = 'Se han guardado los cambios.';
+         this.mensajeResponse.mostrar = true;
+         this.mensajeResponse.clase = 'success';
+         this.mensaje(2);
+     },
+     error => {
+         this.cargando = false;
+         this.form_dato.estatus = 'AJUSTADO';
+
+         this.mensajeResponse.texto = 'No especificado.';
+         this.mensajeResponse.mostrar = true;
+         this.mensajeResponse.clase = 'alert';
+         this.mensaje(2);
+         try {
+             let e = error.json();
+             if (error.status == 401) {
+                 this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
+                 this.mensajeResponse.clase = 'error';
+                 this.mensaje(2);
+             }
+             // Problema de validación
+             if (error.status == 409) {
+                 this.mensajeResponse.texto = 'Por favor verfique los campos marcados en rojo.';
+                 this.mensajeResponse.clase = 'error';
+                 this.mensaje(8);
+                 for (let input in e.error) {
+                     // Iteramos todos los errores
+                     for (let i in e.error[input]) {
+                         this.mensajeResponse.titulo = input;
+                         this.mensajeResponse.texto = e.error[input][i];
+                         this.mensajeResponse.clase = 'error';
+                         this.mensaje(3);
+                     }
+                 }
+             }
+         } catch (e) {
+             if (error.status == 500) {
+                 this.mensajeResponse.texto = '500 (Error interno del servidor)';
+             } else {
+                 this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
+             }
+             this.mensajeResponse.clase = 'error';
+             this.mensaje(2);
+         }
+        }
+    );
   }
 
+  /**
+   * Método para mostrar el DETALLE DE LOS INSUMOS DE LA CLUES
+   */
+  consultar_pedido_CLUES(pedido_id) {
+    this.cargando = true;
+    this.crudService.ver(pedido_id, 'pedidos-cc-um').subscribe(
+      resultado => {
+         // this.reset_form();
+         this.detalle_CLUES = resultado;
+         this.cargando = false;
+         this.abrirModal('detalleCLUES');
+
+         this.mensajeResponse.texto = 'Se han guardado los cambios.';
+         this.mensajeResponse.mostrar = true;
+         this.mensajeResponse.clase = 'success';
+         this.mensaje(2);
+     },
+     error => {
+         this.cargando = false;
+         this.form_dato.estatus = 'AJUSTADO';
+
+         this.mensajeResponse.texto = 'No especificado.';
+         this.mensajeResponse.mostrar = true;
+         this.mensajeResponse.clase = 'alert';
+         this.mensaje(2);
+         try {
+             let e = error.json();
+             if (error.status == 401) {
+                 this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
+                 this.mensajeResponse.clase = 'error';
+                 this.mensaje(2);
+             }
+             // Problema de validación
+             if (error.status == 409) {
+                 this.mensajeResponse.texto = 'Por favor verfique los campos marcados en rojo.';
+                 this.mensajeResponse.clase = 'error';
+                 this.mensaje(8);
+                 for (let input in e.error) {
+                     // Iteramos todos los errores
+                     for (let i in e.error[input]) {
+                         this.mensajeResponse.titulo = input;
+                         this.mensajeResponse.texto = e.error[input][i];
+                         this.mensajeResponse.clase = 'error';
+                         this.mensaje(3);
+                     }
+                 }
+             }
+         } catch (e) {
+             if (error.status == 500) {
+                 this.mensajeResponse.texto = '500 (Error interno del servidor)';
+             } else {
+                 this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
+             }
+             this.mensajeResponse.clase = 'error';
+             this.mensaje(2);
+         }
+        }
+    );
+  }
   /**
    * Método para enviar el modelo a la API según si es para crear un nuevo registro o para actualizarlo.
    */
@@ -1069,15 +1084,13 @@ export class FormularioComponent {
    */
   guardarDatos() {
     this.cargando = true;
-    this.crudService.crear(this.form_dato, 'pedidos-cc-dam').subscribe(
+    this.crudService.crear(this.form_dato, 'pedidos-cc-daf').subscribe(
       resultado => {
         this.cargando = false;
-        console.log(this.form_dato);
-        console.log(resultado);
         this.form_dato.id = resultado.id;
         this.cargarDatos(resultado.id);
-        if (this.form_dato.estatus === 'NOINICIALIZADO') {
-          this.router.navigate(['/pedidos/dam/editar', resultado.id]);
+        if (this.form_dato.estatus === 'CONCENTRADO') {
+          this.router.navigate(['/pedidos/daf/editar', resultado.id]);
           this.cargarDatos(resultado.id);
         }
 
@@ -1089,7 +1102,7 @@ export class FormularioComponent {
       },
       error => {
         this.cargando = false;
-        this.form_dato.estatus = 'NOINICIALIZADO';
+        this.form_dato.estatus = 'CONCENTRADO';
         if (error.status === 500) {
             this.mensajeResponse.texto = '500 (Error interno del servidor)';
             this.mensajeResponse.mostrar = true;
@@ -1156,19 +1169,17 @@ export class FormularioComponent {
      * @return void
      */
     actualizarDatos(id) {
-      let editar = '/pedidos/dam';
+      let editar = '/pedidos/daf';
       this.cargando = true;
 
-      this.crudService.editar(id, this.form_dato, 'pedidos-cc-dam').subscribe(
+      this.crudService.editar(id, this.form_dato, 'pedidos-cc-daf').subscribe(
            resultado => {
               this.reset_form();
-              console.log(resultado);
-              if (resultado.estatus === 'INICIALIZADO') {
+              if (resultado.estatus === 'AJUSTADO') {
                   this.router.navigate([editar]);
               }
-              if (resultado.estatus === 'NOINICIALIZADO') {
-                  this.router.navigate(['/pedidos/dam/editar', resultado.id]);
-                  console.log('cargarDatos');
+              if (resultado.estatus === 'CONCENTRADO') {
+                  this.router.navigate(['/pedidos/daf/editar', resultado.id]);
                   this.cargarDatos(resultado.id);
               }
               this.cargando = false;
@@ -1180,7 +1191,7 @@ export class FormularioComponent {
           },
           error => {
               this.cargando = false;
-              this.form_dato.estatus = 'NOINICIALIZADO';
+              this.form_dato.estatus = 'CONCENTRADO';
 
               this.mensajeResponse.texto = 'No especificado.';
               this.mensajeResponse.mostrar = true;
@@ -1232,16 +1243,16 @@ export class FormularioComponent {
       try {
           this.cargando = true;
 
-          this.crudService.ver(id, 'pedidos-cc-dam').subscribe(
+          this.crudService.ver(id, 'pedidos-cc-daf').subscribe(
               resultado => {
 
                 this.form_dato = resultado;
                 if (!this.form_dato.unidades_medicas) {
                   this.form_dato.unidades_medicas = [];
-                  console.log('No hay unidades m[edicas');
                 }
-                console.log(this.form_dato);
-                console.log('Resultado', resultado);
+                if (!this.form_dato.insumos) {
+                  this.form_dato.insumos = [];
+                }
                 this.form_dato.metadato_compra_consolidada.presupuesto_compra = Number(this.form_dato.metadato_compra_consolidada.presupuesto_compra);
                 this.form_dato.metadato_compra_consolidada.presupuesto_causes = Number(this.form_dato.metadato_compra_consolidada.presupuesto_causes);
                 this.form_dato.metadato_compra_consolidada.presupuesto_no_causes = Number(this.form_dato.metadato_compra_consolidada.presupuesto_no_causes);
@@ -1315,7 +1326,7 @@ export class FormularioComponent {
       lastOnBottom: true
   };
     if (this.mensajeResponse.titulo === '') {
-        this.mensajeResponse.titulo = 'Pedido DAM';
+        this.mensajeResponse.titulo = 'Pedido DAF';
       }
     if (this.mensajeResponse.clase === 'alert') {
         this.notificacion.alert(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
@@ -1344,7 +1355,7 @@ export class FormularioComponent {
       this.cargandoPdf = true;
       let impresion_inicializacion = {
         datos: this.form_dato,
-        lista: this.form_dato.unidades_medicas,
+        lista: this.form_dato.insumos,
         usuario: this.usuario
       };
       this.pdfworker.postMessage(JSON.stringify(impresion_inicializacion));

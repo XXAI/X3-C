@@ -95,6 +95,8 @@ import { PedidosEstandarModule } from './almacen-estandar/pedidos-estandar/pedid
 // # Hub laboratorio
 import { IndexLaboratorioModule   } from './laboratorio/index-laboratorio/index-laboratorio.module';
 import { EntradasLaboratorioModule} from './laboratorio/entradas-laboratorio/entradas-laboratorio.module';
+import { EntradasLabEstandarModule} from './laboratorio/entradas-laboratorio-estandar/entradas-lab-estandar.module';
+import { SalidasLabEstandarModule } from './laboratorio/salidas-laboratorio-estandar/salidas-laboratorio-estandar.module';
 import { SalidasLaboratorioModule } from './laboratorio/salidas-laboratorio/salidas-laboratorio.module';
 import { ExistenciasModule        } from './laboratorio/existencias/existencias.module';
 
@@ -261,6 +263,8 @@ export function highchartsFactory() {
     PersonalCluesModule,
     IndexLaboratorioModule,
     EntradasLaboratorioModule,
+    EntradasLabEstandarModule,
+    SalidasLabEstandarModule,
     SalidasLaboratorioModule,
     ExistenciasModule,
     IndexEquipamientoModule,

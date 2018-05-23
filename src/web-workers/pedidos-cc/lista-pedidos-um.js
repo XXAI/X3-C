@@ -197,20 +197,20 @@ importScripts(
 
         for (var i in data.lista) {
             var movimiento = data.lista[i];
-            if(i == data.lista.length-1){
-                break;
-            }
+            // if(i == data.lista.length-1){
+            //     break;
+            // }
                 dd.content[0].table.body.push([
                     { text: movimiento.fecha ? movimiento.fecha : 'No disponible' , style: 'tableRow', alignment: 'center' },
                     { text: movimiento.id ? movimiento.id : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: 'movimiento.metadato_compra_consolidada.presupuesto_compra' == null ? 'No disponible' : ('$ ' + Number(100).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')), colSpan: 2, style: 'tableRow', alignment: 'right' },
+                    { text: movimiento.metadato_compra_consolidada.presupuesto_compra == null ? 'No disponible' : ('$ ' + Number(movimiento.metadato_compra_consolidada.presupuesto_compra).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')), colSpan: 2, style: 'tableRow', alignment: 'right' },
                     {},
                     // movimiento.metadato_compra_consolidada.presupuesto_causes == null ? 'No disponible' : ('$ ' + Number(movimiento.metadato_compra_consolidada.presupuesto_causes).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'))
-                    { text: '', colSpan: 2, style: 'tableRow', alignment: 'right' },
+                    { text: movimiento.metadato_compra_consolidada.presupuesto_causes == null ? 'No disponible' : ('$ ' + Number(movimiento.metadato_compra_consolidada.presupuesto_causes).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')), colSpan: 2, style: 'tableRow', alignment: 'right' },
                     {},
                     // text: movimiento.metadato_compra_consolidada.presupuesto_no_causes == null ? 'No disponible' : ('$ ' + Number(movimiento.metadato_compra_consolidada.presupuesto_no_causes).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'))
-                    { text: '', style: 'tableRow', alignment: 'right' },
-                    { text: movimiento.estatus == null ? 'No disponible' :  movimiento.estatus, style: 'tableRow', alignment: 'center' }
+                    { text: movimiento.metadato_compra_consolidada.presupuesto_no_causes == null ? 'No disponible' : ('$ ' + Number(movimiento.metadato_compra_consolidada.presupuesto_no_causes).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')), style: 'tableRow', alignment: 'right' },
+                    { text: movimiento.estatus == null ? 'No disponible' :  movimiento.estatus == 'FI' ? 'Finalizado' : 'Borrador', style: 'tableRow', alignment: 'center' }
                 ]);
         }
 

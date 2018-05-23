@@ -1,4 +1,5 @@
 import { Component, OnInit, NgZone, ViewChildren } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
 import { CrudService } from '../../../crud/crud.service';
 import  * as FileSaver    from 'file-saver';
 
@@ -18,6 +19,10 @@ export class ListaComponent implements OnInit {
    * Fecha inicial de periodo de tiempo para filtro.
    * @type {string} */
     fecha_desde: String = '';
+  /**
+   * Variable para el enlace en las secciones de ayuda
+   */
+    enlaceAyuda = '';
   /**
    * Fecha final de periodo de tiempo de filtro.
    * @type {string} */
@@ -77,12 +82,31 @@ export class ListaComponent implements OnInit {
     @ViewChildren('sr') sr;
 
   /**
+   * Calcula el tamaño de la pantalla
+   */
+  tamano = document.body.clientHeight;
+
+  /**
    * Este método inicializa la carga de las dependencias
    * que se necesitan para el funcionamiento del modulo
    */
   constructor(
     private _ngZone: NgZone,
-    private crudService: CrudService) { }
+    private router: Router,
+    private crudService: CrudService) {
+      /**
+       * Para poder ir a las secciones de ayuda.
+       **/
+      router.events.subscribe(s => {
+        if (s instanceof NavigationEnd) {
+          const tree = router.parseUrl(router.url);
+          if (tree.fragment) {
+            const element = document.querySelector('#' + tree.fragment);
+            if (element) { element.scrollIntoView(true); }
+          }
+        }
+      });
+    }
   /**
    * Método ngOnInit
    */
@@ -106,6 +130,23 @@ export class ListaComponent implements OnInit {
       FileSaver.saveAs( self.base64ToBlob( evt.data.base64, 'application/pdf' ), evt.data.fileName );
       // open( 'data:application/pdf;base64,' + evt.data.base64 ); // Popup PDF
     };
+    this.enlaceAyuda = '/almacen-estandar/salidas';
+  }
+  /**
+   * Este método abre una modal
+   * @param id identificador del elemento de la modal
+   * @return void
+   */
+  abrirModal(id) {
+    document.getElementById(id).classList.add('is-active');
+  }
+  /**
+   * Este método cierra una modal
+   * @param id identificador del elemento de la modal
+   * @return void
+   */
+  cancelarModal(id) {
+    document.getElementById(id).classList.remove('is-active');
   }
 
   /**
@@ -137,17 +178,20 @@ export class ListaComponent implements OnInit {
    * @returns archivo en formato PDF
    */
   imprimir() {
+    this.cargando = true;
+    console.log('imprimir');
+    this.cargandoPdf = true;
     try {
-      this.cargandoPdf = true;
       let turno = this.tr.first.nativeElement.options;
-      let servicio = this.sr.first.nativeElement.options;
+//      let servicio = this.sr.first.nativeElement.options;
       turno = turno[turno.selectedIndex].text;
-      servicio = servicio[servicio.selectedIndex].text;
+      // servicio = servicio[servicio.selectedIndex].text;
 
       this.crudService.lista_general('salida-almacen-standard?tipo=2&fecha_desde=' + this.fecha_desde
       + '&fecha_hasta=' + this.fecha_hasta + '&turno=' + this.turno + '&servicio=' + this.servicio + '&recibe=' + this.recibe).subscribe(
         resultado => {
                 this.cargando = false;
+                this.cargandoPdf = false;
                 this.lista_impresion = resultado;
                 let entrada_imprimir = {
                   lista: this.lista_impresion,
@@ -155,15 +199,17 @@ export class ListaComponent implements OnInit {
                   fecha_desde: this.fecha_desde,
                   fecha_hasta: this.fecha_hasta,
                   turno: turno,
-                  servicio: servicio,
+                  // servicio: servicio,
                   recibe: this.recibe
                 };
                 this.pdfworker.postMessage(JSON.stringify(entrada_imprimir));
               },
               error => {
+                this.cargandoPdf = false;
               }
       );
     } catch (e) {
+      console.log(e);
       this.cargandoPdf = false;
     }
   }
