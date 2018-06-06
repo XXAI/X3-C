@@ -15,11 +15,15 @@ import { environment } from '../../../../environments/environment';
 export class BaseDatosComponent implements OnInit {
   exportando: boolean = false;
 
+	tabRestaurar = true;
+  tabCargar = false;
 
   errores = {
 		archivo: null
 	}
-  mostrarModalSubirArchivoSQL:boolean = false;
+	mostrarModalSubirArchivoSQL:boolean = false;
+	mostrarModalSubirDatosServidor:boolean = false;
+
   mensajeErrorSync:string = "";
   archivo:File = null;
   archivoSubido:boolean = false;
@@ -116,7 +120,57 @@ export class BaseDatosComponent implements OnInit {
 	this.uploadInput.emit(event);
 	this.enviandoDatos = true;
 	
-  }*/
+	}*/
+	
+	cargarDatos(){
+		if(this.archivo){
+
+			this.errores = {
+				archivo: null
+			}
+			this.mensajeErrorSync = "";
+			this.archivoSubido = false;
+			this.enviandoDatos = true;
+
+			let usuario = JSON.parse(localStorage.getItem("usuario"));			
+			
+			let formData:FormData = new FormData();
+			formData.append('sql', this.archivo, this.archivo.name);
+			
+			let headers = new Headers();
+			headers.delete('Content-Type');
+			headers.append('Authorization',  'Bearer ' + localStorage.getItem('token'));
+			headers.append('X-Clues',usuario.clues_activa.clues);
+			headers.append('X-Almacen-Id',usuario.almacen_activo.id);
+			let options = new RequestOptions({ headers: headers });
+			//let options = new RequestOptions({ headers: headers });
+
+			
+			var responseHeaders:any;
+			var contentDisposition:any;
+			this.http.post(`${environment.API_URL}/opciones-avanzadas/cargar-datos-servidor-central/`, formData, options)										
+				.subscribe(
+					response => {
+						this.archivoSubido = true;
+						this.enviandoDatos = false;
+						//this.mostrarModalSubirArchivoSQL = false;
+						this.progreso = 100;
+						this.archivo = null;
+					},					
+					error => {
+						if(error.status == 409){
+							this.mensajeErrorSync = "No se pudo subir el archivo, verifica que el archivo que tratas de subir sea correcto, que el nombre no haya sido modificado. Verifica que el archivo que intentas subir ya ha sido sincronizado previamente.";
+						} else if(error.status == 401){
+							this.mensajeErrorSync = "El archivo que intentas subir ya ha sido sincronizado previamente";
+						} else {
+							this.mensajeErrorSync = "Hubo un problema al sincronizar, prueba recargar el sitio de lo contrario llama a soporte técnico.";
+						}
+						this.progreso = 100;
+						this.enviandoDatos = false;
+					}
+				);	
+		}
+	}
 
   adjuntar(){
 		if(this.archivo){
