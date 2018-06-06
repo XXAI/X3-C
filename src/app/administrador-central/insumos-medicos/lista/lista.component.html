@@ -22,7 +22,7 @@
                     </p>
                     <p class="control">
                         <a class="button is-medium is-primary is-inverted " routerLink="/administrador-central/insumos-medicos/nuevo">
-                        <span class="icon"><i class="fa fa-plus"></i></span><span>Nueva</span>
+                        <span class="icon"><i class="fa fa-plus"></i></span><span>Nuevo</span>
                         </a>
                     </p>
                 </div>
@@ -55,8 +55,8 @@
                         <td style="vertical-align: middle; text-align: center;"><a routerLink="/administrador-central/insumos-medicos/editar/{{item.clave}}" title="{{ item.tipo=='ME'?'Medicamento':'Material de curación' }}">{{ item.tipo }}</a></td>                        
                         <td style="vertical-align: middle; text-align: center;"><a routerLink="/administrador-central/insumos-medicos/editar/{{item.clave}}"><span class="icon is-small" *ngIf="item.es_causes"><i class="fa fa-check"></i></span></a></td>                        
                         <td style="vertical-align: middle; text-align: center;"><a routerLink="/administrador-central/insumos-medicos/editar/{{item.clave}}"><span class="icon is-small" *ngIf="item.es_unidosis"><i class="fa fa-check"></i></span></a></td>                        
-                        <td style="vertical-align: middle; text-align: center;"><a routerLink="/administrador-central/insumos-medicos/editar/{{item.clave}}"><span class="icon is-small" *ngIf="item.es_atencion_medica"><i class="fa fa-check"></i></span></a></td>                        
-                        <td style="vertical-align: middle; text-align: center;"><a routerLink="/administrador-central/insumos-medicos/editar/{{item.clave}}"><span class="icon is-small" *ngIf="item.es_salud_publica"><i class="fa fa-check"></i></span></a></td>                        
+                        <td style="vertical-align: middle; text-align: center;"><a routerLink="/administrador-central/insumos-medicos/editar/{{item.clave}}"><span class="icon is-small" *ngIf="item.atencion_medica"><i class="fa fa-check"></i></span></a></td>                        
+                        <td style="vertical-align: middle; text-align: center;"><a routerLink="/administrador-central/insumos-medicos/editar/{{item.clave}}"><span class="icon is-small" *ngIf="item.salud_publica"><i class="fa fa-check"></i></span></a></td>                        
                         <td style="vertical-align: middle; text-align: center;"><a routerLink="/administrador-central/insumos-medicos/editar/{{item.clave}}"><span class="icon is-small" *ngIf="item.descontinuado"><i class="fa fa-ban"></i></span></a></td>                        
                         <td style="vertical-align: middle; text-align: center;" class="has-text-centered">
                             <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>                           
@@ -74,8 +74,8 @@
                         <td style="vertical-align: middle; text-align: center;"><a routerLink="/administrador-central/insumos-medicos/editar/{{item.clave}}" title="{{ item.tipo=='ME'?'Medicamento':'Material de curación' }}">{{ item.tipo }}</a></td>                        
                         <td style="vertical-align: middle; text-align: center;"><a routerLink="/administrador-central/insumos-medicos/editar/{{item.clave}}"><span class="icon is-small" *ngIf="item.es_causes"><i class="fa fa-check"></i></span></a></td>                        
                         <td style="vertical-align: middle; text-align: center;"><a routerLink="/administrador-central/insumos-medicos/editar/{{item.clave}}"><span class="icon is-small" *ngIf="item.es_unidosis"><i class="fa fa-check"></i></span></a></td>                        
-                        <td style="vertical-align: middle; text-align: center;"><a routerLink="/administrador-central/insumos-medicos/editar/{{item.clave}}"><span class="icon is-small" *ngIf="item.es_atencion_medica"><i class="fa fa-check"></i></span></a></td>                        
-                        <td style="vertical-align: middle; text-align: center;"><a routerLink="/administrador-central/insumos-medicos/editar/{{item.clave}}"><span class="icon is-small" *ngIf="item.es_salud_publica"><i class="fa fa-check"></i></span></a></td>                        
+                        <td style="vertical-align: middle; text-align: center;"><a routerLink="/administrador-central/insumos-medicos/editar/{{item.clave}}"><span class="icon is-small" *ngIf="item.atencion_medica"><i class="fa fa-check"></i></span></a></td>                        
+                        <td style="vertical-align: middle; text-align: center;"><a routerLink="/administrador-central/insumos-medicos/editar/{{item.clave}}"><span class="icon is-small" *ngIf="item.salud_publica"><i class="fa fa-check"></i></span></a></td>                        
                         <td style="vertical-align: middle; text-align: center;"><a routerLink="/administrador-central/insumos-medicos/editar/{{item.clave}}"><span class="icon is-small" *ngIf="item.descontinuado"><i class="fa fa-ban"></i></span></a></td>                        
                         <td style="vertical-align: middle; text-align: center;" class="has-text-centered">
                             <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>                           
