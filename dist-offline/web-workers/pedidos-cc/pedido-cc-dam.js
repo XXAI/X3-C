@@ -14,6 +14,7 @@ importScripts(
         let data = JSON.parse(evt.data);
         pdf(data);
         fechas();
+        console.log(data);
     };
 
     function fechas() {
@@ -91,7 +92,7 @@ importScripts(
                         [ 
                             { text: 'PRESUPUESTO DE COMPRA:', style: 'tableHeaderVerde', colSpan:2, alignment: 'right'},
                             { },
-                            { text: data.datos.metadato_compra_consolidada.presupuesto_compra ? data.datos.metadato_compra_consolidada.presupuesto_compra : 'No disponible', style: 'tableHeader', colSpan:3, alignment: 'left' },
+                            { text: data.datos.metadato_compra_consolidada.presupuesto_compra ?  ('$ ' + Number(data.datos.metadato_compra_consolidada.presupuesto_compra).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')) : 'No disponible', style: 'tableHeader', colSpan:3, alignment: 'left' },
                             { },
                             { },
                             { text: 'FECHA LÍMITE DE CAPTURA:', style: 'tableHeaderVerde', colSpan:2, alignment: 'right' },
@@ -285,11 +286,11 @@ importScripts(
                         [
                             { text: insumo.id ? insumo.id : 'No disponible' , style: 'tableRow', alignment: 'center' },
                             { text: insumo.clues ? insumo.clues : 'No disponible' , style: 'tableRow', alignment: 'center' },
-                            { text: insumo.nombre ? insumo.nombre : 'No disponible' , style: 'tableRow', colSpan:2, alignment: 'center' },
+                            { text: insumo.unidad_medica ? insumo.unidad_medica.nombre : 'No disponible' , style: 'tableRow', colSpan:2, alignment: 'left' },
                             { },
-                            { text: insumo.presupuesto_causes ? insumo.presupuesto_causes : 'No disponible' , style: 'tableRow', alignment: 'center' },
-                            { text: insumo.presupuesto_no_causes ? insumo.presupuesto_no_causes : 'No disponible' , style: 'tableRow', alignment: 'center' },
-                            { text: insumo.presupuesto_clues ? insumo.presupuesto_clues : 'No disponible' , style: 'tableRow', alignment: 'center' },
+                            { text: insumo.presupuesto_causes ? ('$ ' + Number(insumo.presupuesto_causes).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')) : 'No disponible' , style: 'tableRow', alignment: 'center' },
+                            { text: insumo.presupuesto_no_causes ?  ('$ ' + Number(insumo.presupuesto_no_causes).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')) : 'No disponible' , style: 'tableRow', alignment: 'center' },
+                            { text: insumo.presupuesto_clues ? ('$ ' + Number(insumo.presupuesto_clues).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')) : 'No disponible' , style: 'tableRow', alignment: 'center' },
                             { text: insumo.estatus_pedido ? insumo.estatus_pedido == 'BR' ? 'Borrador' : 'Finalizado' : 'No disponible' , style: 'tableRow', alignment: 'center' },
                             { text: insumo.presupuesto_utilizado ? insumo.presupuesto_utilizado : 'No disponible' , style: 'tableRow', alignment: 'center' },
                         ],
@@ -401,7 +402,7 @@ importScripts(
 
         
         pdfMake.createPdf(dd).getBase64(function(base64) {
-            postMessage({ fileName: 'Pedido_DAM_'+ data.datos.fecha_movimiento + '.pdf', base64: base64 });
+            postMessage({ fileName: 'Pedido_DAM_'+ data.datos.fecha + '.pdf', base64: base64 });
         });
     }
 

@@ -106,7 +106,7 @@ importScripts(
                             { },
                             { },
                             { },
-                            { text: 'NO CAUSES:', style: 'tableHeaderVerde', colSpan:4, alignment: 'center' },
+                            { text: 'NO CAUSES', style: 'tableHeaderVerde', colSpan:4, alignment: 'center' },
                             { },
                             { },
                             { }
