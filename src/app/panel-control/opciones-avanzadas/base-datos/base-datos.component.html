@@ -21,17 +21,23 @@
             <div class="tabs is-centered is-boxed is-medium">
                 <ul>
                     <li [ngClass]="{ 'is-active': tabRestaurar}">
-                        <a (click)="tabRestaurar=true;tabCargar=false;">
+                        <a (click)="tabRestaurar=true;tabCargar=false;tabDescargar=false;">
                             <span class="icon is-small"><i class="fa fa-hdd-o"></i></span>
                             <span>Respaldar/Restaurar</span>
                         </a>
                     </li>
                     <li [ngClass]="{ 'is-active': tabCargar}">
-                        <a (click)="tabRestaurar=false;tabCargar=true;">
+                        <a (click)="tabRestaurar=false;tabCargar=true;tabDescargar=false;">
                         <span class="icon is-small"><i class="fa fa-database"></i></span>
-                        <span>Cargar Datos</span>
+                        <span>Cargar Datos al Servidor Local</span>
                         </a>
-                    </li>    
+                    </li>
+                    <li [ngClass]="{ 'is-active': tabDescargar}">
+                        <a (click)="tabRestaurar=false;tabCargar=false;tabDescargar=true;">
+                        <span class="icon is-small"><i class="fa fa-database"></i></span>
+                        <span>Descargar Datos del Servidor Central</span>
+                        </a>
+                    </li>  
                 </ul>
             </div>
             <br>
