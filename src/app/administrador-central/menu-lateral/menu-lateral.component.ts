@@ -45,7 +45,7 @@ export class MenuLateralComponent implements OnInit {
         titulo: 'Catálogos',
         modulos: [
           { permiso: 'r1RX6Yq7fc4CRRI2OJXIPxeBLW3lFP59', icono: 'fa-check-square', titulo:"Claves básicas", url:"/administrador-central/claves-basicas" },
-          { permiso: 'r1RX6Yq7fc4CRRI2OJXIPxeBLW3lFP59_', icono: 'fa-medkit', titulo:"Insumos médicos", url:"/administrador-central/insumos-medicos" },
+          { permiso: 'X36qZL6YWSwvEaR2EH1TeSOotssAkrxu', icono: 'fa-medkit', titulo:"Insumos médicos", url:"/administrador-central/insumos-medicos" },
         ]
       },
       {

@@ -132,6 +132,15 @@ export class FormularioComponent implements OnInit {
 
       this.apiService.editar(this.id, payload).subscribe(
         respuesta => {
+          console.log(respuesta);
+          this.id = respuesta.clave;
+          if(this.insumo_medico.medicamento != null && this.insumo_medico.medicamento != {}){
+            this.insumo_medico.medicamento.insumo_medico_clave = this.id;
+          }
+
+          if(this.insumo_medico.material_curacion != null && this.insumo_medico.material_curacion != {} ){
+            this.insumo_medico.material_curacion.insumo_medico_clave = this.id;
+          }
           this.guardando = false;
         },
         error => {

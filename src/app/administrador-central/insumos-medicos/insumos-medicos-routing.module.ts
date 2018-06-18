@@ -10,9 +10,9 @@ const routes: Routes = [
   {
     path: 'administrador-central/insumos-medicos',
     children: [       
-       { path: '', component: ListaComponent, canActivate: [PermisosGuard], data: { key: 'r1RX6Yq7fc4CRRI2OJXIPxeBLW3lFP59'} },        
-       { path: 'nuevo', component: FormularioComponent, canActivate: [PermisosGuard], data: { key: 'r1RX6Yq7fc4CRRI2OJXIPxeBLW3lFP59'} },
-       { path: 'editar/:id', component: FormularioComponent, canActivate: [PermisosGuard], data: { key: 'r1RX6Yq7fc4CRRI2OJXIPxeBLW3lFP59'}},    
+       { path: '', component: ListaComponent, canActivate: [PermisosGuard], data: { key: 'X36qZL6YWSwvEaR2EH1TeSOotssAkrxu'} },        
+       { path: 'nuevo', component: FormularioComponent, canActivate: [PermisosGuard], data: { key: 'jBCDyEZfGTteX7PdyuLPCdpbrCabseXy'} },
+       { path: 'editar/:id', component: FormularioComponent, canActivate: [PermisosGuard], data: { key: 'LUSTiOJVbVzVkfCKLi2VcJk29UC0GCRZ'}},    
     ],
     canActivate: [AuthGuard]
   }

@@ -14,7 +14,7 @@ import 'rxjs/add/operator/catch';
 
 import { InsumosMedicosService } from '../insumos-medicos.service';
 import { CambiarEntornoService } from '../../../perfil/cambiar-entorno.service';
-
+import { environment } from '../../../../environments/environment';
 
 
 import { Mensaje } from '../../../mensaje';
@@ -222,9 +222,9 @@ export class ListaComponent implements OnInit {
 			}
 		);
 	}
-	mostrarUnidadesMedicas(item: any, index): void {
-		this.listaSeleccionada = item;
-		this.mostrarModalClues = true;
+	exportarExcel(){
+		var query = "token="+localStorage.getItem('token');
+		window.open(`${environment.API_URL}/administrador-central/insumos-medicos-excel?${query}`);
 	}
 	eliminar(item: any, index): void {
 		if(!confirm("¿Estás seguro de eliminar esta lista?, Se eliminará de todas las unidades médicas donde esté asignada.")){
