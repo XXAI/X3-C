@@ -20,75 +20,74 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     headerRows: 5,
                     dontBreakRows: true,
                     //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
-                    widths: [60, 50, 'auto', 'auto', 60, 'auto','auto', 'auto'],
+                    widths: [50, 50, 'auto', 'auto', 'auto', 45, 'auto', 'auto', 'auto'],
                     body: [
                         [{
                             image: 'header',
                             width: 500,
                             style: 'tableHeaderTop',
-                            colSpan: 8,
+                            colSpan: 9,
                             alignment: 'center'
-                        }, {}, {}, {}, {}, {},{},{}],
-                        [{ text: 'SIAL', style: 'titulo', colSpan: 8, alignment: 'center' },
-                            {}, {}, {}, {}, {}, {},{}
+                        }, {}, {}, {}, {}, {},{}, {},{}],
+                        [{ text: 'SIAL', style: 'titulo', colSpan: 9, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {}, {}, {}
                         ],
-                        [{ text: 'SALIDAS DE ALMACEN', style: 'tableHeaderTop', colSpan: 8, alignment: 'center' },
-                            {}, {}, {}, {}, {}, {},{}
+                        [{ text: 'SALIDAS DE ALMACEN', style: 'tableHeaderTop', colSpan: 9, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {}, {}, {}
                         ],
                         [
                             { text: 'CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
-                            {},
-                            { text: data.usuario.clues_activa.clues, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
-                            { text: 'NOMBRE DE CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' }, {},
-                            { text: data.usuario.clues_activa.nombre, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {}
+                            { },
+                            { text: data.usuario.clues_activa.clues, style: 'tableHeader', colSpan: 2, alignment: 'left' }, 
+                            { },
+                            { text: 'NOMBRE DE CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' }, 
+                            { },
+                            { text: data.usuario.clues_activa.nombre, style: 'tableHeader', colSpan: 3, alignment: 'left' }, 
+                            { },
+                            { }
                         ],
                         [
                             { text: '', style: 'tableHeaderVerde', colSpan: 4, alignment: 'right' },
-                            {},{}, {},
+                            {}, {}, {},
                             { text: 'NOMBRE DE ALMACÉN', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
                             {},
-                            { text: data.usuario.almacen_activo.nombre, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {}
+                            { text: data.usuario.almacen_activo.nombre, style: 'tableHeader', colSpan: 3, alignment: 'left' },
+                            {}, {}
                         ],
-                        [{ text: ' ', style: 'celdaEspacio', colSpan: 8, alignment: 'center' },
-                            {}, {}, {}, {}, {}, {}, {}
+                        [{ text: ' ', style: 'celdaEspacio', colSpan: 9, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {}, {}, {}
                         ],
-                        [{ text: 'DETALLES DE SALIDAS', style: 'tableHeaderLeyenda', colSpan: 8, alignment: 'center' },
-                            {}, {}, {}, {}, {}, {}, {}
+                        [{ text: 'DETALLES DE SALIDAS', style: 'tableHeaderLeyenda', colSpan: 9, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {}, {}, {}
                         ],
                         [
-                            { text: 'DESDE:', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' }, 
+                            { text: 'DESDE:', style: 'tableHeaderVerde', alignment: 'right' }, 
+                            { text: data.fecha_desde == "" ? '- -' : data.fecha_desde.substr(0,10), 
+                              style: 'tableHeader', alignment: 'left' },
+                            { text: 'HASTA:', style: 'tableHeaderVerde', alignment: 'right' }, 
+                            { text: data.fecha_hasta == "" ? '- -' : data.fecha_hasta.substr(0,10), 
+                              style: 'tableHeader', alignment: 'left' },
+                            { text: 'ENTREGA:', style: 'tableHeaderVerde',  alignment: 'right' },
+                            { text: data.recibe == "" ? 'TODOS' : data.recibe, style: 'tableHeader', colSpan: 4, alignment: 'left' },
                             {},
-                            { text: data.fecha_desde == "" ? '- -' : data.fecha_desde.substr(0,10), style: 'tableHeader', colSpan: 2, alignment: 'left' },
                             {},
-                            { text: 'HASTA:', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' }, 
-                            {},
-                            { text: data.fecha_hasta == "" ? '- -' : data.fecha_hasta.substr(0,10), style: 'tableHeader', colSpan: 2, alignment: 'left' },    
                             {}
                         ],
-
-                        [ 
-                            { text: 'TURNO:', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.turno == "" ? 'TODOS' : data.turno, style: 'tableHeader', alignment: 'left' },{ text: 'SERVICIO:', style: 'tableHeaderVerde',    alignment: 'right' },
-                            { text: data.servicio == "" ? 'TODOS' : data.servicio, style: 'tableHeader', alignment: 'left' },
-                            { text: 'RECIBE:', style: 'tableHeaderVerde', colSpan: 2,  alignment: 'right' },
-                            {},
-                            { text: data.recibe == "" ? 'TODOS' : data.recibe, style: 'tableHeader', colSpan: 2, alignment: 'left' },
-                            {}
-                        ],
-                        [{ text: ' ', style: 'celdaEspacio', colSpan: 8, alignment: 'center' },
-                            {}, {}, {}, {}, {}, {}, {}
+                        [{ text: ' ', style: 'celdaEspacio', colSpan: 9, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {}, {}, {}
                         ],
                         [
                             { text: 'FECHA', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'FOLIO', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'SERVICIO', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'TURNO', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'INSUMOS', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'RECIBE', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'ENTREGÓ', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'CAPTURADO', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'RECIBE', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
+                            { },
+                            { text: 'ENTREGÓ', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
+                            { },
+                            { text: 'ESTATUS', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'CAPTURADO', style: 'tableHeaderVerde', alignment: 'center' }
                         ]
-                        //Body -> Salidas estandar
+                        //Body -> insumos
                     ]
                 },
                 layout: {
@@ -206,53 +205,18 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                 dd.content[0].table.body.push([
                     { text: movimiento.fecha_movimiento ? movimiento.fecha_movimiento : 'No disponible' , style: 'tableRow', alignment: 'center' },
                     { text: movimiento.id ? movimiento.id : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.movimiento_metadato == null ? 'No disponible' : movimiento.movimiento_metadato.servicio.nombre, style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.movimiento_metadato == null ? 'No disponible' : movimiento.movimiento_metadato.turno.nombre, style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.numero_claves == null || movimiento.numero_insumos == null ? 'No disponible' : 'Claves: ' + movimiento.numero_claves + '\n Insumos: ' + movimiento.numero_insumos, style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.movimiento_metadato == null ? 'No disponible' :  movimiento.movimiento_metadato.persona_recibe, style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.movimiento_usuario == null ? 'No disponible' : movimiento.movimiento_usuario.nombre + ' ' + movimiento.movimiento_usuario.apellidos , style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.numero_claves == null || movimiento.numero_insumos == null ? 'No disponible' : 'Claves: ' + movimiento.numero_claves + '\n Insumos: ' + movimiento.numero_insumos, style: 'tableRow', alignment: 'left' },
+                    { text: movimiento.movimiento_metadato == null ? 'No disponible' :  movimiento.movimiento_metadato.persona_recibe, style: 'tableRow', colSpan: 2, alignment: 'left' },
+                    { },
+                    { text: movimiento.movimiento_usuario == null ? 'No disponible' : movimiento.movimiento_usuario.nombre + ' ' + movimiento.movimiento_usuario.apellidos, style: 'tableRow', colSpan: 2, alignment: 'center' },
+                    { },
+                    { text: !movimiento.status ? 'No disponible' : movimiento.status == 'FI' ? 'Finalizado' : movimiento.status == 'BR' ? 'Borrador' : 'No disponible', style: 'tableRow', alignment: 'center' },
                     { text: movimiento.created_at ? movimiento.created_at : 'No disponible', style: 'tableRow', alignment: 'center' }
                 ]);
         }
-/*
-        dd.content[0].table.body.push(
-            // Footer
-            [
-                { text: "", style: 'tableHeader', colSpan: 8, alignment: 'center' },
-                '', '', '', '', '', '', ''
-            ],
 
-            // Firmas
-            [{
-                table: {
-                    widths: ['*', '*'],
-                    body: [
-                        ['', '']
-                    ],
-                },
-                layout: {
-                    hLineWidth: function(i, node) {
-                        if (i == 0 || i == 3) {
-                            return 0;
-                        }
-                        return 0.5;
-                    },
-                    vLineWidth: function(i, node) {
-                        if (i == 0 || i == 3) {
-                            return 0;
-                        }
-                        return 0.5;
-                    },
-                },
-                style: 'tableHeader',
-                margin: [0, 0, 0, 0],
-                colSpan: 8,
-                alignment: 'center',
-            }, {}, {}, {}, {}, {}, {}, {}]
-        );
-*/
         pdfMake.createPdf(dd).getBase64(function(base64) {
-            postMessage({ fileName: 'Salidas_estandar.pdf', base64: base64 });
+            postMessage({ fileName: 'LISTA_SALIDAS_ESTANDAR.pdf', base64: base64 });
         });
     }
 

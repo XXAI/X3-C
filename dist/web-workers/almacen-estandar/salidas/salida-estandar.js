@@ -13,7 +13,6 @@ importScripts(
     onmessage = function(evt) {
         let data = JSON.parse(evt.data);
         pdf(data);
-        console.log(data);
         fechas();
     };
 
@@ -98,13 +97,13 @@ importScripts(
             tipo_controlado: this.tipo_controlado
                          */
                         [ 
-                            { text: 'FECHA DE MOVIMIENTO:', style: 'tableHeaderVerde', colSpan:6, alignment: 'right' },
+                            { text: 'FECHA DE MOVIMIENTO:', style: 'tableHeaderVerde', colSpan:2, alignment: 'right' },
                             { },
+                            { text: data.datos.fecha_movimiento ? data.datos.fecha_movimiento : 'No disponible', style: 'tableHeader', colSpan:2, alignment: 'left' },
                             { },
+                            { text: 'UM Destino', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
                             { },
-                            { },
-                            { },
-                            { text: data.datos.fecha_movimiento ? data.datos.fecha_movimiento : 'No disponible', style: 'tableHeader', colSpan:3, alignment: 'left' },
+                            { text: data.datos.movimiento_metadato.unidad_medica ? data.datos.movimiento_metadato.unidad_medica.nombre : 'No disponible', style: 'tableHeader', colSpan: 3, alignment: 'left' },
                             { },
                             { },
                         ],
@@ -115,7 +114,7 @@ importScripts(
                             {},
                             { text: 'PROGRAMA', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
                             { },
-                            { text: data.datos.programa_id ? data.datos.programa_id : 'No disponible', style: 'tableHeader', colSpan: 3, alignment: 'left' },
+                            { text: data.datos.programa_id == null ? 'No disponible' : data.datos.programa_id == 0 ? 'Sin programa' : data.datos.programa_id, style: 'tableHeader', colSpan: 3, alignment: 'left' },
                             { },
                             { }
                         ],
