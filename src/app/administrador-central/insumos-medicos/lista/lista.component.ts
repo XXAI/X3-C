@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-
+import { Headers, Http, Response, RequestOptions, ResponseContentType } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
@@ -59,6 +59,19 @@ export class ListaComponent implements OnInit {
 	paginasTotalesBusqueda = 0;
 	indicePaginasBusqueda:number[] = []
 	// # FIN SECCION
+
+
+
+	errores = {
+		archivo: null
+	}
+	mostrarModalCarga:boolean = false;
+
+	mensajeErrorSync:string = "";
+	archivo:File = null;
+	archivoSubido:boolean = false;
+	enviandoDatos: boolean = false;
+	progreso: number = 0;
 
 	constructor(    
 		private title: Title, 
@@ -239,11 +252,8 @@ export class ListaComponent implements OnInit {
 				this.resultadosBusqueda.splice(index, 1);  
 			} else {
 				this.lista.splice(index, 1);  
-			}
+			}				
 			
-			
-			console.log("Se eliminó el elemento de la lista.");
-
 			this.mensajeExito = new Mensaje(true)
 			this.mensajeExito.mostrar = true;
 			this.mensajeExito.texto = "item eliminado";
@@ -253,8 +263,7 @@ export class ListaComponent implements OnInit {
 			this.mensajeError.mostrar = true;
 			this.ultimaPeticion = function(){
 				this.eliminar(item, index);
-			}
-			
+			}			
 			
 			try {
 				let e = error.json();
@@ -262,7 +271,6 @@ export class ListaComponent implements OnInit {
 				this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
 				}
 			} catch(e){
-				console.log("No se puede interpretar el error");
 				
 				if (error.status == 500 ){
 				this.mensajeError.texto = "500 (Error interno del servidor)";
@@ -288,6 +296,20 @@ export class ListaComponent implements OnInit {
 	}
 	paginaAnteriorBusqueda(term:string):void {
 		this.listarBusqueda(term,this.paginaActualBusqueda-1);
+	}
+
+
+	// # SECCION: Importación
+	fileChange(event){
+		let fileList: FileList = event.target.files;
+		if(fileList.length > 0) {
+			this.archivo = fileList[0];
+		}
+	}
+
+	descargarFormato(){
+		var query = "token="+localStorage.getItem('token');
+		window.open(`${environment.API_URL}/administrador-central/formato-insumos-medicos-excel?${query}`);
 	}
 
 

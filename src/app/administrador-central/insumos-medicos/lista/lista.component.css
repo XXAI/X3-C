@@ -27,3 +27,15 @@
   	white-space: nowrap;
   	text-overflow: ellipsis;
 }
+
+.modal-carga{
+     height: 95%;
+}
+
+@media screen and (min-width: 800px) {
+    .modal-carga{
+        width: 95%;
+        height: 95%;
+    }
+}
+
