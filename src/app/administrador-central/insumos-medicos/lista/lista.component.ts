@@ -75,7 +75,8 @@ export class ListaComponent implements OnInit {
 
 	constructor(    
 		private title: Title, 
-		private apiService: InsumosMedicosService) { }
+		private apiService: InsumosMedicosService,
+		private http:Http) { }
 
   	ngOnInit() {
 		this.title.setTitle("Insumos médicos / Administrador central");
@@ -300,6 +301,19 @@ export class ListaComponent implements OnInit {
 
 
 	// # SECCION: Importación
+
+	cambiarArchivo(){
+		this.errores = { archivo: null }
+		this.mensajeErrorSync = "";
+		this.archivo = null;
+		this.archivoSubido = false;
+		this.enviandoDatos = false;
+		this.progreso = 0;
+	}
+	cerrarModalCarga(){
+		this.mostrarModalCarga = false;		
+		this.cambiarArchivo();
+	}
 	fileChange(event){
 		let fileList: FileList = event.target.files;
 		if(fileList.length > 0) {
@@ -310,6 +324,55 @@ export class ListaComponent implements OnInit {
 	descargarFormato(){
 		var query = "token="+localStorage.getItem('token');
 		window.open(`${environment.API_URL}/administrador-central/formato-insumos-medicos-excel?${query}`);
+	}
+
+	subir(){
+		if(this.archivo){
+
+			this.errores = {
+				archivo: null
+			}
+			this.mensajeErrorSync = "";
+			this.archivoSubido = false;
+			this.enviandoDatos = true;
+
+			let usuario = JSON.parse(localStorage.getItem("usuario"));			
+			
+			let formData:FormData = new FormData();
+			formData.append('archivo', this.archivo, this.archivo.name);
+			
+			let headers = new Headers();
+			headers.delete('Content-Type');
+			headers.append('Authorization',  'Bearer ' + localStorage.getItem('token'));
+			let options = new RequestOptions({ headers: headers });
+			//let options = new RequestOptions({ headers: headers });
+
+			
+			var responseHeaders:any;
+			var contentDisposition:any;
+			this.http.post(`${environment.API_URL}/administrador-central/cargar-insumos-excel/`, formData, options)										
+				.subscribe(
+					response => {
+						this.archivoSubido = true;
+						this.enviandoDatos = false;
+						//this.mostrarModalSubirArchivoSQL = false;
+						this.progreso = 100;
+						this.archivo = null;
+						console.log(response);
+					},					
+					error => {
+						if(error.status == 409){
+							this.mensajeErrorSync = "No se pudo subir el archivo, verifica que el archivo que tratas de subir sea correcto, que el nombre no haya sido modificado. Verifica que el archivo que intentas subir ya ha sido sincronizado previamente.";
+						} else if(error.status == 401){
+							this.mensajeErrorSync = "El archivo que intentas subir ya ha sido sincronizado previamente";
+						} else {
+							this.mensajeErrorSync = "Hubo un problema al sincronizar, prueba recargar el sitio de lo contrario llama a soporte técnico.";
+						}
+						this.progreso = 100;
+						this.enviandoDatos = false;
+					}
+				);	
+		}
 	}
 
 
