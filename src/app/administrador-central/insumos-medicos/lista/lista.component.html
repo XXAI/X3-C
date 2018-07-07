@@ -274,23 +274,182 @@
             <p class="modal-card-title"><span class="icon"><i class="fa fa-upload"></i></span> Importación masiva de datos</p>
             <button class="delete" (click)="cerrarModalCarga()"></button>
         </header>
-        <section class="modal-card-body">
+        <section class="modal-card-body" style="position: relative; padding:0px;">
            <!-- <div class="notification is-danger" *ngIf="mensajeErrorSync!=''"><span class="icon"><i class="fa fa-exclamation-circle"></i></span> {{ mensajeErrorSync }}</div>-->
 
-            <div class="field" [ngClass]="{ 'is-hidden' : enviandoDatos }" *ngIf="!archivoSubido">
+            <div class="field" [ngClass]="{ 'is-hidden' : enviandoDatos }" *ngIf="!archivoSubido" style="margin:1em;">
                     <label for="sql" class="label" [ngClass]="{ 'is-danger': errores.archivo != null }">Elige el archivo .xls</label>                         
                     <input type="file"  class="input-file" #archivoInput style="width:100%" name="archivo" is="xls" (change)="fileChange($event)"  accept=".xls,.xlsx">
             </div>
-            <div *ngIf="enviandoDatos">
+            <div *ngIf="enviandoDatos"  style="margin:1em;">
                 <h1 class="subtitle" *ngIf="enviandoDatos">Subiendo archivo...</h1>                
                 <progress class="progress is-primary" value="{{ progreso }}" max="100">{{ progreso}}%</progress>
             </div>
 
-            <table class="table" *ngIf="archivoSubido">
+            <div class="tabs is-centered" *ngIf="archivoSubido" style="position: fixed; width:88%; background: white">
+                <ul>
+                  <li [ngClass]="{ 'is-active': tabMedicamentos }" (click)="tabMedicamentos = true; tabMaterialCuracion = false;"><a>Medicamentos ({{ listaCargaMasiva.medicamentos.correctos.length + listaCargaMasiva.medicamentos.errores.length }})</a></li>
+                  <li  [ngClass]="{ 'is-active': tabMaterialCuracion }" (click)="tabMedicamentos = false; tabMaterialCuracion = true;"><a>Material de curación ({{ listaCargaMasiva.material_curacion.correctos.length + listaCargaMasiva.material_curacion.errores.length }})</a></li>
+                </ul>
+            </div>
+            <table class="table" style="font-size:0.7em; margin-top:50px; margin-bottom:50px;" *ngIf="archivoSubido && tabMedicamentos">
                 <thead>
-
+                    <tr>
+                        <th>Clave</th>
+                        <th>Causes</th>
+                        <th>Unidosis</th>
+                        <th>Tiene fecha Caducidad</th>
+                        <th>Controlado</th>
+                        <th>Surfactante</th>
+                        <th>Descontinuado</th>
+                        <th>Atención Médica</th>
+                        <th>Salud Pública</th>
+                        <th>Descripción</th>
+                        <th>Presentación</th>
+                        <th>Concentración</th>
+                        <th>Contenido</th>
+                        <th>Cantidad X Envase</th>
+                        <th>Unidad de medida</th>
+                        <th>Via Admnistración</th>
+                        <th>Dosis</th>
+                        <th>Indicaciones</th>
+                    </tr>
                 </thead>
+                <tbody *ngIf="tabMedicamentosCorrectos">
+                    <tr *ngFor="let item of listaCargaMasiva.medicamentos.correctos; let i=index">
+                        <td>{{ item.clave }}</td>
+                        <td>{{ item.es_causes ? "SI" : "NO" }}</td>
+                        <td>{{ item.es_unidosis ? "SI" : "NO" }}</td>
+                        <td>{{ item.tiene_fecha_caducidad ? "SI" : "NO" }}</td>
+                        <td>{{ item.medicamento.es_controlado ? "SI" : "NO" }}</td>
+                        <td>{{ item.medicamento.es_surfactante ? "SI" : "NO" }}</td>
+                        <td>{{ item.descontinuado ? "SI" : "NO" }}</td>
+                        <td>{{ item.atencion_medica ? "SI" : "NO" }}</td>
+                        <td>{{ item.salud_publica ? "SI" : "NO" }}</td>
+                        <td>{{ item.descripcion }}</td>
+                        <td>{{ item.medicamento.presentacion_id }}</td>
+                        <td>{{ item.medicamento.concentracion }}</td>
+                        <td>{{ item.medicamento.contenido }}</td>
+                        <td>{{ item.medicamento.cantidad_x_envase }}</td>
+                        <td>{{ item.medicamento.unidad_medida_id }}</td>
+                        <td>{{ item.medicamento.via_administracion_id }}</td>
+                        <td>{{ item.medicamento.dosis }}</td>
+                        <td>{{ item.medicamento.indicaciones }}</td>
+
+                    </tr>
+                </tbody>
+                <tbody *ngIf="tabMedicamentosErrores" style="color:darkred">
+                    <tr *ngFor="let item of listaCargaMasiva.medicamentos.errores; let i=index">
+                        <td>{{ item.clave }}</td>
+                        <td>{{ item.es_causes ? "SI" : "NO" }}</td>
+                        <td>{{ item.es_unidosis ? "SI" : "NO" }}</td>
+                        <td>{{ item.tiene_fecha_caducidad ? "SI" : "NO" }}</td>
+                        <td>{{ item.medicamento.es_controlado ? "SI" : "NO" }}</td>
+                        <td>{{ item.medicamento.es_surfactante ? "SI" : "NO" }}</td>
+                        <td>{{ item.descontinuado ? "SI" : "NO" }}</td>
+                        <td>{{ item.atencion_medica ? "SI" : "NO" }}</td>
+                        <td>{{ item.salud_publica ? "SI" : "NO" }}</td>
+                        <td>{{ item.descripcion }}</td>
+                        <td>{{ item.medicamento.presentacion_id }}</td>
+                        <td>{{ item.medicamento.concentracion }}</td>
+                        <td>{{ item.medicamento.contenido }}</td>
+                        <td>{{ item.medicamento.cantidad_x_envase }}</td>
+                        <td>{{ item.medicamento.unidad_medida_id }}</td>
+                        <td>{{ item.medicamento.via_administracion_id }}</td>
+                        <td>{{ item.medicamento.dosis }}</td>
+                        <td>{{ item.medicamento.indicaciones }}</td>
+                    </tr>
+                </tbody>
             </table>
+
+            
+            <div class="tabs is-centered is-boxed is-tab-bottom" *ngIf="archivoSubido  && tabMedicamentos" style="position: fixed; bottom:110px; width:88%">
+                <ul>
+                    <li [ngClass]="{ 'is-active' : tabMedicamentosCorrectos }" (click)="tabMedicamentosCorrectos = true; tabMedicamentosErrores = false;">
+                        <a>
+                            <span class="icon is-small">
+                                <i class="fa fa-check"></i>
+                            </span>
+                            <span> {{ listaCargaMasiva.medicamentos.correctos.length }} correctos</span>
+                        </a>
+                    </li>
+                    <li [ngClass]="{ 'is-active' : tabMedicamentosErrores, 'is-danger': listaCargaMasiva.material_curacion.errores.length > 0 }"  (click)="tabMedicamentosCorrectos = false; tabMedicamentosErrores = true;">
+                        <a>
+                            <span class="icon is-small">
+                                <i class="fa fa-times-circle"></i>
+                            </span>
+                            <span>{{ listaCargaMasiva.medicamentos.errores.length }} errores</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <table class="table" style="font-size:0.7em;  margin-top:50px" *ngIf="archivoSubido && tabMaterialCuracion">
+                <thead>
+                    <tr>
+                        <th>Clave</th>
+                        <th>Causes</th>
+                        <th>Unidosis</th>
+                        <th>Tiene fecha Caducidad</th>
+                        <th>Descontinuado</th>
+                        <th>Atención Médica</th>
+                        <th>Salud Pública</th>
+                        <th>Descripción</th>
+                        <th>Cantidad X Envase</th>
+                        <th>Unidad de medida</th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="tabMaterialCuracionCorrectos">
+                        <tr *ngFor="let item of listaCargaMasiva.material_curacion.correctos; let i=index">
+                            <td>{{ item.clave }}</td>
+                            <td>{{ item.es_causes ? "SI" : "NO" }}</td>
+                            <td>{{ item.es_unidosis ? "SI" : "NO" }}</td>
+                            <td>{{ item.tiene_fecha_caducidad ? "SI" : "NO" }}</td>
+                            <td>{{ item.descontinuado ? "SI" : "NO" }}</td>
+                            <td>{{ item.atencion_medica ? "SI" : "NO" }}</td>
+                            <td>{{ item.salud_publica ? "SI" : "NO" }}</td>
+                            <td>{{ item.descripcion }}</td>
+                            <td>{{ item.material_curacion.cantidad_x_envase }}</td>
+                            <td>{{ item.material_curacion.unidad_medida_id }}</td>    
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="tabMaterialCuracionErrores" style="color:darkred;">
+                        <tr *ngFor="let item of listaCargaMasiva.material_curacion.errores; let i=index">
+                                <td>{{ item.clave }}</td>
+                                <td>{{ item.es_causes ? "SI" : "NO" }}</td>
+                                <td>{{ item.es_unidosis ? "SI" : "NO" }}</td>
+                                <td>{{ item.tiene_fecha_caducidad ? "SI" : "NO" }}</td>
+                                <td>{{ item.descontinuado ? "SI" : "NO" }}</td>
+                                <td>{{ item.atencion_medica ? "SI" : "NO" }}</td>
+                                <td>{{ item.salud_publica ? "SI" : "NO" }}</td>
+                                <td>{{ item.descripcion }}</td>
+                                <td>{{ item.material_curacion.cantidad_x_envase }}</td>
+                                <td>{{ item.material_curacion.unidad_medida_id }}</td>    
+                        </tr>
+                    </tbody>
+            </table>
+
+            <div class="tabs  is-centered is-boxed is-tab-bottom" *ngIf="archivoSubido  && tabMaterialCuracion" style="position: fixed; bottom:110px; background: white; width:88%">
+                    <ul>
+                        <li [ngClass]="{ 'is-active' : tabMaterialCuracionCorrectos }" (click)="tabMaterialCuracionCorrectos = true; tabMaterialCuracionErrores = false;">
+                            <a>
+                                <span class="icon is-small">
+                                    <i class="fa fa-check"></i>
+                                </span>
+                                <span> {{ listaCargaMasiva.material_curacion.correctos.length }} correctos</span>
+                            </a>
+                        </li>
+                        <li [ngClass]="{ 'is-active' : tabMaterialCuracionErrores, 'is-danger': listaCargaMasiva.material_curacion.errores.length > 0 }"  (click)="tabMaterialCuracionCorrectos = false; tabMaterialCuracionErrores = true;">
+                            <a>
+                                
+                                <span class="icon is-small">
+                                    <i class="fa fa-times-circle"></i>
+                                </span>
+                                <span>{{ listaCargaMasiva.material_curacion.errores.length }} errores</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
         </section>
         <footer class="modal-card-foot">
             <a class="button is-hidden-desktop" [ngClass]="{ 'is-disabled' : enviandoDatos  }"  *ngIf="!archivoSubido" (click)="descargarFormato()"><span class="icon"><i class="fa fa-file-excel-o"></i></span></a>

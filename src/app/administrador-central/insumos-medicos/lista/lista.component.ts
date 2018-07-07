@@ -73,6 +73,20 @@ export class ListaComponent implements OnInit {
 	enviandoDatos: boolean = false;
 	progreso: number = 0;
 
+	tabMedicamentos: boolean = false;
+	tabMaterialCuracion: boolean = false;
+
+	tabMedicamentosCorrectos: boolean = false;
+	tabMedicamentosErrores: boolean = false;
+
+	tabMaterialCuracionCorrectos: boolean = false;
+	tabMaterialCuracionErrores: boolean = false;
+
+	listaCargaMasiva = {
+		medicamentos: { correctos: [], errores: [] },
+		material_curacion:  { correctos: [], errores: [] }
+	}
+
 	constructor(    
 		private title: Title, 
 		private apiService: InsumosMedicosService,
@@ -92,7 +106,7 @@ export class ListaComponent implements OnInit {
 		.switchMap((term:string)  =>  { 
 		console.log("Cargando búsqueda.");
 		this.busquedaActivada = term != "" ? true: false;
-
+		this.tabMedicamentos = true;
 		this.ultimoTerminoBuscado = term;
 		this.paginaActualBusqueda = 1;
 		this.cargando = true;
@@ -328,7 +342,10 @@ export class ListaComponent implements OnInit {
 
 	subir(){
 		if(this.archivo){
-
+			this.listaCargaMasiva = {
+				medicamentos: { correctos: [], errores: [] },
+				material_curacion:  { correctos: [], errores: [] }
+			}
 			this.errores = {
 				archivo: null
 			}
@@ -358,7 +375,31 @@ export class ListaComponent implements OnInit {
 						//this.mostrarModalSubirArchivoSQL = false;
 						this.progreso = 100;
 						this.archivo = null;
-						console.log(response);
+
+						this.tabMedicamentos = this.tabMedicamentosCorrectos =  this.tabMaterialCuracionCorrectos = true;
+
+
+						this.tabMaterialCuracion = this.tabMaterialCuracionErrores = this.tabMedicamentosErrores  = false;
+
+						var data = response.json().data;
+
+
+						for(var i in data.medicamentos){
+							if(data.medicamentos[i].error != null){
+								this.listaCargaMasiva.medicamentos.errores.push(data.medicamentos[i]);
+							} else {
+								this.listaCargaMasiva.medicamentos.correctos.push(data.medicamentos[i]);
+							}
+						}
+
+						for(var i in data.material_curacion){
+							if(data.material_curacion[i].error != null){
+								this.listaCargaMasiva.material_curacion.errores.push(data.material_curacion[i]);
+							} else {
+								this.listaCargaMasiva.material_curacion.correctos.push(data.material_curacion[i]);
+							}
+						}
+						
 					},					
 					error => {
 						if(error.status == 409){
@@ -370,6 +411,7 @@ export class ListaComponent implements OnInit {
 						}
 						this.progreso = 100;
 						this.enviandoDatos = false;
+						
 					}
 				);	
 		}

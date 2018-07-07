@@ -31,6 +31,33 @@
 .modal-carga{
      height: 95%;
 }
+.is-tab-bottom {
+    background: white;
+}
+.is-tab-bottom ul {
+    border-top: 1px solid #dbdbdb;
+    border-bottom: 0px;
+}
+
+.is-tab-bottom li.is-active a {
+    background-color: white;
+    
+    border-top-color: transparent !important;
+    border-bottom-color: #dbdbdb !important;
+}
+.is-tab-bottom a {
+    margin-top: -1px;
+    margin-bottom: 0px;
+    border-radius: 0 0 3px 3px;
+}
+.is-tab-bottom li.is-danger a{
+    color:red;
+}
+.tabs a:hover {
+    border-top-color: #dbdbdb;
+    border-bottom-color:transparent !important;
+  }
+
 
 @media screen and (min-width: 800px) {
     .modal-carga{
