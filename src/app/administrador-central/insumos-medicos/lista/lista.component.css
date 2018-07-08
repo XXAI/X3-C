@@ -58,6 +58,22 @@
     border-bottom-color:transparent !important;
   }
 
+.text-overflow-ellipsis{
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.import-table thead th {
+    text-align: center;
+    vertical-align: bottom;
+}
+
+.import-table tbody td {
+    cursor: pointer;
+}
+
 
 @media screen and (min-width: 800px) {
     .modal-carga{

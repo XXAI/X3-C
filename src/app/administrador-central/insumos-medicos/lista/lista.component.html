@@ -288,17 +288,17 @@
 
             <div class="tabs is-centered" *ngIf="archivoSubido" style="position: fixed; width:88%; background: white">
                 <ul>
-                  <li [ngClass]="{ 'is-active': tabMedicamentos }" (click)="tabMedicamentos = true; tabMaterialCuracion = false;"><a>Medicamentos ({{ listaCargaMasiva.medicamentos.correctos.length + listaCargaMasiva.medicamentos.errores.length }})</a></li>
-                  <li  [ngClass]="{ 'is-active': tabMaterialCuracion }" (click)="tabMedicamentos = false; tabMaterialCuracion = true;"><a>Material de curación ({{ listaCargaMasiva.material_curacion.correctos.length + listaCargaMasiva.material_curacion.errores.length }})</a></li>
+                  <li [ngClass]="{ 'is-active': tabMedicamentos }" (click)="tabMedicamentos = true; tabMaterialCuracion = false;"><a>Medicamentos ({{ listaCargaMasiva.medicamentos.correctos.length + listaCargaMasiva.medicamentos.por_validar.length + listaCargaMasiva.medicamentos.errores.length }})</a></li>
+                  <li  [ngClass]="{ 'is-active': tabMaterialCuracion }" (click)="tabMedicamentos = false; tabMaterialCuracion = true;"><a>Material de curación ({{ listaCargaMasiva.material_curacion.correctos.length + listaCargaMasiva.material_curacion.por_validar.length + listaCargaMasiva.material_curacion.errores.length }})</a></li>
                 </ul>
             </div>
-            <table class="table" style="font-size:0.7em; margin-top:50px; margin-bottom:50px;" *ngIf="archivoSubido && tabMedicamentos">
+            <table class="table import-table" style="font-size:0.7em; margin-top:50px; margin-bottom:50px;" *ngIf="archivoSubido && tabMedicamentos">
                 <thead>
                     <tr>
                         <th>Clave</th>
                         <th>Causes</th>
                         <th>Unidosis</th>
-                        <th>Tiene fecha Caducidad</th>
+                        <th>Tiene Fecha Caducidad</th>
                         <th>Controlado</th>
                         <th>Surfactante</th>
                         <th>Descontinuado</th>
@@ -316,7 +316,7 @@
                     </tr>
                 </thead>
                 <tbody *ngIf="tabMedicamentosCorrectos">
-                    <tr *ngFor="let item of listaCargaMasiva.medicamentos.correctos; let i=index">
+                    <tr *ngFor="let item of listaCargaMasiva.medicamentos.correctos; let i=index" (click)="editarRegistroListaMasiva(i,'ME',false)">
                         <td>{{ item.clave }}</td>
                         <td>{{ item.es_causes ? "SI" : "NO" }}</td>
                         <td>{{ item.es_unidosis ? "SI" : "NO" }}</td>
@@ -326,20 +326,62 @@
                         <td>{{ item.descontinuado ? "SI" : "NO" }}</td>
                         <td>{{ item.atencion_medica ? "SI" : "NO" }}</td>
                         <td>{{ item.salud_publica ? "SI" : "NO" }}</td>
-                        <td>{{ item.descripcion }}</td>
-                        <td>{{ item.medicamento.presentacion_id }}</td>
+                        <td class="text-overflow-ellipsis">{{ item.descripcion }}</td>
+                        <td class="text-overflow-ellipsis">
+                            <span *ngIf="item.medicamento.presentacion_medicamento != null">{{ item.medicamento.presentacion_medicamento.nombre }}</span>
+                            <strong *ngIf="item.medicamento.presentacion_medicamento == null">INVÁLIDO</strong>
+                        </td>
                         <td>{{ item.medicamento.concentracion }}</td>
-                        <td>{{ item.medicamento.contenido }}</td>
+                        <td class="text-overflow-ellipsis">{{ item.medicamento.contenido }}</td>
                         <td>{{ item.medicamento.cantidad_x_envase }}</td>
-                        <td>{{ item.medicamento.unidad_medida_id }}</td>
-                        <td>{{ item.medicamento.via_administracion_id }}</td>
-                        <td>{{ item.medicamento.dosis }}</td>
-                        <td>{{ item.medicamento.indicaciones }}</td>
-
+                        <td class="text-overflow-ellipsis">
+                            <span *ngIf="item.medicamento.unidad_medida != null">{{ item.medicamento.unidad_medida.nombre }}</span>
+                            <strong *ngIf="item.medicamento.unidad_medida == null">INVÁLIDO</strong>
+                        </td>
+                        <td class="text-overflow-ellipsis">
+                            <span *ngIf="item.medicamento.via_administracion != null">{{ item.medicamento.via_administracion.nombre }}</span>
+                            <strong *ngIf="item.medicamento.via_administracion == null">INVÁLIDO</strong>
+                        </td>
+                        <td class="text-overflow-ellipsis">{{ item.medicamento.dosis }}</td>
+                        <td class="text-overflow-ellipsis">{{ item.medicamento.indicaciones }}</td>
+            
                     </tr>
                 </tbody>
+
+                <tbody *ngIf="tabMedicamentosPorValidar">
+                        <tr *ngFor="let item of listaCargaMasiva.medicamentos.por_validar; let i=index" (click)="editarRegistroListaMasiva(i,'ME',false)">
+                            <td>{{ item.clave }}</td>
+                            <td>{{ item.es_causes ? "SI" : "NO" }}</td>
+                            <td>{{ item.es_unidosis ? "SI" : "NO" }}</td>
+                            <td>{{ item.tiene_fecha_caducidad ? "SI" : "NO" }}</td>
+                            <td>{{ item.medicamento.es_controlado ? "SI" : "NO" }}</td>
+                            <td>{{ item.medicamento.es_surfactante ? "SI" : "NO" }}</td>
+                            <td>{{ item.descontinuado ? "SI" : "NO" }}</td>
+                            <td>{{ item.atencion_medica ? "SI" : "NO" }}</td>
+                            <td>{{ item.salud_publica ? "SI" : "NO" }}</td>
+                            <td class="text-overflow-ellipsis">{{ item.descripcion }}</td>
+                            <td class="text-overflow-ellipsis">
+                                <span *ngIf="item.medicamento.presentacion_medicamento != null">{{ item.medicamento.presentacion_medicamento.nombre }}</span>
+                                <strong *ngIf="item.medicamento.presentacion_medicamento == null">INVÁLIDO</strong>
+                            </td>
+                            <td>{{ item.medicamento.concentracion }}</td>
+                            <td class="text-overflow-ellipsis">{{ item.medicamento.contenido }}</td>
+                            <td>{{ item.medicamento.cantidad_x_envase }}</td>
+                            <td class="text-overflow-ellipsis">
+                                <span *ngIf="item.medicamento.unidad_medida != null">{{ item.medicamento.unidad_medida.nombre }}</span>
+                                <strong *ngIf="item.medicamento.unidad_medida == null">INVÁLIDO</strong>
+                            </td>
+                            <td class="text-overflow-ellipsis">
+                                <span *ngIf="item.medicamento.via_administracion != null">{{ item.medicamento.via_administracion.nombre }}</span>
+                                <strong *ngIf="item.medicamento.via_administracion == null">INVÁLIDO</strong>
+                            </td>
+                            <td class="text-overflow-ellipsis">{{ item.medicamento.dosis }}</td>
+                            <td class="text-overflow-ellipsis">{{ item.medicamento.indicaciones }}</td>
+                
+                        </tr>
+                    </tbody>
                 <tbody *ngIf="tabMedicamentosErrores" style="color:darkred">
-                    <tr *ngFor="let item of listaCargaMasiva.medicamentos.errores; let i=index">
+                    <tr *ngFor="let item of listaCargaMasiva.medicamentos.errores; let i=index" (click)="editarRegistroListaMasiva(i,'ME',true)">
                         <td>{{ item.clave }}</td>
                         <td>{{ item.es_causes ? "SI" : "NO" }}</td>
                         <td>{{ item.es_unidosis ? "SI" : "NO" }}</td>
@@ -349,15 +391,24 @@
                         <td>{{ item.descontinuado ? "SI" : "NO" }}</td>
                         <td>{{ item.atencion_medica ? "SI" : "NO" }}</td>
                         <td>{{ item.salud_publica ? "SI" : "NO" }}</td>
-                        <td>{{ item.descripcion }}</td>
-                        <td>{{ item.medicamento.presentacion_id }}</td>
+                        <td class="text-overflow-ellipsis">{{ item.descripcion }}</td>
+                        <td class="text-overflow-ellipsis">
+                            <span *ngIf="item.medicamento.presentacion_medicamento != null">{{ item.medicamento.presentacion_medicamento.nombre }}</span>
+                            <strong *ngIf="item.medicamento.presentacion_medicamento == null">INVÁLIDO</strong>
+                        </td>
                         <td>{{ item.medicamento.concentracion }}</td>
-                        <td>{{ item.medicamento.contenido }}</td>
+                        <td class="text-overflow-ellipsis">{{ item.medicamento.contenido }}</td>
                         <td>{{ item.medicamento.cantidad_x_envase }}</td>
-                        <td>{{ item.medicamento.unidad_medida_id }}</td>
-                        <td>{{ item.medicamento.via_administracion_id }}</td>
-                        <td>{{ item.medicamento.dosis }}</td>
-                        <td>{{ item.medicamento.indicaciones }}</td>
+                        <td class="text-overflow-ellipsis">
+                            <span *ngIf="item.medicamento.unidad_medida != null">{{ item.medicamento.unidad_medida.nombre }}</span>
+                            <strong *ngIf="item.medicamento.unidad_medida == null">INVÁLIDO</strong>
+                        </td>
+                        <td class="text-overflow-ellipsis">
+                            <span *ngIf="item.medicamento.via_administracion != null">{{ item.medicamento.via_administracion.nombre }}</span>
+                            <strong *ngIf="item.medicamento.via_administracion == null">INVÁLIDO</strong>
+                        </td>
+                        <td class="text-overflow-ellipsis">{{ item.medicamento.dosis }}</td>
+                        <td class="text-overflow-ellipsis">{{ item.medicamento.indicaciones }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -365,7 +416,7 @@
             
             <div class="tabs is-centered is-boxed is-tab-bottom" *ngIf="archivoSubido  && tabMedicamentos" style="position: fixed; bottom:110px; width:88%">
                 <ul>
-                    <li [ngClass]="{ 'is-active' : tabMedicamentosCorrectos }" (click)="tabMedicamentosCorrectos = true; tabMedicamentosErrores = false;">
+                    <li [ngClass]="{ 'is-active' : tabMedicamentosCorrectos }" (click)="tabMedicamentosCorrectos = true; tabMedicamentosErrores = false; tabMedicamentosPorValidar = false;">
                         <a>
                             <span class="icon is-small">
                                 <i class="fa fa-check"></i>
@@ -373,7 +424,15 @@
                             <span> {{ listaCargaMasiva.medicamentos.correctos.length }} correctos</span>
                         </a>
                     </li>
-                    <li [ngClass]="{ 'is-active' : tabMedicamentosErrores, 'is-danger': listaCargaMasiva.material_curacion.errores.length > 0 }"  (click)="tabMedicamentosCorrectos = false; tabMedicamentosErrores = true;">
+                    <li *ngIf="listaCargaMasiva.medicamentos.por_validar.length>0" [ngClass]="{ 'is-active' : tabMedicamentosPorValidar }" (click)="tabMedicamentosCorrectos = false; tabMedicamentosErrores = false; tabMedicamentosPorValidar = true;">
+                        <a>
+                            <span class="icon is-small">
+                                <i class="fa fa-warning"></i>
+                            </span>
+                            <span> {{ listaCargaMasiva.medicamentos.por_validar.length }} por validar</span>
+                        </a>
+                    </li>
+                    <li [ngClass]="{ 'is-active' : tabMedicamentosErrores, 'is-danger': listaCargaMasiva.material_curacion.errores.length > 0 }"  (click)="tabMedicamentosCorrectos = false; tabMedicamentosErrores = true; tabMedicamentosPorValidar = false;">
                         <a>
                             <span class="icon is-small">
                                 <i class="fa fa-times-circle"></i>
@@ -384,13 +443,13 @@
                 </ul>
             </div>
 
-            <table class="table" style="font-size:0.7em;  margin-top:50px" *ngIf="archivoSubido && tabMaterialCuracion">
+            <table class="table import-table" style="font-size:0.7em;  margin-top:50px" *ngIf="archivoSubido && tabMaterialCuracion">
                 <thead>
                     <tr>
                         <th>Clave</th>
                         <th>Causes</th>
                         <th>Unidosis</th>
-                        <th>Tiene fecha Caducidad</th>
+                        <th>Tiene Fecha Caducidad</th>
                         <th>Descontinuado</th>
                         <th>Atención Médica</th>
                         <th>Salud Pública</th>
@@ -400,7 +459,24 @@
                     </tr>
                 </thead>
                 <tbody *ngIf="tabMaterialCuracionCorrectos">
-                        <tr *ngFor="let item of listaCargaMasiva.material_curacion.correctos; let i=index">
+                    <tr *ngFor="let item of listaCargaMasiva.material_curacion.correctos; let i=index" (click)="editarRegistroListaMasiva(i, 'MC', false)">
+                        <td>{{ item.clave }}</td>
+                        <td>{{ item.es_causes ? "SI" : "NO" }}</td>
+                        <td>{{ item.es_unidosis ? "SI" : "NO" }}</td>
+                        <td>{{ item.tiene_fecha_caducidad ? "SI" : "NO" }}</td>
+                        <td>{{ item.descontinuado ? "SI" : "NO" }}</td>
+                        <td>{{ item.atencion_medica ? "SI" : "NO" }}</td>
+                        <td>{{ item.salud_publica ? "SI" : "NO" }}</td>
+                        <td class="text-overflow-ellipsis">{{ item.descripcion }}</td>
+                        <td>{{ item.material_curacion.cantidad_x_envase }}</td>
+                        <td class="text-overflow-ellipsis">
+                            <span *ngIf="item.material_curacion.unidad_medida != null">{{ item.material_curacion.unidad_medida.nombre }}</span>
+                            <strong *ngIf="item.material_curacion.unidad_medida == null">INVÁLIDO</strong>
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody *ngIf="tabMaterialCuracionPorValidar">
+                        <tr *ngFor="let item of listaCargaMasiva.material_curacion.por_validar; let i=index" (click)="editarRegistroListaMasiva(i, 'MC', false)">
                             <td>{{ item.clave }}</td>
                             <td>{{ item.es_causes ? "SI" : "NO" }}</td>
                             <td>{{ item.es_unidosis ? "SI" : "NO" }}</td>
@@ -408,30 +484,36 @@
                             <td>{{ item.descontinuado ? "SI" : "NO" }}</td>
                             <td>{{ item.atencion_medica ? "SI" : "NO" }}</td>
                             <td>{{ item.salud_publica ? "SI" : "NO" }}</td>
-                            <td>{{ item.descripcion }}</td>
+                            <td class="text-overflow-ellipsis">{{ item.descripcion }}</td>
                             <td>{{ item.material_curacion.cantidad_x_envase }}</td>
-                            <td>{{ item.material_curacion.unidad_medida_id }}</td>    
+                            <td class="text-overflow-ellipsis">
+                                <span *ngIf="item.material_curacion.unidad_medida != null">{{ item.material_curacion.unidad_medida.nombre }}</span>
+                                <strong *ngIf="item.material_curacion.unidad_medida == null">INVÁLIDO</strong>
+                            </td>
                         </tr>
                     </tbody>
-                    <tbody *ngIf="tabMaterialCuracionErrores" style="color:darkred;">
-                        <tr *ngFor="let item of listaCargaMasiva.material_curacion.errores; let i=index">
-                                <td>{{ item.clave }}</td>
-                                <td>{{ item.es_causes ? "SI" : "NO" }}</td>
-                                <td>{{ item.es_unidosis ? "SI" : "NO" }}</td>
-                                <td>{{ item.tiene_fecha_caducidad ? "SI" : "NO" }}</td>
-                                <td>{{ item.descontinuado ? "SI" : "NO" }}</td>
-                                <td>{{ item.atencion_medica ? "SI" : "NO" }}</td>
-                                <td>{{ item.salud_publica ? "SI" : "NO" }}</td>
-                                <td>{{ item.descripcion }}</td>
-                                <td>{{ item.material_curacion.cantidad_x_envase }}</td>
-                                <td>{{ item.material_curacion.unidad_medida_id }}</td>    
-                        </tr>
-                    </tbody>
+                <tbody *ngIf="tabMaterialCuracionErrores" style="color:darkred;">
+                    <tr *ngFor="let item of listaCargaMasiva.material_curacion.errores; let i=index" (click)="editarRegistroListaMasiva(i, 'MC', true)">
+                        <td>{{ item.clave }}</td>
+                        <td>{{ item.es_causes ? "SI" : "NO" }}</td>
+                        <td>{{ item.es_unidosis ? "SI" : "NO" }}</td>
+                        <td>{{ item.tiene_fecha_caducidad ? "SI" : "NO" }}</td>
+                        <td>{{ item.descontinuado ? "SI" : "NO" }}</td>
+                        <td>{{ item.atencion_medica ? "SI" : "NO" }}</td>
+                        <td>{{ item.salud_publica ? "SI" : "NO" }}</td>
+                        <td class="text-overflow-ellipsis">{{ item.descripcion }}</td>
+                        <td>{{ item.material_curacion.cantidad_x_envase }}</td>
+                        <td class="text-overflow-ellipsis">
+                            <span *ngIf="item.material_curacion.unidad_medida != null">{{ item.material_curacion.unidad_medida.nombre }}</span>
+                            <strong *ngIf="item.material_curacion.unidad_medida == null">INVÁLIDO</strong>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
 
             <div class="tabs  is-centered is-boxed is-tab-bottom" *ngIf="archivoSubido  && tabMaterialCuracion" style="position: fixed; bottom:110px; background: white; width:88%">
                     <ul>
-                        <li [ngClass]="{ 'is-active' : tabMaterialCuracionCorrectos }" (click)="tabMaterialCuracionCorrectos = true; tabMaterialCuracionErrores = false;">
+                        <li [ngClass]="{ 'is-active' : tabMaterialCuracionCorrectos }" (click)="tabMaterialCuracionCorrectos = true; tabMaterialCuracionErrores = false; tabMaterialCuracionPorValidar = false;">
                             <a>
                                 <span class="icon is-small">
                                     <i class="fa fa-check"></i>
@@ -439,7 +521,15 @@
                                 <span> {{ listaCargaMasiva.material_curacion.correctos.length }} correctos</span>
                             </a>
                         </li>
-                        <li [ngClass]="{ 'is-active' : tabMaterialCuracionErrores, 'is-danger': listaCargaMasiva.material_curacion.errores.length > 0 }"  (click)="tabMaterialCuracionCorrectos = false; tabMaterialCuracionErrores = true;">
+                        <li *ngIf="listaCargaMasiva.material_curacion.por_validar.length>0" [ngClass]="{ 'is-active' : tabMaterialCuracionPorValidar }" (click)="tabMaterialCuracionCorrectos = false; tabMaterialCuracionErrores = false; tabMaterialCuracionPorValidar = true;">
+                                <a>
+                                    <span class="icon is-small">
+                                        <i class="fa fa-warning"></i>
+                                    </span>
+                                    <span> {{ listaCargaMasiva.material_curacion.por_validar.length }} por validar</span>
+                                </a>
+                            </li>
+                        <li [ngClass]="{ 'is-active' : tabMaterialCuracionErrores, 'is-danger': listaCargaMasiva.material_curacion.errores.length > 0 }"  (click)="tabMaterialCuracionCorrectos = false; tabMaterialCuracionErrores = true; tabMaterialCuracionPorValidar = false;">
                             <a>
                                 
                                 <span class="icon is-small">
@@ -460,6 +550,278 @@
             <a class="button is-hidden-touch is-warning" [ngClass]="{ 'is-disabled' : confirmando  }"  *ngIf="archivoSubido" (click)="cambiarArchivo()"><span class="icon"><i class="fa fa-file-excel-o"></i></span> <span>Cambiar archivo</span></a>
             <a class="button is-hidden-touch is-success" [ngClass]="{ 'is-disabled' : confirmando  }" *ngIf="archivoSubido" (click)="confirmar()"><span class="icon"><i class="fa fa-check"></i></span> <span>Confirmar importación</span></a>
             <a class="button" [ngClass]="{ 'is-disabled' : enviandoDatos  }" (click)="cerrarModalCarga()">Cancelar</a>
+        </footer>
+    </div>
+</div>
+<div class="modal is-active" *ngIf="mostrarModalEditarRegistro">
+    <div class="modal-background" (click)="cerrarModalEditarRegistro()"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">
+                <span class="icon">
+                    <i class="fa fa-edit"></i>
+                </span> Editar registro</p>
+            <button class="delete" (click)="cerrarModalEditarRegistro()"></button>
+        </header>
+        <section class="modal-card-body">
+            <div class="notification is-danger" *ngIf="errorRegistro != ''">{{ errorRegistro }}</div>
+
+            <section style="padding:1em;" >
+                <div class="field">
+                    <label class="label">Clave:</label>
+                    <p class="control is-expanded  has-icon has-icon-right">
+                        <input class="input" autofocus type="text" placeholder="Clave: Ej. 010.000.0000000.00"
+                            [(ngModel)]="insumo_medico.clave">
+                        <span class="icon is-small" *ngIf="false">
+                            <i class="fa fa-warning"></i>
+                        </span>
+                    </p>
+                </div>
+                <br>
+                <div class="columns" style="font-size: 0.8em">
+                    <div class="column">
+                        <div class="field">
+                            <p class="control">
+                                <label class="checkbox" [ngClass]="{ 'is-disabled': guardando}">
+                                    <input type="checkbox" (change)="insumo_medico.atencion_medica = !insumo_medico.atencion_medica" [checked]="insumo_medico.atencion_medica">
+                                    <strong>ATENCIÓN MÉDICA</strong>
+                                </label>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="column" style="text-align: center">
+                        <div class="field">
+                            <p class="control">
+                                <label class="checkbox" [ngClass]="{ 'is-disabled': guardando}">
+                                    <input type="checkbox" (change)="insumo_medico.salud_publica = !insumo_medico.salud_publica" [checked]="insumo_medico.salud_publica">
+                                    <strong>SALUD PÚBLICA</strong>
+                                </label>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!--
+                <div class="field ">
+                    <label class="label">Tipo:</label>
+                    <p class="control is-expanded">
+                        <span class="select is-fullwidth">
+                            <select (change)="seleccionarTipo($event.target.value)" [ngClass]="{'is-danger': errores.tipo != null, 'is-disabled': guardando}">
+                                <option value="">Selecciona un tipo</option>
+                                <option value="ME" [selected]="insumo_medico.tipo == 'ME'">ME Medicamentos</option>
+                                <option value="MC" [selected]="insumo_medico.tipo == 'MC'">ME Material de curación</option>
+                            </select>
+                        </span>
+                        <span class="help is-danger" *ngIf="errores.tipo == 'required'">Este campo es requerido.</span>
+                    </p>
+                </div>
+            -->
+                <div class="columns" style="font-size: 0.8em">
+                    <div class="column">
+                        <div class="field">
+                            <p class="control">
+                                <label class="checkbox" [ngClass]="{ 'is-disabled': guardando}">
+                                    <input type="checkbox" (change)="insumo_medico.es_unidosis = !insumo_medico.es_unidosis" [checked]="insumo_medico.es_unidosis"> Unidosis
+                                </label>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="field">
+                            <p class="control">
+                                <label class="checkbox" [ngClass]="{ 'is-disabled': guardando}">
+                                    <input type="checkbox" (change)="insumo_medico.es_causes = !insumo_medico.es_causes" [checked]="insumo_medico.es_causes"> CAUSES
+                                </label>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="column is-4">
+                        <div class="field">
+                            <p class="control">
+                                <label class="checkbox" [ngClass]="{ 'is-disabled': guardando}">
+                                    <input type="checkbox" (change)="insumo_medico.tiene_fecha_caducidad = !insumo_medico.tiene_fecha_caducidad" [checked]="insumo_medico.tiene_fecha_caducidad"> Fecha de caducidad
+                                </label>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="field">
+                            <p class="control">
+                                <label class="checkbox" [ngClass]="{ 'is-disabled': guardando}">
+                                    <input type="checkbox" (change)="insumo_medico.descontinuado = !insumo_medico.descontinuado" [checked]="insumo_medico.descontinuado"> Descontinuado
+                                </label>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Descripción completa del insumo:</label>
+                    <div class="control">
+                        <textarea name="observaciones" class="textarea"
+                            placeholder="Ej. ÁCIDO ACETILSALICÍLICO Tableta 500 mg 20 tabletas" [(ngModel)]="insumo_medico.descripcion"></textarea>
+                    </div>
+                </div>
+            </section>
+            <section *ngIf="insumo_medico.tipo =='ME'" style="padding: 1em;">
+                <div class="columns">
+                    <div class="column">
+                        <div class="field">
+                            <p class="control">
+                                <label class="checkbox" [ngClass]="{ 'is-disabled': guardando}">
+                                    <input type="checkbox" (change)="insumo_medico.medicamento.es_controlado = !insumo_medico.medicamento.es_controlado" [checked]="insumo_medico.medicamento.es_controlado"> Controlado
+                                </label>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="field">
+                            <p class="control">
+                                <label class="checkbox" [ngClass]="{ 'is-disabled': guardando}">
+                                    <input type="checkbox" (change)="insumo_medico.medicamento.es_surfactante = !insumo_medico.medicamento.es_surfactante" [checked]="insumo_medico.medicamento.es_surfactante"> Surfactante
+                                </label>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="columns">
+                    <div class="column">
+                        <div class="field ">
+                            <label class="label">Presentacion:</label>
+                            <p class="control is-expanded">
+                                <span class="select is-fullwidth">
+                                    <select (change)="seleccionarPresentacion($event.target.value)" >
+                                        <option value="">Selecciona una opción</option>
+                                        <option *ngFor="let item of presentaciones" value="{{ item.id }}" [selected]="insumo_medico.medicamento.presentacion_id == item.id">{{ item.nombre }}</option>
+                                    </select>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">Contenido:</label>
+                            <p class="control is-expanded  has-icon has-icon-right">
+                                <input class="input" autofocus type="text"
+                                    placeholder="Ej. Caja con un frasco ámpula o una ampolleta con 1 ml." [(ngModel)]="insumo_medico.medicamento.contenido">
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="columns">
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">Concentración :</label>
+                            <p class="control is-expanded  has-icon has-icon-right">
+                                <input class="input" autofocus type="text"
+                                    placeholder="Ejemplos: 5 mg, 40 mg/200 mg, etc." [(ngModel)]="insumo_medico.medicamento.concentracion">
+                                <span class="icon is-small" *ngIf="false">
+                                    <i class="fa fa-warning"></i>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">Cantidad x envase:</label>
+                            <p class="control is-expanded  has-icon has-icon-right">
+                                <input class="input" autofocus type="number"
+                                    [(ngModel)]="insumo_medico.medicamento.cantidad_x_envase">
+                                <span class="icon is-small" *ngIf="false">
+                                    <i class="fa fa-warning"></i>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="columns">
+                    <div class="column">
+                        <div class="field ">
+                            <label class="label">Unidad de medida:</label>
+                            <p class="control is-expanded">
+                                <span class="select is-fullwidth">
+                                    <select (change)="seleccionarUnidadMedida($event.target.value)" [ngClass]="{'is-danger': errores.medicamento  && errores.medicamento.unidad_medida_id, 'is-disabled': guardando}">
+                                        <option value="">Selecciona una opción</option>
+                                        <option *ngFor="let item of unidades_medida" value="{{ item.id }}" [selected]="insumo_medico.medicamento.unidad_medida_id == item.id">{{ item.clave }} - {{ item.nombre }}</option>
+                                    </select>
+                                </span>
+                                <span class="help is-danger" *ngIf="errores.medicamento && errores.medicamento.unidad_medida_id == 'required'">Este campo es requerido.</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="field ">
+                            <label class="label">Vía de administración:</label>
+                            <p class="control is-expanded">
+                                <span class="select is-fullwidth">
+                                    <select (change)="seleccionarViaAdministracion($event.target.value)" [ngClass]="{'is-disabled': guardando}">
+                                        <option value="">Selecciona una opción</option>
+                                        <option *ngFor="let item of vias_administracion" value="{{ item.id }}" [selected]="insumo_medico.medicamento.via_administracion_id == item.id">{{ item.nombre }}</option>
+                                    </select>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="columns">
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">Dosis</label>
+                            <div class="control">
+                                <textarea name="dosis" class="textarea" [ngClass]="{'is-disabled': guardando}" placeholder="Ej. La que el médico señale"
+                                    [(ngModel)]="insumo_medico.medicamento.dosis"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">Indicaciones</label>
+                            <div class="control">
+                                <textarea name="indicaciones" class="textarea" [ngClass]="{'is-disabled': guardando}" placeholder="Ej. Enfermedades alérgicas. Enfermedades inflamatorias, etc..."
+                                    [(ngModel)]="insumo_medico.medicamento.indicaciones"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section *ngIf="insumo_medico.tipo =='MC'" style="padding: 1em;">
+                <div class="columns">
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">Cantidad x envase:</label>
+                            <p class="control is-expanded  has-icon has-icon-right">
+                                <input class="input" autofocus type="number" 
+                                    [(ngModel)]="insumo_medico.material_curacion.cantidad_x_envase">
+                                <span class="icon is-small" *ngIf="false">
+                                    <i class="fa fa-warning"></i>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="field ">
+                            <label class="label">Unidad de medida:</label>
+                            <p class="control is-expanded">
+                                <span class="select is-fullwidth">
+                                    <select (change)="seleccionarUnidadMedida($event.target.value)" >
+                                        <option value="">Selecciona una opción</option>
+                                        <option *ngFor="let item of unidades_medida" value="{{ item.id }}" [selected]="insumo_medico.material_curacion.unidad_medida_id == item.id">{{ item.clave }} - {{ item.nombre }}</option>
+                                    </select>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+        <footer class="modal-card-foot">
+
+            <a class="button is-primary" [ngClass]="{ 'is-disabled' : (insumo_medico.tipo == 'MC' && (insumo_medico.material_curacion.unidad_medida_id == '' || (insumo_medico.material_curacion.unidad_medida == null && insumo_medico.material_curacion.unidad_medida_id != '' ) )) || (insumo_medico.tipo == 'ME' && (insumo_medico.medicamento.unidad_medida_id == ''  || insumo_medico.medicamento.presentacion_id ==''  || insumo_medico.medicamento.via_administracion_id == '' ))   }" (click)="aplicarCambiosRegistro()">
+                <span class="icon">
+                    <i class="fa fa-check"></i>
+                </span>
+                <span>Aplicar cambios</span>
+            </a>
+            <a class="button" [ngClass]="{ 'is-disabled' : enviandoDatos  }" (click)="cerrarModalEditarRegistro()">Cancelar</a>
         </footer>
     </div>
 </div>

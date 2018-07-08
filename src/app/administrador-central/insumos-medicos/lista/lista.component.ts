@@ -66,6 +66,7 @@ export class ListaComponent implements OnInit {
 		archivo: null
 	}
 	mostrarModalCarga:boolean = false;
+	mostrarModalEditarRegistro: boolean = false;
 
 	mensajeErrorSync:string = "";
 	archivo:File = null;
@@ -77,14 +78,16 @@ export class ListaComponent implements OnInit {
 	tabMaterialCuracion: boolean = false;
 
 	tabMedicamentosCorrectos: boolean = false;
+	tabMedicamentosPorValidar: boolean = false;
 	tabMedicamentosErrores: boolean = false;
 
 	tabMaterialCuracionCorrectos: boolean = false;
+	tabMaterialCuracionPorValidar: boolean = false;
 	tabMaterialCuracionErrores: boolean = false;
 
 	listaCargaMasiva = {
-		medicamentos: { correctos: [], errores: [] },
-		material_curacion:  { correctos: [], errores: [] }
+		medicamentos: { correctos: [], por_validar:[], errores: [] },
+		material_curacion:  { correctos: [], por_validar:[], errores: [] }
 	}
 
 	constructor(    
@@ -154,6 +157,10 @@ export class ListaComponent implements OnInit {
 		}
 
 		);
+
+		this.cargarPresentaciones();
+		this.cargarUnidadesMedida();
+		this.cargarViasAdministracion();
 		
 	}
 
@@ -340,11 +347,31 @@ export class ListaComponent implements OnInit {
 		window.open(`${environment.API_URL}/administrador-central/formato-insumos-medicos-excel?${query}`);
 	}
 
+	confirmar(){
+		var total_registros = this.listaCargaMasiva.medicamentos.correctos.length + this.listaCargaMasiva.medicamentos.por_validar.length + this.listaCargaMasiva.material_curacion.correctos.length + this.listaCargaMasiva.material_curacion.por_validar.length;	
+		var registros_ignorados =  this.listaCargaMasiva.medicamentos.errores.length + this.listaCargaMasiva.material_curacion.errores.length;
+		var cadena_ignorados = registros_ignorados > 0? ", se van a ignorar: '"+registros_ignorados+"' registros con errores": "";
+		
+		var word = prompt("Se van a importar: '"+(total_registros) +"' registros"+cadena_ignorados+". En caso de que ocurra un error en el proceso, los registros NO serán importados a la base de datos. Para continuar escriba: CONFIRMAR");
+		
+		if(word!=null){
+			if(word == "CONFIRMAR"){
+				// Aquí deberíamos mandar los datos
+	
+				this.cerrarModalCarga();
+			} else {
+				alert("Palabra incorrecta.")
+			}
+		}
+
+		
+	}
+
 	subir(){
 		if(this.archivo){
 			this.listaCargaMasiva = {
-				medicamentos: { correctos: [], errores: [] },
-				material_curacion:  { correctos: [], errores: [] }
+				medicamentos: { correctos: [], por_validar:[], errores: [] },
+				material_curacion:  { correctos: [], por_validar:[], errores: [] }
 			}
 			this.errores = {
 				archivo: null
@@ -417,5 +444,191 @@ export class ListaComponent implements OnInit {
 		}
 	}
 
+	errorRegistro:string = "";
+	insumo_medico:any = {};
+	index_registro_seleccionado = -1;
+	editando_error: boolean = false;
+	editando_por_validar:boolean = false;
+	editarRegistroListaMasiva(index, tipo, editarError, porValidar){
+		this.editando_por_validar = porValidar;
+		if(porValidar){
+			editarError = false;
+		}
+
+		this.editando_error = editarError;
+		this.mostrarModalEditarRegistro = true;
+		var insumo_seleccionado;
+		this.errorRegistro = "";
+		this.index_registro_seleccionado = index;
+		if(tipo == "MC"){
+			
+			if(editarError){				
+				insumo_seleccionado = this.listaCargaMasiva.material_curacion.errores[index];
+				this.errorRegistro = insumo_seleccionado.error_detectado;
+			} else if(porValidar) {
+				insumo_seleccionado = this.listaCargaMasiva.material_curacion.por_validar[index];
+			}else {
+				insumo_seleccionado = this.listaCargaMasiva.material_curacion.correctos[index];
+			}
+
+			
+			
+		} else {
+			if(editarError){				
+				insumo_seleccionado = this.listaCargaMasiva.medicamentos.errores[index];
+				this.errorRegistro = insumo_seleccionado.error_detectado;
+			} else if(porValidar) {
+				insumo_seleccionado = this.listaCargaMasiva.medicamentos.por_validar[index];
+			}else {
+				insumo_seleccionado = this.listaCargaMasiva.medicamentos.correctos[index];
+			}
+		}
+
+		this.insumo_medico = JSON.parse(JSON.stringify(insumo_seleccionado));
+
+		if(this.insumo_medico.tipo == "ME"){
+			var bandera_via_administracion = false;
+			var bandera_presentacion = false;
+			var bandera_unidad_medida = false;
+			for( var i = 0; i < this.vias_administracion.length; i++){
+				if(this.vias_administracion[i].id == this.insumo_medico.medicamento.via_administracion_id){
+					bandera_via_administracion = true;
+				}
+			}
+			for( var i = 0; i < this.presentaciones.length; i++){
+				if(this.presentaciones[i].id == this.insumo_medico.medicamento.presentacion_id){
+					bandera_presentacion = true;
+				}
+			}
+
+			for( var i = 0; i < this.unidades_medida.length; i++){
+				if(this.unidades_medida[i].id == this.insumo_medico.medicamento.unidad_medida_id){
+					bandera_unidad_medida = true;
+				}
+			}
+
+			if(!bandera_via_administracion){
+				this.insumo_medico.medicamento.via_administracion_id = '';
+			}
+			if(!bandera_presentacion){
+				this.insumo_medico.medicamento.presentacion_id = '';
+			}
+			if(!bandera_unidad_medida){
+				this.insumo_medico.medicamento.unidad_medida_id = '';
+			}
+		} else {
+			var bandera_unidad_medida = false;
+			for( var i = 0; i < this.unidades_medida.length; i++){
+				if(this.unidades_medida[i].id == this.insumo_medico.material_curacion.unidad_medida_id){
+					bandera_unidad_medida = true;
+				}
+			}
+			if(!bandera_unidad_medida){
+				this.insumo_medico.material_curacion.unidad_medida_id = '';
+			}
+		}
+
+	}
+	aplicarCambiosRegistro(){
+		var insumo_correcto =  JSON.parse(JSON.stringify( this.insumo_medico));
+		if(this.insumo_medico.tipo == "ME"){
+			if(this.editando_error){
+				this.listaCargaMasiva.medicamentos.por_validar.push(insumo_correcto);
+				this.listaCargaMasiva.medicamentos.errores.splice(this.index_registro_seleccionado, 1);
+			} else if(this.editando_por_validar) {
+				this.listaCargaMasiva.medicamentos.por_validar[this.index_registro_seleccionado] = insumo_correcto;
+			}else {
+				this.listaCargaMasiva.medicamentos.por_validar.push(insumo_correcto);
+				this.listaCargaMasiva.medicamentos.correctos.splice(this.index_registro_seleccionado, 1);
+			}
+			
+		} else {
+			if(this.editando_error){
+				this.listaCargaMasiva.material_curacion.por_validar.push(insumo_correcto);
+				this.listaCargaMasiva.material_curacion.errores.splice(this.index_registro_seleccionado, 1);
+			} else if(this.editando_por_validar) {
+				this.listaCargaMasiva.material_curacion.por_validar[this.index_registro_seleccionado] = insumo_correcto;
+			}else {
+				this.listaCargaMasiva.material_curacion.por_validar.push(insumo_correcto);
+				this.listaCargaMasiva.material_curacion.correctos.splice(this.index_registro_seleccionado, 1);
+			}
+		}
+
+		this.mostrarModalEditarRegistro = false;
+		this.insumo_medico = null;	
+		
+	}
+	cerrarModalEditarRegistro(){
+		this.mostrarModalEditarRegistro = false;
+		this.insumo_medico = null;		
+	}
+
+
+	presentaciones: any[] = [];
+  	unidades_medida: any[] = [];
+  	vias_administracion: any[] = [];
+
+	cargandoPresentaciones:boolean = false;
+	cargandoUnidadesMedida:boolean = false;
+	cargandoViasAdministracion:boolean = false;
+
+	cargarPresentaciones() {
+		this.cargandoPresentaciones = true;
+	
+		this.apiService.presentaciones().subscribe(
+		  respuesta => {
+			this.presentaciones = respuesta;
+			this.cargandoPresentaciones = false;
+		  }, error => {
+			this.presentaciones = [];
+			this.cargandoPresentaciones = false;
+		  }
+		)
+	  }
+	
+	  cargarUnidadesMedida() {
+		this.cargandoUnidadesMedida = true;
+	
+		this.apiService.unidadesMedida().subscribe(
+		  respuesta => {
+			this.unidades_medida = respuesta;
+			this.cargandoUnidadesMedida = false;
+		  }, error => {
+			this.presentaciones = [];
+			this.cargandoUnidadesMedida = false;
+		  }
+		)
+	  }
+	
+	  cargarViasAdministracion() {
+		this.cargandoViasAdministracion = true;
+	
+		this.apiService.viasAdministracion().subscribe(
+		  respuesta => {
+			this.vias_administracion = respuesta;
+			this.cargandoViasAdministracion = false;
+		  }, error => {
+			this.presentaciones = [];
+			this.cargandoViasAdministracion = false;
+		  }
+		)
+	  }
+	  
+	  seleccionarPresentacion(value) {
+		this.insumo_medico.medicamento.presentacion_id = value;
+	  }
+	  seleccionarUnidadMedida(value) {
+		if(this.insumo_medico.tipo == "ME"){
+		  this.insumo_medico.medicamento.unidad_medida_id = value;
+		}
+	
+		if(this.insumo_medico.tipo == "MC"){
+		  this.insumo_medico.material_curacion.unidad_medida_id = value;
+		}
+		
+	  }
+	  seleccionarViaAdministracion(value) {
+		this.insumo_medico.medicamento.via_administracion_id = value;
+	  }
 
 }
