@@ -26,13 +26,13 @@
                             <span>Respaldar/Restaurar</span>
                         </a>
                     </li>
-                    <li [ngClass]="{ 'is-active': tabCargar}">
+                    <li [ngClass]="{ 'is-active': tabCargar}" *ngIf="servidor.id != '0001'">
                         <a (click)="tabRestaurar=false;tabCargar=true;tabDescargar=false;">
                         <span class="icon is-small"><i class="fa fa-database"></i></span>
                         <span>Cargar Datos al Servidor Local</span>
                         </a>
                     </li>
-                    <li [ngClass]="{ 'is-active': tabDescargar}">
+                    <li [ngClass]="{ 'is-active': tabDescargar}" *ngIf="servidor.id == '0001'">
                         <a (click)="tabRestaurar=false;tabCargar=false;tabDescargar=true;">
                         <span class="icon is-small"><i class="fa fa-database"></i></span>
                         <span>Descargar Datos del Servidor Central</span>
@@ -54,6 +54,10 @@
                 <div style="text-align:center;"><a class="button is-warning is-medium" [ngClass]="{ 'is-loading': enviandoDatoss}" (click)="mostrarModalSubirDatosServidor = true; archivoSubido = false;" ><span class="icon"><i class="fa fa-upload"></i></span> <span>Cargar Datos</span></a></div>
                 <br>
                 <p><strong>Importante:</strong> esta acción reemplazará toda la información de la base de datos; realice este procedimiento solo si sabe lo que está haciendo, por favor asegúrese de <a (click)="exportar()">realizar un respaldo</a> antes de realizar esta acción para evitar cualquier perdida de información.</p>
+            </section>
+            <section class="section" *ngIf="tabDescargar">            
+                <div style="text-align:center;"><a class="button is-primary is-medium" [ngClass]="{ 'is-loading': exportando}" (click)="descargarDatos()"><span class="icon"><i class="fa fa-download"></i></span> <span>Descargar Datos</span></a></div>
+                <br>
             </section>
         </div>
         

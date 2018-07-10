@@ -16,7 +16,10 @@ export class BaseDatosComponent implements OnInit {
   exportando: boolean = false;
 
 	tabRestaurar = true;
-  tabCargar = false;
+	tabCargar = false;
+	tabDescargar = false;
+
+	servidor = {id:''};
 
   errores = {
 		archivo: null
@@ -45,7 +48,14 @@ export class BaseDatosComponent implements OnInit {
   constructor(private http:Http) {}
 
   ngOnInit() {
+		let usuario = JSON.parse(localStorage.getItem('usuario'));
+		this.servidor = usuario.servidor;
   }
+
+	descargarDatos(){
+		var query = "token="+localStorage.getItem('token');
+    window.open(`${environment.API_URL}/opciones-avanzadas/obtener-datos-central/?${query}`); 
+	}
 
   exportar() {
     var query = "token="+localStorage.getItem('token');
@@ -230,7 +240,8 @@ export class BaseDatosComponent implements OnInit {
 
 	}
 
-  importar(){/*
+  importar(){
+	/*
 		if(this.archivo){
 
 			this.errores = {

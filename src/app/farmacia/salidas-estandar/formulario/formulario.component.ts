@@ -398,10 +398,12 @@ export class FormularioComponent {
         this.res_busq_insumos = [];
 
         // poner el titulo a la modal
-        document.getElementById('tituloModal').innerHTML = ` ${data.descripcion} <br>
+        /*document.getElementById('tituloModal').innerHTML = ` ${data.descripcion} <br>
           <p aling="justify" style="font-size:12px">${data.descripcion}</p> 
           <p aling="justify" style="font-size:16px"> CANTIDAD POR ENVASE: 
           ${data.cantidad_x_envase ? data.cantidad_x_envase : 'Sin especificar' }</p>`;
+        */
+       console.log(this.insumo);
         this.es_unidosis = data.es_unidosis;
         this.unidad_medida = data.unidad_medida;
 
