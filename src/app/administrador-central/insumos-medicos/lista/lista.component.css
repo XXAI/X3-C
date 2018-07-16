@@ -6,6 +6,10 @@
 	position: relative;
 	border-radius: 0.75em 0.75em 0 0;
 }
+.top-bar .select,
+.top-bar label {
+    font-size: 0.6em; 
+}
 .top-bar.is-primary {
     background: #00d1b2;
     color:#FFF;
@@ -72,6 +76,10 @@
 
 .import-table tbody td {
     cursor: pointer;
+}
+
+.select {
+    margin-bottom: 0;
 }
 
 

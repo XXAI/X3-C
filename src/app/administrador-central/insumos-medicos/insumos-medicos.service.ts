@@ -14,8 +14,8 @@ export class InsumosMedicosService {
         return this.jwtRequest.get(InsumosMedicosService.URL+"/insumos-medicos").map((response: Response) => response.json().data) as Observable<any[]>;
     }
 
-    buscar(term: string, pagina: number = 1, resultados_por_pagina: number = 20): Observable<any> {
-        return this.jwtRequest.get(InsumosMedicosService.URL+"/insumos-medicos", null, { q: term, page: pagina, per_page: resultados_por_pagina }).map((response: Response) => response.json().data);
+    buscar(payload:any = { q: '', tipo: '',   causes: -1, unidosis: -1, descontinuado: -1, atencion_medica: -1, salud_publica: -1, page: 1, per_page: 20 }): Observable<any> {
+        return this.jwtRequest.get(InsumosMedicosService.URL+"/insumos-medicos", null, payload).map((response: Response) => response.json().data);
     }
 
     listaPaginada(pagina: number = 1, resultados_por_pagina: number = 20): Observable<any> {
@@ -54,5 +54,9 @@ export class InsumosMedicosService {
         return this.jwtRequest.get(InsumosMedicosService.URL+"/vias-administracion").map((response: Response) => response.json().data) as Observable<any[]>;
     }
 
+
+    confirmarCargaMasivaDatos(item: any): Observable<any> {
+        return this.jwtRequest.post(InsumosMedicosService.URL+"/confirmar-carga-masiva-insumos", item).map((response: Response) => response.json().data) as Observable<any>;
+    }
    
 }
