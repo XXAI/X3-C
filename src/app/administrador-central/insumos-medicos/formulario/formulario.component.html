@@ -69,6 +69,16 @@
                             </p>
                         </div>
                     </div>
+
+                    <div class="column"  style="text-align: center">
+                        <div class="field">
+                            <p class="control">
+                                <label class="checkbox" [ngClass]="{ 'is-disabled': guardando}">
+                                    <input type="checkbox" (change)="insumo_medico.es_causes = !insumo_medico.es_causes" [checked]="insumo_medico.es_causes"> CAUSES
+                                </label>
+                            </p>
+                        </div>
+                    </div>
                 </div>
                 <div class="field ">
                     <label class="label">Tipo:</label>
@@ -93,11 +103,12 @@
                             </p>
                         </div>
                     </div>
-                    <div class="column">
+                    
+                    <div class="column is-4">
                         <div class="field">
                             <p class="control">
                                 <label class="checkbox" [ngClass]="{ 'is-disabled': guardando}">
-                                    <input type="checkbox" (change)="insumo_medico.es_causes = !insumo_medico.es_causes" [checked]="insumo_medico.es_causes"> CAUSES
+                                    <input type="checkbox" (change)="insumo_medico.tiene_fecha_caducidad = !insumo_medico.tiene_fecha_caducidad" [checked]="insumo_medico.tiene_fecha_caducidad"> Fecha de caducidad
                                 </label>
                             </p>
                         </div>
@@ -106,7 +117,7 @@
                         <div class="field">
                             <p class="control">
                                 <label class="checkbox" [ngClass]="{ 'is-disabled': guardando}">
-                                    <input type="checkbox" (change)="insumo_medico.tiene_fecha_caducidad = !insumo_medico.tiene_fecha_caducidad" [checked]="insumo_medico.tiene_fecha_caducidad"> Fecha de caducidad
+                                    <input type="checkbox" (change)="insumo_medico.no_disponible_pedidos = !insumo_medico.no_disponible_pedidos" [checked]="insumo_medico.no_disponible_pedidos"> Bloquear en pedidos
                                 </label>
                             </p>
                         </div>

@@ -150,13 +150,16 @@
                         <th style="width:50px">Tipo</th>
                         <th style="width:50px">Causes</th>
                         <th style="width:70px">Unidosis</th>
-                        <th style="width:50px">
+                        <th style="width:50px; text-align: center;">
                             <abbr title="Atención Médica">AM</abbr>
                         </th>
-                        <th style="width:50px">
+                        <th style="width:50px; text-align: center;">
                             <abbr title="Salud Pública">SP</abbr>
                         </th>
-                        <th style="width:50px">
+                        <th style="width:50px; text-align: center;">
+                            <abbr title="Bloqueado en pedidos">B/P</abbr>
+                        </th>
+                        <th style="width:50px; text-align: center;">
                             <abbr title="Descontinuado">
                                 <span class="icon is-small">
                                     <i class="fa fa-ban"></i>
@@ -204,6 +207,13 @@
                             <a routerLink="/administrador-central/insumos-medicos/editar/{{item.clave}}">
                                 <span class="icon is-small" *ngIf="item.salud_publica">
                                     <i class="fa fa-check"></i>
+                                </span>
+                            </a>
+                        </td>
+                        <td style="vertical-align: middle; text-align: center;">
+                            <a routerLink="/administrador-central/insumos-medicos/editar/{{item.clave}}">
+                                <span class="icon is-small" *ngIf="item.no_disponible_pedidos">
+                                    <i class="fa fa-lock"></i>
                                 </span>
                             </a>
                         </td>
@@ -267,6 +277,13 @@
                             <a routerLink="/administrador-central/insumos-medicos/editar/{{item.clave}}">
                                 <span class="icon is-small" *ngIf="item.salud_publica">
                                     <i class="fa fa-check"></i>
+                                </span>
+                            </a>
+                        </td>
+                        <td style="vertical-align: middle; text-align: center;">
+                            <a routerLink="/administrador-central/insumos-medicos/editar/{{item.clave}}">
+                                <span class="icon is-small" *ngIf="item.no_disponible_pedidos">
+                                    <i class="fa fa-lock"></i>
                                 </span>
                             </a>
                         </td>
@@ -388,6 +405,7 @@
                         <th>Tiene Fecha Caducidad</th>
                         <th>Controlado</th>
                         <th>Surfactante</th>
+                        <th>Bloquear en Pedidos</th>
                         <th>Descontinuado</th>
                         <th>Atención Médica</th>
                         <th>Salud Pública</th>
@@ -403,13 +421,14 @@
                     </tr>
                 </thead>
                 <tbody *ngIf="tabMedicamentosCorrectos">
-                    <tr *ngFor="let item of listaCargaMasiva.medicamentos.correctos; let i=index" (click)="editarRegistroListaMasiva(i,'ME',false)">
+                    <tr *ngFor="let item of listaCargaMasiva.medicamentos.correctos; let i=index" (click)="editarRegistroListaMasiva(i,'ME',false, false)">
                         <td>{{ item.clave }}</td>
                         <td>{{ item.es_causes ? "SI" : "NO" }}</td>
                         <td>{{ item.es_unidosis ? "SI" : "NO" }}</td>
                         <td>{{ item.tiene_fecha_caducidad ? "SI" : "NO" }}</td>
                         <td>{{ item.medicamento.es_controlado ? "SI" : "NO" }}</td>
                         <td>{{ item.medicamento.es_surfactante ? "SI" : "NO" }}</td>
+                        <td>{{ item.no_disponible_pedidos ? "SI" : "NO" }}</td>
                         <td>{{ item.descontinuado ? "SI" : "NO" }}</td>
                         <td>{{ item.atencion_medica ? "SI" : "NO" }}</td>
                         <td>{{ item.salud_publica ? "SI" : "NO" }}</td>
@@ -436,13 +455,14 @@
                 </tbody>
 
                 <tbody *ngIf="tabMedicamentosPorValidar">
-                    <tr *ngFor="let item of listaCargaMasiva.medicamentos.por_validar; let i=index" (click)="editarRegistroListaMasiva(i,'ME',true)">
+                    <tr *ngFor="let item of listaCargaMasiva.medicamentos.por_validar; let i=index" (click)="editarRegistroListaMasiva(i,'ME',false, true)">
                         <td>{{ item.clave }}</td>
                         <td>{{ item.es_causes ? "SI" : "NO" }}</td>
                         <td>{{ item.es_unidosis ? "SI" : "NO" }}</td>
                         <td>{{ item.tiene_fecha_caducidad ? "SI" : "NO" }}</td>
                         <td>{{ item.medicamento.es_controlado ? "SI" : "NO" }}</td>
                         <td>{{ item.medicamento.es_surfactante ? "SI" : "NO" }}</td>
+                        <td>{{ item.no_disponible_pedidos ? "SI" : "NO" }}</td>
                         <td>{{ item.descontinuado ? "SI" : "NO" }}</td>
                         <td>{{ item.atencion_medica ? "SI" : "NO" }}</td>
                         <td>{{ item.salud_publica ? "SI" : "NO" }}</td>
@@ -468,13 +488,14 @@
                     </tr>
                 </tbody>
                 <tbody *ngIf="tabMedicamentosErrores" style="color:darkred">
-                    <tr *ngFor="let item of listaCargaMasiva.medicamentos.errores; let i=index" (click)="editarRegistroListaMasiva(i,'ME',true)">
+                    <tr *ngFor="let item of listaCargaMasiva.medicamentos.errores; let i=index" (click)="editarRegistroListaMasiva(i,'ME',true, false)">
                         <td>{{ item.clave }}</td>
                         <td>{{ item.es_causes ? "SI" : "NO" }}</td>
                         <td>{{ item.es_unidosis ? "SI" : "NO" }}</td>
                         <td>{{ item.tiene_fecha_caducidad ? "SI" : "NO" }}</td>
                         <td>{{ item.medicamento.es_controlado ? "SI" : "NO" }}</td>
                         <td>{{ item.medicamento.es_surfactante ? "SI" : "NO" }}</td>
+                        <td>{{ item.no_disponible_pedidos ? "SI" : "NO" }}</td>
                         <td>{{ item.descontinuado ? "SI" : "NO" }}</td>
                         <td>{{ item.atencion_medica ? "SI" : "NO" }}</td>
                         <td>{{ item.salud_publica ? "SI" : "NO" }}</td>
@@ -538,6 +559,7 @@
                         <th>Causes</th>
                         <th>Unidosis</th>
                         <th>Tiene Fecha Caducidad</th>
+                        <th>Bloquear en Pedidos</th>
                         <th>Descontinuado</th>
                         <th>Atención Médica</th>
                         <th>Salud Pública</th>
@@ -547,11 +569,12 @@
                     </tr>
                 </thead>
                 <tbody *ngIf="tabMaterialCuracionCorrectos">
-                    <tr *ngFor="let item of listaCargaMasiva.material_curacion.correctos; let i=index" (click)="editarRegistroListaMasiva(i, 'MC', false)">
+                    <tr *ngFor="let item of listaCargaMasiva.material_curacion.correctos; let i=index" (click)="editarRegistroListaMasiva(i, 'MC', false,false)">
                         <td>{{ item.clave }}</td>
                         <td>{{ item.es_causes ? "SI" : "NO" }}</td>
                         <td>{{ item.es_unidosis ? "SI" : "NO" }}</td>
                         <td>{{ item.tiene_fecha_caducidad ? "SI" : "NO" }}</td>
+                        <td>{{ item.no_disponible_pedidos ? "SI" : "NO" }}</td>
                         <td>{{ item.descontinuado ? "SI" : "NO" }}</td>
                         <td>{{ item.atencion_medica ? "SI" : "NO" }}</td>
                         <td>{{ item.salud_publica ? "SI" : "NO" }}</td>
@@ -564,11 +587,12 @@
                     </tr>
                 </tbody>
                 <tbody *ngIf="tabMaterialCuracionPorValidar">
-                    <tr *ngFor="let item of listaCargaMasiva.material_curacion.por_validar; let i=index" (click)="editarRegistroListaMasiva(i, 'MC', false)">
+                    <tr *ngFor="let item of listaCargaMasiva.material_curacion.por_validar; let i=index" (click)="editarRegistroListaMasiva(i, 'MC', false,true)">
                         <td>{{ item.clave }}</td>
                         <td>{{ item.es_causes ? "SI" : "NO" }}</td>
                         <td>{{ item.es_unidosis ? "SI" : "NO" }}</td>
                         <td>{{ item.tiene_fecha_caducidad ? "SI" : "NO" }}</td>
+                        <td>{{ item.no_disponible_pedidos ? "SI" : "NO" }}</td>
                         <td>{{ item.descontinuado ? "SI" : "NO" }}</td>
                         <td>{{ item.atencion_medica ? "SI" : "NO" }}</td>
                         <td>{{ item.salud_publica ? "SI" : "NO" }}</td>
@@ -581,11 +605,12 @@
                     </tr>
                 </tbody>
                 <tbody *ngIf="tabMaterialCuracionErrores" style="color:darkred;">
-                    <tr *ngFor="let item of listaCargaMasiva.material_curacion.errores; let i=index" (click)="editarRegistroListaMasiva(i, 'MC', true)">
+                    <tr *ngFor="let item of listaCargaMasiva.material_curacion.errores; let i=index" (click)="editarRegistroListaMasiva(i, 'MC', true,false)">
                         <td>{{ item.clave }}</td>
                         <td>{{ item.es_causes ? "SI" : "NO" }}</td>
                         <td>{{ item.es_unidosis ? "SI" : "NO" }}</td>
                         <td>{{ item.tiene_fecha_caducidad ? "SI" : "NO" }}</td>
+                        <td>{{ item.no_disponible_pedidos ? "SI" : "NO" }}</td>
                         <td>{{ item.descontinuado ? "SI" : "NO" }}</td>
                         <td>{{ item.atencion_medica ? "SI" : "NO" }}</td>
                         <td>{{ item.salud_publica ? "SI" : "NO" }}</td>
@@ -722,6 +747,15 @@
                             </p>
                         </div>
                     </div>
+                    <div class="column"  style="text-align: center">
+                        <div class="field">
+                            <p class="control">
+                                <label class="checkbox" [ngClass]="{ 'is-disabled': guardando}">
+                                    <input type="checkbox" (change)="insumo_medico.es_causes = !insumo_medico.es_causes" [checked]="insumo_medico.es_causes"> CAUSES
+                                </label>
+                            </p>
+                        </div>
+                    </div>
                 </div>
                 <!--
                 <div class="field ">
@@ -748,20 +782,21 @@
                             </p>
                         </div>
                     </div>
-                    <div class="column">
-                        <div class="field">
-                            <p class="control">
-                                <label class="checkbox" [ngClass]="{ 'is-disabled': guardando}">
-                                    <input type="checkbox" (change)="insumo_medico.es_causes = !insumo_medico.es_causes" [checked]="insumo_medico.es_causes"> CAUSES
-                                </label>
-                            </p>
-                        </div>
-                    </div>
+                    
                     <div class="column is-4">
                         <div class="field">
                             <p class="control">
                                 <label class="checkbox" [ngClass]="{ 'is-disabled': guardando}">
                                     <input type="checkbox" (change)="insumo_medico.tiene_fecha_caducidad = !insumo_medico.tiene_fecha_caducidad" [checked]="insumo_medico.tiene_fecha_caducidad"> Fecha de caducidad
+                                </label>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="field">
+                            <p class="control">
+                                <label class="checkbox" [ngClass]="{ 'is-disabled': guardando}">
+                                    <input type="checkbox" (change)="insumo_medico.no_disponible_pedidos = !insumo_medico.no_disponible_pedidos" [checked]="insumo_medico.no_disponible_pedidos"> Bloquear en pedidos
                                 </label>
                             </p>
                         </div>

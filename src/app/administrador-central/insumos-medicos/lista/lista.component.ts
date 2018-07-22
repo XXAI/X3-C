@@ -188,6 +188,7 @@ export class ListaComponent implements OnInit {
 	filtro_atencion_medica: number = -1;
 	filtro_salud_publica: number = -1;
 	filtro_descontinuado: number = -1;
+	filtro_no_disponible_pedidos: number = -1;
 
 	listarBusqueda(term: string, pagina: number): void {
 		this.paginaActualBusqueda = pagina;
@@ -205,6 +206,7 @@ export class ListaComponent implements OnInit {
 			descontinuado: this.filtro_descontinuado,
 			atencion_medica: this.filtro_atencion_medica,
 			salud_publica: this.filtro_salud_publica,
+			no_disponible_pedidos: this.filtro_no_disponible_pedidos,
 			page: pagina,
 			per_page: this.resultadosPorPaginaBusqueda
 		}
@@ -500,6 +502,7 @@ export class ListaComponent implements OnInit {
 								this.listaCargaMasiva.medicamentos.errores.push(data.medicamentos[i]);
 							} else {
 								this.listaCargaMasiva.medicamentos.correctos.push(data.medicamentos[i]);
+								console.log(data.medicamentos[i]);
 							}
 						}
 
