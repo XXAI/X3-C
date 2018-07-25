@@ -132,17 +132,18 @@ export class ActualizarSistemaComponent implements OnInit {
 						
 						let parche = {nombre: response.json().parche, fecha_ejecucion:false};
 
-						/*this.mostrarLog = true;
+						this.mostrarLog = true;
 						this.archivoSubido = true;
 						this.enviandoDatos = false;
 						
 						this.progreso = 100;
-						this.archivo = null;*/
+						this.archivo = null;
 
 						//this.mostrarModalSubirArchivoSQL = false;
 						//this.listarParches();
 						//window.location.reload();
 
+						/*
 						this.apiService.ejecutarParche(parche).subscribe(
 							respuesta => {
 								this.enviandoDatos = false;
@@ -157,12 +158,13 @@ export class ActualizarSistemaComponent implements OnInit {
 								this.archivo = null;
 							},
 							error => {
-								this.enviandoDatos = false;				
+								this.enviandoDatos = false;
 								console.log(error);
 					
 							}
 						);
-					},					
+						*/
+					},
 					error => {
             			if(error.status == 500){
 							try{
