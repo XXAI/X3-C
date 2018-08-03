@@ -43,6 +43,10 @@ export class FormComponent implements OnInit {
   cluesAgregadas: string[] = [];
   unidadMedicaSeleccionada = null;
 
+  idRolesSeleccionados: any = {};
+
+  servidor = {id:''};
+
   idsAlmacenesSeleccionados: string[] = [];
 
   /**
@@ -51,9 +55,17 @@ export class FormComponent implements OnInit {
   ngOnInit() {
     var ums:FormArray = this.usuario.get('unidades_medicas') as FormArray;
     var almacenes:FormArray = this.usuario.get('almacenes') as FormArray;
-    console.log(this.usuario.get('medico_id'))
+    console.log(this.usuario.get('medico_id'));
 
+    let rolesUsuario = this.usuario.get('roles').value;
 
+    for (let i in rolesUsuario) {
+      this.idRolesSeleccionados[rolesUsuario[i]] = true;
+    }
+
+    let usuario = JSON.parse(localStorage.getItem('usuario'));
+		this.servidor = usuario.servidor;
+    
     this.cluesAgregadas = ums.value;
 
     this.idsAlmacenesSeleccionados = almacenes.value;
@@ -73,6 +85,25 @@ export class FormComponent implements OnInit {
         }
       }
     }
+  }
+
+  checkRol(id){
+    if(!this.idRolesSeleccionados[id]){
+      this.idRolesSeleccionados[id] = true;
+    }else{
+      this.idRolesSeleccionados[id] = false;
+    }
+
+    let nuevosRoles = [];
+    for(let i in this.idRolesSeleccionados){
+      nuevosRoles.push(i);
+    }
+
+    this.usuario.controls['roles'].reset([]);
+    this.usuario.controls['roles'].setValue(nuevosRoles);
+    
+    //console.log(this.usuario.controls['roles']);
+    console.log(this.usuario.get('roles').value);
   }
 
   enviar() {

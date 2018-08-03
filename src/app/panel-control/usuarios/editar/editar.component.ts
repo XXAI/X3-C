@@ -73,7 +73,7 @@ export class EditarComponent implements OnInit {
       password: [{value: '', disabled: true}, [Validators.required]],
       confirmarPassword: [{value: '', disabled: true}, [Validators.required]],
       avatar: ['avatar-circled-user-male'],
-      roles: [[1],[Validators.required]],
+      roles: [[],[Validators.required]],
       unidades_medicas: [[]],
       almacenes: [[]],
       medico_id: ['-1'],
