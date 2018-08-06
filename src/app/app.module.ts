@@ -34,6 +34,7 @@ import { AdministradorCentralModule } from './administrador-central/administrado
 import { AsignacionProveedoresPedidosAlternosModule } from './administrador-central/asignacion-proveedores-pedidos-alternos/asignacion-proveedores-pedidos-alternos.module';
 import { ValidacionPedidosAlternosModule } from './administrador-central/validacion-pedidos-alternos/validacion-pedidos-alternos.module';
 import { InsumosMedicosModule } from './administrador-central/insumos-medicos/insumos-medicos.module';
+import { ContratosModule } from './administrador-central/contratos/contratos.module';
 
 // # Administrador proveedores
 import { AdministradorProveedoresModule } from './administrador-proveedores/administrador-proveedores.module';
@@ -204,6 +205,7 @@ export function highchartsFactory() {
     AdministradorCentralModule,
     AsignacionProveedoresPedidosAlternosModule,
     InsumosMedicosModule,
+    ContratosModule,
     ValidacionPedidosAlternosModule,
     AdministradorProveedoresModule,
     IndexFarmaciaSubrrogadaModule,

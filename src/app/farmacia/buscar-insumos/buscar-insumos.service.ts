@@ -24,6 +24,10 @@ export class BuscarInsumosService {
     return this.jwtRequest.get('unidades-medicas-dependientes',null,null).map( (response: Response) => response.json().data);
   }
 
+  tipoInsumos( ): Observable<any>{
+    return this.jwtRequest.get('tipo-insumo',null,null).map( (response: Response) => response.json().data);
+  }
+
   obtenerStock(clave: string): Observable<any>{
     return this.jwtRequest.get('stock-insumo-medico',null,{clave: clave}).map( (response: Response) => response.json().data);
   }
