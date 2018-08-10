@@ -82,7 +82,7 @@
                   <li [ngClass]="{ 'is-active' : tab == 1}"><a (click)="tab=1">Roles</a></li>
                   <li [ngClass]="{ 'is-active' : tab == 2}"><a (click)="tab=2">Clues / Almacenes</a></li>
                   <li [ngClass]="{ 'is-active' : tab == 3}"><a (click)="tab=3">Avatar</a></li>
-                  <li [ngClass]="{ 'is-active' : tab == 4}"><a (click)="tab=4" *ngIf="servidor.id == '0001'">Médico</a></li>
+                  <li [ngClass]="{ 'is-active' : tab == 4}"><a (click)="tab=4">Médico</a></li>
                   <li [ngClass]="{ 'is-active' : tab == 5}"><a (click)="tab=5" *ngIf="servidor.id == '0001'">Proveedor</a></li>
                 </ul>
               </div>
@@ -90,7 +90,7 @@
               <div  [ngClass]="{ 'is-hidden': tab != 1}">
                 <div class="control is-grouped">
                   <p class="control is-expanded">
-                    <label class="tag" [ngClass]="{'is-disabled': cargando, 'is-success': (idRolesSeleccionados[item.id])}" *ngFor="let item of roles" style="margin: 1px;">
+                    <label class="tag" [ngClass]="{'is-disabled': cargando, 'is-success': (idRolesSeleccionados[item.id])}" *ngFor="let item of roles" style="margin: 1px; cursor:pointer;">
                       <input type="checkbox" value="{{item.id}}" style="display:none;" (change)="checkRol(item.id)"> {{item.nombre}}
                     </label>
                   </p>

@@ -96,14 +96,11 @@ export class FormComponent implements OnInit {
 
     let nuevosRoles = [];
     for(let i in this.idRolesSeleccionados){
-      nuevosRoles.push(i);
+      if(this.idRolesSeleccionados[i]){
+        nuevosRoles.push(i);
+      }
     }
-
-    this.usuario.controls['roles'].reset([]);
     this.usuario.controls['roles'].setValue(nuevosRoles);
-    
-    //console.log(this.usuario.controls['roles']);
-    console.log(this.usuario.get('roles').value);
   }
 
   enviar() {
