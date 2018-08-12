@@ -61,8 +61,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   // # FIN SECCION
 
   listaTipoInsumos:any[] = [];
-  tipoInsumo:any = -1;
-  descripcionTipoInsumo:string = "";
+  tipoInsumo:any = {};
 
    // # SECCION: Unidades Medicas dependientes
 
@@ -468,8 +467,8 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       var insumo = {
         precio: this.precioBoxViewChildren.first.nativeElement.value,
         insumo : this.insumoSeleccionado,
-        tipo_insumo_id: this.tipoInsumo,
-        descripcion_tipo_insumo: this.descripcionTipoInsumo
+        tipo_insumo_id: this.tipoInsumo.id,
+        tipo: this.tipoInsumo
       }
       this.onEnviar.emit(insumo);
       this.precioBoxViewChildren.first.nativeElement.value = "";
@@ -591,11 +590,9 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
     }
   }
   seleccionarTipoInsumo(value){
-    this.tipoInsumo = value;
-
     for(var i = 0; i<this.listaTipoInsumos.length; i++){
-      if(this.tipoInsumo == this.listaTipoInsumos[i].id){
-        this.descripcionTipoInsumo = this.listaTipoInsumos[i].clave + " - " + this.listaTipoInsumos[i].nombre;
+      if(value == this.listaTipoInsumos[i].id){
+        this.tipoInsumo = {id: value, clave: this.listaTipoInsumos[i].clave, nombre: this.listaTipoInsumos[i].nombre};
       }
     }
     try{

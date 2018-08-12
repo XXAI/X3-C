@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Location } from '@angular/common';
+import { Headers, Http, Response, RequestOptions, ResponseContentType } from '@angular/http';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
 import { ContratosService } from '../contratos.service';
 import { CambiarEntornoService } from '../../../perfil/cambiar-entorno.service';
 
-
+import { environment } from '../../../../environments/environment';
 
 import { Mensaje } from '../../../mensaje';
 
@@ -59,6 +60,7 @@ export class FormularioComponent implements OnInit {
     private location: Location,
     private router: Router,
     private route: ActivatedRoute,
+    private http: Http,
     private apiService: ContratosService,
     private cambiarEntornoService: CambiarEntornoService
 
@@ -266,10 +268,10 @@ export class FormularioComponent implements OnInit {
 
     this.contrato.precios.push({
       insumo_medico_clave: item.insumo.clave,
-      descripcion: item.insumo.descripcion,
+      insumo: item.insumo,
       precio: item.precio,
+      tipo: item.tipo,
       tipo_insumo_id: item.tipo_insumo_id,
-      descripcion_tipo_insumo: item.descripcion_tipo_insumo
     });
 
     this.setPage(1);
@@ -280,10 +282,13 @@ export class FormularioComponent implements OnInit {
 			return;
     }
 
+
+    var clave =  item.insumo_medico_clave;
+
     var indexLista = 0;
     
     for(var  i = 0; i < this.contrato.precios.length; i++){
-      if(this.contrato.precios[i].insumo_medico_clave == item.insumo_medico_clave){
+      if(this.contrato.precios[i].insumo_medico_clave == clave){
         indexLista = i;
         break;
       }
@@ -294,7 +299,8 @@ export class FormularioComponent implements OnInit {
 
     var indexClavesAgregadas = 0;
     for(var  i = 0; i < this.listaClavesAgregadas.length; i++){
-      if(this.listaClavesAgregadas[i].clave == item.insumo_medico_clave){
+      if(this.listaClavesAgregadas[i] == clave){
+
         indexClavesAgregadas = i;
         break;
       }
@@ -359,6 +365,162 @@ export class FormularioComponent implements OnInit {
         endIndex: endIndex,
         pages: pages
     };
-}
+  }
+
+  descargarFormato() {
+		var query = "token=" + localStorage.getItem('token');
+		window.open(`${environment.API_URL}/administrador-central/formato-contrato-lista-precios-excel?${query}`);
+  }
+
+  opcionImportacion = "1";
+  mensajeErrorSync: string = "";
+  archivo: File = null;
+	archivoSubido: boolean = false;
+	enviandoDatos: boolean = false;
+	progreso: number = 0;
+  mostrarModalCarga:boolean =  false;
+  erroresArchivo = {
+		archivo: null
+  }
+
+  erroresImportacion:any[] = [];
+  
+  
+	cambiarArchivo() {
+		this.errores = { archivo: null }
+		this.mensajeErrorSync = "";
+		this.archivo = null;
+		this.archivoSubido = false;
+		this.enviandoDatos = false;
+		this.progreso = 0;
+	}
+	cerrarModalCarga() {
+		this.mostrarModalCarga = false;
+		this.cambiarArchivo();
+  }
+  
+  seleccionarOpcionImportacion(value) {
+    this.opcionImportacion = value;
+  }
+	fileChange(event) {
+		let fileList: FileList = event.target.files;
+		if (fileList.length > 0) {
+			this.archivo = fileList[0];
+		}
+  }
+  
+  subir() {
+		if (this.archivo) {
+			/*this.listaCargaMasiva = {
+				medicamentos: { correctos: [], por_validar: [], errores: [] },
+				material_curacion: { correctos: [], por_validar: [], errores: [] }
+			}*/
+			this.erroresArchivo = {
+				archivo: null
+			}
+			this.mensajeErrorSync = "";
+			this.archivoSubido = false;
+			this.enviandoDatos = true;
+
+			let usuario = JSON.parse(localStorage.getItem("usuario"));
+
+			let formData: FormData = new FormData();
+      formData.append('archivo', this.archivo, this.archivo.name);
+      formData.append('contrato_id',this.id);
+      formData.append('opcion_importacion',this.opcionImportacion);
+
+			let headers = new Headers();
+			headers.delete('Content-Type');
+			headers.append('Authorization', 'Bearer ' + localStorage.getItem('token'));
+			let options = new RequestOptions({ headers: headers });
+			//let options = new RequestOptions({ headers: headers });
+
+
+			var responseHeaders: any;
+			var contentDisposition: any;
+			this.http.post(`${environment.API_URL}/administrador-central/cargar-lista-precios-excel/`, formData, options)
+				.subscribe(
+					response => {
+						this.archivoSubido = true;
+						this.enviandoDatos = false;
+						//this.mostrarModalSubirArchivoSQL = false;
+						this.progreso = 100;
+						this.archivo = null;
+
+
+						var data = response.json().data;
+
+            var listaSustituir:any[] = [];
+            this.erroresImportacion = [];
+
+						for (var i in data.precios) {
+							if (data.precios[i].error != null) {
+								this.erroresImportacion.push(data.precios[i]);
+							} else {
+
+                if(this.opcionImportacion != "1"){
+
+                  var hayCoincidencia = false;
+                  for(var j = 0; j < this.contrato.precios.length; j++){
+                    if(this.contrato.precios[j].insumo_medico_clave == data.precios[i].insumo_medico_clave){
+                      if(this.opcionImportacion == "2"){ //sustituir repetidos  de lo contrario ignoramos
+                        
+                        this.contrato.precios[j] = data.precios[i];
+                      }
+
+                      hayCoincidencia = true;
+                      break;
+                    }
+                  }
+
+                  if(!hayCoincidencia){
+                    // Si no coincide simplemente agregamos
+                    this.contrato.precios.push(data.precios[i]);
+                  }
+                } else {
+                  listaSustituir.push(data.precios[i]);
+                }
+                
+								
+							}
+            }
+            if(this.opcionImportacion == "1" && listaSustituir.length > 0){
+              this.contrato.precios = listaSustituir;
+            }
+
+            console.log(this.contrato.precios);
+
+            if(this.erroresImportacion.length > 0 ){
+              alert("Se ignoraron: " + this.erroresImportacion.length + " que contenian errores");
+            }
+
+            this.listaClavesAgregadas = [];
+            for(var  z= 0; z< this.contrato.precios.length; z++){
+              this.listaClavesAgregadas.push( this.contrato.precios[z].insumo_medico_clave);
+            }
+
+            console.log(this.listaClavesAgregadas);
+            this.setPage(1);
+
+
+            
+            this.cerrarModalCarga();
+
+					},
+					error => {
+						if (error.status == 409) {
+							this.mensajeErrorSync = "No se pudo subir el archivo, verifica que el archivo que tratas de subir sea correcto, que el nombre no haya sido modificado. Verifica que el archivo que intentas subir ya ha sido sincronizado previamente.";
+						} else if (error.status == 401) {
+							this.mensajeErrorSync = "El archivo que intentas subir ya ha sido sincronizado previamente";
+						} else {
+							this.mensajeErrorSync = "Hubo un problema al sincronizar, prueba recargar el sitio de lo contrario llama a soporte técnico.";
+						}
+						this.progreso = 100;
+						this.enviandoDatos = false;
+
+					}
+				);
+		}
+	}
 
 }
