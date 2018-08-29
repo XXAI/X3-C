@@ -1,0 +1,311 @@
+<app-menu-inventario [modulo]="'Reporte Salidas'" [icono]="'assets/icono-ajustes-inventario.svg'" [url]="'/inventario/inicializacion-inventario'"></app-menu-inventario>
+
+<div style="height:50px;"></div>
+<div class="contenedor columns " style="height:100%; overflow:auto;">
+    <div class="column" style="padding:2em;">
+        <div style="background: #FFF; border-radius: 1em; overflow: hidden;">
+            <section class="hero" [ngClass] = " {'is-dark': busquedaActivada, 'is-primary': !busquedaActivada } " >
+                
+                <div class="hero-body" style="position:relative;">
+                    <nav class="level">
+                        <div class="level-left"></div>
+                        <div class="level-right">
+                            <p class="level-item"><a class="button  is-primary" title="Excel" (click)="imprimirExcel()"><span class="icon "><i class="fa fa-file-excel-o"></i></span></a></p>
+                            <p class="level-item"><a class="button  is-primary" (click)="listar(1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
+                        
+                        </div>
+                    </nav>    
+                    
+                    <div class="container is-fluid">
+                        
+                        <!--<h1 class="title" *ngIf="!busquedaActivada">
+                            <span class="icon is-medium"><i class="fa"></i></span> {{ titulo }}
+                        </h1>-->
+                        
+                            
+                            
+                        <h1 class="title" *ngIf="busquedaActivada">
+                            <span class="icon is-medium"><i class="fa fa-search"></i></span> Búsqueda 
+                        </h1>
+                        <div class="columns">
+                            
+                            <div class="column is-2">
+                              <label class="label" style="color: #FFF">Mes Inicio</label>
+                              <select class="select redondear" #desde (change)='filtro(1, desde.value)'>
+                                  <option value="1">ENERO</option>
+                                  <option value="2">FEBRERO</option>
+                                  <option value="3">MARZO</option>
+                                  <option value="4">ABRIL</option>
+                                  <option value="5">MAYO</option>
+                                  <option value="6">JUNIO</option>
+                                  <option value="7">JULIO</option>
+                                  <option value="8">AGOSTO</option>
+                                  <option value="9">SEPTIEMBRE</option>
+                                  <option value="10">OCTUBRE</option>
+                                  <option value="11">NOVIEMBRE</option>
+                                  <option value="12">DICIEMBRE</option>
+                              </select>
+                            </div>
+                            <div class="column is-2">
+                              <label class="label" style="color: #FFF">Mes Final</label>
+                              <select class="select redondear" #hasta (change)='filtro(2, hasta.value)'>
+                                <option value="1">ENERO</option>
+                                <option value="2">FEBRERO</option>
+                                <option value="3">MARZO</option>
+                                <option value="4">ABRIL</option>
+                                <option value="5">MAYO</option>
+                                <option value="6">JUNIO</option>
+                                <option value="7">JULIO</option>
+                                <option value="8">AGOSTO</option>
+                                <option value="9">SEPTIEMBRE</option>
+                                <option value="10">OCTUBRE</option>
+                                <option value="11">NOVIEMBRE</option>
+                                <option value="12">DICIEMBRE</option>
+                            </select>
+                            </div>
+                            <div class="column">
+                            <label class="label" style="color: #FFF">Clues</label>
+                                <input type="text" class="input is-medium" [(ngModel)]='filtroClues'  #searchBox  (keyup)="buscarClues(searchBox.value)">
+                            </div>
+                            <div class="column is-2">
+                            <label class="label" style="color: #FFF">Orden de Prioridad</label>
+                              <select class="select redondear" #orden (change)='filtro(4, orden.value)'>
+                                  <option value="1">SALIDAS</option>
+                                  <option value="2">NEGACIONES</option>
+                              </select>
+                            </div>
+                            <div class="column is-2">
+                              <a class="button is-medium is-primary is-inverted " (click)='listar()' style="margin-top: 20px">
+                              <span class="icon"><i class="fa fa-search"></i></span><span>Generar</span>
+                              </a>
+                              
+                            </div>
+
+                          </div>
+                          
+                    </div>
+                    
+                </div>
+            </section>
+            <div class="is-fullwidth has-text-centered" *ngIf="cargando">
+                <br>
+                <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
+                <br>
+                <br>
+            </div>
+            <br>
+            <div style="overflow:auto;" *ngIf="!cargando">
+                <table  class="table" *ngIf="!cargando">
+                    <thead style="background-color: #00d1b2;">
+                        <th style="color: #fff !important;">
+                            Insumos y Materiales de Curación
+                        </th>
+                    </thead>    
+                    <tbody *ngIf='tabla_insumos.length != 0'>
+                        <tr>
+                            <td>
+                                <div class="columns">
+                                    <div class="column">
+                                        <chart [options]="options_insumos" class="is-fullwidth is-12"  ></chart>
+                                    </div>
+                                    
+                                </div>
+                            </td>    
+                        </tr>
+                    </tbody>
+                </table>        
+                <table class="table">
+                    <thead>
+                    
+                        <tr>
+                            <th>Clave / Unidad Medica</th>
+                            
+                            <th>Nombre Insumo o Material de Curación</th>
+                            <th>Cantidad</th>
+                            <th>%</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of tabla_insumos; let i=index">
+                            <td style="vertical-align: middle;cursor:pointer;" style="width: 25%;"> {{ item.clave }} <br>
+                             {{ item.nombre }} </td>
+                            
+                            <td style="vertical-align: middle;cursor:pointer;"> {{ item.descripcion }} </td>
+                            <td style="vertical-align: middle;cursor:pointer;"> {{ item.cantidad }} </td>
+                            <td style="vertical-align: middle;cursor:pointer;"> {{ item.porcentaje }} </td>
+                        </tr>
+                        <tr *ngIf="tabla_insumos.length == 0">
+                            <td>No Existen datos a mostrar</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="overflow:auto; display:block" *ngIf="!cargando">
+                <table  class="table" *ngIf="!cargando">
+                    <thead style="background-color: #00d1b2;">
+                        <th style="color: #fff !important;">
+                            Turnos
+                        </th>
+                    </thead>    
+                    <tbody *ngIf="tabla_turnos.length != 0">
+                        <tr>
+                            <td>
+                                <div class="columns">
+                                    <div class="column">
+                                        <chart [options]="options_turnos" class="is-fullwidth is-12"  ></chart>
+                                    </div>
+                                    
+                                </div>
+                            </td>    
+                        </tr>
+                    </tbody>
+                </table>        
+                <table class="table">
+                    <thead>
+                    
+                        <tr>
+                            <th>Clave / Unidad</th>
+                            
+                            <th>Turno</th>
+                            <th>Nombre Insumo o Material de Curación</th>
+                            <th>Cantidad</th>
+                            <th>%</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of tabla_turnos; let i=index">
+                            <td style="vertical-align: middle;cursor:pointer;"  style="width: 25%;"> {{ item.clave }} <br>
+                            {{ item.nombre }} </td>
+                            <td style="vertical-align: middle;cursor:pointer;" *ngIf='item.turno_id'> {{ catalogo_turno[item.turno_id].nombre }} </td>
+                            <td style="vertical-align: middle;cursor:pointer;" *ngIf='!item.turno_id'> Sin Dato </td>
+                            <td style="vertical-align: middle;cursor:pointer;"> {{ item.descripcion }} </td>
+                            <td style="vertical-align: middle;cursor:pointer;"> {{ item.cantidad }} </td>
+                            <td style="vertical-align: middle;cursor:pointer;"> {{ item.porcentaje }} </td>
+                        </tr>
+                        <tr *ngIf="tabla_turnos.length == 0">
+                            <td>No Existen datos a mostrar</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="overflow:auto; display:block" *ngIf="!cargando">
+                    <table  class="table" *ngIf="!cargando">
+                        <thead style="background-color: #00d1b2;">
+                            <th style="color: #fff !important;">
+                                Servicios
+                            </th>
+                        </thead>    
+                        <tbody *ngIf="tabla_servicios.length != 0">
+                            <tr>
+                                <td>
+                                    <div class="columns">
+                                        <div class="column">
+                                            <chart [options]="options_servicios" class="is-fullwidth is-12"  ></chart>
+                                        </div>
+                                        
+                                    </div>
+                                </td>    
+                            </tr>
+                        </tbody>
+                    </table>        
+                    <table class="table">
+                        <thead>
+                        
+                            <tr>
+                                
+                                <th>Clave / Unidad Medica</th>
+                                <th>Servicios</th>
+                                <th>Nombre Insumo o Material de Curación</th>
+                                <th>Cantidad</th>
+                                <th>%</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of tabla_servicios; let i=index">
+                                <td style="vertical-align: middle;cursor:pointer;" style="width: 25%;"> {{ item.clave }} <br>
+                                 {{ item.nombre }} </td>
+                                <td style="vertical-align: middle;cursor:pointer;" *ngIf='item.servicio_id'> {{ catalogo_servicio[item.servicio_id].nombre }} </td>
+                                <td style="vertical-align: middle;cursor:pointer;" *ngIf='!item.servicio_id'> Sin Datos </td>
+                                
+                                <td style="vertical-align: middle;cursor:pointer;"> {{ item.descripcion }} </td>
+                                <td style="vertical-align: middle;cursor:pointer;"> {{ item.cantidad }} </td>
+                                <td style="vertical-align: middle;cursor:pointer;"> {{ item.porcentaje }} </td>
+                            </tr>
+                            <tr *ngIf="tabla_servicios.length == 0">
+                                <td>No Existen datos a mostrar</td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+                </div>
+        </div>
+    </div>
+</div> 
+
+<div id="modal-temas" class="modal is-active" [ngClass]="{'is-active': showPrimerModal}">
+        <div class="modal-background"  (click)="showPrimerModal = !showPrimerModal"></div>
+        <div class="modal-card" style="width:60%; height: auto;">
+          <header class="modal-card-head" style="background-color: #00d1b2" >
+            <div class="container is-fluid"  style="width:100%;">
+                <h1 class="title" style="color:#FFF;">
+                  <span class="icon is-medium"><i class="fa fa-user"></i></span> Unidades Medicas
+                </h1>
+            </div>            
+            <a class="button  is-primary" style="position:absolute; top:1em; right:1em;" (click)="showPrimerModal = !showPrimerModal"><span class="icon "><i class="fa fa-close"></i></span></a>
+          </header>
+          <section class="section">
+              
+            <section class="section" style="padding: 1rem 1.5rem; background-color: #EFEFEF">
+                <div class="container">
+                <!--<div class="heading">
+                    <h1 class="title">Avances</h1>
+                </div>-->
+                </div>
+            </section> 
+            <div class="columns">
+                <div class="column">
+                    <div class="control is-grouped">
+                        <p class="control is-expanded  has-icon has-icon-right">
+                            <label class="label">Unidades Médicas</label>
+                            <input class="input is-medium" type="text" [(ngModel)] = "busquedaQuery">
+                        </p>
+                    </div>
+                </div>
+                <div class="column is-2">
+                    <button class="button is-primary" style="margin-top:30px" (click)='borrar_clues()'>Borrar Seleccion</button>
+                </div>
+            </div>
+            
+            <div class="columns">
+                <div class="column">
+                    <div class="columns">
+                        <div class="column is-2">
+                            Clues
+                        </div>
+                        <div class="column is-2">
+                            Unidad
+                        </div>    
+                    </div>
+                    
+                    <div class="columns" *ngFor="let item of catalogo_clues | busquedaClues:busquedaQuery">
+                        <div class="column is-2" style="height: 30px; cursor: pointer;" (click)='seleccionaClues(item)'>
+                            {{ item.clues }}
+                        </div>
+                        <div class="column is-10" style="height: 30px; cursor: pointer;" (click)='seleccionaClues(item)'>
+                            {{ item.nombre }}
+                        </div>
+                    </div>  
+                    
+                </div>
+            </div>
+        
+          </section>
+          
+        </div>
+      </div>
+      

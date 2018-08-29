@@ -53,6 +53,10 @@ export class IndexInventarioComponent implements OnInit {
         permiso: 'xYbpHsWi4HGSXQDUmG7fcJT8ZzcZKqyb', icono: 'assets/icono-monitor-caduc.svg',
         titulo: 'Monitor de caducidades', url: '/inventario/monitor-caducidades'
       },
+      {
+        permiso: 'WBMye8hcO0Bg9P7hySl6WJ0p79HXuDZ6', icono: 'assets/icono-inventario-salidas.svg',
+        titulo: 'Reporte Salidas', url: '/inventario/reporte-salidas'
+      }
       /**
        * Temporales
        */
