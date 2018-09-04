@@ -521,6 +521,11 @@ export class FormularioComponent implements OnInit {
 					}
 				);
 		}
-	}
+  }
+  exportarExcel() {
+		var query = "token=" + localStorage.getItem('token');
+		window.open(`${environment.API_URL}/administrador-central/exportar-contrato-lista-precios-excel/${this.id}/?${query}`);
+  }
+  
 
 }

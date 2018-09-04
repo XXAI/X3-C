@@ -10,10 +10,10 @@ const routes: Routes = [
   {
     path: 'administrador-central/contratos',
     children: [       
-       { path: '', component: ListaComponent, canActivate: [PermisosGuard], data: { key: 'X36qZL6YWSwvEaR2EH1TeSOotssAkrxu'} },        
-       { path: 'nuevo', component: FormularioComponent, canActivate: [PermisosGuard], data: { key: 'jBCDyEZfGTteX7PdyuLPCdpbrCabseXy'} },
-       { path: 'editar/:id', component: FormularioComponent, canActivate: [PermisosGuard], data: { key: 'LUSTiOJVbVzVkfCKLi2VcJk29UC0GCRZ'}},    
-       { path: 'editar/:id/:lista', component: FormularioComponent, canActivate: [PermisosGuard], data: { key: 'LUSTiOJVbVzVkfCKLi2VcJk29UC0GCRZ'}},  
+       { path: '', component: ListaComponent, canActivate: [PermisosGuard], data: { key: 'IMkUZwr9GEJW91gdXNEdHZPMvYMYthT2'} },        
+       { path: 'nuevo', component: FormularioComponent, canActivate: [PermisosGuard], data: { key: 'hhKMLXe4j7aECBpbPXantCVIizVp7Jvj'} },
+       { path: 'editar/:id', component: FormularioComponent, canActivate: [PermisosGuard], data: { key: 'Wek8fk58OZrOyygmQEc8tjpg36ZkaTWK'}},    
+       { path: 'editar/:id/:lista', component: FormularioComponent, canActivate: [PermisosGuard], data: { key: 'Wek8fk58OZrOyygmQEc8tjpg36ZkaTWK'}},  
     ],
     canActivate: [AuthGuard]
   }
