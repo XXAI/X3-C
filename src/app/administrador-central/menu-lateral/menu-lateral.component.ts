@@ -38,6 +38,7 @@ export class MenuLateralComponent implements OnInit {
       {
         titulo: 'Operaciones',
         modulos: [
+          { permiso: 's8kSv2Gj9DZwRvClVRmZohp92Rtvi26i', icono: 'fa-money', titulo:"Presupuesto", url:"/administrador-central/presupuesto" },
           { permiso: 's8kSv2Gj9DZwRvClVRmZohp92Rtvi26i', icono: 'fa-exchange', titulo:"Transferencias de recursos", url:"/administrador-central/transferencias-recursos" },
         ]
       },

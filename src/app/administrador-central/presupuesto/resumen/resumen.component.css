@@ -1,0 +1,14 @@
+.text-overflow {
+	display: block;
+  	overflow: hidden;
+  	white-space: nowrap;
+  	text-overflow: ellipsis;
+}
+
+.clickable-cell{
+    text-align:right; cursor: pointer; color:#00d1b2;
+}
+.clickable-cell:hover {
+    background:#00d1b2;
+    color:white; 
+}

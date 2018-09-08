@@ -1,0 +1,89 @@
+<administrador-central-menu></administrador-central-menu>
+<div style="height:50px;"></div>
+<div class="contenedor columns " style="height:100%; ">
+  <div class="column is-narrow is-hidden-mobile">
+    <administrador-central-menu-lateral></administrador-central-menu-lateral>
+  </div>
+  <div class="column" style="overflow: scroll;">
+    <section style="background:white; border-radius:1em;">
+      <div class="top-bar is-primary" [ngClass]=" {'is-dark': busquedaActivada, 'is-primary': !busquedaActivada } ">
+        <h1 class="title" style="margin-bottom:0px" *ngIf="esEditar">
+          <span class="icon is-medium">
+            <i class="fa fa-edit"></i>
+          </span> Editar insumo médico
+        </h1>
+        <h1 class="title" style="margin-bottom:0px" *ngIf="!esEditar">
+          <span class="icon is-medium">
+            <i class="fa fa-money"></i>
+          </span> Nuevo presupuesto
+        </h1>
+        <a class="button  is-primary" routerLink="/administrador-central/presupuesto/" style="position:absolute; top:1em; right:1em;">
+          <span class="icon ">
+            <i class="fa fa-close"></i>
+          </span>
+        </a>
+      </div>
+      <div style="padding:10px">
+          <div class="columns" style="font-size: 0.8em">
+              <div class="column">
+                <div class="field">
+                  <label class="label">Ejercicio:</label>
+                  <p class="control is-expanded  has-icon has-icon-right">
+                    <input class="input" autofocus type="text" [ngClass]="{'is-danger': errores.ejercicio != null, 'is-disabled': guardando}"
+                      placeholder="Ej. 2019" [(ngModel)]="presupuesto.ejercicio">
+                    <span class="icon is-small" *ngIf="false">
+                      <i class="fa fa-warning"></i>
+                    </span>
+                    <span class="help is-danger" *ngIf="errores.ejercicio == 'required'">Este campo es requerido.</span>
+                    <span class="help is-danger" *ngIf="errores.ejercicio == 'unique'">Este ejercicio ya existe.</span>
+                  </p>
+                </div>
+              </div>
+              <div class="column">
+                  <div class="field">
+                      <label class="label">$ Presupuesto CAUSES:</label>
+                      <p class="control is-expanded  has-icon has-icon-right">
+                        <input class="input" autofocus type="text" [ngClass]="{'is-danger': errores.causes != null, 'is-disabled': guardando}"
+                          placeholder="0.00" [(ngModel)]="presupuesto.causes">
+                        <span class="icon is-small" *ngIf="false">
+                          <i class="fa fa-warning"></i>
+                        </span>
+                        <span class="help is-danger" *ngIf="errores.causes == 'required'">Este campo es requerido.</span>
+                        <span class="help is-danger" *ngIf="errores.causes == 'numeric'">Este campo debe ser un valor numerico.</span>
+                      </p>
+                    </div>
+              </div>
+              <div class="column">
+                  <div class="field">
+                      <label class="label">$ Presupuesto NO CAUSES:</label>
+                      <p class="control is-expanded  has-icon has-icon-right">
+                        <input class="input" autofocus type="text" [ngClass]="{'is-danger': errores.no_causes != null, 'is-disabled': guardando}"
+                          placeholder="0.00" [(ngModel)]="presupuesto.no_causes">
+                        <span class="icon is-small" *ngIf="false">
+                          <i class="fa fa-warning"></i>
+                        </span>
+                        <span class="help is-danger" *ngIf="errores.no_causes == 'required'">Este campo es requerido.</span>
+                        <span class="help is-danger" *ngIf="errores.no_causes == 'numeric'">Este campo debe ser un valor numerico.</span>
+                      </p>
+                    </div>
+              </div>
+              <div class="column">
+                  <div class="field">
+                      <label class="label">Factor Meses <a><span class="icon is-small"><i class="fa fa-info-circle"></i></span></a></label>
+                      <p class="control is-expanded  has-icon has-icon-right">
+                        <input class="input" autofocus type="text" [ngClass]="{'is-danger': errores.factor_meses != null, 'is-disabled': guardando}"
+                          placeholder="0.00" [(ngModel)]="presupuesto.factor_meses">
+                        <span class="icon is-small" *ngIf="false">
+                          <i class="fa fa-warning"></i>
+                        </span>
+                        <span class="help is-danger" *ngIf="errores.factor_meses == 'required'">Este campo es requerido.</span>
+                        <span class="help is-danger" *ngIf="errores.factor_meses == 'numeric'">Este campo debe ser un valor numerico.</span>
+                      </p>
+                    </div>
+              </div>
+            </div>
+      </div>
+      
+    </section>
+  </div>
+</div>
