@@ -360,21 +360,19 @@
                                                 </div> 
                                                 <div class="column is-2">                                                
                                                     <p class="control is-expanded">
-                                                        <label>Precio unitario:</label>
-                                                        <!-- <input type="number" class="input is-small" [(ngModel)]="lote.precio_unitario" [ngModelOptions]="{standalone: true}"
-                                                            (keypress)="quitar_punto($event);"
-                                                            (keyup)="cambio_cantidad_stock_key($event, form_dato.programas[i_programa].insumos[i].lotes[i_lote], i_programa, i, i_lote)"
-                                                            (blur)="cambio_cantidad_stock_key($event, form_dato.programas[i_programa].insumos[i].lotes[i_lote], i_programa, i, i_lote)"
-                                                            (change)="cambio_cantidad_stock_key($event, form_dato.programas[i_programa].insumos[i].lotes[i_lote], i_programa, i, i_lote)"
-                                                            [ngClass]="{'is-danger': form_dato.programas[i_programa].insumos[i].lotes[i_lote].precio_unitario == '', 'is-disabled': form_dato.estatus === 'INICIALIZADO'}"> -->
+                                                        <label style="float:right;text-align: right !important; width: 100%">Precio unitario:</label>
                                                         <input class="input is-small"  currencyMask [(ngModel)]='lote.precio_unitario' [ngModelOptions]="{standalone: true}"
                                                             [options]="{ prefix: '$ ', thousands: ',', decimal: '.', allowZero: true }"
                                                             (keyup)="cambio_cantidad_stock_key($event, form_dato.programas[i_programa].insumos[i].lotes[i_lote], i_programa, i, i_lote); validar_precio_unitario(i_programa, i, i_lote)"
                                                             (blur)="cambio_cantidad_stock_key($event, form_dato.programas[i_programa].insumos[i].lotes[i_lote], i_programa, i, i_lote)"
                                                             (change)="cambio_cantidad_stock_key($event, form_dato.programas[i_programa].insumos[i].lotes[i_lote], i_programa, i, i_lote)"
                                                             [ngClass]="{'is-danger': form_dato.programas[i_programa].insumos[i].lotes[i_lote].requerir_pu == true,
-                                                                        'is-disabled': form_dato.estatus === 'INICIALIZADO' || form_dato.programas[i_programa].insumos[i].precio_unitario}"
+                                                                        'is-disabled': form_dato.estatus === 'INICIALIZADO' || form_dato.programas[i_programa].insumos[i].precio_unitario,
+                                                                        'is-hidden': form_dato.programas[i_programa].insumos[i].precio_unitario}"
                                                             />
+                                                            <span class="control is-expanded"  style="float:right;" *ngIf="form_dato.programas[i_programa].insumos[i].precio_unitario">
+                                                                {{form_dato.programas[i_programa].insumos[i].precio_unitario | currency:'' }}
+                                                            </span>
                                                     </p>
                                                 </div>
                                                 <div class="column is-1" style="padding-right: 0em">

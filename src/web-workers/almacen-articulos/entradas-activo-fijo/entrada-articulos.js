@@ -5,10 +5,12 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
 (function() {
     'use strict';
 
+
     onmessage = function(evt) {
         let data = JSON.parse(evt.data)
         pdf(data);
-
+        console.log(data);
+        
     };
 
     function pdf(data) {
@@ -21,50 +23,52 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     headerRows: 5,
                     dontBreakRows: true,
                     //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
-                    widths: [50, 50, 'auto', 'auto', 'auto', 45,'auto'],
+                    widths: [100, 90, 'auto', 'auto', 'auto', 80],
                     body: [
                         [{
                             image: 'header',
                             width: 500,
                             style: 'tableHeaderTop',
-                            colSpan: 7,
+                            colSpan: 6,
                             alignment: 'center'
-                        }, {}, {}, {}, {}, {},{}],
-                        [{ text: 'SIAL', style: 'titulo', colSpan: 7, alignment: 'center' },
-                            {}, {}, {}, {}, {}, {}
+                        }, {}, {}, {}, {}, {}],
+                        [{ text: 'SIAL', style: 'titulo', colSpan: 6, alignment: 'center' },
+                            {}, {}, {}, {}, {}
                         ],
-                        [{ text: 'LISTA DE ARTÍCULOS GENERALES', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },
-                            {}, {}, {}, {}, {}, {}
-                        ],[
-                            { text: 'CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
-                            {},
-                            { text: data.usuario.clues_activa.clues, style: 'tableHeader', alignment: 'left' }, 
-                            { text: 'NOMBRE DE CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' }, 
-                            {},
-                            { text: data.usuario.clues_activa.nombre, style: 'tableHeader', colSpan: 2, alignment: 'left' }, 
-                            {}
+                        [{ text: 'ENTRADA ARTÍCULOS', style: 'tableHeaderTop', colSpan: 6, alignment: 'center' },
+                            {}, {}, {}, {}, {}
                         ],
                         [
-                            { text: '', style: 'tableHeaderVerde', colSpan: 3, alignment: 'right' },
-                            {},{},
-                            { text: 'NOMBRE DE ALMACÉN', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
-                            {},
-                            { text: data.usuario.almacen_activo.nombre, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {}
-                        ],
-                        [{ text: ' ', style: 'celdaEspacio', colSpan: 7, alignment: 'center' },
-                            {}, {}, {}, {}, {}, {}
-                        ],
-                        [{ text: ' ', style: 'celdaEspacio', colSpan: 7, alignment: 'center' },
-                            {}, {}, {}, {}, {}, {}
+                            { text: 'FOLIO', style: 'tableHeaderVerde', alignment: 'right' },
+                            { text: data.datos.id, style: 'tableHeader', alignment: 'left' },
+                            { text: 'ALMACÉN', style: 'tableHeaderVerde', alignment: 'right' },
+                            { text: data.usuario.almacen_activo.nombre, style: 'tableHeader', colSpan: 3, alignment: 'left' },
+                            {}, {},
                         ],
                         [
-                            { text: 'ID', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'ART. PADRE', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'USUARIO', style: 'tableHeaderVerde', alignment: 'right' },
+                            { text: data.usuario.nombre +' '+ data.usuario.apellidos, style: 'tableHeader', alignment: 'left' },
+                            { text: 'FECHA DE ENTRADA', style: 'tableHeaderVerde', alignment: 'right' },
+                            { text: data.datos.fecha_movimiento, style: 'tableHeader', colSpan: 3, alignment: 'left' },
+                            {}, {}
+                        ],
+                        [
+                            { text: 'CLUES', style: 'tableHeaderVerde', alignment: 'right' },
+                            { text: data.usuario.clues_activa.clues, style: 'tableHeader', alignment: 'left' },
+                            { text: 'NOMBRE DE CLUES', style: 'tableHeaderVerde', alignment: 'right' },
+                            { text: data.usuario.clues_activa.nombre, style: 'tableHeader', colSpan: 3, alignment: 'left' },
+                            {}, {}
+                        ],
+                        [{ text: ' ', style: 'celdaEspacio', colSpan: 6, alignment: 'center' },
+                            {}, {}, {}, {}, {}
+                        ],
+                        [
+                            { text: 'NUM. INVENTARIO', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'NOMBRE', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'CATEGORÍA', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'DESCRIPCIÓN', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'ACTIVO FIJO', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'PRECIO', style: 'tableHeaderVerde', alignment: 'center' }
+                            { text: 'NO. DE LOTE', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'FECHA DE CADUCIDAD', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'CANTIDAD', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'IMPORTE', style: 'tableHeaderVerde', alignment: 'center' },
                         ]
                         //Body -> insumos
                     ]
@@ -176,25 +180,84 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
 
         var suma_total_insumos = 0;
 
+
         for (var i in data.lista) {
-            var articulo = data.lista[i];
-            // if(i == data.lista.length-1){
-            //     break;
+            var insumo = data.lista[i];
+            console.log(insumo);
+
+            // for (var j in insumo.lotes) {
+            //     var lote = insumo.lotes[j];
+            //     dd.content[0].table.body.push([
+            //         { text: lote.clave_insumo_medico, style: 'tableRow', alignment: 'center' },
+            //         { text: insumo.detalles.descripcion, style: 'tableRow', alignment: 'center' },
+            //         { text: lote.lote, style: 'tableRow', alignment: 'center' },
+            //         { text: lote.fecha_caducidad, style: 'tableRow', alignment: 'center' },
+            //         { text: lote.codigo_barras, style: 'tableRow', alignment: 'center' },
+            //         { text: lote.cantidad, style: 'tableRow', alignment: 'center' }
+            //     ]);
             // }
+            for (var j in insumo.inventarios) {
+                var insumo_af = insumo.inventarios[j];
+                console.log(insumo_af);
                 dd.content[0].table.body.push([
-                    { text: articulo.id ? articulo.id : 'No disponible' , style: 'tableRow', alignment: 'center' },
-                    { text: articulo.padre == null ? 'No disponible' : articulo.padre.nombre, style: 'tableRow', alignment: 'center' },
-                    { text: articulo.nombre == null ? 'No disponible' : articulo.nombre, style: 'tableRow', alignment: 'center' },
-                    { text: articulo.categoria == null ? 'No disponible' :  articulo.categoria.nombre, style: 'tableRow', alignment: 'center' },
-                    { text: articulo.descripcion == null ? 'No disponible' :  articulo.descripcion, style: 'tableRow', alignment: 'center' },
-                    // { text: articulo.movimiento_usuario == null ? 'No disponible' : articulo.movimiento_usuario.nombre + ' ' + articulo.movimiento_usuario.apellidos, style: 'tableRow', alignment: 'center' },
-                    { text: !articulo.es_activo_fijo ? 'No disponible' : articulo.es_activo_fijo == '0' ? 'NO' : articulo.es_activo_fijo == '1' ? 'SI' : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: articulo.precio_referencia ? articulo.precio_referencia : 'No disponible', style: 'tableRow', alignment: 'right' }
+                    { text: insumo_af.numero_inventario, style: 'tableRow', alignment: 'center' },
+                    { text: insumo.articulos.nombre, style: 'tableRow', alignment: 'center' },
+                    { text: insumo_af.lote, style: 'tableRow', alignment: 'center' },
+                    { text: insumo_af.fecha_caducidad, style: 'tableRow', alignment: 'center' },
+                    { text: insumo_af.existencia, style: 'tableRow', alignment: 'center' },
+                    { text: insumo.importe == null ? 'No disponible' : ('$ ' + Number(insumo.importe).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')), style: 'tableRow', alignment: 'right' }
                 ]);
+            }
+
         }
 
+
+        dd.content[0].table.body.push(
+            // Footer
+            [
+                { text: "", style: 'tableHeader', colSpan: 6, alignment: 'center' },
+                '', '', '', '', ''
+            ],
+
+            // Firmas
+            [{
+                table: {
+                    widths: ['*', '*'],
+                    body: [
+                        [
+                            { text: '\n\n\n\n', rowSpan: 2, style: 'tableRow' }, 
+                            { text: "Observaciones", style: 'text' }
+                        ],
+                        [
+                            '', 
+                            { text: '\n' + data.datos.observaciones, rowSpan: 2, alignment: 'justify' }
+                        ],
+                        ['Persona que entrega ', '']
+                    ],
+                },
+                layout: {
+                    hLineWidth: function(i, node) {
+                        if (i == 0 || i == 3) {
+                            return 0;
+                        }
+                        return 0.5;
+                    },
+                    vLineWidth: function(i, node) {
+                        if (i == 0 || i == 3) {
+                            return 0;
+                        }
+                        return 0.5;
+                    },
+                },
+                style: 'tableHeader',
+                margin: [0, 0, 0, 0],
+                colSpan: 6,
+                alignment: 'center',
+            }, {}, {}, {}, {}, {}]
+        );
+
         pdfMake.createPdf(dd).getBase64(function(base64) {
-            postMessage({ fileName: 'Lista_Artículos.pdf', base64: base64 });
+            postMessage({ fileName: 'Entrada_Articulos_' + data.datos.id + '.pdf', base64: base64 });
         });
     }
 

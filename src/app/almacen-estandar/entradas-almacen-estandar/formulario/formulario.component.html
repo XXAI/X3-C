@@ -2,7 +2,7 @@
 <app-menu-almacen-estandar [modulo]="'Entrada  de medicamentos'" [icono]="'assets/icono-entradas.svg'" [url]="'/almacen-estandar/entradas'" (ayudaModal)="abrirModal('ayuda')"></app-menu-almacen-estandar>
 <div style="height:50px;"></div>
 <form name="form" novalidate [formGroup]="dato" (ngSubmit)="ctrl.enviar()">
-    <div class="contenedor columns " style="height:90%">
+    <div class="contenedor columns" style="height:90%">
         <div class="column is-one-third" style="padding:1em;">
             <div style="background: #FFF; border-radius: 1em; ">
                 <section class="hero is-primary">
@@ -32,7 +32,7 @@
                          </div>
                     </h3>
                 </div>
-                    <div style="padding: 1em; overflow: scroll; overflow-x: hidden;" [style.height.px]="ctrl.tamano-300">                    
+                    <div style="padding: 1em; overflow: scroll; overflow-x: hidden;" [style.height.px]="ctrl.tamano-320">                    
                         <div class="field" >
                             <label class="label">Fecha de referencia:</label>
                             <p class="control is-expanded  has-icon has-icon-right">
@@ -255,7 +255,7 @@
             </div>
         </div>
         <!-- apartado de insumos -->
-        <div class="column" style="padding: 1em; overflow: scroll; overflow-x: hidden;" [style.height.px]="ctrl.tamano-100">
+        <div class="column" >
             <div style="background: #FFF; border-radius: 1em; ">
                 <section class="hero is-primary">
                     <div class="hero-body">

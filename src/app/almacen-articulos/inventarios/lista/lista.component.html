@@ -11,26 +11,110 @@
         <div style="background: #FFF; border-radius: 1em; ">
 
             <!-- Opciones y busqueda -->
-            <tabla-opciones 
+            <!-- Right side -->
+            <section class="hero" [ngClass]=" {'is-dark': ctrl.busquedaActivada, 'is-primary': !ctrl.busquedaActivada } ">
+              <div class="hero-body" style="position:relative;">
+
+                  <div class="control is-grouped" style="position:absolute; top:0.5em; right:0em;">
+
+                      <p class="control" *ngIf="!ctrl.busquedaActivada">
+                          <a class="button is-primary tooltip"  (click)="ctrl.listar(1)">
+                              <span class="icon ">
+                                  <i class="fa fa-refresh"></i>
+                              </span>
+                              <span class="tooltiptext">Actualizar</span>
+                          </a>
+                      </p>
+
+                      <p class="control" *ngIf="ctrl.busquedaActivada">
+                          <a class="button is-dark tooltip"  (click)="ctrl.listarBusqueda(searchBox.value,1)" id="cargar_datos_actualizar">
+                              <span class="icon ">
+                                  <i class="fa fa-refresh"></i>
+                              </span>
+                              <span class="tooltiptext">Actualizar</span>
+                          </a>
+                      </p>
+
+                      <p class="control" *ngIf="false">
+                          <a  class="button is-{{ctrl.busquedaActivada ? 'dark' : 'primary'}} tooltip"  routerLink="{{url_nuevo}}">
+                              <span class="icon ">
+                                  <i class="fa fa-file"></i>
+                              </span>
+                              <span class="tooltiptext">Nuevo</span>
+                          </a>
+                      </p>
+
+                      <p class="control">
+                          <a class="button is-{{ctrl.busquedaActivada ? 'dark' : 'primary'}} tooltip" (click)="imprimirExcel()">
+                              <span class="icon ">
+                                  <i class="fa fa-file-excel-o"></i>
+                              </span>
+                              <span class="tooltiptext">Exportar Excel</span>
+                          </a>
+                      </p>
+
+                      <!-- <p class="control">
+                          <a class="button is-{{ctrl.busquedaActivada ? 'dark' : 'primary'}} tooltip" (click)="imprimirPdf()">
+                              <span class="icon ">
+                                  <i class="fa fa-print"></i>
+                              </span>
+                              <span class="tooltiptext">Imprimir</span>
+                          </a>
+                      </p> -->
+                      <p class="control">
+                          <a class="button  is-dark tooltip" *ngIf="ctrl.busquedaActivada" (click)="ctrl.cerrar_busqueda(searchBox)">
+                              <span class="icon ">
+                                  <i class="fa fa-close"></i>
+                              </span>
+                              <span class="tooltiptext">Cerrar Busqueda</span>
+                          </a>
+                      </p>
+                  </div>
+
+                  <div class="container is-fluid">
+
+                      <h1 class="title" *ngIf="!ctrl.busquedaActivada">
+                          <span class="icon is-medium"><i class="fa fa-list"></i></span>&nbsp; Inventarios
+                      </h1>
+                      <h1 class="title" *ngIf="ctrl.busquedaActivada">
+                          <span class="icon is-medium"><i class="fa fa-search"></i></span> Búsqueda
+                      </h1>
+                      <div class="control is-grouped">
+                          <p class="control is-expanded">
+                              <input class="input is-medium" type="text" placeholder="Buscar" #searchBox id="search-box" (keyup)="ctrl.buscar(searchBox.value)">
+                          </p>
+
+                      </div>
+                  </div>
+
+              </div>
+          </section>
+
+          <div class="is-fullwidth has-text-centered" *ngIf="ctrl.cargando">
+              <br>
+              <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
+              <br>
+              <br>
+          </div>
+            <!-- <tabla-opciones
                 #opciones
                 [ctrl]= "ctrl"
-                [nombre]= "'Inventarios'"
                 [ruta]= "'inventario-articulos'"
                 [nuevo]= false
-                [ruta_pdf]="'almacen-articulos/lista-inventario-articulos.js'"></tabla-opciones>
-            
+                [ruta_pdf]="'almacen-articulos/lista-inventario-articulos.js'"></tabla-opciones> -->
+
             <span style="overflow-y:auto; overflow-x: hidden; display:block" [style.maxHeight.px]="tamano-285">
-                <div class="is-fullwidth has-text-centered" *ngIf="opciones.cargandoPdf">
+                <div class="is-fullwidth has-text-centered" *ngIf="ctrl.cargandoPdf">
                     <br>
                     <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Generando PDF...</span></span>
                     <br>
                     <br>
                 </div>
-                <table class="table" *ngIf="!ctrl.cargando && !opciones.cargandoPdf">
+                <table class="table" *ngIf="!ctrl.cargando && !ctrl.cargandoPdf">
                     <thead>
                         <tr>
-                            <th><abbr title="Usuario ID">ID</abbr></th> 
-                            <th>Almacén</th>                       
+                            <th><abbr title="Usuario ID">ID</abbr></th>
+                            <th>Almacén</th>
                             <th>Articulo</th>
                             <th>Numero de inventario</th>
                             <th>Existencia</th>
@@ -44,7 +128,7 @@
                             <td style="vertical-align: middle;"><a routerLink="/almacen-articulos/inventarios/editar/{{item.id}}">{{ item.almacen ? item.almacen.nombre : 'NO TIENE' }} </a></td>
                             <td style="vertical-align: middle;"><a routerLink="/almacen-articulos/inventarios/editar/{{item.id}}">{{ item.articulo.nombre }} </a></td>
                             <td style="vertical-align: middle;"><a routerLink="/almacen-articulos/inventarios/editar/{{item.id}}">{{ item.numero_inventario }} </a></td>
-                            <td style="vertical-align: middle;"><a routerLink="/almacen-articulos/inventarios/editar/{{item.id}}">{{ item.existencia }} </a></td>
+                            <td style="vertical-align: middle;"><a routerLink="/almacen-articulos/inventarios/editar/{{item.id}}"><span class="tag is-warning is-large ">{{ item.existencia }} </span></a></td>
                             <td style="vertical-align: middle;"><a routerLink="/almacen-articulos/inventarios/editar/{{item.id}}">{{ item.baja == 1 ? 'Si'  : 'No' }} </a></td>
                             <td style="vertical-align: middle;" class="has-text-centered"><span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando"
                                     class="is-danger" (click)="ctrl.eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>
@@ -60,7 +144,7 @@
                             <td style="vertical-align: middle;"><a routerLink="/almacen-articulos/inventarios/editar/{{item.id}}">{{ item.almacen ? item.almacen.nombre : 'NO TIENE' }} </a></td>
                             <td style="vertical-align: middle;"><a routerLink="/almacen-articulos/inventarios/editar/{{item.id}}">{{ item.articulo.nombre }} </a></td>
                             <td style="vertical-align: middle;"><a routerLink="/almacen-articulos/inventarios/editar/{{item.id}}">{{ item.numero_inventario }} </a></td>
-                            <td style="vertical-align: middle;"><a routerLink="/almacen-articulos/inventarios/editar/{{item.id}}">{{ item.existencia }} </a></td>
+                            <td style="vertical-align: middle;"><a routerLink="/almacen-articulos/inventarios/editar/{{item.id}}"><span class="tag is-warning is-large ">{{ item.existencia }} </span></a></td>
                             <td style="vertical-align: middle;"><a routerLink="/almacen-articulos/inventarios/editar/{{item.id}}">{{ item.baja == 1 ? 'Si'  : 'No' }} </a></td>
                             <td style="vertical-align: middle;" class="has-text-centered"><span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando"
                                     class="is-danger" (click)="ctrl.eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>

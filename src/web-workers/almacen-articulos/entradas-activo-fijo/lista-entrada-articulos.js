@@ -8,7 +8,6 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
     onmessage = function(evt) {
         let data = JSON.parse(evt.data)
         pdf(data);
-
     };
 
     function pdf(data) {
@@ -21,7 +20,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                     headerRows: 5,
                     dontBreakRows: true,
                     //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
-                    widths: [50, 50, 'auto', 'auto', 'auto', 45,'auto'],
+                    widths: [90, 60, 'auto', 'auto', 'auto', 90,'auto'],
                     body: [
                         [{
                             image: 'header',
@@ -33,7 +32,7 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         [{ text: 'SIAL', style: 'titulo', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],
-                        [{ text: 'LISTA DE ARTÍCULOS GENERALES', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },
+                        [{ text: 'ENTRADAS DE ARTÍCULOS GENERALES', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],[
                             { text: 'CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
@@ -54,17 +53,51 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                         [{ text: ' ', style: 'celdaEspacio', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],
+                        // [
+                        //     { text: 'DESDE:', style: 'tableHeaderVerde', alignment: 'right' }, 
+                        //     { text: data.fecha_desde == "" ? '- -' : data.fecha_desde.substr(0,10), 
+                        //       style: 'tableHeader', alignment: 'left' },
+                        //     { text: 'HASTA:', style: 'tableHeaderVerde', alignment: 'right' }, 
+                        //     { text: data.fecha_hasta == "" ? '- -' : data.fecha_hasta.substr(0,10), 
+                        //       style: 'tableHeader', alignment: 'left' },
+                        //     { text: 'PROGRAMA:', style: 'tableHeaderVerde',  alignment: 'right' },
+                        //     { text: data.programa_id == "" ? 'TODOS' : data.programa_id, style: 'tableHeader', colSpan: 2,  alignment: 'left' },
+                        //     { }
+                        // ],
+                                            
+                        [
+                            { text: 'DESDE:', style: 'tableHeaderVerde', alignment: 'right' }, 
+                            { text: data.fecha_desde == "" ? '- -' : data.fecha_desde.substr(0,10), 
+                              style: 'tableHeader', alignment: 'left' },
+                            { text: 'HASTA:', style: 'tableHeaderVerde', alignment: 'right' }, 
+                            { text: data.fecha_hasta == "" ? '- -' : data.fecha_hasta.substr(0,10), 
+                              style: 'tableHeader', alignment: 'left' },
+                            { text: 'PROGRAMA:', style: 'tableHeaderVerde',  alignment: 'right' },
+                            { text: data.programa, style: 'tableHeader', colSpan: 2, alignment: 'left' },
+                            {}
+                        ],
+                        [
+                            { text: 'DONACION:', style: 'tableHeaderVerde', alignment: 'right' }, 
+                            { text: data.donacion == "" ? '- -' : data.donacion.substr(0,10), 
+                              style: 'tableHeader', alignment: 'left' },
+                            { text: 'DONANTE:', style: 'tableHeaderVerde', alignment: 'right' }, 
+                            { text: data.donante == "" ? '- -' : data.donante.substr(0,10), 
+                              style: 'tableHeader', alignment: 'left' },
+                            { text: 'PROVEEDOR:', style: 'tableHeaderVerde',  alignment: 'right' },
+                            { text: data.proveedor_id, style: 'tableHeader', colSpan: 2, alignment: 'left' },
+                            {}
+                        ],
                         [{ text: ' ', style: 'celdaEspacio', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],
                         [
-                            { text: 'ID', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'ART. PADRE', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'NOMBRE', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'CATEGORÍA', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'DESCRIPCIÓN', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'ACTIVO FIJO', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'PRECIO', style: 'tableHeaderVerde', alignment: 'center' }
+                            { text: 'FOLIO', style: 'tableHeaderVerde',  alignment: 'center' },
+                            { text: 'CAPTURADO', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'PROGRAMA', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'PROVEEDOR', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'ARTÍCULOS', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'IMPORTE', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'ESTATUS', style: 'tableHeaderVerde', alignment: 'center' }
                         ]
                         //Body -> insumos
                     ]
@@ -177,24 +210,24 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
         var suma_total_insumos = 0;
 
         for (var i in data.lista) {
-            var articulo = data.lista[i];
+            var movimiento = data.lista[i];
             // if(i == data.lista.length-1){
             //     break;
             // }
+            console.log(movimiento);
                 dd.content[0].table.body.push([
-                    { text: articulo.id ? articulo.id : 'No disponible' , style: 'tableRow', alignment: 'center' },
-                    { text: articulo.padre == null ? 'No disponible' : articulo.padre.nombre, style: 'tableRow', alignment: 'center' },
-                    { text: articulo.nombre == null ? 'No disponible' : articulo.nombre, style: 'tableRow', alignment: 'center' },
-                    { text: articulo.categoria == null ? 'No disponible' :  articulo.categoria.nombre, style: 'tableRow', alignment: 'center' },
-                    { text: articulo.descripcion == null ? 'No disponible' :  articulo.descripcion, style: 'tableRow', alignment: 'center' },
-                    // { text: articulo.movimiento_usuario == null ? 'No disponible' : articulo.movimiento_usuario.nombre + ' ' + articulo.movimiento_usuario.apellidos, style: 'tableRow', alignment: 'center' },
-                    { text: !articulo.es_activo_fijo ? 'No disponible' : articulo.es_activo_fijo == '0' ? 'NO' : articulo.es_activo_fijo == '1' ? 'SI' : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: articulo.precio_referencia ? articulo.precio_referencia : 'No disponible', style: 'tableRow', alignment: 'right' }
+                    { text: movimiento.id ? movimiento.id : 'No disponible', style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.fecha_movimiento ? movimiento.fecha_movimiento : 'No disponible', style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.programa ? movimiento.programa.nombre : 'No disponible', style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.proveedor_id ? movimiento.proveedor_id : 'No disponible', style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.total_articulos == null ? 'No disponible' : 'Articulos: ' + movimiento.total_articulos, style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.total_importe == null ? 'No disponible' : ('$ ' + Number(movimiento.total_importe).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')), style: 'tableRow', alignment: 'right' },
+                    { text: !movimiento.status ? 'No disponible' : movimiento.status == 'FI' ? 'Finalizado' : movimiento.status == 'BR' ? 'Borrador' : 'No disponible', style: 'tableRow', alignment: 'center' }
                 ]);
         }
 
         pdfMake.createPdf(dd).getBase64(function(base64) {
-            postMessage({ fileName: 'Lista_Artículos.pdf', base64: base64 });
+            postMessage({ fileName: 'Lista_Entradas_Artículos.pdf', base64: base64 });
         });
     }
 
