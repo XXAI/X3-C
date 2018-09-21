@@ -16,13 +16,13 @@ const routes: Routes = [
         path: '',
         component: ListaComponent,
         canActivate: [PermisosGuard],
-        data: { key: '5Pnh7DTayhrND0GyB7bzfbdFK2kA6bgM'}
+        data: { key: 'aUYWDYq2gV9RqGaIe6XdRfd2QjZOeRSP'}
       },
       {
         path: 'nuevo',
         component: FormularioComponent,
         canActivate: [PermisosGuard],
-        data: { key: '5Pnh7DTayhrND0GyB7bzfbdFK2kA6bgM'}
+        data: { key: 'aUYWDYq2gV9RqGaIe6XdRfd2QjZOeRSP'}
       },
       {
         path: 'editar/:id',
