@@ -176,7 +176,7 @@
                                         <span class="tooltiptext">Consultar pedido global</span>
                                     </button> -->
                                     <button class="button is-primary tooltip" (click)="imprimir()" title="PDF" type="submit"
-                                        [ngClass]="{'is-loading': cargando}" [disabled]="form_dato.invalid">
+                                        [ngClass]="{'is-loading': cargando, 'is-hidden': form_dato.estatus === 'CONCENTRADO'}" [disabled]="form_dato.invalid">
                                         <!-- , 'is-hidden': form_dato.estatus === 'NOINICIALIZADO' -->
                                         <span class="icon">
                                             <i class="fa fa-file-pdf-o fa-2x"></i>

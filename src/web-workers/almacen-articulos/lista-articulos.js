@@ -58,13 +58,13 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
                             {}, {}, {}, {}, {}, {}
                         ],
                         [
-                            { text: 'FECHA', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'FOLIO', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'INSUMOS', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'ENTREGÓ', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'RECIBE', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'ESTATUS', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'CAPTURADO', style: 'tableHeaderVerde', alignment: 'center' }
+                            { text: 'ID', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'ART. PADRE', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'NOMBRE', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'CATEGORÍA', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'DESCRIPCIÓN', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'ACTIVO FIJO', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'PRECIO', style: 'tableHeaderVerde', alignment: 'center' }
                         ]
                         //Body -> insumos
                     ]
@@ -177,18 +177,19 @@ importScripts('../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js'
         var suma_total_insumos = 0;
 
         for (var i in data.lista) {
-            var movimiento = data.lista[i];
-            if(i == data.lista.length-1){
-                break;
-            }
+            var articulo = data.lista[i];
+            // if(i == data.lista.length-1){
+            //     break;
+            // }
                 dd.content[0].table.body.push([
-                    { text: movimiento.fecha_movimiento ? movimiento.fecha_movimiento : 'No disponible' , style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.id ? movimiento.id : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.numero_claves == null || movimiento.numero_insumos == null ? 'No disponible' : 'Claves: ' + movimiento.numero_claves + '\n Insumos: ' + movimiento.numero_insumos, style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.movimiento_metadato == null ? 'No disponible' :  movimiento.movimiento_metadato.persona_recibe, style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.movimiento_usuario == null ? 'No disponible' : movimiento.movimiento_usuario.nombre + ' ' + movimiento.movimiento_usuario.apellidos, style: 'tableRow', alignment: 'center' },
-                    { text: !movimiento.status ? 'No disponible' : movimiento.status == 'FI' ? 'Finalizado' : movimiento.status == 'BR' ? 'Borrador' : 'No disponible', style: 'tableRow', alignment: 'center' },
-                    { text: movimiento.created_at ? movimiento.created_at : 'No disponible', style: 'tableRow', alignment: 'center' }
+                    { text: articulo.id ? articulo.id : 'No disponible' , style: 'tableRow', alignment: 'center' },
+                    { text: articulo.padre == null ? 'No disponible' : articulo.padre.nombre, style: 'tableRow', alignment: 'center' },
+                    { text: articulo.nombre == null ? 'No disponible' : articulo.nombre, style: 'tableRow', alignment: 'center' },
+                    { text: articulo.categoria == null ? 'No disponible' :  articulo.categoria.nombre, style: 'tableRow', alignment: 'center' },
+                    { text: articulo.descripcion == null ? 'No disponible' :  articulo.descripcion, style: 'tableRow', alignment: 'center' },
+                    // { text: articulo.movimiento_usuario == null ? 'No disponible' : articulo.movimiento_usuario.nombre + ' ' + articulo.movimiento_usuario.apellidos, style: 'tableRow', alignment: 'center' },
+                    { text: !articulo.es_activo_fijo ? 'No disponible' : articulo.es_activo_fijo == '0' ? 'NO' : articulo.es_activo_fijo == '1' ? 'SI' : 'No disponible', style: 'tableRow', alignment: 'center' },
+                    { text: articulo.precio_referencia ? articulo.precio_referencia : 'No disponible', style: 'tableRow', alignment: 'right' }
                 ]);
         }
 

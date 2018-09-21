@@ -184,7 +184,7 @@
                                         <span class="tooltiptext" style="color: blue">Crear cuadro de distribución</span>
                                     </button> -->
                                     <button class="button is-primary tooltip" (click)="consultar_pedido();" title="Consultar pedido Global" type="submit"
-                                            [ngClass]="{'is-loading': cargando, 'is-hidden': form_dato.estatus === 'NOINICIALIZADO' || form_dato.estatus === 'INICIALIZADO'}"
+                                            [ngClass]="{'is-loading': cargando, 'is-hidden': form_dato.estatus === 'NOINICIALIZADO' || form_dato.estatus === 'INICIALIZADO' || form_dato.estatus === 'AJUSTADO'}"
                                             [disabled]="form_dato.estatus == 'NOINICIALIZADO' || form_dato.estatus === 'INICIALIZADO'">
                                         <span class="icon">
                                             <i class="fa fa-eye fa-2x"></i>
@@ -249,8 +249,9 @@
                             <article class="tile is-primary is-child notification has-text-centered" style="padding: 0; padding-left: 1em;">
                                 <nav class="level" style="padding-left: 1em;">
                                     <!-- Left side -->
-                                    <div class="level-left" style="margin: 0.5em">
-                                        <div class="level-item">
+                                    <div class="level-left" style="margin: 0.5em" [ngClass]="{'is-loading': cargando, 'is-hidden': form_dato.estatus === 'AJUSTADO'}">
+                                        <div class="level-item"
+                                        [ngClass]="{'is-loading': cargando, 'is-hidden': form_dato.estatus === 'AJUSTADO'}">
                                             <p class="title">
                                                 <span *ngIf="!cargando || !cargando" class="icon is-medium">
                                                     <i class="fa fa-hospital-o"></i>
@@ -262,20 +263,20 @@
                                             </p>
                                         </div>
                                     </div>
-                                    <!-- <div class="level-left" style="margin: 0.5em">
+                                    <div class="level-left" style="margin: 0.5em">
                                         <div class="level-item"
                                         [ngClass]="{'is-loading': cargando, 'is-hidden': form_dato.estatus === 'NOINICIALIZADO' || form_dato.estatus === 'INICIALIZADO' || form_dato.estatus === 'CONCENTRADO'}">
                                             <p class="title">
                                                 <span *ngIf="!cargando || !cargando" class="icon is-medium">
-                                                    <i class="fa fa-hospital-o"></i>
+                                                    <i class="fa fa-shopping-basket"></i>
                                                 </span>
                                                 <span *ngIf="cargando || cargando" class="icon is-medium">
                                                     <i class="fa fa-refresh fa-spin"></i>
                                                 </span>
-                                                MEDICAMENTOS
+                                                Insumos
                                             </p>
                                         </div>
-                                    </div> -->
+                                    </div>
                                     <div class="level-right" style="padding-right: 4em;">
                                         <div class="level-item" [ngClass]="{'is-hidden': form_dato.estatus == 'INICIALIZADO'}">
                                             <a  class="button is-primary"
@@ -300,7 +301,8 @@
                                 </div> -->
                             </article>
                             <div  style="padding: 1em; overflow: scroll; overflow-x: hidden;" [style.height.px]="tamano-400">
-                                <table class="table">
+                                <!-- *******************TABLA DE          C L U E S            ********************* -->
+                                <table class="table" [ngClass]="{'is-loading': cargando, 'is-hidden': form_dato.estatus === 'AJUSTADO'}">
                                     <thead>
                                         <tr>
                                             <th style=" text-align: center;"><abbr title="Folio">Folio</abbr></th>
@@ -374,6 +376,59 @@
                                         </tr>
                                         <tr *ngIf="form_dato.unidades_medicas.length == 0">
                                             <td colspan="6" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <!-- *******************TABLA DE INSUMOS********************* -->
+                                <table class="table" [ngClass]="{'is-loading': cargando, 'is-hidden': form_dato.estatus != 'AJUSTADO'}">
+                                    <thead>
+                                        <tr>
+                                            <th style=" text-align: center;"><abbr title="#">NP</abbr></th>
+                                            <th style=" text-align: center;">Clave</th>
+                                            <th>Descripción</th>
+                                            <th style=" text-align: center;">Precio</th>
+                                            <th style=" text-align: center;">Cantidad solicitada</th>
+                                            <th style=" text-align: center;">Cantidad ajustada</th>
+                                            <th style=" text-align: center;">Importe</th>
+                                            <!-- <th style=" text-align: center;">Opciones</th> -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let insumo of insumos_pedido; let i_insumos = index"
+                                            [ngStyle]="{'background': insumo.cantidad_solicitada != insumo.cantidad_enviada ? '#FFFB7E' : ''}">
+                                            <th style=" text-align: center;">
+                                                <a (click)="consultar_pedido_medicamento(insumo.insumo_medico_clave, insumo)"> {{i_insumos + 1}} </a>
+                                            </th>
+                                            <th style=" text-align: center;">
+                                                <span *ngIf="insumo.cantidad_solicitada != insumo.cantidad_enviada">
+                                                    <a (click)="consultar_pedido_medicamento(insumo.insumo_medico_clave, insumo)"> 
+                                                        {{insumo.insumo_medico_clave}}&nbsp;
+                                                    </a>
+                                                </span>
+                                                <span *ngIf="insumo.cantidad_solicitada == insumo.cantidad_enviada">
+                                                        {{insumo.insumo_medico_clave}}&nbsp;
+                                                </span>
+                                            </th>
+                                            <th>
+                                                <a (click)="consultar_pedido_medicamento(insumo.insumo_medico_clave, insumo)">
+                                                    <span>{{insumo.info_insumo.descripcion}}&nbsp;</span>
+                                                    <label class="tag is-success" *ngIf="insumo.info_insumo.es_causes == true"><strong>Causes </strong></label>
+                                                    <label class="tag" *ngIf="insumo.info_insumo.es_causes == 0" style="background: #B8FB7E; border-color: #B8FB7E; color: rgba(0,0,0,0.7);" ><strong>No Causes </strong> </label>
+                                                    <span *ngIf="insumo.info_insumo.tipo == 'MC'" class="tag is-warning" style="font-size: 0.7em !important;">MATERIAL CURACIÓN</span>
+                                                </a>
+                                            </th>
+                                            <th style="text-align: right;">
+                                                {{insumo.precio_unitario | currency:''}}
+                                            </th>
+                                            <th style="text-align: right;">
+                                                {{insumo.cantidad_enviada | number}}
+                                            </th>
+                                            <th style=" text-align: right;">
+                                                {{insumo.cantidad_solicitada}}
+                                            </th>
+                                            <th style=" text-align: right;">
+                                                {{insumo.monto_solicitado | currency:''}}
+                                            </th>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -458,7 +513,7 @@
     </div>
 </div>
 
-
+<!-- PEDIDO GLOBAL -->
 <div class="modal" id="pedidoGlobal">
     <div class="modal-background"></div>
     <div class="modal-card" style="width: 80%">
@@ -482,7 +537,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let insumo of insumos_pedido; let i_insumos = index" [ngStyle]="{'background': insumo.cantidad_solicitada != insumo.cantidad_enviada ? '#FFFB7E' : ''}">
+                            <tr *ngFor="let insumo of insumos_pedido; let i_insumos = index"
+                                [ngStyle]="{'background': insumo.cantidad_solicitada != insumo.cantidad_enviada ? '#FFFB7E' : ''}">
                                 <th style=" text-align: center;">{{i_insumos + 1}} </th>
                                 <th style=" text-align: center;"><span>{{insumo.insumo_medico_clave}}&nbsp;</span></th>
                                 <th>
@@ -580,6 +636,106 @@
     <div *ngIf="detalle_CLUES == []" class="modal-card" style="width: 80%"> Error al cargar datos</div>
 </div>
 <!-- FINALIZA DETALLES DE LOS INSUMOS DE LA CLUES -->
+
+<!-- ASIGNAR INSUMOS A UM -->
+<div class="modal" id="insumosUM">
+        <div class="modal-background"></div>
+        <div class="modal-card" style="width: 80%">
+            <header class="modal-card-head">
+                <p class="modal-card-title"><i class="fa fa-file-text"></i>&nbsp; Designar insumos a Unidades médicas</p>
+                <button class="delete" (click)="cancelarModal('insumosUM')"></button>
+            </header>
+            <section class="modal-card-body">
+                <div class="content">
+                    <div class="columns" style="padding: 1em;">
+                        <div class="column">
+                            <p>{{insumo_detalle?.insumo_medico_clave}}&nbsp;</p>
+                            <span>{{insumo_detalle?.info_insumo?.descripcion}}&nbsp;</span>
+                            <label class="tag is-success" *ngIf="insumo_detalle?.info_insumo?.es_causes == true"><strong>Cause </strong></label>
+                            <label class="tag" *ngIf="insumo_detalle?.info_insumo?.es_causes == false" style="background: #B8FB7E; border-color: #B8FB7E; color: rgba(0,0,0,0.7);" ><strong>No Cause </strong> </label>
+                            <span *ngIf="insumo_detalle?.info_insumo?.tipo == 'MC'" class="tag is-warning" style="font-size: 0.7em !important;">MATERIAL CURACIÓN</span>
+                        </div>
+                        <div class="column" style="font-size: 18px !important">
+                            <p style="vertical-align: center;">
+                                Cantidad total solicitada: <span class="tag is-warning is-medium" style="font-size: 18px ">{{insumo_detalle?.cantidad_enviada}}</span>
+                            </p>
+                            <p>
+                                Cantidad total autorizada: <span class="tag is-success is-medium" style="font-size: 18px ">{{insumo_detalle?.cantidad_solicitada}}</span>
+                            </p>
+                            <p>
+                                Cantidad total ajustada:
+                                <span class="tag is-success is-medium" style="font-size: 18px"
+                                [ngClass]="{'is-danger': suma_insumos_cd != insumo_detalle?.cantidad_solicitada}">{{suma_insumos_cd}}</span>
+                            </p>
+                        </div>
+                        
+                    </div>
+                    <div  style="padding: 1em; overflow: scroll; overflow-x: hidden;" [style.height.px]="tamano-500">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style=" text-align: center;"><abbr title="#">NP</abbr></th>
+                                    <th style=" text-align: center;">CLUES</th>
+                                    <th>Nombre</th>
+                                    <th style=" text-align: center;">Precio</th>
+                                    <th style=" text-align: center;">Cantidad solicitada</th>
+                                    <th style=" text-align: center;">Cantidad ajustada</th>
+                                    <th style=" text-align: center;">Importe</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let insumo_um_detalle of json_insumos_UM.insumos_ajustar; let i_um = index"
+                                    [ngStyle]="{'background': insumo_um_detalle.cantidad_solicitada != insumo_um_detalle.cantidad_enviada ? '#FFFB7E' : ''}">
+                                    <th style=" text-align: center;">{{i_um + 1}} </th>
+                                    <th style=" text-align: center;"><span>{{insumo_um_detalle.clues_detalles.clues}}&nbsp;</span></th>
+                                    <th>
+                                        <span>{{insumo_um_detalle.clues_detalles.nombre}}&nbsp;</span>
+                                    </th>
+                                    <th style="text-align: right;">
+                                        {{insumo_um_detalle.precio_unitario | currency:''}}
+                                    </th>
+                                    <th style=" text-align: right;">
+                                        {{insumo_um_detalle.cantidad_enviada}}
+                                    </th>
+                                    <th style=" text-align: right;">
+                                        <!-- <span [ngStyle]="{'color': insumo_um_detalle.cantidad_solicitada != insumo_um_detalle.cantidad_enviada ? 'green' : ''}">
+                                            {{insumo_um_detalle.cantidad_solicitada}}
+                                        </span> -->
+                                        <input class="input is-small" [(ngModel)]="insumo_um_detalle.cantidad_solicitada"
+                                            style="text-align: right" [ngModelOptions]="{standalone: true}"
+                                            [textMask]="{mask:numberMask}"
+                                            (keypress)="quitar_punto($event);"
+                                            (keyup)="validar_cantidad_stock_key($event, json_insumos_UM.insumos_ajustar[i_um], i_um)"
+                                            (blur)="validar_cantidad_stock_key($event, json_insumos_UM.insumos_ajustar[i_um], i_um)"
+                                            (change)="validar_cantidad_stock_key($event, json_insumos_UM.insumos_ajustar[i_um], i_um)"                                                    
+                                            [ngClass]="{'is-danger': json_insumos_UM.insumos_ajustar[i_um].cantidad_solicitada == '' || json_insumos_UM.insumos_ajustar[i_um].cantidad_solicitada == null}">
+                                                    
+                                    </th>
+                                    <th style=" text-align: right;">
+                                        {{insumo_um_detalle.monto_solicitado | currency:''}}
+                                    </th>
+                                </tr>
+                                <tr *ngIf="insumos_UM.length == 0">
+                                    <td colspan="6" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- {{insumos_UM | json}} -->
+                    </div>
+                </div>
+            </section>
+            <footer class="modal-card-foot">
+                <a class="button is-success"
+                    (click)="validar_insumo_um(insumo_detalle?.insumo_medico_clave); cancelarModal('concentrarPedido')"
+                    [ngClass]="{'is-disabled': suma_insumos_cd != insumo_detalle?.cantidad_solicitada}">
+                    Continuar
+                </a>
+                <a class="button" (click)="cancelarModal('insumosUM')">Cancelar</a>
+            </footer>
+            <simple-notifications [options]="options"></simple-notifications>
+        </div>
+    </div>
+<!-- FIN ASIGNAR INSUMOS A UM -->
 
 <div class="modal" id="concentrarPedido">
     <div class="modal-background"></div>

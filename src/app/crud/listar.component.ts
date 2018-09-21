@@ -2,13 +2,13 @@
 * <h1>Listar Component</h1>
 *<p>
 * El componente listar se encarga obtener una lista de elementos
-* de la api con los parametros y filtros que se especifiquen, 
+* de la api con los parametros y filtros que se especifiquen,
 * interactua con el servicio crud
 * </p>
 *
 * @author  Eliecer Ramirez Esquinca
 * @version 1.0
-* @since   2017-05-08 
+* @since   2017-05-08
 */
 
 import { Observable } from 'rxjs';
@@ -94,11 +94,12 @@ export class ListarComponent implements OnInit {
     indicePaginasBusqueda: number[] = [];
     // # FIN SECCION
 
+    cargarDatosCatalogo;
     @Input() URL: string;
     @Input() titulo: string;
 
     /**
-     * Este método inicializa la carga de las dependencias 
+     * Este método inicializa la carga de las dependencias
      * que se necesitan para el funcionamiento del modulo
      */
     constructor(private title: Title, private crudService: CrudService, private authService: AuthService, private notificacion: NotificationsService) {
@@ -151,7 +152,7 @@ export class ListarComponent implements OnInit {
                     self.mensajeResponse.clase = "danger";
                     this.mensaje(2);
                 }
-                // Devolvemos el subject porque si no se detiene el funcionamiento del stream 
+                // Devolvemos el subject porque si no se detiene el funcionamiento del stream
                 return busquedaSubject
 
             })
@@ -179,7 +180,7 @@ export class ListarComponent implements OnInit {
     /**
      * Este método es un intermediario para realizar la busqueda en
      * api con los filtros que se especifiquen en la vista
-     * @param term contiene las palabras de busqueda     
+     * @param term contiene las palabras de busqueda
      * @return void
      */
     buscar(term: string): void {
@@ -190,7 +191,7 @@ export class ListarComponent implements OnInit {
      * Este método obtiene una lista de elementos de la
      * api con los filtros que se especifiquen en la vista
      * @param term contiene las palabras de busqueda
-     * @param pagina  inicio de la página para mostrar resultados   
+     * @param pagina  inicio de la página para mostrar resultados
      * @return void
      */
     listarBusqueda(term: string, pagina: number): void {
@@ -294,10 +295,10 @@ export class ListarComponent implements OnInit {
     borrarItem = ''; borrarIndex = '';
 
     /**
-     * Este método es intermediario para la eliminación de un elemento 
+     * Este método es intermediario para la eliminación de un elemento
      * en la api, abre una ventana modal para confirmar la acción
      * @param item contiene el valod del elemento a eliminar
-     * @param index  indica la posicion del elemento en la lista cargada  
+     * @param index  indica la posicion del elemento en la lista cargada
      * @return void
      */
     eliminar(item: any, index): void {
@@ -307,18 +308,18 @@ export class ListarComponent implements OnInit {
     }
 
     /**
-     * Este método cierra el modal de la de confirmación de eleimnación         
+     * Este método cierra el modal de la de confirmación de eleimnación
      * @return void
      */
     cancelarModal() {
         document.getElementById('confirmarEliminar').classList.remove('is-active');
     }
-    
+
     /**
-     * Este método se encarga de la eliminacion de un elemento 
+     * Este método se encarga de la eliminacion de un elemento
      * en la api
      * @param item contiene el valod del elemento a eliminar
-     * @param index  indica la posicion del elemento en la lista cargada  
+     * @param index  indica la posicion del elemento en la lista cargada
      * @return void
      */
     borrar(item: any, index, key: any = 'id'): void {
@@ -461,4 +462,81 @@ export class ListarComponent implements OnInit {
             this.notificacion.error(this.mensajeResponse.titulo, this.mensajeResponse.texto, objeto);
 
     }
+
+     /**
+     * Este metodo se encarga de cargar los datos de un catalogo para crear un select, grupos de radios o check
+     * @param item nombre del modelo donde se guardaron los resultados
+     * @param url  ruta de la pai donde se obtienen los valores
+     * @return void
+     */
+    cargarCatalogo(item, url, id: string = "") {
+      this.cargando = true;
+      this.cargarDatosCatalogo = true;
+      this.crudService.lista(0, 0, url).subscribe(
+
+          resultado => {
+              if (resultado.data) {
+                  resultado.data.forEach(element => {
+                      if (!element.text) {
+                          element.text = element.nombre;
+                      }
+                  });
+                  this[item] = resultado.data;
+              }else {
+                  if (Array.isArray(resultado)) {
+                      resultado.forEach(element => {
+                          if (!element.text) {
+                              element.text = element.nombre;
+                          }
+                      });
+                  }
+                  this[item] = resultado;
+              }
+              this.cargando = false;
+              if (resultado.length == 0) {
+                  this.mensajeResponse.titulo = item;
+                  this.mensajeResponse.texto = 'Esta vacio, póngase en contacto con un administrador.';
+                  this.mensajeResponse.mostrar = true;
+                  this.mensajeResponse.clase = 'warning';
+                  this.mensaje(3);
+              }
+              this.cargarDatosCatalogo = false;
+              if (id != '') {
+                      setTimeout(() => {
+                          if (document.getElementById(id)) {
+                              document.getElementById(id).click();
+                          }
+                      }, 500);
+              }
+          },
+          error => {
+              this.mensajeResponse = new Mensaje(true);
+              this.mensajeResponse.texto = 'No especificado.';
+              this.mensajeResponse.mostrar = true;
+
+              try {
+
+                  let e = error.json();
+
+                  if (error.status == 401) {
+                      this.mensajeResponse.texto = "No tiene permiso para ver los roles.";
+                  }
+
+                  if (error.status == 500) {
+
+                      this.mensajeResponse.texto = "500 (Error interno del servidor). No se pudieron cargar los roles";
+                  }
+              } catch (e) {
+
+                  if (error.status == 500) {
+
+                      this.mensajeResponse.texto = "500 (Error interno del servidor). No se pudieron cargar los roles";
+                  } else {
+                      this.mensajeResponse.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.  No se pudieron cargar los roles";
+                  }
+              }
+              this.cargarDatosCatalogo = false;
+          }
+      );
+  }
 }

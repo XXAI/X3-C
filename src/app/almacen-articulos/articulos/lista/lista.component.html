@@ -9,16 +9,23 @@
         <div style="background: #FFF; border-radius: 1em; ">
 
             <!-- Opciones y busqueda -->
-            <tabla-opciones [ctrl]="ctrl" [nombre]="'Articulos'"></tabla-opciones>
+            <tabla-opciones
+                [ctrl]="ctrl"
+                [nombre]="'Articulos'"
+                [ruta]="'articulos'"
+                [ruta_pdf]="'almacen-articulos/lista-articulos.js'"></tabla-opciones>
 
             <table class="table" *ngIf="!ctrl.cargando">
                 <thead>
                     <tr>
-                        <th><abbr title="Usuario ID">ID</abbr></th> 
-                        <th>Articulo padre</th>                       
+                        <th><abbr title="Usuario ID">ID</abbr></th>
+                        <th>Articulo padre</th>
                         <th>Nombre</th>
                         <th>Categoria</th>
                         <th>Descripción</th>
+                        <th>Activo Fijo</th>
+                        <th>V. Útil(años) </th>
+                        <th>Precio ref.</th>
                         <th style="text-align:center;">Opciones</th>
                     </tr>
                 </thead>
@@ -29,6 +36,9 @@
                         <td style="vertical-align: middle;"><a routerLink="/almacen-articulos/articulos/editar/{{item.id}}">{{ item.nombre }} </a></td>
                         <td style="vertical-align: middle;"><a routerLink="/almacen-articulos/articulos/editar/{{item.id}}">{{ item.categoria.nombre }} </a></td>
                         <td style="vertical-align: middle;"><a routerLink="/almacen-articulos/articulos/editar/{{item.id}}">{{ item.descripcion }} </a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/almacen-articulos/articulos/editar/{{item.id}}"><span class="tag is-info is-medium" *ngIf="item.es_activo_fijo==1">Sí</span></a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/almacen-articulos/articulos/editar/{{item.id}}"> <span class="tag is-danger is-medium" *ngIf="item.vida_util!=0.00">{{ item.vida_util }}</span></a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/almacen-articulos/articulos/editar/{{item.id}}"><span class="tag is-info is-medium">$ {{ item.precio_referencia }} </span></a></td>
                         <td style="vertical-align: middle;" class="has-text-centered"><span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando"
                                 class="is-danger" (click)="ctrl.eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>
 
@@ -44,6 +54,9 @@
                         <td style="vertical-align: middle;"><a routerLink="/almacen-articulos/articulos/editar/{{item.id}}">{{ item.nombre }} </a></td>
                         <td style="vertical-align: middle;"><a routerLink="/almacen-articulos/articulos/editar/{{item.id}}">{{ item.categoria.nombre }} </a></td>
                         <td style="vertical-align: middle;"><a routerLink="/almacen-articulos/articulos/editar/{{item.id}}">{{ item.descripcion }} </a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/almacen-articulos/articulos/editar/{{item.id}}"><span class="tag is-info is-medium" *ngIf="item.es_activo_fijo==1">Sí</span></a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/almacen-articulos/articulos/editar/{{item.id}}"> <span class="tag is-danger is-medium" *ngIf="item.vida_util!=0.00">{{ item.vida_util }}</span></a></td>
+                        <td style="vertical-align: middle;"><a routerLink="/almacen-articulos/articulos/editar/{{item.id}}"><span class="tag is-info is-medium">$ {{ item.precio_referencia }} </span></a></td>
                         <td style="vertical-align: middle;" class="has-text-centered"><span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span><a *ngIf="!item.cargando"
                                 class="is-danger" (click)="ctrl.eliminar(item, i)"><span class="icon"><i class="fa fa-trash-o"></i></span></a></td>
 

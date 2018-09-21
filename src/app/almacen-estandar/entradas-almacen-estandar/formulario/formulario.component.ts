@@ -993,7 +993,6 @@ export class FormularioComponent {
     try {
       this.cargandoPdf = true;
         this.cargando = true;
-        console.log(this.dato.value);
         // this.crudService.ver(this.dato.controls.id.value, 'entrada-almacen-standard').subscribe(
           this.crudService.verIniciar('documentos-firmantes/2').subscribe(
             resultado => {

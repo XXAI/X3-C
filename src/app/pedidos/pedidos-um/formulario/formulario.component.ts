@@ -487,7 +487,7 @@ export class FormularioComponent {
     }
   }
 
-    /**
+  /**
    * Método que evalúa las teclas presionadas en los campos de existencia y precio unitario para
    * mandar a llamar la función calcular_importes (item, pos) si son valores válidos.
    * @param event Parametro que contiene el valor de la tecla presionada.
@@ -534,6 +534,9 @@ export class FormularioComponent {
     }
   }
 
+  /**
+   * Método para calcular los subtotales de cada insumo
+   */
   calcularSubtotal() {
     let total_asignado_causes_insumos = 0, total_asignado_no_causes_insumos = 0, total_insumo = 0;
 
