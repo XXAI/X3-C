@@ -8,7 +8,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CrudService } from '../../../crud/crud.service';
 import * as moment from 'moment';
 import  * as FileSaver    from 'file-saver';
-import { createAutoCorrectedDatePipe } from 'text-mask-addons';
+import { createAutoCorrectedDatePipe, createNumberMask } from 'text-mask-addons';
 
 import { Mensaje } from '../../../mensaje';
 import { NotificationsService } from 'angular2-notifications';
@@ -65,6 +65,18 @@ export class FormularioComponent {
    */
   detalle_CLUES = [];
   /**
+   * Contiene los datos de las unidades médicas de acuerdo al insumo.
+   */
+  insumos_UM = [];
+  /**
+   * Contiene los datos de las unidades médicas de acuerdo al insumo.
+   */
+  json_insumos_UM = [];
+  /**
+   * Suma de insumos asignados a cuadro de distribución
+   */
+  suma_insumos_cd = 0;
+  /**
    * Contiene la clave del programa elegido por el usuario, nos sirve para hacer comparaciones en caso
    * de que el usuario intente cambiar el programa cuando hay insumos capturados.
    * @type {any}
@@ -89,6 +101,10 @@ export class FormularioComponent {
    */
   json_articulos;
 
+  /**
+   * Variable para mostrar la cantidad total ajustada
+   */
+  insumo_detalle = 0;
   /**
    * Variable que contiene un valor _true_ cuando está ejecutándose algun proceso y 
    */
@@ -169,6 +185,14 @@ export class FormularioComponent {
    * @type {array}
    */
   mask = [/[2]/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/];
+  /**
+   * Se crea la máscara que contiene la configuración deseada.
+   */
+  numberMask: any = createNumberMask({
+    prefix: '',
+    includeThousandsSeparator: false,
+    allowLeadingZeroes: false
+  });
   /**
    * Contiene __true__ cuando el formulario recibe el parámetro id, lo que significa que ha de mostrarse una salida por receta
    * existente. Cuando su valor es __false__ quiere decir que mostraremos la vista para crear una nueva salida.
@@ -646,96 +670,65 @@ export class FormularioComponent {
     }
   }
 
-    /**
+  /**
    * Método que evalúa las teclas presionadas en los campos de existencia y precio unitario para
    * mandar a llamar la función calcular_importes (item, pos) si son valores válidos.
    * @param event Parametro que contiene el valor de la tecla presionada.
    * @param item Variable que contiene el objeto del insumo al que pertenece el precio y la existencia.
    * @param pos Contiene la posición a la que pertenece el insumo.
    */
-  cambio_cantidad_stock_key(event, item, i_prog, i_insumo, i_lote) {
-      if (event.key == 'Backspace' || event.key == 'Delete') {
-      this.calcular_importes(item, i_prog, i_insumo, i_lote);
-      this.calcularSubtotal(i_prog, i_insumo);
-    }
-    if (event.key != 'Backspace'
-      && event.key != 'Delete'
-      && event.key != 'ArrowLeft'
-      && event.key != 'ArrowRight'
-      && event.key != 'ArrowUp'
-      && event.key != 'ArrowDown'
-      && event.key != '.') {
-      clearTimeout(this.time_cambio_cantidad_stoc);
-      this.time_cambio_cantidad_stoc = setTimeout(() => {
-        this.calcular_importes(item, i_prog, i_insumo, i_lote);
-        this.calcularSubtotal(i_prog, i_insumo);
-      }, 800);
-    }
+  validar_cantidad_stock_key(event, item, i_insumo) {
+    if (event.key == 'Backspace' || event.key == 'Delete') {
+    this.calcular_importes(item, i_insumo);
+    // this.calcularSubtotal();
   }
+  if (event.key != 'Backspace'
+    && event.key != 'Delete'
+    && event.key != 'ArrowLeft'
+    && event.key != 'ArrowRight'
+    && event.key != 'ArrowUp'
+    && event.key != 'ArrowDown'
+    && event.key != '.') {
+    clearTimeout(this.time_cambio_cantidad_stoc);
+    this.time_cambio_cantidad_stoc = setTimeout(() => {
+      this.calcular_importes(item, i_insumo);
+      // this.calcularSubtotal();
+    }, 800);
+  }
+}
 
-    /**
+  /**
    * Método para calcular subtotal del insumo.
    * @param item Variable que contiene el objeto del insumo al que pertenece el precio y la existencia.
    * @param pos Contiene la posición del arreglo a la que se agregará la existencia.
    */
-  calcular_importes (item, i_prog, i_insumo, i_lote) {
+  calcular_importes (item, i_um) {
+    let iva = 1;
     if (item.precio_unitario === '' || item.precio_unitario == null) {
-      this.form_dato.programas[i_prog].insumos[i_insumo].lotes[i_lote].importe = 0;
-    } if (item.existencia  === '' || item.existencia == null) {
-      this.form_dato.programas[i_prog].insumos[i_insumo].lotes[i_lote].importe = 0;
+      this.json_insumos_UM['insumos_ajustar'][i_um].monto_solicitado = 0;
+    } if (item.cantidad_solicitada  === '' || item.cantidad_solicitada == null) {
+      this.json_insumos_UM['insumos_ajustar'][i_um].monto_solicitado = 0;
     } else {
-      let temporal = item.existencia * item.precio_unitario;
-      this.form_dato.programas[i_prog].insumos[i_insumo].lotes[i_lote].importe = temporal;
-    }
-  }
-
-  calcularSubtotal(i_prog, i_insumo) {
-    let temporal_total_iva = 0, temporal_subtotal_precios = 0, total_insumo = 0;
-
-    for (let i = 0; i < this.form_dato.programas[i_prog].insumos[i_insumo].lotes.length; i++) {
-      temporal_subtotal_precios = temporal_subtotal_precios + Number(this.form_dato.programas[i_prog].insumos[i_insumo].lotes[i].importe);
-      if (this.form_dato.programas[i_prog].insumos[i_insumo].tipo === 'MC') {
-        this.form_dato.programas[i_prog].insumos[i_insumo].lotes[i].iva_importe = Number(this.form_dato.programas[i_prog].insumos[i_insumo].lotes[i].importe) * .16;
-        temporal_total_iva = Number(temporal_total_iva) + ( Number(this.form_dato.programas[i_prog].insumos[i_insumo].lotes[i].importe) * .16);
+      if (item.info_insumo.tipo === 'MC') {
+        iva = 1.16;
       }
+      let temporal = Number(item.cantidad_solicitada) * Number(item.precio_unitario) * iva;
+      this.json_insumos_UM['insumos_ajustar'][i_um].monto_solicitado = temporal;
     }
-      this.form_dato.programas[i_prog].insumos[i_insumo].subtotal  = Number(temporal_subtotal_precios) + Number(temporal_total_iva);
-
-    this.sumaTotal();
+    this.calcular_suma_ajustada();
   }
 
   /**
-   * Método en el que se hace la suma de los precios de los insumos, debemos sacar el iva_importe en caso de que sea Material de Curación
-   * y sumar todo para obtener el total de la factura.
+   * Método para calcular la suma total ajustada
    */
-  sumaTotal() {
-
-    let suma_insumo = 0, iva_insumos = 0, cantidad_claves = 0, cantidad_lotes = 0, cantidad_insumos = 0;
-
-    for (let p = 0; p < this.form_dato.programas.length; p++) {
-      for (let c = 0; c < this.form_dato.programas[p].insumos.length; c++) {
-        for (let i = 0; i < this.form_dato.programas[p].insumos[c].lotes.length; i++) {
-          suma_insumo = suma_insumo + Number(this.form_dato.programas[p].insumos[c].lotes[i].importe);
-          if (this.form_dato.programas[p].insumos[c].tipo === 'MC') {
-            iva_insumos = Number(iva_insumos) + Number(this.form_dato.programas[p].insumos[c].lotes[i].iva_importe);
-          }
-          cantidad_insumos = cantidad_insumos + Number(this.form_dato.programas[p].insumos[c].lotes[i].existencia);
-          cantidad_lotes++;
-        }
-        cantidad_claves++;
-      }
+  calcular_suma_ajustada() {
+    let suma_temporal = 0;
+    for (let c = 0; c < this.json_insumos_UM['insumos_ajustar'].length; c++) {
+      suma_temporal = suma_temporal + Number(this.json_insumos_UM['insumos_ajustar'][c].cantidad_solicitada);
     }
-
-    this.subtotal_precios = Number(suma_insumo);
-    this.total_iva        = iva_insumos;
-    this.total_precio     = Number(this.subtotal_precios) + Number(this.total_iva);
-
-    this.form_dato.cantidad_programas = this.form_dato.programas.length;
-    this.form_dato.cantidad_claves    = cantidad_claves;
-    this.form_dato.cantidad_insumos   = cantidad_insumos;
-    this.form_dato.cantidad_lotes     = cantidad_lotes;
-    this.form_dato.monto_total        = this.total_precio;
+    this.suma_insumos_cd = suma_temporal;
   }
+
 
   /**
    * Devuelve un valor Boolean que indica si existe o no un patrón en una cadena de búsqueda.
@@ -1126,7 +1119,9 @@ export class FormularioComponent {
       resultado => {
          // this.reset_form();
          this.cargando = false;
-         this.abrirModal('pedidoGlobal');
+         if (this.form_dato.estatus !== 'AJUSTADO') {
+          this.abrirModal('pedidoGlobal');
+         }
          this.insumos_pedido = resultado.insumos;
 
          this.mensajeResponse.texto = 'Se han guardado los cambios.';
@@ -1175,6 +1170,223 @@ export class FormularioComponent {
          }
         }
     );
+  }
+
+  consultar_pedido_medicamento(id_medicamento, item) {
+    this.cargando = true;
+    this.insumo_detalle = item;
+    this.crudService.ver(this.form_dato.id + '?clave_medicamento=' + id_medicamento, 'pcc-insumo-ajustar').subscribe(
+      resultado => {
+         // this.reset_form();
+         this.json_insumos_UM = resultado;
+         this.insumos_UM = resultado.insumos_ajustar;
+         this.calcular_suma_ajustada();
+         this.cargando = false;
+         this.abrirModal('insumosUM');
+
+         this.mensajeResponse.texto = 'Se han guardado los cambios.';
+         this.mensajeResponse.mostrar = true;
+         this.mensajeResponse.clase = 'success';
+         this.mensaje(2);
+     },
+     error => {
+         this.cargando = false;
+         console.log(error);
+
+         this.mensajeResponse.texto = 'No especificado.';
+         this.mensajeResponse.mostrar = true;
+         this.mensajeResponse.clase = 'alert';
+         this.mensaje(2);
+         try {
+             let e = error.json();
+             if (error.status == 401) {
+                 this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
+                 this.mensajeResponse.clase = 'error';
+                 this.mensaje(2);
+             }
+             // Problema de validación
+             if (error.status == 409) {
+                 this.mensajeResponse.texto = 'Por favor verfique los campos marcados en rojo.';
+                 this.mensajeResponse.clase = 'error';
+                 this.mensaje(8);
+                 for (let input in e.error) {
+                     // Iteramos todos los errores
+                     for (let i in e.error[input]) {
+                         this.mensajeResponse.titulo = input;
+                         this.mensajeResponse.texto = e.error[input][i];
+                         this.mensajeResponse.clase = 'error';
+                         this.mensaje(3);
+                     }
+                 }
+             }
+         } catch (e) {
+             if (error.status == 500) {
+                 this.mensajeResponse.texto = '500 (Error interno del servidor)';
+             } else {
+                 this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
+             }
+             this.mensajeResponse.clase = 'error';
+             this.mensaje(2);
+         }
+        }
+    );
+  }
+
+  /**
+   * Método para validar el formulario al enviar el cuadro de distribucion por insumo médico
+   */
+  validar_insumo_um(id_medicamento) {
+    this.cargando = true;
+    let correcto = true;
+    if (!id_medicamento) {
+      correcto = false;
+      console.log(id_medicamento);
+    }
+    for (let c = 0; c < this.json_insumos_UM['insumos_ajustar'].length; c++) {
+      this.json_insumos_UM['insumos_ajustar'][c].ajustado = 1;
+      if (this.json_insumos_UM['insumos_ajustar'][c].cantidad_solicitada === '' ||
+          this.json_insumos_UM['insumos_ajustar'][c].cantidad_solicitada < 0) {
+            correcto = false;
+            this.mensajeResponse.texto = 'Verificar campos vacíos. CLUES: ' + this.json_insumos_UM['insumos_ajustar'][c].clues;
+            this.mensajeResponse.mostrar = true;
+            this.mensajeResponse.clase = 'warn';
+            this.mensaje(2);
+            this.cargando = false;
+            break;
+      }
+    }
+    if (correcto === true) {
+      this.enviar_insumo_um(id_medicamento);
+    } else {
+      this.mensajeResponse.texto = 'Error al enviar el formulario. Contactar a soporte técnico.'
+      this.mensajeResponse.mostrar = true;
+      this.mensajeResponse.clase = 'warn';
+      this.mensaje(2);
+      this.cargando = false;
+    }
+  }
+  /**
+   * Método para enviar el cuadro de distribucion del insumo médico a las unidades médicas
+   */
+  enviar_insumo_um(id_medicamento) {
+    this.cargando = true;
+
+    // .data.insumos_ajustar["0"].ajustado
+    this.crudService.editar(this.form_dato.id + '?clave_medicamento=' + id_medicamento, this.json_insumos_UM, 'pcc-insumo-ajustar').subscribe(
+      resultado => {
+         this.reset_form();
+        //  if (resultado.estatus === 'INICIALIZADO') {
+        //      this.router.navigate([editar]);
+        //  }
+         if (resultado.estatus === 'AJUSTADO') {
+             this.router.navigate(['/pedidos/dam/ver', resultado.id]);
+             this.cargarDatos(resultado.id);
+         }
+         this.cargando = false;
+
+         this.cancelarModal('insumosUM');
+
+         this.mensajeResponse.texto = 'Se han guardado los cambios.';
+         this.mensajeResponse.mostrar = true;
+         this.mensajeResponse.clase = 'success';
+         this.mensaje(2);
+     },
+     error => {
+         this.cargando = false;
+         this.form_dato.estatus = 'NOINICIALIZADO';
+
+         this.mensajeResponse.texto = 'No especificado.';
+         this.mensajeResponse.mostrar = true;
+         this.mensajeResponse.clase = 'alert';
+         this.mensaje(2);
+         try {
+             let e = error.json();
+             if (error.status == 401) {
+                 this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
+                 this.mensajeResponse.clase = 'error';
+                 this.mensaje(2);
+             }
+             // Problema de validación
+             if (error.status == 409) {
+                 this.mensajeResponse.texto = 'Por favor verfique los campos marcados en rojo.';
+                 this.mensajeResponse.clase = 'error';
+                 this.mensaje(8);
+                 for (let input in e.error) {
+                     // Iteramos todos los errores
+                     for (let i in e.error[input]) {
+                         this.mensajeResponse.titulo = input;
+                         this.mensajeResponse.texto = e.error[input][i];
+                         this.mensajeResponse.clase = 'error';
+                         this.mensaje(3);
+                     }
+                 }
+             }
+         } catch (e) {
+             if (error.status == 500) {
+                 this.mensajeResponse.texto = '500 (Error interno del servidor)';
+             } else {
+                 this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
+             }
+             this.mensajeResponse.clase = 'error';
+             this.mensaje(2);
+         }
+
+     }
+ );
+    // this.crudService.editar(this.form_dato.id + '?clave_medicamento=' + id_medicamento, 'pcc-insumo-ajustar').subscribe(
+    //   resultado => {
+    //      // this.reset_form();
+    //      this.json_insumos_UM = resultado;
+    //      this.insumos_UM = resultado.insumos_ajustar;
+    //      this.cargando = false;
+    //      this.abrirModal('insumosUM');
+
+    //      this.mensajeResponse.texto = 'Se han guardado los cambios.';
+    //      this.mensajeResponse.mostrar = true;
+    //      this.mensajeResponse.clase = 'success';
+    //      this.mensaje(2);
+    //  },
+    //  error => {
+    //      this.cargando = false;
+    //      console.log(error);
+
+    //      this.mensajeResponse.texto = 'No especificado.';
+    //      this.mensajeResponse.mostrar = true;
+    //      this.mensajeResponse.clase = 'alert';
+    //      this.mensaje(2);
+    //      try {
+    //          let e = error.json();
+    //          if (error.status == 401) {
+    //              this.mensajeResponse.texto = 'No tiene permiso para hacer esta operación.';
+    //              this.mensajeResponse.clase = 'error';
+    //              this.mensaje(2);
+    //          }
+    //          // Problema de validación
+    //          if (error.status == 409) {
+    //              this.mensajeResponse.texto = 'Por favor verfique los campos marcados en rojo.';
+    //              this.mensajeResponse.clase = 'error';
+    //              this.mensaje(8);
+    //              for (let input in e.error) {
+    //                  // Iteramos todos los errores
+    //                  for (let i in e.error[input]) {
+    //                      this.mensajeResponse.titulo = input;
+    //                      this.mensajeResponse.texto = e.error[input][i];
+    //                      this.mensajeResponse.clase = 'error';
+    //                      this.mensaje(3);
+    //                  }
+    //              }
+    //          }
+    //      } catch (e) {
+    //          if (error.status == 500) {
+    //              this.mensajeResponse.texto = '500 (Error interno del servidor)';
+    //          } else {
+    //              this.mensajeResponse.texto = 'No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.';
+    //          }
+    //          this.mensajeResponse.clase = 'error';
+    //          this.mensaje(2);
+    //      }
+    //     }
+    // );
   }
 
   /**
@@ -1414,6 +1626,9 @@ export class FormularioComponent {
               resultado => {
 
                 this.form_dato = resultado;
+                if (this.form_dato.estatus === 'AJUSTADO') {
+                  this.consultar_pedido();
+                }
                 if (!this.form_dato.unidades_medicas) {
                   this.form_dato.unidades_medicas = [];
                 }

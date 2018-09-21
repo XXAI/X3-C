@@ -981,6 +981,7 @@ export class InicialComponent {
     this.crudService.crear(this.form_dato, 'inicializar-inventario-me').subscribe(
       resultado => {
         this.cargando = false;
+
         this.form_dato.id = resultado.id;
         if (this.form_dato.estatus === 'NOINICIALIZADO') {
             this.router.navigate(['/inventario/iniciar-inventario/editar', resultado.id]);
@@ -994,8 +995,10 @@ export class InicialComponent {
 
       },
       error => {
+        this.form_dato.estatus = 'NOINICIALIZADO';
         this.cargando = false;
         if (error.status === 500) {
+            this.form_dato.estatus = 'NOINICIALIZADO';
             this.mensajeResponse.texto = '500 (Error interno del servidor)';
             this.mensajeResponse.mostrar = true;
             this.mensajeResponse.clase = 'error';
@@ -1091,9 +1094,10 @@ export class InicialComponent {
           error => {
               this.cargando = false;
 
-              this.mensajeResponse.texto = 'No especificado.';
+              this.form_dato.estatus = 'NOINICIALIZADO';
+              this.mensajeResponse.texto = '500 (Error interno del servidor)';
               this.mensajeResponse.mostrar = true;
-              this.mensajeResponse.clase = 'alert';
+              this.mensajeResponse.clase = 'error';
               this.mensaje(2);
               try {
                   let e = error.json();

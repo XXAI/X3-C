@@ -66,10 +66,10 @@ export class IndexAlmacenArticulosComponent implements OnInit {
         permiso: '5Pnh7DTayhrND0GyB7bzfbdFK2kA6bgM', icono: 'assets/icono-salidas-general.svg',
         titulo: 'Salidas', url: '/almacen-articulos/salidas'
       },
-      /*{
+      {
         permiso: 'aUYWDYq2gV9RqGaIe6XdRfd2QjZOeRSP', icono: 'assets/catalogo-servidor.svg',
         titulo: 'Resguardos', url: '/almacen-articulos/resguardos'
-      },*/
+      },
     ];
     this.accesosDirectos = [
       {
