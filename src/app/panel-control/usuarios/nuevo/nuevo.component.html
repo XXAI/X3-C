@@ -22,7 +22,8 @@
             <panel-control-usuarios-form 
                 [usuario]="usuario" 
                 [roles]="roles" 
-                [medicos]="medicos" 
+                [medicos]="medicos"  
+                [proveedores]="proveedores"
                 [unidadesMedicas]="unidadesMedicas" 
                 [usuarioRepetido]="usuarioRepetido"
                 [usuarioInvalido]="usuarioInvalido"
@@ -34,6 +35,7 @@
                 (onRegresar)="regresar()"
                 (onCargarRoles)="cargarRoles()"
                 (onCargarMedicos)="cargarMedicos()"
+                (onCargarProveedores)="cargarProveedores()"
             ></panel-control-usuarios-form>
             </section>
         </div>

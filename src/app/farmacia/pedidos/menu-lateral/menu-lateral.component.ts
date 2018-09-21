@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { PedidosService } from '../pedidos.service';
 
 import { Subscription }   from 'rxjs/Subscription';
@@ -12,6 +12,8 @@ import { CambiarEntornoService } from '../../../perfil/cambiar-entorno.service';
 })
 export class MenuLateralComponent implements OnInit {
   usuario:any;
+  presupuestos: any[];
+  presupuestoSeleccionado: number;
   cargando: boolean = false;
   stats: any = {
     todos: 0, 
@@ -25,6 +27,8 @@ export class MenuLateralComponent implements OnInit {
     farmacia: 0,
     alternos: 0,
   };
+
+  @Output() onCambiarPresupuesto = new EventEmitter<void>();
 
   cambiarEntornoSuscription: Subscription;
 
@@ -46,15 +50,49 @@ export class MenuLateralComponent implements OnInit {
         actas:0
       };
       this.cargarStatsPedidos();
+      this.cargarPresupuestos();
       this.usuario = JSON.parse(localStorage.getItem("usuario"));
     });
+    let presupuesto_seleccionado = localStorage.getItem('presupuestoSeleccionado');
+    if(presupuesto_seleccionado){
+      this.presupuestoSeleccionado = +presupuesto_seleccionado;
+    }
     this.cargarStatsPedidos();
+    this.cargarPresupuestos();
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
+  }
+
+  cargarPresupuestos(){
+    this.pedidosService.presupuestos().subscribe(
+      response => {
+        this.presupuestos = response.data;
+        let presupuesto_seleccionado = localStorage.getItem('presupuestoSeleccionado');
+        if(!presupuesto_seleccionado){
+          for (let i in this.presupuestos) {
+            if(this.presupuestos[i].activo){
+              localStorage.setItem('presupuestoSeleccionado',this.presupuestos[i].id);
+              this.presupuestoSeleccionado = this.presupuestos[i].id;
+              break;
+            }
+          }
+        }
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
+
+  cambioPresupuesto(){
+    localStorage.setItem('presupuestoSeleccionado',this.presupuestoSeleccionado.toString());
+    this.cargarStatsPedidos();
+    this.onCambiarPresupuesto.emit();
   }
 
   cargarStatsPedidos(){
     this.cargando = true;
-    this.pedidosService.stats().subscribe(
+    let presupuesto = +localStorage.getItem('presupuestoSeleccionado');
+    this.pedidosService.stats(presupuesto).subscribe(
       response => {
         this.cargando = false;
         this.stats = response;

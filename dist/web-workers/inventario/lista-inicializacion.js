@@ -1,6 +1,7 @@
 var document = { 'createElementNS': function() { return {} } };
 var window = this;
 var fecha_optima, fecha_media, fecha_hoy;
+
 importScripts(
     '../../../scripts/pdfmake.min.js',
     '../../../scripts/vfs_fonts.js',
@@ -14,109 +15,85 @@ importScripts(
         let data = JSON.parse(evt.data);
         console.log(data);
         pdf(data);
-        fechas();
-    };
-
-    function fechas() {
-        fecha_optima = moment().add(365, 'days').format('YYYY-MM-DD');
-        fecha_media = moment().add(183, 'days').format('YYYY-MM-DD');
-        fecha_hoy = moment().format('YYYY-MM-DD');
-        moment.locale('es');
-        // console.log(moment().format('llll'));
     };
 
     function pdf(data) {
         var contadorLineasHorizontalesV = 0;
         var COLOR_CELDA = '#eaf1dd';
-        var COLOR_PROGRAMA = '#ddeaf1';
         var dd = {
             content: [{
                 style: 'Movimiento',
                 table: {
-                    headerRows: 10,
+                    headerRows: 5,
                     dontBreakRows: true,
-                    widths: [80, 70, 20, 'auto', 'auto', 40, 'auto', 40, 'auto'],
+                    //widths: [ 35, 70, 'auto', 'auto', 40 , 45, 45],
+                    widths: [60, 50, 'auto', 'auto', 60, 'auto','auto', 'auto'],
                     body: [
                         [{
                             image: 'header',
                             width: 500,
                             style: 'tableHeaderTop',
-                            colSpan: 9,
+                            colSpan: 8,
                             alignment: 'center'
-                        }, {}, {}, {}, {}, {},{},{},{}],
-                        [{ text: 'SIAL', style: 'titulo', colSpan: 9, alignment: 'center' },
-                            {}, {}, {}, {}, {}, {},{},{}
+                        }, {}, {}, {}, {}, {},{},{}],
+                        [{ text: 'SIAL', style: 'titulo', colSpan: 8, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {},{}
                         ],
-                        [{ text: 'REPORTE DE INICIALIZACION DE INVENTARIO', style: 'tableHeaderTop', colSpan: 9, alignment: 'center' },
-                            {}, {}, {}, {}, {}, {},{}, {} 
+                        [{ text: 'INICIALIZACIONES DE ALMACEN', style: 'tableHeaderTop', colSpan: 8, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {},{}
                         ],
                         [
                             { text: 'CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
                             {},
-                            { text: data.usuario.clues_activa.clues, style: 'tableHeader', colSpan: 2, alignment: 'left' }, 
-                            {},
-                            { text: 'NOMBRE DE CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' }, 
-                            {},
-                            { text: data.usuario.clues_activa.nombre, style: 'tableHeader', colSpan: 3, alignment: 'left' }, 
-                            {}, {} 
+                            { text: data.usuario.clues_activa.clues, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {},
+                            { text: 'NOMBRE DE CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' }, {},
+                            { text: data.usuario.clues_activa.nombre, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {}
                         ],
                         [
-                            { text: 'MONTO TOTAL DEL INVENTARIO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
-                            {},
-                            { text: data.datos.monto_total ? ('$ ' + data.datos.monto_total.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')) : 'No disponible', style: 'tableHeader', colSpan: 2, alignment: 'left' }, 
-                            {},
+                            { text: '', style: 'tableHeaderVerde', colSpan: 4, alignment: 'right' },
+                            {},{}, {},
                             { text: 'NOMBRE DE ALMACÉN', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
                             {},
-                            { text: data.usuario.almacen_activo.nombre, style: 'tableHeader', colSpan: 3, alignment: 'left' }, 
-                            {}, {} 
+                            { text: data.usuario.almacen_activo.nombre, style: 'tableHeader', colSpan: 2, alignment: 'left' }, {}
                         ],
-                        [{ text: ' ', style: 'celdaEspacio', colSpan: 9, alignment: 'center' },
-                            {}, {}, {}, {}, {}, {}, {}, {} 
+                        [{ text: ' ', style: 'celdaEspacio', colSpan: 8, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {}, {}
                         ],
-                        [{ text: 'DETALLES DE LA INICIALIZACION', style: 'tableHeaderLeyenda', colSpan: 9, alignment: 'center' },
-                            {}, {}, {}, {}, {}, {}, {}, {} 
-                        ],
-
-                        /**
-                         * 
-            clave_insumo: this.clave_insumo,
-            tipo_controlado: this.tipo_controlado
-                         */
-                        [ 
-                            { text: 'TOTAL DE PROGRAMAS:', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.datos.cantidad_programas ? data.datos.cantidad_programas : 'No disponible', style: 'tableHeader', alignment: 'left' },
-                            { text: 'TOTAL DE CLAVES:', style: 'tableHeaderVerde', colSpan:2, alignment: 'right' },
-                            {},
-                            { text: data.datos.cantidad_claves ? data.datos.cantidad_claves : 'No disponible', style: 'tableHeader', alignment: 'left' },
-                            { text: 'TOTAL DE INSUMOS:', style: 'tableHeaderVerde', colSpan:2, alignment: 'right' },
-                            { },
-                            { text: data.datos.cantidad_insumos ? data.datos.cantidad_insumos : 'No disponible', colSpan:2,  style: 'tableHeader', alignment: 'left'  },
-                            {}
-                        ],
-                        [ 
-                            { text: 'TOTAL DE LOTES:', style: 'tableHeaderVerde', alignment: 'right'},
-                            { text: data.datos.cantidad_lotes ? data.datos.cantidad_lotes : 'No disponible', style: 'tableHeader', alignment: 'left' },
-                            { text: 'FECHA INICIO:', style: 'tableHeaderVerde', colSpan:2, alignment: 'right' },
-                            {},
-                            { text: data.datos.fecha_inicio ? data.datos.fecha_inicio : 'No disponible', style: 'tableHeader', alignment: 'left' },
-                            { text: 'FECHA FINAL:', style: 'tableHeaderVerde', colSpan:2, alignment: 'right' },
-                            { },
-                            { text: data.datos.fecha_fin ? data.datos.fecha_fin : 'No disponible', style: 'tableHeader', colSpan:2, alignment: 'left' },
-                            { },
-                        ],
-                        [{ text: ' ', style: 'celdaEspacio', colSpan: 9, alignment: 'center' },
-                            {}, {}, {}, {}, {}, {}, {}, {} 
+                        [{ text: 'DETALLES DE LISTA INICIALIZACIONES', style: 'tableHeaderLeyenda', colSpan: 8, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {}, {}
                         ],
                         [
-                            { text: 'CLAVE', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'LOTE', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'CADUCIDAD', style: 'tableHeaderVerde', colSpan: 2, alignment: 'center' },
-                            { },
-                            { text: 'EXISTENCIA', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'EXISTENCIA UNIDOSIS', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'PRECIO UNITARIO', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'IMPORTE', style: 'tableHeaderVerde', alignment: 'center' },
-                            { text: 'IVA', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'DESDE:', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' }, 
+                            {},
+                            { text: data.fecha_desde == "" ? '- -' : data.fecha_desde.substr(0,10), style: 'tableHeader', colSpan: 2, alignment: 'left' },
+                            {},
+                            { text: 'HASTA:', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' }, 
+                            {},
+                            { text: data.fecha_hasta == "" ? '- -' : data.fecha_hasta.substr(0,10), style: 'tableHeader', colSpan: 2, alignment: 'left' },    
+                            {}
+                        ],
+
+                        // [ 
+                        //     { text: 'TURNO:', style: 'tableHeaderVerde', alignment: 'right' },
+                        //     { text: data.turno == "" ? 'TODOS' : data.turno, style: 'tableHeader', alignment: 'left' },{ text: 'SERVICIO:', style: 'tableHeaderVerde',    alignment: 'right' },
+                        //     { text: data.servicio == "" ? 'TODOS' : data.servicio, style: 'tableHeader', alignment: 'left' },
+                        //     { text: 'RECIBE:', style: 'tableHeaderVerde', colSpan: 2,  alignment: 'right' },
+                        //     {},
+                        //     { text: data.recibe == "" ? 'TODOS' : data.recibe, style: 'tableHeader', colSpan: 2, alignment: 'left' },
+                        //     {}
+                        // ],
+                        [{ text: ' ', style: 'celdaEspacio', colSpan: 8, alignment: 'center' },
+                            {}, {}, {}, {}, {}, {}, {}
+                        ],
+                        [
+                            { text: 'FECHA', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'FOLIO', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'PROGRAMAS', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'CLAVES', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'LOTES', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'INSUMOS', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'MONTO', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'ESTATUS', style: 'tableHeaderVerde', alignment: 'center' },
                         ]
                         //Body -> Salidas estandar
                     ]
@@ -193,13 +170,7 @@ importScripts(
                     color: 'black',
                     fillColor: COLOR_CELDA,
                     margin: [3, 3, 3, 3]
-                },
-                tableHeaderAzul: {
-                    bold: true,
-                    fontSize: 6,
-                    color: 'black',
-                    fillColor: COLOR_PROGRAMA,
-                    margin: [3, 3, 3, 3]
+
                 },
                 tableHeaderData: {
                     bold: false,
@@ -232,80 +203,64 @@ importScripts(
             }
         };
 
-        fecha_optima = moment().add(365, 'days').format('YYYY-MM-DD');
-        fecha_media = moment().add(183, 'days').format('YYYY-MM-DD');
-        fecha_hoy = moment().format('YYYY-MM-DD');
+        var suma_total_insumos = 0;
 
-        for (var i in data.programas) {
-            var programa = data.programas[i];
-            
-            dd.content[0].table.body.push([
-                { text: programa.nombre ? ' PROGRAMA: ' + programa.nombre + '. CLAVE: ' + programa.clave  : 'No disponible', style: 'tableHeaderAzul', colSpan: 9, alignment: 'left' },
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {}
-            ]);
-            moment.locale('es');
-                for (var j in programa.insumos) {
-                    var insumo = programa.insumos[j];
-                    console.log(insumo);
-                    dd.content[0].table.body.push([
-                        { text: insumo.clave_insumo_medico ? insumo.clave_insumo_medico : 'No disponible' , style: 'tableHeaderVerde', alignment: 'center' },
-                        { text: insumo.descripcion ? insumo.descripcion : 'No disponible', style: 'tableHeaderVerde', colSpan:5, alignment: 'left' },
-                        {},
-                        {},
-                        {},
-                        {},
-                        { text: insumo.subtotal == null ? 'No disponible' : '$ ' + insumo.subtotal.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'), style: 'tableHeaderVerde', colSpan:3, alignment: 'right' },
-                        {},
-                        {}
-                    ]);
-                    
-                    for (var l in insumo.lotes) {
-                        var lote = insumo.lotes[l];
-                        var color_circulo;  
-                        if (lote.fecha_caducidad > fecha_optima) {
-                            color_circulo = 'green';
-                        }
-                        if(lote.fecha_caducidad >= fecha_media && lote.fecha_caducidad < fecha_optima){
-                            color_circulo = 'yellow';
-                        }
-                        if(lote.fecha_caducidad >= fecha_hoy && lote.fecha_caducidad < fecha_media){
-                            color_circulo = 'red';
-                        }
-                        if(lote.fecha_caducidad < fecha_hoy){
-                            color_circulo = 'black';
-                        }
-                        console.log(lote);
-                        dd.content[0].table.body.push([
-                            { text: '' , style: 'tableRow', alignment: 'center' },
-                            { text: lote.lote == null ? 'No disponible' : lote.lote, style: 'tableRow', alignment: 'left' },
-                            { canvas: [{
-                                    type: 'ellipse',
-                                    x: 12, y: 6.5,
-                                    color: color_circulo,
-                                    fillOpacity: 0.5,
-                                    r1: 5, r2: 5,
-                                    lineColor: 'black'
-                                }]},
-                            { text: lote.fecha_caducidad ? moment(lote.fecha_caducidad).format('LL') : 'No disponible', style: 'tableRow', alignment: 'right' },
-                            { text: lote.existencia == null ? 'No disponible' : lote.existencia, style: 'tableRow', alignment: 'right' },
-                            { text: lote.existencia_unidosis  != null ? lote.existencia_unidosis : 'No disponible', style: 'tableRow', alignment: 'right' },
-                            { text: lote.precio_unitario == null ? 'No disponible' : ('$ ' + Number(lote.precio_unitario).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')), style: 'tableRow', alignment: 'right' },
-                            { text: lote.importe == null ? 'No disponible' : ('$ ' + Number(lote.importe).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')), style: 'tableRow', alignment: 'right' },
-                            { text: lote.iva_importe == null ? 'No disponible' : ('$ ' + Number(lote.iva_importe).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')), style: 'tableRow', alignment: 'right' }
-                        ]);
-                    }
-
-                }
+        for (var i in data.lista) {
+            var movimiento = data.lista[i];
+            if(i == data.lista.length-1){
+                break;
+            }
+                dd.content[0].table.body.push([
+                    { text: movimiento.fecha_fin ? movimiento.fecha_fin : 'No disponible' , style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.id ? movimiento.id : 'No disponible', style: 'tableRow', alignment: 'center' },
+                    { text: movimiento.cantidad_programas == null ? 'No disponible' : movimiento.cantidad_programas, style: 'tableRow', alignment: 'right' },
+                    { text: movimiento.cantidad_claves == null ? 'No disponible' : movimiento.cantidad_claves, style: 'tableRow', alignment: 'right' },
+                    { text: movimiento.cantidad_lotes == null ? 'No disponible' : movimiento.cantidad_lotes, style: 'tableRow', alignment: 'right' },
+                    { text: movimiento.cantidad_insumos == null ? 'No disponible' :  movimiento.cantidad_insumos, style: 'tableRow', alignment: 'right' },
+                    { text: movimiento.monto_total ? ('$ ' + Number(movimiento.monto_total).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')) : 'No disponible', style: 'tableRow', alignment: 'right' },
+                    { text: movimiento.estatus ? movimiento.estatus : 'No disponible', style: 'tableRow', alignment: 'center' }
+                ]);
         }
+/*
+        dd.content[0].table.body.push(
+            // Footer
+            [
+                { text: "", style: 'tableHeader', colSpan: 8, alignment: 'center' },
+                '', '', '', '', '', '', ''
+            ],
+
+            // Firmas
+            [{
+                table: {
+                    widths: ['*', '*'],
+                    body: [
+                        ['', '']
+                    ],
+                },
+                layout: {
+                    hLineWidth: function(i, node) {
+                        if (i == 0 || i == 3) {
+                            return 0;
+                        }
+                        return 0.5;
+                    },
+                    vLineWidth: function(i, node) {
+                        if (i == 0 || i == 3) {
+                            return 0;
+                        }
+                        return 0.5;
+                    },
+                },
+                style: 'tableHeader',
+                margin: [0, 0, 0, 0],
+                colSpan: 8,
+                alignment: 'center',
+            }, {}, {}, {}, {}, {}, {}, {}]
+        );
+*/
         pdfMake.createPdf(dd).getBase64(function(base64) {
-            postMessage({ fileName: 'INICIALIZACION_INVENTARIO.pdf', base64: base64 });
+            fecha_hoy = moment().format('YYYY-MM-DD');
+            postMessage({ fileName: 'LISTA_INICIALIZACION_'+ fecha_hoy +'.pdf', base64: base64 });
         });
     }
 

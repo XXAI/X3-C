@@ -25,12 +25,16 @@ export class PedidosComponent implements OnInit {
   // # SECCION: Filtro
   q:string = "";
   status:any[] = [];
+  status_recepcion_filtro:any[] = [];
+  mes_filtro:any[] = [];
   jurisdicciones:any[] = [];
   proveedores:any[] = [];
 
   statusSeleccionados:any[] = [];
   jurisdiccionesSeleccionadas:any[] = [];
+  mesSeleccionados:any[] = [];
   proveedoresSeleccionados:any[] = [];
+  statusRecepcionSeleccionados:any[] = [];
 
   fecha_desde:Date = null;
   fecha_hasta:Date = null;
@@ -81,6 +85,7 @@ export class PedidosComponent implements OnInit {
     
     this.cargarJurisdicciones();
     this.cargarProveedores();
+    this.cargarMes();
 
     this.status = [
       { id: 'BR', descripcion: 'Borradores'},
@@ -90,7 +95,12 @@ export class PedidosComponent implements OnInit {
       { id: 'EF', descripcion: 'En Farmacia'},
       { id: 'EX', descripcion: 'Expirados'},
       { id: 'EX-CA', descripcion: 'Cancelados'}
-    ]
+    ];
+    
+    this.status_recepcion_filtro = [
+      { id: 1, descripcion: 'Con Insumos Faltantes'},
+      { id: 2, descripcion: 'Sin Insumos Faltante'}
+    ];
     
   }
 
@@ -329,8 +339,20 @@ export class PedidosComponent implements OnInit {
   cargarProveedores(){
     this.apiService.proveedores().subscribe(
       respuesta => {
-        //console.log(respuesta)
+        console.log(respuesta)
         this.proveedores = respuesta;
+        //console.log(this.proveedores)
+      }, error => {
+
+      }
+    );
+  }
+
+  cargarMes(){
+    this.apiService.mes().subscribe(
+      respuesta => {
+        console.log(respuesta)
+        this.mes_filtro = respuesta;
         //console.log(this.proveedores)
       }, error => {
 
@@ -344,6 +366,21 @@ export class PedidosComponent implements OnInit {
       this.jurisdiccionesSeleccionadas = [];
     }
     this.agregarJurisdiccion(id);
+  }
+  
+  cambioSeleccionMes(id){
+    if (id == -1){
+      this.mesSeleccionados = [];
+    }
+    this.agregarMes(id);
+  }
+
+  cambioSeleccionStatusRecepcion(id)
+  {
+      if (id == -1){
+        this.statusRecepcionSeleccionados = [];
+      }
+      this.agregarStatusRecepcion(id);
   }
   cambioSeleccionProveedor(id){
     if (id == -1){
@@ -398,6 +435,48 @@ export class PedidosComponent implements OnInit {
     }
   }
 
+  agregarMes(id:any){
+    this.mesSeleccionados = [];
+    if (id == -1){
+      return;
+    }
+    // Si existe en el filtro no la agregamos
+    for(var i in this.mesSeleccionados){
+      if(this.mesSeleccionados[i].id == id){
+        return;
+      }
+    }
+
+    for(var i in this.mes_filtro){
+      if(this.mes_filtro[i].id == id){
+        this.mesSeleccionados.push(this.mes_filtro[i]);
+        break;
+      }
+    }
+    
+  }
+  
+  agregarStatusRecepcion(id:any){
+    this.statusRecepcionSeleccionados = [];
+    if (id == -1){
+      return;
+    }
+    // Si existe en el filtro no la agregamos
+    for(var i in this.statusRecepcionSeleccionados){
+      if(this.statusRecepcionSeleccionados[i].id == id){
+        return;
+      }
+    }
+
+    for(var i in this.status_recepcion_filtro){
+      if(this.status_recepcion_filtro[i].id == id){
+        this.statusRecepcionSeleccionados.push(this.status_recepcion_filtro[i]);
+        break;
+      }
+    }
+    
+  }
+
   agregarStatus(id:any){
     if (id == -1){
       return;
@@ -424,6 +503,13 @@ export class PedidosComponent implements OnInit {
   }
   quitarStatus(index){        
     this.statusSeleccionados.splice(index,1);
+  }
+  quitarMes(index){        
+    this.mesSeleccionados.splice(index,1);
+  }
+  
+  quitarStatusRecepcion(index){        
+    this.statusRecepcionSeleccionados.splice(index,1);
   }
   filtrarQuery(e: KeyboardEvent) {
     if(e.keyCode == 13){
@@ -486,11 +572,24 @@ export class PedidosComponent implements OnInit {
       statusIds.push(this.statusSeleccionados[i].id);
     }
 
+    var mesesIds = [];
+    for(var i in this.mesSeleccionados){
+      mesesIds.push(this.mesSeleccionados[i].id);
+    }
+    
+
+    var statusRecepcionIds = [];
+    for(var i in this.statusRecepcionSeleccionados){
+      statusRecepcionIds.push(this.statusRecepcionSeleccionados[i].id);
+    }
+
     var  parametros =  {
       q: this.q,
       proveedores: proveedoresIds,
       jurisdicciones: jurisdiccionesIds,
       status: statusIds,
+      meses: mesesIds,
+      statusRecepcion: statusRecepcionIds,
       page: this.paginaActual,
       per_page: this.resultadosPorPagina,
       ordenar_causes: this.ordenarCauses,

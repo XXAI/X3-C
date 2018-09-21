@@ -16,12 +16,16 @@ export class BuscarInsumosService {
     return this.jwtRequest.get(BuscarInsumosService.URL,null,{page: pagina, per_page: resultados_por_pagina, con_precios: con_precios}).map( (response: Response) => response.json().data);
   }
 
-  buscar(term: string, pagina:number = 1, resultados_por_pagina:number = 25, con_precios:boolean = false, tipo:string = null ): Observable<any>{
-    return this.jwtRequest.get(BuscarInsumosService.URL,null,{q: term, page: pagina, per_page: resultados_por_pagina, con_precios: con_precios, tipo: tipo}).map( (response: Response) => response.json().data);
+  buscar(term: string, pagina:number = 1, resultados_por_pagina:number = 25, con_precios:boolean = false, tipo:string = null, disponible_pedidos:boolean = null): Observable<any>{
+    return this.jwtRequest.get(BuscarInsumosService.URL,null,{q: term, page: pagina, per_page: resultados_por_pagina, con_precios: con_precios, tipo: tipo, disponible_pedidos: disponible_pedidos}).map( (response: Response) => response.json().data);
   }
 
   clues( ): Observable<any>{
     return this.jwtRequest.get('unidades-medicas-dependientes',null,null).map( (response: Response) => response.json().data);
+  }
+
+  tipoInsumos( ): Observable<any>{
+    return this.jwtRequest.get('tipo-insumo',null,null).map( (response: Response) => response.json().data);
   }
 
   obtenerStock(clave: string): Observable<any>{

@@ -128,17 +128,43 @@ export class ActualizarSistemaComponent implements OnInit {
 			this.http.post(`${environment.API_URL}/patches/ejecutar`, formData, options)										
 				.subscribe(
 					response => {
-            			this.logActualizacion = response.json().data;
-            			this.mostrarLog = true;
+						this.logActualizacion = response.json().data;
+						
+						let parche = {nombre: response.json().parche, fecha_ejecucion:false};
 
+						this.mostrarLog = true;
 						this.archivoSubido = true;
 						this.enviandoDatos = false;
-						//this.mostrarModalSubirArchivoSQL = false;
+						
 						this.progreso = 100;
 						this.archivo = null;
+
+						//this.mostrarModalSubirArchivoSQL = false;
 						//this.listarParches();
 						//window.location.reload();
-					},					
+
+						/*
+						this.apiService.ejecutarParche(parche).subscribe(
+							respuesta => {
+								this.enviandoDatos = false;
+								console.log(respuesta);
+								parche.fecha_ejecucion = true;
+
+								this.mostrarLog = true;
+								this.archivoSubido = true;
+								this.enviandoDatos = false;
+								
+								this.progreso = 100;
+								this.archivo = null;
+							},
+							error => {
+								this.enviandoDatos = false;
+								console.log(error);
+					
+							}
+						);
+						*/
+					},
 					error => {
             			if(error.status == 500){
 							try{

@@ -33,6 +33,8 @@ import { CrudModule } from './crud/crud.module';
 import { AdministradorCentralModule } from './administrador-central/administrador-central.module';
 import { AsignacionProveedoresPedidosAlternosModule } from './administrador-central/asignacion-proveedores-pedidos-alternos/asignacion-proveedores-pedidos-alternos.module';
 import { ValidacionPedidosAlternosModule } from './administrador-central/validacion-pedidos-alternos/validacion-pedidos-alternos.module';
+import { InsumosMedicosModule } from './administrador-central/insumos-medicos/insumos-medicos.module';
+import { ContratosModule } from './administrador-central/contratos/contratos.module';
 
 // # Administrador proveedores
 import { AdministradorProveedoresModule } from './administrador-proveedores/administrador-proveedores.module';
@@ -202,6 +204,8 @@ export function highchartsFactory() {
     MisFirmantesModule,
     AdministradorCentralModule,
     AsignacionProveedoresPedidosAlternosModule,
+    InsumosMedicosModule,
+    ContratosModule,
     ValidacionPedidosAlternosModule,
     AdministradorProveedoresModule,
     IndexFarmaciaSubrrogadaModule,

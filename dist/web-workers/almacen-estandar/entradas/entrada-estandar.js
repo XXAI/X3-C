@@ -364,18 +364,14 @@ importScripts(
             // Firmas
             [{
                 table: {
-                    widths: ['*', '*'],
+                    widths: ['*', '*', '*'],
                     body: [
                         [
-                            { text: '\n\n\n\n' + '' + 'Nombre de responsables', rowSpan: 2, style: 'tableRow' }, 
-                            { text: "Observaciones", style: 'text' }
-                        ],
-                        [
-                            '', 
-                            { text: '\n' + data.datos.observaciones, rowSpan: 2, alignment: 'justify' }
-                        ],
-                        ['RESPONSABLES ', '']
-                    ],
+                            { text: 'Observaciones: ' + data.datos.observaciones, alignment: 'left', colSpan: 3, style: 'tableRow' }, 
+                            { },
+                            { }
+                        ]
+                    ]
                 },
                 layout: {
                     hLineWidth: function(i, node) {
@@ -397,7 +393,78 @@ importScripts(
                 alignment: 'center',
             }, {}, {}, {}, {}, {}]
         );
-
+        
+        data.firmas.documento.documento_cargos.splice(0, 0, 
+            {
+                cargo : {
+                        id: null,
+                        clave: null,
+                        nombre: ""
+                    },
+                cargo_id:null,
+                created_at:null,
+                deleted_at:null,
+                documento_sistema_id:null,
+                firmante:{
+                    id: null,
+                    incremento: null,
+                    servidor_id: null,
+                    almacen_id: null,
+                    documento_sistema_cargo_id: null,
+                    nombre: data.usuario.nombre + ' ' + data.usuario.apellidos                    
+                },
+                id:"1",
+                leyenda:"ELABORÓ",
+                updated_at:null,
+                usuario_id:"root"
+            },
+            {
+                cargo : {
+                        id: null,
+                        clave: null,
+                        nombre: data.datos.movimiento_metadato.proveedor ? data.datos.movimiento_metadato.proveedor.nombre  : ''
+                    },
+                cargo_id:null,
+                created_at:null,
+                deleted_at:null,
+                documento_sistema_id:null,
+                firmante:{
+                    id: null,
+                    incremento: null,
+                    servidor_id: null,
+                    almacen_id: null,
+                    documento_sistema_cargo_id: null,
+                    nombre: data.datos.movimiento_metadato.persona_recibe ? data.datos.movimiento_metadato.persona_recibe : '______________________________'
+                },
+                id:"1",
+                leyenda:"ENTREGÓ",
+                updated_at:null,
+                usuario_id:"root"
+            });
+            let cantidad_firmas = data.firmas.documento.documento_cargos.length;
+            
+            let filas_firmas_abajo = 3 - cantidad_firmas % 3;
+            let contenido_body = [];
+            for (let c =0; c < data.firmas.documento.documento_cargos.length; c++) {
+                contenido_body.push(
+                    { text: data.firmas.documento.documento_cargos[c].leyenda + '\n\n\n\n' + data.firmas.documento.documento_cargos[c].firmante.nombre + '\n' + data.firmas.documento.documento_cargos[c].cargo.nombre, alignment: 'center', colSpan: 3, style: 'tableRow'  },
+                    { },
+                    { }
+                );
+                if(data.firmas.documento.documento_cargos.length-1 == c && (filas_firmas_abajo == 1 || filas_firmas_abajo == 2)) {
+                    for( let i=0; i < filas_firmas_abajo; i++) {
+                        contenido_body.push(
+                            { text: '' + '\n\n\n\n' + '' + '\n' + '', colSpan: 3, style: 'tableRow'  },
+                            { },
+                            { }
+                        );
+                    }
+                }
+                if((c+1) % 3 == 0 || data.firmas.documento.documento_cargos.length-1 == c) {
+                    dd.content[0].table.body.push(contenido_body);
+                    contenido_body = [];
+                }            
+            }
         
         pdfMake.createPdf(dd).getBase64(function(base64) {
             postMessage({ fileName: 'ENTRADA_ESTANDAR_MEDICAMENTO.pdf', base64: base64 });

@@ -35,6 +35,7 @@ export class EditarComponent implements OnInit {
   cargando: boolean = false;
   cargandoRoles: boolean = false;
   cargandoMedicos: boolean = false;
+  cargandoProveedores: boolean = false;
   cargandoUnidadesMedicas: boolean = false;
 
   catalogosCargados:number = 0;
@@ -42,6 +43,7 @@ export class EditarComponent implements OnInit {
   roles: Rol[] = [];
   unidadesMedicas: any[] = [];
   medicos: any[] = [];
+  proveedores: any[];
   unidadesMedicasEdicion:any[]  = [];
 
    // # SECCION: Esta sección es para mostrar mensajes
@@ -71,10 +73,11 @@ export class EditarComponent implements OnInit {
       password: [{value: '', disabled: true}, [Validators.required]],
       confirmarPassword: [{value: '', disabled: true}, [Validators.required]],
       avatar: ['avatar-circled-user-male'],
-      roles: [[1],[Validators.required]],
+      roles: [[],[Validators.required]],
       unidades_medicas: [[]],
       almacenes: [[]],
       medico_id: ['-1'],
+      proveedor_id: [-1],
       pregunta_secreta: [''],
       respuesta: ['']
     });
@@ -87,7 +90,7 @@ export class EditarComponent implements OnInit {
     this.cargarRoles();
     this.cargarUnidadesMedicas();
     this.cargarMedicos();
-    
+    this.cargarProvedores();
   }
   
 
@@ -184,7 +187,10 @@ export class EditarComponent implements OnInit {
           if(usuario.medico_id == null){
             usuario.medico_id = '-1';
           }
-          console.log(usuario.medico_id)
+          if(usuario.proveedor_id == null){
+            usuario.proveedor_id = -1;
+          }
+          //console.log(usuario.medico_id)
           this.usuario.patchValue(usuario);
           this.unidadesMedicasEdicion = usuario.unidades_medicas_objs;
           console.log("Usuario cargado.");
@@ -229,7 +235,18 @@ export class EditarComponent implements OnInit {
       }, error => {
         this.cargandoMedicos = false;
       }
-
+    )
+  }
+  cargarProvedores(){
+    this.cargandoProveedores = true;
+    this.usuariosService.listaProveedores().subscribe(
+      proveedores => {
+        this.proveedores = proveedores;
+        this.cargandoProveedores = false;
+        console.log("Proveedores cargados")
+      }, error => {
+        this.cargandoProveedores = false;
+      }
     )
   }
   cargarUnidadesMedicas(){

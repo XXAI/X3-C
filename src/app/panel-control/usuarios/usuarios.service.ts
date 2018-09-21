@@ -76,4 +76,8 @@ export class UsuariosService {
     return this.jwtRequest.get("personal-clues",null,{clues: usuario.clues_activa.clues}).map( (response: Response) => response.json().data);
   }
 
+  listaProveedores( ): Observable<any>{
+    return this.jwtRequest.get("proveedores",null,null).map( (response: Response) => response.json().data);
+  }
+
 }

@@ -16,6 +16,7 @@ export class FormComponent implements OnInit {
   @Input() roles: Rol[];
   @Input() unidadesMedicas: any[];
   @Input() medicos: any[];
+  @Input() proveedores: any[];
   @Input() usuario:FormGroup;
 
   @Input()  respuestaRequerida:boolean;
@@ -31,6 +32,7 @@ export class FormComponent implements OnInit {
   @Output() onToggleCambiarPassword = new EventEmitter<void>();
   @Output() onCargarRoles = new EventEmitter<void>();
   @Output() onCargarMedicos = new EventEmitter<void>();
+  @Output() onCargarProveedores = new EventEmitter<void>();
 
   // # Esto es solo para listar las unidades medicas que ya estan relacionadas
   // al usuario, en el modulo de edicion
@@ -41,7 +43,9 @@ export class FormComponent implements OnInit {
   cluesAgregadas: string[] = [];
   unidadMedicaSeleccionada = null;
 
+  idRolesSeleccionados: any = {};
 
+  servidor = {id:''};
 
   idsAlmacenesSeleccionados: string[] = [];
 
@@ -51,9 +55,17 @@ export class FormComponent implements OnInit {
   ngOnInit() {
     var ums:FormArray = this.usuario.get('unidades_medicas') as FormArray;
     var almacenes:FormArray = this.usuario.get('almacenes') as FormArray;
-    console.log(this.usuario.get('medico_id'))
+    console.log(this.usuario.get('medico_id'));
 
+    let rolesUsuario = this.usuario.get('roles').value;
 
+    for (let i in rolesUsuario) {
+      this.idRolesSeleccionados[rolesUsuario[i]] = true;
+    }
+
+    let usuario = JSON.parse(localStorage.getItem('usuario'));
+		this.servidor = usuario.servidor;
+    
     this.cluesAgregadas = ums.value;
 
     this.idsAlmacenesSeleccionados = almacenes.value;
@@ -75,6 +87,22 @@ export class FormComponent implements OnInit {
     }
   }
 
+  checkRol(id){
+    if(!this.idRolesSeleccionados[id]){
+      this.idRolesSeleccionados[id] = true;
+    }else{
+      this.idRolesSeleccionados[id] = false;
+    }
+
+    let nuevosRoles = [];
+    for(let i in this.idRolesSeleccionados){
+      if(this.idRolesSeleccionados[i]){
+        nuevosRoles.push(i);
+      }
+    }
+    this.usuario.controls['roles'].setValue(nuevosRoles);
+  }
+
   enviar() {
     this.onEnviar.emit();
   }
@@ -84,6 +112,10 @@ export class FormComponent implements OnInit {
   cargarMedicos(){
     this.onCargarMedicos.emit();
  }
+
+ cargarProveedores(){
+  this.onCargarProveedores.emit();
+}
 
   regresar() {
     this.onRegresar.emit();
@@ -128,11 +160,5 @@ export class FormComponent implements OnInit {
     }
 
     this.usuario.controls['almacenes'].setValue(this.idsAlmacenesSeleccionados);
-
   }
-
-
-
-
-
 }

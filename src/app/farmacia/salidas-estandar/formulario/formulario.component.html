@@ -466,12 +466,18 @@
 <div class="modal" id="verLotes">
     <div class="modal-background"></div>
     <div class="modal-card" style="width: 60%; height: 90%;">
-        <header class="modal-card-head" style="height: 10%;">
-            <p class="modal-card-title" id="tituloModal" style="width: 200px"> </p>
+        <header class="modal-card-head">
+            <p class="modal-card-title" id="tituloModal" style="width: 200px" *ngIf="insumo">Recibir {{(insumo.tipo == 'ME')?'Medicamento':'Material de Curación'}}</p>
             <button type="button" class="delete" (click)="cancelarModal('verLotes'); modo = 'N';"></button>
         </header>
         <section class="modal-card-body" style="height: 90%;">
             <div style="padding: 1em; overflow-x: hidden; height: 100%;">
+                <div style="overflow: hidden;" *ngIf="insumo">
+                    <p aling="justify" style="font-weight:bold; font-size:18px;">{{insumo.clave}}</p>
+                    <p aling="justify" style="font-size:12px;">{{insumo.descripcion}}</p> 
+                    <p aling="justify" style="font-size:16px;"> CANTIDAD POR ENVASE: 
+                    {{insumo.cantidad_x_envase ? insumo.cantidad_x_envase : 'Sin especificar' }}</p>
+                </div>
                 <div style="padding: 1em; overflow: scroll; overflow-x: hidden; overflow-y: hidden; height: 20%;">
                     <div class="columns" >
                         <div class="column is-two-thirds">
@@ -507,7 +513,7 @@
                         </div>
                     </div>
                 </div>
-                <div style="padding: 1em; overflow: scroll; overflow-x: hidden; height: 80%;">
+                <div style="padding: 1em; overflow: scroll; overflow-x: hidden; height: 70%;">
                     <table class="table is-narrow is-bordered is-striped" >
                         <thead>
                             <tr>

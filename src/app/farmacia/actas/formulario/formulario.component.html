@@ -257,4 +257,4 @@
     <p style="text-align: center;"><small >Este mensaje desaparecerá en {{ mensajeExito.cuentaAtras }} segundos.</small></p>       
 </div>
 
-<buscar-insumos *ngIf="mostrarModalInsumos" (onCerrar)="mostrarModalInsumos = false" (onEnviar)="agregarItem($event)" [listaAgregados]="listaClaveAgregadas"></buscar-insumos>
+<buscar-insumos *ngIf="mostrarModalInsumos" (onCerrar)="mostrarModalInsumos = false" (onEnviar)="agregarItem($event)" [disponiblePedidos]="true" [listaAgregados]="listaClaveAgregadas"></buscar-insumos>

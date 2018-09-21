@@ -13,7 +13,6 @@ importScripts(
     onmessage = function(evt) {
         let data = JSON.parse(evt.data);
         pdf(data);
-        console.log(data);
         fechas();
     };
 
@@ -49,7 +48,7 @@ importScripts(
                 table: {
                     headerRows: 10,
                     dontBreakRows: true,
-                    widths: [70, 70, 20, 'auto', 'auto', 'auto', 50, 50, 'auto'],
+                    widths: [80, 70, 20, 'auto', 'auto', 'auto', 50, 50, 'auto'],
                     body: [
                         [{
                             image: 'header',
@@ -65,11 +64,11 @@ importScripts(
                             {}, {}, {}, {}, {}, {},{}, {} 
                         ],
                         [
-                            { text: 'FOLIO DE SALIDA', style: 'tableHeaderVerde', colSpan: 6, alignment: 'right' },
+                            { text: 'NOMBRE DE ALMACÉN', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
                             {},
+                            { text: data.usuario.almacen_activo.nombre, style: 'tableHeader', colSpan: 2, alignment: 'left' }, 
                             {},
-                            {},
-                            {},
+                            { text: 'FOLIO DE SALIDA', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
                             {},
                             { text: data.datos.id, style: 'tableHeader', colSpan: 3, alignment: 'left' },
                             {},
@@ -83,16 +82,6 @@ importScripts(
                             { text: 'NOMBRE DE CLUES', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' }, 
                             {},
                             { text: data.usuario.clues_activa.nombre, style: 'tableHeader', colSpan: 3, alignment: 'left' }, 
-                            {}, {} 
-                        ],
-                        [
-                            { text: 'MONTO TOTAL DE LA SALIDA', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
-                            {},
-                            { text: data.monto_total ? ('$ ' + data.monto_total.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')) : 'No disponible', style: 'tableHeader', colSpan: 2, alignment: 'left' }, 
-                            {},
-                            { text: 'NOMBRE DE ALMACÉN', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
-                            {},
-                            { text: data.usuario.almacen_activo.nombre, style: 'tableHeader', colSpan: 3, alignment: 'left' }, 
                             {}, {} 
                         ],
                         [{ text: ' ', style: 'celdaEspacio', colSpan: 9, alignment: 'center' },
@@ -109,13 +98,13 @@ importScripts(
                          */
                         [ 
                             { text: 'FECHA DE MOVIMIENTO:', style: 'tableHeaderVerde', colSpan:2, alignment: 'right' },
-                            {},
+                            { },
                             { text: data.datos.fecha_movimiento ? data.datos.fecha_movimiento : 'No disponible', style: 'tableHeader', colSpan:2, alignment: 'left' },
                             { },
-                            { text: 'PROGRAMA:', style: 'tableHeaderVerde', alignment: 'right'},
-                            { text: data.datos.programa_id ? data.datos.programa_id : 'No disponible', style: 'tableHeader', alignment: 'left' },
-                            { text: 'RECIBE:', style: 'tableHeaderVerde', alignment: 'right' },
-                            { text: data.datos.movimiento_metadato.persona_recibe ? data.datos.movimiento_metadato.persona_recibe : 'No disponible', style: 'tableHeader', colSpan:2, alignment: 'left' },
+                            { text: 'UM Destino', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
+                            { },
+                            { text: data.datos.movimiento_metadato.unidad_medica ? data.datos.movimiento_metadato.unidad_medica.nombre : 'No disponible', style: 'tableHeader', colSpan: 3, alignment: 'left' },
+                            { },
                             { },
                         ],
                         [
@@ -123,10 +112,10 @@ importScripts(
                             { },
                             { text: data.turno.nombre ? data.turno.nombre : data.turno, style: 'tableHeader', colSpan: 2, alignment: 'left' },
                             {},
-                            { text: 'SERVICIO', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
+                            { text: 'PROGRAMA', style: 'tableHeaderVerde', colSpan: 2, alignment: 'right' },
                             { },
-                            { text: data.servicio.nombre ? data.servicio.nombre : data.servicio, style: 'tableHeader', colSpan: 3, alignment: 'left' },
-                            {},
+                            { text: data.datos.programa_id == null ? 'No disponible' : data.datos.programa_id == 0 ? 'Sin programa' : data.datos.programa_id, style: 'tableHeader', colSpan: 3, alignment: 'left' },
+                            { },
                             { }
                         ],
 
@@ -189,6 +178,12 @@ importScripts(
                 tableHeaderTop: {
                     bold: true,
                     fontSize: 8,
+                    color: 'black',
+                    margin: [3, 3, 3, 3]
+                },
+                headerClave: {
+                    bold: true,
+                    fontSize: 6.5,
                     color: 'black',
                     margin: [3, 3, 3, 3]
                 },
@@ -279,31 +274,31 @@ importScripts(
                             { },
                             { },
                             { },
-                            { text: 'SUBTOTAL', style: 'tableHeaderVerde', colSpan: 3, alignment: 'right' },
+                            { text: 'SUBTOTAL (Incluye IVA)', style: 'tableHeaderVerde', colSpan: 3, alignment: 'right' },
                             { },
                             { },
                         ],
                         [
-                            { text: insumo.clave ? insumo.clave : 'No disponible' , style: 'tableRow', alignment: 'center' },
-                            { text: insumo.descripcion ? insumo.descripcion : 'No disponible', style: 'tableRow', colSpan:5, alignment: 'left' },
+                            { text: insumo.clave ? insumo.clave : 'No disponible' , style: 'headerClave', alignment: 'center' },
+                            { text: insumo.descripcion ? insumo.descripcion : 'No disponible', style: 'headerClave', colSpan:5, alignment: 'left' },
                             {},
                             {},
                             {},
                             {},
-                            { text: insumo.subtotal == null ? 'No disponible' : '$ ' + insumo.subtotal.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'), style: 'tableRow', colSpan:3, alignment: 'right' },
+                            { text: insumo.subtotal_con_iva == null ? 'No disponible' : '$ ' + Number(insumo.subtotal_con_iva).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'), style: 'tableRow', colSpan:3, alignment: 'right' },
                             {},
                             {}
                         ],
                         [
-                            { text: '', style: 'tableRow', alignment: 'center' },
+                            { text: 'PROGRAMA', style: 'tableHeaderAzul', alignment: 'center' },
                             { text: 'LOTE', style: 'tableHeaderAzul', alignment: 'center' },
                             { text: 'CADUCIDAD', style: 'tableHeaderAzul', colSpan:2, alignment: 'center' },
                             { },
                             { text: 'CODIGO DE BARRAS', style: 'tableHeaderAzul', alignment: 'center' },
                             { text: 'CANTIDAD', style: 'tableHeaderAzul', alignment: 'center' },
                             { text: 'PRECIO UNITARIO', style: 'tableHeaderAzul', alignment: 'center' },
-                            { text: 'IMPORTE', style: 'tableHeaderAzul', alignment: 'center' },
                             { text: 'IVA', style: 'tableHeaderAzul', alignment: 'center' },
+                            { text: 'IMPORTE (Incluye IVA)', style: 'tableHeaderAzul', alignment: 'center' },
                         ]);
                     
                     for (var l in insumo.lotes) {
@@ -322,7 +317,7 @@ importScripts(
                             color_circulo = 'black';
                         }
                         dd.content[0].table.body.push([
-                            { text: '' , style: 'tableRow', alignment: 'center' },
+                            { text: lote.programa_nombre == null ? 'No disponible' : lote.programa_nombre, style: 'tableRow', alignment: 'center' },
                             { text: lote.lote == null ? 'No disponible' : lote.lote, style: 'tableRow', alignment: 'left' },
                             { canvas: [{
                                     type: 'ellipse',
@@ -336,8 +331,8 @@ importScripts(
                             { text: lote.codigo_barras  != null ? lote.codigo_barras : 'No disponible', style: 'tableRow', alignment: 'right' },
                             { text: lote.cantidad == null ? 'No disponible' : lote.cantidad, style: 'tableRow', alignment: 'right' },
                             { text: lote.precio_unitario == null ? 'No disponible' : ('$ ' + Number(lote.precio_unitario).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')), style: 'tableRow', alignment: 'right' },
-                            { text: lote.importe == null ? 'No disponible' : ('$ ' + Number(lote.importe).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')), style: 'tableRow', alignment: 'right' },
-                            { text: lote.iva_importe == null ? 'No disponible' : ('$ ' + Number(lote.iva_importe).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')), style: 'tableRow', alignment: 'right' }
+                            { text: lote.iva == null ? 'No disponible' : ('$ ' + Number(lote.iva).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')), style: 'tableRow', alignment: 'right' },
+                            { text: lote.importe_con_iva == null ? 'No disponible' : ('$ ' + Number(lote.importe_con_iva).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')), style: 'tableRow', alignment: 'right' }
                         ]);
                     }
 
@@ -346,27 +341,36 @@ importScripts(
 
 
         dd.content[0].table.body.push(
-            // Footer
+            // Cantidades
             [
-                { text: "", style: 'tableHeader', colSpan: 9, alignment: 'center' },
-                '', '', '', '', '', '', '', ''
+                { text: '\n' +
+                        'SUBTOTAL:' +'\n' +
+                        'IVA:' +'\n' +
+                        'TOTAL:' + '\n', style: 'tableHeaderLeyenda', colSpan:7, alignment: 'right' },
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                { text: '\n' +
+                        '$ ' + Number(data.datos.subtotal).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + '\n' +
+                        '$ ' + Number(data.datos.iva).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + '\n' +
+                        '$ ' + Number(data.datos.total).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + '\n', style: 'tableHeaderLeyenda', colSpan:2, alignment: 'right' },
+                {}
             ],
 
             // Firmas
             [{
                 table: {
-                    widths: ['*', '*'],
+                    widths: ['*', '*', '*'],
                     body: [
                         [
-                            { text: '\n\n\n\n' + '' + 'Nombre de responsables', rowSpan: 2, style: 'tableRow' }, 
-                            { text: "Observaciones", style: 'text' }
-                        ],
-                        [
-                            '', 
-                            { text: '\n' + data.datos.observaciones, rowSpan: 2, alignment: 'justify' }
-                        ],
-                        ['RESPONSABLES ', '']
-                    ],
+                            { text: 'Observaciones: ' + data.datos.observaciones, alignment: 'left', colSpan: 3, style: 'tableRow' }, 
+                            { },
+                            { }
+                        ]
+                    ]
                 },
                 layout: {
                     hLineWidth: function(i, node) {
@@ -388,7 +392,78 @@ importScripts(
                 alignment: 'center',
             }, {}, {}, {}, {}, {}]
         );
-
+        
+        data.firmas.documento.documento_cargos.splice(0, 0, {
+        // data.firmas.documento.documento_cargos.push({
+            cargo : {
+                    id: null,
+                    clave: null,
+                    nombre: "--"
+                },
+            cargo_id:null,
+            created_at:null,
+            deleted_at:null,
+            documento_sistema_id:null,
+            firmante:{
+                id: null,
+                incremento: null,
+                servidor_id: null,
+                almacen_id: null,
+                documento_sistema_cargo_id: null,
+                nombre: data.datos.movimiento_metadato.persona_recibe
+            },
+            id:"1",
+            leyenda:"RECIBIÓ",
+            updated_at:null,
+            usuario_id:"root"
+        },
+        {
+            cargo : {
+                    id: null,
+                    clave: null,
+                    nombre: "--"
+                },
+            cargo_id:null,
+            created_at:null,
+            deleted_at:null,
+            documento_sistema_id:null,
+            firmante:{
+                id: null,
+                incremento: null,
+                servidor_id: null,
+                almacen_id: null,
+                documento_sistema_cargo_id: null,
+                nombre: data.usuario.nombre + ' ' + data.usuario.apellidos
+            },
+            id:"1",
+            leyenda:"ELABORÓ",
+            updated_at:null,
+            usuario_id:"root"
+        });
+        let cantidad_firmas = data.firmas.documento.documento_cargos.length;
+        
+        let filas_firmas_abajo = 3 - cantidad_firmas % 3;
+        let contenido_body = [];
+        for (let c =0; c < data.firmas.documento.documento_cargos.length; c++) {
+            contenido_body.push(
+                { text: data.firmas.documento.documento_cargos[c].leyenda + '\n\n\n\n\n\n' + data.firmas.documento.documento_cargos[c].firmante.nombre + '\n' + data.firmas.documento.documento_cargos[c].cargo.nombre, alignment: 'center', colSpan: 3, style: 'celdaEspacio'  },
+                { },
+                { }
+            );
+            if(data.firmas.documento.documento_cargos.length-1 == c && (filas_firmas_abajo == 1 || filas_firmas_abajo == 2)) {
+                for( let i=0; i < filas_firmas_abajo; i++) {
+                    contenido_body.push(
+                        { text: '' + '\n\n\n\n\n\n' + '' + '\n' + '', colSpan: 3, style: 'celdaEspacio'  },
+                        { },
+                        { }
+                    );
+                }
+            }
+            if((c+1) % 3 == 0 || data.firmas.documento.documento_cargos.length-1 == c) {
+                dd.content[0].table.body.push(contenido_body);
+                contenido_body = [];
+            }            
+        }
         
         pdfMake.createPdf(dd).getBase64(function(base64) {
             postMessage({ fileName: 'SALIDA_ESTANDAR_MEDICAMENTO.pdf', base64: base64 });

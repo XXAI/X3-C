@@ -546,5 +546,6 @@
     [listaAgregados]="listaClaveAgregadas" 
     [listaAgregadosConClues]="listaClaveAgregadas" 
     [conPrecios]="true"
+    [disponiblePedidos]="true"
     [conClues]="esPedidoJurisdiccional"></buscar-insumos>
     <pedidos-lista-clues *ngIf="esPedidoJurisdiccional && mostrarModalListaClues" [insumo]="loteSeleccionado" [listaClaveAgregadas]="listaClaveAgregadas" (onCerrar)="mostrarModalListaClues = false"></pedidos-lista-clues>

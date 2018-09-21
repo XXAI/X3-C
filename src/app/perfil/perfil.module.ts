@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 
 import { PerfilComponent } from './perfil.component';
 import { CambiarEntornoService } from './cambiar-entorno.service';
+import { CambiarFechaHoraService } from './cambiar-fecha-hora.service';
 import { EditarPerfilService } from './editar-perfil.service';
 
 
@@ -18,7 +19,7 @@ import { EditarPerfilService } from './editar-perfil.service';
   exports: [
       PerfilComponent
   ],
-  providers: [CambiarEntornoService, EditarPerfilService],
+  providers: [CambiarEntornoService, CambiarFechaHoraService, EditarPerfilService],
   declarations: [PerfilComponent]
 
 })

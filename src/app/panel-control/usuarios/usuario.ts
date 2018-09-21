@@ -14,6 +14,7 @@ export class Usuario {
     su: boolean;
     cargando:boolean = false;
     medico_id: string;
+    proveedor_id: number;
 }
 
 export interface Usuario {
@@ -28,4 +29,5 @@ export interface Usuario {
     unidades_medicas_objs: any[];
     almacenes: string[];
     medico_id: string;
+    proveedor_id: number;
 }

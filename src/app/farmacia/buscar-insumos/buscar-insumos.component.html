@@ -179,6 +179,20 @@
               </p>
             </div>                   
           </div>
+
+          <div class="column" *ngIf="conTipoInsumo">
+              <div class="field">
+               <label>Tipo Insumo:</label>
+               <p class="control is-expanded">                  
+                 <span class="select is-fullwidth">              
+                   <select (change)="seleccionarTipoInsumo($event.target.value)" #tipoInsumoSelect>
+                     <option value="-1">Seleccione el tipo de insumo</option>                   
+                     <option *ngFor="let item of listaTipoInsumos" value="{{ item.id }}">{{ item.clave }} - {{ item.nombre }}</option>
+                   </select>
+                 </span>
+               </p>
+             </div>                   
+         </div>
           <div class="column">
            
               <div class="control is-grouped is-pulled-right" >            
@@ -186,9 +200,14 @@
                     <label>Consumo promedio mensual: 0</label>
                     <input class="input is-medium" [disabled]="insumoSeleccionado == null" type="number" placeholder="Cantidad" #cantidadBox id="cantidad" (keyup)="comprobarCantidad(cantidadBox.value)" autocomplete="off">
                 </p>
+
+                <p class="control is-expanded" [ngClass]=" {'is-hidden': !establecerPrecio }" >
+                    <label>$ Precio</label>
+                    <input class="input is-medium" [disabled]="insumoSeleccionado == null" type="number" step=".01" placeholder="0.00" #precioBox id="precio" (keyup)="comprobarCantidadDecimales(precioBox.value)" autocomplete="off">
+                </p>
                 <p class="control">
                     <label>&nbsp;</label>
-                    <button [disabled]="(!cantidadValida && conCantidad )|| insumoSeleccionado == null || (conClues && clues == -1)" class="button is-medium is-primary " >
+                    <button [disabled]="(!cantidadValida && conCantidad )|| insumoSeleccionado == null || (conClues && clues == -1) || (!cantidadValida && establecerPrecio ) " class="button is-medium is-primary " >
                     <span class="icon"><i class="fa fa-plus"></i></span><span>Agregar</span>
                     </button>
                 </p>

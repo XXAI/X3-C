@@ -27,6 +27,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   
   @ViewChildren('searchBox') searchBoxViewChildren;
   @ViewChildren('cantidadBox') cantidadBoxViewChildren;
+  @ViewChildren('precioBox') precioBoxViewChildren;
   @ViewChildren('cluesSelect') cluesSelectViewChildren;
   @ViewChildren('stockSelect') stockSelectViewChildren;
   
@@ -37,10 +38,13 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   @Input() listaAgregados: Array<string>;
   @Input() listaAgregadosConClues: any[] = [];
   @Input() listaAgregadosConStock: any = {}; 
+  @Input() disponiblePedidos: boolean;
   @Input() conPrecios: boolean = false;
   @Input() conCantidad: boolean = true;
   @Input() conClues: boolean = false;
   @Input() conStock: boolean = false;
+  @Input() establecerPrecio: boolean = false;
+  @Input() conTipoInsumo: boolean = false;
   @Input() tipo: string = null;
 
   cargando: boolean = false;
@@ -56,6 +60,9 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   indicePaginas:number[] = [];
   // # FIN SECCION
 
+  listaTipoInsumos:any[] = [];
+  tipoInsumo:any = -1;
+  descripcionTipoInsumo:string = "";
 
    // # SECCION: Unidades Medicas dependientes
 
@@ -104,7 +111,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       this.ultimoTerminoBuscado = term;
       this.paginaActual = 1;
       this.cargando = true;
-      return term  ? this.buscarInsumosService.buscar(term, this.paginaActual, this.resultadosPorPagina, this.conPrecios, this.tipo) : Observable.of<any>({data:[]}) 
+      return term  ? this.buscarInsumosService.buscar(term, this.paginaActual, this.resultadosPorPagina, this.conPrecios, this.tipo, this.disponiblePedidos) : Observable.of<any>({data:[]}) 
     }
       
     
@@ -154,11 +161,20 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       }
 
     );
-    console.log(this.conClues)
     if(this.conClues){
       this.buscarInsumosService.clues().subscribe(
         respuesta => {
           this.listaClues = respuesta;
+        }, error => {
+          console.log(error);
+        }
+      );
+    }
+
+    if(this.conTipoInsumo){
+      this.buscarInsumosService.tipoInsumos().subscribe(
+        respuesta => {
+          this.listaTipoInsumos = respuesta;
         }, error => {
           console.log(error);
         }
@@ -197,6 +213,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
   seleccionar(item:InsumoMedico){
     this.insumoSeleccionado = item;
     this.cantidadBoxViewChildren.first.nativeElement.disabled = false;
+    this.precioBoxViewChildren.first.nativeElement.disabled = false;
     
     if(this.conStock){
       this.cargandoStock = true;
@@ -254,11 +271,32 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
           console.log(e);
         }  
     } 
-    
-    if(!this.conStock && !this.conClues){
+    if(this.establecerPrecio){
+      this.precioBoxViewChildren.first.nativeElement.focus();
+    }
+    if(!this.conStock && !this.conClues && !this.establecerPrecio){
       this.cantidadBoxViewChildren.first.nativeElement.focus();
     }
     
+  }
+  comprobarCantidadDecimales(value: any){
+    if (value.replace(/[^0-9.]/g,'') == ""){
+      this.cantidadValida = false;
+      return false;
+    }
+    if (isNaN(value)){
+      this.cantidadValida = false;
+      return false;
+    }
+/*
+    let x = value % 1;
+    if ( x != 0 ){
+      this.cantidadValida = false;
+      return false;
+    }*/
+    this.cantidadValida = true;
+    return true;
+
   }
   comprobarCantidad(value: any){
     if (value.replace(/ /g,'') == ""){
@@ -424,7 +462,24 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       //this.resetItemSeleccionado();
     }
 
-    if(!this.conClues && !this.conStock){
+    if(this.establecerPrecio){
+      this.mensajeAgregado = new Mensaje(true, 2);
+      this.mensajeAgregado.mostrar = true;  
+      var insumo = {
+        precio: this.precioBoxViewChildren.first.nativeElement.value,
+        insumo : this.insumoSeleccionado,
+        tipo_insumo_id: this.tipoInsumo,
+        descripcion_tipo_insumo: this.descripcionTipoInsumo
+      }
+      this.onEnviar.emit(insumo);
+      this.precioBoxViewChildren.first.nativeElement.value = "";
+      this.searchBoxViewChildren.first.nativeElement.focus();
+      //Harima: Agregamos la clave al arreglo de items agregados
+      this.listaAgregados.push(this.insumoSeleccionado.clave);
+      this.resetItemSeleccionado();
+    }
+
+    if(!this.conClues && !this.conStock &&!this.establecerPrecio){
       this.mensajeAgregado = new Mensaje(true, 2);
       this.mensajeAgregado.mostrar = true;    
       this.insumoSeleccionado.cantidad = this.cantidadBoxViewChildren.first.nativeElement.value;
@@ -447,7 +502,7 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
     console.log("Cargando insumos.");
    
     this.cargando = true;
-    this.buscarInsumosService.buscar(term, pagina, this.resultadosPorPagina, this.conPrecios, this.tipo).subscribe(
+    this.buscarInsumosService.buscar(term, pagina, this.resultadosPorPagina, this.conPrecios, this.tipo, this.disponiblePedidos).subscribe(
         resultado => {
           this.cargando = false;
           this.insumos = resultado.data as InsumoMedico[];
@@ -535,7 +590,24 @@ export class BuscarInsumosComponent implements OnInit, AfterViewInit {
       this.paginaAnterior(this.searchBoxViewChildren.first.nativeElement.value);
     }
   }
+  seleccionarTipoInsumo(value){
+    this.tipoInsumo = value;
 
+    for(var i = 0; i<this.listaTipoInsumos.length; i++){
+      if(this.tipoInsumo == this.listaTipoInsumos[i].id){
+        this.descripcionTipoInsumo = this.listaTipoInsumos[i].clave + " - " + this.listaTipoInsumos[i].nombre;
+      }
+    }
+    try{
+      // Por alguna razón si no implemento un setTimeout me lanza error
+      // investigar porque ocurre esto
+
+      // Poner el focus en la barra de busqueda
+      setTimeout(() => { this.precioBoxViewChildren.first.nativeElement.focus();} ); 
+    } catch(e){
+      console.log(e);
+    }  
+  }
   seleccionarClues(value){
     this.clues = value;
     try{

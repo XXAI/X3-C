@@ -47,7 +47,7 @@ export class AuthService {
         json.usuario.clues_activa = null;
         json.usuario.almacen_activo = null;
         json.usuario.proveedor_activo = null; //Harima: Se agrego proveedor activo, para acceder a los modulos de proveedores
-        
+
         if(json.usuario.proveedores){
           if(usuarioAnterior && usuarioAnterior.id == json.usuario.id ){
             var bandera = false;
@@ -110,7 +110,25 @@ export class AuthService {
               json.usuario.almacen_activo = json.usuario.clues_activa.almacenes[0];
             }
             
-          } else {
+          } else if(json.usuario.clues_activa.almacenes_externos.length > 0 ){
+            if(usuarioAnterior &&  usuarioAnterior.id == json.usuario.id ){
+              var bandera = false;
+              if(usuarioAnterior.almacen_activo){
+                for(var i in json.usuario.clues_activa.almacenes_externos){
+                  if(usuarioAnterior.almacen_activo.id == json.usuario.clues_activa.almacenes_externos[i].id){
+                    json.usuario.almacen_activo = json.usuario.clues_activa.almacenes_externos[i];
+                    bandera = true;
+                  }
+                }
+              }
+              
+              if(!bandera){
+                json.usuario.almacen_activo = json.usuario.clues_activa.almacenes_externos[0];
+              }
+            } else{
+              json.usuario.almacen_activo = json.usuario.clues_activa.almacenes_externos[0];
+            }
+          }else {
             json.usuario.almacen_activo = null;
           }
         } else {
@@ -122,7 +140,7 @@ export class AuthService {
         if(json.server_info.data.id != json.usuario.servidor.id){
           console.log('Usuario de diferente servidor...');
           json.usuario.solo_lectura = true;
-        }else if(json.server_info.data.principal && json.usuario.clues_activa.es_offline){
+        }else if(json.server_info.data.principal && json.usuario.clues_activa && json.usuario.clues_activa.es_offline){
           console.log('Usuario mismo servidor, con clues offline...');
           json.usuario.solo_lectura = true;
         }

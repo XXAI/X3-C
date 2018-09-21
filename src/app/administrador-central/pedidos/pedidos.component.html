@@ -117,16 +117,22 @@
                         
                         </div>
                         <div class="column">
-                            <label for="jurisdicciones">Desde:</label>                             
-                            <p class="control is-expanded">
-                                <input class="input " type="date"  [(ngModel)] = "fecha_desde" >
-                            </p>
+                            <label for="jurisdicciones">Mes:</label>                             
+                            <span class="select is-fullwidth">
+                            <select #mesSelect (change)="cambioSeleccionMes(mesSelect.value)">
+                                <option value="-1">Todos</option>
+                                <option *ngFor="let item of mes_filtro" value="{{item.id}}">{{ item.descripcion }}</option>
+                            </select>
+                            </span>
                         </div>
                         <div class="column">
-                            <label for="jurisdicciones">Hasta:</label>                             
-                            <p class="control is-expanded">
-                                <input class="input " type="date"  [(ngModel)] = "fecha_hasta" >
-                            </p>
+                            <label for="jurisdicciones">Status Recepción:</label>                             
+                            <span class="select is-fullwidth">
+                                <select #statusRecepcionSelect (change)="cambioSeleccionStatusRecepcion(statusRecepcionSelect.value)">
+                                    <option value="-1">Todos</option>
+                                    <option *ngFor="let item of status_recepcion_filtro" value="{{item.id}}">{{ item.descripcion }}</option>
+                                </select>
+                                </span>
                         </div>
                         <!--div class="column">
                             <label>Sin Pedidos</label>
@@ -136,11 +142,14 @@
                         </div-->
                     </div>
 
-                    <div *ngIf="jurisdiccionesSeleccionadas.length>0 || proveedoresSeleccionados.length>0 || statusSeleccionados.length>0">
+                    <div *ngIf="jurisdiccionesSeleccionadas.length>0 || proveedoresSeleccionados.length>0 || statusSeleccionados.length>0 || mesSeleccionados.length>0 || statusRecepcionSeleccionados.length>0">
                         <h1 class="title is-6">Filtro aplicado:</h1>
                         <span class="tag is-dark is-medium" style="margin-bottom:0.5em; margin-right:0.2em;" *ngFor="let item of proveedoresSeleccionados; let i = index">{{ item.nombre_corto }}<button class="delete is-small" (click)="quitarProveedor(i)"></button></span>
                         <span class="tag is-white is-medium" style="margin-bottom:0.5em; margin-right:0.2em;" *ngFor="let item of jurisdiccionesSeleccionadas;  let i = index">JS {{ item.numero }}<button class="delete is-small" (click)="quitarJurisdiccion(i)"></button></span>
                         <span class="tag is-warning is-medium" style="margin-bottom:0.5em; margin-right:0.2em;" *ngFor="let item of statusSeleccionados;  let i = index">{{ item.descripcion }}<button class="delete is-small" (click)="quitarStatus(i)"></button></span>
+                        
+                        <span class="tag is-default is-medium" style="margin-bottom:0.5em; margin-right:0.2em;" *ngFor="let item of mesSeleccionados;  let i = index">{{ item.descripcion }}<button class="delete is-small" (click)="quitarMes(i)"></button></span>
+                        <span class="tag is-default is-medium" style="margin-bottom:0.5em; margin-right:0.2em;" *ngFor="let item of statusRecepcionSeleccionados;  let i = index">{{ item.descripcion }}<button class="delete is-small" (click)="quitarStatusRecepcion(i)"></button></span>
                         
                     </div>
                     <nav class="level">

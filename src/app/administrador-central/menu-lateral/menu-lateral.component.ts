@@ -32,6 +32,7 @@ export class MenuLateralComponent implements OnInit {
           { permiso: 'fWA5oDswZ2Ra4O8YaCy6nEY8OeCOxg9C', icono: 'fa-bar-chart', titulo:"Entregas por mes", url:"/administrador-central/entregas-mes" }, 
           { permiso: 'BBg7HSOEmjjOsVl48s8wSz8AxXhmBXA1', icono: 'fa-thumbs-o-up', titulo:"Cumplimiento", url:"/administrador-central/cumplimiento" },          
           { permiso: 'BBg7HSOEmjjOsVl48s8wSz8AxXhmBXA1', icono: 'fa-money', titulo:"Financiero", url:"/administrador-central/reporte-financiero" },          
+          { permiso: 'bsIbPL3qv6XevcAyrRm1GxJufDbzLOax', icono: 'fa-legal', titulo:"Penas convencionales", url:"/administrador-central/penas-convencionales" }, 
         ]
       },
       {
@@ -41,9 +42,11 @@ export class MenuLateralComponent implements OnInit {
         ]
       },
       {
-        titulo: 'Catálogos',
+        titulo: 'Insumos médicos',
         modulos: [
           { permiso: 'r1RX6Yq7fc4CRRI2OJXIPxeBLW3lFP59', icono: 'fa-check-square', titulo:"Claves básicas", url:"/administrador-central/claves-basicas" },
+          { permiso: 'X36qZL6YWSwvEaR2EH1TeSOotssAkrxu', icono: 'fa-medkit', titulo:"Insumos médicos", url:"/administrador-central/insumos-medicos" },
+          { permiso: 'X36qZL6YWSwvEaR2EH1TeSOotssAkrxu', icono: 'fa-file-text-o', titulo:"Contratos", url:"/administrador-central/contratos" },
         ]
       },
       {

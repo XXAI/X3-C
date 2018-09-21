@@ -83,15 +83,22 @@
                   <li [ngClass]="{ 'is-active' : tab == 2}"><a (click)="tab=2">Clues / Almacenes</a></li>
                   <li [ngClass]="{ 'is-active' : tab == 3}"><a (click)="tab=3">Avatar</a></li>
                   <li [ngClass]="{ 'is-active' : tab == 4}"><a (click)="tab=4">Médico</a></li>
+                  <li [ngClass]="{ 'is-active' : tab == 5}"><a (click)="tab=5" *ngIf="servidor.id == '0001'">Proveedor</a></li>
                 </ul>
               </div>
        
               <div  [ngClass]="{ 'is-hidden': tab != 1}">
+                <div class="control is-grouped">
+                  <p class="control is-expanded">
+                    <label class="tag" [ngClass]="{'is-disabled': cargando, 'is-success': (idRolesSeleccionados[item.id])}" *ngFor="let item of roles" style="margin: 1px; cursor:pointer;">
+                      <input type="checkbox" value="{{item.id}}" style="display:none;" (change)="checkRol(item.id)"> {{item.nombre}}
+                    </label>
+                  </p>
+                </div>
                 <div class="control" [ngClass]="{'is-loading': cargandoRoles}">
-
-                  <select  name="roles" formControlName="roles" multiple class="bulma-select-multiple" [ngClass]="{'is-warning': roles?.length ==0 }">
+                  <!--select  name="roles" formControlName="roles" multiple class="bulma-select-multiple" [ngClass]="{'is-warning': roles?.length ==0 }">
                     <option *ngFor="let item of roles" value="{{item.id}}">{{ item.nombre }}</option>
-                  </select>
+                  </select-->
                   <span class="help is-danger" *ngIf="usuario.get('roles').hasError('required') && usuario.get('roles').touched">Debe elegir por lo menos un rol.</span>
                   <span class="help " *ngIf="roles?.length == 0"><b>La lista de roles está vacía.</b> <a (click)="cargarRoles()"><span class="icon is-small"><i class="fa fa-refresh"></i></span> <span>Actualizar</span></a></span>
                 </div>
@@ -225,7 +232,18 @@
                     </span>
                   </p>   
               </div>
-              
+              <div [ngClass]="{ 'is-hidden': tab != 5}">
+                <p class="control is-expanded">
+                  <label for="proveedor">Enlazar cuenta con un proveedor:</label>
+                  <span class="select is-fullwidth">
+                  <select #proveedor id="proveedor" formControlName="proveedor_id">
+                    <option value="-1">Ninguno</option>
+                    <option *ngFor="let item of proveedores" [value]="item.id">{{ item.nombre }}</option>
+                  </select>
+                  </span>
+                </p>   
+            </div>
+
               <br><br>
               <div class="control is-grouped">
                 <p class="control">
