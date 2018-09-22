@@ -32,3 +32,8 @@ select.is-danger {
 	border:1px solid #D84315;
 	border-radius: 0.25em;
 }
+
+tr.is-danger td {
+    background:#ff3860 !important;
+    color: white !important;
+}

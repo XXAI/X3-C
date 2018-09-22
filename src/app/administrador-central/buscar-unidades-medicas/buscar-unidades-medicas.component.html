@@ -1,0 +1,105 @@
+<div class="modal is-active">
+  <div class="modal-background" (click)="cerrar()"></div>
+  <div class="modal-card" style="width:95%; height: 100%;">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Buscar Unidades Médicas</p>
+      <button class="delete" (click)="cerrar()"></button>
+    </header>
+    <section class="modal-card-body">
+      <table class="table" style="margin-bottom:0px">
+        <thead>
+          <tr>
+            <td colspan="3">
+              <p class="control is-expanded">
+                <input class="input " type="text" placeholder="CLUES o Nombre" [(ngModel)]="clues">
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="tipoUnidad">Añadir tipo de unidad:</label>
+              <p class="control is-expanded">
+                <span class="select is-fullwidth">
+                  <select #tipoUnidadSelect (change)="cambioSeleccionTipoUnidad(tipoUnidadSelect.value)">
+                    <option value="-1" *ngIf="cargandoTiposUnidadMedica">Cargando...</option>
+                    <option value="-1" *ngIf="!cargandoTiposUnidadMedica">Todas</option>
+                    <option *ngFor="let item of tiposUnidadMedica" value="{{item.tipo}}">{{item.tipo}}</option>
+                  </select>
+                </span>
+              </p>
+            </td>
+            <td>
+              <label for="jurisdicciones">Añadir Jurisdiccion:</label>
+              <p class="control is-expanded" [ngClass]="{'is-loading': cargandoJurisdicciones, 'is-disabled': cargandoJurisdicciones}">
+                <span class="select is-fullwidth">
+                  <select #js id="jurisdicciones" (change)="cambioSeleccionJurisdiccion(js.value)">
+                    <option value="-1" *ngIf="cargandoJurisdicciones">Cargando...</option>
+                    <option value="-1" *ngIf="!cargandoJurisdicciones">Todas</option>
+                    <option *ngFor="let item of jurisdicciones" value="{{item.id}}">JS {{ item.numero }} - {{
+                      item.nombre }}</option>
+                  </select>
+                </span>
+              </p>
+            </td>
+            <td style="text-align:right; vertical-align: bottom; width:250px">
+              <div class="block" style="margin-bottom:6px">
+                <button class="button " *ngIf="tiposUnidadSeleccionados.length>0 || jurisdiccionesSeleccionadas.length>0 || clues != ''"
+                  (click)="clues = ''; jurisdiccionesSeleccionadas = []; proveedoresSeleccionados = []; tiposUnidadSeleccionados =[]; js.value = -1;  tipoUnidadSelect.value = -1;  "><span
+                    class="icon"><i class="fa fa-times"></i></span> <span>Limpiar filtro</span></button>
+                <button class="button is-primary is-inverted" (click)="buscar()"><span class="icon"><i class="fa fa-filter"></i></span>
+                  <span>Buscar</span></button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="3">Filtro:
+              <span class="tag is-info is-medium" style="margin-bottom:0.5em; margin-right:0.2em;" *ngFor="let item of tiposUnidadSeleccionados; let i = index">{{
+                item.tipo }}<button class="delete is-small" (click)="quitarTipoUnidad(i)"></button></span>
+              <span class="tag is-black is-medium" style="margin-bottom:0.5em; margin-right:0.2em;" *ngFor="let item of jurisdiccionesSeleccionadas;  let i = index">JS
+                {{ item.numero }}<button class="delete is-small" (click)="quitarJurisdiccion(i)"></button></span>
+            </td>
+          </tr>
+        </thead>
+      </table>
+      <table class="table" style="font-size:0.8em; table-layout: fixed;">
+        <thead>
+          <tr>
+            <td style="vertical-align: middle; width: 40px">
+              <div class="field">
+                <div class="control">
+                  <input type="checkbox"  [checked]="seleccionarTodas" (change)="toggleSeleccionarTodas()">
+                </div>
+              </div>
+            </td>
+            <td style="width:85px">CLUES</td>
+            <td style="width:40px">Tipo</td>
+            <td>Nombre</td>            
+            <td style="width:140px">Jurisdicción</td>
+          </tr>
+        </thead>
+        <tbody>
+            <tr *ngIf="cargando"><td colspan="5"><span class="icon is-small"><i class="fa fa-refresh fa-spin"></i></span>  Cargando ...</td></tr>
+            <tr *ngIf="lista.length == 0 && !cargando"><td colspan="5">No hay unidades médicas con esos parametros.</td></tr>
+          <tr *ngFor="let item of lista"  (click)=" item.checked = !item.disabled ? !item.checked : item.checked" [ngClass]="{'is-disabled': item.disabled}" >
+            <td>
+              <div class="field">
+                <div class="control">
+                  <input type="checkbox" [checked]="item.checked" [disabled]="item.disabled" (change)="item.checked != item.checked">
+                </div>
+              </div>
+            </td>
+            <td><span class="text-overflow" title="{{ item.clues }}">{{ item.clues }}</span></td>
+            <td>{{ item.tipo }}</td>
+            <td><span class="text-overflow" title="{{ item.nombre }}">{{ item.nombre }}</span></td>            
+            <td><span *ngIf="item.jurisdiccion">{{ item.jurisdiccion.numero }} - {{ item.jurisdiccion.nombre }}</span></td>
+
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    <footer class="modal-card-foot">
+      <a class="button" (click)="cerrar()">Cerrar</a>
+      <a class="button is-primary" [ngClass]="{ 'is-disabled': cargando || lista.length == 0 }" (click)="agregar()">Agregar</a>
+    </footer>
+  </div>
+</div>

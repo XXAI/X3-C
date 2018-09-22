@@ -16,4 +16,22 @@ export class PresupuestoService {
   presupuestoUnidadesMedicas(id:any): Observable<any[]> {
     return this.jwtRequest.get(PresupuestoService.URL + "/presupuesto/presupuesto-unidades-medicas/"+id).map((response: Response) => response.json().data) as Observable<any[]>;
   }
+
+  cargarUltimoPresupuesto():Observable<any>{
+    return this.jwtRequest.get(PresupuestoService.URL+"/presupuesto/ultimo").map((response: Response) => {
+
+      let jsonData = response.json().data;
+      return jsonData;
+    }) as Observable<any>;
+  }
+  ver(id: any): Observable<any> {
+    return this.jwtRequest.get(PresupuestoService.URL+"/presupuesto/", id, {}).map((response: Response) => {
+
+        let jsonData = response.json().data;
+        return jsonData;
+    }) as Observable<any>;
+  }
+  crear(item: any): Observable<any> {
+      return this.jwtRequest.post(PresupuestoService.URL+"/presupuesto", item).map((response: Response) => response.json().data) as Observable<any>;
+  }
 }

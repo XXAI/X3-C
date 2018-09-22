@@ -1,0 +1,12 @@
+
+.text-overflow {
+	display: block;
+  	overflow: hidden;
+  	white-space: nowrap;
+  	text-overflow: ellipsis;
+}
+
+tr.is-disabled td {
+	color: gray !important;
+	text-decoration: line-through !important;
+}
