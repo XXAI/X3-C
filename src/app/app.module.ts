@@ -150,8 +150,10 @@ import { InventariosModule } from './almacen-articulos/inventarios/inventarios.m
 
 import { PersonalCluesModule } from './configuracion/personal-clues/personal-clues.module';
 
-import { EntradaModule } from './almacen-articulos/entrada/entrada.module';
-import { SalidaModule } from './almacen-articulos/salida/salida.module';
+// import { EntradaModule } from './almacen-articulos/entrada/entrada.module';
+import { EntradasAlmacenArticuloModule } from './almacen-articulos/entrada-almacen-articulos/entrada-almacen-articulo.module';
+// import { SalidaModule } from './almacen-articulos/salida/salida.module';
+import { SalidasAlmacenArticuloModule} from './almacen-articulos/salida-almacen-articulos/salida-almacen-articulo.module';
 import { ConfiguracionGeneralModule } from './almacen-articulos/configuracion-general/configuracion-general.module';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { AyudaSialModule } from './ayuda-sial/ayuda-sial.module';
@@ -281,8 +283,10 @@ export function highchartsFactory() {
     EgresoModule,
     AvancesModule,
     // entradas salidas almacen articulos
-    EntradaModule,
-    SalidaModule,
+    // EntradaModule,
+    EntradasAlmacenArticuloModule,
+    // SalidaModule,
+    SalidasAlmacenArticuloModule,
     ConfiguracionGeneralModule,
 
     MedicosRecetasModule,

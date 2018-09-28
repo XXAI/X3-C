@@ -13,9 +13,9 @@
                     <div class="hero-body">
                         <!-- Opciones  -->
                         <formulario-opciones [ctrl]="ctrl"  class="control is-grouped" style="position:absolute; top:8em; right:3em;">
-                           
-                        </formulario-opciones>  
-                        
+
+                        </formulario-opciones>
+
 
                         <div class="container is-fluid">
                             <h1 class="title">
@@ -77,7 +77,7 @@
                     </div>
                     <hr>
                     <!-- categorias_metadatos -->
-                    <div class="">
+                    <!-- <div class="">
                         <table class="table" formArrayName="categorias_metadatos">
                             <thead>
                                 <tr>
@@ -108,12 +108,12 @@
                                     <td style="vertical-align: middle;">
                                         <input class="input" type="number" min="1" placeholder="Longitud" formControlName="longitud">
                                     </td>
-                                    <td style="vertical-align: middle;">                                       
+                                    <td style="vertical-align: middle;">
                                         <div class="b-checkbox control is-expanded  has-icon has-icon-right">
-                                            <input type="checkbox" id="requerido{{i}}" class="styled" 
+                                            <input type="checkbox" id="requerido{{i}}" class="styled"
                                                 formControlName="requerido" [checked]="ctrl.dato.get('categorias_metadatos').value[i]['requerido'] == 1 ? true : false">
-                                            <label for="requerido{{i}}">  Es requerido? 
-                                            </label> 
+                                            <label for="requerido{{i}}">  Es requerido?
+                                            </label>
                                         </div>
                                     </td>
                                     <!-- <td style="vertical-align: middle;">
@@ -121,28 +121,28 @@
                                             <input type="checkbox" id="requerido{{i}}"
                                                 [checked]="ctrl.dato.get('categorias_metadatos').value[i]?.requerido == 1 ? true : false"
                                                 class="styled" formControlName="requerido">
-                                            <label for="requerido{{i}}">  Es requerido? 
+                                            <label for="requerido{{i}}">  Es requerido?
                                             </label>
                                         </div>
-                                    </td> -->
+                                    </td>
                                     <td style="vertical-align: middle;">
                                         <div class="b-checkbox control is-expanded  has-icon has-icon-right">
-                                            <input type="checkbox" id="requerido_inventario{{i}}" class="styled" 
+                                            <input type="checkbox" id="requerido_inventario{{i}}" class="styled"
                                             formControlName="requerido_inventario" [checked]="ctrl.dato.get('categorias_metadatos').value[i].requerido_inventario == 1 ? true : false">
                                             <label for="requerido_inventario{{i}}">  Es requerido en inventario?
                                             </label>
                                         </div>
                                     </td>
-                                    <!--
+
                                     <td style="vertical-align: middle;">
                                         <div class="b-checkbox control is-expanded has-icon has-icon-right" if="ctrl.dato.get('categorias_metadatos').value[i]">
                                             <input type="checkbox" id="requerido_inventario{{i}}"
                                                 [checked]="ctrl.dato.get('categorias_metadatos').value[i]?.requerido_inventario == 1 ? true : false"
                                                 class="styled" formControlName="requerido_inventario">
-                                            <label for="requerido_inventario{{i}}">  Es requerido? 
+                                            <label for="requerido_inventario{{i}}">  Es requerido?
                                             </label>
                                         </div>
-                                    </td>-->
+                                    </td>
                                     <td style="vertical-align: middle;">
                                         <a class="is-danger" (click)="ctrl.quitar_form_array(ctrl.dato.controls.categorias_metadatos, i)">
                                             <span class="icon"><i class="fa fa-trash-o"></i></span>
@@ -160,7 +160,7 @@
                                 </tr>
                             </tfoot>
                         </table>
-                    </div>
+                    </div> -->
 
 
 

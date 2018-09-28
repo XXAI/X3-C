@@ -14,6 +14,7 @@ importScripts(
         let data = JSON.parse(evt.data);
         pdf(data);
         fechas();
+        console.log(data);
     };
 
     function fechas() {
@@ -447,7 +448,7 @@ importScripts(
             let contenido_body = [];
             for (let c =0; c < data.firmas.documento.documento_cargos.length; c++) {
                 contenido_body.push(
-                    { text: data.firmas.documento.documento_cargos[c].leyenda + '\n\n\n\n' + data.firmas.documento.documento_cargos[c].firmante.nombre + '\n' + data.firmas.documento.documento_cargos[c].cargo.nombre, alignment: 'center', colSpan: 3, style: 'tableRow'  },
+                    { text: data.firmas.documento.documento_cargos[c].leyenda + '\n\n\n\n' + (data.firmas.documento.documento_cargos[c].firmante == null ? '---' : data.firmas.documento.documento_cargos[c].firmante.nombre)  + '\n' + data.firmas.documento.documento_cargos[c].cargo.nombre, alignment: 'center', colSpan: 3, style: 'tableRow'  },
                     { },
                     { }
                 );
