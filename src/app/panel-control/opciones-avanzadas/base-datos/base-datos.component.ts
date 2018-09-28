@@ -53,13 +53,14 @@ export class BaseDatosComponent implements OnInit {
   }
 
 	descargarDatos(){
-		var query = "token="+localStorage.getItem('token');
-    window.open(`${environment.API_URL}/opciones-avanzadas/obtener-datos-central/?${query}`); 
+		let usuario = JSON.parse(localStorage.getItem('usuario'));
+		var query = "token="+localStorage.getItem('token')+"&clues="+usuario.clues_activa.clues;
+    window.open(`${environment.API_URL}/opciones-avanzadas/obtener-datos-central?${query}`); 
 	}
 
   exportar() {
     var query = "token="+localStorage.getItem('token');
-    window.open(`${environment.API_URL}/opciones-avanzadas/exportar-base-datos/?${query}`); 
+    window.open(`${environment.API_URL}/opciones-avanzadas/exportar-base-datos?${query}`); 
   }
 /*
   onUploadOutput(output: UploadOutput): void {
@@ -145,7 +146,7 @@ export class BaseDatosComponent implements OnInit {
 			let usuario = JSON.parse(localStorage.getItem("usuario"));			
 			
 			let formData:FormData = new FormData();
-			formData.append('sql', this.archivo, this.archivo.name);
+			formData.append('zip', this.archivo, this.archivo.name);
 			
 			let headers = new Headers();
 			headers.delete('Content-Type');

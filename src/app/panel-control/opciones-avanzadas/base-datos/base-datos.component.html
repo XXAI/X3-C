@@ -117,8 +117,8 @@
             <div class="notification is-danger" *ngIf="mensajeErrorSync!=''"><span class="icon"><i class="fa fa-exclamation-circle"></i></span> {{ mensajeErrorSync }}</div>
             
             <div class="field" [ngClass]="{ 'is-hidden' : enviandoDatos || archivoSubido }">
-                <label for="sql" class="label" [ngClass]="{ 'is-danger': errores.archivo != null }">Elige el archivo .sql</label>                         
-                <input type="file"  class="input-file" #archivoInput style="width:100%" name="sql" is="sql" (change)="fileChange($event)"  accept=".sql">
+                <label for="zip" class="label" [ngClass]="{ 'is-danger': errores.archivo != null }">Elige el archivo .zip</label>                         
+                <input type="file"  class="input-file" #archivoInput style="width:100%" name="zip" is="zip" (change)="fileChange($event)"  accept=".zip">
             </div>
 
             <div *ngIf="enviandoDatos || archivoSubido">
