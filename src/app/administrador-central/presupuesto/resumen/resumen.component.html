@@ -28,10 +28,9 @@
           </div>
           <div class="column">
             <div class="block">
-              <a class="button is-primary is-outlined" [ngClass]="{ 'is-disabled': cargandoPresupuestoUnidadesMedicas || !ejercicioSeleccionado } " (click)="exportarPresupuestoExcel()"><span class="icon is-small"><i class="fa fa-file-excel-o "></i></span><span>Exportar
-                  a excel</span></a>
-              <a class="button is-primary" routerLink="/administrador-central/presupuesto/nuevo"> <span class="icon is-small"><i class="fa fa-plus "></i></span><span>Nuevo periodo</span></a>
-              <a class="button is-primary is-outlined" [ngClass]="{ 'is-disabled': cargandoPresupuestoUnidadesMedicas || !ejercicioSeleccionado } "><span class="icon is-small"><i class="fa fa-cog "></i></span><span>Ajustes</span></a>
+              <a class="button is-primary is-outlined" *ngIf="ejercicioSeleccionado" routerLink="/administrador-central/presupuesto/ajustes/{{ ejercicioSeleccionado.id}}" [ngClass]="{ 'is-disabled': cargandoPresupuestoUnidadesMedicas || !ejercicioSeleccionado } "><span class="icon is-small"><i class="fa fa-cog "></i></span><span>Ajustes</span></a>
+              <a class="button is-primary is-outlined" [ngClass]="{ 'is-disabled': cargandoPresupuestoUnidadesMedicas || !ejercicioSeleccionado } " (click)="exportarPresupuestoExcel()"><span class="icon is-small"><i class="fa fa-file-excel-o "></i></span><span>Exportar a excel</span></a>
+              <a class="button is-primary" routerLink="/administrador-central/presupuesto/nuevo"> <span class="icon is-small"><i class="fa fa-plus "></i></span><span>Nuevo periodo</span></a>              
             </div>
           </div>
         </div>

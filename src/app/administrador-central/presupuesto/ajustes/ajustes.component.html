@@ -1,0 +1,203 @@
+<administrador-central-menu></administrador-central-menu>
+<div style="height:50px;"></div>
+<div class="contenedor columns " style="height:100%; ">
+  <div class="column is-narrow is-hidden-mobile">
+    <administrador-central-menu-lateral></administrador-central-menu-lateral>
+  </div>
+  <div class="column" style="overflow: scroll;">
+    <section style="background:white; border-radius:1em;">
+      <div class="top-bar is-primary" [ngClass]=" {'is-dark': busquedaActivada, 'is-primary': !busquedaActivada } ">
+        <h1 class="title" style="margin-bottom:0px">
+          <span *ngIf="!cargando" class="icon is-medium">
+            <i class="fa fa-cog"></i>
+          </span>
+          <span *ngIf="cargando" class="icon is-medium"><i class="fa fa-refresh fa-spin"></i></span>
+          Ajuste de presupuesto
+        </h1>
+        <a class="button is-primary" style="position:absolute; top:1em; right:3em;" [ngClass]="{ 'is-disabled': guardando || cargando || ajuste.causes_sumado != ajuste.causes || ajuste.no_causes_sumado != ajuste.no_causes  }"
+          (click)="guardar()"> <span class="icon"><i class="fa fa-save"></i></span> <span>Guardar</span></a>
+        <a class="button  is-primary" routerLink="/administrador-central/presupuesto/" style="position:absolute; top:1em; right:1em;">
+          <span class="icon ">
+            <i class="fa fa-close"></i>
+          </span>
+        </a>
+      </div>
+      <div style="padding:10px">
+        <div class="columns">
+          <div class="column">
+            <table class="table" style="font-size:0.8em;">
+              <thead>
+                <tr>
+                  <th>Presupuesto</th>
+                  <th>Actual/Modificado</th>
+                  <th>Disponible</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>CAUSES</th>
+                  <td>${{ presupuesto.causes | number:'1.2-2' }}</td>
+                  <td>${{ presupuesto.causes_disponible | number:'1.2-2' }}</td>
+                </tr>
+                <tr>
+                    <th>NO CAUSES</th>
+                    <td>${{ presupuesto.no_causes | number:'1.2-2' }}</td>
+                    <td>${{ presupuesto.no_causes_disponible | number:'1.2-2' }}</td>
+                  </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="column">
+            <div class="field">
+              <label class="label">Tipo ajuste:</label>
+              <p class="control is-expanded">
+                <span class="select is-fullwidth" style="min-width:100px !important">
+                  <select #tipoSelect (change)="cambioTipo(tipoSelect.value)">
+                    <option value="I">Incremento</option>
+                    <option value="D">Decremento</option>
+                  </select>
+                </span>
+              </p>
+            </div>
+          </div>
+          <div class="column">
+            <div class="field">
+              <label class="label">$ CAUSES:</label>
+              <p class="control is-expanded  has-icon has-icon-right">
+                <input class="input" autofocus type="text" [ngClass]="{'is-danger': errores.causes != null, 'is-disabled': guardando || cargandoUltimoPresupuesto}"
+                  placeholder="0.00" [(ngModel)]="ajuste.causes">
+                <span class="icon is-small" *ngIf="false">
+                  <i class="fa fa-warning"></i>
+                </span>
+                <span class="help is-danger" *ngIf="errores.causes == 'required'">Este campo es requerido.</span>
+                <span class="help is-danger" *ngIf="errores.causes == 'numeric'">Este campo debe ser un valor numerico.</span>
+                <span class="help is-danger" *ngIf="errores.causes == 'min'">El valor mínimo es 0.</span>
+                <span class="help" [ngClass]="{ 'is-danger': ajuste.causes_sumado > ajuste.causes, 'is-info': ajuste.causes_sumado < ajuste.causes, 'is-success': ajuste.causes_sumado == ajuste.causes}">
+                  <span>{{ ajuste.causes_sumado > ajuste.causes ? 'Excedido' : 'Por asignar' }}: </span>
+                  ${{ ajuste.causes - ajuste.causes_sumado | number:'1.2-2' }}
+                </span>
+              </p>
+            </div>
+          </div>
+          <div class="column">
+            <div class="field">
+              <label class="label">$ NO CAUSES:</label>
+              <p class="control is-expanded  has-icon has-icon-right">
+                <input class="input" autofocus type="text" [ngClass]="{'is-danger': errores.no_causes != null, 'is-disabled': guardando || cargandoUltimoPresupuesto}"
+                  placeholder="0.00" [(ngModel)]="ajuste.no_causes">
+                <span class="icon is-small" *ngIf="false">
+                  <i class="fa fa-warning"></i>
+                </span>
+                <span class="help is-danger" *ngIf="errores.no_causes == 'required'">Este campo es requerido.</span>
+                <span class="help is-danger" *ngIf="errores.no_causes == 'numeric'">Este campo debe ser un valor
+                  numerico.</span>
+                <span class="help is-danger" *ngIf="errores.no_causes == 'min'">El valor mínimo es 0.</span>
+                <span class="help" [ngClass]="{ 'is-danger': ajuste.no_causes_sumado > ajuste.no_causes, 'is-info': ajuste.no_causes_sumado < ajuste.no_causes, 'is-success': ajuste.no_causes_sumado == ajuste.no_causes}">
+                  <span>{{ ajuste.no_causes_sumado > ajuste.no_causes ? 'Excedido' : 'Por asignar' }}: </span>
+                  ${{ ajuste.no_causes - ajuste.no_causes_sumado | number:'1.2-2' }}
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="columns">          
+          <div class="column is-3  is is-offset-9">
+            <a class="button  is-primary is-small is-fullwidth" [ngClass]="{'is-disabled': guardando || cargando}" (click)="mostrarModalUnidadesMedicas = true;">
+              <span class="icon is-small">
+                <i class="fa fa-search"></i>
+              </span>
+              <span>Buscar unidades</span>
+            </a>
+          </div>
+        </div>
+
+        <table class="table is-bordered is-striped" style="font-size:0.7em; table-layout: fixed;">
+          <thead> 
+            <tr>
+              <th style="text-align: center; width: 80px; vertical-align: middle" rowspan="2">Clues</th>
+              <th style="text-align: center; vertical-align: middle" rowspan="2">Nombre</th>
+              <th style="text-align: center; width: 40px; vertical-align: middle" rowspan="2">Tipo</th>
+              <th style="text-align:center" colspan="3">CAUSES MODIFICADO</th>
+              <th style="text-align:center" colspan="3">NO CAUSES MODIFICADO</th>
+              <th style="width:40px" rowspan="2"></th>
+            </tr>
+            <tr>
+              <th style="text-align: center;">ACTUAL</th>
+              <th style="text-align: center;">{{ ajuste.tipo == 'D'? "CARGO": "ABONO" }}</th>
+              <th style="text-align: center;">NUEVO</th>
+              <th style="text-align: center;">ACTUAL</th>
+              <th style="text-align: center;">{{ ajuste.tipo == 'D'? "CARGO": "ABONO" }}</th>
+              <th style="text-align: center;">NUEVO</th>
+            </tr>
+          </thead>
+          <tbody >
+            <tr *ngFor="let item of ajuste.unidades_medicas; let i=index" [ngClass]="{ 'is-danger': item.error }">
+              <td><span class="text-overflow" title="{{ item.clues }}">{{ item.clues }}</span></td>
+              <td><span class="text-overflow" title="{{ item.unidad_medica.nombre }}">{{ item.unidad_medica.nombre }}</span></td>
+              <td style="text-align:center">{{ item.unidad_medica.tipo }}</td>
+              <td style="text-align:center; vertical-align:middle"><span title="Disponible: ${{item.causes_disponible | number:'1.2-2' }}">${{ item.causes_modificado | number:'1.2-2' }}</span></td>
+              <td>
+                <div class="field">
+                  <p class="control is-expanded has-icon has-icon-left"><span class="icon is-small is-left" style="top:0.9rem;"><i
+                        class="fa fa-usd"></i></span><input class="input is-small" [ngClass]="{'is-danger': item.error_validacion &&  item.error_validacion.causes, 'is-disabled': item.error || guardando || cargandoSaldosUnidadesMedicas}" type="number" [(ngModel)]="item.causes"
+                      placeholder="CAUSES" (ngModelChange)="calcularTotales(item)" min="0"></p>
+                    <span class="help is-danger" *ngIf="item.error_validacion &&  item.error_validacion.causes == 'min'">El valor mínimo es 0.</span>
+                    <span class="help is-danger" *ngIf="item.error_validacion &&  item.error_validacion.causes == 'required'">Este campo es requerido.</span>
+                    <span class="help is-danger" *ngIf="item.error_validacion &&  item.error_validacion.causes == 'exceed'">El valor excede el presupuesto disponible resultante.</span>
+                </div>
+              </td>
+              <th style="text-align:center; vertical-align:middle"><span title="Disponible después del ajuste: ${{  ( ajuste.tipo == 'D'? item.causes_disponible-item.causes: item.causes_disponible+item.causes  ) | number:'1.2-2'}}">${{ ( ajuste.tipo == 'D'? item.causes_modificado-item.causes: item.causes_modificado+item.causes  ) | number:'1.2-2' }}</span></th>
+              <td style="text-align:center; vertical-align:middle"><span title="Disponible: ${{item.causes_disponible | number:'1.2-2' }}">${{ item.no_causes_modificado | number:'1.2-2' }}</span></td>
+              <td>
+                <div class="field">
+                  <p class="control is-expanded has-icon has-icon-left"><span class="icon is-small is-left" style="top:0.9rem;"><i
+                        class="fa fa-usd"></i></span><input class="input is-small" [ngClass]="{'is-danger':item.error_validacion &&  item.error_validacion.no_causes, 'is-disabled': item.error || guardando || cargandoSaldosUnidadesMedicas}" type="number" [(ngModel)]="item.no_causes"
+                      (ngModelChange)="calcularTotales(item)" placeholder="NO CAUSES" min="0"></p>
+                  <span class="help is-danger" *ngIf="item.error_validacion &&  item.error_validacion.no_causes == 'min'">El valor mínimo es 0.</span>
+                  <span class="help is-danger" *ngIf="item.error_validacion &&  item.error_validacion.no_causes == 'required'">Este campo es requerido.</span>
+                  <span class="help is-danger" *ngIf="item.error_validacion &&  item.error_validacion.no_causes == 'exceed'">El valor excede el presupuesto disponible resultante.</span>
+                </div>
+              </td>
+              <th style="text-align:center; vertical-align:middle"><span title="Disponible después del ajuste: ${{  ( ajuste.tipo == 'D'? item.no_causes_disponible-item.no_causes: item.no_causes_disponible+item.no_causes  ) | number:'1.2-2'}}">${{ ( ajuste.tipo == 'D'? item.no_causes_modificado-item.no_causes: item.no_causes_modificado+item.no_causes  ) | number:'1.2-2' }}</span></th>
+              <td>
+                <a class="button is-small" (click)="eliminarUnidadMedica(item, i)" [ngClass]="{'is-disabled': guardando || cargandoSaldosUnidadesMedicas}"><span class="icon is-small"><i class="fa fa-trash-o"></i></span></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>
+<div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeError.mostrar">
+  <button class="delete" (click)="mensajeError.mostrar = false"></button>
+  <b>Error:</b> {{ mensajeError.texto }}
+  <br>
+  <br>
+  <p style="text-align:center">
+    <a class="button is-danger is-inverted" (click)="ultimaPeticion(); mensajeError.mostrar = false">
+      <span class="icon">
+        <i class="fa fa-refresh"></i>
+      </span>
+      <span>Volver a intentar</span>
+    </a>
+  </p>
+</div>
+
+<div class="notification is-success" style="position:fixed; left:1em;  bottom:1em; width: auto" *ngIf="mensajeExito.mostrar">
+  <button class="delete" (click)="mensajeExito.mostrar = false"></button>
+  <p>
+    <span class="icon" style="margin-right: 0.5em;">
+      <i class="fa fa-check-circle"></i>
+    </span>
+    <span>{{ mensajeExito.texto }}</span>
+  </p>
+  <br>
+  <p style="text-align: center;">
+    <small>Este mensaje desaparecerá en {{ mensajeExito.cuentaAtras }} segundos.</small>
+  </p>
+</div>
+
+<administrador-central-buscar-unidades-medicas *ngIf="mostrarModalUnidadesMedicas" [ignorarClues]="cluesAgregadas"
+  (onCerrar)="mostrarModalUnidadesMedicas = false" (onEnviar)="agregarUnidadMedica($event);">
+</administrador-central-buscar-unidades-medicas>
