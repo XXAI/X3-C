@@ -90,7 +90,6 @@ export class BuscarUnidadesMedicasComponent implements OnInit {
       respuesta => {
         this.cargandoTiposUnidadMedica = false;
         this.tiposUnidadMedica = respuesta;
-        console.log(this.tiposUnidadMedica);
       }, error =>{
         this.cargandoTiposUnidadMedica = false;
         console.log(error);
@@ -104,7 +103,6 @@ export class BuscarUnidadesMedicasComponent implements OnInit {
       respuesta => {
         this.cargandoJurisdicciones = false;
         this.jurisdicciones = respuesta;
-        console.log(this.tiposUnidadMedica);
       }, error =>{
         this.cargandoJurisdicciones = false;
         console.log(error);

@@ -12,6 +12,7 @@ import { BuscarUnidadesMedicasModule  } from "../buscar-unidades-medicas/buscar-
 import { PresupuestoRoutingModule } from './presupuesto-routing.module';
 import { ResumenComponent } from './resumen/resumen.component';
 import { NuevoComponent } from './nuevo/nuevo.component';
+import { AjustesComponent } from './ajustes/ajustes.component';
 
 @NgModule({
   imports: [
@@ -25,6 +26,6 @@ import { NuevoComponent } from './nuevo/nuevo.component';
     AdministradorCentralModule,
     PresupuestoRoutingModule
   ],
-  declarations: [ResumenComponent, NuevoComponent]
+  declarations: [ResumenComponent, NuevoComponent, AjustesComponent]
 })
 export class PresupuestoModule { }
