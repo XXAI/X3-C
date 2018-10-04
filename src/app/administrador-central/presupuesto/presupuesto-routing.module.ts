@@ -12,9 +12,9 @@ const routes: Routes = [
   {
     path: 'administrador-central/presupuesto',
     children: [       
-       { path: '', component: ResumenComponent, canActivate: [PermisosGuard], data: { key: 'X36qZL6YWSwvEaR2EH1TeSOotssAkrxu'} },        
-       { path: 'nuevo', component: NuevoComponent, canActivate: [PermisosGuard], data: { key: 'jBCDyEZfGTteX7PdyuLPCdpbrCabseXy'} },
-       { path: 'ajustes/:id', component: AjustesComponent, canActivate: [PermisosGuard], data: { key: 'LUSTiOJVbVzVkfCKLi2VcJk29UC0GCRZ'}},    
+       { path: '', component: ResumenComponent, canActivate: [PermisosGuard], data: { key: 'nkzKZXncGYTJVhn0V6aej6UiZGK42dgH'} },        
+       { path: 'nuevo', component: NuevoComponent, canActivate: [PermisosGuard], data: { key: 'P72UWtjEjdNx8CEnTsjW8TjL5NCjy3JX'} },
+       { path: 'ajustes/:id', component: AjustesComponent, canActivate: [PermisosGuard], data: { key: '7nH8WNC9Cf43T4baS1hyS5H3iywGoTxN'}},    
     ],
     canActivate: [AuthGuard]
   }

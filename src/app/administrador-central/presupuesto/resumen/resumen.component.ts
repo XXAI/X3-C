@@ -19,7 +19,7 @@ export class ResumenComponent implements OnInit {
   //loaders
   cargandoEjercicios:boolean = false;
   cargandoPresupuestoUnidadesMedicas:boolean = false;
-
+  cargandoHistorial:boolean = false;
   //Ids
   ejercicioSeleccionado:any;
 
@@ -61,6 +61,7 @@ export class ResumenComponent implements OnInit {
         if(this.ejercicios.length>0){
           this.ejercicioSeleccionado = this.ejercicios[0];
           this.cargarPresupuestoUnidadesMedicas();
+          this.cargarHistorial();
         }
       }, error => {
         this.cargandoEjercicios = false;
@@ -105,6 +106,19 @@ export class ResumenComponent implements OnInit {
         }
       }, error => {
         this.cargandoPresupuestoUnidadesMedicas = false;
+        console.log(error);
+      }
+    )
+  }
+
+  cargarHistorial(){
+    this.cargandoHistorial = true;
+    this.apiService.historial().subscribe(
+      respuesta => {
+        this.cargandoHistorial = false;
+        console.log(respuesta);
+      }, error => {
+        this.cargandoHistorial = false;
         console.log(error);
       }
     )

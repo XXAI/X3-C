@@ -124,7 +124,22 @@
         </table>
       </div>
       <div *ngIf="tabHistorico">
-        chuchi
+        <table  class="table is-bordered is-striped" style="font-size:0.7em; table-layout: fixed;">
+          <thead>
+            <tr>
+              <th rowspan="2">Clues</th>
+              <th rowspan="2">Nombre</th>
+              <th *ngFor="let item of ejercicios" colspan="2">{{item.ejercicio}}</th>
+            </tr>
+            <tr>
+              <ng-container *ngFor="let item of ejercicios">
+                  <th>CAUSES/MAT CUR</th>
+                  <th>NO CAUSES</th>  
+              </ng-container>
+              
+            </tr>
+          </thead>
+        </table>
       </div>
 
     </section>

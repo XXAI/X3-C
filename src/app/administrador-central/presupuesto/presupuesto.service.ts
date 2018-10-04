@@ -32,6 +32,10 @@ export class PresupuestoService {
       return jsonData;
     }) as Observable<any>;
   }
+
+  historial(): Observable<any[]> {
+    return this.jwtRequest.get(PresupuestoService.URL + "/presupuesto/historial").map((response: Response) => response.json().data) as Observable<any[]>;
+  }
   ver(id: any): Observable<any> {
     return this.jwtRequest.get(PresupuestoService.URL+"/presupuesto", id, {}).map((response: Response) => {
 
