@@ -50,4 +50,8 @@ export class PresupuestoService {
   ajuste(id:any, item: any): Observable<any> {
     return this.jwtRequest.put(PresupuestoService.URL+"/presupuesto/ajuste", id, item).map((response: Response) => response.json().data) as Observable<any>;
   }
+
+  historialAjustes(payload:any): Observable<any[]> {
+    return this.jwtRequest.get(PresupuestoService.URL + "/presupuesto/historial/ajustes",null, payload).map((response: Response) => response.json().data) as Observable<any[]>;
+  }
 }

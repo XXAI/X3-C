@@ -20,10 +20,12 @@ export class ResumenComponent implements OnInit {
   cargandoEjercicios:boolean = false;
   cargandoPresupuestoUnidadesMedicas:boolean = false;
   cargandoHistorial:boolean = false;
+  cargandoHistorialAjustes:boolean = false;
   //Ids
   ejercicioSeleccionado:any;
 
   //listas
+  historial:any[] = [];
   ejercicios:any[] = [];
   presupuestoUnidadesMedicas:any[] = [];
   presupuestoUnidadesMedicasTotales:any = {
@@ -39,17 +41,25 @@ export class ResumenComponent implements OnInit {
     no_causes_disponible:0,
   }
 
+  itemPresupuestoModificado:any = {};
+
   tituloModalPedidos:string ="";
 
   constructor(private apiService: PresupuestoService) { }
 
   ngOnInit() {
     this.cargarEjercicios();
+    this.cargarHistorial();
   }
 
   exportarPresupuestoExcel() {
 		var query = "token=" + localStorage.getItem('token');
 		window.open(`${environment.API_URL}/administrador-central/presupuesto/excel/${this.ejercicioSeleccionado.id}?${query}`);
+  }
+  
+  exportarHistorialExcel() {
+		var query = "token=" + localStorage.getItem('token');
+		window.open(`${environment.API_URL}/administrador-central/presupuesto/excel/historial?${query}`);
 	}
 
   cargarEjercicios(){
@@ -61,7 +71,7 @@ export class ResumenComponent implements OnInit {
         if(this.ejercicios.length>0){
           this.ejercicioSeleccionado = this.ejercicios[0];
           this.cargarPresupuestoUnidadesMedicas();
-          this.cargarHistorial();
+          
         }
       }, error => {
         this.cargandoEjercicios = false;
@@ -116,10 +126,23 @@ export class ResumenComponent implements OnInit {
     this.apiService.historial().subscribe(
       respuesta => {
         this.cargandoHistorial = false;
-        console.log(respuesta);
+        this.historial = respuesta;
+        //console.log(respuesta);
       }, error => {
         this.cargandoHistorial = false;
         console.log(error);
+      }
+    )
+  }
+
+  cargarHistorialAjustes(clues:any, causes:boolean){
+    this.cargandoHistorialAjustes = true;
+    this.apiService.historialAjustes({clues: clues, causes: causes}).subscribe(
+      respuesta =>{
+        this.cargandoHistorialAjustes = false;
+
+      }, error =>{
+        this.cargandoHistorialAjustes = false;
       }
     )
   }
@@ -137,13 +160,14 @@ export class ResumenComponent implements OnInit {
       
     }
   }
-  abrirModalModificado(causes:boolean = true){
+  abrirModalModificado(item:any, causes:boolean = true){
 
     if(causes){
-
+      this.cargarHistorialAjustes(item.clues, causes);
     } else {
-
+      this.cargarHistorialAjustes(item.clues, causes);
     }
+    this.itemPresupuestoModificado = item;
     this.modalCauses = causes;
     this.mostrarModalModificado = true;
   }
