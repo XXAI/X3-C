@@ -63,9 +63,9 @@
                                 <option value="12">DICIEMBRE</option>
                             </select>
                             </div>
-                            <div class="column">
-                            <label class="label" style="color: #FFF">Clues</label>
-                                <input type="text" class="input is-medium" [(ngModel)]='filtroClues'  #searchBox  (keyup)="buscarClues(searchBox.value)">
+                            <div class="column" *ngIf="Tipo_Usuario">
+                                <label class="label" style="color: #FFF">Clues</label>
+                                    <input type="text" class="input is-medium" [(ngModel)]='filtroClues'  #searchBox  (keyup)="buscarClues(searchBox.value)">
                             </div>
                             <div class="column is-2">
                             <label class="label" style="color: #FFF">Orden de Prioridad</label>

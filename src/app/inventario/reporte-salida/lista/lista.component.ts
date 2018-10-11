@@ -15,6 +15,7 @@ export class ListaComponent implements OnInit {
   //@ViewChild('searchBox') searchBox: any;
 
   tamano = (document.body.offsetWidth) * 0.95;
+  Tipo_Usuario = false;
 
   tabla_insumos: any[] = [];
   options_insumos: Object = {};
@@ -88,6 +89,9 @@ export class ListaComponent implements OnInit {
     
     this.reportesalidaService.listar(this.filter).subscribe(
       response => {
+        if(response.usuario == 1)
+        this.Tipo_Usuario = true;
+
           this.cargando=false;
           let datos_insumos:any;
           let datos_turnos:any;
