@@ -16,11 +16,17 @@ import { ReporteSalidaService } from './reporte-salida.service';
 import { ChartModule } from 'angular2-highcharts';
 import { HighchartsStatic } from 'angular2-highcharts/dist/HighchartsService';
 import { BusquedaCluesPipe } from './busqueda-clues.pipe';
+import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
 
 
 declare var require: any;
 export function highchartsFactory() {
-  return require('highcharts');
+  //return require('highcharts');
+  const hc = require('highcharts');
+  const dd = require('highcharts/modules/exporting');
+  const drill = require('highcharts/modules/drilldown');
+  drill(hc);
+  dd(hc);
 }
 
 @NgModule({
@@ -34,7 +40,8 @@ export function highchartsFactory() {
     BloquearPantallaModule,
     PaginacionModule,
     IndexInventarioModule,
-    ChartModule
+    ChartModule,
+    NguiDatetimePickerModule
   ],
   providers: [
     { 

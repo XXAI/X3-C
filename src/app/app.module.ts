@@ -168,6 +168,8 @@ import { PedidosDAFModule } from './pedidos/pedidos-daf/pedidos-daf.module';
 export function highchartsFactory() {
   const hc = require('highcharts');
   const dd = require('highcharts/modules/exporting');
+  const drill = require('highcharts/modules/drilldown');
+  drill(hc);
   dd(hc);
   // return require('highcharts'),require('highcharts/modules/exporting');
   return hc;

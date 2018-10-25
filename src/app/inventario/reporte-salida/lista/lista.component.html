@@ -28,40 +28,18 @@
                             <span class="icon is-medium"><i class="fa fa-search"></i></span> Búsqueda 
                         </h1>
                         <div class="columns">
-                            
+                                
                             <div class="column is-2">
-                              <label class="label" style="color: #FFF">Mes Inicio</label>
-                              <select class="select redondear" #desde (change)='filtro(1, desde.value)'>
-                                  <option value="1">ENERO</option>
-                                  <option value="2">FEBRERO</option>
-                                  <option value="3">MARZO</option>
-                                  <option value="4">ABRIL</option>
-                                  <option value="5">MAYO</option>
-                                  <option value="6">JUNIO</option>
-                                  <option value="7">JULIO</option>
-                                  <option value="8">AGOSTO</option>
-                                  <option value="9">SEPTIEMBRE</option>
-                                  <option value="10">OCTUBRE</option>
-                                  <option value="11">NOVIEMBRE</option>
-                                  <option value="12">DICIEMBRE</option>
-                              </select>
+                                <div class="field">   
+                                    <label class="label">Desde:</label>                         
+                                    <input  style="width: 150px;" class="input is-medium" [(ngModel)]='fecha_desde' ngui-datetime-picker date-only="true" placeholder="YYYY-MM-DD" #desde (ngModelChange)='filtro(1, desde.value)'/>
+                                </div>
                             </div>
                             <div class="column is-2">
-                              <label class="label" style="color: #FFF">Mes Final</label>
-                              <select class="select redondear" #hasta (change)='filtro(2, hasta.value)'>
-                                <option value="1">ENERO</option>
-                                <option value="2">FEBRERO</option>
-                                <option value="3">MARZO</option>
-                                <option value="4">ABRIL</option>
-                                <option value="5">MAYO</option>
-                                <option value="6">JUNIO</option>
-                                <option value="7">JULIO</option>
-                                <option value="8">AGOSTO</option>
-                                <option value="9">SEPTIEMBRE</option>
-                                <option value="10">OCTUBRE</option>
-                                <option value="11">NOVIEMBRE</option>
-                                <option value="12">DICIEMBRE</option>
-                            </select>
+                                <div class="field">   
+                                    <label class="label">Hasta:</label>                         
+                                    <input style="width: 150px;" class="input is-medium" [(ngModel)]='fecha_hasta' ngui-datetime-picker date-only="true" placeholder="YYYY-MM-DD" #hasta (ngModelChange)='filtro(2, hasta.value)'/>
+                                </div>
                             </div>
                             <div class="column" *ngIf="Tipo_Usuario">
                                 <label class="label" style="color: #FFF">Clues</label>
@@ -105,10 +83,12 @@
                         <tr>
                             <td>
                                 <div class="columns">
-                                    <div class="column">
-                                        <chart [options]="options_insumos" class="is-fullwidth is-12"  ></chart>
+                                    <div class="column" style="text-align:center">
+                                        <chart [options]="options_insumos" class="is-fullwidth"  ></chart>
                                     </div>
-                                    
+                                    <div class="column" style="text-align:center">
+                                        <chart [options]="options_insumos_tipo_medicamento" class="is-fullwidth"  ></chart>
+                                    </div>
                                 </div>
                             </td>    
                         </tr>
@@ -118,22 +98,24 @@
                     <thead>
                     
                         <tr>
+                            <th>NO</th>
                             <th>Clave / Unidad Medica</th>
-                            
                             <th>Nombre Insumo o Material de Curación</th>
                             <th>Cantidad</th>
                             <th>%</th>
-                            
+                            <th>C.P.M.</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let item of tabla_insumos; let i=index">
+                            <td style="vertical-align: middle;cursor:pointer;"> {{ ( i + 1) }} <br>
                             <td style="vertical-align: middle;cursor:pointer;" style="width: 25%;"> {{ item.clave }} <br>
                              {{ item.nombre }} </td>
                             
                             <td style="vertical-align: middle;cursor:pointer;"> {{ item.descripcion }} </td>
                             <td style="vertical-align: middle;cursor:pointer;"> {{ item.cantidad }} </td>
                             <td style="vertical-align: middle;cursor:pointer;"> {{ item.porcentaje }} </td>
+                            <td style="vertical-align: middle;cursor:pointer;"> {{ item.cpm }} </td>
                         </tr>
                         <tr *ngIf="tabla_insumos.length == 0">
                             <td>No Existen datos a mostrar</td>
@@ -149,12 +131,12 @@
                             Turnos
                         </th>
                     </thead>    
-                    <tbody *ngIf="tabla_turnos.length != 0">
+                    <tbody >
                         <tr>
                             <td>
                                 <div class="columns">
                                     <div class="column">
-                                        <chart [options]="options_turnos" class="is-fullwidth is-12"  ></chart>
+                                        <chart [options]="options_turnos" ></chart>
                                     </div>
                                     
                                 </div>
@@ -166,24 +148,23 @@
                     <thead>
                     
                         <tr>
-                            <th>Clave / Unidad</th>
                             
                             <th>Turno</th>
-                            <th>Nombre Insumo o Material de Curación</th>
+                           
                             <th>Cantidad</th>
                             <th>%</th>
+                            <th>C.P.M.</th>
                             
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let item of tabla_turnos; let i=index">
-                            <td style="vertical-align: middle;cursor:pointer;"  style="width: 25%;"> {{ item.clave }} <br>
-                            {{ item.nombre }} </td>
-                            <td style="vertical-align: middle;cursor:pointer;" *ngIf='item.turno_id'> {{ catalogo_turno[item.turno_id].nombre }} </td>
-                            <td style="vertical-align: middle;cursor:pointer;" *ngIf='!item.turno_id'> Sin Dato </td>
-                            <td style="vertical-align: middle;cursor:pointer;"> {{ item.descripcion }} </td>
+                            <td style="vertical-align: middle;cursor:pointer;"> {{ item.turnos }} <br>
+                           
                             <td style="vertical-align: middle;cursor:pointer;"> {{ item.cantidad }} </td>
                             <td style="vertical-align: middle;cursor:pointer;"> {{ item.porcentaje }} </td>
+                            <td style="vertical-align: middle;cursor:pointer;"> {{ item.cpm }} </td>
+                            
                         </tr>
                         <tr *ngIf="tabla_turnos.length == 0">
                             <td>No Existen datos a mostrar</td>
@@ -191,58 +172,58 @@
                     </tbody>
                 </table>
             </div>
-
-            <div style="overflow:auto; display:block" *ngIf="!cargando">
-                    <table  class="table" *ngIf="!cargando">
-                        <thead style="background-color: #00d1b2;">
-                            <th style="color: #fff !important;">
-                                Servicios
-                            </th>
-                        </thead>    
-                        <tbody *ngIf="tabla_servicios.length != 0">
-                            <tr>
-                                <td>
-                                    <div class="columns">
-                                        <div class="column">
-                                            <chart [options]="options_servicios" class="is-fullwidth is-12"  ></chart>
-                                        </div>
-                                        
+               <br> 
+            <!--<div style="overflow:auto; display:block" *ngIf="!cargando">
+                <table  class="table" *ngIf="!cargando">
+                    <thead style="background-color: #00d1b2;">
+                        <th style="color: #fff !important;">
+                            Servicios
+                        </th>
+                    </thead>    
+                    <tbody *ngIf="tabla_servicios.length != 0">
+                        <tr>
+                            <td>
+                                <div class="columns">
+                                    <div class="column">
+                                        <chart [options]="options_servicios" class="is-fullwidth is-12"  ></chart>
                                     </div>
-                                </td>    
-                            </tr>
-                        </tbody>
-                    </table>        
-                    <table class="table">
-                        <thead>
+                                    
+                                </div>
+                            </td>    
+                        </tr>
+                    </tbody>
+                </table>        
+                <table class="table">
+                    <thead>
+                    
+                        <tr>
+                            
+                            <th>Clave / Unidad Medica</th>
+                            <th>Servicios</th>
+                            <th>Nombre Insumo o Material de Curación</th>
+                            <th>Cantidad</th>
+                            <th>%</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of tabla_servicios; let i=index">
+                            <td style="vertical-align: middle;cursor:pointer;" style="width: 25%;"> {{ item.clave }} <br>
+                                {{ item.nombre }} </td>
+                            <td style="vertical-align: middle;cursor:pointer;" *ngIf='item.servicio_id'> {{ catalogo_servicio[item.servicio_id].nombre }} </td>
+                            <td style="vertical-align: middle;cursor:pointer;" *ngIf='!item.servicio_id'> Sin Datos </td>
+                            
+                            <td style="vertical-align: middle;cursor:pointer;"> {{ item.descripcion }} </td>
+                            <td style="vertical-align: middle;cursor:pointer;"> {{ item.cantidad }} </td>
+                            <td style="vertical-align: middle;cursor:pointer;"> {{ item.porcentaje }} </td>
+                        </tr>
+                        <tr *ngIf="tabla_servicios.length == 0">
+                            <td>No Existen datos a mostrar</td>
+                        </tr>
                         
-                            <tr>
-                                
-                                <th>Clave / Unidad Medica</th>
-                                <th>Servicios</th>
-                                <th>Nombre Insumo o Material de Curación</th>
-                                <th>Cantidad</th>
-                                <th>%</th>
-                                
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let item of tabla_servicios; let i=index">
-                                <td style="vertical-align: middle;cursor:pointer;" style="width: 25%;"> {{ item.clave }} <br>
-                                 {{ item.nombre }} </td>
-                                <td style="vertical-align: middle;cursor:pointer;" *ngIf='item.servicio_id'> {{ catalogo_servicio[item.servicio_id].nombre }} </td>
-                                <td style="vertical-align: middle;cursor:pointer;" *ngIf='!item.servicio_id'> Sin Datos </td>
-                                
-                                <td style="vertical-align: middle;cursor:pointer;"> {{ item.descripcion }} </td>
-                                <td style="vertical-align: middle;cursor:pointer;"> {{ item.cantidad }} </td>
-                                <td style="vertical-align: middle;cursor:pointer;"> {{ item.porcentaje }} </td>
-                            </tr>
-                            <tr *ngIf="tabla_servicios.length == 0">
-                                <td>No Existen datos a mostrar</td>
-                            </tr>
-                           
-                        </tbody>
-                    </table>
-                </div>
+                    </tbody>
+                </table>
+            </div>-->
         </div>
     </div>
 </div> 
