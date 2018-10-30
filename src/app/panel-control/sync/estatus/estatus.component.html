@@ -9,6 +9,7 @@
             <section class="hero" [ngClass] = " {'is-dark': busquedaActivada, 'is-primary': !busquedaActivada } " >
                     
                 <div class="hero-body" style="position:relative;">
+                    <a class="button  is-primary" *ngIf="!busquedaActivada" style="position:absolute; top:1em; right:4em;" (click)="exportar()"><span class="icon "><i class="fa fa-file-excel-o"></i></span> <span>Exportar</span></a>
                     <a class="button  is-dark" *ngIf="busquedaActivada" style="position:absolute; top:1em; right:1em;" (click)="busquedaActivada=false;searchBox.value='';resultadosBusqueda=[]"><span class="icon "><i class="fa fa-close"></i></span></a>
                     <a class="button  is-dark" *ngIf="busquedaActivada" style="position:absolute; top:1em; right:3.5em;" (click)="listarBusqueda(searchBox.value,1)"><span class="icon "><i class="fa fa-refresh"></i></span></a>
                     <a class="button  is-primary" *ngIf="!busquedaActivada" style="position:absolute; top:1em; right:1em;" (click)="listar(1)"><span class="icon "><i class="fa fa-refresh"></i></span></a>
@@ -46,7 +47,7 @@
                         <th><abbr title="Versión del servidor">Ver.</abbr></th>
                         <th>Periodo</th>
                         <th>Última Sync</th>
-                        <th style="width:60px">Retraso</th>
+                        <th>Tiempo desde última sync</th>
                     </tr>
                 </thead>
                 <tbody  *ngIf="!busquedaActivada">
@@ -59,7 +60,7 @@
                         <td style="vertical-align: middle;">{{ item.version}}</td>
                         <td style="vertical-align: middle;">{{ item.periodo_sincronizacion }} Hrs</td>
                         <td style="vertical-align: middle;"><small>{{ item.ultima_sincronizacion == null ? 'Nunca' :  item.ultima_sincronizacion }}</small></td>     
-                        <td style="vertical-align: middle;">{{ item.horas_sin_sincronizar }}</td>                            
+                        <td style="vertical-align: middle;"><small>{{ item.tiempo_desde_ultima_sync }}</small></td>                            
                     </tr>
                     <tr *ngIf="lista.length == 0">
                         <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>                    
@@ -75,7 +76,7 @@
                         <td style="vertical-align: middle;">{{ item.version}}</td>
                         <td style="vertical-align: middle;">{{ item.periodo_sincronizacion }} Hrs</td>
                         <td style="vertical-align: middle;"><small>{{ item.ultima_sincronizacion == null ? 'Nunca' :  item.ultima_sincronizacion }}</small></td>  
-                        <td style="vertical-align: middle;">{{ item.horas_sin_sincronizar }}</td>                            
+                        <td style="vertical-align: middle;"><small>{{ item.tiempo_desde_ultima_sync }}</small></td>                            
                     </tr>
 
                     <tr *ngIf="resultadosBusqueda.length == 0 && busquedaActivada">

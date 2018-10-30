@@ -16,7 +16,8 @@ import 'rxjs/add/operator/catch';
 
 import { SyncService } from '../sync.service';
 
-import { Mensaje } from '../../../mensaje'
+import { Mensaje } from '../../../mensaje';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-estatus',
@@ -114,6 +115,8 @@ export class EstatusComponent implements OnInit {
 			this.paginasTotalesBusqueda = Math.ceil(this.totalBusqueda / this.resultadosPorPaginaBusqueda);
 	
 			this.indicePaginasBusqueda = [];
+			
+
 			for(let i=0; i< this.paginasTotalesBusqueda; i++){
 			  this.indicePaginasBusqueda.push(i+1);
 			}
@@ -140,8 +143,8 @@ export class EstatusComponent implements OnInit {
 			resultado => {
 			  this.cargando = false;
 	
-			  this.resultadosBusqueda = resultado.data as any[];
-	
+				this.resultadosBusqueda = resultado.data as any[];
+					
 			  this.totalBusqueda = resultado.total | 0;
 			  this.paginasTotalesBusqueda = Math.ceil(this.totalBusqueda / this.resultadosPorPaginaBusqueda);
 	
@@ -188,7 +191,8 @@ export class EstatusComponent implements OnInit {
 		this.apiService.servidores(parametros).subscribe(
 			resultado => {
 			  this.cargando = false;
-			  this.lista = resultado.data as any[];
+				this.lista = resultado.data as any[];
+				
 	
 			  this.total = resultado.total | 0;
 			  this.paginasTotales = Math.ceil(this.total / this.resultadosPorPagina);
@@ -239,5 +243,10 @@ export class EstatusComponent implements OnInit {
 	paginaAnteriorBusqueda(term:string):void {
 		this.listarBusqueda(term,this.paginaActualBusqueda-1);
 	}
+
+	exportar(){
+		var query = "token=" + localStorage.getItem('token');
+		window.open(`${environment.API_URL}/sync/servidores/excel?${query}`);
+  }
 
 }
