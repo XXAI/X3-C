@@ -160,6 +160,13 @@
                                         <span class="tooltiptext">Regresar</span>
                                     </button>
 
+                                    <button class="button is-primary tooltip" (click)="mostrarModalCarga = true;" type="submit" [ngClass]="{'is-loading': cargando, 'is-hidden': form_dato.estatus === 'INICIALIZADO'}" [disabled]="form_dato.invalid">
+                                        <span class="icon ">
+                                            <i class="fa fa-upload fa-2x"> </i>
+                                        </span>
+                                        <span class="tooltiptext">Importar Carga de Datos Masiva</span>
+                                    </button>
+
                                     <button class="button is-primary tooltip" (click)=" cargarCatalogo('programa', 'lista_programas', 'estatus'); actualizar()" id='cargar_datos_actualizar'>
                                         <span class="icon ">
                                             <i class="fa fa-refresh fa-2x"></i>
@@ -427,7 +434,84 @@
 
 <!-- ***************************************** INICIO - MODALES ***************************************** -->
 
+<div class="modal is-active" *ngIf="mostrarModalCarga">
+    <div class="modal-background" (click)="cerrarModalCarga()"></div>
+    <div class="modal-card modal-carga">
+        <header class="modal-card-head">
+            <p class="modal-card-title">
+                <span class="icon">
+                    <i class="fa fa-upload"></i>
+                </span> Importación masiva de datos</p>
+            <button class="delete" (click)="cerrarModalCarga()"></button>
+        </header>
+        <section class="modal-card-body" style="position: relative; padding:0px;">
+             <div class="notification is-danger" *ngIf="mensajeErrorSync!=''"><span class="icon"><i class="fa fa-exclamation-circle"></i></span><div [innerHTML] ='mensajeErrorSync' ></div></div>
+             <div class="notification is-success" *ngIf="mensajeExito!=''"><span class="icon"><i class="fa fa-check"></i></span><div [innerHTML] ='mensajeExito' ></div></div>
 
+            <div class="field" [ngClass]="{ 'is-hidden' : enviandoDatos }" *ngIf="!archivoSubido" style="margin:1em;">
+                <label for="sql" class="label" [ngClass]="{ 'is-danger': errores.archivo != null }">Elige el archivo .xls</label>
+                <input type="file" class="input-file" #archivoInput style="width:100%" name="archivo" is="xls" (change)="fileChange($event)"
+                    accept=".xls,.xlsx">
+            </div>
+            <div *ngIf="enviandoDatos" style="margin:1em;">
+                <h1 class="subtitle" *ngIf="enviandoDatos">Subiendo archivo...</h1>
+                <progress class="progress is-primary" value="{{ progreso }}" max="100">{{ progreso}}%</progress>
+            </div>
+
+            <div *ngIf="confirmando" style="margin:1em;">
+                <h1 class="subtitle" *ngIf="confirmando">
+                    <span class="icon">
+                        <i class="fa fa-cog fa-spin"></i>
+                    </span> Confirmando importación de insumos...</h1>
+            </div>
+        </section>
+        <footer class="modal-card-foot">
+            <!--<a class="button is-hidden-desktop" [ngClass]="{ 'is-disabled' : enviandoDatos  }" *ngIf="!archivoSubido" (click)="descargarFormato()">
+                <span class="icon">
+                    <i class="fa fa-file-excel-o"></i>
+                </span>
+            </a>-->
+            <a class="button is-hidden-desktop is-success" [ngClass]="{ 'is-disabled' : confirmando  }" *ngIf="archivoSubido" (click)="confirmar()">
+                <span class="icon">
+                    <i class="fa fa-check"></i>
+                </span>
+            </a>
+            <a class="button is-primary is-hidden-desktop" [ngClass]="{ 'is-disabled' : enviandoDatos || !archivo  }" *ngIf="!archivoSubido"
+                (click)="subir()">
+                <span class="icon">
+                    <i class="fa fa-upload"></i>
+                </span>
+            </a>
+            <!--<a class="button is-hidden-touch" [ngClass]="{ 'is-disabled' : enviandoDatos  }" *ngIf="!archivoSubido" (click)="descargarFormato()">
+                <span class="icon">
+                    <i class="fa fa-file-excel-o"></i>
+                </span>
+                <span>Descargar formato de llenado</span>
+            </a>-->
+            <a class="button is-hidden-touch is-primary" [ngClass]="{ 'is-disabled' : enviandoDatos || !archivo  }" *ngIf="!archivoSubido"
+                (click)="subir()">
+                <span class="icon">
+                    <i class="fa fa-upload"></i>
+                </span>
+                <span>Subir</span>
+            </a>
+            <a class="button is-hidden-touch is-warning" [ngClass]="{ 'is-disabled' : confirmando  }" *ngIf="archivoSubido" (click)="cambiarArchivo()">
+                <span class="icon">
+                    <i class="fa fa-file-excel-o"></i>
+                </span>
+                <span>Cambiar archivo</span>
+            </a>
+            <a class="button is-hidden-touch is-success" [ngClass]="{ 'is-disabled' : confirmando  }" *ngIf="archivoSubido" (click)="confirmar()">
+                <span class="icon">
+                    <i class="fa fa-check"></i>
+                </span>
+                <span>Confirmar importación</span>
+            </a>
+            <a class="button" [ngClass]="{ 'is-disabled' : enviandoDatos  }" (click)="cerrarModalCarga()">Cancelar</a>
+        </footer>
+    </div>
+</div>
+<!-- FIn de Modal cargar insumos masivas-->
 <div [ngClass]="{'is-active': cargarInventario}" class="modal" id="cargandoInventario" >
     <div class="modal-background"></div>
     <div class="modal-content">

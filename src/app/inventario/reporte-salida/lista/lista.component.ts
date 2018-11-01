@@ -43,6 +43,7 @@ export class ListaComponent implements OnInit {
   fecha_desde:any;
   fecha_hasta:any;
 
+
   
 
   titulo:String = "Reporte de Salidas de Medicamento y Material de Curación";
@@ -164,7 +165,6 @@ export class ListaComponent implements OnInit {
     
     this.reportesalidaService.listar(this.filter).subscribe(
       response => {
-        console.log(response);
         if(response.usuario == 1)
         this.Tipo_Usuario = true;
 
@@ -172,26 +172,23 @@ export class ListaComponent implements OnInit {
           let datos_insumos:any;
           let datos_pastel:any;
           let datos_turnos:any;
-          /*let datos_servicios:any;*/
-          //datos_insumos = this.cargar_catalogo_pastel(response.salidas);
+          let datos_servicios:any;
           datos_insumos = this.cargar_catalogo_barras(response.salidas, response.cantidad_mes_actual);
           datos_pastel = this.cargar_catalogo_pastel(datos_insumos[2]);
 
           datos_turnos = this.cargar_catalogo_barras_turnos(response.turnos, response.cantidad_mes_actual);
+          datos_servicios = this.cargar_catalogo_barras_turnos(response.servicios, response.cantidad_mes_actual);
           
-          //console.log(datos_turnos);
-          
-          /*datos_turnos = this.cargar_catalogo_pastel(response.turnos);
-          datos_servicios = this.cargar_catalogo_pastel(response.servicios);*/
           this.tabla_insumos    = datos_insumos[0];
           this.tabla_turnos     = datos_turnos[0];
-          /*this.tabla_servicios  = datos_servicios[0];*/
+          this.tabla_servicios     = datos_servicios[0];
+          console.log(datos_servicios);
           var menu:string = "";
           
           if(this.filter.orden == 1)
-            menu = "Salidas";
+            menu = " Surtidos ";
           else
-            menu = "Salidas Negadas"
+            menu = " Negados "
 
           if(this.filter.desde == this.filter.hasta)  
             menu += " de "+this.filter.desde;  
@@ -205,17 +202,14 @@ export class ListaComponent implements OnInit {
             clues = response.clues.clues+" - "+response.clues.nombre;
            else
             clues = "Todas"; 
-        //this.options_insumos    = this.graficas_pastel("Insumos por "+menu, "Clues: "+clues, datos_insumos[1]);    
-        this.options_insumos                  = this.graficar_barras("Insumos por "+menu, "Clues: "+clues, datos_insumos);   
-       
-        this.options_insumos_tipo_medicamento = this.graficas_pastel("Insumos por "+menu, "Clues: "+clues, datos_pastel[1], datos_insumos[3]);    
-
-        this.options_turnos                  = this.graficar_barras_turnos("Insumos por "+menu, "Clues: "+clues, datos_turnos);   
         
-        console.log(this.options_turnos);
-        //this.options_turnos     = this.graficas_pastel("(Turnos) Insumos por "+menu, "Clues: "+clues, datos_turnos[1]);    
-        //this.options_servicios  = this.graficas_pastel("(Servicios) Insumos por "+menu, "Clues: "+clues, datos_servicios[1]);    
-          
+            this.options_insumos                  = this.graficar_barras("Insumos  "+menu, "Clues: "+clues, datos_insumos);   
+       
+            this.options_insumos_tipo_medicamento = this.graficas_pastel("Insumos  "+menu, "Clues: "+clues, datos_pastel[1], datos_insumos[3]);    
+
+            this.options_turnos                   = this.graficar_barras_turnos("Insumos  "+menu, "Clues: "+clues, datos_turnos);   
+            this.options_servicios                = this.graficar_barras_turnos("Insumos  "+menu, "Clues: "+clues, datos_servicios);   
+        
       },
       error => {
           this.cargando=false;
@@ -331,6 +325,12 @@ export class ListaComponent implements OnInit {
 
     for(let i = 0; i < obj.length; i++)
     {
+      
+        if(this.filter.orden == 1)
+          obj[i].cantidad = obj[i].surtido;
+        else
+          obj[i].cantidad = obj[i].negado;
+          
         total = total + parseFloat(obj[i].cantidad);
         if(obj[i].tipo == "ME")
         {
@@ -346,13 +346,14 @@ export class ListaComponent implements OnInit {
         {
           total_material = total_material + parseFloat(obj[i].cantidad);
         }
+        console.log(this.filter.orden+" -- "+obj[i].cantidad);
     }
 
     for(let i = 0; i < obj.length; i++)
     {
         indices.unshift( ( i+ 1 ));
         let valor:any; 
-        var serie = { name: obj[i].descripcion, y:  parseFloat(obj[i].surtido)   };
+        var serie = { name: obj[i].descripcion, y:  parseFloat(obj[i].cantidad)   };
         grafica.unshift(serie);
 
         obj[i].porcentaje = (parseFloat(obj[i].cantidad) / total) * 100;
@@ -404,21 +405,23 @@ cargar_catalogo_barras_turnos(obj:any, mes:any):any{
   let drilldown = { series: []}
   for(let i = 0; i < obj.length; i++)
   {
+      if(this.filter.orden == 1)
+          obj[i].cantidad = obj[i].surtido;
+        else
+          obj[i].cantidad = obj[i].negado;
       total = total + parseFloat(obj[i].cantidad);
   }
 
   for(let i = 0; i < obj.length; i++)
   {
-      
-      
       obj[i].porcentaje = (parseFloat(obj[i].cantidad) / total) * 100;
       obj[i].porcentaje = parseFloat(obj[i].porcentaje.toFixed(2));
       obj[i].cpm = parseFloat(obj[i].cantidad) / parseInt(mes);
       obj[i].cpm = parseFloat(obj[i].cpm.toFixed(2));
-      var serie = { name: obj[i].turnos, y:  parseFloat(obj[i].surtido), porcentaje: parseFloat(obj[i].porcentaje),cpm: parseFloat(obj[i].cpm),  drilldown: obj[i].turnos  };
+      var serie = { name: obj[i].modulo, y:  parseFloat(obj[i].cantidad), porcentaje: parseFloat(obj[i].porcentaje),cpm: parseFloat(obj[i].cpm),  drilldown: obj[i].modulo  };
       grafica.push(serie);
 
-      var serie_drill = { id:obj[i].turnos, data:[] };
+      var serie_drill = { id:obj[i].modulo, data:[] };
       let arreglo_drill:any[] = [];
       let arreglo: any[] = [];
       for(let j = 0; j < obj[i].drill.length; j++)
@@ -466,7 +469,7 @@ cargar_catalogo_barras_turnos(obj:any, mes:any):any{
     data['title']       = { text: titulo  };
     data['subtitle']    = { text: subtitulo  };
     data['xAxis']       = { type: 'category', categories: arreglo_meses[4]};
-    data['yAxis']       = { min: 0, title: {  text: 'Cantidad' }};
+    data['yAxis']       = { min: 0, title: {  text: 'Cantidad de Cajas' }};
     data['legend']      = { align: 'left', verticalAlign: 'bottom', width: 20, useHTML: true };
     data['tooltip']     = { enabled: true, 
                             headerFormat: '<span style="font-size:10px"><b>{point.key}</b></span><table>',   
@@ -485,7 +488,7 @@ cargar_catalogo_barras_turnos(obj:any, mes:any):any{
 
   graficar_barras_turnos(titulo:String, subtitulo:String, arreglo_meses:any[]):object{
     var data = new Object();
-    data['chart']       = {  type: 'column',  height: 800, width:1900  };
+    data['chart']       = {  type: 'column',  height: 1000, width:1800  };
     data['colors']      = this.colores;
     data['title']       = { text: titulo  };
     data['subtitle']    = { text: subtitulo  };

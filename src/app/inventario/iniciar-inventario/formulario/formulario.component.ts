@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, FormControl, FormArray, FormsModule
 import { ActivatedRoute, Params } from '@angular/router';
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
+import { Headers, Http, Response, RequestOptions, ResponseContentType } from '@angular/http';
 
 import { CrudService } from '../../../crud/crud.service';
 import * as moment from 'moment';
@@ -51,6 +52,7 @@ export class InicialComponent {
    * Contiene los datos del modelo que se enviarán a la API.
    */
   form_dato;
+  form_dato_auxiliar;
   /**
    * Contiene la clave del programa elegido por el usuario, nos sirve para hacer comparaciones en caso
    * de que el usuario intente cambiar el programa cuando hay insumos capturados.
@@ -128,6 +130,22 @@ export class InicialComponent {
    * click para cerrar mensaje, tiempo 3 segundos.
    * @type {Object}
    */
+
+  /*Variable que muestra el modal de carga de datos masiva */
+  errores = {
+		archivo: null
+	}
+	mostrarModalCarga: boolean = false;
+	mostrarModalEditarRegistro: boolean = false;
+
+	mensajeErrorSync: string = "";
+	mensajeExito: string = "";
+	archivo: File = null;
+	archivoSubido: boolean = false;
+	enviandoDatos: boolean = false;
+	progreso: number = 0;
+
+  /* Arreglo de datos de archivo */
   objeto = {
     showProgressBar: true,
     pauseOnHover: true,
@@ -215,7 +233,8 @@ export class InicialComponent {
     private notificacion: NotificationsService,
     private route: ActivatedRoute,
     private crudService: CrudService,
-    private _ngZone: NgZone) { }
+    private _ngZone: NgZone,
+    private http: Http) { }
 
   ngOnInit() {
     // obtener los datos del usiario logueado almacen y clues
@@ -296,6 +315,261 @@ export class InicialComponent {
             'insumos': []
     });
   }
+
+  /* Importacion*/
+  fileChange(event) {
+		let fileList: FileList = event.target.files;
+		if (fileList.length > 0) {
+			this.archivo = fileList[0];
+		}
+  }
+  
+  cambiarArchivo() {
+		this.errores = { archivo: null }
+		this.mensajeErrorSync = "";
+		this.mensajeExito = "";
+		this.archivo = null;
+		this.archivoSubido = false;
+		this.enviandoDatos = false;
+		this.progreso = 0;
+	}
+	cerrarModalCarga() {
+		this.mostrarModalCarga = false;
+    this.cambiarArchivo();
+  }
+
+  subir() {
+		if (this.archivo) {
+			/*this.listaCargaMasiva = {
+				medicamentos: { correctos: [], por_validar: [], errores: [] },
+				material_curacion: { correctos: [], por_validar: [], errores: [] }
+			}*/
+			this.errores = {
+				archivo: null
+			}
+			this.mensajeErrorSync = "";
+			this.archivoSubido = false;
+			this.enviandoDatos = true;
+
+			let usuario = JSON.parse(localStorage.getItem("usuario"));
+
+			let formData: FormData = new FormData();
+			formData.append('archivo', this.archivo);
+      
+			let headers = new Headers();
+			headers.delete('Content-Type');
+			headers.append('Authorization', 'Bearer ' + localStorage.getItem('token'));
+			let options = new RequestOptions({ headers: headers });
+      
+      var responseHeaders: any;
+			var contentDisposition: any;
+			this.http.post(`${environment.API_URL}/cargar-inventario-inicial-excel`, formData, options)
+				.subscribe(
+					response => {
+            this.archivoSubido = true;
+						this.enviandoDatos = false;
+						//this.mostrarModalSubirArchivoSQL = false;
+						this.progreso = 100;
+            this.archivo = null;
+            
+            var data = response.json().data;
+            this.form_dato_auxiliar = {
+              id: '',
+              clues: this.usuario.clues_activa.clues,
+              almacen_id:	this.usuario.almacen_activo.id,
+              estatus	:	'NOINICIALIZADO',
+              fecha_inicio: this.form_dato.fecha_inicio,
+              fecha_fin: this.form_dato.fecha_fin,
+              observaciones: '',
+              usuario_id: this.usuario.id,
+              cantidad_programas: 0,
+              cantidad_claves: 0,
+              cantidad_insumos: 0,
+              cantidad_lotes: 0,
+              monto_total: 0,
+              programas: []
+            };
+
+            for(var i in data.insumos)
+            {
+                this.form_dato_auxiliar.programas.push({
+                  'id': data.insumos[i].programa.id,
+                  'nombre': data.insumos[i].programa.nombre,
+                  'clave': data.insumos[i].programa.clave,
+                  'insumos': []
+                });
+                let indice_programa = this.form_dato_auxiliar.programas.length;
+                for(var j in data.insumos[i].programa.insumos)
+                {
+                  
+                  let insumo_auxiliar = data.insumos[i].programa.insumos[j];
+                  let ob_temporal = {
+                    clave_insumo_medico: insumo_auxiliar.clave,
+                    descripcion: insumo_auxiliar.descripcion,
+                    nombre: insumo_auxiliar.nombre,
+                    es_causes: insumo_auxiliar.es_causes,
+                    es_unidosis: insumo_auxiliar.es_unidosis,
+                    cantidad_x_envase: insumo_auxiliar.cantidad_x_envase,
+                    tipo: insumo_auxiliar.tipo,
+                    precio_unitario: insumo_auxiliar.precio_unitario,
+                    subtotal: '',
+                    lotes: []
+                  };
+
+                  let tiene_precio = false;
+                  if (ob_temporal.precio_unitario) {
+                    tiene_precio = true;
+                  }
+                  if (ob_temporal.precio_unitario === null ) {
+                    tiene_precio = false;
+                  }
+
+                  let start_index = 0;
+                  let number_of_elements_to_remove = 0;
+
+                  //console.log(insumo_auxiliar);
+                  for(var z in insumo_auxiliar.lote)
+                  {
+                    let lotes_temporales = insumo_auxiliar.lote[z];
+                    
+                    let lote_temporal = {
+                      id: null,
+                      lote: lotes_temporales.no_lote,
+                      codigo_barras: '',
+                      fecha_caducidad: lotes_temporales.fecha,
+                      existencia: lotes_temporales.cantidad,
+                      precio_unitario: tiene_precio ? Number(ob_temporal.precio_unitario) : null,
+                      importe: 0,
+                      iva_importe: 0,
+                      exclusivo: 1,
+                      requerir_pu: tiene_precio ? false : true
+                    };
+
+                    ob_temporal.lotes.splice(start_index, number_of_elements_to_remove, lote_temporal);
+                  }
+                  this.form_dato_auxiliar.programas[indice_programa-1].insumos.splice(start_index, number_of_elements_to_remove, ob_temporal);
+                }
+            }
+            
+            
+            this.mensajeExito = "El archivo no contiene ningun error y se encuentra listo para subir";
+            /*for(var i in data)
+            {
+              let ob_temporal = {
+                clave_insumo_medico: data[i].clave,
+                descripcion: data[i].descripcion,
+                nombre: data[i].nombre,
+                es_causes: data[i].es_causes,
+                es_unidosis: data[i].es_unidosis,
+                cantidad_x_envase: data[i].cantidad_x_envase,
+                tipo: data[i].tipo,
+                precio_unitario: data[i].precio_unitario,
+                subtotal: '',
+                lotes: []
+              };
+
+                let start_index = 0;
+                let number_of_elements_to_remove = 0;
+                this.form_dato.programas[0].insumos.splice(start_index, number_of_elements_to_remove, ob_temporal);
+
+                let tiene_precio = false;
+                if (ob_temporal.precio_unitario) {
+                  tiene_precio = true;
+                }
+                if (ob_temporal.precio_unitario === null ) {
+                  tiene_precio = false;
+                }
+                for(var j in data[i].lote)
+                {
+                  let lote_temporal = {
+                    id: null,
+                    lote: data[i].lote[j].lote,
+                    codigo_barras: '',
+                    fecha_caducidad: data[i].lote[j].fecha,
+                    existencia: data[i].lote[j].cantidad,
+                    precio_unitario: tiene_precio ? Number(this.form_dato.programas[0].insumos[0].precio_unitario) : null,
+                    importe: 0,
+                    iva_importe: 0,
+                    exclusivo: 1,
+                    requerir_pu: tiene_precio ? false : true
+                  };
+
+                  this.form_dato.programas[0].insumos[0].lotes.splice(start_index, number_of_elements_to_remove, lote_temporal);
+                }
+
+              
+              //this.form_dato.programas[0].insumos.push(data[i]);
+            }*/
+            //for(response.data )
+            //this.form_dato.programa.insumos
+
+						/*this.tabMedicamentos = this.tabMedicamentosCorrectos = this.tabMaterialCuracionCorrectos = true;
+
+
+						this.tabMaterialCuracion = this.tabMaterialCuracionErrores = this.tabMedicamentosErrores = false;
+
+						var data = response.json().data;
+
+
+						for (var i in data.medicamentos) {
+							if (data.medicamentos[i].error != null) {
+								this.listaCargaMasiva.medicamentos.errores.push(data.medicamentos[i]);
+							} else {
+								this.listaCargaMasiva.medicamentos.correctos.push(data.medicamentos[i]);
+								console.log(data.medicamentos[i]);
+							}
+						}
+
+						for (var i in data.material_curacion) {
+							if (data.material_curacion[i].error != null) {
+								this.listaCargaMasiva.material_curacion.errores.push(data.material_curacion[i]);
+							} else {
+								this.listaCargaMasiva.material_curacion.correctos.push(data.material_curacion[i]);
+							}
+						}*/
+
+					},
+					error => {
+						if (error.status == 409) {
+							this.mensajeErrorSync = "No se pudo subir el archivo, verifica que el archivo que tratas de subir sea correcto, que el nombre no haya sido modificado. Verifica que el archivo que intentas subir ya ha sido sincronizado previamente.";
+						} else if (error.status == 401) {
+							this.mensajeErrorSync = "El archivo que intentas subir ya ha sido sincronizado previamente";
+						}else if (error.status == 500) {
+              var data = error.json().data;
+              //console.log(data);
+							this.mensajeErrorSync = data;
+						} else {
+							this.mensajeErrorSync = "Hubo un problema al sincronizar, prueba recargar el sitio de lo contrario llama a soporte técnico.";
+						}
+						this.progreso = 100;
+						this.enviandoDatos = false;
+
+					}
+				);
+		}
+  }
+  
+  confirmar()
+  {
+      this.mensajeExito = "";
+      this.mensajeErrorSync = "";
+      this.mostrarModalCarga = false;
+      this.form_dato = this.form_dato_auxiliar;
+      for (var i_programa in this.form_dato_auxiliar.programas)
+      {
+        
+        for (var i_insumo in this.form_dato_auxiliar.programas[i_programa].insumos)
+        {
+          for (var i_lote in this.form_dato_auxiliar.programas[i_programa].insumos[i_insumo].lotes)
+          {
+            let item = this.form_dato_auxiliar.programas[i_programa].insumos[i_insumo].lotes[i_lote];
+            let evento = {key: 'tab'};
+            this.cambio_cantidad_stock_key(evento, item, i_programa, i_insumo, i_lote); 
+          }  
+        }
+      }
+  }
+  /* Importacion */
   /**
    * Función local para cargar el catalogo de programas, no se utilizó el cargarCatalogo del CRUD,
    * debido a que este catálogo no existen 'mis-programas', sino que es un catálogo general y se agregan
