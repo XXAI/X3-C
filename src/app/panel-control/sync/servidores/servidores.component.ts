@@ -15,7 +15,8 @@ import 'rxjs/add/operator/catch';
 
 import { SyncService } from '../sync.service';
 
-import { Mensaje } from '../../../mensaje'
+import { Mensaje } from '../../../mensaje';
+import { environment } from '../../../../environments/environment';
 
 
 @Component({
@@ -277,7 +278,10 @@ export class ServidoresComponent implements OnInit {
     paginaAnteriorBusqueda(term:string):void {
       this.listarBusqueda(term,this.paginaActualBusqueda-1);
     }
-  
+    exportar(){
+      var query = "token=" + localStorage.getItem('token');
+      window.open(`${environment.API_URL}/sync/servidores/excel?${query}`);
+    }
   
   }
   
