@@ -53,6 +53,20 @@ export class InicialComponent {
    */
   form_dato;
   form_dato_auxiliar;
+
+  programas_no_registrados:any[] = [];
+  catalogo_programa;
+  insumos_sin_clave:any[] = []; 
+  catalogo_insumos_medicos:any[] = []; 
+  bandera_subir:boolean = true;
+  bandera_programas:boolean = false;
+  bandera_insumos:boolean = false;
+  bandera_importar:boolean = false;
+  agregando_programa:boolean = false;
+  busquedaQuery:String = '';
+  showInsumos = false;
+  obj_seleccionado:any = {};
+  index_insumo_sin_clave:number = 0;
   /**
    * Contiene la clave del programa elegido por el usuario, nos sirve para hacer comparaciones en caso
    * de que el usuario intente cambiar el programa cuando hay insumos capturados.
@@ -334,8 +348,625 @@ export class InicialComponent {
 		this.progreso = 0;
 	}
 	cerrarModalCarga() {
-		this.mostrarModalCarga = false;
+    this.mostrarModalCarga = false;
+    this.bandera_subir= true;
+    this.bandera_programas = false;
+    this.bandera_importar = false;
+    this.bandera_insumos = false;
+    this.programas_no_registrados = [];
+    this.insumos_sin_clave = [];
+    this.form_dato_auxiliar = [];
     this.cambiarArchivo();
+  }
+
+  descargarFormato()
+  {
+    var query = "token=" + localStorage.getItem('token');
+		window.open(`${environment.API_URL}/descargar-formato-inventario-inicial-excel?${query}`);
+  }
+
+  generar_reporte_insumos_faltantes()
+  {
+    let headers = new Headers();
+    headers.delete('Content-Type');
+    headers.append('Authorization', 'Bearer ' + localStorage.getItem('token'));
+    let options = new RequestOptions({ headers: headers });
+    let arreglo:any[] = [];
+    
+    for(var i in this.form_dato_auxiliar.programas)
+    {
+      let insumo = this.form_dato_auxiliar.programas[i].insumos;
+        for(var j in insumo)
+        {
+            let lote_auxiliar = insumo[j].lotes;
+            for(var k in lote_auxiliar)
+            {
+                if(insumo[j].clave_insumo_medico == null)
+                {
+                  let obj = { 'programa': this.form_dato_auxiliar.programas[i].nombre, 'clave_insumo_medico': insumo[j].clave_insumo_medico, 'descripcion': insumo[j].descripcion, 'lote': lote_auxiliar[k].lote, 'fecha': lote_auxiliar[k].fecha_caducidad, 'cantidad': lote_auxiliar[k].existencia };
+                  arreglo.splice(0,0, obj);
+                }
+            }
+        }
+    }
+    let insumos = { 'insumos' : arreglo};
+    //console.log(insumos);
+    var query = "token="+localStorage.getItem('token');
+    
+    query += "&insumos="+JSON.stringify(insumos);
+    window.open(`${environment.API_URL}/descargar-insumos-sin-clave-excel/?${query}`);
+    this.eliminar_insumos_sin_clave();
+  
+  }
+
+  eliminar_insumos_sin_clave()
+  {
+    
+    for(var i in this.form_dato_auxiliar.programas)
+    {
+        let insumo = this.form_dato_auxiliar.programas[i].insumos;
+        let tamano_insumo:number = (this.form_dato_auxiliar.programas[i].insumos.length -1)
+        for(let j in insumo)
+        {
+            let indice_insumo = tamano_insumo - parseInt(j);
+            //console.log(insumo[j].clave_insumo_medico);
+            //console.log(tamano_insumo);
+            if(insumo[indice_insumo].clave_insumo_medico == null)
+            {
+              this.form_dato_auxiliar.programas[i].insumos.splice(indice_insumo, 1);
+              //console.log(this.form_dato_auxiliar.programas[i].insumos[j]);
+              
+            }  
+        }
+       
+    }
+
+    let index_programas:number = (this.form_dato_auxiliar.programas.length - 1);
+    for(let i =0; i<= index_programas; i++)
+    {
+      index_programas = index_programas - i;
+      
+      let insumo = this.form_dato_auxiliar.programas[index_programas].insumos;
+      if(insumo.length == 0)
+          this.form_dato_auxiliar.programas.splice(index_programas,1);
+    }
+    this.bandera_insumos = false;
+    this.bandera_importar = true;
+    this.insumos_sin_clave = [];
+  }
+
+  agregar_programas()
+  {
+      this.programas_no_registrados;
+      this.agregando_programa = true;
+      this.mensajeErrorSync = "";
+      let headers = new Headers();
+			headers.delete('Content-Type');
+			headers.append('Authorization', 'Bearer ' + localStorage.getItem('token'));
+      let options = new RequestOptions({ headers: headers });
+      let programas:any[] = [];
+      for( var i in this.programas_no_registrados)
+      {
+        let arreglo_programas = this.programas_no_registrados[i];
+          let programa = { 'nombre': arreglo_programas.programa.nombre, 'estatus':1}
+          programas.splice(0,0, programa);
+      }
+      
+      let parametros = { 'programas': programas}
+      this.http.post(`${environment.API_URL}/programa-inventario`, parametros, options)
+          .subscribe(
+            response => {
+              this.agregando_programa = false;
+              var data = response.json();
+              this.catalogo_programa = data.data;
+              this.relacionar_programa_nombre();
+              this.bandera_insumos = true;
+              
+            },
+            error => {
+              if (error.status == 409) {
+                this.mensajeErrorSync = "No se pudo subir el archivo, verifica que el archivo que tratas de subir sea correcto, que el nombre no haya sido modificado. Verifica que el archivo que intentas subir ya ha sido sincronizado previamente.";
+              } else if (error.status == 401) {
+                this.mensajeErrorSync = "El archivo que intentas subir ya ha sido sincronizado previamente";
+              }else if (error.status == 500) {
+                var data = error.json().data;
+                //console.log(data);
+                this.mensajeErrorSync = data;
+              } else {
+                this.mensajeErrorSync = "Hubo un problema al sincronizar, prueba recargar el sitio de lo contrario llama a soporte técnico.";
+              }
+              this.progreso = 100;
+              this.enviandoDatos = false;
+              this.agregando_programa = false;
+
+            }
+          );
+  }
+
+
+  guardar_programa_nuevo(index, obj)
+  {
+      this.agregando_programa = true;
+      this.mensajeErrorSync = "";
+      let headers = new Headers();
+			headers.delete('Content-Type');
+			headers.append('Authorization', 'Bearer ' + localStorage.getItem('token'));
+			let options = new RequestOptions({ headers: headers });
+      let programa = { 'nombre': obj.programa.nombre, 'estatus':1}
+      this.http.post(`${environment.API_URL}/programa-inventario`, programa, options)
+				.subscribe(
+					response => {
+            var data = response.json();
+            this.catalogo_programa = data.data;
+            
+           this.relacionar_programa(index, data.id_programa);
+           this.agregando_programa = false;
+					},
+					error => {
+            this.progreso = 100;
+            this.enviandoDatos = false;
+            this.agregando_programa = false;
+						if (error.status == 409) {
+							this.mensajeErrorSync = "No se pudo subir el archivo, verifica que el archivo que tratas de subir sea correcto, que el nombre no haya sido modificado. Verifica que el archivo que intentas subir ya ha sido sincronizado previamente.";
+						} else if (error.status == 401) {
+							this.mensajeErrorSync = "El archivo que intentas subir ya ha sido sincronizado previamente";
+						}else if (error.status == 500) {
+              var data = error.json().data;
+              //console.log(data);
+							this.mensajeErrorSync = data;
+						} else {
+							this.mensajeErrorSync = "Hubo un problema al sincronizar, prueba recargar el sitio de lo contrario llama a soporte técnico.";
+						}
+						
+
+					}
+				);
+  }
+
+  relacionar_programa_nombre()
+  {
+    let index_programas = (this.programas_no_registrados.length -1);
+    for(let i = 0; i <= index_programas; i++)
+    {
+      index_programas = index_programas - i;
+      for(var j in this.catalogo_programa)
+      {
+        if(this.catalogo_programa[j].nombre == this.programas_no_registrados[index_programas].programa.nombre)
+        {
+          let catalogo = this.catalogo_programa[i];
+          this.programas_no_registrados[index_programas].programa.id = catalogo.id;
+          this.programas_no_registrados[index_programas].programa.clave = catalogo.clave;
+          this.programas_no_registrados[index_programas].programa.nombre = catalogo.nombre;
+          this.buscar_programa(this.catalogo_programa[i].id, index_programas);
+        }
+      }
+      //this.programas_no_registrados.splice(index_programas,1);
+    } 
+    this.programas_no_registrados = [];
+  }
+
+  adjuntar()
+  {
+    console.log(this.form_dato);
+    console.log(this.form_dato_auxiliar);
+    for(var programa_excel in this.form_dato_auxiliar.programas)
+    {
+        let obj_programa_excel = this.form_dato_auxiliar.programas[programa_excel];
+        let bandera_programa = 0;
+        for(var programa_principal in this.form_dato.programas)
+        {
+          
+          let obj_programa_principal = this.form_dato.programas[programa_principal];
+
+          if(obj_programa_excel.id == obj_programa_principal.id)
+          {
+              //console.log("enrto programa");
+              for(var insumo_excel in obj_programa_excel.insumos)
+              {
+                let bandera_insumo = 0;
+                  let obj_insumo_excel = obj_programa_excel.insumos[insumo_excel];
+                  for(var insumo_principal in obj_programa_principal.insumos)
+                  {
+                      let obj_insumo_principal = obj_programa_principal.insumos[insumo_principal];
+                      if(obj_insumo_excel.clave_insumo_medico == obj_insumo_principal.clave_insumo_medico)
+                      {
+                        //console.log("enrto insumo");
+                        
+                        for(var lote_excel in obj_insumo_excel.lotes)
+                        {
+                            let bandera_lote = 0;
+                            let obj_lote_excel = obj_insumo_excel.lotes[lote_excel];
+                            for(var lote_principal in obj_insumo_principal.lotes)
+                            {
+                              let obj_lote_principal = obj_insumo_principal.lotes[lote_principal];
+                              if(obj_lote_excel.fecha_caducidad == obj_lote_principal.fecha_caducidad && obj_lote_excel.lote == obj_lote_principal.lote)
+                              {
+                                //console.log("enrto lote");
+                                this.form_dato.programas[programa_principal].insumos[insumo_principal].lotes[lote_principal].existencia = obj_lote_principal.existencia + obj_lote_excel.existencia;
+                                bandera_lote = 1;
+                              }
+                              
+                            }
+                            if(bandera_lote == 0)
+                            this.form_dato.programas[programa_principal].insumos[insumo_principal].lotes.splice(0,0, this.form_dato_auxiliar.programas[programa_excel].insumos[insumo_excel].lotes[lote_excel]);
+                        }
+                        bandera_insumo = 1;
+                      }
+                  }
+                  if(bandera_insumo == 0)
+                  {
+                    this.form_dato.programas[programa_principal].insumo.splice(0,0, this.form_dato_auxiliar.programas[programa_excel].insumo[insumo_excel]);
+                  }
+              }
+              
+              bandera_programa = 1;
+          }
+          
+        }
+        //console.log(bandera_programa);
+        if(bandera_programa == 0)
+        this.form_dato.programas.push(this.form_dato_auxiliar.programas[programa_excel]);
+    }
+    //console.log(this.form_dato);
+    //console.log(this.form_dato_auxiliar);
+    for (var i_programa in this.form_dato.programas)
+      {
+        
+        for (var i_insumo in this.form_dato.programas[i_programa].insumos)
+        {
+          for (var i_lote in this.form_dato.programas[i_programa].insumos[i_insumo].lotes)
+          {
+            let item = this.form_dato.programas[i_programa].insumos[i_insumo].lotes[i_lote];
+            let evento = {key: 'tab'};
+            this.cambio_cantidad_stock_key(evento, item, i_programa, i_insumo, i_lote); 
+          }  
+        }
+      }
+    this.cerrarModalCarga();
+    
+  }
+
+  relacionar_programa(index, id_programa)
+  {
+    id_programa = parseInt(id_programa);
+    for(var i in this.catalogo_programa)
+    {
+        if(this.catalogo_programa[i].id == id_programa)
+        {
+          let catalogo = this.catalogo_programa[i];
+            this.programas_no_registrados[index].programa.id = catalogo.id;
+            this.programas_no_registrados[index].programa.clave = catalogo.clave;
+            this.programas_no_registrados[index].programa.nombre = catalogo.nombre;
+            this.buscar_programa(id_programa, index);
+        }
+      }
+      //console.log(this.form_dato_auxiliar);
+      this.programas_no_registrados.splice(index,1);
+      
+      if(this.programas_no_registrados.length == 0)
+        this.verificar_claves();
+  }
+
+  verificar_claves()
+  {
+    this.insumos_sin_clave = [];
+    for(var x in this.form_dato_auxiliar.programas)
+    {
+        let programas = this.form_dato_auxiliar.programas[x];
+        for(var y in programas.insumos)
+        {
+          let insumos_aux = programas.insumos[y];
+          //console.log(insumos_aux); 
+          if(!insumos_aux.clave_insumo_medico)
+              this.bandera_insumos = true;
+                  
+            let obj_insumo = {id: y, indice_programa: x, nombre: insumos_aux.descripcion, programa: programas.id, id_insumo:0, nombre_programa: programas.nombre, lotes:[]};
+            let tiene_precio = false;
+            if (insumos_aux.precio_unitario) {
+              tiene_precio = true;
+            }
+            if (insumos_aux.precio_unitario === null ) {
+              tiene_precio = false;
+            }
+
+            let start_index = 0;
+            let number_of_elements_to_remove = 0;
+            for(var z in insumos_aux.lotes)
+            {
+              let lotes_temporales = insumos_aux.lotes[z];
+              //console.log(lotes_temporales);
+              
+              obj_insumo.lotes.splice(start_index, number_of_elements_to_remove, lotes_temporales);
+            }
+            
+            if(!insumos_aux.clave_insumo_medico)
+            {
+                obj_insumo.id_insumo = (this.form_dato_auxiliar.programas[x].insumos.length - 1);
+                this.insumos_sin_clave.splice(0,0, obj_insumo);
+            } 
+        }
+    }
+  }
+  buscar_programa(id_programa, index)
+  {
+    let bandera = 0;
+      for(var i in this.form_dato_auxiliar.programas)
+      {
+          if(this.form_dato_auxiliar.programas[i].id == id_programa)
+          {
+              this.buscar_insumo_lote(i, index);
+              bandera = 1;
+          } 
+      }
+      if(bandera == 0)
+      {
+        this.programas_no_registrados[index].programa.insumos = this.crear_programa_nuevo(this.programas_no_registrados[index].programa);
+        this.form_dato_auxiliar.programas.push(this.programas_no_registrados[index].programa);
+      }
+      //console.log(this.form_dato_auxiliar); 
+  }
+
+  buscarInsumo(obj, text, index)
+  {
+      this.index_insumo_sin_clave = index;
+      this.obj_seleccionado = obj;
+      this.showInsumos = true;
+      this.busquedaQuery = text;
+  }
+
+
+  crear_programa_nuevo(obj_programa)
+  {
+      let obj_insumos = [];
+      for(var i in obj_programa.insumos)
+      {
+        let insumos = obj_programa.insumos[i];
+        let ob_temporal = {
+          clave_insumo_medico: insumos.clave_insumo_medico,
+          descripcion: insumos.descripcion,
+          nombre: insumos.nombre,
+          es_causes: insumos.es_causes,
+          es_unidosis: insumos.es_unidosis,
+          cantidad_x_envase: insumos.cantidad_x_envase,
+          tipo: insumos.tipo,
+          precio_unitario: insumos.precio_unitario,
+          subtotal: '',
+          lotes: []
+        };
+
+        let tiene_precio = false;
+        if (ob_temporal.precio_unitario) {
+          tiene_precio = true;
+        }
+        if (ob_temporal.precio_unitario === null ) {
+          tiene_precio = false;
+        }
+
+        let start_index = 0;
+        let number_of_elements_to_remove = 0;
+
+        //console.log(insumo_auxiliar);
+        for(var z in insumos.lote)
+        {
+          let lotes_temporales = insumos.lote[z];
+          
+          let lote_temporal = {
+            id: null,
+            lote: lotes_temporales.no_lote,
+            codigo_barras: '',
+            fecha_caducidad: lotes_temporales.fecha,
+            existencia: lotes_temporales.cantidad,
+            precio_unitario: tiene_precio ? Number(ob_temporal.precio_unitario) : null,
+            importe: 0,
+            iva_importe: 0,
+            exclusivo: 1,
+            requerir_pu: tiene_precio ? false : true
+          };
+
+          ob_temporal.lotes.splice(start_index, number_of_elements_to_remove, lote_temporal);
+        }
+        obj_insumos.splice(start_index, number_of_elements_to_remove, ob_temporal);
+      }
+      return obj_insumos;
+  }
+  buscar_insumo_lote(index_con_programa, index_sin_programa)
+  {
+    let bandera = 0;
+    let bandera_lote = 0;
+    for(var i in this.programas_no_registrados[index_sin_programa].programa.insumos)
+    {
+      let insumo_no_programa = this.programas_no_registrados[index_sin_programa].programa.insumos[i];
+      console.log(insumo_no_programa);
+      //console.log(this.programas_no_registrados[index_sin_programa].programa.insumos[i]);
+      for(var j in this.form_dato_auxiliar.programas[index_con_programa].insumos)
+        {
+            let insumo_programa = this.form_dato_auxiliar.programas[index_con_programa].insumos[j];
+            //console.log(this.form_dato_auxiliar.programas[index_con_programa].insumos[j]);
+            if(insumo_no_programa.clave_insumo_medico == insumo_programa.clave_insumo_medico)
+            {
+                for(var k in insumo_no_programa.lotes)
+                {
+                  let tiene_precio = false;
+                  if (insumo_programa.precio_unitario) {
+                    tiene_precio = true;
+                  }
+                  if (insumo_programa.precio_unitario === null ) {
+                    tiene_precio = false;
+                  }
+
+                  let start_index = 0;
+                  let number_of_elements_to_remove = 0;
+
+                  for(var l in insumo_programa.lotes)
+                  {
+                      if(insumo_no_programa.lotes[k].fecha == insumo_programa.lotes[l].fecha_caducidad && insumo_no_programa.lotes[k].no_lote == insumo_programa.lotes[l].lote)
+                      {
+                        this.form_dato_auxiliar.programas[index_con_programa].insumos[j].lotes[l].cantidad = this.form_dato_auxiliar.programas[index_con_programa].insumos[j].lotes[l].cantidad + insumo_no_programa.lotes[k].cantidad;
+                        bandera_lote = 1;
+                      }
+                  }
+                  if(bandera_lote == 0)
+                  {
+                      let lote_temporal = {
+                        id: null,
+                        lote: insumo_no_programa.lotes[k].no_lote,
+                        codigo_barras: '',
+                        fecha_caducidad: insumo_no_programa.lotes[k].fecha,
+                        existencia: insumo_no_programa.lotes[k].cantidad,
+                        precio_unitario: tiene_precio ? Number(insumo_programa.precio_unitario) : null,
+                        importe: 0,
+                        iva_importe: 0,
+                        exclusivo: 1,
+                        requerir_pu: tiene_precio ? false : true
+                      };
+
+                      this.form_dato_auxiliar.programas[index_con_programa].insumos[j].lotes.splice(start_index, number_of_elements_to_remove, lote_temporal);
+                  }
+                }
+                bandera = 1;  
+            }
+        }
+        if(bandera == 0)
+        {
+            //let insumo_auxiliar = data.insumos[i].programa.insumos[j];
+            let ob_temporal = {
+              clave_insumo_medico: insumo_no_programa.clave_insumo_medico,
+              descripcion: insumo_no_programa.descripcion,
+              nombre: insumo_no_programa.nombre,
+              es_causes: insumo_no_programa.es_causes,
+              es_unidosis: insumo_no_programa.es_unidosis,
+              cantidad_x_envase: insumo_no_programa.cantidad_x_envase,
+              tipo: insumo_no_programa.tipo,
+              precio_unitario: insumo_no_programa.precio_unitario,
+              subtotal: '',
+              lotes: []
+            };
+
+            let tiene_precio = false;
+            if (ob_temporal.precio_unitario) {
+              tiene_precio = true;
+            }
+            if (ob_temporal.precio_unitario === null ) {
+              tiene_precio = false;
+            }
+
+            let start_index = 0;
+            let number_of_elements_to_remove = 0;
+
+            //console.log(insumo_auxiliar);
+            for(var z in insumo_no_programa.lote)
+            {
+              let lotes_temporales = insumo_no_programa.lote[z];
+              
+              let lote_temporal = {
+                id: null,
+                lote: lotes_temporales.no_lote,
+                codigo_barras: '',
+                fecha_caducidad: lotes_temporales.fecha,
+                existencia: lotes_temporales.cantidad,
+                precio_unitario: tiene_precio ? Number(ob_temporal.precio_unitario) : null,
+                importe: 0,
+                iva_importe: 0,
+                exclusivo: 1,
+                requerir_pu: tiene_precio ? false : true
+              };
+
+              ob_temporal.lotes.splice(start_index, number_of_elements_to_remove, lote_temporal);
+            }
+            this.form_dato_auxiliar.programas[index_con_programa].insumos.splice(start_index, number_of_elements_to_remove, ob_temporal);
+          
+        }
+    }
+    
+    //console.log(bandera);
+  }
+
+  seleccionInsumo(obj)
+  {
+    this.obj_seleccionado;
+    
+    //onsole.log(this.obj_seleccionado);
+    //console.log(this.form_dato_auxiliar.programas[this.obj_seleccionado.indice_programa]);
+    
+    let bandera:number = 0;
+    let index_borrar:number = 0;
+    for(let i in this.form_dato_auxiliar.programas[this.obj_seleccionado.indice_programa].insumos)
+    {
+      let insumo_verificar = this.form_dato_auxiliar.programas[this.obj_seleccionado.indice_programa].insumos[i];
+        if(this.obj_seleccionado.nombre ==  insumo_verificar.descripcion && insumo_verificar.clave_insumo_medico == null)
+        {
+          index_borrar = parseInt(i);
+        }
+    }
+    //console.log(index_borrar);
+
+    for(var i in this.form_dato_auxiliar.programas[this.obj_seleccionado.indice_programa].insumos)
+    {
+       let insumo = this.form_dato_auxiliar.programas[this.obj_seleccionado.indice_programa].insumos[i];
+
+       if(insumo.clave_insumo_medico == obj.clave)
+       {
+         
+          for(var lotes in this.obj_seleccionado.lotes)
+          {
+              let bandera_lote:number = 0;
+              let var_lote = this.obj_seleccionado.lotes[lotes];
+              for(var j in insumo.lotes)
+              {
+                  let lote_principal = insumo.lotes[j];
+                  if(lote_principal.fecha_caducidad == var_lote.fecha_caducidad && var_lote.lote == lote_principal.lote)
+                  {
+                    let lote = this.form_dato_auxiliar.programas[this.obj_seleccionado.indice_programa].insumos[i].lotes[j];
+                    this.form_dato_auxiliar.programas[this.obj_seleccionado.indice_programa].insumos[i].lotes[j].existencia = parseFloat(var_lote.existencia) + parseFloat(lote.existencia);
+                    bandera_lote = 1;
+                  }
+              }
+              if(bandera_lote == 0)
+              {
+                this.form_dato_auxiliar.programas[this.obj_seleccionado.indice_programa].insumos[i].lotes.splice(0,0, var_lote);
+              }
+          }
+          
+          bandera = 1;
+          this.form_dato_auxiliar.programas[this.obj_seleccionado.indice_programa].insumos.splice(index_borrar,1);
+          //eliminar el insumo
+       }
+       
+    }
+
+    if(bandera == 0)
+    {
+        let insumo_auxiliar = this.form_dato_auxiliar.programas[this.obj_seleccionado.indice_programa].insumos[this.obj_seleccionado.id_insumo];
+        insumo_auxiliar.clave_insumo_medico= obj.clave_insumo_medico;
+        insumo_auxiliar.descripcion= obj.descripcion;
+        insumo_auxiliar.nombre= obj.nombre;
+        insumo_auxiliar.es_causes= obj.es_causes;
+        insumo_auxiliar.es_unidosis= obj.es_unidosis;
+        insumo_auxiliar.cantidad_x_envase= obj.cantidad_x_envase;
+        insumo_auxiliar.tipo= obj.tipo;
+        insumo_auxiliar.precio_unitario= obj.precio_unitario;
+        
+        for(var i in insumo_auxiliar.lotes)
+        {
+            let tiene_precio = false;
+            if (insumo_auxiliar.precio_unitario) {
+              tiene_precio = true;
+            }
+            if (insumo_auxiliar.precio_unitario === null ) {
+              tiene_precio = false;
+            }
+          insumo_auxiliar.lotes[i].precio_unitario = tiene_precio ? Number(insumo_auxiliar.precio_unitario) : null;
+          insumo_auxiliar.lotes[i].requerir_pu = tiene_precio ? false : true;
+      }
+    }
+    this.showInsumos = false;
+    this.busquedaQuery = "";
+    this.insumos_sin_clave.splice(this.index_insumo_sin_clave, 1);
+    
+    if(this.insumos_sin_clave.length == 0)
+      this.bandera_insumos = false;
+    //console.log(this.insumos_sin_clave);
+    console.log(this.form_dato_auxiliar.programas);
   }
 
   subir() {
@@ -366,13 +997,27 @@ export class InicialComponent {
 			this.http.post(`${environment.API_URL}/cargar-inventario-inicial-excel`, formData, options)
 				.subscribe(
 					response => {
+            var data = response.json().data;
             this.archivoSubido = true;
-						this.enviandoDatos = false;
-						//this.mostrarModalSubirArchivoSQL = false;
+            this.enviandoDatos = false;
+            this.bandera_subir = false;
+						
 						this.progreso = 100;
             this.archivo = null;
+
             
-            var data = response.json().data;
+            if(data.sin_programa.length > 0)
+              this.bandera_programas = true;
+            
+            this.catalogo_programa = data.programas;
+            //this.catalogo_insumos_medicos = data.insumos_medicamentos;
+            
+            for(var i in data.insumos_medicamentos)
+            {
+              this.catalogo_insumos_medicos.splice(0,0, data.insumos_medicamentos[i]);
+              //console.log(data.insumos_medicamentos[i]);
+            }
+            //console.log(this.catalogo_insumos_medicos);
             this.form_dato_auxiliar = {
               id: '',
               clues: this.usuario.clues_activa.clues,
@@ -403,8 +1048,13 @@ export class InicialComponent {
                 {
                   
                   let insumo_auxiliar = data.insumos[i].programa.insumos[j];
+                  if(!insumo_auxiliar.clave_insumo_medico)
+                    this.bandera_insumos = true;
+                  
+                  let obj_insumo = {id: j, indice_programa: (indice_programa -1), nombre: insumo_auxiliar.descripcion, programa: data.insumos[i].programa.id, id_insumo:0, nombre_programa: data.insumos[i].programa.nombre, lotes:[]};
+                    
                   let ob_temporal = {
-                    clave_insumo_medico: insumo_auxiliar.clave,
+                    clave_insumo_medico: insumo_auxiliar.clave_insumo_medico,
                     descripcion: insumo_auxiliar.descripcion,
                     nombre: insumo_auxiliar.nombre,
                     es_causes: insumo_auxiliar.es_causes,
@@ -446,87 +1096,27 @@ export class InicialComponent {
                     };
 
                     ob_temporal.lotes.splice(start_index, number_of_elements_to_remove, lote_temporal);
+                    
+                    obj_insumo.lotes.splice(start_index, number_of_elements_to_remove, lote_temporal);                      
+                    
                   }
+                  
                   this.form_dato_auxiliar.programas[indice_programa-1].insumos.splice(start_index, number_of_elements_to_remove, ob_temporal);
+
+                  
+                  if(!insumo_auxiliar.clave_insumo_medico)
+                  {
+                      obj_insumo.id_insumo = (this.form_dato_auxiliar.programas[indice_programa-1].insumos.length - 1);
+                      this.insumos_sin_clave.splice(0,0, obj_insumo);
+                  }
+                      
                 }
             }
             
+            this.programas_no_registrados = data.sin_programa;
             
             this.mensajeExito = "El archivo no contiene ningun error y se encuentra listo para subir";
-            /*for(var i in data)
-            {
-              let ob_temporal = {
-                clave_insumo_medico: data[i].clave,
-                descripcion: data[i].descripcion,
-                nombre: data[i].nombre,
-                es_causes: data[i].es_causes,
-                es_unidosis: data[i].es_unidosis,
-                cantidad_x_envase: data[i].cantidad_x_envase,
-                tipo: data[i].tipo,
-                precio_unitario: data[i].precio_unitario,
-                subtotal: '',
-                lotes: []
-              };
-
-                let start_index = 0;
-                let number_of_elements_to_remove = 0;
-                this.form_dato.programas[0].insumos.splice(start_index, number_of_elements_to_remove, ob_temporal);
-
-                let tiene_precio = false;
-                if (ob_temporal.precio_unitario) {
-                  tiene_precio = true;
-                }
-                if (ob_temporal.precio_unitario === null ) {
-                  tiene_precio = false;
-                }
-                for(var j in data[i].lote)
-                {
-                  let lote_temporal = {
-                    id: null,
-                    lote: data[i].lote[j].lote,
-                    codigo_barras: '',
-                    fecha_caducidad: data[i].lote[j].fecha,
-                    existencia: data[i].lote[j].cantidad,
-                    precio_unitario: tiene_precio ? Number(this.form_dato.programas[0].insumos[0].precio_unitario) : null,
-                    importe: 0,
-                    iva_importe: 0,
-                    exclusivo: 1,
-                    requerir_pu: tiene_precio ? false : true
-                  };
-
-                  this.form_dato.programas[0].insumos[0].lotes.splice(start_index, number_of_elements_to_remove, lote_temporal);
-                }
-
-              
-              //this.form_dato.programas[0].insumos.push(data[i]);
-            }*/
-            //for(response.data )
-            //this.form_dato.programa.insumos
-
-						/*this.tabMedicamentos = this.tabMedicamentosCorrectos = this.tabMaterialCuracionCorrectos = true;
-
-
-						this.tabMaterialCuracion = this.tabMaterialCuracionErrores = this.tabMedicamentosErrores = false;
-
-						var data = response.json().data;
-
-
-						for (var i in data.medicamentos) {
-							if (data.medicamentos[i].error != null) {
-								this.listaCargaMasiva.medicamentos.errores.push(data.medicamentos[i]);
-							} else {
-								this.listaCargaMasiva.medicamentos.correctos.push(data.medicamentos[i]);
-								console.log(data.medicamentos[i]);
-							}
-						}
-
-						for (var i in data.material_curacion) {
-							if (data.material_curacion[i].error != null) {
-								this.listaCargaMasiva.material_curacion.errores.push(data.material_curacion[i]);
-							} else {
-								this.listaCargaMasiva.material_curacion.correctos.push(data.material_curacion[i]);
-							}
-						}*/
+            
 
 					},
 					error => {
@@ -545,15 +1135,17 @@ export class InicialComponent {
 						this.enviandoDatos = false;
 
 					}
-				);
-		}
+        );
+        console.log(this.form_dato_auxiliar);
+    }
+    
   }
   
   confirmar()
   {
-      this.mensajeExito = "";
+      /*this.mensajeExito = "";
       this.mensajeErrorSync = "";
-      this.mostrarModalCarga = false;
+      this.mostrarModalCarga = false;*/
       this.form_dato = this.form_dato_auxiliar;
       for (var i_programa in this.form_dato_auxiliar.programas)
       {
@@ -568,6 +1160,7 @@ export class InicialComponent {
           }  
         }
       }
+      this.cerrarModalCarga();
   }
   /* Importacion */
   /**

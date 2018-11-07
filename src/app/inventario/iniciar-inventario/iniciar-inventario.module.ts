@@ -24,6 +24,7 @@ import { MomentModule   } from 'angular2-moment';
 import { NguiDatetimePickerModule, NguiDatetime } from '@ngui/datetime-picker';
 import { SimpleNotificationsModule } from 'angular2-notifications';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { BusquedaInsumosPipe } from './busqueda-insumos.pipe';
 
 @NgModule({
   imports: [
@@ -47,6 +48,7 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
   declarations: [
     ListaComponent,
     InicialComponent,
+    BusquedaInsumosPipe,
     // VerComponent
   ],
   providers: [
