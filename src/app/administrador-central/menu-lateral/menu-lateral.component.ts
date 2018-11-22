@@ -45,6 +45,7 @@ export class MenuLateralComponent implements OnInit {
       {
         titulo: 'Insumos médicos',
         modulos: [
+          { permiso: 'r1RX6Yq7fc4CRRI2OJXIPxeBLW3lFP59', icono: 'fa-file', titulo:"Pedidos ordinarios", url:"/administrador-central/pedidos-ordinarios" },
           { permiso: 'r1RX6Yq7fc4CRRI2OJXIPxeBLW3lFP59', icono: 'fa-check-square', titulo:"Claves básicas", url:"/administrador-central/claves-basicas" },
           { permiso: 'X36qZL6YWSwvEaR2EH1TeSOotssAkrxu', icono: 'fa-medkit', titulo:"Insumos médicos", url:"/administrador-central/insumos-medicos" },
           { permiso: 'IMkUZwr9GEJW91gdXNEdHZPMvYMYthT2', icono: 'fa-file-text-o', titulo:"Contratos", url:"/administrador-central/contratos" },
