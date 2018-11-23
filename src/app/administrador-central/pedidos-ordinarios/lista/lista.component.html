@@ -64,57 +64,44 @@
           <tr>
             <th style="text-align: center;">ID</th>
             <th style="text-align: center">Descripcion</th>
-            <th style="text-align: right;">Fecha</th>
-            <th style="text-align: right;">Fecha expiración</th>
-            <th style="text-align: center;">Fecha Inicio</th>
-            <th style="text-align: center;">Fecha Fin</th>
-
+            <th style="text-align: center;">Fecha</th>
+            <th style="text-align: center;">Expiración</th>
+            <th style="text-align: center;">Unidades Médicas</th>
             <th style="text-align:center; width:100px"></th>
           </tr>
         </thead>
         <tbody *ngIf="!busquedaActivada">
           <tr *ngFor="let item of lista; let i=index">
             <td style="text-align: center; vertical-align: middle;">
-              <a routerLink="/administrador-central/contratos/editar/{{item.id}}">
-                <span class="text-overflow">{{ item.proveedor }}</span>
-              </a>
-            </td>
-            <td style="vertical-align: middle; text-align: center;">
-              <a routerLink="/administrador-central/contratos/editar/{{item.id}}" *ngIf="item.activo">
-
-                <span class="icon is-small">
-                  <i class="fa fa-check"></i>
-                </span>
-              </a>
-
-            </td>
-            <td style="text-align: right; vertical-align: middle;">
-              <a routerLink="/administrador-central/contratos/editar/{{item.id}}">
-                <span class="text-overflow">${{ (item.monto_minimo) | number:'1.2-2' }}</span>
-                
-              </a>
-            </td>
-            <td style="text-align: right; vertical-align: middle;">
-              <a routerLink="/administrador-central/contratos/editar/{{item.id}}">
-                <span class="text-overflow">${{ (item.monto_maximo) | number:'1.2-2' }}</span>
+              <a routerLink="/administrador-central/pedidos-ordinarios/{{item.id}}">
+                <span class="text-overflow">{{ item.id }}</span>
               </a>
             </td>
             <td style="text-align: center; vertical-align: middle;">
-              <a routerLink="/administrador-central/contratos/editar/{{item.id}}"><span class="text-overflow">{{ item.fecha_inicio | date:'y-MM-dd' }}</span></a>
+              <a routerLink="/administrador-central/pedidos-ordinarios/{{item.id}}">
+                <span class="text-overflow">{{ item.descripcion }}</span>
+              </a>
             </td>
-            <td style="text-align: center; vertical-align: middle;">
-              <a routerLink="/administrador-central/contratos/editar/{{item.id}}"><span class="text-overflow">{{ item.fecha_fin | date:'y-MM-dd' }}</span></a>
+            <td style="text-align: center; vertical-align: middle; text-align: center">
+              <a routerLink="/administrador-central/pedidos-ordinarios/{{item.id}}">
+                <span class="text-overflow">{{ item.fecha | date: 'dd/MM/yyyy' }}</span>
+              </a>
             </td>
 
+            <td style="text-align: center; vertical-align: middle; text-align: center">
+              <a routerLink="/administrador-central/pedidos-ordinarios/{{item.id}}">
+                <span class="text-overflow">{{ item.fecha_expiracion | date: 'dd/MM/yyyy' }} a las {{ item.fecha_expiracion | date: 'hh:mm' }} hrs</span>
+              </a>
+            </td>
+            <td style="text-align: right; vertical-align: middle; text-align:center">
+              <a routerLink="/administrador-central/pedidos-ordinarios/{{item.id}}">
+                <span class="text-overflow">N</span>                
+              </a>
+            </td>
             <td style="vertical-align: middle; text-align: center;" class="has-text-centered">
               <span class="icon " *ngIf="item.cargando">
                 <i class="fa fa-circle-o-notch fa-spin"></i>
               </span>
-              <a *ngIf="!item.cargando" class="button is-primary is-outlined is-small" (click)="activar(item)">
-                <span class="icon is-small">
-                  <i class="fa fa-check"></i>
-                </span>
-              </a>
               <a *ngIf="!item.cargando" class="button is-white is-small" (click)="eliminar(item, i)">
                 <span class="icon is-small">
                   <i class="fa fa-trash-o"></i>
@@ -123,50 +110,41 @@
             </td>
           </tr>
           <tr *ngIf="lista.length == 0">
-            <td colspan="9" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>
+            <td colspan="6" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>
           </tr>
         </tbody>
         <tbody *ngIf="busquedaActivada">
           <tr *ngFor="let item of resultadosBusqueda; let i=index">
-            <td style="text-align: center;">
-              <a routerLink="/administrador-central/contratos/editar/{{item.id}}">
-                <span class="text-overflow">{{ item.proveedor }}</span>
+            <td style="text-align: center; vertical-align: middle;">
+              <a routerLink="/administrador-central/pedidos-ordinarios/{{item.id}}">
+                <span class="text-overflow">{{ item.id }}</span>
               </a>
             </td>
-            <td style="vertical-align: middle; text-align: center;">
-              <a routerLink="/administrador-central/contratos/editar/{{item.id}}" *ngIf="item.activo">
+            <td style="text-align: center; vertical-align: middle;">
+              <a routerLink="/administrador-central/pedidos-ordinarios/{{item.id}}">
+                <span class="text-overflow">{{ item.descripcion }}</span>
+              </a>
+            </td>
+            <td style="text-align: center; vertical-align: middle; text-align: center">
+              <a routerLink="/administrador-central/pedidos-ordinarios/{{item.id}}">
+                <span class="text-overflow">{{ item.fecha | date: 'dd/MM/yyyy' }}</span>
+              </a>
+            </td>
 
-                <span class="icon is-small">
-                  <i class="fa fa-check"></i>
-                </span>
-              </a>
-
-            </td>
-            <td style="text-align: right;">
-              <a routerLink="/administrador-central/contratos/editar/{{item.id}}">
-                ${{ (item.monto_minimo) | number:'1.2-2' }}
+            <td style="text-align: center; vertical-align: middle; text-align: center">
+              <a routerLink="/administrador-central/pedidos-ordinarios/{{item.id}}">
+                <span class="text-overflow">{{ item.fecha_expiracion | date: 'dd/MM/yyyy' }} a las {{ item.fecha_expiracion | date: 'hh:mm' }} hrs</span>
               </a>
             </td>
-            <td style="text-align: right;">
-              <a routerLink="/administrador-central/contratos/editar/{{item.id}}">
-                ${{ (item.monto_maximo) | number:'1.2-2' }}
+            <td style="text-align: right; vertical-align: middle; text-align:center">
+              <a routerLink="/administrador-central/pedidos-ordinarios/{{item.id}}">
+                <span class="text-overflow">N</span>                
               </a>
-            </td>
-            <td style="text-align: center;">
-              <a routerLink="/administrador-central/contratos/editar/{{item.id}}">{{ item.fecha_inicio | date:'y-MM-dd' }}</a>
-            </td>
-            <td style="text-align: center;">
-              <a routerLink="/administrador-central/contratos/editar/{{item.id}}">{{ item.fecha_fin | date:'y-MM-dd' }}</a>
             </td>
             <td style="vertical-align: middle; text-align: center;" class="has-text-centered">
               <span class="icon " *ngIf="item.cargando">
                 <i class="fa fa-circle-o-notch fa-spin"></i>
               </span>
-              <a *ngIf="!item.cargando" class="button is-primary is-outlined is-small" (click)="activar(item)">
-                  <span class="icon is-small">
-                    <i class="fa fa-check"></i>
-                  </span>
-              </a>
               <a *ngIf="!item.cargando" class="button is-white is-small" (click)="eliminar(item, i)">
                 <span class="icon is-small">
                   <i class="fa fa-trash-o"></i>
@@ -176,7 +154,7 @@
           </tr>
 
           <tr *ngIf="resultadosBusqueda.length == 0 && busquedaActivada">
-            <td colspan="9" style="vertical-align: middle; color:#888;">No se encontraron resultados.</td>
+            <td colspan="6" style="vertical-align: middle; color:#888;">No se encontraron resultados.</td>
           </tr>
         </tbody>
       </table>

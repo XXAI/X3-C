@@ -27,8 +27,6 @@ import { Mensaje } from '../../../mensaje';
 })
 export class ListaComponent implements  OnInit {
   cargando: boolean = false;
-	mostrarModalClues: boolean = false;
-	listaSeleccionada: any = null;
 
 
 	// # SECCION: Esta sección es para mostrar mensajes
@@ -61,41 +59,13 @@ export class ListaComponent implements  OnInit {
 
 
 
-	errores = {
-		archivo: null
-	}
-	mostrarModalCarga: boolean = false;
-	mostrarModalEditarRegistro: boolean = false;
-
-	mensajeErrorSync: string = "";
-	archivo: File = null;
-	archivoSubido: boolean = false;
-	enviandoDatos: boolean = false;
-	progreso: number = 0;
-
-	tabMedicamentos: boolean = false;
-	tabMaterialCuracion: boolean = false;
-
-	tabMedicamentosCorrectos: boolean = false;
-	tabMedicamentosPorValidar: boolean = false;
-	tabMedicamentosErrores: boolean = false;
-
-	tabMaterialCuracionCorrectos: boolean = false;
-	tabMaterialCuracionPorValidar: boolean = false;
-	tabMaterialCuracionErrores: boolean = false;
-
-	listaCargaMasiva = {
-		medicamentos: { correctos: [], por_validar: [], errores: [] },
-		material_curacion: { correctos: [], por_validar: [], errores: [] }
-	}
-
 	constructor(
 		private title: Title,
 		private apiService: PedidosOrdinariosService,
 		private http: Http) { }
 
 	ngOnInit() {
-		this.title.setTitle("Contratos / Administrador central");
+		this.title.setTitle("Pedidos ordinarios / Administrador central");
 		this.listar(1);
 		this.mensajeError = new Mensaje();
 		this.mensajeExito = new Mensaje();
@@ -108,7 +78,6 @@ export class ListaComponent implements  OnInit {
 			.switchMap((term: string) => {
 				console.log("Cargando búsqueda.");
 				this.busquedaActivada = term != "" ? true : false;
-				this.tabMedicamentos = true;
 				this.ultimoTerminoBuscado = term;
 				this.paginaActualBusqueda = 1;
 				this.cargando = true;
@@ -116,12 +85,6 @@ export class ListaComponent implements  OnInit {
 				var payload =
 				{
 					q: term,
-					tipo: this.filtro_tipo,
-					causes: this.filtro_causes,
-					unidosis: this.filtro_unidosis,
-					descontinuado: this.filtro_descontinuado,
-					atencion_medica: this.filtro_atencion_medica,
-					salud_publica: this.filtro_salud_publica,
 					page: this.paginaActualBusqueda,
 					per_page: this.resultadosPorPaginaBusqueda
 				}
@@ -176,13 +139,7 @@ export class ListaComponent implements  OnInit {
 		this.terminosBusqueda.next(term);
 	}
 
-	filtro_tipo: string = "";
-	filtro_causes: number = -1;
-	filtro_unidosis: number = -1;
-	filtro_atencion_medica: number = -1;
-	filtro_salud_publica: number = -1;
-	filtro_descontinuado: number = -1;
-	filtro_no_disponible_pedidos: number = -1;
+	
 
 	listarBusqueda(term: string, pagina: number): void {
 		this.paginaActualBusqueda = pagina;
@@ -194,13 +151,6 @@ export class ListaComponent implements  OnInit {
 		var payload =
 		{
 			q: term,
-			tipo: this.filtro_tipo,
-			causes: this.filtro_causes,
-			unidosis: this.filtro_unidosis,
-			descontinuado: this.filtro_descontinuado,
-			atencion_medica: this.filtro_atencion_medica,
-			salud_publica: this.filtro_salud_publica,
-			no_disponible_pedidos: this.filtro_no_disponible_pedidos,
 			page: pagina,
 			per_page: this.resultadosPorPaginaBusqueda
 		}
@@ -290,9 +240,13 @@ export class ListaComponent implements  OnInit {
 		);
 	}
 	eliminar(item: any, index): void {
-		if (!confirm("¿Estás seguro de eliminar el contrato?")) {
+		if (!confirm("¿Estás seguro de eliminar el pedido?")) {
 			return;
 		}
+
+		return ;
+
+/*
 		item.cargando = true;
 		this.apiService.eliminar(item.id).subscribe(
 			data => {
@@ -330,48 +284,9 @@ export class ListaComponent implements  OnInit {
 				}
 
 			}
-		);
+		);*/
   }
   
-  activar(item: any): void {
-		if (!confirm("¿Estás seguro de activar este contrato?, Será el nuevo contrato vigente para este proveedor y todos los pedidos se realizarán con los datos de este contrato.")) {
-			return;
-		}
-		item.cargando = true;
-		this.apiService.activar(item.id).subscribe(
-			data => {
-				item.cargando = false;
-
-				if (this.busquedaActivada) {
-          this.listarBusqueda(this.ultimoTerminoBuscado, this.paginaActual);					
-				} else {
-					this.listar(this.paginaActual);
-				}
-			},
-			error => {
-				item.cargando = false;
-				this.mensajeError.mostrar = true;
-				this.ultimaPeticion = function () {
-					this.activar(item);
-				}
-
-				try {
-					let e = error.json();
-					if (error.status == 401) {
-						this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
-					}
-				} catch (e) {
-
-					if (error.status == 500) {
-						this.mensajeError.texto = "500 (Error interno del servidor)";
-					} else {
-						this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
-					}
-				}
-
-			}
-		);
-	}
 
 	// # SECCION: Paginación
 	paginaSiguiente(): void {

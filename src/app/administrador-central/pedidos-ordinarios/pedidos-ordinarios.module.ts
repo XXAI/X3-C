@@ -9,9 +9,11 @@ import { HubModule } from '../../hub/hub.module';
 import { PerfilModule } from '../../perfil/perfil.module';
 import { BloquearPantallaModule } from '../../bloquear-pantalla/bloquear-pantalla.module';
 import { PaginacionModule } from '../../paginacion/paginacion.module';
+import { BuscarUnidadesMedicasModule  } from "../buscar-unidades-medicas/buscar-unidades-medicas.module";
 
 import { PedidosOrdinariosRoutingModule } from './pedidos-ordinarios-routing.module';
 import { ListaComponent } from './lista/lista.component';
+import { NuevoComponent } from './nuevo/nuevo.component';
 
 @NgModule({
   imports: [
@@ -23,8 +25,9 @@ import { ListaComponent } from './lista/lista.component';
     BloquearPantallaModule,
     PaginacionModule,  
     AdministradorCentralModule,
-    PedidosOrdinariosRoutingModule
+    PedidosOrdinariosRoutingModule,
+    BuscarUnidadesMedicasModule
   ],
-  declarations: [ListaComponent]
+  declarations: [ListaComponent, NuevoComponent]
 })
 export class PedidosOrdinariosModule { }
