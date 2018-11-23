@@ -491,7 +491,7 @@
                                         <i class="fa fa-exchange"></i>
                                     </span>
                                 </a>
-                                <a class="button is-success" title="Guardar" (click)="guardar_programa_nuevo(i, item)" *ngIf="restriccion_servidor">
+                                <a class="button is-success" title="Guardar" (click)="guardar_programa_nuevo(i, item)" *ngIf="!restriccion_servidor">
                                     <span class="icon">
                                         <i class="fa fa-save"></i>
                                     </span>
