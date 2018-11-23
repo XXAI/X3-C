@@ -11,17 +11,21 @@ export class PedidosOrdinariosService {
     constructor(private jwtRequest: JwtRequestService) { }
 
     lista(): Observable<any[]> {
-        return this.jwtRequest.get(PedidosOrdinariosService.URL+"/contratos").map((response: Response) => response.json().data) as Observable<any[]>;
+        return this.jwtRequest.get(PedidosOrdinariosService.URL+"/pedidos-ordinarios").map((response: Response) => response.json().data) as Observable<any[]>;
     }
 
     buscar(payload:any = { q: '', tipo: '',   causes: -1, unidosis: -1, descontinuado: -1, atencion_medica: -1, salud_publica: -1, page: 1, per_page: 20 }): Observable<any> {
-        return this.jwtRequest.get(PedidosOrdinariosService.URL+"/contratos", null, payload).map((response: Response) => response.json().data);
+        return this.jwtRequest.get(PedidosOrdinariosService.URL+"/pedidos-ordinarios", null, payload).map((response: Response) => response.json().data);
     }
 
     listaPaginada(pagina: number = 1, resultados_por_pagina: number = 20): Observable<any> {
-        return this.jwtRequest.get(PedidosOrdinariosService.URL+"/contratos", null, { page: pagina, per_page: resultados_por_pagina }).map((response: Response) => response.json().data);
+        return this.jwtRequest.get(PedidosOrdinariosService.URL+"/pedidos-ordinarios", null, { page: pagina, per_page: resultados_por_pagina }).map((response: Response) => response.json().data);
     }
 
+    crear(item: any): Observable<any> {
+        return this.jwtRequest.post(PedidosOrdinariosService.URL+"/pedidos-ordinarios", item).map((response: Response) => response.json().data) as Observable<any>;
+    }
+/*
     ver(id: any): Observable<any> {
         return this.jwtRequest.get(PedidosOrdinariosService.URL+"/contratos", id, {}).map((response: Response) => {
 
@@ -55,5 +59,5 @@ export class PedidosOrdinariosService {
 
     confirmarCargaMasivaDatos(item: any): Observable<any> {
         return this.jwtRequest.post(PedidosOrdinariosService.URL+"/confirmar-carga-masiva-insumos", item).map((response: Response) => response.json().data) as Observable<any>;
-    }
+    }*/
 }
