@@ -446,8 +446,10 @@
         </header>
         <section class="modal-card-body" style="position: relative; padding:0px;">
              <div class="notification is-danger" *ngIf="mensajeErrorSync!=''"><span class="icon"><i class="fa fa-exclamation-circle"></i></span><div [innerHTML] ='mensajeErrorSync' ></div></div>
-             <div class="notification is-success" *ngIf="programas_no_registrados.length == 0 && mensajeExito!='' && !bandera_insumos"><div [innerHTML] ='mensajeExito' ></div></div>
-
+             <div class="notification is-success" *ngIf="programas_no_registrados.length == 0 && mensajeExito!='' && !bandera_insumos  && bandera_registros_a_subir"><div [innerHTML] ='mensajeExito' ></div></div>
+             <div class="notification is-danger" *ngIf="insumos_sin_clave.length == 0 && programas_no_registrados.length == 0 && !bandera_subir && !bandera_registros_a_subir">
+                <div >No Existen Insumos a Subir</div>
+            </div>
             <div class="field" [ngClass]="{ 'is-hidden' : enviandoDatos }" *ngIf="!archivoSubido" style="margin:1em;">
                 <label for="sql" class="label" [ngClass]="{ 'is-danger': errores.archivo != null }">Elige el archivo .xls</label>
                 <input type="file" class="input-file" #archivoInput style="width:100%" name="archivo" is="xls" (change)="fileChange($event)"
@@ -489,9 +491,14 @@
                                         <i class="fa fa-exchange"></i>
                                     </span>
                                 </a>
-                                <a class="button is-success" title="Guardar" (click)="guardar_programa_nuevo(i, item)"  [ngClass]="{ 'is-disabled' : agregando_programa  }">
+                                <a class="button is-success" title="Guardar" (click)="guardar_programa_nuevo(i, item)" *ngIf="restriccion_servidor">
                                     <span class="icon">
                                         <i class="fa fa-save"></i>
+                                    </span>
+                                </a>
+                                <a class="button is-danger" title="Guardar" (click)="eliminar_programa_no_registrado(i, item)"  >
+                                    <span class="icon">
+                                        <i class="fa fa-trash-o"></i>
                                     </span>
                                 </a>
                             </td>
@@ -519,7 +526,8 @@
                         <tr *ngFor=" let item of insumos_sin_clave; let i=index">
                             <td>{{ item.nombre_programa }}</td>
                             <td>{{ item.nombre }}</td>
-                            <td><input type="text" class="input is-medium" [(ngModel)]='filtroClues'  (keyup)="buscarInsumo(item, this.value, i)"></td>
+                            <!--<td><input type="text" class="input is-medium" [(ngModel)]='filtroClues'  (keyup)="buscarInsumo(item, this.value, i)"></td>-->
+                            <td><input type="text" class="input is-medium" #busqueda_insumo   (keyup)="buscarInsumo(item, busqueda_insumo.value, i)"></td>
                             
                         </tr>
                                
@@ -553,7 +561,7 @@
                     <span>Subir</span>
                 </a>
             </div>
-            <div *ngIf="bandera_programas && programas_no_registrados.length > 0">
+            <div *ngIf="bandera_programas && programas_no_registrados.length > 0 && restriccion_servidor">
                 <a class="button is-primary"
                     (click)="agregar_programas()" [ngClass]="{ 'is-disabled' : agregando_programa  }" >
                     <span class="icon">
@@ -572,7 +580,7 @@
                 </a>
             </div>
             <div *ngIf="insumos_sin_clave.length == 0 && programas_no_registrados.length == 0">
-                <a class="button is-hidden-desktop is-success" [ngClass]="{ 'is-disabled' : confirmando  }" *ngIf="archivoSubido" (click)="confirmar()">
+                <a class="button is-hidden-desktop is-success" [ngClass]="{ 'is-disabled' : confirmando  }" *ngIf="archivoSubido && bandera_registros_a_subir" (click)="confirmar()">
                     <span class="icon">
                         <i class="fa fa-check"></i>
                     </span>
@@ -584,19 +592,20 @@
                     </span>
                     <span>Cambiar archivo</span>
                 </a>
-                <a class="button is-hidden-touch is-success" [ngClass]="{ 'is-disabled' : confirmando  }" *ngIf="archivoSubido" (click)="confirmar()">
+                <a class="button is-hidden-touch is-success" [ngClass]="{ 'is-disabled' : confirmando  }" *ngIf="archivoSubido && bandera_registros_a_subir" (click)="confirmar()">
                     <span class="icon">
                         <i class="fa fa-check"></i>
                     </span>
                     <span>Confirmar importación</span>
                 </a>
-                <a class="button is-hidden-touch is-success" [ngClass]="{ 'is-disabled' : confirmando  }" *ngIf="archivoSubido" (click)="adjuntar()">
+                <a class="button is-hidden-touch is-success" [ngClass]="{ 'is-disabled' : confirmando  }" *ngIf="archivoSubido && bandera_registros_a_subir" (click)="adjuntar()">
                     <span class="icon">
                         <i class="fa fa-check"></i>
                     </span>
                     <span>Adjuntar importación</span>
                 </a>
             </div>
+            
             
             <a class="button" [ngClass]="{ 'is-disabled' : enviandoDatos  }" (click)="cerrarModalCarga()">Cancelar</a>
         </footer>

@@ -6,6 +6,7 @@ import { environment } from '../../../../environments/environment';
 import { Headers, Http, Response, RequestOptions, ResponseContentType } from '@angular/http';
 
 import { CrudService } from '../../../crud/crud.service';
+import { IniciarInventarioService } from '../iniciar-inventario.service';
 import * as moment from 'moment';
 import  * as FileSaver    from 'file-saver';
 import { createAutoCorrectedDatePipe, createNumberMask } from 'text-mask-addons';
@@ -59,6 +60,7 @@ export class InicialComponent {
   insumos_sin_clave:any[] = []; 
   catalogo_insumos_medicos:any[] = []; 
   bandera_subir:boolean = true;
+  bandera_registros_a_subir:boolean = false;
   bandera_programas:boolean = false;
   bandera_insumos:boolean = false;
   bandera_importar:boolean = false;
@@ -67,6 +69,7 @@ export class InicialComponent {
   showInsumos = false;
   obj_seleccionado:any = {};
   index_insumo_sin_clave:number = 0;
+  restriccion_servidor = false;
   /**
    * Contiene la clave del programa elegido por el usuario, nos sirve para hacer comparaciones en caso
    * de que el usuario intente cambiar el programa cuando hay insumos capturados.
@@ -247,12 +250,20 @@ export class InicialComponent {
     private notificacion: NotificationsService,
     private route: ActivatedRoute,
     private crudService: CrudService,
+    private iniciarInventarioService: IniciarInventarioService,
     private _ngZone: NgZone,
     private http: Http) { }
 
   ngOnInit() {
     // obtener los datos del usiario logueado almacen y clues
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
+      
+
+    //Configuracion de servidor principal
+    if(this.usuario.almacen_activo.servidor_id == "0001")
+      this.restriccion_servidor = false;
+    else
+      this.restriccion_servidor = true;  
 
     this.form_dato = {
       id: '',
@@ -345,11 +356,14 @@ export class InicialComponent {
 		this.archivo = null;
 		this.archivoSubido = false;
 		this.enviandoDatos = false;
-		this.progreso = 0;
+    this.progreso = 0;
+    this.bandera_registros_a_subir = true;
+    this.bandera_subir= true;
 	}
 	cerrarModalCarga() {
     this.mostrarModalCarga = false;
     this.bandera_subir= true;
+    this.bandera_registros_a_subir = true;
     this.bandera_programas = false;
     this.bandera_importar = false;
     this.bandera_insumos = false;
@@ -367,7 +381,34 @@ export class InicialComponent {
 
   generar_reporte_insumos_faltantes()
   {
-    let headers = new Headers();
+    let arreglo:any[] = [];
+    
+    for(var i in this.form_dato_auxiliar.programas)
+    {
+      let insumo = this.form_dato_auxiliar.programas[i].insumos;
+        for(var j in insumo)
+        {
+            let lote_auxiliar = insumo[j].lotes;
+            for(var k in lote_auxiliar)
+            {
+                if(insumo[j].clave_insumo_medico == null)
+                {
+                  let obj = { 'programa': this.form_dato_auxiliar.programas[i].nombre, 'clave_insumo_medico': insumo[j].clave_insumo_medico, 'descripcion': insumo[j].descripcion, 'lote': lote_auxiliar[k].lote, 'fecha': lote_auxiliar[k].fecha_caducidad, 'cantidad': lote_auxiliar[k].existencia };
+                  arreglo.splice(0,0, obj);
+                }
+            }
+        }
+    }
+    let insumos = { 'insumos' : arreglo};
+    this.iniciarInventarioService.exportar_insumos(insumos).subscribe(
+      resultado => {
+        var query = "token="+localStorage.getItem('token');
+        window.open(`${environment.API_URL}/descargar-insumos-sin-clave-excel/?${query}`);
+        this.eliminar_insumos_sin_clave();
+        
+      }
+    );
+    /*let headers = new Headers();
     headers.delete('Content-Type');
     headers.append('Authorization', 'Bearer ' + localStorage.getItem('token'));
     let options = new RequestOptions({ headers: headers });
@@ -390,37 +431,50 @@ export class InicialComponent {
         }
     }
     let insumos = { 'insumos' : arreglo};
+    this.http.post(`${environment.API_URL}/descargar-insumos-sin-clave-excel`, insumos, options)
+        .subscribe(
+          response => {
+          }
+    );
     //console.log(insumos);
-    var query = "token="+localStorage.getItem('token');
+    /*var query = "token="+localStorage.getItem('token');
     
     query += "&insumos="+JSON.stringify(insumos);
     window.open(`${environment.API_URL}/descargar-insumos-sin-clave-excel/?${query}`);
     this.eliminar_insumos_sin_clave();
-  
+    */
   }
 
   eliminar_insumos_sin_clave()
   {
-    
     for(var i in this.form_dato_auxiliar.programas)
     {
+      console.log(this.form_dato_auxiliar.programas[i]);
+      console.log(this.form_dato_auxiliar.programas[i].insumos);
+      console.log(this.form_dato_auxiliar.programas[i].insumos.length);
         let insumo = this.form_dato_auxiliar.programas[i].insumos;
-        let tamano_insumo:number = (this.form_dato_auxiliar.programas[i].insumos.length -1)
-        for(let j in insumo)
+        let tamano_insumo:number = (this.form_dato_auxiliar.programas[i].insumos.length -1);
+        for(let j = 0; j <= tamano_insumo; j++)
+        {
+          let indice_insumo = tamano_insumo - j;
+          if(insumo[indice_insumo].clave_insumo_medico == null)
+          {
+            this.form_dato_auxiliar.programas[i].insumos.splice(indice_insumo, 1);
+          } 
+        }
+        /*for(let j in insumo)
         {
             let indice_insumo = tamano_insumo - parseInt(j);
-            //console.log(insumo[j].clave_insumo_medico);
-            //console.log(tamano_insumo);
+            console.log(j);  
+            //console.log(insumo[indice_insumo].clave_insumo_medico);
             if(insumo[indice_insumo].clave_insumo_medico == null)
             {
-              this.form_dato_auxiliar.programas[i].insumos.splice(indice_insumo, 1);
-              //console.log(this.form_dato_auxiliar.programas[i].insumos[j]);
-              
+              //this.form_dato_auxiliar.programas[i].insumos.splice(indice_insumo, 1);
             }  
-        }
+        }*/
        
     }
-
+    //console.log(this.form_dato_auxiliar);
     let index_programas:number = (this.form_dato_auxiliar.programas.length - 1);
     for(let i =0; i<= index_programas; i++)
     {
@@ -433,6 +487,11 @@ export class InicialComponent {
     this.bandera_insumos = false;
     this.bandera_importar = true;
     this.insumos_sin_clave = [];
+    
+    if(this.form_dato_auxiliar.programas.length == 0)
+      this.bandera_registros_a_subir = false;
+    else
+      this.bandera_registros_a_subir = true;
   }
 
   agregar_programas()
@@ -523,6 +582,14 @@ export class InicialComponent {
 				);
   }
 
+  eliminar_programa_no_registrado(index, obj)
+  {
+    this.programas_no_registrados.splice(index,1);
+      
+    if(this.programas_no_registrados.length == 0)
+      this.verificar_claves();
+  }
+
   relacionar_programa_nombre()
   {
     let index_programas = (this.programas_no_registrados.length -1);
@@ -547,8 +614,8 @@ export class InicialComponent {
 
   adjuntar()
   {
-    console.log(this.form_dato);
-    console.log(this.form_dato_auxiliar);
+    //console.log(this.form_dato);
+    //console.log(this.form_dato_auxiliar);
     for(var programa_excel in this.form_dato_auxiliar.programas)
     {
         let obj_programa_excel = this.form_dato_auxiliar.programas[programa_excel];
@@ -686,14 +753,23 @@ export class InicialComponent {
             } 
         }
     }
+    if(this.form_dato_auxiliar.programas.length == 0)
+        this.bandera_registros_a_subir = false;
+    else
+      this.bandera_registros_a_subir = true;
+
+    console.log(this.bandera_registros_a_subir);  
+  
   }
   buscar_programa(id_programa, index)
   {
+    //console.log(this.form_dato_auxiliar);   
     let bandera = 0;
       for(var i in this.form_dato_auxiliar.programas)
       {
           if(this.form_dato_auxiliar.programas[i].id == id_programa)
           {
+            //console.log("entra");
               this.buscar_insumo_lote(i, index);
               bandera = 1;
           } 
@@ -711,6 +787,7 @@ export class InicialComponent {
       this.index_insumo_sin_clave = index;
       this.obj_seleccionado = obj;
       this.showInsumos = true;
+      //console.log(text);
       this.busquedaQuery = text;
   }
 
@@ -777,12 +854,12 @@ export class InicialComponent {
     {
       let insumo_no_programa = this.programas_no_registrados[index_sin_programa].programa.insumos[i];
       console.log(insumo_no_programa);
-      //console.log(this.programas_no_registrados[index_sin_programa].programa.insumos[i]);
       for(var j in this.form_dato_auxiliar.programas[index_con_programa].insumos)
-        {
+      {
+        
             let insumo_programa = this.form_dato_auxiliar.programas[index_con_programa].insumos[j];
-            //console.log(this.form_dato_auxiliar.programas[index_con_programa].insumos[j]);
-            if(insumo_no_programa.clave_insumo_medico == insumo_programa.clave_insumo_medico)
+            console.log(insumo_programa);
+            if(insumo_no_programa.clave_insumo_medico == insumo_programa.clave_insumo_medico && insumo_programa.clave_insumo_medico!= null && insumo_no_programa.clave_insumo_medico!= null)
             {
                 for(var k in insumo_no_programa.lotes)
                 {
@@ -828,7 +905,6 @@ export class InicialComponent {
         }
         if(bandera == 0)
         {
-            //let insumo_auxiliar = data.insumos[i].programa.insumos[j];
             let ob_temporal = {
               clave_insumo_medico: insumo_no_programa.clave_insumo_medico,
               descripcion: insumo_no_programa.descripcion,
@@ -853,7 +929,6 @@ export class InicialComponent {
             let start_index = 0;
             let number_of_elements_to_remove = 0;
 
-            //console.log(insumo_auxiliar);
             for(var z in insumo_no_programa.lote)
             {
               let lotes_temporales = insumo_no_programa.lote[z];
@@ -883,13 +958,14 @@ export class InicialComponent {
 
   seleccionInsumo(obj)
   {
-    this.obj_seleccionado;
+    //this.obj_seleccionado;
     
     //onsole.log(this.obj_seleccionado);
     //console.log(this.form_dato_auxiliar.programas[this.obj_seleccionado.indice_programa]);
     
     let bandera:number = 0;
     let index_borrar:number = 0;
+    //obtenemos el index del insumo a ingresar dentro de la lista correcta
     for(let i in this.form_dato_auxiliar.programas[this.obj_seleccionado.indice_programa].insumos)
     {
       let insumo_verificar = this.form_dato_auxiliar.programas[this.obj_seleccionado.indice_programa].insumos[i];
@@ -898,7 +974,7 @@ export class InicialComponent {
           index_borrar = parseInt(i);
         }
     }
-    //console.log(index_borrar);
+    
 
     for(var i in this.form_dato_auxiliar.programas[this.obj_seleccionado.indice_programa].insumos)
     {
@@ -929,15 +1005,15 @@ export class InicialComponent {
           
           bandera = 1;
           this.form_dato_auxiliar.programas[this.obj_seleccionado.indice_programa].insumos.splice(index_borrar,1);
-          //eliminar el insumo
+         
        }
        
     }
-
+    console.log(this.form_dato_auxiliar);
     if(bandera == 0)
     {
         let insumo_auxiliar = this.form_dato_auxiliar.programas[this.obj_seleccionado.indice_programa].insumos[this.obj_seleccionado.id_insumo];
-        insumo_auxiliar.clave_insumo_medico= obj.clave_insumo_medico;
+        insumo_auxiliar.clave_insumo_medico= obj.clave;
         insumo_auxiliar.descripcion= obj.descripcion;
         insumo_auxiliar.nombre= obj.nombre;
         insumo_auxiliar.es_causes= obj.es_causes;
@@ -964,9 +1040,13 @@ export class InicialComponent {
     this.insumos_sin_clave.splice(this.index_insumo_sin_clave, 1);
     
     if(this.insumos_sin_clave.length == 0)
+    {
       this.bandera_insumos = false;
-    //console.log(this.insumos_sin_clave);
-    console.log(this.form_dato_auxiliar.programas);
+      if(this.form_dato_auxiliar.programas.length == 0)
+        this.bandera_registros_a_subir = false;
+      else
+        this.bandera_registros_a_subir = true;
+    }
   }
 
   subir() {

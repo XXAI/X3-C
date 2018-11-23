@@ -35,4 +35,8 @@ export class IniciarInventarioService {
   insumos(): Observable<any>{
     return this.jwtRequest.get(IniciarInventarioService.URL_INSUMOS,null,{con_precios: true}).map( (response: Response) => response.json().data);
   }
+
+  exportar_insumos(insumos:any): Observable<any> {
+    return this.jwtRequest.post('crear-insumos-sin-clave-excel',insumos).map( (response: Response) => response.json().data) as Observable<any>;
+  }
 }
