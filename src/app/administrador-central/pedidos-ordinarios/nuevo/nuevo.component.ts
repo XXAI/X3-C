@@ -30,7 +30,9 @@ export class NuevoComponent implements OnInit {
   cluesAgregadas:any[] = [];
   
   // Loaders
-  cargandoUltimoPresupuesto:boolean = false;
+  cargandoPresupuesto:boolean = false;
+
+  presupuesto:any = {}  
 
   constructor(private title: Title,
     private router: Router,
@@ -38,8 +40,7 @@ export class NuevoComponent implements OnInit {
 
   ngOnInit() {
     this.title.setTitle('Nuevo presupuesto');
-    //this.presupuesto.factor_meses = 9;
-    //this.cargarUltimoPresupuesto();
+    this.cargarPresupuesto();
   }
   guardar(){
     
@@ -129,6 +130,51 @@ export class NuevoComponent implements OnInit {
       }
     );
   }
+
+  cargarPresupuesto(){
+    this.cargandoPresupuesto = true;
+    this.apiService.cargarPresupuesto().subscribe(
+      respuesta => {
+        this.presupuesto = respuesta;
+        if(this.presupuesto.presupuesto_unidades_medicas){
+
+          for(var i in this.presupuesto.presupuesto_unidades_medicas){
+            var factor_meses = this.presupuesto.factor_meses | 0;
+             var causes: Number  =  new Number( (this.presupuesto.presupuesto_unidades_medicas[i].causes_modificado / factor_meses).toFixed(2));
+            if(causes > this.presupuesto.presupuesto_unidades_medicas[i].causes_disponible){
+              causes =  (this.presupuesto.presupuesto_unidades_medicas[i].causes_disponible).toFixed(2);
+            }
+
+            var no_causes  = new Number((this.presupuesto.presupuesto_unidades_medicas[i].no_causes_modificado / factor_meses).toFixed(2));
+            if(no_causes > this.presupuesto.presupuesto_unidades_medicas[i].no_causes_disponible){
+              no_causes =  (this.presupuesto.presupuesto_unidades_medicas[i].no_causes_disponible).toFixed(2);
+            }
+
+            if(no_causes > 0 || causes > 0){
+              var object = {
+                clues: this.presupuesto.presupuesto_unidades_medicas[i].clues,
+                unidad_medica: this.presupuesto.presupuesto_unidades_medicas[i].unidad_medica,
+                causes_autorizado: causes,
+                causes_modificado: causes,
+                no_causes_autorizado: no_causes,
+                no_causes_modificado: no_causes
+              }
+              this.cluesAgregadas.push(object.clues);
+              this.pedido_ordinario.pedidos_ordinarios_unidades_medicas.push(object);
+            }
+
+
+           
+          }
+          
+        }
+        this.cargandoPresupuesto = false;
+      }, error =>{
+        console.log(error);
+        this.cargandoPresupuesto = false;
+      }
+    )
+  }
 /*
 
   cargarUltimoPresupuesto(){
@@ -162,12 +208,15 @@ export class NuevoComponent implements OnInit {
       var object = {
         clues: items[i].clues,
         unidad_medica: items[i],
-        causes: 0,
-        no_causes: 0
+        causes_autorizado: 0,
+        causes_modificado: 0,
+        no_causes_autorizado: 0,
+        no_causes_modificado: 0
       }
       this.cluesAgregadas.push(object.clues);
       this.pedido_ordinario.pedidos_ordinarios_unidades_medicas.push(object);
     }
+    console.log(this.pedido_ordinario);
   }
 
   eliminarUnidadMedica(item:any, index){
@@ -182,26 +231,6 @@ export class NuevoComponent implements OnInit {
     this.calcularTotales();
   }
 
-  factorMes():string{
-
-    switch(Number(this.pedido_ordinario.factor_meses)){
-      case 1: return "Diciembre";
-      case 2: return "Noviembre";
-      case 3: return "Octubre";
-      case 4: return "Septiembre";
-      case 5: return "Agosto";
-      case 6: return "Julio";
-      case 7: return "Junio";
-      case 8: return "Mayo";
-      case 9: return "Abril";
-      case 10: return "Marzo"
-      case 11: return "Febrero";
-      case 12: return "Enero";
-      default: return "";
-    }
-
-   
-  }
 
   checkNumber($value:any){
     $value = Number($value);
