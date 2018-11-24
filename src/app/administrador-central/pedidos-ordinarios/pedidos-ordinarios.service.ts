@@ -25,6 +25,10 @@ export class PedidosOrdinariosService {
     crear(item: any): Observable<any> {
         return this.jwtRequest.post(PedidosOrdinariosService.URL+"/pedidos-ordinarios", item).map((response: Response) => response.json().data) as Observable<any>;
     }
+
+    cargarPresupuesto():Observable<any>{
+        return this.jwtRequest.get(PedidosOrdinariosService.URL+"/pedidos-ordinarios/presupuesto").map((response: Response) => response.json().data) as Observable<any>;
+    }
 /*
     ver(id: any): Observable<any> {
         return this.jwtRequest.get(PedidosOrdinariosService.URL+"/contratos", id, {}).map((response: Response) => {

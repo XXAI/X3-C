@@ -9,13 +9,13 @@
       <div class="top-bar is-primary" [ngClass]=" {'is-dark': busquedaActivada, 'is-primary': !busquedaActivada } ">
 
         <h1 class="title" style="margin-bottom:0px">
-          <span *ngIf="!cargandoUltimoPresupuesto" class="icon is-medium">
-            <i class="fa fa-money"></i>
+          <span *ngIf="!cargandoPresupuesto" class="icon is-medium">
+            <i class="fa fa-file"></i>
           </span>
-          <span *ngIf="cargandoUltimoPresupuesto" class="icon is-medium"><i class="fa fa-refresh fa-spin"></i></span>
+          <span *ngIf="cargandoPresupuesto" class="icon is-medium"><i class="fa fa-refresh fa-spin"></i></span>
           Nuevo pedido ordinario
         </h1>
-        <a class="button is-primary" style="position:absolute; top:1em; right:3em;" [ngClass]="{ 'is-disabled': errores_carga || causes_sumado != pedido_ordinario.causes || no_causes_sumado != pedido_ordinario.no_causes || cargandoUltimoPresupuesto}"
+        <a class="button is-primary" style="position:absolute; top:1em; right:3em;" [ngClass]="{ 'is-disabled': errores_carga || causes_sumado != pedido_ordinario.causes || no_causes_sumado != pedido_ordinario.no_causes || cargandoPresupuesto}"
           (click)="guardar()"> <span class="icon"><i class="fa fa-save"></i></span> <span>Guardar</span></a>
         <a class="button  is-primary" routerLink="/administrador-central/pedidos-ordinarios/" style="position:absolute; top:1em; right:1em;">
           <span class="icon ">
@@ -29,7 +29,7 @@
             <div class="field">
               <label class="label">Descripcion:</label>
               <p class="control is-expanded  has-icon has-icon-right">
-                <input class="input" autofocus type="text" [ngClass]="{'is-danger': errores.ejercicio != null, 'is-disabled': guardando || cargandoUltimoPresupuesto}"
+                <input class="input" autofocus type="text" [ngClass]="{'is-danger': errores.ejercicio != null, 'is-disabled': guardando || cargandoPresupuesto}"
                   placeholder="Ej. Pedido ordinario del mes de mayo 2019" [(ngModel)]="pedido_ordinario.ejercicio">
                 <span class="icon is-small" *ngIf="false">
                   <i class="fa fa-warning"></i>
@@ -46,7 +46,7 @@
             <div class="field">
               <label class="label">Fecha:</label>
               <p class="control is-expanded ">
-                <input class="input"  type="date" [ngClass]="{'is-danger': errores.fecha != null, 'is-disabled': guardando || cargandoUltimoPresupuesto}"
+                <input class="input"  type="date" [ngClass]="{'is-danger': errores.fecha != null, 'is-disabled': guardando || cargandoPresupuesto}"
                    [(ngModel)]="pedido_ordinario.fecha">
                 
                 <span class="help is-danger" *ngIf="errores.causes == 'required'">Este campo es requerido.</span>
@@ -58,7 +58,7 @@
             <div class="field">
               <label class="label">Fecha expiración:</label>
               <p class="control is-expanded ">
-                <input class="input"  type="datetime-local" [ngClass]="{'is-danger': errores.fecha_expiracion != null, 'is-disabled': guardando || cargandoUltimoPresupuesto}"
+                <input class="input"  type="datetime-local" [ngClass]="{'is-danger': errores.fecha_expiracion != null, 'is-disabled': guardando || cargandoPresupuesto}"
                    [(ngModel)]="pedido_ordinario.fecha_expiracion" style="width:100%">
                 
                 <span class="help is-danger" *ngIf="errores.causes == 'required'">Este campo es requerido.</span>
@@ -71,7 +71,7 @@
             <div class="field">
               <label class="label">$ Presupuesto CAUSES:</label>
               <p class="control is-expanded  has-icon has-icon-right">
-                <input class="input" autofocus type="text" [ngClass]="{'is-danger': errores.causes != null, 'is-disabled': guardando || cargandoUltimoPresupuesto}"
+                <input class="input" autofocus type="text" [ngClass]="{'is-danger': errores.causes != null, 'is-disabled': guardando || cargandoPresupuesto}"
                   placeholder="0.00" [(ngModel)]="pedido_ordinario.causes">
                 <span class="icon is-small" *ngIf="false">
                   <i class="fa fa-warning"></i>
@@ -90,7 +90,7 @@
             <div class="field">
               <label class="label">$ Presupuesto NO CAUSES:</label>
               <p class="control is-expanded  has-icon has-icon-right">
-                <input class="input" autofocus type="text" [ngClass]="{'is-danger': errores.no_causes != null, 'is-disabled': guardando || cargandoUltimoPresupuesto}"
+                <input class="input" autofocus type="text" [ngClass]="{'is-danger': errores.no_causes != null, 'is-disabled': guardando || cargandoPresupuesto}"
                   placeholder="0.00" [(ngModel)]="pedido_ordinario.no_causes">
                 <span class="icon is-small" *ngIf="false">
                   <i class="fa fa-warning"></i>
@@ -110,7 +110,7 @@
               <label class="label">Factor Meses
                 <a (click)="mostrarInfoFactorMeses = true"><span class="icon is-small"><i class="fa fa-info-circle"></i></span></a></label>
               <p class="control is-expanded  has-icon has-icon-right">
-                <input class="input" autofocus type="text" [ngClass]="{'is-danger': errores.factor_meses != null, 'is-disabled': guardando || cargandoUltimoPresupuesto}"
+                <input class="input" autofocus type="text" [ngClass]="{'is-danger': errores.factor_meses != null, 'is-disabled': guardando || cargandoPresupuesto}"
                   placeholder="Valor entre 1 y 12" [(ngModel)]="pedido_ordinario.factor_meses">
                 <span class="icon is-small" *ngIf="false"><i class="fa fa-warning"></i></span>
                 <span class="help is-danger" *ngIf="errores.factor_meses == 'required'">Este campo es requerido.</span>
@@ -121,7 +121,7 @@
         </div>
         <div class="columns">
           <div class="column is-3  is-offset-6">
-            <a class="button  is-primary is-outlined is-small is-fullwidth " [ngClass]="{'is-disabled': guardando || cargandoUltimoPresupuesto}" (click)="mostrarModalCarga = true;">
+            <a class="button  is-primary is-outlined is-small is-fullwidth " [ngClass]="{'is-disabled': guardando || cargandoPresupuesto}" (click)="mostrarModalCarga = true;">
               <span class="icon is-small">
                 <i class="fa fa-upload"></i>
               </span>
@@ -129,7 +129,7 @@
             </a>
           </div>
           <div class="column is-3 ">
-            <a class="button  is-primary is-small is-fullwidth" [ngClass]="{'is-disabled': guardando || cargandoUltimoPresupuesto}" (click)="mostrarModalUnidadesMedicas = true;">
+            <a class="button  is-primary is-small is-fullwidth" [ngClass]="{'is-disabled': guardando || cargandoPresupuesto}" (click)="mostrarModalUnidadesMedicas = true;">
               <span class="icon is-small">
                 <i class="fa fa-search"></i>
               </span>
@@ -157,19 +157,19 @@
               <td>
                 <div class="field">
                   <p class="control is-expanded has-icon has-icon-left"><span class="icon is-small is-left" style="top:0.9rem;"><i
-                        class="fa fa-usd"></i></span><input class="input is-small" [ngClass]="{'is-danger': item.error_validacion &&  item.error_validacion.causes, 'is-disabled': item.error || guardando}" type="number" [(ngModel)]="item.causes"
+                        class="fa fa-usd"></i></span><input class="input is-small" [ngClass]="{'is-danger': item.error_validacion &&  item.error_validacion.causes_autorizado, 'is-disabled': item.error || guardando}" type="number" [(ngModel)]="item.causes_autorizado"
                       placeholder="CAUSES" (ngModelChange)="calcularTotales()"></p>
-                    <span class="help is-danger" *ngIf="item.error_validacion &&  item.error_validacion.causes == 'min'">El valor mínimo es 0.</span>
-                    <span class="help is-danger" *ngIf="item.error_validacion &&  item.error_validacion.causes == 'required'">Este campo es requerido.</span>
+                    <span class="help is-danger" *ngIf="item.error_validacion &&  item.error_validacion.causes_autorizado == 'min'">El valor mínimo es 0.</span>
+                    <span class="help is-danger" *ngIf="item.error_validacion &&  item.error_validacion.causes_autorizado == 'required'">Este campo es requerido.</span>
                 </div>
               </td>
               <td>
                 <div class="field">
                   <p class="control is-expanded has-icon has-icon-left"><span class="icon is-small is-left" style="top:0.9rem;"><i
-                        class="fa fa-usd"></i></span><input class="input is-small" [ngClass]="{'is-danger':item.error_validacion &&  item.error_validacion.no_causes, 'is-disabled': item.error || guardando}" type="number" [(ngModel)]="item.no_causes"
+                        class="fa fa-usd"></i></span><input class="input is-small" [ngClass]="{'is-danger':item.error_validacion &&  item.error_validacion.no_causes_autorizado, 'is-disabled': item.error || guardando}" type="number" [(ngModel)]="item.no_causes_autorizado"
                       (ngModelChange)="calcularTotales()" placeholder="NO CAUSES"></p>
-                  <span class="help is-danger" *ngIf="item.error_validacion &&  item.error_validacion.no_causes == 'min'">El valor mínimo es 0.</span>
-                  <span class="help is-danger" *ngIf="item.error_validacion &&  item.error_validacion.no_causes == 'required'">Este campo es requerido.</span>
+                  <span class="help is-danger" *ngIf="item.error_validacion &&  item.error_validacion.no_causes_autorizado == 'min'">El valor mínimo es 0.</span>
+                  <span class="help is-danger" *ngIf="item.error_validacion &&  item.error_validacion.no_causes_autorizado == 'required'">Este campo es requerido.</span>
                 </div>
               </td>
               <td><a class="button is-small" (click)="eliminarUnidadMedica(item, i)" [ngClass]="{'is-disabled': guardando}"><span class="icon is-small"><i
