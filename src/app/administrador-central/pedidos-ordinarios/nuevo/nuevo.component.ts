@@ -85,18 +85,18 @@ export class NuevoComponent implements OnInit {
                       }
 
                       var index = parseInt(object[1]);
-
-                      if(object[2] == 'causes'){
+                      console.log(object[2]);
+                      if(object[2] == 'causes_autorizado'){
                         //this.presupuesto.pedidos_ordinarios_unidades_medicas.
                         this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[index].error_validacion = {};
-                        this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[index].error_validacion.causes = e.error[input][i];
+                        this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[index].error_validacion.causes_autorizado = e.error[input][i];
                       }
 
-                      if(object[2] == 'no_causes'){
+                      if(object[2] == 'no_causes_autorizado'){
                         if(this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[index].error_validacion == null){
                           this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[index].error_validacion = {};
                         }
-                        this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[index].error_validacion.no_causes = e.error[input][i];
+                        this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[index].error_validacion.no_causes_autorizado = e.error[input][i];
                       }
                       
                       //this.errores[object[0]][object[1]][object[2]] = e.error[input][i];
@@ -140,24 +140,26 @@ export class NuevoComponent implements OnInit {
 
           for(var i in this.presupuesto.presupuesto_unidades_medicas){
             var factor_meses = this.presupuesto.factor_meses | 0;
-             var causes: Number  =  new Number( (this.presupuesto.presupuesto_unidades_medicas[i].causes_modificado / factor_meses).toFixed(2));
+             var causes: Number  =  parseFloat( (this.presupuesto.presupuesto_unidades_medicas[i].causes_modificado / factor_meses).toFixed(2));
             if(causes > this.presupuesto.presupuesto_unidades_medicas[i].causes_disponible){
-              causes =  (this.presupuesto.presupuesto_unidades_medicas[i].causes_disponible).toFixed(2);
+              causes =  parseFloat((this.presupuesto.presupuesto_unidades_medicas[i].causes_disponible).toFixed(2));
             }
 
-            var no_causes  = new Number((this.presupuesto.presupuesto_unidades_medicas[i].no_causes_modificado / factor_meses).toFixed(2));
+            var no_causes  = parseFloat((this.presupuesto.presupuesto_unidades_medicas[i].no_causes_modificado / factor_meses).toFixed(2));
             if(no_causes > this.presupuesto.presupuesto_unidades_medicas[i].no_causes_disponible){
-              no_causes =  (this.presupuesto.presupuesto_unidades_medicas[i].no_causes_disponible).toFixed(2);
+              no_causes =   parseFloat((this.presupuesto.presupuesto_unidades_medicas[i].no_causes_disponible).toFixed(2));
             }
-
+            
             if(no_causes > 0 || causes > 0){
               var object = {
                 clues: this.presupuesto.presupuesto_unidades_medicas[i].clues,
                 unidad_medica: this.presupuesto.presupuesto_unidades_medicas[i].unidad_medica,
                 causes_autorizado: causes,
                 causes_modificado: causes,
+                causes_disponible:  parseFloat((this.presupuesto.presupuesto_unidades_medicas[i].causes_disponible).toFixed(2)),
                 no_causes_autorizado: no_causes,
-                no_causes_modificado: no_causes
+                no_causes_modificado: no_causes,
+                no_causes_disponible:  parseFloat((this.presupuesto.presupuesto_unidades_medicas[i].no_causes_disponible).toFixed(2))
               }
               this.cluesAgregadas.push(object.clues);
               this.pedido_ordinario.pedidos_ordinarios_unidades_medicas.push(object);
@@ -245,18 +247,45 @@ export class NuevoComponent implements OnInit {
     for(var i in this.pedido_ordinario.pedidos_ordinarios_unidades_medicas){
       if(this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].error){
         con_errores = true;
+        
         continue;
       }
-      if(!isNaN(this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].causes)){
-        this.causes_sumado += Number(this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].causes);
+
+     
+      if(!isNaN(this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].causes_autorizado)){
+        if(this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].causes_autorizado> this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].causes_disponible ){
+          con_errores = true;
+          if(this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].error_validacion == null){
+            this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].error_validacion = {};
+          }
+          this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].error_validacion.causes_autorizado = "exceeded";
+          
+        }  else  if(this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].error_validacion != null){
+          this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].error_validacion.causes_autorizado = "";    
+          this.causes_sumado += Number(this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].causes_autorizado);
+        }
+
+      
       } else {
-        this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].causes = 0;
+        this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].causes_autorizado = 0;
       }
 
-      if(!isNaN(this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].no_causes)){
-        this.no_causes_sumado += Number(this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].no_causes);
+      if(!isNaN(this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].no_causes_autorizado)){
+        if(this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].no_causes_autorizado> this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].no_causes_disponible ){
+          con_errores = true;
+          if(this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].error_validacion == null){
+            this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].error_validacion = {};
+          }
+          this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].error_validacion.no_causes_autorizado = "exceeded";
+        
+        } else  if(this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].error_validacion != null){
+          this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].error_validacion.no_causes_autorizado = ""; 
+          this.no_causes_sumado += Number(this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].no_causes_autorizado);   
+        }
+
+       
       } else {
-        this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].no_causes = 0;
+        this.pedido_ordinario.pedidos_ordinarios_unidades_medicas[i].no_causes_autorizado = 0;
       }
     }   
     this.errores_carga = con_errores

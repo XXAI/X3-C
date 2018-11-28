@@ -15,7 +15,7 @@
           <span *ngIf="cargandoPresupuesto" class="icon is-medium"><i class="fa fa-refresh fa-spin"></i></span>
           Nuevo pedido ordinario
         </h1>
-        <a class="button is-primary" style="position:absolute; top:1em; right:3em;" [ngClass]="{ 'is-disabled': errores_carga || causes_sumado != pedido_ordinario.causes || no_causes_sumado != pedido_ordinario.no_causes || cargandoPresupuesto}"
+        <a class="button is-primary" style="position:absolute; top:1em; right:3em;" [ngClass]="{ 'is-disabled': errores_carga || cargandoPresupuesto}"
           (click)="guardar()"> <span class="icon"><i class="fa fa-save"></i></span> <span>Guardar</span></a>
         <a class="button  is-primary" routerLink="/administrador-central/pedidos-ordinarios/" style="position:absolute; top:1em; right:1em;">
           <span class="icon ">
@@ -29,14 +29,12 @@
             <div class="field">
               <label class="label">Descripcion:</label>
               <p class="control is-expanded  has-icon has-icon-right">
-                <input class="input" autofocus type="text" [ngClass]="{'is-danger': errores.ejercicio != null, 'is-disabled': guardando || cargandoPresupuesto}"
-                  placeholder="Ej. Pedido ordinario del mes de mayo 2019" [(ngModel)]="pedido_ordinario.ejercicio">
+                <input class="input" autofocus type="text" [ngClass]="{'is-danger': errores.descripcion != null, 'is-disabled': guardando || cargandoPresupuesto}"
+                  placeholder="Ej. Pedido ordinario del mes de mayo 2019" [(ngModel)]="pedido_ordinario.descripcion">
                 <span class="icon is-small" *ngIf="false">
                   <i class="fa fa-warning"></i>
                 </span>
-                <span class="help is-danger" *ngIf="errores.ejercicio == 'required'">Este campo es requerido.</span>
-                <span class="help is-danger" *ngIf="errores.ejercicio == 'unique'">Este ejercicio ya existe.</span>
-                <span class="help is-danger" *ngIf="errores.ejercicio == 'integer'">El ejercicio debe ser el año expresado en 4 digitos: AAAA.</span>
+                <span class="help is-danger" *ngIf="errores.descripcion == 'required'">Este campo es requerido.</span>
               </p>
             </div>
           </div>
@@ -49,8 +47,8 @@
                 <input class="input"  type="date" [ngClass]="{'is-danger': errores.fecha != null, 'is-disabled': guardando || cargandoPresupuesto}"
                    [(ngModel)]="pedido_ordinario.fecha">
                 
-                <span class="help is-danger" *ngIf="errores.causes == 'required'">Este campo es requerido.</span>
-                <span class="help is-danger" *ngIf="errores.causes == 'dae'">Este campo debe ser una fecha válida.</span>                
+                <span class="help is-danger" *ngIf="errores.fecha == 'required'">Este campo es requerido.</span>
+                <span class="help is-danger" *ngIf="errores.fecha == 'date'">Este campo debe ser una fecha válida.</span>                
               </p>
             </div>
           </div>
@@ -61,8 +59,8 @@
                 <input class="input"  type="datetime-local" [ngClass]="{'is-danger': errores.fecha_expiracion != null, 'is-disabled': guardando || cargandoPresupuesto}"
                    [(ngModel)]="pedido_ordinario.fecha_expiracion" style="width:100%">
                 
-                <span class="help is-danger" *ngIf="errores.causes == 'required'">Este campo es requerido.</span>
-                <span class="help is-danger" *ngIf="errores.causes == 'dae'">Este campo debe ser una fecha válida.</span>                
+                <span class="help is-danger" *ngIf="errores.fecha_expiracion == 'required'">Este campo es requerido.</span>
+                <span class="help is-danger" *ngIf="errores.fecha_expiracion == 'date'">Este campo debe ser una fecha válida.</span>                
               </p>
             </div>
           </div>
@@ -159,8 +157,11 @@
                   <p class="control is-expanded has-icon has-icon-left"><span class="icon is-small is-left" style="top:0.9rem;"><i
                         class="fa fa-usd"></i></span><input class="input is-small" [ngClass]="{'is-danger': item.error_validacion &&  item.error_validacion.causes_autorizado, 'is-disabled': item.error || guardando}" type="number" [(ngModel)]="item.causes_autorizado"
                       placeholder="CAUSES" (ngModelChange)="calcularTotales()"></p>
+                    <span class="help" style="font-size:0.9em">Presupuesto total disponible: $ {{ item.causes_disponible | number:'1.2-2' }}</span>
+                    <span class="help is-danger" *ngIf="item.error_validacion &&  item.error_validacion.causes_autorizado == 'budget'">Esta unidad médica no tiene presupuesto.</span>
                     <span class="help is-danger" *ngIf="item.error_validacion &&  item.error_validacion.causes_autorizado == 'min'">El valor mínimo es 0.</span>
                     <span class="help is-danger" *ngIf="item.error_validacion &&  item.error_validacion.causes_autorizado == 'required'">Este campo es requerido.</span>
+                    <span class="help is-danger" *ngIf="item.error_validacion &&  item.error_validacion.causes_autorizado == 'exceeded'">El monto máximo es: $ {{ item.causes_disponible | number:'1.2-2' }}.</span>
                 </div>
               </td>
               <td>
@@ -168,8 +169,11 @@
                   <p class="control is-expanded has-icon has-icon-left"><span class="icon is-small is-left" style="top:0.9rem;"><i
                         class="fa fa-usd"></i></span><input class="input is-small" [ngClass]="{'is-danger':item.error_validacion &&  item.error_validacion.no_causes_autorizado, 'is-disabled': item.error || guardando}" type="number" [(ngModel)]="item.no_causes_autorizado"
                       (ngModelChange)="calcularTotales()" placeholder="NO CAUSES"></p>
+                  <span class="help" style="font-size:0.9em">Presupuesto total disponible: $ {{ item.no_causes_disponible | number:'1.2-2' }}</span>
+                  <span class="help is-danger" *ngIf="item.error_validacion &&  item.error_validacion.no_causes_autorizado == 'budget'">Esta unidad médica no tiene presupuesto.</span>
                   <span class="help is-danger" *ngIf="item.error_validacion &&  item.error_validacion.no_causes_autorizado == 'min'">El valor mínimo es 0.</span>
                   <span class="help is-danger" *ngIf="item.error_validacion &&  item.error_validacion.no_causes_autorizado == 'required'">Este campo es requerido.</span>
+                  <span class="help is-danger" *ngIf="item.error_validacion &&  item.error_validacion.no_causes_autorizado == 'exceeded'">El monto máximo es: $ {{ item.no_causes_disponible | number:'1.2-2' }}.</span>
                 </div>
               </td>
               <td><a class="button is-small" (click)="eliminarUnidadMedica(item, i)" [ngClass]="{'is-disabled': guardando}"><span class="icon is-small"><i
