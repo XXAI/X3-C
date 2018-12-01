@@ -137,9 +137,9 @@ export class NuevoComponent implements OnInit {
       respuesta => {
         this.presupuesto = respuesta;
         if(this.presupuesto.presupuesto_unidades_medicas){
-
+          var factor_meses = this.presupuesto.factor_meses | 0;
           for(var i in this.presupuesto.presupuesto_unidades_medicas){
-            var factor_meses = this.presupuesto.factor_meses | 0;
+           
              var causes: Number  =  parseFloat( (this.presupuesto.presupuesto_unidades_medicas[i].causes_modificado / factor_meses).toFixed(2));
             if(causes > this.presupuesto.presupuesto_unidades_medicas[i].causes_disponible){
               causes =  parseFloat((this.presupuesto.presupuesto_unidades_medicas[i].causes_disponible).toFixed(2));
@@ -294,7 +294,7 @@ export class NuevoComponent implements OnInit {
 
   descargarFormato() {
 		var query = "token=" + localStorage.getItem('token');
-		window.open(`${environment.API_URL}/administrador-central/presupuesto/formato-carga-presupuesto-excel?${query}`);
+		window.open(`${environment.API_URL}/administrador-central/pedidos-ordinarios/formato-carga-pedido-ordinario-excel?${query}`);
   }
 
   mensajeErrorSync: string = "";
@@ -353,7 +353,7 @@ export class NuevoComponent implements OnInit {
 
 			var responseHeaders: any;
 			var contentDisposition: any;
-			this.http.post(`${environment.API_URL}/administrador-central/presupuesto/procesar-presupuesto-excel/`, formData, options)
+			this.http.post(`${environment.API_URL}/administrador-central/pedidos-ordinarios/procesar-excel/`, formData, options)
 				.subscribe(
 					response => {
 						this.archivoSubido = true;
@@ -365,8 +365,8 @@ export class NuevoComponent implements OnInit {
             var data = response.json().data;
 
 
-            this.pedido_ordinario.causes = data.causes;
-            this.pedido_ordinario.no_causes = data.no_causes;
+           // this.pedido_ordinario.causes = data.causes;
+           // this.pedido_ordinario.no_causes = data.no_causes;
             
             
 
@@ -375,11 +375,16 @@ export class NuevoComponent implements OnInit {
             this.causes_sumado = 0;
             this.no_causes_sumado = 0;
             for(var i in data.pedidos_ordinarios_unidades_medicas){
-              if(data.pedidos_ordinarios_unidades_medicas[i].error){
+              if(data.pedidos_ordinarios_unidades_medicas[i].error && data.pedidos_ordinarios_unidades_medicas[i].no_existe){
                 con_errores.push(data.pedidos_ordinarios_unidades_medicas[i]);
-              } else{
+              } else  if(data.pedidos_ordinarios_unidades_medicas[i].error){
+                var um = data.pedidos_ordinarios_unidades_medicas[i];
+                delete um.error;
+                
+                con_errores.push(um);
+              }else{
                 correctos.push(data.pedidos_ordinarios_unidades_medicas[i]);
-                this.causes_sumado += Number(data.pedidos_ordinarios_unidades_medicas[i].causes);
+                this.causes_sumado += Number(data.pedidos_ordinarios_unidades_medicas[i].causes_autorizado);
                 this.no_causes_sumado += Number(data.pedidos_ordinarios_unidades_medicas[i].no_causes);
               }
             }
@@ -389,14 +394,14 @@ export class NuevoComponent implements OnInit {
 
             if(data.con_errores){
               this.errores_carga = true;
-              alert("1 o más unidades médicas en la importación no existen, elimine los registros marcados en rojo o corrija el archivo y vuelva a importar.")
+              alert("1 o más unidades médicas en la importación no existen o no tienen presupuesto, elimine los registros marcados en rojo o corrija el archivo y vuelva a importar.")
             }
 
             if(this.erroresImportacion.length > 0 ){
               alert("Se ignoraron: " + this.erroresImportacion.length + " que contenian errores");
             }
 
-            
+            this.calcularTotales();
             
             this.cerrarModalCarga();
 
