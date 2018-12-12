@@ -18,24 +18,24 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngIf="!presupuesto">
+                    <tr *ngIf="!presupuesto || cargandoPresupuesto">
                         <th colspan="5" style="text-align:center"><span class="icon"><i class="fa fa-refresh fa-spin"></i></span>&nbsp;Cargando Presupuesto...</th>
                     </tr>
-                    <tr *ngIf="presupuesto">
+                    <tr *ngIf="presupuesto && !cargandoPresupuesto">
                         <th>Causes y Material de Curación</th>
                         <td style="text-align:center"><span class="tag is-primary">$ {{ presupuesto.insumos_modificado | number:'1.2-2' }}</span></td>
                         <td style="text-align:center"><span class="tag is-warning">$ {{ (presupuesto.insumos_comprometido) | number:'1.2-2' }}</span></td>
                         <td style="text-align:center"><span class="tag is-danger">$ {{ (presupuesto.insumos_devengado) | number:'1.2-2' }}</span></td>
                         <td style="text-align:center"><span class="tag is-success">$ {{ (presupuesto.insumos_disponible) | number:'1.2-2' }}</span></td>
                     </tr>
-                    <tr *ngIf="presupuesto">
+                    <tr *ngIf="presupuesto && !cargandoPresupuesto">
                         <th>No causes</th>
                         <td style="text-align:center"><span class="tag is-primary">$ {{ presupuesto.no_causes_modificado | number:'1.2-2' }}</span></td>
                         <td style="text-align:center"><span class="tag is-warning">$ {{ presupuesto.no_causes_comprometido | number:'1.2-2' }}</span></td>
                         <td style="text-align:center"><span class="tag is-danger">$ {{ presupuesto.no_causes_devengado | number:'1.2-2' }}</span></td>
                         <td style="text-align:center"><span class="tag is-success">$ {{ presupuesto.no_causes_disponible | number:'1.2-2' }}</span></td>
                     </tr>
-                    <tr *ngIf="presupuesto">
+                    <tr *ngIf="presupuesto && !cargandoPresupuesto">
                         <th>Total</th>
                         <td style="text-align:center"><span class="tag is-primary">$ {{ ( presupuesto.no_causes_modificado + presupuesto.insumos_modificado) | number:'1.2-2' }}</span></td>
                         <td style="text-align:center"><span class="tag is-warning">$ {{ ( presupuesto.no_causes_comprometido + presupuesto.insumos_comprometido) | number:'1.2-2' }}</span></td>
@@ -80,8 +80,35 @@
                 <br>
                 <br>
             </div>
-
-            <table class="table" *ngIf="!cargando">
+            <table class="table" *ngIf="bandeja && !cargando">
+                <thead style="font-size: 0.7em">
+                    <tr>
+                        <th>Pedido ordinario</th>                        
+                        <th>$ Causes</th>
+                        <th>$ No Causes</th>
+                        <th>Fecha</th>
+                        <th>Fecha Expiración</th>
+                        <th>Días restantes</th>
+                    </tr>
+                </thead>
+                <tbody  style="font-size: 0.7em">
+                    <tr *ngFor="let item of pedidosOrdinariosBandeja">
+                        <td>{{ item.descripcion}}</td>
+                        
+                        <td style="vertical-align: middle;"><a>
+                            $ {{ (item.causes_modificado || 0) | number:'1.2-2' }}
+                        </a></td>
+                        <td style="vertical-align: middle;"><a>
+                            $ {{ (item.no_causes_modificado || 0) | number:'1.2-2' }}
+                        </a></td>
+                        <td>{{ item.fecha | date: 'y-MM-dd' }}</td>
+                        <td>{{ item.fecha_expiracion | date: 'y-MM-dd' }}</td>
+                        <td>Expira en {{ item.expira_en_dias }} días</td>
+                    </tr>
+                </tbody>
+            </table>
+        
+            <table class="table" *ngIf="!bandeja && !cargando" >
                 <thead style="font-size: 0.7em;">
                     <tr>
                         <th><abbr title="Folio del pedido">Folio</abbr></th>
@@ -185,6 +212,7 @@
                 (onAnterior)="paginaAnteriorBusqueda(searchBox.value)" 
                 (onListar)="listarBusqueda(searchBox.value,$event)" 
                 *ngIf="totalBusqueda > 0 && totalBusqueda > resultadosPorPaginaBusqueda && busquedaActivada"></paginacion>
+        
         </div>
     </div>
 </div>

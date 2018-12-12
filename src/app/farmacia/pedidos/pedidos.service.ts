@@ -27,6 +27,20 @@ export class PedidosService {
     return this.jwtRequest.get(PedidosService.URL_PRESUPUESTOS,null,null).map( (response: Response) => response.json());
   }
 
+  pedidosStatsPresupuestos(): Observable<any>{
+    return this.jwtRequest.get(PedidosService.URL_STATS+"/presupuestos",null,null).map( (response: Response) => response.json());
+  }
+
+  pedidosStats(payload:any = { presupuesto: 0}): Observable<any>{
+    return this.jwtRequest.get(PedidosService.URL_STATS+"/stats",null,payload).map( (response: Response) => response.json());
+  }
+
+  pedidosStatsPresupuestoUnidadMedica(presupuesto:number = 0): Observable<any>{
+    let parametros:any = {};   
+    if(presupuesto){ parametros.presupuesto = presupuesto; }
+    return this.jwtRequest.get(PedidosService.URL_STATS+"/presupuesto-ejercicio-unidad-medica",null,parametros).map( (response: Response) => response.json());
+  }
+
   presupuesto(mes:number = 0, anio:number = 0, almacen:string = '', presupuesto:number = 0): Observable<any>{
     let parametros:any = {};
     if(mes){ parametros.mes = mes; }
@@ -36,12 +50,16 @@ export class PedidosService {
     return this.jwtRequest.get(PedidosService.URL_PRESUPUESTO,null,parametros).map( (response: Response) => response.json());
   }
 
-  buscar(status:string, term: string, pagina:number = 1, resultados_por_pagina:number =20, tipo:string = '', presupuesto:number = 0 ): Observable<any>{
-    return this.jwtRequest.get(PedidosService.URL,null,{tipo:tipo, status: status, q: term, page: pagina, per_page: resultados_por_pagina, presupuesto: presupuesto}).map( (response: Response) => response.json().data);
+  buscar(status:string, term: string, pagina:number = 1, resultados_por_pagina:number =20, tipo:string = '', presupuesto:number = 0, nuevaVersion: boolean = false ): Observable<any>{
+    return this.jwtRequest.get(PedidosService.URL,null,{tipo:tipo, status: status, q: term, page: pagina, per_page: resultados_por_pagina, presupuesto: presupuesto, nueva_version: nuevaVersion}).map( (response: Response) => response.json().data);
   }
 
-  lista(status:string, pagina:number = 1, resultados_por_pagina:number =20,tipo:string = '', presupuesto:number = 0 ): Observable<any>{
-    return this.jwtRequest.get(PedidosService.URL,null,{tipo:tipo, status:status, page: pagina, per_page: resultados_por_pagina, presupuesto: presupuesto}).map( (response: Response) => response.json().data);
+  listaPedidosOrdinarios(pagina:number = 1, resultados_por_pagina:number =20, presupuesto:number = 0 ): Observable<any>{
+    return this.jwtRequest.get(PedidosService.URL_STATS+"/pedidos-ordinarios",null,{page: pagina, per_page: resultados_por_pagina, presupuesto: presupuesto}).map( (response: Response) => response.json().data);
+  }
+
+  lista(status:string, pagina:number = 1, resultados_por_pagina:number =20,tipo:string = '', presupuesto:number = 0, nuevaVersion:boolean = false ): Observable<any>{
+    return this.jwtRequest.get(PedidosService.URL,null,{tipo:tipo, status:status, page: pagina, per_page: resultados_por_pagina, presupuesto: presupuesto, nueva_version: nuevaVersion}).map( (response: Response) => response.json().data);
   }
 
   ver(id:any): Observable<any>{

@@ -4,14 +4,55 @@
     </p>-->
     <a routerLink="/almacen/pedidos/nuevo" routerLinkActive="is-active" class="button is-primary is-inverted is-medium is-fullwidth" *ngIf="!usuario.solo_lectura && !usuario.almacen_activo.subrogado"><span class="icon"  ><i class="fa fa-plus"></i></span> <span>Nuevo Pedido</span></a>
     <br>
+    <div class="columns is-mobile is-gapless">
+        <div class="column">
+            <p class="control"  [ngClass]="{ 'is-disabled': cargando_presupuesto || cargando}">
+                <span class="select is-fullwidth" style="margin:0">
+                    <select name="presupuesto" [(ngModel)]="presupuestoSeleccionado" (change)="cambioPresupuesto()">
+                        <option *ngFor="let item of presupuestos" value="{{item.id}}" [selected]="item.id == presupuestoSeleccionado">Presupuesto
+                            {{ nueva_version_presupuesto? item.ejercicio : item.anio }}</option>
+                    </select>
+                </span>
+                <span class="help is-info" *ngIf="nueva_version_presupuesto" style="font-size:0.65rem">Nueva versión activada.</span>
+            </p>
+        </div>
+        <div class="column">
+            <a class="button" [ngClass]="{ 'is-disabled': cargando_presupuesto}" (click)="cambiarVersionPresupuesto()"><span class="icon"><i class="fa fa-exchange"></i></span></a>
+        </div>
+    </div>
+    
+    <!--
     <p class="control">
         <span class="select is-fullwidth">
             <select name="presupuesto" [(ngModel)]="presupuestoSeleccionado" (change)="cambioPresupuesto()"> 
-                <option *ngFor="let item of presupuestos" value="{{item.id}}" [selected]="item.id == presupuestoSeleccionado">Presupuesto {{ item.anio }}</option>
+                <option *ngFor="let item of presupuestos" value="{{item.id}}" [selected]="item.id == presupuestoSeleccionado">Presupuesto {{ item.ejercicio }}</option>
             </select>
         </span>
-    </p>
+    </p>-->
     <ul class="menu-list">
+        <li *ngIf="nueva_version_presupuesto">
+            <a routerLink="/almacen/pedidos/ordinarios" routerLinkActive="is-active"><span class="icon"><i class="fa fa-file-text-o"></i></span> Pedidos ordinarios</a>
+            <ul>
+                <li><a routerLink="/almacen/pedidos/ordinarios/bandeja" #ordinariosBandeja routerLinkActive="is-active">
+                    Bandeja
+                    <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                    <span *ngIf="stats.ordinarios_bandeja>0 && !cargando" class="tag is-pulled-right" [ngClass]="{ 'is-white': ordinariosBandeja.className == 'is-active', 'is-primary': ordinariosBandeja.className != 'is-active' }">{{  stats.ordinarios_bandeja }}</span>
+                    </a>
+                </li>
+                <li><a routerLink="/almacen/pedidos/ordinarios/borradores" #ordinariosBorradores routerLinkActive="is-active">
+                    Borradores
+                    <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                    <span *ngIf="stats.ordinarios_borradores>0 && !cargando" class="tag is-pulled-right" [ngClass]="{ 'is-white': ordinariosBorradores.className == 'is-active', 'is-primary': ordinariosBorradores.className != 'is-active' }">{{  stats.ordinarios_borradores }}</span>
+                    </a>
+                </li>
+                <li><a routerLink="/almacen/pedidos/ordinarios/todos" #ordinarios routerLinkActive="is-active">
+                    Todos
+                    <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                    <span *ngIf="stats.ordinarios>0 && !cargando" class="tag is-pulled-right" [ngClass]="{ 'is-white': ordinarios.className == 'is-active', 'is-primary': ordinarios.className != 'is-active' }">{{  stats.ordinarios }}</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
         <li>
             <a routerLink="/almacen/pedidos/todos" #todos routerLinkActive="is-active">
                 <span class="icon"><i class="fa fa-file"></i></span> Pedidos

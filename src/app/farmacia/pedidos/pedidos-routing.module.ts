@@ -16,6 +16,10 @@ const routes: Routes = [
   {
     path: 'almacen/pedidos',
     children: [
+      { path: 'ordinarios', component: ListaComponent}, 
+      { path: 'ordinarios/todos', component: ListaComponent}, 
+       { path: 'ordinarios/bandeja', component: ListaComponent}, 
+       { path: 'ordinarios/borradores', component: ListaComponent}, 
        { path: 'todos', component: ListaComponent},
        { path: 'borradores', component: ListaComponent},
        { path: 'solicitados', component: ListaComponent},

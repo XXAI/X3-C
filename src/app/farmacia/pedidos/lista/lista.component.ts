@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -28,7 +28,10 @@ import { Mensaje } from '../../../mensaje';
 })
 export class ListaComponent implements OnInit {
   cargando: boolean = false;
+  cargandoPresupuesto: boolean = false;
   soloLectura: boolean = false;
+  nuevaVersionPresupuesto: boolean = false;
+  bandeja: boolean = false;
 
   almacenSeleccionado: string;
 
@@ -39,6 +42,7 @@ export class ListaComponent implements OnInit {
   // # FIN SECCION
 
   // # SECCION: Lista
+  pedidosOrdinariosBandeja:any [] = [];
   status: string;
   tipo:string = '';
   titulo: string = "Pedidos";
@@ -67,11 +71,13 @@ export class ListaComponent implements OnInit {
 
   cambiarEntornoSuscription: Subscription;
 
-  constructor(private title: Title, private route: ActivatedRoute, private pedidosService: PedidosService, private cambiarEntornoService:CambiarEntornoService) { }
+  constructor(private title: Title, private router: Router, private route: ActivatedRoute, private pedidosService: PedidosService, private cambiarEntornoService:CambiarEntornoService) { }
 
   ngOnInit() {
     let usuario =  JSON.parse(localStorage.getItem("usuario"));
-    
+    let nueva_version_presupuesto = localStorage.getItem("nuevaVersionPresupuesto");
+    console.log(nueva_version_presupuesto);
+    this.nuevaVersionPresupuesto = nueva_version_presupuesto == "true";
     switch(this.route.snapshot.url[0].path){
       //case 'todos': this.status = "TODO"; this.titulo = "Todos"; this.icono = "fa-file"; break;
       case 'borradores': this.status = "BR"; this.titulo = "Borradores"; this.icono = "fa-pencil-square-o"; break;
@@ -99,12 +105,31 @@ export class ListaComponent implements OnInit {
           }
       break;
       case 'alternos': this.titulo = "Alternos"; this.tipo= 'PALT'; this.icono = "fa-code-fork"; break;
+      case 'ordinarios':
+        if(!this.nuevaVersionPresupuesto){
+          this.router.navigate(['/almacen/pedidos']);
+        }
+        this.tipo = 'PO';
+        if(this.route.snapshot.url.length > 1){
+          if(this.route.snapshot.url[1].path  == "bandeja"){
+            this.titulo = "Pedidos ordinarios - Bandeja";
+            this.bandeja = true;
+          } else if(this.route.snapshot.url[1].path  == "borradores"){
+            this.titulo = "Pedidos ordinarios - borradores";
+            this.status = "BR";
+          } else {
+            this.titulo = "Pedidos ordinarios";
+          }
+        } else {
+          this.titulo = "Pedidos ordinarios";
+        }
+      break;
       default: this.titulo = "Pedidos"; this.icono = "fa-file"; break;
     }
     console.log('inicializar lista de pedidos');
     this.title.setTitle("Pedidos");
 
-    this.cargarPresupuestoAnual();
+   // this.cargarPresupuestoAnual();
 
     this.cambiarEntornoSuscription = this.cambiarEntornoService.entornoCambiado$.subscribe(evento => {
       let usuario =  JSON.parse(localStorage.getItem("usuario"));
@@ -134,7 +159,7 @@ export class ListaComponent implements OnInit {
       this.ultimoTerminoBuscado = term;
       this.paginaActualBusqueda = 1;
       this.cargando = true;
-      return term  ? this.pedidosService.buscar(this.status,term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda, this.tipo) : Observable.of<any>({data:[]}) 
+      return term  ? this.pedidosService.buscar(this.status,term, this.paginaActualBusqueda, this.resultadosPorPaginaBusqueda, this.tipo, null, this.nuevaVersionPresupuesto) : Observable.of<any>({data:[]}) 
     }
       
     
@@ -188,59 +213,92 @@ export class ListaComponent implements OnInit {
   }
 
   actualizarListaPedidos(){
+    let nueva_version_presupuesto = localStorage.getItem("nuevaVersionPresupuesto");    
+    this.nuevaVersionPresupuesto = nueva_version_presupuesto == "true";
+
+    if(this.route.snapshot.url[0].path == "ordinarios" && !this.nuevaVersionPresupuesto){
+      this.router.navigate(['/almacen/pedidos']);
+    }
     this.listar(1);
     this.cargarPresupuestoAnual();
   }
 
+  setPresupuesto(data){
+    if(data){
+      this.presupuesto.insumos_modificado = +data.insumos_modificado;
+      this.presupuesto.insumos_comprometido = +data.insumos_comprometido;
+      this.presupuesto.insumos_devengado = +data.insumos_devengado;
+      this.presupuesto.insumos_disponible = +data.insumos_disponible;
+
+      this.presupuesto.no_causes_modificado = +data.no_causes_modificado;
+      this.presupuesto.no_causes_comprometido = +data.no_causes_comprometido;
+      this.presupuesto.no_causes_devengado = +data.no_causes_devengado;
+      this.presupuesto.no_causes_disponible = +data.no_causes_disponible;
+    }else{
+      this.presupuesto.insumos_modificado = 0;
+      this.presupuesto.insumos_comprometido = 0;
+      this.presupuesto.insumos_devengado = 0;
+      this.presupuesto.insumos_disponible = 0;
+
+      this.presupuesto.no_causes_modificado = 0;
+      this.presupuesto.no_causes_comprometido = 0;
+      this.presupuesto.no_causes_devengado = 0;
+      this.presupuesto.no_causes_disponible = 0;
+    }
+
+    
+    
+    /*this.presupuesto.causes_modificado = +response.data.causes_modificado;
+    this.presupuesto.causes_comprometido = +response.data.causes_comprometido;
+    this.presupuesto.causes_devengado = +response.data.causes_devengado;
+    this.presupuesto.causes_disponible = +response.data.causes_disponible;
+    
+    this.presupuesto.material_curacion_modificado = +response.data.material_curacion_modificado;
+    this.presupuesto.material_curacion_comprometido = +response.data.material_curacion_comprometido;
+    this.presupuesto.material_curacion_devengado = +response.data.material_curacion_devengado;
+    this.presupuesto.material_curacion_disponible = +response.data.material_curacion_disponible;*/
+  }
+
   cargarPresupuestoAnual(){
+
+    this.cargandoPresupuesto = true;
     let presupuesto = +localStorage.getItem('presupuestoSeleccionado');
-    this.pedidosService.presupuesto(0,0,'',presupuesto).subscribe(
-      response => {
-        this.cargando = false;
-        //this.presupuesto = response.data;
-        this.presupuesto = {};
+    
 
-        if(response.data){
-          this.presupuesto.insumos_modificado = +response.data.insumos_modificado;
-          this.presupuesto.insumos_comprometido = +response.data.insumos_comprometido;
-          this.presupuesto.insumos_devengado = +response.data.insumos_devengado;
-          this.presupuesto.insumos_disponible = +response.data.insumos_disponible;
-
-          this.presupuesto.no_causes_modificado = +response.data.no_causes_modificado;
-          this.presupuesto.no_causes_comprometido = +response.data.no_causes_comprometido;
-          this.presupuesto.no_causes_devengado = +response.data.no_causes_devengado;
-          this.presupuesto.no_causes_disponible = +response.data.no_causes_disponible;
-        }else{
-          this.presupuesto.insumos_modificado = 0;
-          this.presupuesto.insumos_comprometido = 0;
-          this.presupuesto.insumos_devengado = 0;
-          this.presupuesto.insumos_disponible = 0;
-
-          this.presupuesto.no_causes_modificado = 0;
-          this.presupuesto.no_causes_comprometido = 0;
-          this.presupuesto.no_causes_devengado = 0;
-          this.presupuesto.no_causes_disponible = 0;
+    if(this.nuevaVersionPresupuesto){
+      this.pedidosService.pedidosStatsPresupuestoUnidadMedica(presupuesto).subscribe(
+        response => {
+          this.cargandoPresupuesto = false;
+          //this.presupuesto = response.data;
+          this.presupuesto = {};
+          if(response.presupuesto){
+            this.presupuestoActual = response.presupuesto;
+          }
+          this.setPresupuesto(response.data);
+        },
+        error => {
+          this.cargandoPresupuesto = false;
+          console.log(error);
         }
-
-        if(response.presupuesto){
-          this.presupuestoActual = response.presupuesto;
+      );
+    } else {
+      this.pedidosService.presupuesto(0,0,'',presupuesto).subscribe(
+        response => {
+          this.cargandoPresupuesto = false;
+          //this.presupuesto = response.data;
+          this.presupuesto = {};
+          if(response.presupuesto){
+            this.presupuestoActual = response.presupuesto;
+          }
+          this.setPresupuesto(response.data);
+        },
+        error => {
+          this.cargandoPresupuesto = false;
+          console.log(error);
         }
-        
-        /*this.presupuesto.causes_modificado = +response.data.causes_modificado;
-        this.presupuesto.causes_comprometido = +response.data.causes_comprometido;
-        this.presupuesto.causes_devengado = +response.data.causes_devengado;
-        this.presupuesto.causes_disponible = +response.data.causes_disponible;
-        
-        this.presupuesto.material_curacion_modificado = +response.data.material_curacion_modificado;
-        this.presupuesto.material_curacion_comprometido = +response.data.material_curacion_comprometido;
-        this.presupuesto.material_curacion_devengado = +response.data.material_curacion_devengado;
-        this.presupuesto.material_curacion_disponible = +response.data.material_curacion_disponible;*/
-      },
-      error => {
-        this.cargando = false;
-        console.log(error);
-      }
-    );
+      );
+    }
+    
   }
 
   obtenerDireccion(id:string, status:string): string{
@@ -262,7 +320,7 @@ export class ListaComponent implements OnInit {
     let presupuesto = +localStorage.getItem('presupuestoSeleccionado');
 
     this.cargando = true;
-    this.pedidosService.buscar(this.status, term, pagina, this.resultadosPorPaginaBusqueda, this.tipo,presupuesto).subscribe(
+    this.pedidosService.buscar(this.status, term, pagina, this.resultadosPorPaginaBusqueda, this.tipo,presupuesto, this.nuevaVersionPresupuesto).subscribe(
         resultado => {
           this.cargando = false;
 
@@ -315,7 +373,21 @@ export class ListaComponent implements OnInit {
     let presupuesto = +localStorage.getItem('presupuestoSeleccionado');
 
     this.cargando = true;
-    this.pedidosService.lista(this.status, pagina,this.resultadosPorPagina, this.tipo, presupuesto).subscribe(
+
+    if(this.bandeja){
+      this.pedidosService.listaPedidosOrdinarios(pagina, this.resultadosPorPagina, presupuesto).subscribe(
+        resultado => {
+          this.cargando = false;
+          this.pedidosOrdinariosBandeja = resultado;
+          console.log(resultado);
+        },
+        error => {
+          this.cargando = false;
+          console.log(error);
+        }
+      );
+    } else {
+      this.pedidosService.lista(this.status, pagina,this.resultadosPorPagina, this.tipo, presupuesto, this.nuevaVersionPresupuesto).subscribe(
         resultado => {
           this.cargando = false;
           this.pedidos = resultado.data as Pedido[];
@@ -352,6 +424,8 @@ export class ListaComponent implements OnInit {
 
         }
       );
+    }
+    
   }
 
   eliminar(pedido: Pedido, index): void {

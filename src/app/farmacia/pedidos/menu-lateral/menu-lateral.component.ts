@@ -15,7 +15,13 @@ export class MenuLateralComponent implements OnInit {
   presupuestos: any[];
   presupuestoSeleccionado: number;
   cargando: boolean = false;
+  cargando_presupuesto: boolean = false;
+  nueva_version_presupuesto: boolean = false;
+
   stats: any = {
+    ordinarios_bandeja:0,
+    ordinarios_borrador:0,
+    ordinarios:0,
     todos: 0, 
     borradores: 0,
     solicitados: 0,
@@ -37,6 +43,9 @@ export class MenuLateralComponent implements OnInit {
   ngOnInit() {
     this.cambiarEntornoSuscription = this.cambiarEntornoService.entornoCambiado$.subscribe(evento => {
       this.stats = {
+        ordinarios_bandeja:0,
+        ordinarios_borrador:0,
+        ordinarios:0,
         todos: 0, 
         borradores: 0,
         solicitados: 0,
@@ -54,36 +63,73 @@ export class MenuLateralComponent implements OnInit {
       this.usuario = JSON.parse(localStorage.getItem("usuario"));
     });
     let presupuesto_seleccionado = localStorage.getItem('presupuestoSeleccionado');
+    let nueva_version_presupuesto_seleccionada = localStorage.getItem("nuevaVersionPresupuesto");
     if(presupuesto_seleccionado){
       this.presupuestoSeleccionado = +presupuesto_seleccionado;
     }
-    this.cargarStatsPedidos();
+    this.nueva_version_presupuesto = nueva_version_presupuesto_seleccionada == "true";
+    
+   // this.cargarStatsPedidos();
     this.cargarPresupuestos();
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
   }
 
-  cargarPresupuestos(){
-    this.pedidosService.presupuestos().subscribe(
-      response => {
-        this.presupuestos = response.data;
-        let presupuesto_seleccionado = localStorage.getItem('presupuestoSeleccionado');
-        if(!presupuesto_seleccionado){
-          for (let i in this.presupuestos) {
-            if(this.presupuestos[i].activo){
-              localStorage.setItem('presupuestoSeleccionado',this.presupuestos[i].id);
-              this.presupuestoSeleccionado = this.presupuestos[i].id;
-              break;
-            }
-          }
+  setPresupuesto(data) {
+    this.presupuestos = data;
+    let presupuesto_seleccionado = localStorage.getItem('presupuestoSeleccionado');
+    if (!presupuesto_seleccionado) {
+      for (let i in this.presupuestos) {
+        if (this.presupuestos[i].activo) {
+          localStorage.setItem('presupuestoSeleccionado', this.presupuestos[i].id);
+          this.presupuestoSeleccionado = this.presupuestos[i].id;
+          break; 
         }
-      },
-      error => {
-        console.log(error);
       }
-    );
+    }
+    this.cambioPresupuesto();
+    this.cargando_presupuesto = false;
+  }
+  cargarPresupuestos(){
+    this.presupuestos = [];
+   // this.presupuestoSeleccionado = null;
+    //localStorage.removeItem('presupuestoSeleccionado');
+    this.cargando_presupuesto = true;
+    if(this.nueva_version_presupuesto){
+      this.pedidosService.pedidosStatsPresupuestos().subscribe(
+        response => {
+          this.setPresupuesto(response.data);
+        },
+        error => {
+          console.log(error);
+          this.cargando_presupuesto = false;
+        }
+      );
+    } else{
+      console.log("cargar version vieja");
+      this.pedidosService.presupuestos().subscribe(
+        response => {
+          this.setPresupuesto(response.data);
+        },
+        error => {
+          console.log(error);
+          this.cargando_presupuesto = false;
+        }
+      );
+    }
+    
+  }
+  cambiarVersionPresupuesto(){
+    this.nueva_version_presupuesto = !this.nueva_version_presupuesto;
+    localStorage.setItem("nuevaVersionPresupuesto", this.nueva_version_presupuesto.toString());
+    localStorage.removeItem('presupuestoSeleccionado');
+    this.cargarPresupuestos();
   }
 
   cambioPresupuesto(){
+    if(this.presupuestoSeleccionado == null){
+      return;
+    }
+    console.log(this.presupuestoSeleccionado);
     localStorage.setItem('presupuestoSeleccionado',this.presupuestoSeleccionado.toString());
     this.cargarStatsPedidos();
     this.onCambiarPresupuesto.emit();
@@ -92,16 +138,30 @@ export class MenuLateralComponent implements OnInit {
   cargarStatsPedidos(){
     this.cargando = true;
     let presupuesto = +localStorage.getItem('presupuestoSeleccionado');
-    this.pedidosService.stats(presupuesto).subscribe(
-      response => {
-        this.cargando = false;
-        this.stats = response;
-      },
-      error => {
-        this.cargando = false;
-        console.log(error);
-      }
-    );
+
+    if(this.nueva_version_presupuesto){
+      this.pedidosService.pedidosStats({presupuesto : presupuesto, nueva_version: this.nueva_version_presupuesto}).subscribe(
+        response => {
+          this.cargando = false;
+          this.stats = response;
+        },
+        error => {
+          this.cargando = false;
+          console.log(error);
+        }
+      );
+    } else {    
+      this.pedidosService.stats(presupuesto).subscribe(
+        response => {
+          this.cargando = false;
+          this.stats = response;
+        },
+        error => {
+          this.cargando = false;
+          console.log(error);
+        }
+      );
+    }
   }
 
   ngOnDestroy(){
