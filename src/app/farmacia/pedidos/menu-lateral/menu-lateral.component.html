@@ -16,7 +16,7 @@
                 <span class="help is-info" *ngIf="nueva_version_presupuesto" style="font-size:0.65rem">Nueva versión activada.</span>
             </p>
         </div>
-        <div class="column">
+        <div class="column" *ngIf="usuario && usuario.id == 'root'">
             <a class="button" [ngClass]="{ 'is-disabled': cargando_presupuesto}" (click)="cambiarVersionPresupuesto()"><span class="icon"><i class="fa fa-exchange"></i></span></a>
         </div>
     </div>

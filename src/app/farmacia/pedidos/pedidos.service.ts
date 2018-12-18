@@ -26,6 +26,7 @@ export class PedidosService {
   presupuestos(): Observable<any>{
     return this.jwtRequest.get(PedidosService.URL_PRESUPUESTOS,null,null).map( (response: Response) => response.json());
   }
+  
 
   pedidosStatsPresupuestos(): Observable<any>{
     return this.jwtRequest.get(PedidosService.URL_STATS+"/presupuestos",null,null).map( (response: Response) => response.json());
@@ -48,6 +49,11 @@ export class PedidosService {
     if(almacen){ parametros.almacen = almacen; }
     if(presupuesto){ parametros.presupuesto = presupuesto; }
     return this.jwtRequest.get(PedidosService.URL_PRESUPUESTO,null,parametros).map( (response: Response) => response.json());
+  }
+
+  presupuestoPedidoOrdinarioUnidadMedica(id:number = 0): Observable<any>{
+
+    return this.jwtRequest.get(PedidosService.URL_STATS+"/pedido-ordinario-unidad-medica",id,{}).map( (response: Response) => response.json());
   }
 
   buscar(status:string, term: string, pagina:number = 1, resultados_por_pagina:number =20, tipo:string = '', presupuesto:number = 0, nuevaVersion: boolean = false ): Observable<any>{

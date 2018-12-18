@@ -27,6 +27,7 @@ import { Mensaje } from '../../../mensaje';
   providers: [PedidosService]
 })
 export class ListaComponent implements OnInit {
+  usuario: any;
   cargando: boolean = false;
   cargandoPresupuesto: boolean = false;
   soloLectura: boolean = false;
@@ -74,7 +75,7 @@ export class ListaComponent implements OnInit {
   constructor(private title: Title, private router: Router, private route: ActivatedRoute, private pedidosService: PedidosService, private cambiarEntornoService:CambiarEntornoService) { }
 
   ngOnInit() {
-    let usuario =  JSON.parse(localStorage.getItem("usuario"));
+    this.usuario =  JSON.parse(localStorage.getItem("usuario"));
     let nueva_version_presupuesto = localStorage.getItem("nuevaVersionPresupuesto");
     console.log(nueva_version_presupuesto);
     this.nuevaVersionPresupuesto = nueva_version_presupuesto == "true";
@@ -132,18 +133,18 @@ export class ListaComponent implements OnInit {
    // this.cargarPresupuestoAnual();
 
     this.cambiarEntornoSuscription = this.cambiarEntornoService.entornoCambiado$.subscribe(evento => {
-      let usuario =  JSON.parse(localStorage.getItem("usuario"));
-      this.soloLectura = usuario.solo_lectura;
-      this.almacenSeleccionado = usuario.almacen_activo;
+      this.usuario =  JSON.parse(localStorage.getItem("usuario"));
+      this.soloLectura = this.usuario.solo_lectura;
+      this.almacenSeleccionado = this.usuario.almacen_activo;
 
       this.listar(1);
       this.cargarPresupuestoAnual();
     });
 
-    this.soloLectura = usuario.solo_lectura;
-    this.almacenSeleccionado = usuario.almacen_activo;
+    this.soloLectura = this.usuario.solo_lectura;
+    this.almacenSeleccionado = this.usuario.almacen_activo;
 
-    this.listar(1);
+    //this.listar(1);
     this.mensajeError = new Mensaje();
     this.mensajeExito = new Mensaje();
 

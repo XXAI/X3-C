@@ -72,6 +72,7 @@ export class MenuLateralComponent implements OnInit {
    // this.cargarStatsPedidos();
     this.cargarPresupuestos();
     this.usuario = JSON.parse(localStorage.getItem("usuario"));
+    console.log(this.usuario);
   }
 
   setPresupuesto(data) {

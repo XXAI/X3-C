@@ -59,7 +59,7 @@
                                 <i class="fa fa-warning"></i>
                             </span>
                             <span class="select is-fullwidth">
-                                <select [ngClass]="{'is-danger': pedido.tieneError('fecha','required')}" formControlName="fecha" #fecha id="fecha" (change)="recargarPresupuesto(fecha.value)">
+                                <select [ngClass]="{'is-danger': pedido.tieneError('fecha','required')}" formControlName="fecha" #fecha id="fecha" (change)="recargarPresupuesto(fecha.value)" >
                                     <option *ngFor="let item of fechasValidas" value="{{item.fecha}}">{{ item.descripcion }}</option>
                                 </select>
                             </span>

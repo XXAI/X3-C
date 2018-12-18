@@ -38,13 +38,18 @@ import { Almacen } from '../../../catalogos/almacenes/almacen';
 
 
 export class FormularioComponent implements OnInit {
-
+  
   cargando: boolean = false;
   guardando: boolean = false;
   cargandoAlmacenes: boolean = false;
   cargandoInsumos: boolean = false;
   cargandoPresupuestos: boolean = false;
   soloLectura: boolean = false;
+  
+  pedidoOrdinarioUnidadMedicaId:any;
+  pedidoOrdinario:any = {};
+  esPedidoOrdinario:boolean = false;
+  cargandoPedidoOrdinario:boolean = false;
 
   almacenDelUsuario:any = {};
 
@@ -177,7 +182,9 @@ export class FormularioComponent implements OnInit {
     
     // Harima: Inicializamos el pedido
     this.pedido = new Pedido(true);
+
     
+   
     this.route.params.subscribe(params => {
       //this.id = params['id']; // Se puede agregar un simbolo + antes de la variable params para volverlo number
       if(params['id']){
@@ -198,6 +205,7 @@ export class FormularioComponent implements OnInit {
 
             let fecha_pedido = pedido.fecha.split('-');
             let mes_pedido = parseInt(fecha_pedido[1]);
+            let anio_pedido = parseInt(fecha_pedido[0]);
             
             if(fecha_pedido[0] < now.getFullYear()){
               this.fechasValidas.push({fecha:fecha_pedido[0] + "-" + fecha_pedido[1] + "-" + fecha_pedido[2], descripcion: this.meses[mes_pedido] + " " + fecha_pedido[0]}); //fecha diferente año
@@ -243,6 +251,9 @@ export class FormularioComponent implements OnInit {
               this.totalMontoComprometidoNoCauses = (+presupuesto_apartado.no_causes_comprometido)+(+presupuesto_apartado.no_causes_devengado);
             }
 
+            
+            
+
             //this.datosCargados = true;
             this.pedido.datos.patchValue(pedido);
             this.pedido.status = pedido.status;
@@ -251,7 +262,9 @@ export class FormularioComponent implements OnInit {
 
             //let fecha = pedido.fecha.split('-');
             //let mes = parseInt(fecha_pedido[1]);
-            this.cargarPresupuesto(mes_pedido);
+            //this.cargarPresupuesto(mes_pedido); //Harima:Se quita por que se estaba llamando doble
+            this.mes = mes_pedido;
+            this.anio = anio_pedido;
             this.cambioAlmacen();
 
             for(let i in pedido.insumos){
@@ -323,36 +336,53 @@ export class FormularioComponent implements OnInit {
           }
         );
       }else{
-        //Harima:calcular fechas validas
-        let now = new Date();
-        let dia = now.getDate();
-        let mes = now.getMonth()+1;
+        
+        if(params['pedido_ordinario_unidad_medica_id']){
+          this.esPedidoOrdinario = true;
+          this.pedidoOrdinarioUnidadMedicaId = params['pedido_ordinario_unidad_medica_id'];
+          this.title.setTitle('Nuevo pedido ordinario');
+        } else {
+          this.title.setTitle('Nuevo pedido');
 
-        //if(dia < 20){
-          //Mes actual y siguiente, se agrega mes actual
-        let day = ("0" + dia).slice(-2);
-        let month = ("0" + mes).slice(-2);
-        this.fechasValidas.push({fecha:now.getFullYear() + "-" + (month) + "-" + (day),descripcion: this.meses[mes] + " " + now.getFullYear()}); //fecha actual
-        //}
+          //Harima:calcular fechas validas
+          let now = new Date();
+          let dia = now.getDate();
+          let mes = now.getMonth()+1;
 
-        //Meses siguientes
-        let mes_inicio = mes+1;
-        day = '01';
-        let anio = now.getFullYear();
+          //if(dia < 20){
+            //Mes actual y siguiente, se agrega mes actual
+          let day = ("0" + dia).slice(-2);
+          let month = ("0" + mes).slice(-2);
+          this.fechasValidas.push({fecha:now.getFullYear() + "-" + (month) + "-" + (day),descripcion: this.meses[mes] + " " + now.getFullYear()}); //fecha actual
+          //}
 
-        if(mes_inicio == 13){
-          mes_inicio = 1;
-          anio = now.getFullYear()+1;
+          //Meses siguientes
+          let mes_inicio = mes+1;
+          day = '01';
+          let anio = now.getFullYear();
+
+          if(mes_inicio == 13){
+            mes_inicio = 1;
+            anio = now.getFullYear()+1;
+          }
+          
+          for(let mes = mes_inicio; mes <= 12; mes++){
+            let month = ("0" + (mes)).slice(-2);
+            this.fechasValidas.push({fecha:anio + "-" + (month) + "-" + (day),descripcion: this.meses[mes] + " " + anio}); //fecha siguiente
+          }
+        }
+
+        if(this.esPedidoOrdinario){
+          this.pedido.datos.get('descripcion').disable();
+          this.pedido.datos.get('fecha').disable();
         }
         
-        for(let mes = mes_inicio; mes <= 12; mes++){
-          let month = ("0" + (mes)).slice(-2);
-          this.fechasValidas.push({fecha:anio + "-" + (month) + "-" + (day),descripcion: this.meses[mes] + " " + anio}); //fecha siguiente
-        }
 
-        this.title.setTitle('Nuevo pedido');
+        console.log(this.fechasValidas);
+
         this.cargarPresupuesto();
-
+                
+        
         //Harima:cargamos catalogos
         this.cargarAlmacenes();
       }
@@ -664,6 +694,14 @@ export class FormularioComponent implements OnInit {
 
     guardar_pedido = this.pedido.obtenerDatosGuardar();
 
+    if(this.esPedidoOrdinario){
+      let fecha = this.pedidoOrdinario.pedido_ordinario.fecha.split(" ");
+      guardar_pedido.datos.fecha = fecha[0];
+      guardar_pedido.datos.descripcion = this.pedidoOrdinario.pedido_ordinario.descripcion;
+      guardar_pedido.datos.pedido_ordinario_unidad_medica_id = this.pedidoOrdinario.id;
+    }
+    //return;
+
     if(finalizar){
       guardar_pedido.datos.status = 'CONCLUIR';
 
@@ -754,7 +792,7 @@ export class FormularioComponent implements OnInit {
         pedido => {
           //this.guardando = false;
           //console.log('Pedido creado');
-          //console.log(pedido);
+          console.log(pedido);
           this.router.navigate(['/almacen/pedidos/editar/'+pedido.id]);
           //hacer cosas para dejar editar
         },
@@ -812,7 +850,10 @@ export class FormularioComponent implements OnInit {
     }else{
       this.es_almacen_subrogado = false;
     }
-    this.cargarPresupuesto(this.mes,this.anio);
+    if(!this.esPedidoOrdinario){
+      this.cargarPresupuesto(this.mes,this.anio);
+    }
+  
 
     this.almacenSeleccionado = {id:almacen_seleccionado,subrogado:this.es_almacen_subrogado};
 
@@ -824,6 +865,7 @@ export class FormularioComponent implements OnInit {
   }
 
   cargarAlmacenes() {
+    
     this.cargandoAlmacenes = true;
 
     // ######### PEDIDOS JURISDICCIONALES #########
@@ -850,9 +892,12 @@ export class FormularioComponent implements OnInit {
 
           //Harima:Si no es editar, inicializamos el formulario
           if(!this.esEditar){
-            let datos_iniciales:any = {}
+
+            if(!this.esPedidoOrdinario){
+              let datos_iniciales:any = {}            
+              this.pedido.inicializarDatos(datos_iniciales);
+            }
             
-            this.pedido.inicializarDatos(datos_iniciales);
           }
           
           console.log("Almacenes cargados.");
@@ -875,6 +920,7 @@ export class FormularioComponent implements OnInit {
             
           }
           // ############################################
+      
         },
         error => {
           this.cargandoAlmacenes = false;
@@ -924,48 +970,107 @@ export class FormularioComponent implements OnInit {
   }
 
   cargarPresupuesto(mes:number = 0, anio:number = 0){
-    if(mes == 0){
-      let now = new Date();
-      mes = (now.getMonth() + 1);
-    }
-
-    if(anio == 0){
-      let now = new Date();
-      anio = now.getFullYear();
-    }
-
-    this.mes = mes;
-    this.anio = anio;
-
-    let almacen_seleccionado = this.pedido.datos.get('almacen_solicitante').value;
-    if(almacen_seleccionado){
+    if(this.esPedidoOrdinario){
       this.cargandoPresupuestos = true;
-      let presupuesto_id = 0;
-      if(this.esEditar){
-        presupuesto_id = this.pedido.presupuesto_id;
-      }
-      this.pedidosService.presupuesto(mes,anio,almacen_seleccionado,presupuesto_id).subscribe(
-        response => {
-          this.cargando = false;
-          if(response.data){
-            this.presupuesto = response.data;
-            console.log(this.presupuesto);
-          }else{
+      this.pedidosService.presupuestoPedidoOrdinarioUnidadMedica(this.pedidoOrdinarioUnidadMedicaId).subscribe(
+        respuesta => {
+          this.cargandoPresupuestos = false;
+          console.log(respuesta);
+          if(respuesta.data){
+            this.pedidoOrdinario = respuesta.data;
+            this.presupuesto.insumos_disponible = respuesta.data.causes_modificado;
+            this.presupuesto.causes_disponible = 0;
+            this.presupuesto.no_causes_disponible = respuesta.data.no_causes_modificado;
+            this.presupuesto.material_curacion_disponible = 0;
+
+            let fecha_pedido_ymd = respuesta.data.pedido_ordinario.fecha.split(' ');
+
+            var datos = {
+              descripcion: respuesta.data.pedido_ordinario.descripcion,
+              fecha: fecha_pedido_ymd[0],
+              observaciones:'',
+              almacen_solicitante:'',
+              almacen_proveedor:''
+            };
+            //this.pedido.datos.get('descripcion').setValue(respuesta.data.pedido_ordinario.descripcion);
+            //this.pedido.datos.patchValue({descripcion: "yuyi  "});
+            //(this.pedido.datos.controls['descripcion']).setErrors(null)
+            /*this.fb.group({
+              descripcion: ['', [Validators.required]],
+              fecha: ['',[Validators.required]],
+              almacen_solicitante: ['',[Validators.required]],
+              almacen_proveedor: ['',[Validators.required]],
+              observaciones: ''
+            });*/
+            //this.pedido.datos.patchValue(datos);
+            this.pedido.datos.setValue(datos);
+
             
+            let fecha_pedido = fecha_pedido_ymd[0].split('-');
+            console.log(fecha_pedido);
+            let mes_pedido = parseInt(fecha_pedido[1]);
+            let anio_pedido = parseInt(fecha_pedido[0]);
+
+            this.mes = mes_pedido;
+            this.anio = anio_pedido;
+            this.fechasValidas.push({fecha:fecha_pedido_ymd[0],descripcion: this.meses[this.mes] + " " + this.anio}); //fecha actual
+            
+          } else {
             this.presupuesto.insumos_disponible = 0;
             this.presupuesto.causes_disponible = 0;
             this.presupuesto.no_causes_disponible = 0;
             this.presupuesto.material_curacion_disponible = 0;
           }
-          this.cargandoPresupuestos = false;
-        },
-        error => {
-          this.cargando = false;
+        }, error => {
           this.cargandoPresupuestos = false;
           console.log(error);
         }
-      );
+      )
+    } else {
+      if(mes == 0){
+        let now = new Date();
+        mes = (now.getMonth() + 1);
+      }
+  
+      if(anio == 0){
+        let now = new Date();
+        anio = now.getFullYear();
+      }
+  
+      this.mes = mes;
+      this.anio = anio;
+  
+      let almacen_seleccionado = this.pedido.datos.get('almacen_solicitante').value;
+      if(almacen_seleccionado){
+        this.cargandoPresupuestos = true;
+        let presupuesto_id = 0;
+        if(this.esEditar){
+          presupuesto_id = this.pedido.presupuesto_id;
+        }
+        this.pedidosService.presupuesto(mes,anio,almacen_seleccionado,presupuesto_id).subscribe(
+          response => {
+            this.cargando = false;
+            if(response.data){
+              this.presupuesto = response.data;
+              console.log(this.presupuesto);
+            }else{
+              
+              this.presupuesto.insumos_disponible = 0;
+              this.presupuesto.causes_disponible = 0;
+              this.presupuesto.no_causes_disponible = 0;
+              this.presupuesto.material_curacion_disponible = 0;
+            }
+            this.cargandoPresupuestos = false;
+          },
+          error => {
+            this.cargando = false;
+            this.cargandoPresupuestos = false;
+            console.log(error);
+          }
+        );
+      }
     }
+    
     
   }
 

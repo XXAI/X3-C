@@ -34,6 +34,7 @@ const routes: Routes = [
        { path: 'farmacia-subrogada', component: ListaComponent},
        { path: 'alternos', component: ListaComponent},
        { path: 'nuevo', component: FormularioComponent},
+       { path: 'nuevo/ordinario/:pedido_ordinario_unidad_medica_id', component: FormularioComponent},
        { path: 'editar/:id', component: FormularioComponent},
        { path: 'ver/:id', component: VerComponent},
        { path: 'recepcion/:id', component: RecepcionComponent},
