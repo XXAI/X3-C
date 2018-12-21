@@ -36,7 +36,7 @@
                 <li><a routerLink="/almacen/pedidos/ordinarios/bandeja" #ordinariosBandeja routerLinkActive="is-active">
                     Bandeja
                     <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
-                    <span *ngIf="stats.ordinarios_bandeja>0 && !cargando" class="tag is-pulled-right" [ngClass]="{ 'is-white': ordinariosBandeja.className == 'is-active', 'is-primary': ordinariosBandeja.className != 'is-active' }">{{  stats.ordinarios_bandeja }}</span>
+                    <span *ngIf="stats.ordinarios_bandeja>0 && !cargando" class="tag is-pulled-right" [ngClass]="{ 'is-info': ordinariosBandeja.className == 'is-active', 'is-info': ordinariosBandeja.className != 'is-active' }">{{  stats.ordinarios_bandeja }}</span>
                     </a>
                 </li>
                 <li><a routerLink="/almacen/pedidos/ordinarios/borradores" #ordinariosBorradores routerLinkActive="is-active">
