@@ -6,6 +6,7 @@ import { PermisosGuard } from '../../permisos.guard';
 
 import { ListaComponent } from './lista/lista.component';
 import { NuevoComponent } from "./nuevo/nuevo.component";
+import { VerComponent } from './ver/ver.component';
 
 const routes: Routes =  [
   {
@@ -13,7 +14,7 @@ const routes: Routes =  [
     children: [       
        { path: '', component: ListaComponent, canActivate: [PermisosGuard], data: { key: 'nkzKZXncGYTJVhn0V6aej6UiZGK42dgH'} },        
        { path: 'nuevo', component: NuevoComponent, canActivate: [PermisosGuard], data: { key: 'P72UWtjEjdNx8CEnTsjW8TjL5NCjy3JX'} },
-       //{ path: 'ajustes/:id', component: AjustesComponent, canActivate: [PermisosGuard], data: { key: '7nH8WNC9Cf43T4baS1hyS5H3iywGoTxN'}},    
+       { path: ':id', component: VerComponent, canActivate: [PermisosGuard], data: { key: 'nkzKZXncGYTJVhn0V6aej6UiZGK42dgH'}},    
     ],
     canActivate: [AuthGuard]
   }

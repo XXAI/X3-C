@@ -64,6 +64,7 @@
                                 </select>
                             </span>
                             <span class="help is-danger" *ngIf="pedido.tieneError('fecha','required')">Este campo es requerido.</span>
+                            <span class="help is-info" *ngIf="esPedidoOrdinario && !cargandoPresupuestos">Captura expira el {{ fecha_expiracion | date: 'dd/MM/yyyy' }} a las {{ fecha_expiracion | date: 'HH:mm' }} hrs</span>
                         </p>
 
                         <div class="control">

@@ -8,12 +8,13 @@ import { environment } from '../../../../environments/environment';
 import { Mensaje } from '../../../mensaje';
 
 @Component({
-  selector: 'app-nuevo',
-  templateUrl: './nuevo.component.html',
-  styleUrls: ['./nuevo.component.css'],
+  selector: 'app-ver',
+  templateUrl: './ver.component.html',
+  styleUrls: ['./ver.component.css'],  
   providers:[PedidosOrdinariosService]
 })
-export class NuevoComponent implements OnInit {
+export class VerComponent implements OnInit {
+
   pedido_ordinario:any = { pedidos_ordinarios_unidades_medicas:[]};
   causes_sumado:number;
   no_causes_sumado:number;
@@ -31,6 +32,8 @@ export class NuevoComponent implements OnInit {
   
   // Loaders
   cargandoPresupuesto:boolean = false;
+  cargando:boolean = false;
+  id:any;
 
   presupuesto:any = {}  
 
@@ -39,8 +42,29 @@ export class NuevoComponent implements OnInit {
     private route: ActivatedRoute,private apiService: PedidosOrdinariosService,  private http: Http) { }
 
   ngOnInit() {
-    this.title.setTitle('Nuevo presupuesto');
-    this.cargarPresupuesto();
+    this.title.setTitle('Ver Pedido Ordinario');
+    this.route.params.subscribe(params => {
+      if(params['id']){
+        this.cargando = true;
+        this.id = params['id'];
+        this.apiService.ver(this.id).subscribe(
+          respuesta => {
+            this.cargando = false;
+            this.pedido_ordinario = respuesta;
+            console.log(respuesta);
+          }, error => {
+            console.log(error);
+            this.cargando = false;
+            this.router.navigate(['/administrador-central/pedidos-ordinarios']);    
+          }
+        )
+      } else {
+        this.router.navigate(['/administrador-central/pedidos-ordinarios']);
+      }
+    });
+    //this.cargarPresupuesto();
+
+    
   }
   guardar(){
     
@@ -131,6 +155,8 @@ export class NuevoComponent implements OnInit {
     );
   }
 
+  
+
   cargarPresupuesto(){
     this.cargandoPresupuesto = true;
     this.apiService.cargarPresupuesto().subscribe(
@@ -177,34 +203,7 @@ export class NuevoComponent implements OnInit {
       }
     )
   }
-/*
 
-  cargarUltimoPresupuesto(){
-    this.cargandoUltimoPresupuesto = true;
-    this.apiService.cargarUltimoPresupuesto().subscribe(
-      respuesta =>{
-        if(respuesta){
-          this.cargandoUltimoPresupuesto = false;
-          this.presupuesto.ejercicio = respuesta.ejercicio + 1;
-          this.presupuesto.causes = respuesta.causes;
-          this.presupuesto.no_causes = respuesta.no_causes;
-          this.presupuesto.factor_meses = respuesta.factor_meses;
-          this.presupuesto.pedidos_ordinarios_unidades_medicas = respuesta.pedidos_ordinarios_unidades_medicas;
-          for(var i in  this.presupuesto.pedidos_ordinarios_unidades_medicas){
-            this.cluesAgregadas.push( this.presupuesto.pedidos_ordinarios_unidades_medicas[i].clues);
-          }
-          this.calcularTotales();
-        } else {
-          this.presupuesto.factor_meses = 9;
-        }
-       
-      }, error => {
-        this.cargandoUltimoPresupuesto = false;
-        console.log(error);
-      }
-    );
-  }
-*/
   agregarUnidadMedica(items:any[]){
     for(var i in items){
       var object = {

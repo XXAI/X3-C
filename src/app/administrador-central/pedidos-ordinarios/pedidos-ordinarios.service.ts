@@ -29,14 +29,15 @@ export class PedidosOrdinariosService {
     cargarPresupuesto():Observable<any>{
         return this.jwtRequest.get(PedidosOrdinariosService.URL+"/pedidos-ordinarios/presupuesto").map((response: Response) => response.json().data) as Observable<any>;
     }
-/*
+
     ver(id: any): Observable<any> {
-        return this.jwtRequest.get(PedidosOrdinariosService.URL+"/contratos", id, {}).map((response: Response) => {
+        return this.jwtRequest.get(PedidosOrdinariosService.URL+"/pedidos-ordinarios", id, {}).map((response: Response) => {
 
             let jsonData = response.json().data;
             return jsonData;
         }) as Observable<any>;
     }
+    /*
 
     crear(item: any): Observable<any> {
         return this.jwtRequest.post(PedidosOrdinariosService.URL+"/contratos", item).map((response: Response) => response.json().data) as Observable<any>;

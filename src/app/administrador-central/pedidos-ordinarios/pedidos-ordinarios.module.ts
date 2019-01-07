@@ -14,6 +14,7 @@ import { BuscarUnidadesMedicasModule  } from "../buscar-unidades-medicas/buscar-
 import { PedidosOrdinariosRoutingModule } from './pedidos-ordinarios-routing.module';
 import { ListaComponent } from './lista/lista.component';
 import { NuevoComponent } from './nuevo/nuevo.component';
+import { VerComponent } from './ver/ver.component';
 
 @NgModule({
   imports: [
@@ -28,6 +29,6 @@ import { NuevoComponent } from './nuevo/nuevo.component';
     PedidosOrdinariosRoutingModule,
     BuscarUnidadesMedicasModule
   ],
-  declarations: [ListaComponent, NuevoComponent]
+  declarations: [ListaComponent, NuevoComponent, VerComponent]
 })
 export class PedidosOrdinariosModule { }

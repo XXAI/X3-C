@@ -109,12 +109,13 @@
                         <th>Fecha</th>
                         <th>Fecha Expiración</th>
                         <th>Días restantes</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody style="font-size: 0.7em">
-                    <tr *ngFor="let item of pedidosOrdinariosBandeja">
+                    <tr *ngFor="let item of pedidosOrdinariosBandeja" [ngClass]="{'proyecto-estatus-normal':(item.status == 'S/P'),'proyecto-estatus-rojo':item.status == 'CA','proyecto-estatus-amarillo':item.status == 'EX' || (item.status == 'S/P' && (item.expira_en_dias < 0 || (item.expira_en_dias == 0 && item.expira_en_horas < 0  ) || (item.expira_en_dias == 0 && item.expira_en_horas < 1 && item.expira_en_minutos < 1  ) ) )}">
                         <td>
-                            <a routerLink="/almacen/pedidos/nuevo/ordinario/{{item.id}}" *ngIf="!usuario.solo_lectura && !usuario.almacen_activo.subrogado">
+                            <a routerLink="/almacen/pedidos/nuevo/ordinario/{{item.id}}" [ngClass]="{'is-disabled' : item.status == 'CA' || item.status == 'EX' || (item.status == 'S/P' && (item.expira_en_dias < 0 || (item.expira_en_dias == 0 && item.expira_en_horas < 0  ) || (item.expira_en_dias == 0 && item.expira_en_horas < 1 && item.expira_en_minutos < 1 ))) }" *ngIf="!usuario.solo_lectura && !usuario.almacen_activo.subrogado">
                                 {{ item.descripcion}}
                             </a>
                             <span *ngIf="usuario && (usuario.solo_lectura || usuario.almacen_activo.subrogado)">
@@ -123,24 +124,44 @@
                         </td>
 
                         <td style="vertical-align: middle;">
-                            <a routerLink="/almacen/pedidos/nuevo/ordinario/{{item.id}}" *ngIf="!usuario.solo_lectura && !usuario.almacen_activo.subrogado">
+                            <a routerLink="/almacen/pedidos/nuevo/ordinario/{{item.id}}" [ngClass]="{'is-disabled' : item.status == 'CA' || item.status == 'EX' || (item.status == 'S/P' && (item.expira_en_dias < 0 || (item.expira_en_dias == 0 && item.expira_en_horas < 0  ) || (item.expira_en_dias == 0 && item.expira_en_horas < 1 && item.expira_en_minutos < 1 )))}" *ngIf="!usuario.solo_lectura && !usuario.almacen_activo.subrogado">
                                 $ {{ (item.causes_modificado || 0) | number:'1.2-2' }}
                             </a>
+                            
                             <span *ngIf="usuario && (usuario.solo_lectura || usuario.almacen_activo.subrogado)">
                                 $ {{ (item.causes_modificado || 0) | number:'1.2-2' }}
                             </span>
                         </td>
                         <td style="vertical-align: middle;">
-                            <a routerLink="/almacen/pedidos/nuevo/ordinario/{{item.id}}" *ngIf="!usuario.solo_lectura && !usuario.almacen_activo.subrogado">
+                            <a routerLink="/almacen/pedidos/nuevo/ordinario/{{item.id}}" [ngClass]="{'is-disabled' : item.status == 'CA' || item.status == 'EX' || (item.status == 'S/P' && (item.expira_en_dias < 0 || (item.expira_en_dias == 0 && item.expira_en_horas < 0  ) || (item.expira_en_dias == 0 && item.expira_en_horas < 1 && item.expira_en_minutos < 1 )))}" *ngIf="!usuario.solo_lectura && !usuario.almacen_activo.subrogado">
                                 $ {{ (item.no_causes_modificado || 0) | number:'1.2-2' }}
                             </a>
                             <span *ngIf="usuario && (usuario.solo_lectura || usuario.almacen_activo.subrogado)">
                                 $ {{ (item.no_causes_modificado || 0) | number:'1.2-2' }}
                             </span>
                         </td>
-                        <td>{{ item.fecha | date: 'y-MM-dd' }}</td>
-                        <td>{{ item.fecha_expiracion | date: 'y-MM-dd' }}</td>
-                        <td>Expira en {{ item.expira_en_dias }} días</td>
+                        <td><span [ngClass]="{ 'estatus-amarillo': item.status == 'EX' || (item.status == 'S/P' && (item.expira_en_dias < 0 || (item.expira_en_dias == 0 && item.expira_en_horas < 0  ) || (item.expira_en_dias == 0 && item.expira_en_horas < 1 && item.expira_en_minutos < 1 ))) }">{{ item.fecha | date: 'dd/MM/yyyy' }}</span></td>
+                        <td>
+                            <span [ngClass]="{ 'estatus-amarillo': item.status == 'EX' || (item.status == 'S/P' && (item.expira_en_dias < 0 || (item.expira_en_dias == 0 && item.expira_en_horas < 0  ) || (item.expira_en_dias == 0 && item.expira_en_horas < 1 && item.expira_en_minutos < 1 ))) }">{{ item.fecha_expiracion | date: 'dd/MM/yyyy' }} a las {{ item.fecha_expiracion | date: 'HH:mm' }} hrs</span>
+                        </td>
+                        <td>
+                            <span *ngIf="item.status == 'CA'" class="estatus-rojo">Cancelado</span>
+                            <span *ngIf="(item.status == 'EX' || (item.status == 'S/P' && (item.expira_en_dias < 0 || (item.expira_en_dias == 0 && item.expira_en_horas < 0  ) || (item.expira_en_dias == 0 && item.expira_en_horas < 1 && item.expira_en_minutos < 1  ) ) )); else poexpirado"  class="estatus-amarillo" >Expirado</span>
+                            <ng-template #poexpirado>
+                                    <span >Expira en {{ item.expira_en_dias }} días  <span *ngIf="item.expira_en_dias <= 0">, {{ item.expira_en_horas }} horas y {{ item.expira_en_minutos - (item.expira_en_horas * 60) }} minutos</span> <span *ngIf="item.expira_en_dias > 0">y {{ item.expira_en_horas }} horas</span></span>                            
+                            </ng-template>
+                            
+                        </td>
+                        <td style="vertical-align: middle;" class="has-text-centered">
+                            <span class="icon " *ngIf="item.cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                            
+                            <span *ngIf="!item.cargando && item.status == 'S/P' && item.expira_en_dias < 0" class="estatus-amarillo" 
+                                title="Expirado"><span class="icon"><i class="fa fa-exclamation-circle"></i></span></span>
+                            <span *ngIf="!item.cargando && item.status == 'CA'" class="estatus-rojo" title="Expirado - Cancelado"><span
+                                    class="icon"><i class="fa fa-times-circle"></i></span></span>
+                            <span *ngIf="!item.cargando && item.status == 'EX'" class="estatus-amarillo" title="Expirado"><span
+                                    class="icon"><i class="fa fa-exclamation-circle"></i></span></span>
+                        </td>
                     </tr>
                     <tr *ngIf="pedidosOrdinariosBandeja.length == 0">
                         <td colspan="6">No hay pedidos ordinarios pendientes de capturar.</td>

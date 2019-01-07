@@ -58,6 +58,8 @@ export class FormularioComponent implements OnInit {
   esPedidoJurisdiccional: boolean = false;
   esOficinaJurisdiccional: boolean = false;
 
+  fecha_expiracion:Date = new Date();
+
   // # SECCION: Esta sección es para mostrar mensajes
   mensajeError: Mensaje = new Mensaje();
   mensajeAdvertencia: Mensaje = new Mensaje()
@@ -709,11 +711,12 @@ export class FormularioComponent implements OnInit {
 
     if(this.esPedidoOrdinario){
       let fecha = this.pedidoOrdinario.pedido_ordinario.fecha.split(" ");
+      guardar_pedido.datos.monto_causes_capturado = this.pedido.totalMontoCauses  + this.pedido.totalMontoMaterialCuracion;
+      guardar_pedido.datos.monto_no_causes_capturado = this.pedido.totalMontoNoCauses;
       guardar_pedido.datos.fecha = fecha[0];
       guardar_pedido.datos.descripcion = this.pedidoOrdinario.pedido_ordinario.descripcion;
       guardar_pedido.datos.pedido_ordinario_unidad_medica_id = this.pedidoOrdinario.id;
     }
-    //return;
 
     if(finalizar){
       guardar_pedido.datos.status = 'CONCLUIR';
@@ -984,7 +987,7 @@ export class FormularioComponent implements OnInit {
   cargarPresupuesto(mes:number = 0, anio:number = 0){
     if(this.esPedidoOrdinario){
       this.cargandoPresupuestos = true;
-      console.log("no deberia entrar aqui?");
+      
       this.pedidosService.presupuestoPedidoOrdinarioUnidadMedica(this.pedidoOrdinarioUnidadMedicaId).subscribe(
         respuesta => {
           this.cargandoPresupuestos = false;
@@ -994,7 +997,13 @@ export class FormularioComponent implements OnInit {
             this.presupuesto.causes_disponible = 0;
             this.presupuesto.no_causes_disponible = respuesta.data.no_causes_modificado;
             this.presupuesto.material_curacion_disponible = 0;
+            
+            this.fecha_expiracion = new Date(respuesta.data.pedido_ordinario.fecha_expiracion);
             if(!this.esEditar){
+              if(respuesta.data.status != "S/P"){
+                this.router.navigate(['/almacen/pedidos/']);
+              }
+
               let fecha_pedido_ymd = respuesta.data.pedido_ordinario.fecha.split(' ');
 
               var datos = {
@@ -1025,6 +1034,7 @@ export class FormularioComponent implements OnInit {
             this.presupuesto.material_curacion_disponible = 0;
           }
         }, error => {
+          this.router.navigate(['/almacen/pedidos/']);
           this.cargandoPresupuestos = false;
           console.log(error);
         }
