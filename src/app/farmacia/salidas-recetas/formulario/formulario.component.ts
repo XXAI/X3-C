@@ -190,6 +190,13 @@ export class FormularioComponent {
    * existente. Cuando su valor es __false__ quiere decir que mostraremos la vista para crear una nueva salida.
    * @type {Boolean} */
   tieneid = false;
+  /**
+   * Contiene el modo de salida del insumo 'N' hace referencia a una salida normal.
+   * 'U' a una salida en unidosis.
+   * @type {String} */
+   modo = 'N';
+
+   tiene_unidosis = false;
 
   // # SECCION: Reportes
       /**
@@ -324,7 +331,8 @@ export class FormularioComponent {
         usuario_id: [''],
         receta_detalles: this.fb.array([])
       }),
-      insumos: this.fb.array([])
+      insumos: this.fb.array([]),
+      insumos_negados: this.fb.array([])
     });
 
     this.route.params.subscribe(params => {
@@ -508,11 +516,40 @@ export class FormularioComponent {
     var usuario = JSON.parse(localStorage.getItem('usuario'));
     this.cargando = true;
     // cargar los datos de los lotes del insumo seleccionado en el autocomplete
+
+    //TODO::Agregar de la lista ya seleccionada
+    console.log('Selecciona de insumos medicos en autocomplete');
+    console.log(data);
+    // comprobar que el isumo no este en la lista cargada
+    const control = <FormArray>this.dato.controls['insumos'];
+    var existe = false;
+    for (let item of control.value) {
+      if (item.clave === data.clave) {
+        existe = true;
+        break;
+      }
+    }
+
+    if(existe){
+      console.log('Medicamento ya fue capturado en la receta');
+      this.cargando = false;
+      (<HTMLInputElement>document.getElementById('buscarInsumo')).value = '';
+      this.res_busq_insumos = [];
+      return false;
+    }
+
     this.crudService.lista(0, 1000, 'comprobar-stock?almacen=' + usuario.almacen_activo.id + '&clave=' + data.clave).subscribe(
       resultado => {
 
         this.lotes_insumo = resultado;
         this.insumo = data;
+
+        if(!data.es_unidosis){
+          this.modo = 'N';
+          this.tiene_unidosis = false;
+        }else{
+          this.tiene_unidosis = true;
+        }
 
         //limpiar el autocomplete
         (<HTMLInputElement>document.getElementById('buscarInsumo')).value = '';
@@ -560,6 +597,7 @@ export class FormularioComponent {
       'cantidad_surtida': 1,
       'unidad_medida': this.unidad_medida,
       'presentacion_nombre': this.presentacion_nombre,
+      'modo': this.modo,
       'lotes': this.fb.array([])
     };
 
@@ -609,10 +647,17 @@ export class FormularioComponent {
                 item.existencia = item.cantidad * 1;
               }
 
-              //validar que la cantidad escrita no sea mayor que la existencia si no poner la existencia como la cantidad maxima      
-              if (cantidad_lote > l.controls.existencia.value && item.nuevo == 0) {
-                this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + l.controls.existencia.value, objeto);
-                cantidad_lote = l.controls.existencia.value * 1;
+              console.log('---------------------------------------------------------------------');
+              //validar que la cantidad escrita no sea mayor que la existencia si no poner la existencia como la cantidad maxima 
+              let cantidad_existente = 0;
+              if(this.modo == 'N'){
+                cantidad_existente = l.controls.existencia.value;
+              }else{
+                cantidad_existente = l.controls.existencia_unidosis.value;
+              }
+              if (cantidad_lote > cantidad_existente && item.nuevo == 0) {
+                this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + cantidad_existente, objeto);
+                cantidad_lote = cantidad_existente * 1;
               }
               l.controls.cantidad.patchValue(cantidad_lote);
               break;
@@ -623,13 +668,27 @@ export class FormularioComponent {
         if (!existe_lote) {
           // Si es nuevo entonces igualar la cantidad a la existencia
           if (item.nuevo) {
-            item.existencia = item.cantidad * 1;
+            if(this.modo == 'N'){
+              item.existencia = item.cantidad * 1;
+              item.existencia_unidosis = item.cantidad * lotes.cantidad_x_envase;
+            }else{
+              item.existencia = item.cantidad / lotes.cantidad_x_envase;
+              item.existencia_unidosis = item.cantidad * 1;
+            }
           }
 
-          // validar que la cantidad escrita no sea mayor que la existencia si no poner la existencia como la cantidad maxima        
-          if (item.cantidad > item.existencia) {
-            this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + item.existencia, objeto);
-            item.cantidad = item.existencia * 1;
+          console.log('//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////');
+          // validar que la cantidad escrita no sea mayor que la existencia si no poner la existencia como la cantidad maxima 
+          let cantidad_existente = 0;
+          if(this.modo == 'N'){
+            cantidad_existente = item.existencia;
+          }else{
+            cantidad_existente = item.existencia_unidosis;
+          }
+          
+          if (item.cantidad > cantidad_existente) {
+            this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + cantidad_existente, objeto);
+            item.cantidad = cantidad_existente * 1;
           }
 
           // agregar al formulario reactivo de lote
@@ -640,7 +699,8 @@ export class FormularioComponent {
               codigo_barras: item.codigo_barras ? item.codigo_barras : '' ,
               lote: item.lote,
               fecha_caducidad: item.fecha_caducidad,
-              existencia: item.nuevo ? item.cantidad : item.existencia,
+              existencia: item.existencia,
+              existencia_unidosis: item.existencia_unidosis,
               cantidad: item.cantidad
             }
           ));
@@ -655,6 +715,7 @@ export class FormularioComponent {
     //agregar la cantidad surtida
     ctrlLotes.controls['cantidad_surtida'].patchValue(cantidad);
     this.cancelarModal('verLotes');
+    this.cancelarModal('negarExistencia');
     this.sum_cant_lotes = false;
   }
   /**
@@ -712,13 +773,20 @@ export class FormularioComponent {
      * @return void
      */
   validar_cantidad_lote(i, val, i2) {
-    if (val.controls.cantidad.value > val.controls.existencia.value && val.nuevo == 0) {
+    let cantidad_existente = 0;
+    if(this.modo == 'N'){
+      cantidad_existente = val.controls.existencia.value;
+    }else{
+      cantidad_existente = val.controls.existencia_unidosis.value;
+    }
+    if (val.controls.cantidad.value > cantidad_existente && val.controls.nuevo.value == 0) {
       var objeto = {
         showProgressBar: true,
         pauseOnHover: true,
         clickToClose: true,
         maxLength: 2000
       };
+      
       this.notificacion.alert('Cantidad Excedida', 'La cantidad maxima es: ' + val.controls.existencia.value, objeto);
       val.controls.cantidad.patchValue(val.controls.existencia.value * 1);
     }
@@ -798,11 +866,14 @@ export class FormularioComponent {
   calcularCantidadSugerida(dosis, frecuencia, duracion) {
     let veces_al_dia = 24 / frecuencia;
     this.cantidad_recomendada  = veces_al_dia * dosis * Number(duracion);
-    this.cantidad_recomendada = this.cantidad_recomendada / this.cantidad_x_envase;
-    let temporal = '' + this.cantidad_recomendada;
 
-    if ( this.cantidad_recomendada > parseInt(temporal, 10)) {
-      this.cantidad_recomendada =  parseInt(temporal, 10) + 1;
+    if(this.modo == 'N'){
+      this.cantidad_recomendada = this.cantidad_recomendada / this.cantidad_x_envase;
+      let temporal = '' + this.cantidad_recomendada;
+
+      if ( this.cantidad_recomendada > parseInt(temporal, 10)) {
+        this.cantidad_recomendada =  parseInt(temporal, 10) + 1;
+      }
     }
   }
   /**

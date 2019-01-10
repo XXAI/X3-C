@@ -90,7 +90,8 @@ export class HubComponent implements OnInit {
         'bwWWUufmEBRFpw9HbUJQUP8EFnagynQv', // Ver abasto
         's8kSv2Gj9DZwRvClVRmZohp92Rtvi26i', // Transferencia de recursos
         'fWA5oDswZ2Ra4O8YaCy6nEY8OeCOxg9C', // Entregas por mes
-        'BBg7HSOEmjjOsVl48s8wSz8AxXhmBXA1' // Cumplimiento
+        'BBg7HSOEmjjOsVl48s8wSz8AxXhmBXA1', // Cumplimiento
+        'X36qZL6YWSwvEaR2EH1TeSOotssAkrxu', // Catalogo de Insumos medicos
       ]
     },
     {
@@ -119,7 +120,7 @@ export class HubComponent implements OnInit {
         'zRTSAl0H8YNFMWcn00yeeJPigztCbSdC', // Ver mis almacenes
         '9dKCEyujSdLQF2CbpjXiWKeap0NlJCzw', // Ver mis turnos
         'Ki9kBghgqYsY17kqL620GWYl0bpeU6TB', // Ver mis servicios
-        'BnB3LhrDbKNBrbQaeB2BPXKGrLEYrEw7' // Ver mis claves
+        'BnB3LhrDbKNBrbQaeB2BPXKGrLEYrEw7', // Ver mis claves
       ]
     },
     {

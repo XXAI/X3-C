@@ -80,7 +80,7 @@ export class TransferenciaAlmacenService {
   }
 
   almacenes(clues:string): Observable<any>{
-    return this.jwtRequest.get(TransferenciaAlmacenService.URL_ALMACENES,null,{q: clues, tipo: 'ALMPAL'}).map( (response: Response) => response.json().data);
+    return this.jwtRequest.get(TransferenciaAlmacenService.URL_ALMACENES,null,{q: clues}).map( (response: Response) => response.json().data);
   }
   
   guardarTransferencia(id:any = null, parametros: any = {}):Observable<any> {

@@ -1216,7 +1216,7 @@ export class InicialComponent {
 
 					}
         );
-        console.log(this.form_dato_auxiliar);
+        //console.log(this.form_dato_auxiliar);
     }
     
   }
