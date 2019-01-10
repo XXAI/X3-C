@@ -55,6 +55,7 @@
                   <span class="help is-danger" *ngIf="errores.fecha == 'required'">Este campo es requerido.</span>
               </p>
           </div>
+          
         </div>
         <div class="columns">
             <div class="column is-one-third">
@@ -276,6 +277,52 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="modal is-active" [ngClass]="{'is-active': showResponsables}">
+  <div class="modal-background"  (click)="showResponsables = !showResponsables"></div>
+  <div class="modal-card" style="width:60%; height: auto;">
+    <header class="modal-card-head" style="background-color: #00d1b2" >
+      <div class="container is-fluid"  style="width:100%;">
+          <h1 class="title" style="color:#FFF;">
+            <span class="icon is-medium"><i class="fa fa-user"></i></span> Responsables
+          </h1>
+      </div>            
+      <a class="button  is-primary" style="position:absolute; top:1em; right:1em;" (click)="showResponsables = !showResponsables"><span class="icon "><i class="fa fa-close"></i></span></a>
+    </header>
+        <!--<section class="section" style="padding: 1rem 1.5rem; background-color: #EFEFEF">
+            <div class="container">
+              <div class="heading">
+                <h1 class="title">Responsables</h1>
+              </div>
+            </div>
+        </section> -->
+        <section class="modal-card-body">
+            <div class="content">
+        
+              <div class="columns">
+                <div class="column">              
+                    <label class="label">Responsable envia:</label>
+                    <p class="control is-expanded  has-icon has-icon-right">
+                        <input class="input"  type="text"  [(ngModel)]="datosPedido.reponsable_entrega"   placeholder="Nombre Responsable Envia" >
+                    </p>
+                </div>
+                <div class="column">
+                    <label class="label">Persona encargada de recepción</label>              
+                    <p class="control is-expanded  has-icon has-icon-right">
+                        <input class="input"  type="text"  [(ngModel)]="datosPedido.responsable_recibe"  placeholder="Nombre Responsable Recepcion" >
+                    </p>
+                </div>
+              </div> 
+            </div>    
+                   
+          </section>
+
+    <footer class="" style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em " >
+        <a class="button is-success" (click)= 'aceptar_finalizacion()'>ACEPTAR</a>
+        <a class="button" (click)="showResponsables = !showResponsables">Cancelar</a>
+    </footer>
   </div>
 </div>
 

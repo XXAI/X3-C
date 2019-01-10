@@ -62,6 +62,9 @@ export class TransferenciaComponent implements OnInit {
 
     // # SECCION: Modal Insumos
     mostrarModalInsumos = false;
+
+    // #SECCION: Modal responsables
+    showResponsables: boolean = false;
     
     // Akira: Lo volvy tipo any en lugar de string porque en pedidos jurisdiccionales se agregan más datos :P
     listaLotesAgregados: any = {};
@@ -717,8 +720,11 @@ export class TransferenciaComponent implements OnInit {
         observaciones: this.datosPedido.observaciones,
         insumos : insumos,
         movimiento: this.movimiento,
-        movimiento_insumos: listaStock
+        movimiento_insumos: listaStock,
+        entrega: this.datosPedido.reponsable_entrega,
+        recibe: this.datosPedido.responsable_recibe
       }
+      //console.log(payload);
       this.apiService.guardarTransferencia(this.id != null? this.id : null,payload).subscribe(
         respuesta => {
           if(finalizar){
@@ -771,6 +777,29 @@ export class TransferenciaComponent implements OnInit {
     }
 
     finalizar() {
+      this.showResponsables = true;
+      let recibe  = this.datosPedido.almacen_solicitante;
+      console.log(recibe);
+      if(this.datosPedido.almacen_solicitante != null)
+      {
+        this.apiService.responsables( recibe).subscribe(
+          respuesta => {
+           
+            let datos = respuesta;
+            
+            this.datosPedido.reponsable_entrega = datos.entrega;
+            this.datosPedido.responsable_recibe = datos.recibe;
+          },error =>
+          {
+
+          }
+        );
+      }
+      /**/
+    }
+
+    aceptar_finalizacion()
+    {
       var validacion_palabra = prompt("Atención la transferencia ya no podra editarse, para confirmar que desea concluir el movimiento por favor escriba: CONCLUIR TRANSFERENCIA");
       if(validacion_palabra == 'CONCLUIR TRANSFERENCIA'){
         this.guardar(true);

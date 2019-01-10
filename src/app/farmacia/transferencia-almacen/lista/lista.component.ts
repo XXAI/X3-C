@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 
@@ -13,6 +13,8 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/catch';
+
+import  * as FileSaver    from 'file-saver';
 
 import { TransferenciaAlmacenService } from '../transferencia-almacen.service';
 import { CambiarEntornoService } from '../../../perfil/cambiar-entorno.service';
@@ -49,6 +51,17 @@ export class ListaComponent implements OnInit {
   indicePaginas:number[] = []
   // # FIN SECCION
 
+   /**
+   * Objeto para los reportes con web Webworkers.
+   * @type {Worker}
+   */
+  pdfworker: Worker;
+
+   /**
+   * Contiene la lista general de los datos para enviarlo al PDF.
+   * @type {any} */
+  lista_impresion;
+
   // # SECCION: Resultados de búsqueda
   ultimoTerminoBuscado = "";
   terminosBusqueda = new Subject<string>();
@@ -63,7 +76,7 @@ export class ListaComponent implements OnInit {
 
   cambiarEntornoSuscription: Subscription;
 
-  constructor(private title: Title, private route: ActivatedRoute, private transferenciaAlmacenService: TransferenciaAlmacenService, private cambiarEntornoService:CambiarEntornoService) { }
+  constructor(private title: Title, private route: ActivatedRoute, private transferenciaAlmacenService: TransferenciaAlmacenService, private cambiarEntornoService:CambiarEntornoService, private _ngZone: NgZone) { }
 
   ngOnInit() {
     switch(this.route.snapshot.url[0].path){
@@ -157,6 +170,23 @@ export class ListaComponent implements OnInit {
       }
 
     );
+
+     // Inicializamos el objeto para los reportes con web Webworkers
+     this.pdfworker = new Worker('web-workers/farmacia/transferencia/imprimir-acuse.js');
+
+     // Este es un hack para poder usar variables del componente dentro de una funcion del worker
+     let $ngZone = this._ngZone;
+ 
+     this.pdfworker.onmessage = function( evt ) {
+       // Esto es un hack porque estamos fuera de contexto dentro del worker
+       // Y se usa esto para actualizar alginas variables
+       $ngZone.run(() => {
+          //self.cargandoPdf = false;
+       });
+ 
+       FileSaver.saveAs( self.base64ToBlob( evt.data.base64, 'application/pdf' ), evt.data.fileName );
+       // open( 'data:application/pdf;base64,' + evt.data.base64 ); // Popup PDF
+     };
   }
 
   obtenerDireccion(id:string, status:string): string{
@@ -168,6 +198,35 @@ export class ListaComponent implements OnInit {
       return '/almacen/transferencia-almacen/ver/'+id;
     }
   }
+   imprimir_reporte(id: string): void
+   {
+      //console.log(id);
+      try {
+        let pedido = id;
+  
+        this.transferenciaAlmacenService.reporte_acuse(pedido).subscribe(
+          resultado => {
+                  /*this.cargando = false;
+                  
+                  this.cargandoPdf = false;*/
+                  
+                  this.lista_impresion = resultado;
+                  let datos_imprimir = {
+                    pedido: this.lista_impresion.pedido,
+                    fecha: this.lista_impresion.fecha_completa
+                  };
+                  console.log(datos_imprimir);
+                  this.pdfworker.postMessage(JSON.stringify(datos_imprimir));
+                },
+                error => {
+                  //this.cargandoPdf = false;
+                }
+        );
+      } catch (e) {
+        console.log(e);
+        //this.cargandoPdf = false;
+      }
+   }
   
   buscar(term: string): void {
     this.terminosBusqueda.next(term);
@@ -311,6 +370,23 @@ export class ListaComponent implements OnInit {
     }else{
       pedido.cargando = false;
     }
+  }
+
+  /**
+   * Método que realiza una conversión de base64 a Blob
+   * @param base64 Formato en el que llega el dato
+   * @param type Tipo al que se convertira.
+   */
+  base64ToBlob( base64, type ) {
+    let bytes = atob( base64 );
+    let len = bytes.length;
+    let buffer = new ArrayBuffer( len );
+    let view = new Uint8Array( buffer );
+
+    for ( let i = 0 ; i < len ; i++ ) {
+      view[i] = bytes.charCodeAt(i) & 0xff;
+    }
+    return new Blob( [ buffer ], { type: type } );
   }
 
   // # SECCION: Paginación

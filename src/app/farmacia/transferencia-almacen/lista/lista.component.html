@@ -51,6 +51,7 @@
                         <th>Cantidad</th>
                         <th>Monto</th>
                         <th style="text-align:center;" width="1">Opciones</th>
+                        <th style="text-align:center;" width="1"><i class="fa fa-print"></i></th>
                     </tr>
                 </thead>
                 <tbody  *ngIf="!busquedaActivada">
@@ -59,6 +60,7 @@
                             <span class="icon" *ngIf="item.tipo_pedido_id=='PA'"><i class="fa fa-hospital-o"></i></span>
                             <span class="icon" *ngIf="item.tipo_pedido_id=='PFS'"><i class="fa fa-building"></i></span>
                             <span class="icon" *ngIf="item.tipo_pedido_id=='PALT'"><i class="fa fa-building-o"></i></span>
+                            <span class="icon" *ngIf="item.tipo_pedido_id=='PEA'"><i class="fa  fa-building-o fa-refresh"></i></span>
                             {{ item.folio?item.folio:'S/F' }}</a>
                         </th>
                         <td style="vertical-align: middle;"><a routerLink="{{obtenerDireccion(item.id,item.status)}}">{{ item.descripcion }}</a></td>
@@ -81,6 +83,10 @@
                             <span *ngIf="!item.cargando && item.status == 'FI'" class="estatus-verde" title="Finalizado"><span class="icon"><i class="fa fa-check-circle"></i></span></span>
                             <span *ngIf="!item.cargando && item.status == 'EX-CA'" class="estatus-rojo" title="Expirado - Cancelado"><span class="icon"><i class="fa fa-times-circle"></i></span></span>
                             <span *ngIf="!item.cargando && item.status == 'EX'" class="estatus-amarillo" title="Expirado"><span class="icon"><i class="fa fa-exclamation-circle"></i></span></span-->
+                        </td>
+                        <!-- Opcion de Imprimir ATARRAYA-->
+                        <td style="vertical-align: middle;" class="has-text-centered">
+                            <a (click)="imprimir_reporte(item.id)" *ngIf="item.status != 'BR'"><i class="fa fa-file-pdf-o"></i></a>
                         </td>
                     </tr>
                     <tr *ngIf="pedidos.length == 0">

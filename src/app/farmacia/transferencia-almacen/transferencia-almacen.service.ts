@@ -19,6 +19,10 @@ export class TransferenciaAlmacenService {
 
   static readonly URL_UNIDADES_MEDICAS: string = "unidades-medicas";
   static readonly URL_ALMACENES: string = "almacenes";
+
+  //ATARRAYA:
+  static readonly URL_RESPONSABLES: string = "almacen/responsables";
+  static readonly URL_ACUSE: string = "almacen/reporte-acuse";
   
   constructor(private http: Http,   private jwtRequest:JwtRequestService) { }
 
@@ -89,6 +93,16 @@ export class TransferenciaAlmacenService {
 
   cancelarTransferencia(id:any, parametros:any = {}): Observable<any>{
     return this.jwtRequest.put(TransferenciaAlmacenService.URL_CANCELAR_TRANSFERENCIA,id,parametros).map( (response: Response) => response.json().data) as Observable<any[]>;
+  }
+
+  //ATARRAYA:
+  responsables(almacen_recibe:any): Observable<any>{
+    console.log(almacen_recibe);
+    return this.jwtRequest.get(TransferenciaAlmacenService.URL_RESPONSABLES,null,{ almacen_solicitante: almacen_recibe}).map( (response: Response) => response.json().data);
+  }
+
+  reporte_acuse(pedido:string): Observable<any>{
+    return this.jwtRequest.get(TransferenciaAlmacenService.URL_ACUSE,null,{pedido_id:pedido}).map( (response: Response) => response.json().data);
   }
 
 }
