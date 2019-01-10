@@ -1,6 +1,7 @@
 var document = { 'createElementNS': function(){ return {} } };
 var window = this;
 importScripts( '../../../scripts/pdfmake.min.js', '../../../scripts/vfs_fonts.js');
+importScripts('../../logos.js');
 
 (function() { 
     'use strict';
