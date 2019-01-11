@@ -15,7 +15,8 @@
           <span *ngIf="cargandoPresupuesto" class="icon is-medium"><i class="fa fa-refresh fa-spin"></i></span>
           Pedido ordinario
         </h1>
-
+        <a class="button is-primary" style="position:absolute; top:1em; right:3.5em;" (click)="exportarPresupuestoExcel()"><span class="icon is-small"><i class="fa fa-file-excel-o "></i></span><span>Exportar
+                  a excel</span></a>
         <a class="button  is-primary" routerLink="/administrador-central/pedidos-ordinarios/" style="position:absolute; top:1em; right:1em;">
           <span class="icon ">
             <i class="fa fa-arrow-left"></i>
@@ -25,77 +26,34 @@
       <div style="padding:10px">
         <div class="columns is-desktop" style="font-size: 0.8em">
           <div class="column ">
-            <div class="field">
-              <label class="label">Descripcion:</label>
-              <p class="control is-expanded  has-icon has-icon-right">
-                <input class="input" autofocus type="text" [ngClass]="{'is-danger': errores.descripcion != null, 'is-disabled': guardando || cargandoPresupuesto}"
-                  placeholder="Ej. Pedido ordinario del mes de mayo 2019" [(ngModel)]="pedido_ordinario.descripcion">
-                <span class="icon is-small" *ngIf="false">
-                  <i class="fa fa-warning"></i>
-                </span>
-                <span class="help is-danger" *ngIf="errores.descripcion == 'required'">Este campo es requerido.</span>
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="columns is-desktop" style="font-size: 0.8em">
-          <div class="column">
-            <div class="field">
-              <label class="label">Fecha:</label>
-              <p class="control is-expanded ">
-                <input class="input" type="date" [ngClass]="{'is-danger': errores.fecha != null, 'is-disabled': guardando || cargandoPresupuesto}"
-                  [(ngModel)]="pedido_ordinario.fecha">
-
-                <span class="help is-danger" *ngIf="errores.fecha == 'required'">Este campo es requerido.</span>
-                <span class="help is-danger" *ngIf="errores.fecha == 'date'">Este campo debe ser una fecha válida.</span>
-              </p>
-            </div>
-          </div>
-          <div class="column">
-            <div class="field">
-              <label class="label">Fecha expiración:</label>
-              <p class="control is-expanded ">
-                <input class="input" type="datetime-local" [ngClass]="{'is-danger': errores.fecha_expiracion != null, 'is-disabled': guardando || cargandoPresupuesto}"
-                  [(ngModel)]="pedido_ordinario.fecha_expiracion" style="width:100%">
-
-                <span class="help is-danger" *ngIf="errores.fecha_expiracion == 'required'">Este campo es requerido.</span>
-                <span class="help is-danger" *ngIf="errores.fecha_expiracion == 'date'">Este campo debe ser una fecha
-                  válida.</span>
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="columns">
-
-          <div class="column ">
-            <div class="block">
-                <a class="button  is-info is-small" [ngClass]="{'is-disabled': guardando || cargandoPresupuesto}">
-                    <span class="icon is-small">
-                      <i class="fa fa-calendar-plus-o"></i>
-                    </span>
-                    <span>Ampliar fecha expiración</span>
-                  </a>
-                  <a class="button  is-warning is-small " [ngClass]="{'is-disabled': guardando || cargandoPresupuesto}">
-                      <span class="icon is-small">
-                        <i class="fa fa-plus"></i>
-                      </span>
-                      <span>Ampliar presupuesto a excedidos</span>
-                    </a>
-                    <a class="button  is-success is-small " [ngClass]="{'is-disabled': guardando || cargandoPresupuesto}">
-                        <span class="icon is-small">
-                          <i class="fa fa-check"></i>
-                        </span>
-                        <span>Liberar todo el presupuesto sobrante</span>
-                      </a>
+            <div class="content">
+              <h3><strong>{{ pedido_ordinario.descripcion }}</strong></h3>
+              
+            <hr>
             </div>
             
-            <!--<a class="button  is-primary is-small is-fullwidth" [ngClass]="{'is-disabled': guardando || cargandoPresupuesto}" (click)="mostrarModalUnidadesMedicas = true;">
-              <span class="icon is-small">
-                <i class="fa fa-search"></i>
-              </span>
-              <span>Buscar unidades</span>
-            </a>-->
+            <nav class="level">
+              <div class="level-left">
+                <div class="level-item">
+                  <p>
+                    <strong><small>Fecha</small></strong><br>
+                    <span>{{ pedido_ordinario.fecha | date: 'dd/MM/yyyy' }} </span>
+                  </p>
+                </div>
+                <div class="level-item">
+                  <p>
+                    <strong><small>Fecha expiración</small></strong><br>
+                    <span>{{ pedido_ordinario.fecha_expiracion | date: 'dd/MM/yyyy' }} a las {{
+                      pedido_ordinario.fecha_expiracion | date: 'HH:mm' }} hrs</span>
+                  </p>
+                </div>
+                <p class="level-item"><a class="button is-primary is-inverted" title="Ampliar fecha de expiración"><span class="icon"><i class="fa fa-calendar-plus-o"></i></span></a></p>              
+              </div>
+              <div class="level-right">
+                  <p class="level-item"><a class="button is-warning" (click)="mostrarAumentarPresupuesto = true;" title="Aumentar presupuesto a pedidos excedidos" [ngClass]="{'is-disabled': total_faltante == 0 }"><span class="icon"><i class="fa fa-dollar"></i></span> <span>Aumentar excedidos ({{ total_faltante }})</span></a></p>              
+                  <p class="level-item"><a class="button is-success"  title="Liberar presupuesto no utilizado" [ngClass]="{'is-disabled': total_liberar_presupuesto == 0 }"><span class="icon"><i class="fa fa-check"></i></span> <span>Liberar presupuesto ({{ total_liberar_presupuesto }})</span></a></p>              
+              </div>
+            </nav>
           </div>
         </div>
 
@@ -105,8 +63,8 @@
 
               <tr>
                 <th rowspan="2" style="text-align:center; vertical-align: middle; width: 48px">
-                    <a  class="button is-small is-danger" title="Cancelar todos" (click)="cancelarTodos()"
-                    [ngClass]="{'is-disabled': guardando}"><span class="icon is-small"><i class="fa fa-ban"></i></span></a>
+                  <a class="button is-small is-danger" title="Cancelar todos" (click)="cancelar()" [ngClass]="{'is-disabled': guardando}"><span
+                      class="icon is-small"><i class="fa fa-ban"></i></span></a>
                 </th>
                 <th rowspan="2" style="text-align:center; vertical-align: middle; width: 80px;">Clues</th>
                 <th rowspan="2" style="text-align:center; vertical-align: middle; max-width: 180px">Nombre</th>
@@ -138,21 +96,18 @@
             <tbody *ngIf="pedido_ordinario.pedidos_ordinarios_unidades_medicas">
               <tr *ngFor="let item of pedido_ordinario.pedidos_ordinarios_unidades_medicas; let i=index" [ngClass]="{ 'is-danger': item.error }">
                 <td style="text-align:center">
-                  <a *ngIf="item.status == 'S/P' || item.status == 'EX' " title="Cancelar" class="button is-small is-danger is-inverted" (click)="cancelar(item, i)"
-                    [ngClass]="{'is-disabled': guardando}"><span class="icon is-small"><i class="fa fa-ban"></i></span></a>
+                  <a *ngIf="item.status == 'S/P' || item.status == 'EX' " title="Cancelar" class="button is-small is-danger is-inverted"
+                    (click)="cancelar(item)" [ngClass]="{'is-disabled': guardando}"><span class="icon is-small"><i
+                        class="fa fa-ban"></i></span></a>
                   <span *ngIf="item.status == 'FI'" class="icon"><i class="fa fa-check"></i></span>
                   <span *ngIf="item.status == 'CA'" class="icon"><i class="fa fa-ban"></i></span>
-                  <!--<a *ngIf="item.status == 'EP'" class="button is-small is-success" (click)="aumentarPresupuesto(item, i)"
-                    [ngClass]="{'is-disabled': guardando}"><span class="icon is-small" style="margin-right:0px !important;"><i
-                        class="fa fa-plus"></i></span><span class="icon is-small"><i class="fa fa-usd"></i></span></a>
-                  <a *ngIf="item.status == 'FI' && item.causes_modificado - item.causes_disponible" class="button is-small is-success"
-                    (click)="aumentarPresupuesto(item, i)" [ngClass]="{'is-disabled': guardando}"><span class="icon is-small"
-                      style="margin-right:0px !important;"><i class="fa fa-plus"></i></span><span class="icon is-small"><i
-                        class="fa fa-usd"></i></span></a>-->
                 </td>
                 <td><span class="text-overflow" title="{{ item.clues }}">{{ item.clues }}</span></td>
                 <td><span class="text-overflow" title="{{ item.unidad_medica.nombre }}">{{ item.unidad_medica.nombre }}</span></td>
-                <td style="text-align:center">{{ item.status }}</td>
+                <td style="text-align:center">
+                  <abbr [ngStyle]="{'color': item.status == 'CA' || item.status == 'EX'? 'red': 'black' }" title="{{ item.status == 'S/P'? 'Sin pedido capturado' : ( item.status == 'EP' ? 'Captura en proceso': ( item.status == 'CA'? 'Cancelado': (item.status == 'EX'? 'Expirado': 'Finalizado')))  }}">{{ item.status }}</abbr>
+                  
+                </td>
 
                 <td style="text-align:right">${{ (item.causes_autorizado || 0) | number:'1.2-2' }}</td>
                 <td style="text-align:right">${{ (item.no_causes_autorizado || 0) | number:'1.2-2' }}</td>
@@ -249,27 +204,3 @@
     <small>Este mensaje desaparecerá en {{ mensajeExito.cuentaAtras }} segundos.</small>
   </p>
 </div>
-
-<div class="modal is-active" *ngIf="mostrarInfoFactorMeses">
-  <div class="modal-background" (click)="mostrarInfoFactorMeses = false"></div>
-  <div class="modal-card">
-    <header class="modal-card-head">
-      <p class="modal-card-title">Factor meses</p>
-      <button class="delete" (click)="mostrarInfoFactorMeses = false"></button>
-    </header>
-    <section class="modal-card-body">
-      Este valor es para saber entre cuantos meses se va a gastar el presupuesto. Debe ser entre 1 y 12. <br>
-      <span *ngIf="pedido_ordinario.factor_meses >=1 && pedido_ordinario.factor_meses <=12">
-        El valor elegido es: <strong>{{ pedido_ordinario.factor_meses}}</strong> por lo cual se prevé el presupuesto se
-        empezará a gastar a partir del mes de <strong>{{ factorMes() }}</strong>
-      </span>
-    </section>
-    <footer class="modal-card-foot">
-      <a class="button" (click)="mostrarInfoFactorMeses = false">Cerrar</a>
-    </footer>
-  </div>
-</div>
-
-<administrador-central-buscar-unidades-medicas *ngIf="mostrarModalUnidadesMedicas" [ignorarClues]="cluesAgregadas"
-  (onCerrar)="mostrarModalUnidadesMedicas = false" (onEnviar)="agregarUnidadMedica($event); mostrarModalUnidadesMedicas = false;">
-</administrador-central-buscar-unidades-medicas>

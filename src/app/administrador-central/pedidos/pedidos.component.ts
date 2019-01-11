@@ -702,10 +702,21 @@ export class PedidosComponent implements OnInit {
     if(this.fecha_hasta != null){
       query += "&fecha_hasta="+this.fecha_hasta;
     }
-    window.open(`${environment.API_URL}/administrador-central/pedidos-excel?${query}`);
-   
+
+    var lista_meses = "";
     
-    
+    for(var i in this.mesSeleccionados){
+      if(lista_meses != ""){
+        lista_meses += ",";
+      }
+      lista_meses += ""+this.mesSeleccionados[i].id;
+      
+    }
+    if(lista_meses != ""){
+      query += "&meses="+lista_meses;
+    }
+
+    window.open(`${environment.API_URL}/administrador-central/pedidos-excel?${query}`);    
   }
 
   imprimirExcelItem(id){
