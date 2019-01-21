@@ -95,6 +95,13 @@
                 <span *ngIf="stats.farmacia>0 && !cargando" class="tag is-pulled-right" [ngClass]="{ 'is-white': farmacia.className == 'is-active', 'is-info': farmacia.className != 'is-active' }">{{  stats.farmacia }}</span>
             </a>
         </li>
+        <li>
+            <a routerLink="/almacen/pedidos/recepcion" #recepcion routerLinkActive="is-active">
+                <span class="icon"><i class="fa fa-list-alt"></i></span> Recepcion de Pedidos
+                <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                <span *ngIf="stats.recepcion>0 && !cargando" class="tag is-pulled-right" [ngClass]="{ 'is-white': recepcion.className == 'is-active', 'is-info': recepcion.className != 'is-active' }">{{  stats.recepcion }}</span>
+            </a>
+        </li>
         <hr>
         <li>
             <a routerLink="/almacen/pedidos/finalizados" #finalizados routerLinkActive="is-active">

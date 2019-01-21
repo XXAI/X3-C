@@ -32,6 +32,7 @@ export class MenuLateralComponent implements OnInit {
     expirados_cancelados: 0,
     farmacia: 0,
     alternos: 0,
+    recepcion:0
   };
 
   @Output() onCambiarPresupuesto = new EventEmitter<void>();
@@ -56,7 +57,8 @@ export class MenuLateralComponent implements OnInit {
         expirados_cancelados: 0,
         farmacia: 0,
         alternos: 0,
-        actas:0
+        actas:0, 
+        recepcion:0
       };
       this.cargarStatsPedidos();
       this.cargarPresupuestos();
@@ -164,6 +166,7 @@ export class MenuLateralComponent implements OnInit {
       );
     }
   }
+
 
   ngOnDestroy(){
     this.cambiarEntornoSuscription.unsubscribe();

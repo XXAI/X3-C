@@ -17,6 +17,9 @@ export class PedidosService {
   static readonly URL_CANCELAR_TRANSFERENCIA: string = "cancelar-transferencia";
   static readonly URL_GENERAR_ALTERNO: string = "generar-pedido-alterno";
   
+  static readonly URL_RECEPCION: string = "reporte-recepcion-pedido";//Villa: Se agrega liga de recepcion
+  static readonly URL_RECEPCION_DETALLE: string = "reporte-recepcion-pedido-detalle";
+  
   constructor(private http: Http,   private jwtRequest:JwtRequestService) { }
 
   stats(presupuesto:number = 0): Observable<any>{
@@ -99,5 +102,10 @@ export class PedidosService {
   generarPedidoAlterno(id:any, parametros:any = {}): Observable<any>{
     return this.jwtRequest.put(PedidosService.URL_GENERAR_ALTERNO,id,parametros).map( (response: Response) => response.json().data) as Observable<any[]>;
   }
+
+  reporte_recepcion(pedido:string): Observable<any>{
+    return this.jwtRequest.get(PedidosService.URL_RECEPCION,null,{pedido_id:pedido}).map( (response: Response) => response.json().data);
+  }
+  
   
 }

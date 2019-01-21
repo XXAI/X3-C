@@ -23,15 +23,18 @@ import { ActasService } from './actas/actas.service';
 import { AlmacenesService } from '../../catalogos/almacenes/almacenes.service';
 import { StockService } from '../stock/stock.service';
 import { RecepcionService } from './recepcion/recepcion.service';
+import { ReporteRecepcionService } from './reporte-recepcion/reporte-recepcion.service';
 
 import { VerComponent } from './ver/ver.component';
 import { FormularioComponent } from './formulario/formulario.component';
 import { RecepcionComponent } from './recepcion/recepcion.component';
 
+
 import { ListaCluesComponent } from './lista-clues/lista-clues.component';
 
 import { ListaComponent as ListaActasComponent } from './actas/lista/lista.component';
 import { VerComponent as VerActaComponent } from './actas/ver/ver.component';
+import { ReporteRecepcionComponent } from './reporte-recepcion/reporte-recepcion.component';
 
 @NgModule({
   imports: [
@@ -47,7 +50,7 @@ import { VerComponent as VerActaComponent } from './actas/ver/ver.component';
     PedidosRoutingModule,
     IndexFarmaciaModule
   ],
-  declarations: [PedidosComponent, MenuLateralComponent, ListaComponent, VerComponent, FormularioComponent, RecepcionComponent, ListaCluesComponent, ListaActasComponent, VerActaComponent],
-  providers:[PedidosService,ActasService,AlmacenesService,StockService,RecepcionService]
+  declarations: [PedidosComponent, MenuLateralComponent, ListaComponent, VerComponent, FormularioComponent, RecepcionComponent, ListaCluesComponent, ListaActasComponent, VerActaComponent, ReporteRecepcionComponent],
+  providers:[PedidosService,ActasService,AlmacenesService,StockService,RecepcionService, ReporteRecepcionService]
 })
 export class PedidosModule { }

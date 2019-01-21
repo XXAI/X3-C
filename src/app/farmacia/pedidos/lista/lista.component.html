@@ -184,6 +184,7 @@
                 <tbody *ngIf="!busquedaActivada" style="font-size: 0.7em;">
                     <tr *ngFor="let item of pedidos; let i=index" [ngClass]="{'proyecto-estatus-normal':(item.status == 'BR' || item.status == 'PS'),'proyecto-estatus-azul':item.status == 'EF','proyecto-estatus-rojo':item.status == 'EX-CA','proyecto-estatus-amarillo':item.status == 'EX','proyecto-estatus-verde':item.status == 'FI'}">
                         <th style="vertical-align: middle;"><a routerLink="{{obtenerDireccion(item.id,item.status)}}">
+                                <span class="icon" *ngIf="item.tipo_pedido_id=='PEA'"><i class="fa fa-hospital-o"></i></span>
                                 <span class="icon" *ngIf="item.tipo_pedido_id=='PA'"><i class="fa fa-hospital-o"></i></span>
                                 <span class="icon" *ngIf="item.tipo_pedido_id=='PFS'"><i class="fa fa-building"></i></span>
                                 <span class="icon" *ngIf="item.tipo_pedido_id=='PALT'"><i class="fa fa-building-o"></i></span>
@@ -228,6 +229,7 @@
                             <span *ngIf="!item.cargando && item.status == 'EX'" class="estatus-amarillo" title="Expirado"><span
                                     class="icon"><i class="fa fa-exclamation-circle"></i></span></span>
                         </td>
+                        
                     </tr>
                     <tr *ngIf="pedidos.length == 0">
                         <td colspan="5" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>
@@ -280,6 +282,7 @@
                             <span *ngIf="!item.cargando && item.status == 'EX'" class="estatus-amarillo" title="Expirado"><span
                                     class="icon"><i class="fa fa-exclamation-circle"></i></span></span>
                         </td>
+                       
                     </tr>
 
                     <tr *ngIf="resultadosBusqueda.length == 0 && busquedaActivada">

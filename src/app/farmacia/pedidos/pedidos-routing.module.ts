@@ -6,6 +6,7 @@ import { ListaComponent } from './lista/lista.component';
 import { FormularioComponent } from './formulario/formulario.component';
 import { VerComponent } from './ver/ver.component';
 import { RecepcionComponent } from './recepcion/recepcion.component';
+import { ReporteRecepcionComponent } from './reporte-recepcion/reporte-recepcion.component';
 import { ListaComponent as ListaActasComponent } from './actas/lista/lista.component';
 import { VerComponent as VerActaComponent } from './actas/ver/ver.component';
 
@@ -32,6 +33,7 @@ const routes: Routes = [
        { path: 'expirados', component: ListaComponent},
        { path: 'expirados-cancelados', component: ListaComponent},
        { path: 'farmacia-subrogada', component: ListaComponent},
+       { path: 'recepcion', component: ReporteRecepcionComponent},
        { path: 'alternos', component: ListaComponent},
        { path: 'nuevo', component: FormularioComponent},
        { path: 'nuevo/ordinario/:pedido_ordinario_unidad_medica_id', component: FormularioComponent},

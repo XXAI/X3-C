@@ -14,6 +14,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/catch';
 
+
 import { PedidosService } from '../pedidos.service';
 import { CambiarEntornoService } from '../../../perfil/cambiar-entorno.service';
 
@@ -47,6 +48,7 @@ export class ListaComponent implements OnInit {
   status: string;
   tipo:string = '';
   titulo: string = "Pedidos";
+
   icono = "fa-file";
   pedidos: Pedido[] = [];
   presupuesto:any = false;
@@ -77,7 +79,7 @@ export class ListaComponent implements OnInit {
   ngOnInit() {
     this.usuario =  JSON.parse(localStorage.getItem("usuario"));
     let nueva_version_presupuesto = localStorage.getItem("nuevaVersionPresupuesto");
-    console.log(nueva_version_presupuesto);
+    //console.log(nueva_version_presupuesto);
     this.nuevaVersionPresupuesto = nueva_version_presupuesto == "true";
     switch(this.route.snapshot.url[0].path){
       //case 'todos': this.status = "TODO"; this.titulo = "Todos"; this.icono = "fa-file"; break;
@@ -88,6 +90,7 @@ export class ListaComponent implements OnInit {
       case 'expirados': this.status = "EX"; this.titulo = "Expirados"; this.icono = "fa-exclamation-circle"; break;
       case 'expirados-cancelados': this.status = "EX-CA"; this.titulo = "Expirados - Cancelados"; this.icono = "fa-times-circle"; break;
       case 'farmacia-subrogada': this.status = "EF"; this.titulo = "Farmacia Subrogada"; this.icono = "fa-building"; break;
+      
       case 'finalizados': 
           this.status = "FI";
           this.icono = "fa-check-circle";
@@ -127,7 +130,7 @@ export class ListaComponent implements OnInit {
       break;
       default: this.titulo = "Pedidos"; this.icono = "fa-file"; break;
     }
-    console.log('inicializar lista de pedidos');
+    //console.log('inicializar lista de pedidos');
     this.title.setTitle("Pedidos");
 
    // this.cargarPresupuestoAnual();
@@ -211,6 +214,8 @@ export class ListaComponent implements OnInit {
       }
 
     );
+
+   
   }
 
   actualizarListaPedidos(){
@@ -324,8 +329,8 @@ export class ListaComponent implements OnInit {
     this.pedidosService.buscar(this.status, term, pagina, this.resultadosPorPaginaBusqueda, this.tipo,presupuesto, this.nuevaVersionPresupuesto).subscribe(
         resultado => {
           this.cargando = false;
-
-          let parsed = resultado.data ;
+          console.log("entro");
+          let parsed = resultado.data;
           for(var i in parsed) {
             parsed[i].created_at = parsed[i].created_at.replace(" ","T"); // En safari fallan las fechas por eso se pone esto
 
@@ -379,6 +384,8 @@ export class ListaComponent implements OnInit {
       this.pedidosService.listaPedidosOrdinarios(pagina, this.resultadosPorPagina, presupuesto).subscribe(
         resultado => {
           this.cargando = false;
+        
+
           this.pedidosOrdinariosBandeja = resultado;
           console.log(resultado);
         },
@@ -391,9 +398,10 @@ export class ListaComponent implements OnInit {
       this.pedidosService.lista(this.status, pagina,this.resultadosPorPagina, this.tipo, presupuesto, this.nuevaVersionPresupuesto).subscribe(
         resultado => {
           this.cargando = false;
+         
           this.pedidos = resultado.data as Pedido[];
 
-          this.total = resultado.total | 0;
+          this.total = resultado.data.total | 0;
           this.paginasTotales = Math.ceil(this.total / this.resultadosPorPagina);
 
           this.indicePaginas = [];
@@ -473,6 +481,8 @@ export class ListaComponent implements OnInit {
       pedido.cargando = false;
     }
   }
+
+  
 
   // # SECCION: Paginación
   paginaSiguiente():void {

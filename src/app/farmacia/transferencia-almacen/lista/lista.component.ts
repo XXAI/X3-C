@@ -215,7 +215,7 @@ export class ListaComponent implements OnInit {
                     pedido: this.lista_impresion.pedido,
                     fecha: this.lista_impresion.fecha_completa
                   };
-                  console.log(datos_imprimir);
+                  //console.log(datos_imprimir);
                   this.pdfworker.postMessage(JSON.stringify(datos_imprimir));
                 },
                 error => {
