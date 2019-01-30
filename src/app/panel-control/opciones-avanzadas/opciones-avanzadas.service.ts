@@ -26,6 +26,10 @@ export class OpcionesAvanzadasService {
     return this.jwtRequest.get(OpcionesAvanzadasService.URL_PARCHES+"/lista",null,{}).map( (response: Response) => response.json().data ) as Observable<any>;
   }
 
+  listarServidores(): Observable<any>{
+    return this.jwtRequest.get("informacion-servidor",null,{}).map( (response: Response) => response.json().data ) as Observable<any>;
+  }
+
   ejecutarParche(objeto: any): Observable<any> {
     return this.jwtRequest.post(OpcionesAvanzadasService.URL_PARCHES+"/ejecutar-parche",objeto).map( (response: Response) => response.json().data) as Observable<any>;
   }

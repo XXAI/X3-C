@@ -21,21 +21,27 @@
             <div class="tabs is-centered is-boxed is-medium">
                 <ul>
                     <li [ngClass]="{ 'is-active': tabRestaurar}">
-                        <a (click)="tabRestaurar=true;tabCargar=false;tabDescargar=false;">
+                        <a (click)="tabRestaurar=true;tabCargar=false;tabDescargar=false;tabMigrar=false;">
                             <span class="icon is-small"><i class="fa fa-hdd-o"></i></span>
                             <span>Respaldar/Restaurar</span>
                         </a>
                     </li>
                     <li [ngClass]="{ 'is-active': tabCargar}" *ngIf="servidor.id != '0001'">
-                        <a (click)="tabRestaurar=false;tabCargar=true;tabDescargar=false;">
+                        <a (click)="tabRestaurar=false;tabCargar=true;tabDescargar=false;tabMigrar=false;">
                         <span class="icon is-small"><i class="fa fa-database"></i></span>
                         <span>Cargar Datos al Servidor Local</span>
                         </a>
                     </li>
                     <li [ngClass]="{ 'is-active': tabDescargar}" *ngIf="servidor.id == '0001'">
-                        <a (click)="tabRestaurar=false;tabCargar=false;tabDescargar=true;">
+                        <a (click)="tabRestaurar=false;tabCargar=false;tabDescargar=true;tabMigrar=false;">
                         <span class="icon is-small"><i class="fa fa-database"></i></span>
                         <span>Descargar Datos del Servidor Central</span>
+                        </a>
+                    </li>  
+                    <li [ngClass]="{ 'is-active': tabMigrar}" *ngIf="servidor.id == '0001' && usuario.su == 1">
+                        <a (click)="tabRestaurar=false;tabCargar=false;tabDescargar=false;tabMigrar= true">
+                        <span class="icon is-small"><i class="fa fa-random"></i></span>
+                        <span>Migración</span>
                         </a>
                     </li>  
                 </ul>
@@ -58,6 +64,11 @@
             <section class="section" *ngIf="tabDescargar">            
                 <div style="text-align:center;"><a class="button is-primary is-medium" [ngClass]="{ 'is-loading': exportando}" (click)="descargarDatos()"><span class="icon"><i class="fa fa-download"></i></span> <span>Descargar Datos</span></a></div>
                 <br>
+            </section>
+            <section class="section" *ngIf="tabMigrar">            
+                <div style="text-align:center;"><a class="button is-primary is-medium" [ngClass]="{ 'is-loading': exportando}" (click)="mostrarMigracion()"><span class="icon"><i class="fa fa-random"></i></span> <span>Migrar a offline</span></a></div>
+                <br>
+                <p><strong>Importante:</strong> esta acción modificará todos los registros de la unidad médica para que pueda exportarse a offline, esta acción <strong>NO ES REVERSIBLE</strong>; realice este procedimiento solo si sabe lo que está haciendo, por favor asegúrese de <a (click)="exportar()">realizar un respaldo</a> antes de realizar esta acción para evitar cualquier perdida de información.</p>
             </section>
         </div>
         
@@ -130,6 +141,48 @@
       <footer class="modal-card-foot">
             <a class="button is-primary" [ngClass]="{ 'is-disabled' : enviandoDatos || !archivo  }" *ngIf="!archivoSubido" (click)="cargarDatos()">Importar</a>  
           <a class="button" [ngClass]="{ 'is-disabled' : enviandoDatos  }" (click)="mostrarModalSubirDatosServidor = !mostrarModalSubirDatosServidor">Cerrar</a>      
+      </footer>
+    </div>
+  </div>
+
+  
+  <div class="modal"  [ngClass]="{ 'is-active': mostrarModalMigracion }">
+    <div class="modal-background" (click)="mostrarModalMigracion =!mostrarModalMigracion"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title"><span class="icon"><i class="fa fa-random"></i></span> Migrar servidor a offline</p>
+        <button class="delete" (click)="mostrarModalMigracion = !mostrarModalMigracion; progreso = 0"></button>
+      </header>
+      <section class="modal-card-body">    
+            <!--<div class="notification is-danger" *ngIf="mensajeErrorSync!=''"><span class="icon"><i class="fa fa-exclamation-circle"></i></span> {{ mensajeErrorSync }}</div>-->
+            <div class="is-fullwidth has-text-centered" *ngIf="cargandoServidores">
+                <br>
+                <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
+                <br>
+                <br>
+            </div>
+            <div *ngIf="!cargandoServidores && listaServidores.length" class="control is-expanded">
+                <div class="select is-fullwidth">
+                    <select name="servidor_id" id="servidor_id" [ngClass]="{'is-danger': mensaje}" [(ngModel)]="servidorIdMigracion"> 
+                        <option *ngFor="let item of listaServidores" value="{{item.id}}">{{ item.nombre }}</option>
+                    </select>
+                </div>
+            </div>
+            <!--
+            <div class="field" [ngClass]="{ 'is-hidden' : enviandoDatos || archivoSubido }">
+                <label for="zip" class="label" [ngClass]="{ 'is-danger': errores.archivo != null }">Elige el archivo .zip</label>                         
+                <input type="file"  class="input-file" #archivoInput style="width:100%" name="zip" is="zip" (change)="fileChange($event)"  accept=".zip">
+            </div>
+
+            <div *ngIf="enviandoDatos || archivoSubido">
+                <h1 class="subtitle" *ngIf="enviandoDatos">Subiendo datos...</h1>
+                <h1 class="subtitle" *ngIf="archivoSubido "><span class="icon"><i class="fa fa-check-circle"></i></span> ¡Los datos se han subido exitosamente!</h1>
+                <progress class="progress is-primary" value="{{ progreso }}" max="100">{{ progreso}}%</progress>
+            </div>-->
+      </section>
+      <footer class="modal-card-foot">
+            <a class="button is-primary" [ngClass]="{ 'is-disabled' : cargandoServidores  }"  (click)="migrar()">Migrar</a>  
+          <a class="button" (click)="mostrarModalMigracion = !mostrarModalMigracion">Cerrar</a>      
       </footer>
     </div>
   </div>

@@ -6,6 +6,7 @@ import { Headers, Http, Response, RequestOptions, ResponseContentType } from '@a
 
 
 import { environment } from '../../../../environments/environment';
+import { OpcionesAvanzadasService } from '../opciones-avanzadas.service';
 
 @Component({
   selector: 'app-base-datos',
@@ -43,13 +44,20 @@ export class BaseDatosComponent implements OnInit {
   dragOver: boolean;
 
 */
+	usuario:any;
+	listaServidores:any[] = [];
 
+	cargandoServidores:boolean;
+	mostrarModalMigracion:boolean = false;
+	servidorIdMigracion:any = '';
 
-  constructor(private http:Http) {}
+  constructor(private http:Http, private apiService:OpcionesAvanzadasService) {}
 
   ngOnInit() {
-		let usuario = JSON.parse(localStorage.getItem('usuario'));
-		this.servidor = usuario.servidor;
+		this.usuario = JSON.parse(localStorage.getItem('usuario'));
+		this.servidor = this.usuario.servidor;
+
+		console.log(this.usuario);
   }
 
 	descargarDatos(){
@@ -61,7 +69,43 @@ export class BaseDatosComponent implements OnInit {
   exportar() {
     var query = "token="+localStorage.getItem('token');
     window.open(`${environment.API_URL}/opciones-avanzadas/exportar-base-datos?${query}`); 
-  }
+	}
+
+	migrar() {
+		
+		if(this.servidorIdMigracion==''){
+			return;
+		}
+		var query = "token="+localStorage.getItem('token');
+		var key = prompt("Esta acción modificará todos los registros de la unidad médica para que pueda exportarse a offline, este procedimiento NO ES REVERSIBLE, para confirmar escriba: MIGRAR");
+		if(key == "MIGRAR"){
+			window.open(`${environment.API_URL}/opciones-avanzadas/migrar-servidor/${this.servidorIdMigracion}?${query}`); 
+			this.mostrarModalMigracion = false;
+		} else {
+			alert("Palabra de confirmación incorrecta.");
+		}
+		
+		
+	}
+	
+	mostrarMigracion(){
+		this.mostrarModalMigracion = true;
+		this.cargandoServidores = true;
+		this.apiService.listarServidores().subscribe(
+			respuesta =>
+			{
+				this.cargandoServidores = false;
+				if(respuesta.lista_servidores){
+					this.listaServidores = respuesta.lista_servidores;
+				} 
+				console.log(respuesta);
+			
+			}, error => {
+				this.cargandoServidores = false;
+				console.log(error);
+			}
+		)
+	}
 /*
   onUploadOutput(output: UploadOutput): void {
 
@@ -182,6 +226,7 @@ export class BaseDatosComponent implements OnInit {
 				);	
 		}
 	}
+
 
   adjuntar(){
 		if(this.archivo){
