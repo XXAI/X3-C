@@ -1,3 +1,4 @@
 .hack-column {
-	width:75%;
+	width:100%;
+	overflow: auto;
 }

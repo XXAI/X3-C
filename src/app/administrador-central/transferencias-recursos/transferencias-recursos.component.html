@@ -1,6 +1,6 @@
 <administrador-central-menu></administrador-central-menu>
 <div style="height:50px;"></div>
-<div class="contenedor columns " style="height:100%">
+<div class="contenedor columns " style="height:100%; overflow: auto;">
     <div class="column is-narrow is-hidden-mobile">
         <administrador-central-menu-lateral></administrador-central-menu-lateral>
     </div>
@@ -115,7 +115,7 @@
                 <br>
                 <br>
             </div>
-            
+            <div style="overflow-x:auto; width:100%; ">
             <table class="table is-bordered is-striped has-text-centered" style="font-size:0.7em;" *ngIf="!cargando">
                 <thead>
                     <tr>
@@ -164,6 +164,7 @@
                     </tr>
                 </tbody>
             </table>
+            </div>
             <!-- Paginación para la lista  -->
             
             <paginacion 
