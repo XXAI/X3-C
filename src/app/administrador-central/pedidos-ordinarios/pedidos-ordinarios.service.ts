@@ -37,6 +37,15 @@ export class PedidosOrdinariosService {
             return jsonData;
         }) as Observable<any>;
     }
+
+    aumentarPresupuesto(id,pedido_ordinario_unidad_medica:any = null):Observable<any>{
+        console.log("aumentando presupesto llamada api");
+        return this.jwtRequest.put(PedidosOrdinariosService.URL+"/pedidos-ordinarios/aumentar-presupuesto", id, {pedido_ordinario_unidad_medica: pedido_ordinario_unidad_medica}).map((response: Response) => {
+
+            let jsonData = response.json().data;
+            return jsonData;
+        }) as Observable<any>;
+    }
     /*
 
     crear(item: any): Observable<any> {

@@ -1,6 +1,6 @@
 <administrador-central-menu></administrador-central-menu>
 <div style="height:50px;"></div>
-<div class="contenedor columns " style="height:100%; ">
+<div class="contenedor columns " style="height:100%; overflow:auto">
   <div class="column is-narrow is-hidden-mobile">
     <administrador-central-menu-lateral></administrador-central-menu-lateral>
   </div>
@@ -50,7 +50,7 @@
                 <p class="level-item"><a class="button is-primary is-inverted" title="Ampliar fecha de expiración"><span class="icon"><i class="fa fa-calendar-plus-o"></i></span></a></p>              
               </div>
               <div class="level-right">
-                  <p class="level-item"><a class="button is-warning" (click)="mostrarAumentarPresupuesto = true;" title="Aumentar presupuesto a pedidos excedidos" [ngClass]="{'is-disabled': total_faltante == 0 }"><span class="icon"><i class="fa fa-dollar"></i></span> <span>Aumentar excedidos ({{ total_faltante }})</span></a></p>              
+                  <p class="level-item"><a class="button is-warning" (click)="aumentarExcedido()" title="Aumentar presupuesto a pedidos excedidos" [ngClass]="{'is-disabled': total_faltante == 0 }"><span class="icon"><i class="fa fa-dollar"></i></span> <span>Aumentar excedidos ({{ total_faltante }})</span></a></p>              
                   <p class="level-item"><a class="button is-success"  title="Liberar presupuesto no utilizado" [ngClass]="{'is-disabled': total_liberar_presupuesto == 0 }"><span class="icon"><i class="fa fa-check"></i></span> <span>Liberar presupuesto ({{ total_liberar_presupuesto }})</span></a></p>              
               </div>
             </nav>
@@ -116,7 +116,7 @@
 
                 <td style="text-align:right; white-space: nowrap;">
                   <a title="Aumentar presupuesto CAUSES" *ngIf="item.status == 'EP' && item.causes_disponible - item.causes_capturado < 0; else labelcausescapturado"
-                    style="color:red !important; text-decoration: underline;" (click)="aumentarPresupuesto(item,true)">
+                    style="color:red !important; text-decoration: underline;" (click)="aumentarExcedido(item,true)">
                     ${{ (item.causes_capturado || 0) | number:'1.2-2' }}<span class="icon" style="font-size:1em; line-height: 1.5; width:1.2em;"><i
                         class="fa fa-plus-circle"></i></span>
                   </a>
@@ -127,7 +127,7 @@
                 </td>
                 <td style="text-align:right; white-space: nowrap;">
                   <a title="Aumentar presupuesto NO CAUSES" *ngIf="item.status == 'EP' && item.no_causes_disponible - item.no_causes_capturado < 0; else labelnocausescapturado"
-                    style="color:red !important; text-decoration: underline;" (click)="aumentarPresupuesto(item,false)">
+                    style="color:red !important; text-decoration: underline;" (click)="aumentarExcedido(item,false)">
                     ${{ (item.no_causes_capturado || 0) | number:'1.2-2' }}<span class="icon" style="font-size:1em; line-height: 1.5; width:1.2em;"><i
                         class="fa fa-plus-circle"></i></span>
                   </a>
@@ -144,7 +144,7 @@
 
                 <td style="text-align:right; white-space: nowrap;">
                   <a title="Liberar presupuesto CAUSES" *ngIf="item.status == 'FI' && item.causes_disponible > 0; else labelcausesdisponible"
-                    style="color:green !important; text-decoration: underline;" (click)="aumentarPresupuesto(item,true)">
+                    style="color:green !important; text-decoration: underline;" (click)="liberarPresupuesto(item,true)">
                     ${{ (item.causes_disponible || 0) | number:'1.2-2' }}<span class="icon" style="font-size:1em; line-height: 1.5; width:1.2em;"><i
                         class="fa fa-arrow-circle-right"></i></span>
                   </a>
@@ -154,7 +154,7 @@
                 </td>
                 <td style="text-align:right; white-space: nowrap;">
                   <a title="Liberar presupuesto NO CAUSES" *ngIf="item.status == 'FI' && item.no_causes_disponible > 0; else labelnocausesdisponible"
-                    style="color:green !important; text-decoration: underline;" (click)="aumentarPresupuesto(item,true)">
+                    style="color:green !important; text-decoration: underline;" (click)="liberarPresupuesto(item,false)">
                     ${{ (item.no_causes_disponible || 0) | number:'1.2-2' }}<span class="icon" style="font-size:1em; line-height: 1.5; width:1.2em;"><i
                         class="fa fa-arrow-circle-right"></i></span>
                   </a>

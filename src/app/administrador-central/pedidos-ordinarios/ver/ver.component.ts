@@ -78,10 +78,49 @@ export class VerComponent implements OnInit {
 
     
   }
-  aumentarExcedidos(item:any = null, tipo:any = null){
+  aumentarExcedido(item:any = null, causes:boolean= true){
+    //AKIRA PENDIENTE
+    if(item != null){
+      var key = prompt("Se aumentará el presupuesto del pedido ordinario de la unidad médica: \""+item.unidad_medica.clues+" - "+item.unidad_medica.nombre+"\" a la cantidad excedida, siempre y cuando posea más presupuesto. Para proceder, escriba: AUMENTAR")
 
+      if(key == "AUMENTAR"){
+       
+        var obj = {
+          causes: causes,
+          no_causes: !causes,
+          id: item.id
+        }
+        console.log(obj);
+        this.apiService.aumentarPresupuesto(item.pedido_ordinario_id,obj).subscribe(
+          respuesta => {
+            console.log(respuesta);
+          }, error => {
+            console.log(error);
+          }
+        );      
+
+      } else {
+        alert("Palabra escrita incorrectamente");
+      }
+    } else {
+      var key = prompt("Se aumentará el presupuesto del pedido ordinario a todas las  unidades médicas que hayan excedido la cantidad, siempre y cuando posea más presupuesto. Para proceder, escriba: AUMENTAR")
+      if(key == "AUMENTAR"){
+        console.log("aumentar a todas");      
+        this.apiService.aumentarPresupuesto(item.pedido_ordinario_id,null).subscribe(
+          respuesta => {
+            console.log(respuesta);
+          }, error => {
+            console.log(error);
+          }
+        ); 
+      } else {
+        alert("Palabra escrita incorrectamente");
+      }
+    }
   }
-  liberarPresupuesto(){}
+  liberarPresupuesto(item:any = null, causes:boolean= true){
+    console.log(item)
+  }
   cancelar(item = null){
     var items:any[] = [];
     if(item != null){

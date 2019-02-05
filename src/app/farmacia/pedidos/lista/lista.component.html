@@ -62,7 +62,6 @@
 
         <div style="background: #FFF; border-radius: 1em; margin-bottom:80px;">
             <section class="hero" [ngClass]=" {'is-dark': busquedaActivada, 'is-primary': !busquedaActivada } ">
-
                 <div class="hero-body" style="position:relative;">
                     <a class="button  is-dark" *ngIf="busquedaActivada" style="position:absolute; top:1em; right:1em;"
                         (click)="busquedaActivada=false;searchBox.value='';resultadosBusqueda=[]"><span class="icon "><i
@@ -115,7 +114,9 @@
                 <tbody style="font-size: 0.7em">
                     <tr *ngFor="let item of pedidosOrdinariosBandeja" [ngClass]="{'proyecto-estatus-normal':(item.status == 'S/P'),'proyecto-estatus-rojo':item.status == 'CA','proyecto-estatus-amarillo':item.status == 'EX' || (item.status == 'S/P' && (item.expira_en_dias < 0 || (item.expira_en_dias == 0 && item.expira_en_horas < 0  ) || (item.expira_en_dias == 0 && item.expira_en_horas < 1 && item.expira_en_minutos < 1  ) ) )}">
                         <td>
-                            <a routerLink="/almacen/pedidos/nuevo/ordinario/{{item.id}}" [ngClass]="{'is-disabled' : item.status == 'CA' || item.status == 'EX' || (item.status == 'S/P' && (item.expira_en_dias < 0 || (item.expira_en_dias == 0 && item.expira_en_horas < 0  ) || (item.expira_en_dias == 0 && item.expira_en_horas < 1 && item.expira_en_minutos < 1 ))) }" *ngIf="!usuario.solo_lectura && !usuario.almacen_activo.subrogado">
+                            <a routerLink="/almacen/pedidos/nuevo/ordinario/{{item.id}}" 
+                                [ngClass]="{'is-disabled' : item.status == 'CA' || item.status == 'EX' || (item.status == 'S/P' && (item.expira_en_dias < 0 || (item.expira_en_dias == 0 && item.expira_en_horas < 0  ) || (item.expira_en_dias == 0 && item.expira_en_horas < 1 && item.expira_en_minutos < 1 ))) }" 
+                                *ngIf="!usuario.solo_lectura && !usuario.almacen_activo.subrogado">
                                 {{ item.descripcion}}
                             </a>
                             <span *ngIf="usuario && (usuario.solo_lectura || usuario.almacen_activo.subrogado)">
