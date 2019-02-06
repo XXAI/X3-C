@@ -96,7 +96,7 @@
                             <p class="control is-expanded">
                                     <label class="label">&nbsp;</label>
                                 <input class="input is-medium" type="text" placeholder="Buscar" #searchBox id="search-box" [(ngModel)]='buscar_texto'
-                                    (keyup)="buscar(searchBox.value)">
+                                    (keyup)="buscar(searchBox.value); buscar_texto_imsumo = this.value">
                             </p>
                             <div class="control">
                                 <div class="field">  
@@ -267,7 +267,20 @@
                         Clues: <div *ngIf="!cargando">{{ descripcion_clues }}</div><div *ngIf="cargando">...</div> <br>
                         Folio:  <div *ngIf="!cargando">{{ folio_recepcion }}</div><div *ngIf="cargando">...</div>
                     </div>
-                </div>        
+                </div>  
+                <h1 class="title" *ngIf="busquedaActivada">
+                    <span class="icon is-medium"><i class="fa fa-search"></i></span> Búsqueda
+                </h1>
+                
+                <div class="control is-grouped" *ngIf="!bandeja">
+                    <p class="control is-expanded">
+                            <label class="label">&nbsp;</label>
+                        <input class="input is-medium" type="text" placeholder="Buscar Insumo" [(ngModel)]='buscar_texto_imsumo'
+                         >
+                    </p>
+                    
+                </div>
+
                 <div class="columns" *ngIf="!cargando">
                   <div class="column">              
                      <table class="table table-bordered">
@@ -281,7 +294,7 @@
                              <th></th>
                          </thead>
                          <tbody>
-                             <tr  *ngFor="let item of listaMovimientos; let i=index">
+                             <tr  *ngFor="let item of listaMovimientos  | filterInsumos: buscar_texto_imsumo; let i=index ">
                                 
                                 
                                 <td>{{ item.entrega }}</td>
@@ -289,7 +302,7 @@
                                 <td>{{ item.created_at }}</td>
                                 <td>{{ item.usuario_id }}</td>
                                 <td>{{ item.insumos.length }}</td>
-                                <td><a (click)="verMovimiento(i);"><i class="fa fa-print"></i></a></td>
+                                <td><a (click)="verMovimiento(item);"><i class="fa fa-print"></i></a></td>
                              </tr>
                              <tr *ngIf="listaMovimientos.length == 0" >
                                 <td>No existen Recepciones para este Pedido</td>

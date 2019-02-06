@@ -22,6 +22,8 @@ import { CambiarEntornoService } from '../../../perfil/cambiar-entorno.service';
 import { Pedido } from '../pedido';
 import { Mensaje } from '../../../mensaje';
 
+
+
 @Component({
   selector: 'app-reporte-recepcion',
   templateUrl: './reporte-recepcion.component.html',
@@ -55,6 +57,7 @@ export class ReporteRecepcionComponent implements OnInit {
   fecha_desde: string = "";
   fecha_hasta: string = "";
   buscar_texto: string = "";
+  buscar_texto_imsumo:string = "para";
 
   listaMovimientos:any[] = [];
   pedidoSeleccionado:any[] = [];
@@ -459,15 +462,14 @@ export class ReporteRecepcionComponent implements OnInit {
     this.cargando =true;
     this.reporteRecepcionService.VerRecepciones(id).subscribe(
       resultado => {
-        console.log(resultado);
         this.cargando = false;
         this.pedidoSeleccionado = resultado.pedido;
         this.listaMovimientos = resultado.pedido.movimientos_recepcion_completo;
         this.fecha_impresion = resultado.fecha_completa;
-        //console.log(this.listaMovimientos);
         
         this.descripcion_clues = resultado.pedido.clues +" - "+ resultado.pedido.unidad_medica.nombre ;
         this.folio_recepcion = resultado.pedido.folio;
+        this.buscar_texto_imsumo = this.buscar_texto;
       },
       error => {
         this.cargando = false;
@@ -476,12 +478,15 @@ export class ReporteRecepcionComponent implements OnInit {
     );
   }
 
-  verMovimiento(index):void{
+  verMovimiento(objeto):void{
+    //console.log(this.listaMovimientos);
+    //console.log(index);
     let datos_imprimir = {
       pedido: this.pedidoSeleccionado,
-      movimiento: this.listaMovimientos[index],
+      movimiento: objeto,
       fecha: this.fecha_impresion
     };
+    //console.log(datos_imprimir);
     this.pdfworker.postMessage(JSON.stringify(datos_imprimir));
   }
 

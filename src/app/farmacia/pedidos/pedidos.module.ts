@@ -7,6 +7,7 @@ import { HubModule } from '../../hub/hub.module';
 import { PerfilModule } from '../../perfil/perfil.module';
 import { BloquearPantallaModule } from '../../bloquear-pantalla/bloquear-pantalla.module';
 import { PaginacionModule } from '../../paginacion/paginacion.module';
+import { PipesModule } from '../../pipes/pipes.module';
 
 import { BuscarInsumosModule } from '../buscar-insumos/buscar-insumos.module';
 import { IndexFarmaciaModule } from '../index-farmacia/index-farmacia.module';
@@ -36,6 +37,8 @@ import { ListaComponent as ListaActasComponent } from './actas/lista/lista.compo
 import { VerComponent as VerActaComponent } from './actas/ver/ver.component';
 import { ReporteRecepcionComponent } from './reporte-recepcion/reporte-recepcion.component';
 
+import { FilterPipe } from '../../pipes/filter.pipe';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -48,7 +51,8 @@ import { ReporteRecepcionComponent } from './reporte-recepcion/reporte-recepcion
     BuscarInsumosModule,
     NguiDatetimePickerModule,
     PedidosRoutingModule,
-    IndexFarmaciaModule
+    IndexFarmaciaModule,
+    PipesModule
   ],
   declarations: [PedidosComponent, MenuLateralComponent, ListaComponent, VerComponent, FormularioComponent, RecepcionComponent, ListaCluesComponent, ListaActasComponent, VerActaComponent, ReporteRecepcionComponent],
   providers:[PedidosService,ActasService,AlmacenesService,StockService,RecepcionService, ReporteRecepcionService]
