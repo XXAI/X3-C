@@ -251,7 +251,7 @@ export class FormularioComponent {
     // inicializar el data picker minimo y maximo
     let date = new Date();
 
-    this.MinDate = new Date(date.getFullYear() - 1, 0, 1);
+    this.MinDate = new Date(date.getFullYear() - 2, 0, 1);
     this.MaxDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     this.MinDateCaducidad = date.getFullYear() + '-' + ('00' + (date.getMonth() + 1)).slice(-2) + '-' + date.getDate();
 
@@ -416,6 +416,38 @@ export class FormularioComponent {
 
         this.lotes_insumo = resultado;
         this.insumo = data;
+
+        //let fecha_movimiento = ;
+        let fecha_movimiento = new Date((<FormArray>this.dato.controls['fecha_movimiento']).value);
+        
+        for(let i in this.lotes_insumo){
+          let fecha_caducidad = this.lotes_insumo[i].fecha_caducidad;
+          fecha_caducidad = new Date(fecha_caducidad);
+
+          let label = 'OPTIMA';
+
+          if(fecha_caducidad < fecha_movimiento){
+            label = 'CADUCADO';
+          }
+
+          let diff = Math.floor(fecha_caducidad.getTime() - fecha_movimiento.getTime());
+          let day = 1000 * 60 * 60 * 24;
+
+          let days = Math.floor(diff/day);
+          let months = Math.floor(days/31);
+          let years = Math.floor(months/12);
+
+          if(days < 0){
+            this.lotes_insumo[i].tipo_caducidad = 'CADUCADO';
+          }else if(years > 0){
+            this.lotes_insumo[i].tipo_caducidad = 'OPTIMA';
+          }else if(months > 6){
+            this.lotes_insumo[i].tipo_caducidad = 'MEDIA';
+          }else{
+            this.lotes_insumo[i].tipo_caducidad = 'PRONTA';
+          }
+        }
+
 
         var lista_insumos = this.dato.get('insumos').value;
         console.log(lista_insumos);
@@ -657,8 +689,8 @@ export class FormularioComponent {
               codigo_barras: item.codigo_barras,
               lote: item.lote,
               fecha_caducidad: item.fecha_caducidad,
-              existencia: item.nuevo ? item.cantidad : item.existencia,
               cantidad: item.cantidad,
+              existencia: item.nuevo ? item.cantidad : item.existencia,
               existencia_unidosis: item.nuevo ? item.cantidad : item.existencia_unidosis,
               modo_salida: this.modo,
             }

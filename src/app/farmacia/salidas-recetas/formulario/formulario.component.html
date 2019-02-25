@@ -389,19 +389,19 @@
                             </span>
                         </div>
                         <!-- *****************     RESULTADOS DE BUSQUEDA DE INSUMO     ****************** -->
-                        <div *ngIf="res_busq_insumos.length > 0 && !cargando" style="height: 200px;">
+                        <div *ngIf="res_busq_insumos.length > 0 && !cargando" [ngStyle]="{ 'height' : res_busq_insumos.length > 3 ? '400px': 'auto'  }" >
                             <div *ngIf="res_busq_insumos.length > 0 && !cargando" style="overflow: scroll; overflow-x: hidden; height: 90%;">
                                 <div class="content" style="z-index: 1;" *ngFor="let item_insumo of res_busq_insumos; let c = index">
-                                    <div class="card" (click)="select_insumo_autocomplete(item_insumo)" style="background: rgba(242,248,253, 0.8)">
+                                    <div class="card" (click)="select_insumo_autocomplete(item_insumo)" style="background: #F9F9F9; cursor: pointer;">
                                         <div class="card-content">
                                             <div class="media">          
                                                 <div class="media-content">
-                                                    <p class="title is-4">{{item_insumo.descripcion}}</p>
+                                                    <p class="title is-4" style="font-size:14px; line-height: 1em; margin-bottom:2em">{{item_insumo.descripcion}}</p>
                                                     <p class="subtitle is-6">
-                                                        <strong>Clave: </strong> {{item_insumo.clave}}
-                                                        <label class="tag is-success" *ngIf="item_insumo.es_causes == 1"><strong>Cause </strong></label>
-                                                        <label class="tag" *ngIf="item_insumo.es_causes == 0" style="background: #B8FB7E; border-color: #B8FB7E; color: rgba(0,0,0,0.7);" ><strong>No Cause </strong> </label>
-                                                        <label class="tag is-warning" *ngIf="item_insumo.es_unidosis == 1"><strong>Unidosis</strong> </label>
+                                                        <strong>{{item_insumo.clave}}</strong>
+                                                        <span class="tag is-success" *ngIf="item_insumo.es_causes == 1">Causes</span>
+                                                        <span class="tag is-danger" *ngIf="item_insumo.es_causes == 0" >No Causes</span>
+                                                        <span class="tag is-warning" *ngIf="item_insumo.es_unidosis == 1">Unidosis</span>
                                                     </p>
                                                 </div>
                                             </div>
@@ -508,8 +508,8 @@
                                         </p>
                                         <a class="is-danger" title="Ver la lista de lotes de este articulo" style="float:right" (click)="ver_lotes_asignados(i)">
                                             <span class="icon">
-                                                <i *ngIf="!mostrar_lote[i]" class="fa fa-chevron-down"></i>
-                                                <i *ngIf="mostrar_lote[i]" class="fa fa-chevron-up"></i>
+                                                <i *ngIf="!mostrar_lote[i]" class="fa fa-plus-square-o"></i>
+                                                <i *ngIf="mostrar_lote[i]" class="fa fa-minus-square-o"></i>
                                             </span>
                                         </a>
                                     </div>
@@ -616,30 +616,30 @@
 
 <div class="modal" id="verLotes">
     <div class="modal-background"></div>
-    <div class="modal-card" style="width: 90%; height: 95%;">
-        <header class="modal-card-head" style="height: 10%;">
-            <p class="modal-card-title" id="tituloModal"> </p>
+    <div class="modal-card" style="width: 95%; height: 95%;">
+        <header class="modal-card-head">
+            <p class="modal-card-title" id="tituloModal" *ngIf="insumo" style="width: 200px" >Entregar {{(insumo.tipo == 'ME')?'Medicamento':'Material de Curación'}}</p>
             <button type="button" class="delete" (click)="cancelarModal('verLotes')"></button>
         </header>
         <section class="modal-card-body" style="height: 90%;">
             <div>
+                <div style="overflow: hidden;" *ngIf="insumo">
+                    <p aling="justify" style="font-weight:bold; font-size:18px;">{{insumo.clave}}</p>
+                    <p aling="justify" style="font-size:12px;">{{insumo.descripcion}}</p> 
+                    <p aling="justify" style="font-size:16px;"> CANTIDAD POR ENVASE: 
+                    {{insumo.cantidad_x_envase ? insumo.cantidad_x_envase : 'Sin especificar' }}</p>
+                </div>
                 <div style="overflow: auto; overflow-x: hidden;">
                     <div class="columns">
-                        <div class="column">
-                            <label class="label" style="font-size: large;float: left;margin-right: 6%;">Modo salida: </label>
-                        </div>
-                        <div class="column">
-                            <div class="b-checkbox is-info is-circular">
-                                <input class="styled" type="radio" id="modo_n" [checked]="modo == 'N'" (click)="modo = 'N'; calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value)" [value]="'N'" name="modo">                                    
-                                <label for="modo_n">
+                        <div class="column is-two-thirds">
+                            <div *ngIf="insumo">
+                                <label class="label">Modo salida: </label>
+                                <input class="styled" style="display:none" type="radio" id="modo_n" [checked]="modo == 'N'" (click)="modo = 'N'; calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value)" [value]="'N'" name="modo">
+                                <label for="modo_n" style="cursor:pointer">
                                     <span class="tag is-large" [ngClass]="{'is-success':modo == 'N'}">Normal</span>
                                 </label>
-                            </div>
-                        </div>
-                        <div class="column" *ngIf="tiene_unidosis">
-                            <div class="b-checkbox is-info is-circular">
-                                <input class="styled" type="radio" id="modo_u" [checked]="modo == 'U'" (click)="modo = 'U'; calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value)" [value]="'U'" name="modo">                                    
-                                <label for="modo_u">
+                                <input *ngIf="insumo.es_unidosis" class="styled" style="display:none" type="radio" id="modo_u" [checked]="modo == 'U'" (click)="modo = 'U'; calcularCantidadSugerida(dosis.value, frecuencia.value, duracion.value)" [value]="'U'" name="modo">
+                                <label *ngIf="insumo.es_unidosis" for="modo_u" style="cursor:pointer">
                                     <span class="tag is-large" [ngClass]="{'is-success':modo == 'U'}">Unidosis</span>
                                 </label>
                             </div>
@@ -717,7 +717,7 @@
                             <tr>
                                 <th>Lote</th>
                                 <th>Caducidad</th>
-                                <th>Codigo de barras</th>
+                                <th>Programa</th>
                                 <th *ngIf="modo == 'N'">Existencia</th>
                                 <th *ngIf="modo == 'N'">Cantidad</th>
                                 <th *ngIf="modo == 'U'">Existencia Unidosis ({{insumo.unidad_medida}})</th> 
@@ -740,7 +740,8 @@
                                     {{item.fecha_caducidad}}
                                 </td>
                                 <td *ngIf="item.nuevo"><input class="input has-text-centered " type="date" placeholder="Fecha de caducidad" [(ngModel)]="item.fecha_caducidad"></td>
-                                <td *ngIf="!item.nuevo">{{item.codigo_barras}}</td>
+                                <!--td *ngIf="!item.nuevo">{{item.codigo_barras}}</td-->
+                                <td *ngIf="!item.nuevo">{{(item.programa)?item.programa.nombre:'Sin Programa Asignado'}}</td>
                                 <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Codigo de barras" [(ngModel)]="item.codigo_barras"></td>
                                 <td *ngIf="!item.nuevo">{{(modo=='N')?item.existencia:item.existencia_unidosis}}</td>
                                 <td *ngIf="item.nuevo"></td>
@@ -764,7 +765,7 @@
             <a class="button is-dark" (click)="agregarNuevoLote()">Agregar nuevo lote</a>                            
             <a class="button is-success" [ngClass]="{'is-disabled':!sum_cant_lotes}"  (click)="agregarLoteIsumo(dosis.value, frecuencia.value, duracion.value, cant_recetada.value)">Aceptar</a>
             <a class="button" (click)="cancelarModal('verLotes')">Cancelar</a>
-            <a class="button is-danger" [ngClass]="{'is-disabled':(sum_cant_lotes || (!cantidad_recomendada && !cant_recetada.value!=0) )}" (click)="abrirModal('negarExistencia')"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;
+            <a class="button is-danger" *ngIf="!(sum_cant_lotes || (!cantidad_recomendada && !cant_recetada.value!=0) )" (click)="abrirModal('negarExistencia')"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;
                 Negar existencia</a>
         </footer>
     </div>

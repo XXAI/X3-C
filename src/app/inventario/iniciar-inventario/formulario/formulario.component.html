@@ -275,9 +275,9 @@
                             <hr>
                         </div>
                         <!-- FORMULARIO DE INSUMOS -->
-                        <div style="overflow:auto; display:block" [style.maxHeight.px]="tamano-300"> <!-- DATOS DEL INSUMO -->
-                            <div *ngFor="let insumo of form_dato.programas[i_programa].insumos; let i = index" style="padding: 1em;">
-                                <div class="box" style="padding: 1em">                                
+                        <div style="overflow:auto; display:block" [style.maxHeight.px]="tamano-300" id="lista-de-insumos-inventario"> <!-- DATOS DEL INSUMO -->
+                            <div *ngFor="let insumo of form_dato.programas[i_programa].insumos; let i = index" style="padding: 1em;" id="panel-{{form_dato.programas[i_programa].insumos[i].clave_insumo_medico}}" [ngClass]="{'insumo-seleccionado': clave_insumo_agregado == form_dato.programas[i_programa].insumos[i].clave_insumo_medico}">
+                                <div class="box" style="padding: 1em">
                                         <div class="content">
                                             <span style="float:right; padding-left: 15px;" [ngClass]="{'is-hidden': form_dato.estatus === 'INICIALIZADO' }">
                                                 <a  class="button is-danger" title="Quitar este elemento de la lista" (click)="abrirModal('borrarInsumo', i_programa, i)">

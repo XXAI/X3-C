@@ -345,7 +345,7 @@ export class FormularioComponent {
     // inicializar el data picker minimo y maximo
     var date = new Date();
 
-    this.MinDate = new Date(date.getFullYear() - 1, 0, 1);
+    this.MinDate = new Date(date.getFullYear() - 2, 0, 1);
     this.MaxDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
     // si es nuevo poner la fecha actual si no poner la fecha con que se guardo
@@ -551,15 +551,51 @@ export class FormularioComponent {
           this.tiene_unidosis = true;
         }
 
+        //let fecha_movimiento = ;
+        let fecha_movimiento = new Date((<FormArray>this.dato.controls['fecha_movimiento']).value);
+        console.log('pruebas--------------------------------------------------------------------->')
+        console.log(this.lotes_insumo);
+        console.log(fecha_movimiento);
+
+        for(let i in this.lotes_insumo){
+          let fecha_caducidad = this.lotes_insumo[i].fecha_caducidad;
+          fecha_caducidad = new Date(fecha_caducidad);
+
+          let label = 'OPTIMA';
+
+          if(fecha_caducidad < fecha_movimiento){
+            label = 'CADUCADO';
+          }
+
+          let diff = Math.floor(fecha_caducidad.getTime() - fecha_movimiento.getTime());
+          let day = 1000 * 60 * 60 * 24;
+
+          let days = Math.floor(diff/day);
+          let months = Math.floor(days/31);
+          let years = Math.floor(months/12);
+
+          if(days < 0){
+            this.lotes_insumo[i].tipo_caducidad = 'CADUCADO';
+          }else if(years > 0){
+            this.lotes_insumo[i].tipo_caducidad = 'OPTIMA';
+          }else if(months > 6){
+            this.lotes_insumo[i].tipo_caducidad = 'MEDIA';
+          }else{
+            this.lotes_insumo[i].tipo_caducidad = 'PRONTA';
+          }
+
+          //console.log(fecha_caducidad + ' -- ' + fecha_movimiento + ' === ' + label + ' || ------ ' + message);
+        }
+
         //limpiar el autocomplete
         (<HTMLInputElement>document.getElementById('buscarInsumo')).value = '';
         this.res_busq_insumos = [];
 
         //poner el titulo a la modal
-        document.getElementById('tituloModal').innerHTML = ` ${data.descripcion} <br>
+       /* document.getElementById('tituloModal').innerHTML = ` ${data.descripcion} <br>
           <p aling="justify" style="font-size:12px">CANTIDAD POR ENVASE: 
           ${data.cantidad_x_envase ? data.cantidad_x_envase : 'Sin especificar' }</p> `;
-
+        */
         this.es_unidosis = data.es_unidosis;
         this.unidad_medida = data.unidad_medida;
         this.presentacion_nombre = data.presentacion_nombre;
@@ -580,7 +616,7 @@ export class FormularioComponent {
   agregarLoteIsumo(dosis, frecuencia, duracion, cantidad_recetada) {
     //obtener el formulario reactivo para agregar los elementos
     const control = <FormArray>this.dato.controls['insumos'];
-
+    
     //crear el json que se pasara al formulario reactivo tipo insumos
     var lotes = {
       'clave': this.insumo.clave,
@@ -600,7 +636,7 @@ export class FormularioComponent {
       'modo': this.modo,
       'lotes': this.fb.array([])
     };
-
+    
     // comprobar que el isumo no este en la lista cargada
     var existe = false;
     for (let item of control.value) {

@@ -467,7 +467,7 @@
 
 <div class="modal" id="verLotes">
     <div class="modal-background"></div>
-    <div class="modal-card" style="width: 60%; height: 90%;">
+    <div class="modal-card" style="width: 95%; height: 90%;">
         <header class="modal-card-head">
             <p class="modal-card-title" id="tituloModal" style="width: 200px" *ngIf="insumo">Entregar {{(insumo.tipo == 'ME')?'Medicamento':'Material de Curación'}}</p>
             <button type="button" class="delete" (click)="cancelarModal('verLotes'); modo = 'N';"></button>
@@ -492,8 +492,7 @@
                                 <input class="styled" style="display:none" type="radio" id="modo_u" [checked]="modo == 'U'" (click)="cambiar_modo('U')" [value]="'U'" name="modo">                                    
                                 <label for="modo_u" style="cursor:pointer">
                                     <span class="tag is-large" [ngClass]="{'is-success':modo == 'U'}">Unidosis</span>
-                                </label>   
-                               
+                                </label>
                             </div>
                         </div>
                         <div class="column">
@@ -514,7 +513,7 @@
                             <tr>
                                 <th>Lote</th>
                                 <th>Caducidad</th>
-                                <th>Codigo de barras</th>
+                                <th>Programa</th>
                                 <th *ngIf="modo == 'N'">Existencia</th>
                                 <th *ngIf="modo == 'N'">Cantidad</th>
                                 <th *ngIf="modo == 'U'">Existencia Unidosis ({{insumo.unidad_medida}})</th> 
@@ -539,7 +538,8 @@
                                     [(ngModel)]="item.fecha_caducidad" min="MinDateCaducidad" (blur)="validar_fecha()"
                                     placeholder="YYYY-MM-DD" [textMask]="{mask:mask, keepCharPositions: true, pipe: autoCorrectedDatePipe}"/>
                                 </td>
-                                <td *ngIf="!item.nuevo">{{item.codigo_barras}}</td>
+                                <!--td *ngIf="!item.nuevo">{{item.codigo_barras}}</td-->
+                                <td *ngIf="!item.nuevo">{{(item.programa)?item.programa.nombre:'Sin Programa Asignado'}}</td>
                                 <td *ngIf="item.nuevo"><input class="input has-text-centered " type="text" placeholder="Codigo de barras" [(ngModel)]="item.codigo_barras"></td>
                                 <td *ngIf="!item.nuevo && modo == 'N'">{{item.existencia}}</td>
                                 <td *ngIf="!item.nuevo && modo == 'U'">{{item.existencia_unidosis}}</td>
@@ -547,9 +547,7 @@
                                 <td >
                                     <input class="input has-text-centered" type="number" step="1" min="0" (keypress)="quitar_punto($event)"
                                     (keyup)="comprobar_cant_lotes()" (change)="comprobar_cant_lotes()"
-                                    placeholder="Cantidad" [(ngModel)]="item.cantidad" [disabled]="item.tipo_caducidad == 'CADUCADO' || (modo == 'N' && item.existencia <= 0 && !item.nuevo) || (modo == 'U' && item.existencia_unidosis <= 0 && !item.nuevo)" [ngClass]="{'is-disabled': item.tipo_caducidad == 'CADUCADO' || (modo == 'N' && item.existencia <= 0 && !item.nuevo) || (modo == 'U' && item.existencia_unidosis <= 0 && !item.nuevo)}"
-
-                                    >
+                                    placeholder="Cantidad" [(ngModel)]="item.cantidad" [disabled]="item.tipo_caducidad == 'CADUCADO' || (modo == 'N' && item.existencia <= 0 && !item.nuevo) || (modo == 'U' && item.existencia_unidosis <= 0 && !item.nuevo)" [ngClass]="{'is-disabled': item.tipo_caducidad == 'CADUCADO' || (modo == 'N' && item.existencia <= 0 && !item.nuevo) || (modo == 'U' && item.existencia_unidosis <= 0 && !item.nuevo)}">
                                 </td>
                                 <td *ngIf="item.nuevo">
                                     <a class="delete" (click)=eliminarLote(i)></a>

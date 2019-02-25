@@ -19,12 +19,14 @@ import { error, inspect } from 'util';
 @Component({
   selector: 'app-inicial-formulario',
   templateUrl: './formulario.component.html',
+  styleUrls: ['./formulario.component.css'],
   host: {
     '(document:keydown)': 'handleKeyboardEvents($event)'
   }
 })
 
 export class InicialComponent {
+  clave_insumo_agregado = '';
   /**
    * Variable que tiene un valor verdadero mientras cargan los datos del inventario.
    */
@@ -1288,16 +1290,29 @@ export class InicialComponent {
     });
   }
 
-
+  scroll(el: HTMLElement) {
+    el.scrollIntoView();
+  }
 
   /**
    * Método para agregar programas al formulario
    */
   agregarInsumo(i): void {
     let existe = false;
+    this.clave_insumo_agregado = '';
+    let lista_inventario = document.getElementById('lista-de-insumos-inventario');
+    lista_inventario.scrollTo(0,0);
+    this.clave_insumo_agregado = this.insumo.clave;
 
     for (let item of this.form_dato.programas[i].insumos) {
       if (item.clave_insumo_medico === this.insumo.clave) {
+        let top_lista_insumos = lista_inventario.getBoundingClientRect().top;
+
+        let elemento = document.getElementById('panel-'+this.insumo.clave);
+
+        let top_insumo = elemento.getBoundingClientRect().top - top_lista_insumos;
+
+        lista_inventario.scrollTo(0,top_insumo);
         existe = true;
         break;
       }
