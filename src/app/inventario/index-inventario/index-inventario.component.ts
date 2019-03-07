@@ -56,6 +56,10 @@ export class IndexInventarioComponent implements OnInit {
       {
         permiso: 'WBMye8hcO0Bg9P7hySl6WJ0p79HXuDZ6', icono: 'assets/icono-inventario-salidas.svg',
         titulo: 'Reporte Salidas', url: '/inventario/reporte-salidas'
+      },
+      {
+        permiso: 'f6bI5844sUd8iCTJdk9a2RMTo5E0R6vf', icono: 'assets/icono-inventario-es.svg',
+        titulo: 'Reporte E/S', url: '/inventario/reporte-entradas-salidas'
       }
       /**
        * Temporales

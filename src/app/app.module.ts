@@ -84,6 +84,7 @@ import { MovimientosGeneralesModule     }  from './inventario/movimientos-genera
 import { MonitorCaducidadesModule       }  from './inventario/monitor-caducidades/monitor-caducidades.module';
 import { IniciarInventarioModule        }  from './inventario/iniciar-inventario/iniciar-inventario.module';
 import { ReporteSalidaModule            }  from './inventario/reporte-salida/reporte-salida.module';
+import { ReporteEntradasSalidasModule   }  from './inventario/reporte-entradas-salidas/reporte-entradas-salidas.module';
 
 // # Hub almacén artículos
 import { IndexAlmacenArticulosModule } from './almacen-articulos/index-almacen-articulos/index-almacen-articulos.module';
@@ -234,6 +235,7 @@ export function highchartsFactory() {
     MonitorCaducidadesModule,
     IniciarInventarioModule,
     ReporteSalidaModule,
+    ReporteEntradasSalidasModule,
     SalidasRecetasModule,
     DashboardSalidasModule,
     ClavesBasicasModule,

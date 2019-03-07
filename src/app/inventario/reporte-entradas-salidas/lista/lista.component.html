@@ -1,0 +1,177 @@
+<app-menu-inventario [modulo]="'Reporte Estradas Salidas'" [icono]="'assets/icono-ajustes-inventario.svg'" [url]="'/inventario/inicializacion-inventario'"></app-menu-inventario>
+
+<div style="height:50px;"></div>
+<div class="contenedor columns " >
+    <div class="column" style="padding:2em; z-index: initial; height:100%;">
+        <div style="background: #FFF; ">
+            <section class="hero" [ngClass] = " {'is-dark': busquedaActivada, 'is-primary': !busquedaActivada } " >
+                
+                <div class="hero-body" style="position:relative;">
+                    <nav class="level">
+                        <div class="level-left"></div>
+                        <div class="level-right">
+                            <p class="level-item"><a class="button  is-primary" title="Excel" (click)="imprimirMovimientos()"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
+                            <p class="level-item"><a class="button  is-primary" (click)="listar(1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
+                        
+                        </div>
+                    </nav>    
+                    
+                    <div class="container is-fluid">
+                        <h1 class="title" *ngIf="busquedaActivada">
+                            <span class="icon is-medium"><i class="fa fa-search"></i></span> Búsqueda 
+                        </h1>
+                        <div class="columns">
+                            <div class="column is-2" style="z-index: 1000;">
+                                <div class="field">   
+                                    <label class="label">Desde:</label>                         
+                                    <input  style="width: 150px;" class="input is-medium" [(ngModel)]='fecha_desde' ngui-datetime-picker date-only="true" placeholder="YYYY-MM-DD" #desde (ngModelChange)='filtro(1, desde.value)'/>
+                                </div>
+                            </div>
+                            <div class="column is-2" style="z-index: 1000;">
+                                <div class="field">   
+                                    <label class="label">Hasta:</label>                         
+                                    <input style="width: 150px;" class="input is-medium" [(ngModel)]='fecha_hasta' ngui-datetime-picker date-only="true" placeholder="YYYY-MM-DD" #hasta (ngModelChange)='filtro(2, hasta.value)'/>
+                                </div>
+                            </div>
+                            <div class="column is-2">
+                                <div class="field">   
+                                    <label class="label">Tipo Movimiento:</label>                         
+                                    <select class="select redondear" #tipo (change)='filtro(3, tipo.value)'>
+                                        <option value="1">TODOS</option>
+                                        <option value="2">ENTRADAS</option>
+                                        <option value="3">SALIDAS</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <label class="label" style="color: #FFF">Insumo</label>
+                                    <input type="text" class="input is-medium" [(ngModel)]='filtroInsumo'  #insumo  (keyup)="filtro(4, insumo.value); buscarInsumo(insumo.value)">
+                            </div>
+                            
+                            <div class="column is-2">
+                              <a class="button is-medium is-primary is-inverted " (click)='listar()' style="margin-top: 20px">
+                              <span class="icon"><i class="fa fa-search"></i></span><span>Generar</span>
+                              </a>
+                              
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </section>
+            <div class="is-fullwidth has-text-centered" *ngIf="cargando">
+                <br>
+                <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
+                <br>
+                <br>
+            </div>
+            <br>
+
+        <!--Sigue-->
+        <div style="overflow:auto;" *ngIf="!cargando">
+            <table class="table">
+                <thead>
+                
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Tipo Movimiento</th>
+                        <th>Tipo</th>
+                        <th>Insumo</th>
+                        <th>Cantidad</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of tabla_insumos; let i=index">
+                        <td style="vertical-align: middle;cursor:pointer; min-width: 110px;"> {{ ( item.fecha_movimiento) }} </td>
+                        <td style="vertical-align: middle;cursor:pointer; min-width: 200px;"> {{ ( item.nombre) }} </td>
+                        <td style="vertical-align: middle;cursor:pointer;"> {{ ( item.tipo) }} </td>
+                        <td style="vertical-align: middle;cursor:pointer;"> {{ ( item.clave) }} - {{ ( item.descripcion) }} </td>
+                        <td style="vertical-align: middle;cursor:pointer;"> {{ ( item.cantidad) }}</td>
+                        <td style="vertical-align: middle;cursor:pointer;"> 
+                            <button type="button" class="button" (click)="imprimir(item)"><i class="fa fa-file-pdf-o"  [ngClass]="{ 'fa-file-pdf-o': archivo == '', 'fa-refresh fa-spin': archivo == 'descargar' }"></i></button>
+                            
+                        </td>
+                        
+                    </tr>
+                    <tr *ngIf="tabla_insumos.length == 0">
+                        <td>No Existen datos a mostrar</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+        
+            <paginacion 
+                [total]="total" 
+                [paginasTotales]="paginasTotales" 
+                [resultadosPorPagina]="resultadosPorPagina" 
+                [paginaActual]="paginaActual" 
+                [indicePaginas]="indicePaginas"
+                (onSiguiente)="paginaSiguiente()" 
+                (onAnterior)="paginaAnterior()" 
+                (onListar)="listar($event)" 
+                *ngIf="total>0 && total > resultadosPorPagina"></paginacion>
+        </div>
+    </div>
+</div>
+
+<div id="modal-temas" class="modal is-active" [ngClass]="{'is-active': showPrimerModal}">
+    <div class="modal-background"  (click)="showPrimerModal = !showPrimerModal"></div>
+    <div class="modal-card" style="width:60%; height: auto;">
+      <header class="modal-card-head" style="background-color: #00d1b2" >
+        <div class="container is-fluid"  style="width:100%;">
+            <h1 class="title" style="color:#FFF;">
+              <span class="icon is-medium"><i class="fa fa-user"></i></span> Insumos Médicos
+            </h1>
+        </div>            
+        <a class="button  is-primary" style="position:absolute; top:1em; right:1em;" (click)="showPrimerModal = !showPrimerModal"><span class="icon "><i class="fa fa-close"></i></span></a>
+      </header>
+      <section class="section">
+          
+        <section class="section" style="padding: 1rem 1.5rem; background-color: #EFEFEF">
+            <div class="container">
+           
+            </div>
+        </section> 
+        <div class="columns">
+            <div class="column">
+                <div class="control is-grouped">
+                    <p class="control is-expanded  has-icon has-icon-right">
+                        <label class="label">Insumos Médicos</label>
+                        <input class="input is-medium" type="text" [(ngModel)] = "busquedaQuery">
+                    </p>
+                </div>
+            </div>
+           
+        </div>
+        
+        <div class="columns">
+            <div class="column">
+                <div class="columns">
+                    <div class="column is-2">
+                        Clave
+                    </div>
+                    <div class="column is-2">
+                        Insumo
+                    </div>    
+                </div>
+                
+                <div class="columns" *ngFor="let item of catalogo_insumos | busquedaInsumos:busquedaQuery ">
+                    <div class="column is-2" style="height: 30px; cursor: pointer;" (click)='seleccionaInsumo(item)'>
+                        {{ item.clave }}
+                    </div>
+                    <div class="column is-10" style="height: 30px; cursor: pointer;" (click)='seleccionaInsumo(item)'>
+                        {{ item.descripcion }}
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    
+      </section>
+      
+    </div>
+</div>
+
+            
