@@ -1,4 +1,5 @@
 export const PATCHES = [
+	{ nombre:"F4AD226C93E44E6F1214C6D114809BAD.sial.cliente.5.patch",fecha:"2019-03-04" },
 	{ nombre:"022AFC890A15775FCE7574E2E3B74C0A.sial.cliente.4.patch",fecha:"2018-08-10" },
 	{ nombre:"1EFAE10CA4EC6E5D73A74A58B71B4820.sial.cliente.3.patch",fecha:"2018-06-15" },
 	{ nombre:"E62D05D77EAE3119542356AEC2E1F633.sial.cliente.2.patch",fecha:"2018-03-04" },
