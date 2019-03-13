@@ -720,9 +720,7 @@ export class FormularioComponent {
       }*/
     }
 
-    console.log(ctrlLotes.controls['modo_salida'])
     if (ctrlLotes.controls['modo_salida'].value == 'U') {
-      console.log("aqui maldito")
       ctrlLotes.controls['cantidad_surtida'].patchValue(cantidad);
       ctrlLotes.controls['cantidad_solicitada'].patchValue(cantidad_solicitada);
       /*
@@ -835,7 +833,6 @@ export class FormularioComponent {
    * Comprueba que la suma de la cantidad a entregar de los lotes sea mayor a cero.
    */
   comprobar_cant_lotes() {
-    console.log("si me ejecuto malditooooooo!!!")
     let cantidad = 0;
     for (let l of this.lotes_insumo) {
       if(l.cantidad)

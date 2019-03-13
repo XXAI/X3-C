@@ -165,6 +165,7 @@ import { IndexDamModule } from './pedidos/index-dam/index-dam.module';
 import { PedidosDamCCModule } from './pedidos/dam-cc/pedidos-cc.module';
 import { PedidosUMModule } from './pedidos/pedidos-um/pedidos-um.module';
 import { PedidosDAFModule } from './pedidos/pedidos-daf/pedidos-daf.module';
+import { UIModule } from './ui/ui.module';
 
 //import { CrudModule } from './crud/crud.module';
 export function highchartsFactory() {
@@ -301,6 +302,7 @@ export function highchartsFactory() {
     PedidosDamCCModule,
     PedidosUMModule,
     PedidosDAFModule,
+    UIModule,
 
     // Animations need to be imported in to your project to use the library
     BrowserAnimationsModule,

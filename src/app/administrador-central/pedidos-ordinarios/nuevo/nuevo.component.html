@@ -54,7 +54,7 @@
           </div>
           <div class="column">
             <div class="field">
-              <label class="label">Fecha expiración:</label>
+              <label class="label">Fecha expiración para capturar:</label>
               <p class="control is-expanded ">
                 <input class="input"  type="datetime-local" [ngClass]="{'is-danger': errores.fecha_expiracion != null, 'is-disabled': guardando || cargandoPresupuesto}"
                    [(ngModel)]="pedido_ordinario.fecha_expiracion" style="width:100%">

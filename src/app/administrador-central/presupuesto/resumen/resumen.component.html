@@ -42,26 +42,29 @@
         <table class="table is-bordered is-striped" style="font-size:0.7em; table-layout: fixed;">
           <thead>
             <tr>
-              <th colspan="6" style="text-align:center; font-size: 1.2em;">CAUSES / Material curación</th>
-              <th colspan="6" style="text-align:center; font-size: 1.2em;">NO CAUSES</th>
+              <th colspan="2" style="text-align:center; font-size: 1.2em;">CAUSES / Material curación</th>
+              <th colspan="2" style="text-align:center; font-size: 1.2em;">NO CAUSES</th>
             </tr>
             <tr>
-              <th colspan="3" style="text-align:center; font-size: 1.2em;">Autorizado/Modificado</th>
-              <th colspan="3" style="text-align:center; font-size: 1.2em;">Disponible</th>
-              <th colspan="3" style="text-align:center; font-size: 1.2em;">Autorizado/Modificado</th>
-              <th colspan="3" style="text-align:center; font-size: 1.2em;">Disponible</th>
+              <th style="text-align:center; font-size: 1.2em;">Autorizado/Modificado</th>
+              <th style="text-align:center; font-size: 1.2em;">Disponible</th>
+              <th style="text-align:center; font-size: 1.2em;">Autorizado/Modificado</th>
+              <th style="text-align:center; font-size: 1.2em;">Disponible</th>
             </tr>
             <tr>
-              <td colspan="3" class="clickable-cell" style="text-align:center; font-size: 1.2em;">${{
+              <td class="clickable-cell" style="text-align:center; font-size: 1.2em;">${{
                 (ejercicioSeleccionado ? ejercicioSeleccionado.causes : 0) | number:'1.2-2' }}</td>
-              <th colspan="3" style="text-align:center; font-size: 1.2em;">${{
+              <th style="text-align:center; font-size: 1.2em;">${{
                 presupuestoUnidadesMedicasTotales.causes_disponible | number:'1.2-2' }}</th>
-              <td colspan="3" class="clickable-cell" style="text-align:center;  font-size: 1.2em;">${{
+              <td class="clickable-cell" style="text-align:center;  font-size: 1.2em;">${{
                 (ejercicioSeleccionado ? ejercicioSeleccionado.no_causes : 0) | number:'1.2-2' }}</td>
-              <th colspan="3" style="text-align:center; font-size: 1.2em;">${{
+              <th style="text-align:center; font-size: 1.2em;">${{
                 presupuestoUnidadesMedicasTotales.no_causes_disponible | number:'1.2-2' }}</th>
             </tr>
-
+          </thead>
+        </table>
+        <table  class="table is-bordered is-striped" style="font-size:0.7em; table-layout: fixed;">
+          <thead>
             <tr>
               <th rowspan="2" style="vertical-align:middle; text-align: center;">Clues</th>
               <th rowspan="2" style="vertical-align:middle; text-align: center;">Nombre</th>
