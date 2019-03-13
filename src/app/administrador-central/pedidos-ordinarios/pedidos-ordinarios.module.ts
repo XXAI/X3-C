@@ -15,6 +15,7 @@ import { PedidosOrdinariosRoutingModule } from './pedidos-ordinarios-routing.mod
 import { ListaComponent } from './lista/lista.component';
 import { NuevoComponent } from './nuevo/nuevo.component';
 import { VerComponent } from './ver/ver.component';
+import { UIModule } from 'app/ui/ui.module';
 
 @NgModule({
   imports: [
@@ -27,7 +28,8 @@ import { VerComponent } from './ver/ver.component';
     PaginacionModule,  
     AdministradorCentralModule,
     PedidosOrdinariosRoutingModule,
-    BuscarUnidadesMedicasModule
+    BuscarUnidadesMedicasModule,
+    UIModule,
   ],
   declarations: [ListaComponent, NuevoComponent, VerComponent]
 })

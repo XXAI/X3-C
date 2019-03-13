@@ -38,9 +38,34 @@ export class PedidosOrdinariosService {
         }) as Observable<any>;
     }
 
-    aumentarPresupuesto(id,pedido_ordinario_unidad_medica:any = null):Observable<any>{
-        console.log("aumentando presupesto llamada api");
-        return this.jwtRequest.put(PedidosOrdinariosService.URL+"/pedidos-ordinarios/aumentar-presupuesto", id, {pedido_ordinario_unidad_medica: pedido_ordinario_unidad_medica}).map((response: Response) => {
+    verPedido(id: any): Observable<any> {
+        return this.jwtRequest.get(PedidosOrdinariosService.URL+"/pedidos-ordinarios/pedido", id, {}).map((response: Response) => {
+
+            let jsonData = response.json().data;
+            return jsonData;
+        }) as Observable<any>;
+    }
+
+    editar(id, data: any): Observable<any> {
+        return this.jwtRequest.put(PedidosOrdinariosService.URL+"/pedidos-ordinarios", id, data).map((response: Response) => response.json().data) as Observable<any>;
+    }
+
+    regresarACaptura(id, items: any): Observable<any> {
+        return this.jwtRequest.put(PedidosOrdinariosService.URL+"/pedidos-ordinarios/regresar-captura", id, {pedidos: items}).map((response: Response) => response.json().data) as Observable<any>;
+    }
+
+    cancelar(id, items: any): Observable<any> {
+        return this.jwtRequest.put(PedidosOrdinariosService.URL+"/pedidos-ordinarios/cancelar", id, {pedidos: items}).map((response: Response) => response.json().data) as Observable<any>;
+    }
+
+    anularCancelacion(id, items: any): Observable<any> {
+        return this.jwtRequest.put(PedidosOrdinariosService.URL+"/pedidos-ordinarios/anular-cancelacion", id, {pedidos: items}).map((response: Response) => response.json().data) as Observable<any>;
+    }
+
+    modificarPresupuesto(id,pedido_ordinario_unidad_medica:any = null, aumentar: boolean = false, liberar:boolean = false,pedidos: any[] = []):Observable<any>{
+        console.log("modificando presupuesto llamada api");
+        
+        return this.jwtRequest.put(PedidosOrdinariosService.URL+"/pedidos-ordinarios/modificar-presupuesto", id, {pedido_ordinario_unidad_medica: pedido_ordinario_unidad_medica, aumentar: aumentar, liberar: liberar, pedidos: pedidos}).map((response: Response) => {
 
             let jsonData = response.json().data;
             return jsonData;

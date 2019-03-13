@@ -15,23 +15,77 @@
           <span *ngIf="cargandoPresupuesto" class="icon is-medium"><i class="fa fa-refresh fa-spin"></i></span>
           Pedido ordinario
         </h1>
-        <a class="button is-primary" style="position:absolute; top:1em; right:3.5em;" (click)="exportarPresupuestoExcel()"><span class="icon is-small"><i class="fa fa-file-excel-o "></i></span><span>Exportar
-                  a excel</span></a>
-        <a class="button  is-primary" routerLink="/administrador-central/pedidos-ordinarios/" style="position:absolute; top:1em; right:1em;">
+        <a class="button is-primary" style="position:absolute; top:1em; right:9.5em;"
+          (click)="generarExcel()"><span class="icon is-small"><i
+              class="fa fa-file-excel-o "></i></span><span>Exportar
+            a excel</span></a>
+
+            <a class="button is-primary is-inverted" style="position:absolute; top:1em; right:3.5em;"
+          (click)="abrirModalEditar()"><span class="icon is-small"><i
+              class="fa fa-edit "></i></span><span>Editar </span></a>
+        <a class="button  is-primary" routerLink="/administrador-central/pedidos-ordinarios/"
+          style="position:absolute; top:1em; right:1em;">
           <span class="icon ">
             <i class="fa fa-arrow-left"></i>
           </span>
         </a>
       </div>
       <div style="padding:10px">
-        <div class="columns is-desktop" style="font-size: 0.8em">
+        <table class="table is-bordered">
+          <tbody>
+            <tr><th style="width:165px">Descripción</th><td>{{ pedido_ordinario.descripcion }}</td></tr>
+            <tr><th>Fecha</th><td>{{ pedido_ordinario.fecha | date: 'dd/MM/yyyy' }} </td></tr>
+            <tr><th>Expiración de captura</th><td>{{ pedido_ordinario.fecha_expiracion | date: 'dd/MM/yyyy' }} a las {{
+              pedido_ordinario.fecha_expiracion | date: 'HH:mm' }} hrs <small style="color:red" *ngIf="pedido_ordinario.dias_expiracion > 0">Expirado hace: {{ pedido_ordinario.dias_expiracion }} dias.</small></td></tr>
+          </tbody>
+        </table>
+
+        <ui-actions-picker
+          [actions]="actions"
+          (onCheck)="seleccionarTodos($event)"
+          (onApply)="aplicarAccionEnLote($event)"></ui-actions-picker>
+          
+      <!--  <nav class="navbar">
+          <div class="navbar-brand">
+            <div class="navbar-burger burger" data-target="actionsMenu">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+          <div id="actionsMenu" class="navbar-menu">
+            <div class="navbar-start">
+              <span class="navbar-item">
+                  <a class="button " (click)="seleccionarParaCancelar()"
+                  title="Aumentar presupuesto a pedidos excedidos" [ngClass]="{'is-disabled': total_faltante == 0 }">
+                    <span class="icon"><i class="fa fa-ban"></i></span> <span>Anular Cancelación</span>
+                  </a>
+                </span>
+              <span class="navbar-item">
+                <a class="button " (click)="seleccionarParaCancelar()"
+                title="Aumentar presupuesto a pedidos excedidos" [ngClass]="{'is-disabled': total_faltante == 0 }">
+                  <span class="icon"><i class="fa fa-ban"></i></span> <span>Cancelar</span>
+                </a>
+              </span>
+              <span class="navbar-item">
+                <a class="button " (click)="modificarPresupuesto(null, true, false)"
+                  title="Aumentar presupuesto a pedidos excedidos" [ngClass]="{'is-disabled': total_faltante == 0 }"><span
+                    class="icon"><i class="fa fa-dollar"></i></span> <span>Ampliar presupuesto ({{ total_faltante }})</span></a>
+              </span>
+              <span class="navbar-item">
+                <a class="button" (click)="modificarPresupuesto(null, false, true)"
+                  title="Liberar presupuesto no utilizado" [ngClass]="{'is-disabled': total_liberar_presupuesto == 0 }"><span
+                    class="icon"><i class="fa fa-check"></i></span> <span>Liberar presupuesto</span></a>
+              </span>
+            </div>
+          </div>
+        </nav> -->
+       <!--  <div class="columns is-desktop" style="font-size: 0.8em">
           <div class="column ">
             <div class="content">
               <h3><strong>{{ pedido_ordinario.descripcion }}</strong></h3>
-              
-            <hr>
+              <hr>
             </div>
-            
             <nav class="level">
               <div class="level-left">
                 <div class="level-item">
@@ -44,28 +98,33 @@
                   <p>
                     <strong><small>Fecha expiración</small></strong><br>
                     <span>{{ pedido_ordinario.fecha_expiracion | date: 'dd/MM/yyyy' }} a las {{
-                      pedido_ordinario.fecha_expiracion | date: 'HH:mm' }} hrs</span>
+                      pedido_ordinario.fecha_expiracion | date: 'HH:mm' }} hrs</span><br>
+                    <small style="color:red" *ngIf="pedido_ordinario.dias_expiracion > 0">Expirado hace: {{ pedido_ordinario.dias_expiracion }} dias.</small>
                   </p>
+
                 </div>
-                <p class="level-item"><a class="button is-primary is-inverted" title="Ampliar fecha de expiración"><span class="icon"><i class="fa fa-calendar-plus-o"></i></span></a></p>              
+
               </div>
               <div class="level-right">
-                  <p class="level-item"><a class="button is-warning" (click)="aumentarExcedido()" title="Aumentar presupuesto a pedidos excedidos" [ngClass]="{'is-disabled': total_faltante == 0 }"><span class="icon"><i class="fa fa-dollar"></i></span> <span>Aumentar excedidos ({{ total_faltante }})</span></a></p>              
-                  <p class="level-item"><a class="button is-success"  title="Liberar presupuesto no utilizado" [ngClass]="{'is-disabled': total_liberar_presupuesto == 0 }"><span class="icon"><i class="fa fa-check"></i></span> <span>Liberar presupuesto ({{ total_liberar_presupuesto }})</span></a></p>              
+                <p class="level-item"><a class="button is-warning" (click)="modificarPresupuesto(null, true, false)"
+                    title="Aumentar presupuesto a pedidos excedidos"
+                    [ngClass]="{'is-disabled': total_faltante == 0 }"><span class="icon"><i
+                        class="fa fa-dollar"></i></span> <span>Aumentar excedidos ({{ total_faltante }})</span></a></p>
+                <p class="level-item"><a class="button is-success"  (click)="modificarPresupuesto(null, false, true)" title="Liberar presupuesto no utilizado"
+                    [ngClass]="{'is-disabled': total_liberar_presupuesto == 0 }"><span class="icon"><i
+                        class="fa fa-check"></i></span> <span>Liberar presupuesto
+                      ({{ total_liberar_presupuesto }})</span></a></p>
               </div>
             </nav>
           </div>
-        </div>
+        </div>-->
 
         <section *ngIf="!cargando" style="width:100%; height:auto;  overflow-x:scroll">
           <table class="table is-bordered is-striped" style="font-size:0.65em;">
             <thead>
 
               <tr>
-                <th rowspan="2" style="text-align:center; vertical-align: middle; width: 48px">
-                  <a class="button is-small is-danger" title="Cancelar todos" (click)="cancelar()" [ngClass]="{'is-disabled': guardando}"><span
-                      class="icon is-small"><i class="fa fa-ban"></i></span></a>
-                </th>
+                <th rowspan="2" style="text-align:center; vertical-align: middle; width: 48px"></th>
                 <th rowspan="2" style="text-align:center; vertical-align: middle; width: 80px;">Clues</th>
                 <th rowspan="2" style="text-align:center; vertical-align: middle; max-width: 180px">Nombre</th>
                 <th rowspan="2" style="text-align:center; vertical-align: middle; width: 40px">Status</th>
@@ -94,58 +153,71 @@
               </tr>
             </thead>
             <tbody *ngIf="pedido_ordinario.pedidos_ordinarios_unidades_medicas">
-              <tr *ngFor="let item of pedido_ordinario.pedidos_ordinarios_unidades_medicas; let i=index" [ngClass]="{ 'is-danger': item.error }">
-                <td style="text-align:center">
-                  <a *ngIf="item.status == 'S/P' || item.status == 'EX' " title="Cancelar" class="button is-small is-danger is-inverted"
-                    (click)="cancelar(item)" [ngClass]="{'is-disabled': guardando}"><span class="icon is-small"><i
-                        class="fa fa-ban"></i></span></a>
-                  <span *ngIf="item.status == 'FI'" class="icon"><i class="fa fa-check"></i></span>
-                  <span *ngIf="item.status == 'CA'" class="icon"><i class="fa fa-ban"></i></span>
+              <tr *ngFor="let item of pedido_ordinario.pedidos_ordinarios_unidades_medicas; let i=index" style="cursor:pointer;"
+                [ngClass]="{ 'is-danger': item.error }"  (click)=" mostrarModalAumentarItem(item)">
+                <td style="text-align:center; cursor: pointer">
+                 <!-- <a *ngIf="item.status != 'FI' && item.status != 'CA' " title="Cancelar"
+                    class="button is-small is-danger is-inverted" (click)="cancelar(item); $event.stopPropagation();"
+                    [ngClass]="{'is-disabled': guardando}"><span class="icon is-small"><i
+                        class="fa fa-ban"></i></span></a>-->
+
+                        <label (click)=" $event.stopPropagation();">                         
+                          <input type="checkbox" [(ngModel)]="item.seleccionado" />
+                      </label>
+                  <!-- <span *ngIf="item.status == 'FI'" class="icon is-small"><i class="fa fa-check"></i></span>
+                  <span *ngIf="item.status == 'CA' " class="icon is-small"><i class="fa fa-ban"></i></span> -->
                 </td>
-                <td><span class="text-overflow" title="{{ item.clues }}">{{ item.clues }}</span></td>
-                <td><span class="text-overflow" title="{{ item.unidad_medica.nombre }}">{{ item.unidad_medica.nombre }}</span></td>
-                <td style="text-align:center">
-                  <abbr [ngStyle]="{'color': item.status == 'CA' || item.status == 'EX'? 'red': 'black' }" title="{{ item.status == 'S/P'? 'Sin pedido capturado' : ( item.status == 'EP' ? 'Captura en proceso': ( item.status == 'CA'? 'Cancelado': (item.status == 'EX'? 'Expirado': 'Finalizado')))  }}">{{ item.status }}</abbr>
-                  
+                <td  [ngStyle]="{ 'text-decoration': item.status == 'CA' ? 'line-through' : '' }"><span class="text-overflow"  title="{{ item.clues }}">{{ item.clues }}</span></td>
+                <td  [ngStyle]="{ 'text-decoration': item.status == 'CA' ? 'line-through' : '' }"><span class="text-overflow"
+                    title="{{ item.unidad_medica.nombre }}">{{ item.unidad_medica.nombre }}</span></td>
+                <td style="text-align:center;">
+                  <abbr  [ngStyle]="{'color': item.status == 'CA' || item.status == 'EX'? 'red': 'black' }"
+                    title="{{ item.status == 'S/P'? 'Sin pedido capturado' : ( item.status == 'EP' ? 'Captura en proceso': ( item.status == 'CA'? 'Cancelado': (item.status == 'EX'? 'Expirado': 'Finalizado')))  }}">{{ item.status }}</abbr>
+
                 </td>
 
-                <td style="text-align:right">${{ (item.causes_autorizado || 0) | number:'1.2-2' }}</td>
-                <td style="text-align:right">${{ (item.no_causes_autorizado || 0) | number:'1.2-2' }}</td>
-                <td style="text-align:right">${{ (item.causes_modificado || 0) | number:'1.2-2' }}</td>
-                <td style="text-align:right">${{ (item.no_causes_modificado || 0) | number:'1.2-2' }}</td>
+                <td [ngStyle]="{ 'text-align': 'right', 'text-decoration': item.status == 'CA' ? 'line-through' : '' }">${{ (item.causes_autorizado || 0) | number:'1.2-2' }}</td>
+                <td [ngStyle]="{ 'text-align': 'right', 'text-decoration': item.status == 'CA' ? 'line-through' : '' }">${{ (item.no_causes_autorizado || 0) | number:'1.2-2' }}</td>
+                <td [ngStyle]="{ 'text-align': 'right', 'text-decoration': item.status == 'CA' ? 'line-through' : '' }">${{ (item.causes_modificado || 0) | number:'1.2-2' }}</td>
+                <td [ngStyle]="{ 'text-align': 'right', 'text-decoration': item.status == 'CA' ? 'line-through' : '' }">${{ (item.no_causes_modificado || 0) | number:'1.2-2' }}</td>
 
+                <td [ngStyle]="{ 'text-align': 'right', ' white-space':'nowrap', 'text-decoration': item.status == 'CA' ? 'line-through' : '' }">
+                  <span [ngStyle]="{ 'color': item.status == 'EP' && item.causes_disponible + item.causes_devengado - item.causes_capturado < 0 ? 'red' : 'inherit' }">
+                    ${{ (item.causes_capturado || 0) | number:'1.2-2' }}<!--<span class="icon"
+                      style="font-size:1em; line-height: 1.5; width:1.2em;"><i class="fa fa-plus-circle"></i></span>-->
+                  </span>
+                </td>
+
+                <td [ngStyle]="{ 'text-align': 'right', ' white-space':'nowrap', 'text-decoration': item.status == 'CA' ? 'line-through' : '' }">
+                    <span [ngStyle]="{ 'color': item.status == 'EP' && item.no_causes_disponible + item.no_causes_devengado - item.no_causes_capturado < 0 ? 'red' : 'inherit' }">
+                      ${{ (item.no_causes_capturado || 0) | number:'1.2-2' }}
+                    </span>
+                </td>
+
+
+                <td [ngStyle]="{ 'text-align': 'right', 'text-decoration': item.status == 'CA' ? 'line-through' : '' }">${{ (item.causes_comprometido || 0) | number:'1.2-2' }}</td>
+                <td [ngStyle]="{ 'text-align': 'right', 'text-decoration': item.status == 'CA' ? 'line-through' : '' }">${{ (item.no_causes_comprometido || 0) | number:'1.2-2' }}</td>
+                <td [ngStyle]="{ 'text-align': 'right', 'text-decoration': item.status == 'CA' && item.causes_devengado == 0 ? 'line-through' : '' }">${{ (item.causes_devengado || 0) | number:'1.2-2' }}</td>
+                <td [ngStyle]="{ 'text-align': 'right', 'text-decoration': item.status == 'CA' && item.no_causes_devengado == 0? 'line-through' : '' }">${{ (item.no_causes_devengado || 0) | number:'1.2-2' }}</td>
+
+                <td [ngStyle]="{ 'text-align': 'right', ' white-space':'nowrap', 'text-decoration': item.status == 'CA' ? 'line-through' : '' }">
+                    <span [ngStyle]="{ 'color': item.status == 'FI' && item.causes_disponible > 0 ? 'green' : 'inherit', 'font-weight': item.status == 'FI' && item.causes_disponible > 0 ? 'bold' : 'normal' }">
+                      ${{ (item.causes_disponible || 0) | number:'1.2-2' }}
+                    </span>
+                </td>
+
+                <td [ngStyle]="{ 'text-align': 'right', ' white-space':'nowrap', 'text-decoration': item.status == 'CA' ? 'line-through' : '' }">
+                    <span [ngStyle]="{ 'color': item.status == 'FI' && item.no_causes_disponible > 0 ? 'green' : 'inherit', 'font-weight': item.status == 'FI' && item.no_causes_disponible > 0 ? 'bold' : 'normal' }">
+                      ${{ (item.no_causes_disponible || 0) | number:'1.2-2' }}
+                    </span>
+                </td>
+                <!--
                 <td style="text-align:right; white-space: nowrap;">
-                  <a title="Aumentar presupuesto CAUSES" *ngIf="item.status == 'EP' && item.causes_disponible - item.causes_capturado < 0; else labelcausescapturado"
-                    style="color:red !important; text-decoration: underline;" (click)="aumentarExcedido(item,true)">
-                    ${{ (item.causes_capturado || 0) | number:'1.2-2' }}<span class="icon" style="font-size:1em; line-height: 1.5; width:1.2em;"><i
-                        class="fa fa-plus-circle"></i></span>
-                  </a>
-                  <ng-template #labelcausescapturado>
-                    ${{ (item.causes_capturado || 0) | number:'1.2-2' }}
-                  </ng-template>
-
-                </td>
-                <td style="text-align:right; white-space: nowrap;">
-                  <a title="Aumentar presupuesto NO CAUSES" *ngIf="item.status == 'EP' && item.no_causes_disponible - item.no_causes_capturado < 0; else labelnocausescapturado"
-                    style="color:red !important; text-decoration: underline;" (click)="aumentarExcedido(item,false)">
-                    ${{ (item.no_causes_capturado || 0) | number:'1.2-2' }}<span class="icon" style="font-size:1em; line-height: 1.5; width:1.2em;"><i
-                        class="fa fa-plus-circle"></i></span>
-                  </a>
-                  <ng-template #labelnocausescapturado>
-                    ${{ (item.no_causes_capturado || 0) | number:'1.2-2' }}
-                  </ng-template>
-
-                </td>
-
-                <td style="text-align:right">${{ (item.causes_comprometido || 0) | number:'1.2-2' }}</td>
-                <td style="text-align:right">${{ (item.no_causes_comprometido || 0) | number:'1.2-2' }}</td>
-                <td style="text-align:right">${{ (item.causes_devengado || 0) | number:'1.2-2' }}</td>
-                <td style="text-align:right">${{ (item.no_causes_devengado || 0) | number:'1.2-2' }}</td>
-
-                <td style="text-align:right; white-space: nowrap;">
-                  <a title="Liberar presupuesto CAUSES" *ngIf="item.status == 'FI' && item.causes_disponible > 0; else labelcausesdisponible"
+                  <a title="Liberar presupuesto CAUSES"
+                    *ngIf="item.status == 'FI' && item.causes_disponible > 0; else labelcausesdisponible"
                     style="color:green !important; text-decoration: underline;" (click)="liberarPresupuesto(item,true)">
-                    ${{ (item.causes_disponible || 0) | number:'1.2-2' }}<span class="icon" style="font-size:1em; line-height: 1.5; width:1.2em;"><i
+                    ${{ (item.causes_disponible || 0) | number:'1.2-2' }}<span class="icon"
+                      style="font-size:1em; line-height: 1.5; width:1.2em;"><i
                         class="fa fa-arrow-circle-right"></i></span>
                   </a>
                   <ng-template #labelcausesdisponible>
@@ -153,15 +225,18 @@
                   </ng-template>
                 </td>
                 <td style="text-align:right; white-space: nowrap;">
-                  <a title="Liberar presupuesto NO CAUSES" *ngIf="item.status == 'FI' && item.no_causes_disponible > 0; else labelnocausesdisponible"
-                    style="color:green !important; text-decoration: underline;" (click)="liberarPresupuesto(item,false)">
-                    ${{ (item.no_causes_disponible || 0) | number:'1.2-2' }}<span class="icon" style="font-size:1em; line-height: 1.5; width:1.2em;"><i
+                  <a title="Liberar presupuesto NO CAUSES"
+                    *ngIf="item.status == 'FI' && item.no_causes_disponible > 0; else labelnocausesdisponible"
+                    style="color:green !important; text-decoration: underline;"
+                    (click)="liberarPresupuesto(item,false)">
+                    ${{ (item.no_causes_disponible || 0) | number:'1.2-2' }}<span class="icon"
+                      style="font-size:1em; line-height: 1.5; width:1.2em;"><i
                         class="fa fa-arrow-circle-right"></i></span>
                   </a>
                   <ng-template #labelnocausesdisponible>
                     ${{ (item.no_causes_disponible || 0) | number:'1.2-2' }}
                   </ng-template>
-                </td>
+                </td> -->
 
                 <td><span class="text-overflow" title="{{ item.updated_at }}">{{ item.updated_at }}</span></td>
               </tr>
@@ -173,6 +248,409 @@
       </div>
 
     </section>
+  </div>
+</div>
+
+<div class="modal is-active" *ngIf="mostrarModalAumentarPresupuestoItem">
+  <div class="modal-background" (click)="mostrarModalAumentarPresupuestoItem = !mostrarModalAumentarPresupuestoItem">
+  </div>
+  <div class="modal-card">
+    <header class="modal-card-head" style="background: #00d1b2;">
+      <div class="container is-fluid" style="width:100%;">
+       <!-- <h1 *ngIf="itemPedidoOrdinarioSeleccionado.status != 'CA' && itemPedidoOrdinarioSeleccionado.status != 'FI'" class="title" style="color:#FFF;">
+          Modificar presupuesto del pedido
+        </h1>
+
+        <h1 *ngIf="itemPedidoOrdinarioSeleccionado.status == 'CA' || itemPedidoOrdinarioSeleccionado.status == 'FI'" class="title" style="color:#FFF;">
+          Pedido ordinario de la Unidad Médica
+        </h1>-->
+        <h1 class="title" style="color: white">Editar</h1>
+      </div>
+      <a class="button  is-primary" style="position:absolute; top:1em; right:1em;"
+        (click)="mostrarModalAumentarPresupuestoItem = !mostrarModalAumentarPresupuestoItem"><span class="icon "><i
+            class="fa fa-close"></i></span></a>
+    </header>
+    <section class="modal-card-body">
+      <p><strong>{{ itemPedidoOrdinarioSeleccionado.clues }}</strong>
+        {{ itemPedidoOrdinarioSeleccionado.unidad_medica.nombre }}</p>
+      <p><span class="tag is-success" *ngIf="itemPedidoOrdinarioSeleccionado.status == 'FI'">Captura Finalizada (FI)</span><span class="tag is-info" *ngIf="itemPedidoOrdinarioSeleccionado.status == 'EP'">En proceso de captura (EP)</span><span class="tag is-danger" *ngIf="itemPedidoOrdinarioSeleccionado.status == 'CA'">Cancelado (CA)</span><span class="tag is-warning" *ngIf="itemPedidoOrdinarioSeleccionado.status == 'EX'">Captura expirada (EX)</span><span class="tag is-dark" *ngIf="itemPedidoOrdinarioSeleccionado.status == 'S/P'">Sin capturar (S/P)</span></p>
+
+      <div style="margin-top:20px" class="tabs is-boxed" *ngIf="itemPedidoOrdinarioSeleccionado.pedido_id != null">
+        <ul>
+          <li [ngClass]="{ 'is-active': tabPresupuesto }" ><a (click)="tabPresupuesto = true; tabPedidoCapturado = false;">Presupuesto</a></li>
+          <li [ngClass]="{ 'is-active': tabPedidoCapturado }" ><a (click)="tabPresupuesto = false; tabPedidoCapturado = true;">Pedido capturado</a></li>
+        </ul>
+      </div>
+      <hr *ngIf="itemPedidoOrdinarioSeleccionado.pedido_id == null">
+      <div  *ngIf="tabPresupuesto">
+        <h1 class="subtitle">Presupuesto del pedido</h1>
+        <div class="columns is-desktop" style="font-size: 0.8em; margin-bottom:0;">
+          <div class="column">
+            <table class="table" style=" margin-bottom:0;">
+              <thead>
+                <tr>
+                  <th colspan="2">CAUSES</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>Autorizado</th>
+                  <td><span class="help"  [ngClass]="{ 'is-info': itemPedidoOrdinarioSeleccionado.status != 'CA' && itemPedidoOrdinarioSeleccionado.status != 'FI' }" style="font-size:0.9em">$
+                      {{ itemPedidoOrdinarioSeleccionado.causes_modificado  | number:'1.2-2' }}</span></td>
+                </tr>
+                <tr *ngIf="itemPedidoOrdinarioSeleccionado.status != 'CA' && itemPedidoOrdinarioSeleccionado.status != 'FI'">
+                  <th>Modificar a:</th>
+                  <td>
+                    <div class="field">
+                      <p class="control is-expanded has-icon has-icon-left">
+                        <span class="icon is-small is-left" style="top:0.9rem;">
+                          <i class="fa fa-usd"></i></span>
+                        <input class="input is-small"
+                          [ngClass]="{'is-danger': itemPedidoOrdinarioSeleccionado.error_validacion &&  itemPedidoOrdinarioSeleccionado.error_validacion.causes_autorizado, 'is-disabled': itemPedidoOrdinarioSeleccionado.error || guardando}"
+                          type="number" [(ngModel)]="itemPedidoOrdinarioSeleccionado.causes_nuevo" placeholder="CAUSES">
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Capturado</th>
+                  <td><span class="help"
+                      [ngClass]="{ 'is-danger': itemPedidoOrdinarioSeleccionado.causes_capturado > itemPedidoOrdinarioSeleccionado.causes_modificado }"
+                      style="font-size:0.9em">$
+                      {{ itemPedidoOrdinarioSeleccionado.causes_capturado  | number:'1.2-2' }}</span></td>
+                </tr>
+                <tr>
+                  <th>Disponible</th>
+                  <td><span class="help" style="font-size:0.9em">$ {{ itemPedidoOrdinarioSeleccionado.causes_disponible  | number:'1.2-2' }}</span></td>
+                </tr>
+                <tr>
+                  <th>Comprometido</th>
+                  <td><span class="help" style="font-size:0.9em">$ {{ itemPedidoOrdinarioSeleccionado.causes_comprometido  | number:'1.2-2' }}</span></td>
+                </tr>
+                <tr>
+                  <th>Devengado</th>
+                  <td><span class="help is-warning" style="font-size:0.9em; font-weight: bold;">$ {{ itemPedidoOrdinarioSeleccionado.causes_devengado  | number:'1.2-2' }}</span></td>
+                </tr>
+
+
+              </tbody>
+            </table>
+
+          </div>
+          <div class="column">
+            <table class="table" style=" margin-bottom:0;">
+              <thead>
+                <tr>
+                  <th colspan="2">NO CAUSES</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>Autorizado</th>
+                  <td><span class="help" [ngClass]="{ 'is-info': itemPedidoOrdinarioSeleccionado.status != 'CA' && itemPedidoOrdinarioSeleccionado.status != 'FI' }" style="font-size:0.9em">$
+                      {{ itemPedidoOrdinarioSeleccionado.no_causes_modificado  | number:'1.2-2' }}</span></td>
+                </tr>
+                <tr *ngIf="itemPedidoOrdinarioSeleccionado.status != 'CA' && itemPedidoOrdinarioSeleccionado.status != 'FI'">
+                  <th>Modificar a:</th>
+                  <td>
+                    <div class="field">
+                      <p class="control is-expanded has-icon has-icon-left">
+                        <span class="icon is-small is-left" style="top:0.9rem;">
+                          <i class="fa fa-usd"></i></span>
+                        <input class="input is-small"
+                          [ngClass]="{'is-danger': itemPedidoOrdinarioSeleccionado.error_validacion &&  itemPedidoOrdinarioSeleccionado.error_validacion.causes_autorizado, 'is-disabled': itemPedidoOrdinarioSeleccionado.error || guardando}"
+                          type="number" [(ngModel)]="itemPedidoOrdinarioSeleccionado.no_causes_nuevo" placeholder="CAUSES" >
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Capturado</th>
+                  <td><span class="help"
+                      [ngClass]="{ 'is-danger': itemPedidoOrdinarioSeleccionado.no_causes_capturado > itemPedidoOrdinarioSeleccionado.no_causes_modificado }"
+                      style="font-size:0.9em">$
+                      {{ itemPedidoOrdinarioSeleccionado.no_causes_capturado  | number:'1.2-2' }}</span></td>
+                </tr>
+                <tr>
+                  <th>Disponible</th>
+                  <td><span class="help" style="font-size:0.9em">$ {{ itemPedidoOrdinarioSeleccionado.no_causes_disponible  | number:'1.2-2' }}</span></td>
+                </tr>
+                <tr>
+                  <th>Comprometido</th>
+                  <td><span class="help" style="font-size:0.9em">$ {{ itemPedidoOrdinarioSeleccionado.no_causes_comprometido  | number:'1.2-2' }}</span></td>
+                </tr>
+                <tr>
+                  <th>Devengado</th>
+                  <td><span class="help is-warning" style="font-size:0.9em; font-weight: bold;">$ {{ itemPedidoOrdinarioSeleccionado.no_causes_devengado  | number:'1.2-2' }}</span></td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+        <h1 class="subtitle">Presupuesto Global</h1>
+        <div class="columns is-desktop" style="font-size: 0.8em">
+          <div class="column">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th colspan="2">CAUSES</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>Disponible</th>
+                  <td>
+                    <span class="help">${{ itemPedidoOrdinarioSeleccionado.presupuesto.causes_disponible | number:'1.2-2' }}</span>
+                  </td>
+                </tr>
+                <tr *ngIf="itemPedidoOrdinarioSeleccionado.status != 'CA' && itemPedidoOrdinarioSeleccionado.status != 'FI'" >
+                  <th>Diferencia</th>
+                  <td><span class="help"
+                      [ngClass]="{ 'is-success': itemPedidoOrdinarioSeleccionado.causes_nuevo < itemPedidoOrdinarioSeleccionado.causes_modificado, 'is-danger': itemPedidoOrdinarioSeleccionado.causes_nuevo > itemPedidoOrdinarioSeleccionado.causes_modificado  }"
+                      style="font-size:0.9em">$
+                      {{ itemPedidoOrdinarioSeleccionado.causes_modificado - itemPedidoOrdinarioSeleccionado.causes_nuevo | number:'1.2-2' }}</span>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot *ngIf="itemPedidoOrdinarioSeleccionado.status != 'CA' && itemPedidoOrdinarioSeleccionado.status != 'FI'">
+                <tr>
+                  <th>Nuevo saldo</th>
+                  <td><span class="help is-info" style="font-size:0.9em">$
+                      {{ itemPedidoOrdinarioSeleccionado.presupuesto.causes_disponible + itemPedidoOrdinarioSeleccionado.causes_modificado - itemPedidoOrdinarioSeleccionado.causes_nuevo  | number:'1.2-2' }}</span>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <div class="column">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th colspan="2">NO CAUSES</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>Disponible</th>
+                  <td>
+                    <span
+                      class="help">${{ itemPedidoOrdinarioSeleccionado.presupuesto.no_causes_disponible | number:'1.2-2' }}</span>
+                  </td>
+                </tr>
+                <tr *ngIf="itemPedidoOrdinarioSeleccionado.status != 'CA' && itemPedidoOrdinarioSeleccionado.status != 'FI'">
+                  <th>Diferencia</th>
+                  <td><span class="help"
+                      [ngClass]="{ 'is-success': itemPedidoOrdinarioSeleccionado.no_causes_nuevo < itemPedidoOrdinarioSeleccionado.no_causes_modificado, 'is-danger': itemPedidoOrdinarioSeleccionado.no_causes_nuevo > itemPedidoOrdinarioSeleccionado.no_causes_modificado  }"
+                      style="font-size:0.9em">$
+                      {{ itemPedidoOrdinarioSeleccionado.no_causes_modificado - itemPedidoOrdinarioSeleccionado.no_causes_nuevo | number:'1.2-2' }}</span>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot *ngIf="itemPedidoOrdinarioSeleccionado.status != 'CA' && itemPedidoOrdinarioSeleccionado.status != 'FI'">
+                <tr>
+                  <th>Nuevo saldo</th>
+                  <td><span class="help is-info" style="font-size:0.9em">$
+                      {{ itemPedidoOrdinarioSeleccionado.presupuesto.no_causes_disponible + itemPedidoOrdinarioSeleccionado.no_causes_modificado - itemPedidoOrdinarioSeleccionado.no_causes_nuevo  | number:'1.2-2' }}</span>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="tabPedidoCapturado">
+        <table class="table" *ngIf="itemPedidoOrdinarioSeleccionado.pedido != null">
+          <tbody>
+            <tr>
+              <th>Folio</th><td>{{ itemPedidoOrdinarioSeleccionado.pedido.folio ?  itemPedidoOrdinarioSeleccionado.pedido.folio : 'S/F' }}</td>
+            </tr>
+            <tr>
+              <th>Status</th><td>
+                <span *ngIf="itemPedidoOrdinarioSeleccionado.pedido.status == 'PS'">Por surtir</span>
+                <span *ngIf="itemPedidoOrdinarioSeleccionado.pedido.status == 'FI'">Finalizado</span>
+                <span *ngIf="itemPedidoOrdinarioSeleccionado.pedido.status == 'BR'">Borrador</span>
+                <span *ngIf="itemPedidoOrdinarioSeleccionado.pedido.status == 'EX-CA'">CANCELADO</span>
+                <span *ngIf="itemPedidoOrdinarioSeleccionado.pedido.status == 'EX'">Expirado</span>
+              </td>
+            </tr>
+            <tr>
+              <th>Monto recibido</th><td>${{ itemPedidoOrdinarioSeleccionado.pedido.total_monto_recibido | number:'1.2-2' }}/${{ itemPedidoOrdinarioSeleccionado.pedido.total_monto_solicitado | number:'1.2-2' }} <span class="tag">{{  (itemPedidoOrdinarioSeleccionado.pedido.total_monto_recibido * 100 / itemPedidoOrdinarioSeleccionado.pedido.total_monto_solicitado) | number: '1.2-2' }}%</span></td>
+            </tr>
+            <tr>
+              <th>Claves recibidas</th><td>{{ itemPedidoOrdinarioSeleccionado.pedido.total_claves_recibidas  }}/{{ itemPedidoOrdinarioSeleccionado.pedido.total_claves_solicitadas  }} <span class="tag">{{  (itemPedidoOrdinarioSeleccionado.pedido.total_claves_recibidas * 100 / itemPedidoOrdinarioSeleccionado.pedido.total_claves_solicitadas) | number: '1.2-2' }}%</span></td>
+            </tr>
+            <tr>
+              <th>Insumos recibidos</th><td>${{ itemPedidoOrdinarioSeleccionado.pedido.total_cantidad_recibida | number:'1.2-2' }}/${{ itemPedidoOrdinarioSeleccionado.pedido.total_cantidad_solicitada | number:'1.2-2' }} <span class="tag">{{  (itemPedidoOrdinarioSeleccionado.pedido.total_cantidad_recibida * 100 / itemPedidoOrdinarioSeleccionado.pedido.total_cantidad_solicitada) | number: '1.2-2' }}%</span></td>
+            </tr>
+            <tr>
+              <th>Fecha Concluido</th><td>{{ itemPedidoOrdinarioSeleccionado.pedido.fecha_concluido | date: 'dd/MM/yyyy' }}</td>
+            </tr>
+            <tr>
+              <th>Fecha Expiración</th><td>{{ itemPedidoOrdinarioSeleccionado.pedido.fecha_expiracion | date: 'dd/MM/yyyy' }}</td>
+            </tr>
+            <tr>
+              <th>Fecha Cancelación</th><td>{{ itemPedidoOrdinarioSeleccionado.pedido.fecha_cancelacion | date: 'dd/MM/yyyy' }}</td>
+            </tr>
+            <tr>
+              <th>Observaciones</th><td>{{ itemPedidoOrdinarioSeleccionado.pedido.observaciones}}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr><td colspan="2"><button class="button"  (click)="generarExcelPedido(itemPedidoOrdinarioSeleccionado.pedido_id)">
+                <span class="icon"><i class="fa fa-file-excel-o"></i></span> <span>Descargar Excel del pedido completo</span>
+              </button></td></tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+    <footer
+      style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em ">
+      <button class="button" (click)="mostrarModalAumentarPresupuestoItem = !mostrarModalAumentarPresupuestoItem">
+        <span>Cerrar</span>
+      </button>
+      <button [disabled]="false" *ngIf="itemPedidoOrdinarioSeleccionado.status == 'CA'" [ngClass]="{ 'is-loading': agregandoUnidadMedica }" (click)="anularCancelacion(itemPedidoOrdinarioSeleccionado)"
+        class="button is-warning"><span class="icon is-small"><i class="fa fa-undo"></i></span> <span>Anular cancelación</span>
+      </button>
+      <button [disabled]="false" *ngIf="itemPedidoOrdinarioSeleccionado.status != 'CA'" [ngClass]="{ 'is-loading': agregandoUnidadMedica }" (click)="cancelar(itemPedidoOrdinarioSeleccionado)"
+        class="button is-danger"><span class="icon is-small"><i class="fa fa-ban"></i></span> <span>Cancelar</span>
+      </button>
+      <button [disabled]="false" *ngIf="itemPedidoOrdinarioSeleccionado.status == 'FI'" [ngClass]="{ 'is-loading': agregandoUnidadMedica }" (click)="regresarACaptura(itemPedidoOrdinarioSeleccionado)"
+        class="button is-info"><span class="icon is-small"><i class="fa fa-undo"></i></span><span>Regresar a captura</span>
+      </button>
+      <button [disabled]="false" *ngIf="itemPedidoOrdinarioSeleccionado.status != 'CA' && itemPedidoOrdinarioSeleccionado.status != 'FI'" [ngClass]="{ 'is-loading': agregandoUnidadMedica }" (click)="modificarPresupuesto(itemPedidoOrdinarioSeleccionado)"
+        class="button is-primary"><span class="icon is-small"><i class="fa fa-save"></i></span><span>Modificar presupuesto</span>
+      </button>
+    </footer>
+  </div>
+</div>
+
+
+<div class="modal is-active" *ngIf="mostrarModalEditar">
+  <div class="modal-background" (click)="mostrarModalEditar = !mostrarModalEditar">
+  </div>
+  <div class="modal-card">
+    <header class="modal-card-head" style="background: #00d1b2;">
+      <div class="container is-fluid" style="width:100%;">
+        <h1 class="title" style="color:#FFF;">
+          Editar información general
+        </h1>
+      </div>
+      <a class="button  is-primary" style="position:absolute; top:1em; right:1em;"
+        (click)="mostrarModalEditar = !mostrarModalEditar"><span class="icon "><i
+            class="fa fa-close"></i></span></a>
+    </header>
+    <section class="modal-card-body">
+
+      <div class="columns is-desktop" style="font-size: 0.8em">
+        <div class="column ">
+          <div class="field">
+            <label class="label">Descripcion:</label>
+            <p class="control is-expanded  has-icon has-icon-right">
+              <input class="input" autofocus type="text" [ngClass]="{'is-danger': errores.descripcion != null, 'is-disabled': guardando || cargandoPresupuesto}"
+                placeholder="Ej. Pedido ordinario del mes de mayo 2019" [(ngModel)]="pedido_datos.descripcion">
+              <span class="icon is-small" *ngIf="false">
+                <i class="fa fa-warning"></i>
+              </span>
+              <span class="help is-danger" *ngIf="errores.descripcion == 'required'">Este campo es requerido.</span>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="columns is-desktop" style="font-size: 0.8em">
+        <div class="column">
+          <div class="field">
+            <label class="label">Fecha:</label>
+            <p class="control is-expanded ">
+              <input class="input"  type="date" [ngClass]="{'is-danger': errores.fecha != null, 'is-disabled': guardando || cargandoPresupuesto}"
+                 [(ngModel)]="pedido_datos.fecha">
+
+              <span class="help is-danger" *ngIf="errores.fecha == 'required'">Este campo es requerido.</span>
+              <span class="help is-danger" *ngIf="errores.fecha == 'date'">Este campo debe ser una fecha válida.</span>
+            </p>
+          </div>
+        </div>
+        <div class="column">
+          <div class="field">
+            <label class="label">Fecha expiración para capturar:</label>
+            <p class="control is-expanded ">
+              <input class="input"  type="datetime-local" [ngClass]="{'is-danger': errores.fecha_expiracion != null, 'is-disabled': guardando || cargandoPresupuesto}"
+                 [(ngModel)]="pedido_datos.fecha_expiracion"  style="width:100%">
+
+              <span class="help is-danger" *ngIf="errores.fecha_expiracion == 'required'">Este campo es requerido.</span>
+              <span class="help is-danger" *ngIf="errores.fecha_expiracion == 'date'">Este campo debe ser una fecha válida.</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+    <footer
+      style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em ">
+      <button class="button" (click)="mostrarModalEditar = !mostrarModalEditar">
+        <span>Cancelar</span>
+      </button>
+      <button [disabled]="false" [ngClass]="{ 'is-loading': agregandoUnidadMedica }" (click)="guardar()"
+        class="button is-primary"><span>Aceptar</span>
+      </button>
+    </footer>
+  </div>
+</div>
+
+
+<div class="modal is-active" *ngIf="mostrarModalCancelar">
+  <div class="modal-background" (click)="mostrarModalCancelar = !mostrarModalCancelar">
+  </div>
+  <div class="modal-card">
+    <header class="modal-card-head" style="background: #00d1b2;">
+      <div class="container is-fluid" style="width:100%;">
+        <h1 class="title" style="color:#FFF;">
+          Cancelar pedidos por status
+        </h1>
+      </div>
+      <a class="button  is-primary" style="position:absolute; top:1em; right:1em;"
+        (click)="mostrarModalCancelar = !mostrarModalCancelar"><span class="icon "><i
+            class="fa fa-close"></i></span></a>
+    </header>
+    <section class="modal-card-body">
+
+      <div class="field">
+        <div class="control">
+          <label class="checkbox">
+            <input type="checkbox" (change)="statusACancelar.SP = !statusACancelar.SP" [checked]="statusACancelar.SP">
+            Sin pedido (S/P)
+          </label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="control">
+          <label class="checkbox">
+            <input type="checkbox" (change)="statusACancelar.EX = !statusACancelar.EX" [checked]="statusACancelar.EX">
+            Expirados (EX)
+          </label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="control">
+          <label class="checkbox">
+            <input type="checkbox" (change)="statusACancelar.EP = !statusACancelar.EP" [checked]="statusACancelar.EP">
+            En proceso (EP)
+          </label>
+        </div>
+      </div>
+
+    </section>
+    <footer
+      style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em ">
+      <button class="button" (click)="mostrarModalCancelar = !mostrarModalCancelar">
+        <span>Cancelar</span>
+      </button>
+      <button [disabled]="false" [ngClass]="{ 'is-loading': agregandoUnidadMedica }" (click)="cancelar()"
+        class="button is-primary"><span>Aceptar</span>
+      </button>
+    </footer>
   </div>
 </div>
 
@@ -191,7 +669,8 @@
   </p>
 </div>
 
-<div class="notification is-success" style="position:fixed; left:1em;  bottom:1em; width: auto" *ngIf="mensajeExito.mostrar">
+<div class="notification is-success" style="position:fixed; left:1em;  bottom:1em; width: auto"
+  *ngIf="mensajeExito.mostrar">
   <button class="delete" (click)="mensajeExito.mostrar = false"></button>
   <p>
     <span class="icon" style="margin-right: 0.5em;">

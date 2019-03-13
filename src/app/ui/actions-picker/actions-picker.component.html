@@ -1,0 +1,20 @@
+<div>
+    <span style="display:inline-block">
+        <span class="icon" style="margin: 5px; cursor:pointer; color:#777" (click)="check()"><i class="fa" [ngClass]="{ 'fa-square-o': !checked, 'fa-check-square-o': checked }"></i></span>
+        <!--<input style="margin:10px; vertical-align: top !important" type="checkbox" (change)="check()" [checked]="checked">-->
+    </span>
+    <span style="width:auto; display: inline-block;">
+      <span class="select is-fullwidth" style="margin:none">
+      <select #actionSelect (change)="pickAction(actionSelect.value)" >
+          
+        <option value="-1">-- Acciones en lote --</option>
+       
+          <option *ngFor="let item of actions" value="{{item.key}}">{{ item.text }}</option>
+      
+      </select>
+      </span>
+    </span>
+    <span style="width:auto; display: inline-block;">
+      <a  class="button is-primary" (click)="apply()" [ngClass]="{ 'is-disabled': actions.length == 0 || pickedAction == -1 }">Aplicar</a>
+    </span>
+</div>
