@@ -16,6 +16,7 @@ import { ListaComponent } from './lista/lista.component';
 import { NuevoComponent } from './nuevo/nuevo.component';
 import { VerComponent } from './ver/ver.component';
 import { UIModule } from 'app/ui/ui.module';
+import { SolicitudesComponent } from './solicitudes/solicitudes.component';
 
 @NgModule({
   imports: [
@@ -31,6 +32,6 @@ import { UIModule } from 'app/ui/ui.module';
     BuscarUnidadesMedicasModule,
     UIModule,
   ],
-  declarations: [ListaComponent, NuevoComponent, VerComponent]
+  declarations: [ListaComponent, NuevoComponent, VerComponent, SolicitudesComponent]
 })
 export class PedidosOrdinariosModule { }

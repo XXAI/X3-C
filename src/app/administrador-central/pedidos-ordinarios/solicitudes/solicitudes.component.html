@@ -1,0 +1,362 @@
+<administrador-central-menu></administrador-central-menu>
+<div style="height:50px;"></div>
+<div class="contenedor columns " style="height:100%; overflow:auto ">
+  <div class="column is-narrow is-hidden-mobile">
+    <administrador-central-menu-lateral></administrador-central-menu-lateral>
+  </div>
+  <div class="column" style="overflow: scroll;">
+    <div style="background: #FFF; border-radius: 1em;  margin:20px; padding-bottom: 0.25em;">
+      <div class="top-bar is-primary" [ngClass]=" {'is-dark': busquedaActivada, 'is-primary': !busquedaActivada } ">
+        <h1 class="title" *ngIf="!busquedaActivada">
+          <span class="icon is-medium">
+            <i class="fa fa-inbox"></i>
+          </span> Solicitudes de pedidos extraordinarios
+
+        </h1>
+        <h1 class="title" *ngIf="busquedaActivada">
+          <span class="icon is-medium">
+            <i class="fa fa-search"></i>
+          </span> Búsqueda
+        </h1>
+        <a class="button  is-dark" *ngIf="busquedaActivada" style="position:absolute; top:1em; right:1em;" (click)="busquedaActivada=false;searchBox.value='';resultadosBusqueda=[]">
+          <span class="icon ">
+            <i class="fa fa-close"></i>
+          </span>
+        </a>
+        <a class="button  is-dark" *ngIf="busquedaActivada" style="position:absolute; top:1em; right:3.5em;" (click)="listarBusqueda(searchBox.value,1)">
+          <span class="icon ">
+            <i class="fa fa-refresh"></i>
+          </span>
+        </a>
+        <a class="button  is-primary" *ngIf="!busquedaActivada" style="position:absolute; top:1em; right:1em;" (click)="listar(1)">
+          <span class="icon ">
+            <i class="fa fa-refresh"></i>
+          </span>
+        </a>
+        <div class="control is-grouped">
+          <p class="control is-expanded">
+            <input class="input is-medium" type="text" placeholder="Buscar" #searchBox id="search-box" (keyup)="buscar(searchBox.value)">
+          </p>          
+        </div>
+      </div>
+      <div class="is-fullwidth has-text-centered" *ngIf="cargando">
+        <br>
+        <span class="tag is-primary is-large ">
+          <span class="icon">
+            <i class="fa fa-refresh fa-spin"></i>
+          </span> &nbsp;
+          <span>Cargando...</span>
+        </span>
+        <br>
+        <br>
+      </div>
+
+      <table class="table" style="font-size:0.8em; table-layout: fixed;" *ngIf="!cargando">
+        <thead>
+          <tr>
+            <th style="text-align: center; width:170px">Folio</th>
+            <th style="text-align: center">Descripcion</th>
+            <th style="text-align: center; width:90px">Clues</th>
+            <th style="text-align: center">Unidad Médica</th>
+            <th style="text-align: center; width:80px">Fecha</th>
+            <th style="text-align:center; ">Fecha de modificación</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="!busquedaActivada">
+          <tr *ngFor="let item of lista; let i=index" style="color:#00d1b2; cursor: pointer;" (click)="abrirModalAutorizarPresupuesto(item)">
+            <td style="text-align: center; vertical-align: middle;">
+                <span class="text-overflows">{{ item.folio }}</span>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+                <span class="text-overflow">{{ item.descripcion }}</span>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+                <span class="text-overflow">{{ item.unidad_medica.clues }}</span>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+                <span class="text-overflow">{{ item.unidad_medica.nombre }}</span>
+            </td>
+            <td style="text-align: center; vertical-align: middle; text-align: center">
+                <span class="text-overflow">{{ item.fecha | date: 'dd/MM/yyyy' }}</span>
+            </td>
+
+            <td style="text-align: center; vertical-align: middle; text-align: center">              
+              <span class="text-overflow">{{ item.updated_at | date: 'dd/MM/yyyy HH:mm' }} hrs</span>
+            </td>           
+          </tr>
+          <tr *ngIf="lista.length == 0">
+            <td colspan="6" style="vertical-align: middle; color:#888;">Esta lista está vacía.</td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="busquedaActivada">
+          <tr *ngFor="let item of resultadosBusqueda; let i=index"style="color:#00d1b2; cursor: pointer;" (click)="abrirModalAutorizarPresupuesto(item)">
+            <td style="text-align: center; vertical-align: middle;">
+                <span class="text-overflows">{{ item.folio }}</span>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+                <span class="text-overflow">{{ item.descripcion }}</span>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+                <span class="text-overflow">{{ item.unidad_medica.clues }}</span>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+                <span class="text-overflow">{{ item.unidad_medica.nombre }}</span>
+            </td>
+            <td style="text-align: center; vertical-align: middle; text-align: center">
+                <span class="text-overflow">{{ item.fecha | date: 'dd/MM/yyyy' }}</span>
+            </td>
+
+            <td style="text-align: center; vertical-align: middle; text-align: center">              
+              <span class="text-overflow">{{ item.updated_at | date: 'dd/MM/yyyy HH:mm' }} hrs</span>
+            </td>           
+          </tr>
+
+          <tr *ngIf="resultadosBusqueda.length == 0 && busquedaActivada">
+            <td colspan="6" style="vertical-align: middle; color:#888;">No se encontraron resultados.</td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- Paginación para la lista  -->
+      <paginacion [total]="total" [paginasTotales]="paginasTotales" [resultadosPorPagina]="resultadosPorPagina" [paginaActual]="paginaActual"
+        [indicePaginas]="indicePaginas" (onSiguiente)="paginaSiguiente()" (onAnterior)="paginaAnterior()" (onListar)="listar($event)"
+        *ngIf="total>0 && total > resultadosPorPagina && !busquedaActivada"></paginacion>
+      <!-- Paginación para la búsqueda  -->
+      <paginacion [total]="totalBusqueda" [paginasTotales]="paginasTotalesBusqueda" [resultadosPorPagina]="resultadosPorPaginaBusqueda"
+        [paginaActual]="paginaActualBusqueda" [indicePaginas]="indicePaginasBusqueda" (onSiguiente)="paginaSiguienteBusqueda(searchBox.value)"
+        (onAnterior)="paginaAnteriorBusqueda(searchBox.value)" (onListar)="listarBusqueda(searchBox.value,$event)" *ngIf="totalBusqueda > 0 && totalBusqueda > resultadosPorPaginaBusqueda && busquedaActivada"></paginacion>
+      
+    </div>
+
+  </div>
+</div>
+
+
+<div class="modal is-active" *ngIf="mostrarModalAutorizarPresupuestoItem">
+  <div class="modal-background" (click)="!aprobandoSolicitud ? mostrarModalAutorizarPresupuestoItem = !mostrarModalAutorizarPresupuestoItem : ''">
+  </div>
+  <div class="modal-card">
+    <header class="modal-card-head" style="background: #00d1b2;">
+      <div class="container is-fluid" style="width:100%;">
+       <!-- <h1 *ngIf="itemPedidoOrdinarioSeleccionado.status != 'CA' && itemPedidoOrdinarioSeleccionado.status != 'FI'" class="title" style="color:#FFF;">
+          Modificar presupuesto del pedido
+        </h1>
+
+        <h1 *ngIf="itemPedidoOrdinarioSeleccionado.status == 'CA' || itemPedidoOrdinarioSeleccionado.status == 'FI'" class="title" style="color:#FFF;">
+          Pedido ordinario de la Unidad Médica
+        </h1>-->
+        <h1 class="title" style="color: white">{{ pedidoSeleccionado.folio }}</h1>
+      </div>
+      <a class="button  is-primary" style="position:absolute; top:1em; right:1em;"
+        (click)="!aprobandoSolicitud ? mostrarModalAutorizarPresupuestoItem = !mostrarModalAutorizarPresupuestoItem : ''"><span class="icon "><i
+            class="fa fa-close"></i></span></a>
+    </header>
+    <section class="modal-card-body">
+      <div class="is-fullwidth has-text-centered" *ngIf="cargandoSolicitud">
+				<br>
+				<span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
+				<br>
+				<br>
+			</div>
+      <div *ngIf="pedidoSeleccionado != null && !cargandoSolicitud">
+        <table class="table is-bordered" style="font-size: 0.8em;">
+          <tbody>
+            <tr><th style="width:165px">Unidad médica</th><td><strong>{{ pedidoSeleccionado.clues }}</strong> {{ pedidoSeleccionado.unidad_medica.nombre }}</td></tr>
+            <tr><th style="width:165px">Descripción</th><td>{{ pedidoSeleccionado.descripcion }}</td></tr>
+            <tr><th>Fecha</th><td>{{ pedidoSeleccionado.fecha | date: 'dd/MM/yyyy' }} </td></tr>  
+            <tr><th>Observaciones</th><td>{{ pedidoSeleccionado.observaciones }}</td></tr>            
+          </tbody>
+        </table>
+        <!--<p><span class="tag is-success" *ngIf="pedidoSeleccionado.status == 'FI'">Captura Finalizada (FI)</span><span class="tag is-info" *ngIf="pedidoSeleccionado.status == 'EP'">En proceso de captura (EP)</span><span class="tag is-danger" *ngIf="pedidoSeleccionado.status == 'CA'">Cancelado (CA)</span><span class="tag is-warning" *ngIf="pedidoSeleccionado.status == 'EX'">Captura expirada (EX)</span><span class="tag is-dark" *ngIf="pedidoSeleccionado.status == 'S/P'">Sin capturar (S/P)</span></p>-->
+  
+        <h1 class="subtitle">Presupuesto del pedido</h1>
+        <div class="columns is-desktop" style="font-size: 0.8em; margin-bottom:0;">
+          <div class="column">
+            <table class="table" style=" margin-bottom:0;">
+              <thead>
+                <tr>
+                  <th colspan="2">CAUSES</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>Solicitado</th>
+                  <td><span class="help is-info"  style="font-size:0.9em">$
+                      {{ pedidoSeleccionado.total_monto_causes  | number:'1.2-2' }}</span></td>
+                </tr>
+                <tr>
+                  <th>Autorizar:</th>
+                  <td>
+                    <div class="field">
+                      <p class="control is-expanded has-icon has-icon-left">
+                        <span class="icon is-small is-left" style="top:0.9rem;">
+                          <i class="fa fa-usd"></i></span>
+                        <input class="input is-small"
+                          [ngClass]="{'is-danger': errores.causes_autorizado, 'is-disabled':  aprobandoSolicitud}"
+                          type="number" [(ngModel)]="pedidoSeleccionado.causes_autorizado" placeholder="CAUSES">
+                          <span class="help is-danger" *ngIf="errores.causes_autorizado == 'required'">Este campo es requerido.</span>
+                        <span class="help is-danger" *ngIf="errores.causes_autorizado == 'number'">Este campo debe ser numérico.</span>
+                        <span class="help is-danger" *ngIf="errores.causes_autorizado == 'budget'">Presupuesto insuficiente.</span>
+                        <span class="help is-danger" *ngIf="errores.causes_autorizado == 'min'">El valor mínimo es 0.</span>
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Claves</th>
+                  <td><span class="help" style="font-size:0.9em">{{ pedidoSeleccionado.total_claves_causes  }}</span></td>
+                </tr>
+                <tr>
+                  <th>Insumos</th>
+                  <td><span class="help" style="font-size:0.9em">{{ pedidoSeleccionado.total_insumos_causes  }}</span></td>
+                </tr>                
+
+              </tbody>
+            </table>
+
+          </div>
+          <div class="column">
+            <table class="table" style=" margin-bottom:0;">
+              <thead>
+                <tr>
+                  <th colspan="2">NO CAUSES</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>Solicitado</th>
+                  <td><span class="help is-info"  style="font-size:0.9em">$
+                      {{ pedidoSeleccionado.total_monto_no_causes  | number:'1.2-2' }}</span></td>
+                </tr>
+                <tr>
+                  <th>Autorizar:</th>
+                  <td>
+                    <div class="field">
+                      <p class="control is-expanded has-icon has-icon-left">
+                        <span class="icon is-small is-left" style="top:0.9rem;">
+                          <i class="fa fa-usd"></i></span>
+                        <input class="input is-small"
+                          [ngClass]="{'is-danger': errores.no_causes_autorizado, 'is-disabled': aprobandoSolicitud}"
+                          type="number" [(ngModel)]="pedidoSeleccionado.no_causes_autorizado" placeholder="NO CAUSES">
+                        <span class="help is-danger" *ngIf="errores.no_causes_autorizado == 'required'">Este campo es requerido.</span>
+                        <span class="help is-danger" *ngIf="errores.no_causes_autorizado == 'number'">Este campo debe ser numérico.</span>
+                        <span class="help is-danger" *ngIf="errores.no_causes_autorizado == 'budget'">Presupuesto insuficiente.</span>
+                        <span class="help is-danger" *ngIf="errores.no_causes_autorizado == 'min'">El valor mínimo es 0.</span>
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Claves</th>
+                  <td><span class="help" style="font-size:0.9em">{{ pedidoSeleccionado.total_claves_no_causes  }}</span></td>
+                </tr>
+                <tr>
+                  <th>Insumos</th>
+                  <td><span class="help" style="font-size:0.9em">{{ pedidoSeleccionado.total_insumos_no_causes  }}</span></td>
+                </tr>                
+
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+        <h1 class="subtitle">Presupuesto Global</h1>
+        <div class="columns is-desktop" style="font-size: 0.8em">
+          <div class="column">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th colspan="2">CAUSES</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>Disponible</th>
+                  <td>
+                    <span class="help">${{ pedidoSeleccionado.presupuesto.causes_disponible | number:'1.2-2' }}</span>
+                  </td>
+                </tr>                
+              </tbody>
+              <tfoot *ngIf="pedidoSeleccionado.status != 'CA' && pedidoSeleccionado.status != 'FI'">
+                <tr>
+                  <th>Nuevo saldo</th>
+                  <td><span class="help is-info" style="font-size:0.9em">$
+                      {{ pedidoSeleccionado.presupuesto.causes_disponible  - pedidoSeleccionado.causes_autorizado  | number:'1.2-2' }}</span>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <div class="column">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th colspan="2">NO CAUSES</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>Disponible</th>
+                  <td>
+                    <span
+                      class="help">${{ pedidoSeleccionado.presupuesto.no_causes_disponible | number:'1.2-2' }}</span>
+                  </td>
+                </tr>
+                
+              </tbody>
+              <tfoot *ngIf="pedidoSeleccionado.status != 'CA' && pedidoSeleccionado.status != 'FI'">
+                <tr>
+                  <th>Nuevo saldo</th>
+                  <td><span class="help is-info" style="font-size:0.9em">$
+                      {{ pedidoSeleccionado.presupuesto.no_causes_disponible - pedidoSeleccionado.no_causes_autorizado  | number:'1.2-2' }}</span>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer
+      style="position:relative; padding:1em;background: #FFF; border-top:1px solid #EEE; border-radius:0 0 0.8em 0.8em ">
+      <button class="button"  [ngClass]="{ 'is-loading': aprobandoSolicitud }" (click)="!aprobandoSolicitud? mostrarModalAutorizarPresupuestoItem = !mostrarModalAutorizarPresupuestoItem :''">
+        <span>Cerrar</span>
+      </button>
+      <button [disabled]="(pedidoSeleccionado.causes_autorizado <=0 && pedidoSeleccionado.no_causes_autorizado <= 0) || (pedidoSeleccionado.presupuesto.causes_disponible - pedidoSeleccionado.causes_autorizado) < 0 ||  (pedidoSeleccionado.presupuesto.no_causes_disponible - pedidoSeleccionado.no_causes_autorizado) < 0" [ngClass]="{ 'is-loading': aprobandoSolicitud }" (click)="aprobar(pedidoSeleccionado)"
+        class="button is-primary"><span class="icon is-small"><i class="fa fa-save"></i></span><span>Aprobar presupuesto</span>
+      </button>
+      <button class="button"  (click)="generarExcelPedido(pedidoSeleccionado.id)">
+        <span class="icon"><i class="fa fa-file-excel-o"></i></span> <span>Descargar Excel del pedido completo</span>
+      </button> 
+    </footer>
+  </div>
+</div>
+
+
+<div class="notification is-danger" style="position:fixed; left:1em;  bottom:1em;" *ngIf="mensajeError.mostrar">
+  <button class="delete" (click)="mensajeError.mostrar = false"></button>
+  <b>Error:</b> {{ mensajeError.texto }}
+  <br>
+  <br>
+  <p style="text-align:center">
+    <a class="button is-danger is-inverted" (click)="ultimaPeticion(); mensajeError.mostrar = false">
+      <span class="icon">
+        <i class="fa fa-refresh"></i>
+      </span>
+      <span>Volver a intentar</span>
+    </a>
+  </p>
+</div>
+
+<div class="notification is-success" style="position:fixed; left:1em;  bottom:1em; width: auto" *ngIf="mensajeExito.mostrar">
+  <button class="delete" (click)="mensajeExito.mostrar = false"></button>
+  <p>
+    <span class="icon" style="margin-right: 0.5em;">
+      <i class="fa fa-check-circle"></i>
+    </span>
+    <span>{{ mensajeExito.texto }}</span>
+  </p>
+  <br>
+  <p style="text-align: center;">
+    <small>Este mensaje desaparecerá en {{ mensajeExito.cuentaAtras }} segundos.</small>
+  </p>
+</div>

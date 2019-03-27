@@ -37,6 +37,13 @@
           <p class="control is-expanded">
             <input class="input is-medium" type="text" placeholder="Buscar" #searchBox id="search-box" (keyup)="buscar(searchBox.value)">
           </p>
+          <p class="control is-expanded" style="max-width:110px;">
+            <select style="width:100%; height:100%;border-radius:3px; border: none; box-shadow: inset  0 0 5px #AAA">
+              <option value="">Todos</option>
+              <option value="PO">Ordinarios</option>
+              <option value="">Extraordinarios</option>
+            </select>
+          </p>
           <p class="control">
             <a class="button is-medium is-primary is-inverted " routerLink="/administrador-central/pedidos-ordinarios/nuevo">
               <span class="icon">
