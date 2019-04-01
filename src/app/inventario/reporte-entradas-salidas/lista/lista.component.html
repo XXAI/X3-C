@@ -10,7 +10,13 @@
                     <nav class="level">
                         <div class="level-left"></div>
                         <div class="level-right">
-                            <p class="level-item"><a class="button  is-primary" title="Excel" (click)="imprimirMovimientos()"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
+                            <p class="level-item"><a class="button  is-primary" title="PDF" (click)="imprimirMovimientos()"  *ngIf="!cargando_reporte_pdf"><span class="icon "><i class="fa fa-file-pdf-o"></i></span></a></p>
+                            <p class="level-item" *ngIf="cargando_reporte_pdf"><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> Generando Reporte Pdf</p>
+                            
+                            <p class="level-item"><a class="button  is-primary" title="Excel" (click)="imprimirMovimientosExcel()"  *ngIf="!cargando_reporte_excel"><span class="icon "><i class="fa fa-file-excel-o"></i></span></a></p>
+                            <p class="level-item" *ngIf="cargando_reporte_excel"><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> Generando Reporte Excel</p>
+                            
+                            
                             <p class="level-item"><a class="button  is-primary" (click)="listar(1)"><span class="icon "><i class="fa fa-refresh"></i></span></a></p>
                         
                         </div>
@@ -79,6 +85,7 @@
                         <th>Insumo</th>
                         <th>Cantidad</th>
                         <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -89,8 +96,10 @@
                         <td style="vertical-align: middle;cursor:pointer;"> {{ ( item.clave) }} - {{ ( item.descripcion) }} </td>
                         <td style="vertical-align: middle;cursor:pointer;"> {{ ( item.cantidad) }}</td>
                         <td style="vertical-align: middle;cursor:pointer;"> 
-                            <button type="button" class="button" (click)="imprimir(item)"><i class="fa fa-file-pdf-o"  [ngClass]="{ 'fa-file-pdf-o': archivo == '', 'fa-refresh fa-spin': archivo == 'descargar' }"></i></button>
-                            
+                            <button type="button" class="button" (click)="imprimir(item)" [disabled]="archivo == 'descargar'"><i class="fa fa-file-pdf-o"  [ngClass]="{ 'fa-file-pdf-o': archivo == '', 'fa-refresh fa-spin': archivo == 'descargar' }"></i></button>
+                        </td>
+                        <td style="vertical-align: middle;cursor:pointer;"> 
+                            <button type="button" class="button" (click)="imprimirExcel(item)"><i class="fa fa-file-excel-o" ></i></button>
                         </td>
                         
                     </tr>
@@ -146,7 +155,7 @@
            
         </div>
         
-        <div class="columns">
+        <!--<div class="columns">
             <div class="column">
                 <div class="columns">
                     <div class="column is-2">
@@ -167,7 +176,33 @@
                 </div>
                 
             </div>
+        </div>-->
+
+        <div class="is-fullwidth has-text-centered" *ngIf="cargando_insumos">
+            <br>
+            <span class="tag is-primary is-large "><span class="icon"><i class="fa fa-refresh fa-spin"></i></span> &nbsp;<span>Cargando...</span></span>
+            <br>
+            <br>
         </div>
+        <div class="columns"  *ngIf="!cargando_insumos">
+            <div class="column is-12">
+                <table class='table table-bordered'>
+                    <thead>
+                        <th>Clave</th>
+                        <th>Insumo</th>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of catalogo_insumos | busquedaInsumos:busquedaQuery" (click)='seleccionaInsumo(item)' style='cursor:pointer' >
+                            <td>{{ item.clave }}</td>
+                            <td>{{ item.descripcion }}</td>
+                        </tr>
+                        <tr *ngIf="catalogo_insumos.length == 0" >
+                                <td colspan='2'>NO SE HAN ENCONTRADO COINDICIENCIAS CON EL TEXTO A BUSCAR</td>
+                            </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>    
     
       </section>
       

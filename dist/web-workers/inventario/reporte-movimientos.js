@@ -22,11 +22,7 @@ importScripts('../logos.js');
         let datos       = movimientos.datos;
         let almacen     = movimientos.almacen;
         let parametros  = movimientos.parametro;
-        console.log(datos);
-        /*console.log(movimientos);
         
-        console.log(almacen);
-        console.log(parametros);*/
         try{
             var contadorLineasHorizontalesV = 0;
             var COLOR_CELDA = '#eaf1dd';
@@ -35,45 +31,53 @@ importScripts('../logos.js');
                 content:[{
                     style: 'PEDIDO',
                     table: {
-                        headerRows: 8,
+                        headerRows: 11,
                         dontBreakRows: true,
-                        widths: [ 65, 55, 55, '*', 50,50, 60, 60],
+                        widths: [ 25, 45, 55, '*', 40,40, 40, 40,40, 40, 40],
                         body: [
                             [{
                                 image: 'header',
-                                width: 500,
-                                style: 'tableHeaderTop', colSpan: 8, alignment: 'center' 
-                            },{},{},{},{},{},{},{}],
-                            [{ text: 'SECRETARIA DE SALUD\nINSTITUTO DE SALUD\n'+almacen.unidad_medica.nombre, style: 'tableHeaderTop', colSpan: 8, alignment: 'center' },{},{},{},{},{},{},{}],
+                                width: 550,
+                                style: 'tableHeaderTop', colSpan: 11, alignment: 'center' 
+                            },{},{},{},{},{},{},{},{},{},{}],
+                            [{ text: 'SECRETARIA DE SALUD\nINSTITUTO DE SALUD\n'+almacen.unidad_medica.nombre, style: 'tableHeaderTop', colSpan: 11, alignment: 'center' },{},{},{},{},{},{},{},{},{},{}],
                             [
-                                { text: 'ALMACEN', style: 'tableHeaderVerde', alignment: 'center'},
-                                { text: almacen.nombre, style: 'tableHeader', alignment: 'center', colSpan:3},
-                                {},{},
+                                { text: 'ALMACEN', style: 'tableHeaderVerde', alignment: 'center', colSpan:2},{},
+                                { text: almacen.nombre, style: 'tableHeader', alignment: 'center', colSpan:5},
+                                {},{},{},{},
                                 { text: 'No. DE LOTES', style: 'tableHeaderVerde', alignment: 'center', colSpan:2},{},
                                 { text: datos.length.toString(), style: 'tableHeader', alignment: 'center', colSpan:2},{}
                             ],
                             [
-                                { text: 'PARAMETROS', style: 'tableHeaderVerde', alignment: 'center', colSpan:8},{},{},{},{},{},{},{}
+                                { text: 'PARAMETROS', style: 'tableHeaderVerde', alignment: 'center', colSpan:11},{},{},{},{},{},{},{},{},{},{}
                             ],
                             [
-                                { text: 'PERIODO', style: 'tableHeaderVerde', alignment: 'center'},
-                                { text: 'DE '+parametros.desde+" A "+parametros.hasta, style: 'tableHeader', alignment: 'center', colSpan:3},
-                                {},{},
+                                { text: 'PERIODO', style: 'tableHeaderVerde', alignment: 'center', colSpan:2},{},
+                                { text: 'DE '+parametros.desde+" A "+parametros.hasta, style: 'tableHeader', alignment: 'center', colSpan:5},
+                                {},{},{},{},
                                 { text: 'TIPO MOVIMIENTOS', style: 'tableHeaderVerde', alignment: 'center', colSpan:2},{},
                                 { text: ((parametros.tipo == 1)?'TODOS':((parametros.tipo == 2)?'ENTRADAS':'SALIDAS')), style: 'tableHeader', alignment: 'center', colSpan:2},{}
                             ],
                             [
-                                { text: 'INSUMO', style: 'tableHeaderVerde', alignment: 'center'},
-                                { text: ((parametros.insumo == '')?'SIN DATO':parametros.insumo), style: 'tableHeader', alignment: 'center', colSpan:7}, {}, {},{}, {},{},{}
+                                { text: 'INSUMO', style: 'tableHeaderVerde', alignment: 'center', colSpan:2},{},
+                                { text: ((parametros.insumo == '')?'SIN DATO':parametros.insumo), style: 'tableHeader', alignment: 'center', colSpan:9}, {},{},{},{},{},{},{},{}
                             ],
                             [
-                                { text: 'NO.', style: 'tableHeaderVerde', alignment: 'center'},
-                                { text: 'FECHA', style: 'tableHeaderVerde', alignment: 'center'},
-                                { text: 'TIPO', style: 'tableHeaderVerde', alignment: 'center'},
-                                { text: 'INSUMO', style: 'tableHeaderVerde', alignment: 'center'},
+                                { text: 'NO.', style: 'tableHeaderVerde', alignment: 'center', rowSpan: 2},
+                                { text: 'FECHA', style: 'tableHeaderVerde', alignment: 'center', rowSpan: 2},
+                                { text: 'TIPO', style: 'tableHeaderVerde', alignment: 'center', rowSpan: 2},
+                                { text: 'INSUMO', style: 'tableHeaderVerde', alignment: 'center', rowSpan: 2},
+                                { text: 'PRECIO U.', style: 'tableHeaderVerde', alignment: 'center', rowSpan: 2},
+                                { text: 'ENTRADA', style: 'tableHeaderVerde', alignment: 'center', colSpan:3}, {},{},
+                                { text: 'SALIDA', style: 'tableHeaderVerde', alignment: 'center', colSpan:3}, {},{}
+                            ],
+                            [
+                                {},{},{},{},{},
                                 { text: 'CANTIDAD', style: 'tableHeaderVerde', alignment: 'center'},
-                                { text: 'CANTIDAD UNIDOSIS', style: 'tableHeaderVerde', alignment: 'center'},
-                                { text: 'PRECIO U.', style: 'tableHeaderVerde', alignment: 'center'},
+                                { text: 'UNIDOSIS', style: 'tableHeaderVerde', alignment: 'center'},
+                                { text: 'SUBTOTAL', style: 'tableHeaderVerde', alignment: 'center'},
+                                { text: 'CANTIDAD', style: 'tableHeaderVerde', alignment: 'center'},
+                                { text: 'UNIDOSIS', style: 'tableHeaderVerde', alignment: 'center'},
                                 { text: 'SUBTOTAL', style: 'tableHeaderVerde', alignment: 'center'}
                             ],
                             // Footer
@@ -178,24 +182,64 @@ importScripts('../logos.js');
             }
 
             //var para_iva = 0;
-            let iva = 0;
-            let subtotal = 0;
+            let iva_entrada = 0;
+            let iva_salida = 0;
+            let subtotal_entrada = 0;
+            let subtotal_salida = 0;
             let insumos = datos;
+            let cantidad_entradas = 0;
+            let cantidad_unidosis_entradas = 0;
+            let cantidad_salidas = 0;
+            let cantidad_unidosis_salidas = 0;
             for(var i in insumos){
                 var insumo = insumos[i];
-                dd.content[0].table.body.push([
-                    { text: (parseInt(i)+1), style: 'tableRow',  alignment: 'center'},
-                    { text: insumo.fecha_movimiento, style: 'tableRow', alignment: 'center'},
-                    { text: insumo.nombre, style: 'tableRow',  alignment: 'left'},
-                    { text: insumo.clave+" "+insumo.descripcion, style: 'tableRow', alignment: 'center'},
-                    { text: insumo.cantidad, style: 'tableRow', alignment: 'center'},
-                    { text: ((insumo.cantidad_unidosis)?insumo.cantidad_unidosis:'0'), style: 'tableRow', alignment: 'center'},
-                    { text: '$ '+insumo.precio_unitario, style: 'tableRow', alignment: 'center'},
-                    { text: '$ '+insumo.precio_total, style: 'tableRow', alignment: 'center'}
+                let precio_insumo = parseFloat(insumo.precio_unitario).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                let precio_total = parseFloat(insumo.precio_total).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                if(insumo.tipo == "E")
+                {
                     
-                ]);
-                subtotal = parseFloat(Math.round(subtotal * 100) / 100) + parseFloat(Math.round(insumo.precio_total * 100) / 100);
-                iva = parseFloat(Math.round(iva * 100) / 100) + parseFloat(Math.round(insumo.iva * 100) / 100);
+                    dd.content[0].table.body.push([
+                        { text: (parseInt(i)+1), style: 'tableRow',  alignment: 'center'},
+                        { text: insumo.fecha_movimiento, style: 'tableRow', alignment: 'center'},
+                        { text: insumo.nombre, style: 'tableRow',  alignment: 'left'},
+                        { text: insumo.clave+" "+insumo.descripcion, style: 'tableRow', alignment: 'center'},
+                        { text: '$ '+precio_insumo, style: 'tableRow', alignment: 'center'},
+                        { text: insumo.cantidad, style: 'tableRow', alignment: 'center'},
+                        { text: ((insumo.cantidad_unidosis)?insumo.cantidad_unidosis:'0'), style: 'tableRow', alignment: 'center'},
+                        { text: '$ '+precio_total, style: 'tableRow', alignment: 'center'},
+                        { text: '-', style: 'tableRow', alignment: 'center'},
+                        { text: '-', style: 'tableRow', alignment: 'center'},
+                        { text: '-', style: 'tableRow', alignment: 'center'}
+                        
+                    ]);
+                    cantidad_entradas = parseFloat(Math.round(cantidad_entradas * 100) / 100) + parseFloat(Math.round(insumo.cantidad * 100) / 100);
+                    cantidad_unidosis_entradas = parseFloat(Math.round(cantidad_unidosis_entradas * 100) / 100) + parseFloat(Math.round( ((insumo.cantidad_unidosis)?insumo.cantidad_unidosis:0) * 100) / 100);
+                    
+                    subtotal_entrada = parseFloat(Math.round(subtotal_entrada * 100) / 100) + parseFloat(Math.round(insumo.precio_total * 100) / 100);
+                    iva_entrada = parseFloat(Math.round(iva_entrada * 100) / 100) + parseFloat(Math.round(insumo.iva * 100) / 100);
+                }else if(insumo.tipo == "S")
+                {
+                    dd.content[0].table.body.push([
+                        { text: (parseInt(i)+1), style: 'tableRow',  alignment: 'center'},
+                        { text: insumo.fecha_movimiento, style: 'tableRow', alignment: 'center'},
+                        { text: insumo.nombre, style: 'tableRow',  alignment: 'left'},
+                        { text: insumo.clave+" "+insumo.descripcion, style: 'tableRow', alignment: 'center'},
+                        { text: '$ '+precio_insumo, style: 'tableRow', alignment: 'center'},
+                        { text: '-', style: 'tableRow', alignment: 'center'},
+                        { text: '-', style: 'tableRow', alignment: 'center'},
+                        { text: '-', style: 'tableRow', alignment: 'center'},
+                        { text: insumo.cantidad, style: 'tableRow', alignment: 'center'},
+                        { text: ((insumo.cantidad_unidosis)?insumo.cantidad_unidosis:'0'), style: 'tableRow', alignment: 'center'},
+                        { text: '$ '+precio_total, style: 'tableRow', alignment: 'center'},
+                        
+                        
+                    ]);
+                    cantidad_salidas = parseFloat(Math.round(cantidad_salidas * 100) / 100) + parseFloat(Math.round(insumo.cantidad * 100) / 100);
+                    cantidad_unidosis_salidas = parseFloat(Math.round(cantidad_unidosis_salidas * 100) / 100) + parseFloat(Math.round( ((insumo.cantidad_unidosis)?insumo.cantidad_unidosis:0) * 100) / 100);
+                    subtotal_salida = parseFloat(Math.round(subtotal_salida * 100) / 100) + parseFloat(Math.round(insumo.precio_total * 100) / 100);
+                    iva_salida = parseFloat(Math.round(iva_salida * 100) / 100) + parseFloat(Math.round(insumo.iva * 100) / 100);
+                }
+                
             }
 
             
@@ -203,20 +247,29 @@ importScripts('../logos.js');
             dd.content[0].table.body.push(
                 // Footer
                 [
-                    {
-                        text: '', 
-                        style: 'tableHeader', alignment: 'justify', colSpan:3, rowSpan:3, 
-                        
-                    },'','',
-                    {
-                        //text: 'Facturar 2019 a nombre del Instituto de Salud. Unidad Administrativa Edif. C, Maya Tuxtla Gutiérrez, Chiapas, 29010 R.F.C. ISA-961203- QN5', 
-                        text: '', 
-                        style: 'tableHeader', alignment: 'justify', colSpan:3, rowSpan:3
-                    },'','',
-                    { text: 'SUBTOTAL', style: 'tableHeaderVerde',  alignment: 'center'},{ text: '$ '+subtotal.toFixed(2), style: 'tableHeader', alignment: 'center'}
+                    { text: '', style: 'tableHeader', alignment: 'justify', colSpan:4, rowSpan:3},{},{},{},
+                    { text: 'SUBTOTAL', style: 'tableHeaderVerde',  alignment: 'center'},
+                    { text: '-', style: 'tableHeader', alignment: 'center', colSpan:2},{ },
+                    { text: '$ '+subtotal_entrada.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'), style: 'tableHeader', alignment: 'center'},
+                    { text: '-', style: 'tableHeader', alignment: 'center', colSpan:2},{ },
+                    { text: '$ '+subtotal_salida.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'), style: 'tableHeader', alignment: 'center'}
                 ],
-                ['','','','','','',{ text: 'IVA', style: 'tableHeaderVerde',  alignment: 'center'},{ text: '$ '+iva.toFixed(2), style: 'tableHeader', alignment: 'center'}],
-                ['','','','','','',{ text: 'TOTAL', style: 'tableHeaderVerde',  alignment: 'center'},{ text: '$ '+(subtotal + iva).toFixed(2), style: 'tableHeader', alignment: 'center'}],
+                [   {},{},{},{},
+                    { text: 'IVA', style: 'tableHeaderVerde',  alignment: 'center'},
+                    { text: '-', style: 'tableHeader', alignment: 'center', colSpan:2},{ },
+                    { text: '$ '+iva_entrada.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'), style: 'tableHeader', alignment: 'center'},
+                    { text: '-', style: 'tableHeader', alignment: 'center', colSpan:2},{ },
+                    { text: '$ '+iva_salida.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'), style: 'tableHeader', alignment: 'center'}
+                ],
+                [   {},{},{},{},
+                    { text: 'TOTAL', style: 'tableHeaderVerde',  alignment: 'center'},
+                    { text: cantidad_entradas, style: 'tableHeader',  alignment: 'center'},
+                    { text: cantidad_unidosis_entradas, style: 'tableHeader',  alignment: 'center'}, 
+                    { text: '$ '+(subtotal_entrada + iva_entrada).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'), style: 'tableHeader', alignment: 'center'},
+                    { text: cantidad_salidas, style: 'tableHeader',  alignment: 'center'},
+                    { text: cantidad_unidosis_salidas, style: 'tableHeader',  alignment: 'center'},  
+                    { text: '$ '+(subtotal_salida + iva_salida).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'), style: 'tableHeader', alignment: 'center'}
+                ]
                
                 
             );

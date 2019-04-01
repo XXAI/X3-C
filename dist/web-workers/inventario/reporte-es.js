@@ -14,7 +14,7 @@ importScripts('../logos.js');
 
     onmessage = function( evt ) {
         let data = JSON.parse(evt.data);
-        console.log(data.datos);
+        //console.log(data.datos);
         pdf(data.datos);
     };
 
@@ -166,14 +166,16 @@ importScripts('../logos.js');
             for(var i in insumos){
                 var insumo = insumos[i];
                 //console.log(insumo);
+                let precio_insumo = parseFloat(insumo.precio_unitario).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                let precio_total = parseFloat(insumo.precio_total).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
                 dd.content[0].table.body.push([
                     { text: (parseInt(i)+1), style: 'tableRow',  alignment: 'center'},
                     { text: insumo.detalles.clave, style: 'tableRow', alignment: 'center'},
                     { text: insumo.detalles.descripcion, style: 'tableRow',  alignment: 'left'},
                     { text: insumo.cantidad, style: 'tableRow', alignment: 'center'},
                     { text: ((insumo.cantidad_unidosis)?insumo.cantidad_unidosis:'0'), style: 'tableRow', alignment: 'center'},
-                    { text: '$ '+insumo.precio_unitario, style: 'tableRow', alignment: 'center'},
-                    { text: '$ '+insumo.precio_total, style: 'tableRow', alignment: 'center'}
+                    { text: '$ '+precio_insumo, style: 'tableRow', alignment: 'center'},
+                    { text: '$ '+precio_total.replace(/(\d)(?=(\d{3})+\.)/g, '$1,'), style: 'tableRow', alignment: 'center'}
                     
                 ]);
 
@@ -199,10 +201,10 @@ importScripts('../logos.js');
                         text: 'Facturar 2019 a nombre del Instituto de Salud. Unidad Administrativa Edif. C, Maya Tuxtla Gutiérrez, Chiapas, 29010 R.F.C. ISA-961203- QN5', 
                         style: 'tableHeader', alignment: 'justify', colSpan:3, rowSpan:3
                     },'','',
-                    { text: 'SUBTOTAL', style: 'tableHeaderVerde',  alignment: 'center'},{ text: '$ '+subtotal.toFixed(2), style: 'tableHeader', alignment: 'center'}
+                    { text: 'SUBTOTAL', style: 'tableHeaderVerde',  alignment: 'center'},{ text: '$ '+subtotal.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'), style: 'tableHeader', alignment: 'center'}
                 ],
-                ['','','','','',{ text: 'IVA', style: 'tableHeaderVerde',  alignment: 'center'},{ text: '$ '+iva.toFixed(2), style: 'tableHeader', alignment: 'center'}],
-                ['','','','','',{ text: 'TOTAL', style: 'tableHeaderVerde',  alignment: 'center'},{ text: '$ '+(subtotal + iva).toFixed(2), style: 'tableHeader', alignment: 'center'}],
+                ['','','','','',{ text: 'IVA', style: 'tableHeaderVerde',  alignment: 'center'},{ text: '$ '+iva.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'), style: 'tableHeader', alignment: 'center'}],
+                ['','','','','',{ text: 'TOTAL', style: 'tableHeaderVerde',  alignment: 'center'},{ text: '$ '+(subtotal + iva).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'), style: 'tableHeader', alignment: 'center'}],
                 [{ text: 'TIEMPO DE ENTREGA: Deberá surtir los insumos en un periodo no mayor a 20 dias.', style: 'tableHeaderVerde',  alignment: 'justify', colSpan:7},'','','','','',''],
                 // Firmas
                 [{

@@ -32,6 +32,8 @@ export class ListaComponent implements OnInit {
 
   //Registros Compensatorios
   cargando: boolean = false;
+  cargando_insumos: boolean = false;
+  cargando_reporte_pdf:boolean = false;
   busquedaActivada:boolean = false;
   showPrimerModal:boolean = false;
   catalogo_insumos:any[] = [];
@@ -41,7 +43,7 @@ export class ListaComponent implements OnInit {
   mensajeExito: Mensaje = new Mensaje();
 
   paginaActual = 1;
-  resultadosPorPagina = 10;
+  resultadosPorPagina = 15;
   total = 0;
   paginasTotales = 0;
   indicePaginas:number[] = [];
@@ -299,6 +301,7 @@ export class ListaComponent implements OnInit {
   }
 
   imprimirMovimientos() {
+    this.cargando_reporte_pdf = true;
     try{
       var  parametros =  {
         desde: this.filter.desde,
@@ -309,7 +312,8 @@ export class ListaComponent implements OnInit {
       }
       this.reporteEntradasSalidasService.movimiento_es(parametros).subscribe(
         response => {
-          //console.log(response);
+          console.log(response);
+          this.cargando_reporte_pdf = false;
           this.archivo = "";
           var movimiento_imprimir = {
             datos: response.datos,
@@ -357,14 +361,16 @@ export class ListaComponent implements OnInit {
   seleccionaInsumo(item:any)
   {
     this.showPrimerModal = false;
-    this.filtroInsumo = item.descripcion;
-    this.filtro(4, item.descripcion);
+    this.filtroInsumo = item.clave;
+    this.filtro(4, item.clave);
   }
 
   cargar_catalogo():void{
+    this.cargando_insumos = true;
     this.reporteEntradasSalidasService.catalogos().subscribe(
         response => {
            console.log(response); 
+           this.cargando_insumos = false;
            this.catalogo_insumos = response;
         },
         error => {
@@ -377,5 +383,25 @@ export class ListaComponent implements OnInit {
   ngOnDestroy(){
     this.cambiarEntornoSuscription.unsubscribe();
   }
+
+  imprimirMovimientosExcel(){
+
+    var query = "token="+localStorage.getItem('token')+"&desde="+this.filter.desde+"&hasta="+this.filter.hasta+"&tipo="+this.filter.tipo+"&insumo="+this.filter.insumo;
+    let usuario_actual = JSON.parse(localStorage.getItem('usuario'));
+    query += '&almacen=' + usuario_actual.almacen_activo.id;
+    
+
+    window.open(`${environment.API_URL}/reporte-excel-movimiento-es?${query}`);
+  }
+
+  imprimirExcel(obj:any):void{
+
+    var query = "token="+localStorage.getItem('token')+"&movimiento_id="+obj.id;
+    let usuario_actual = JSON.parse(localStorage.getItem('usuario'));
+    query += '&almacen=' + usuario_actual.almacen_activo.id;
+  
+    window.open(`${environment.API_URL}/reporte-excel-movimiento?${query}`);
+  }
+  
   
 }

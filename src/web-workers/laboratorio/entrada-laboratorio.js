@@ -62,7 +62,7 @@ importScripts('../logos.js');
                             {}, {}, {}, {}, {}
                         ],
                         [
-                            { text: 'CLAVE', style: 'tableHeaderVerde', alignment: 'center' },
+                            { text: 'CLAVE', style: 'tableHeaderVerde', alignment: 'center'  },
                             { text: 'NOMBRE', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'NO. DE LOTE', style: 'tableHeaderVerde', alignment: 'center' },
                             { text: 'FECHA DE CADUCIDAD', style: 'tableHeaderVerde', alignment: 'center' },
