@@ -37,6 +37,13 @@
           <p class="control is-expanded">
             <input class="input is-medium" type="text" placeholder="Buscar" #searchBox id="search-box" (keyup)="buscar(searchBox.value)">
           </p>
+          <p class="control is-expanded" style="max-width:110px;">
+            <select style="width:100%; height:100%;border-radius:3px; border: none; box-shadow: inset  0 0 5px #AAA" #tipoPedido (change)="changeTipo(tipoPedido.value)">
+              <option value="">Todos</option>
+              <option value="PO">Ordinarios</option>
+              <option value="PXT">Extraordinarios</option>
+            </select>
+          </p>
           <p class="control">
             <a class="button is-medium is-primary is-inverted " routerLink="/administrador-central/pedidos-ordinarios/nuevo">
               <span class="icon">
@@ -62,19 +69,24 @@
       <table class="table" style="font-size:0.8em; table-layout: fixed;" *ngIf="!cargando">
         <thead>
           <tr>
-            <th style="text-align: center;">ID</th>
+            <th style="text-align: center; ">ID</th>
+            <th style="text-align: center; width:50px">Tipo</th>
             <th style="text-align: center">Descripcion</th>
-            <th style="text-align: center;">Fecha</th>
+            <th style="text-align: center; width:100px;">Fecha</th>
             <th style="text-align: center;">Expiración</th>
-            <th style="text-align: center;">Unidades Médicas</th>
-            <th style="text-align:center; width:100px"></th>
+            <th style="text-align: center;">Progreso de captura</th>
           </tr>
         </thead>
         <tbody *ngIf="!busquedaActivada">
           <tr *ngFor="let item of lista; let i=index">
+            <td style="text-align: center; vertical-align: middle; white-space: nowrap">
+              <a routerLink="/administrador-central/pedidos-ordinarios/{{item.id}}">
+                {{ item.id }}
+              </a>
+            </td>
             <td style="text-align: center; vertical-align: middle;">
               <a routerLink="/administrador-central/pedidos-ordinarios/{{item.id}}">
-                <span class="text-overflow">{{ item.id }}</span>
+                <abbr title="item.tipo_pedido_id == 'PO'?'Pedido ordinario':'Pedido extraordinario'">{{ item.tipo_pedido_id }}</abbr>
               </a>
             </td>
             <td style="text-align: center; vertical-align: middle;">
@@ -95,17 +107,7 @@
             </td>
             <td style="text-align: right; vertical-align: middle; text-align:center">
               <a routerLink="/administrador-central/pedidos-ordinarios/{{item.id}}">
-                <span class="text-overflow">N</span>                
-              </a>
-            </td>
-            <td style="vertical-align: middle; text-align: center;" class="has-text-centered">
-              <span class="icon " *ngIf="item.cargando">
-                <i class="fa fa-circle-o-notch fa-spin"></i>
-              </span>
-              <a *ngIf="!item.cargando" class="button is-white is-small" (click)="eliminar(item, i)">
-                <span class="icon is-small">
-                  <i class="fa fa-trash-o"></i>
-                </span>
+                <span class="text-overflow">{{ item.capturas_unidades_medicas }}/{{ item.total_unidades_medicas }} ({{ (item.capturas_unidades_medicas * 100 / item.total_unidades_medicas) | number:'1.2-2' }}%)</span>                
               </a>
             </td>
           </tr>
@@ -115,9 +117,14 @@
         </tbody>
         <tbody *ngIf="busquedaActivada">
           <tr *ngFor="let item of resultadosBusqueda; let i=index">
+            <td style="text-align: center; vertical-align: middle; white-space: nowrap">
+              <a routerLink="/administrador-central/pedidos-ordinarios/{{item.id}}">
+                {{ item.id }}
+              </a>
+            </td>
             <td style="text-align: center; vertical-align: middle;">
               <a routerLink="/administrador-central/pedidos-ordinarios/{{item.id}}">
-                <span class="text-overflow">{{ item.id }}</span>
+                <abbr title="item.tipo_pedido_id == 'PO'?'Pedido ordinario':'Pedido extraordinario'">{{ item.tipo_pedido_id }}</abbr>
               </a>
             </td>
             <td style="text-align: center; vertical-align: middle;">
@@ -133,22 +140,12 @@
 
             <td style="text-align: center; vertical-align: middle; text-align: center">
               <a routerLink="/administrador-central/pedidos-ordinarios/{{item.id}}">
-                <span class="text-overflow">{{ item.fecha_expiracion | date: 'dd/MM/yyyy' }} a las {{ item.fecha_expiracion | date: 'hh:mm' }} hrs</span>
+                <span class="text-overflow">{{ item.fecha_expiracion | date: 'dd/MM/yyyy' }} a las {{ item.fecha_expiracion | date: 'HH:mm' }} hrs</span>
               </a>
             </td>
             <td style="text-align: right; vertical-align: middle; text-align:center">
               <a routerLink="/administrador-central/pedidos-ordinarios/{{item.id}}">
-                <span class="text-overflow">N</span>                
-              </a>
-            </td>
-            <td style="vertical-align: middle; text-align: center;" class="has-text-centered">
-              <span class="icon " *ngIf="item.cargando">
-                <i class="fa fa-circle-o-notch fa-spin"></i>
-              </span>
-              <a *ngIf="!item.cargando" class="button is-white is-small" (click)="eliminar(item, i)">
-                <span class="icon is-small">
-                  <i class="fa fa-trash-o"></i>
-                </span>
+                <span class="text-overflow">{{ item.capturas_unidades_medicas }}/{{ item.total_unidades_medicas }} ({{ (item.capturas_unidades_medicas * 100 / item.total_unidades_medicas) | number:'1.2-2' }}%)</span>                
               </a>
             </td>
           </tr>

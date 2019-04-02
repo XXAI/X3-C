@@ -390,6 +390,7 @@ export class VerComponent implements OnInit {
   pedido_datos:any = {}
   errores:any = {}
   abrirModalEditar(){
+    this.errores = {}
     this.mostrarModalEditar = true;
     console.log(this.pedido_ordinario.fecha_expiracion);
     var fecha = this.pedido_ordinario.fecha.split(" ");
@@ -397,6 +398,7 @@ export class VerComponent implements OnInit {
 
    console.log(fecha);
     this.pedido_datos = {
+      tipo_pedido_id: this.pedido_ordinario.tipo_pedido_id,
       descripcion: this.pedido_ordinario.descripcion,
       fecha: fecha[0],
       fecha_expiracion:fecha_expiracion
@@ -407,6 +409,9 @@ export class VerComponent implements OnInit {
   guardar(){
     this.errores = {};
     this.guardando = true;
+    if(this.pedido_datos.tipo_pedido_id == 'PXT'){
+      this.pedido_datos.fecha_expiracion = null;
+    }
     this.apiService.editar(this.id,this.pedido_datos).subscribe(
       respuesta => {
         this.guardando = false;

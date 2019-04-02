@@ -95,8 +95,12 @@
                         <p class="control" *ngIf="!soloLectura">
                             <a class="button is-primary " (click)="guardar()" [ngClass]="{'is-loading': guardando}" >Guardar</a>
                         </p>
-                        <p class="control" *ngIf="esEditar && !soloLectura">
+                        <p class="control" *ngIf="esEditar && !soloLectura &&  !(pedido.tipo_pedido == 'PXT' &&  pedido.status=='BR')">
                             <a class="button is-danger " (click)="finalizar()" [ngClass]="{'is-loading': guardando}" ><span class="icon"><i class="fa fa-check"></i></span><span>Concluir</span></a>
+                        </p>
+
+                        <p class="control" *ngIf="esEditar && !soloLectura &&  pedido.tipo_pedido == 'PXT' &&  pedido.status=='BR'">
+                            <a class="button is-warning " (click)="solicitarAprobacion()" [ngClass]="{'is-loading': guardando}" ><span class="icon"><i class="fa fa-check"></i></span><span>Solicitar aprobación</span></a>
                         </p>
                     
                         <!--p class="control" *ngIf="esEditar">

@@ -49,6 +49,7 @@ export class FormularioComponent implements OnInit {
   pedidoOrdinarioUnidadMedicaId:any;
   pedidoOrdinario:any = {};
   esPedidoOrdinario:boolean = false;
+  esPedidoExtraordinario:boolean = false;
   cargandoPedidoOrdinario:boolean = false;
 
   almacenDelUsuario:any = {};
@@ -214,6 +215,19 @@ export class FormularioComponent implements OnInit {
               this.cargarPresupuesto();
             }
 
+            if(pedido.tipo_pedido_id == 'PXT'){
+              this.esPedidoExtraordinario = true;
+
+              if(pedido.status == "BRA"){
+                this.pedidoOrdinarioUnidadMedicaId = pedido.pedido_ordinario_unidad_medica.id;
+              }
+              //
+              this.title.setTitle('Editar Pedido extraordinario');
+              this.formularioTitulo = "Editar Pedido Extraordinario"
+
+              this.cargarPresupuesto();
+            }
+
             //Harima:calcular fechas validas
             let now = new Date();
             let dia = now.getDate();
@@ -237,7 +251,7 @@ export class FormularioComponent implements OnInit {
               let month = ("0" + mes_actual).slice(-2);
               this.fechasValidas.push({fecha:now.getFullYear() + "-" + (month) + "-" + (day),descripcion: this.meses[mes_actual] + " " + now.getFullYear()}); //fecha actual
             }
-            if(!this.esPedidoOrdinario){
+            if(!this.esPedidoOrdinario && !this.esPedidoExtraordinario){
               //Meses siguientes
               let mes_inicio = mes_actual+1;
               let day = '01';
@@ -275,9 +289,8 @@ export class FormularioComponent implements OnInit {
             //this.datosCargados = true;
             //delete pedido['pedido_ordinario_unidad_medica'];
             this.pedido.datos.patchValue(pedido);
-            console.log(pedido);
-            console.log(this.pedido.datos);
             this.pedido.status = pedido.status;
+            this.pedido.tipo_pedido = pedido.tipo_pedido_id;// AKIRA: No se porque no se asignaba
             this.pedido.presupuesto_id = (pedido.presupuesto_id)?pedido.presupuesto_id:0;
             this.proveedor = pedido.proveedor;
 
@@ -671,8 +684,20 @@ export class FormularioComponent implements OnInit {
       return false;
     }
   }
+  solicitarAprobacion(){
+    var key ="SOLICITAR APROBACION"
+    var validacion_palabra = prompt("Para solicitar presupuesto para su pedido escriba: "+key);
+    if(validacion_palabra == key){
+      this.guardar(false,true);
+    }else{
+      if(validacion_palabra != null){
+        alert("Error al ingresar el texto para confirmar la acción.");
+      }
+      return false;
+    }
+  }
 
-  guardar(finalizar:boolean = false){
+  guardar(finalizar:boolean = false, solicitar_aprobacion:boolean = false){
     this.guardando = true;
     var guardar_pedido;
     this.mensajeError.mostrar = false;
@@ -735,6 +760,11 @@ export class FormularioComponent implements OnInit {
         }
       }
       
+      /*for(var i in guardar_pedidos){
+        guardar_pedidos[i].datos.status = 'ES';
+      }*/
+    }else if(solicitar_aprobacion){
+      guardar_pedido.datos.status = 'SOLICITAR_APROBACION';      
       /*for(var i in guardar_pedidos){
         guardar_pedidos[i].datos.status = 'ES';
       }*/
@@ -985,9 +1015,8 @@ export class FormularioComponent implements OnInit {
   }
 
   cargarPresupuesto(mes:number = 0, anio:number = 0){
-    if(this.esPedidoOrdinario){
+    if(this.esPedidoOrdinario || this.esPedidoExtraordinario){
       this.cargandoPresupuestos = true;
-      
       this.pedidosService.presupuestoPedidoOrdinarioUnidadMedica(this.pedidoOrdinarioUnidadMedicaId).subscribe(
         respuesta => {
           this.cargandoPresupuestos = false;

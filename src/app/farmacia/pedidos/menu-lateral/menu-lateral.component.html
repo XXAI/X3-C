@@ -2,8 +2,21 @@
     <!--  <p class="menu-label">
         Pedidos
     </p>-->
-    <a routerLink="/almacen/pedidos/nuevo" routerLinkActive="is-active" class="button is-primary is-inverted is-medium is-fullwidth" *ngIf="!usuario.solo_lectura && !usuario.almacen_activo.subrogado"><span class="icon"  ><i class="fa fa-plus"></i></span> <span>Nuevo Pedido</span></a>
+    <a routerLink="/almacen/pedidos/nuevo" routerLinkActive="is-active" class="button is-primary is-medium is-fullwidth" *ngIf="!usuario.solo_lectura && !usuario.almacen_activo.subrogado"><span class="icon"  ><i class="fa fa-plus"></i></span> <span>Nuevo Pedido</span></a>
     <br>
+
+    <p class="control"  [ngClass]="{ 'is-disabled': cargando_presupuesto || cargando}">
+        <span class="select is-fullwidth" style="margin:0">
+            <select name="presupuesto" [(ngModel)]="presupuestoSeleccionado" (change)="cambioPresupuesto()">
+                <option *ngFor="let item of presupuestos" value="{{item.id}}" [selected]="item.id == presupuestoSeleccionado">Presupuesto
+                    {{ nueva_version_presupuesto? item.ejercicio : item.anio }}</option>
+            </select>
+        </span>
+        <!-- <span class="help is-info" *ngIf="nueva_version_presupuesto" style="font-size:0.65rem">Nueva versión activada.</span> -->
+    </p>
+    <a  class="button is-primary is-inverted  is-fullwidth is-small" [ngClass]="{ 'is-disabled': cargando_presupuesto}" (click)="cambiarVersionPresupuesto()"><span class="icon is-small"  ><i class="fa fa-exchange"></i></span> <span>{{ nueva_version_presupuesto? 'Regresar a versión anterior': 'Cambiar a version nueva' }}</span></a>
+    <br>
+    <!--
     <div class="columns is-mobile is-gapless">
         <div class="column">
             <p class="control"  [ngClass]="{ 'is-disabled': cargando_presupuesto || cargando}">
@@ -19,7 +32,7 @@
         <div class="column" *ngIf="usuario && usuario.id == 'root'">
             <a class="button" [ngClass]="{ 'is-disabled': cargando_presupuesto}" (click)="cambiarVersionPresupuesto()"><span class="icon"><i class="fa fa-exchange"></i></span></a>
         </div>
-    </div>
+    </div>-->
     
     <!--
     <p class="control">
@@ -49,6 +62,36 @@
                     Todos
                     <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
                     <span *ngIf="stats.ordinarios>0 && !cargando" class="tag is-pulled-right" [ngClass]="{ 'is-white': ordinarios.className == 'is-active', 'is-primary': ordinarios.className != 'is-active' }">{{  stats.ordinarios }}</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li *ngIf="nueva_version_presupuesto">
+            <a routerLink="/almacen/pedidos/extraordinarios" routerLinkActive="is-active"><span class="icon"><i class="fa fa-file-text-o"></i></span> Pedidos extraordinarios</a>
+            <ul>
+               
+                <li><a routerLink="/almacen/pedidos/extraordinarios/borradores" #extraordinariosBorradores routerLinkActive="is-active">
+                    Borradores
+                    <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                    <span *ngIf="stats.extraordinarios_borradores>0 && !cargando" class="tag is-pulled-right" [ngClass]="{ 'is-white': extraordinariosBorradores.className == 'is-active', 'is-primary': extraordinariosBorradores.className != 'is-active' }">{{  stats.extraordinarios_borradores }}</span>
+                    </a>
+                </li>
+                <li><a routerLink="/almacen/pedidos/extraordinarios/por-aprobar" #extraordinariosPorAprobar routerLinkActive="is-active">
+                    Por aprobar
+                    <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                    <span *ngIf="stats.extraordinarios_por_aprobar>0 && !cargando" class="tag is-pulled-right" [ngClass]="{ 'is-info': extraordinariosPorAprobar.className == 'is-active', 'is-info': extraordinariosPorAprobar.className != 'is-active' }">{{  stats.extraordinarios_por_aprobar }}</span>
+                    </a>
+                </li>
+                <li><a routerLink="/almacen/pedidos/extraordinarios/aprobados" #extraordinariosAprobados routerLinkActive="is-active">
+                    Borradores aprobados
+                    <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                    <span *ngIf="stats.extraordinarios_aprobados>0 && !cargando" class="tag is-pulled-right" [ngClass]="{ 'is-info': extraordinariosAprobados.className == 'is-active', 'is-info': extraordinariosAprobados.className != 'is-active' }">{{  stats.extraordinarios_aprobados }}</span>
+                    </a>
+                </li>
+                <li><a routerLink="/almacen/pedidos/extraordinarios/todos" #extraordinarios routerLinkActive="is-active">
+                    Todos
+                    <span class="icon is-pulled-right" *ngIf="cargando"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                    <span *ngIf="stats.extraordinarios>0 && !cargando" class="tag is-pulled-right" [ngClass]="{ 'is-white': extraordinarios.className == 'is-active', 'is-primary': extraordinarios.className != 'is-active' }">{{  stats.extraordinarios }}</span>
                     </a>
                 </li>
             </ul>

@@ -10,6 +10,11 @@
                     <h1 *ngIf="pedido.status == 'PS'" class="title" style="margin:0.5em;" >
                         <span class="icon is-medium"><i class="fa fa-file-text"></i></span> Pedido Por Surtir <span class="is-pulled-right">{{porcentageTotalPedido | number:'1.0-2'}} %</span>
                     </h1>
+
+                    <h1 *ngIf="pedido.status == 'PA'" class="title" style="margin:0.5em;" >
+                        <span class="icon is-medium"><i class="fa fa-file-text"></i></span> Pedido Extraord. por aprobar
+                    </h1>
+
                     <h1 *ngIf="pedido.status == 'SD'" class="title" style="margin:0.5em;" >
                         <span class="icon is-medium"><i class="fa fa-minus-circle"></i></span> Solicitud de transferencia
                     </h1>
@@ -38,6 +43,7 @@
                 <section *ngIf="pedido.tipo_pedido == 'PALT'" class="hero is-warning" style="text-align:center;">
                     Pedido Alterno
                 </section>
+
                 <section *ngIf="!cargando">
                     <div class="control is-grouped">
                         <a class="button is-success is-fullwidth is-outlined" title="Imprimir Excel" (click)="imprimirExcel(); " *ngIf="esEditar">

@@ -13,7 +13,7 @@
             <i class="fa fa-file"></i>
           </span>
           <span *ngIf="cargandoPresupuesto" class="icon is-medium"><i class="fa fa-refresh fa-spin"></i></span>
-          Pedido ordinario
+          Pedido {{pedido_ordinario.tipo_pedido_id=="PO"? 'ordinario':'extraordinario'}}
         </h1>
         <a class="button is-primary" style="position:absolute; top:1em; right:9.5em;"
           (click)="generarExcel()"><span class="icon is-small"><i
@@ -33,9 +33,10 @@
       <div style="padding:10px">
         <table class="table is-bordered">
           <tbody>
+            <tr><th style="width:165px">ID</th><td>{{ pedido_ordinario.id }}</td></tr>
             <tr><th style="width:165px">Descripción</th><td>{{ pedido_ordinario.descripcion }}</td></tr>
             <tr><th>Fecha</th><td>{{ pedido_ordinario.fecha | date: 'dd/MM/yyyy' }} </td></tr>
-            <tr><th>Expiración de captura</th><td>{{ pedido_ordinario.fecha_expiracion | date: 'dd/MM/yyyy' }} a las {{
+            <tr *ngIf="pedido_ordinario.tipo_pedido_id=='PO'"><th>Expiración de captura</th><td>{{ pedido_ordinario.fecha_expiracion | date: 'dd/MM/yyyy' }} a las {{
               pedido_ordinario.fecha_expiracion | date: 'HH:mm' }} hrs <small style="color:red" *ngIf="pedido_ordinario.dias_expiracion > 0">Expirado hace: {{ pedido_ordinario.dias_expiracion }} dias.</small></td></tr>
           </tbody>
         </table>
@@ -574,7 +575,7 @@
           <div class="field">
             <label class="label">Fecha expiración para capturar:</label>
             <p class="control is-expanded ">
-              <input class="input"  type="datetime-local" [ngClass]="{'is-danger': errores.fecha_expiracion != null, 'is-disabled': guardando || cargandoPresupuesto}"
+              <input class="input"  type="datetime-local" [disabled]="pedido_datos.tipo_pedido_id=='PXT'" [ngClass]="{'is-danger': errores.fecha_expiracion != null, 'is-disabled': guardando || cargandoPresupuesto}"
                  [(ngModel)]="pedido_datos.fecha_expiracion"  style="width:100%">
 
               <span class="help is-danger" *ngIf="errores.fecha_expiracion == 'required'">Este campo es requerido.</span>

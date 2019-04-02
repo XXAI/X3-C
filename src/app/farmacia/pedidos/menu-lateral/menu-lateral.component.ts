@@ -22,6 +22,10 @@ export class MenuLateralComponent implements OnInit {
     ordinarios_bandeja:0,
     ordinarios_borrador:0,
     ordinarios:0,
+    extraordinarios_por_aprobar:0,
+        extraordinarios_borradores:0,
+        extraordinarios_aprobados:0,
+        extraordinarios:0,
     todos: 0, 
     borradores: 0,
     solicitados: 0,
@@ -47,6 +51,10 @@ export class MenuLateralComponent implements OnInit {
         ordinarios_bandeja:0,
         ordinarios_borrador:0,
         ordinarios:0,
+        extraordinarios_por_aprobar:0,
+        extraordinarios_borradores:1,
+        extraordinarios_aprobados:0,
+        extraordinarios:0,
         todos: 0, 
         borradores: 0,
         solicitados: 0,
@@ -146,7 +154,8 @@ export class MenuLateralComponent implements OnInit {
       this.pedidosService.pedidosStats({presupuesto : presupuesto, nueva_version: this.nueva_version_presupuesto}).subscribe(
         response => {
           this.cargando = false;
-          this.stats = response;
+          this.stats = {...response};
+          console.log(this.stats);
         },
         error => {
           this.cargando = false;

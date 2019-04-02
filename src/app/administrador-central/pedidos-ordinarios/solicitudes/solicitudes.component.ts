@@ -15,19 +15,21 @@ import 'rxjs/add/operator/catch';
 import { PedidosOrdinariosService } from '../pedidos-ordinarios.service';
 import { CambiarEntornoService } from '../../../perfil/cambiar-entorno.service';
 import { environment } from '../../../../environments/environment';
-
-
 import { Mensaje } from '../../../mensaje';
 
 @Component({
-  selector: 'app-lista',
-  templateUrl: './lista.component.html',
-  styleUrls: ['./lista.component.css'],
-  providers: [PedidosOrdinariosService]
+	selector: 'app-solicitudes',
+	templateUrl: './solicitudes.component.html',
+	styleUrls: ['./solicitudes.component.css'],
+	providers: [PedidosOrdinariosService]
 })
-export class ListaComponent implements  OnInit {
-  cargando: boolean = false;
+export class SolicitudesComponent implements OnInit {
+	cargando: boolean = false;
+	cargandoSolicitud: boolean = false;
+	aprobandoSolicitud: boolean = false;
 
+
+	errores:any = {};
 
 	// # SECCION: Esta sección es para mostrar mensajes
 	mensajeError: Mensaje = new Mensaje();
@@ -35,8 +37,6 @@ export class ListaComponent implements  OnInit {
 	ultimaPeticion: any;
 	// # FIN SECCION
 
-
-	tipoPedidoSeleccionado:string = "";
 
 	// # SECCION: Lista 
 	lista: any[] = [];
@@ -87,12 +87,11 @@ export class ListaComponent implements  OnInit {
 				var payload =
 				{
 					q: term,
-					tipo: this.tipoPedidoSeleccionado,
 					page: this.paginaActualBusqueda,
 					per_page: this.resultadosPorPaginaBusqueda
 				}
 
-				return term ? this.apiService.buscar(payload) : Observable.of<any>({ data: [] })
+				return term ? this.apiService.buscarSolicitudes(payload) : Observable.of<any>({ data: [] })
 			}
 
 
@@ -142,7 +141,7 @@ export class ListaComponent implements  OnInit {
 		this.terminosBusqueda.next(term);
 	}
 
-	
+
 
 	listarBusqueda(term: string, pagina: number): void {
 		this.paginaActualBusqueda = pagina;
@@ -155,11 +154,10 @@ export class ListaComponent implements  OnInit {
 		{
 			q: term,
 			page: pagina,
-			tipo: this.tipoPedidoSeleccionado,
 			per_page: this.resultadosPorPaginaBusqueda
 		}
 
-		this.apiService.buscar(payload).subscribe(
+		this.apiService.buscarSolicitudes(payload).subscribe(
 			resultado => {
 				this.cargando = false;
 
@@ -205,11 +203,7 @@ export class ListaComponent implements  OnInit {
 		console.log("Cargando items.");
 
 		this.cargando = true;
-
-		var payload =  { page: pagina, per_page: this.resultadosPorPagina, tipo: this.tipoPedidoSeleccionado }
-
-		console.log(payload);
-		this.apiService.listaPaginada(payload).subscribe(
+		this.apiService.listaPaginadaSolicitudes(pagina, this.resultadosPorPagina).subscribe(
 			resultado => {
 				this.cargando = false;
 				this.lista = resultado.data as any[];
@@ -248,63 +242,91 @@ export class ListaComponent implements  OnInit {
 		);
 	}
 
-	changeTipo(value){
-		console.log(value);
-		this.tipoPedidoSeleccionado = value;
-		if(this.busquedaActivada){
-			this.listarBusqueda(this.ultimoTerminoBuscado,1);
-		} else {
-			this.listar(1);
+	pedidoSeleccionado: any = {}
+	mostrarModalAutorizarPresupuestoItem: boolean = false;
+	abrirModalAutorizarPresupuesto(item: any): void {
+		this.mostrarModalAutorizarPresupuestoItem = true;
+		this.cargandoSolicitud = true;
+		this.apiService.verSolicitud(item.id).subscribe(
+			respuesta => {
+				this.cargandoSolicitud = false;
+				this.pedidoSeleccionado = respuesta;
+
+				if(this.pedidoSeleccionado.presupuesto != null){
+					this.pedidoSeleccionado.causes_autorizado =this.pedidoSeleccionado.total_monto_causes;
+					this.pedidoSeleccionado.no_causes_autorizado =this.pedidoSeleccionado.total_monto_no_causes;
+				}
+				console.log(this.pedidoSeleccionado);
+			}, error => {
+				this.cargandoSolicitud = false;
+				console.log(error);
+			}
+		);
+	}
+
+	aprobar(pedido){
+		
+		var input = prompt("Para aprobar el presupuesto solicitado escriba: APROBAR");
+      	if(input == "APROBAR"){
+			this.errores = {};
+			this.aprobandoSolicitud = true;
+			var self = this;
+			this.apiService.aprobarPresupuesto(pedido.id, pedido.causes_autorizado, pedido.no_causes_autorizado).subscribe(
+				respuesta => {
+					this.aprobandoSolicitud = false;
+					this.mostrarModalAutorizarPresupuestoItem = false;
+					if(this.busquedaActivada){
+						this.listarBusqueda(self.ultimoTerminoBuscado, self.paginaActualBusqueda);
+					} else {
+						this.listar(1);
+					}					
+				}, error => {
+					console.log(error);
+					this.aprobandoSolicitud = false;
+
+					try {
+						let e = error.json();
+						this.mensajeError = new Mensaje(true)
+						switch (error.status) {
+						  case 401:
+							this.mensajeError.texto = "No tiee permiso para realizar esta acción.";
+							break;
+						  case 409:
+							this.mensajeError.texto = "Verifique la información marcada de color rojo";
+							for (var input in e.error) {
+							  // Iteramos todos los errores
+							  for (var i in e.error[input]) {
+							  
+								
+								  this.errores[input] = e.error[input][i];
+								
+							  }
+							}
+							
+							break;
+						  case 500:
+							this.mensajeError.texto = "500 (Error interno del servidor)";
+							break;
+						  default:
+							this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+						}
+					  } catch (e) {
+						this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
+					  }
+					  this.mensajeError.mostrar = true;
+				}
+			)
+	  	} else {
+			alert("Frase incorrecta");
 		}
 	}
-	eliminar(item: any, index): void {
-		if (!confirm("¿Estás seguro de eliminar el pedido?")) {
-			return;
-		}
 
-		return ;
 
-/*
-		item.cargando = true;
-		this.apiService.eliminar(item.id).subscribe(
-			data => {
-				item.cargando = false;
-
-				if (this.busquedaActivada) {
-					this.resultadosBusqueda.splice(index, 1);
-				} else {
-					this.lista.splice(index, 1);
-				}
-
-				this.mensajeExito = new Mensaje(true)
-				this.mensajeExito.mostrar = true;
-				this.mensajeExito.texto = "item eliminado";
-			},
-			error => {
-				item.cargando = false;
-				this.mensajeError.mostrar = true;
-				this.ultimaPeticion = function () {
-					this.eliminar(item, index);
-				}
-
-				try {
-					let e = error.json();
-					if (error.status == 401) {
-						this.mensajeError.texto = "No tiene permiso para hacer esta operación.";
-					}
-				} catch (e) {
-
-					if (error.status == 500) {
-						this.mensajeError.texto = "500 (Error interno del servidor)";
-					} else {
-						this.mensajeError.texto = "No se puede interpretar el error. Por favor contacte con soporte técnico si esto vuelve a ocurrir.";
-					}
-				}
-
-			}
-		);*/
-  }
-  
+	generarExcelPedido(id){
+		var query = "token="+localStorage.getItem('token');
+		window.open(`${environment.API_URL}/generar-excel-pedido/${id}?${query}`);
+		//window.open(environment.API_URL+"/generar-excel-pedido/"+this.pedido.id, "_blank");
+	  }
 
 	// # SECCION: Paginación
 	paginaSiguiente(): void {

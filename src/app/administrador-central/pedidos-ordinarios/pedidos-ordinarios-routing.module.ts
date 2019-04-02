@@ -7,6 +7,7 @@ import { PermisosGuard } from '../../permisos.guard';
 import { ListaComponent } from './lista/lista.component';
 import { NuevoComponent } from "./nuevo/nuevo.component";
 import { VerComponent } from './ver/ver.component';
+import { SolicitudesComponent } from './solicitudes/solicitudes.component';
 
 const routes: Routes =  [
   {
@@ -17,7 +18,15 @@ const routes: Routes =  [
        { path: ':id', component: VerComponent, canActivate: [PermisosGuard], data: { key: 'nkzKZXncGYTJVhn0V6aej6UiZGK42dgH'}},    
     ],
     canActivate: [AuthGuard]
-  }
+  },
+  {
+    path: 'administrador-central/solicitudes-pedidos-extraordinarios',
+    children: [       
+       { path: '', component: SolicitudesComponent, canActivate: [PermisosGuard], data: { key: 'nkzKZXncGYTJVhn0V6aej6UiZGK42dgH'} },       
+    ],
+    canActivate: [AuthGuard]
+  },
+
 ];
 
 @NgModule({

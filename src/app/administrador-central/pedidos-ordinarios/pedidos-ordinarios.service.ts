@@ -14,12 +14,24 @@ export class PedidosOrdinariosService {
         return this.jwtRequest.get(PedidosOrdinariosService.URL+"/pedidos-ordinarios").map((response: Response) => response.json().data) as Observable<any[]>;
     }
 
-    buscar(payload:any = { q: '', tipo: '',   causes: -1, unidosis: -1, descontinuado: -1, atencion_medica: -1, salud_publica: -1, page: 1, per_page: 20 }): Observable<any> {
+    buscar(payload:any = { q: '', tipo: '', page: 1, per_page: 20 }): Observable<any> {
         return this.jwtRequest.get(PedidosOrdinariosService.URL+"/pedidos-ordinarios", null, payload).map((response: Response) => response.json().data);
     }
 
-    listaPaginada(pagina: number = 1, resultados_por_pagina: number = 20): Observable<any> {
-        return this.jwtRequest.get(PedidosOrdinariosService.URL+"/pedidos-ordinarios", null, { page: pagina, per_page: resultados_por_pagina }).map((response: Response) => response.json().data);
+    listaPaginada(payload: any = {tipo:'', pagina:  1, resultados_por_pagina: 20}): Observable<any> {
+        return this.jwtRequest.get(PedidosOrdinariosService.URL+"/pedidos-ordinarios", null, payload).map((response: Response) => response.json().data);
+    }
+
+    listaSolicitudes(): Observable<any[]> {
+        return this.jwtRequest.get(PedidosOrdinariosService.URL+"/pedidos-extraordinarios/solicitudes").map((response: Response) => response.json().data) as Observable<any[]>;
+    }
+
+    buscarSolicitudes(payload:any = { q: '', tipo: '',   causes: -1, unidosis: -1, descontinuado: -1, atencion_medica: -1, salud_publica: -1, page: 1, per_page: 20 }): Observable<any> {
+        return this.jwtRequest.get(PedidosOrdinariosService.URL+"/pedidos-extraordinarios/solicitudes", null, payload).map((response: Response) => response.json().data);
+    }
+
+    listaPaginadaSolicitudes(pagina: number = 1, resultados_por_pagina: number = 20): Observable<any> {
+        return this.jwtRequest.get(PedidosOrdinariosService.URL+"/pedidos-extraordinarios/solicitudes", null, { page: pagina, per_page: resultados_por_pagina }).map((response: Response) => response.json().data);
     }
 
     crear(item: any): Observable<any> {
@@ -33,6 +45,13 @@ export class PedidosOrdinariosService {
     ver(id: any): Observable<any> {
         return this.jwtRequest.get(PedidosOrdinariosService.URL+"/pedidos-ordinarios", id, {}).map((response: Response) => {
 
+            let jsonData = response.json().data;
+            return jsonData;
+        }) as Observable<any>;
+    }
+
+    verSolicitud(id:any): Observable<any> {
+        return this.jwtRequest.get(PedidosOrdinariosService.URL+"/pedidos-extraordinarios/solicitudes", id, {}).map((response: Response) => {
             let jsonData = response.json().data;
             return jsonData;
         }) as Observable<any>;
@@ -66,6 +85,15 @@ export class PedidosOrdinariosService {
         console.log("modificando presupuesto llamada api");
         
         return this.jwtRequest.put(PedidosOrdinariosService.URL+"/pedidos-ordinarios/modificar-presupuesto", id, {pedido_ordinario_unidad_medica: pedido_ordinario_unidad_medica, aumentar: aumentar, liberar: liberar, pedidos: pedidos}).map((response: Response) => {
+
+            let jsonData = response.json().data;
+            return jsonData;
+        }) as Observable<any>;
+    }
+
+    aprobarPresupuesto(pedido_id: any,causes_autorizado:number = 0, no_causes_autorizado: number = 0 ):Observable<any>{
+        console.log("modificando presupuesto llamada api");        
+        return this.jwtRequest.put(PedidosOrdinariosService.URL+"/pedidos-extraordinarios/aprobar-presupuesto", pedido_id, {causes_autorizado: causes_autorizado, no_causes_autorizado: no_causes_autorizado}).map((response: Response) => {
 
             let jsonData = response.json().data;
             return jsonData;
