@@ -321,7 +321,7 @@
       <button class="button"  [ngClass]="{ 'is-loading': aprobandoSolicitud }" (click)="!aprobandoSolicitud? mostrarModalAutorizarPresupuestoItem = !mostrarModalAutorizarPresupuestoItem :''">
         <span>Cerrar</span>
       </button>
-      <button [disabled]="(pedidoSeleccionado.causes_autorizado <=0 && pedidoSeleccionado.no_causes_autorizado <= 0) || (pedidoSeleccionado.presupuesto.causes_disponible - pedidoSeleccionado.causes_autorizado) < 0 ||  (pedidoSeleccionado.presupuesto.no_causes_disponible - pedidoSeleccionado.no_causes_autorizado) < 0" [ngClass]="{ 'is-loading': aprobandoSolicitud }" (click)="aprobar(pedidoSeleccionado)"
+      <button  *ngIf="pedidoSeleccionado != null && !cargandoSolicitud" [disabled]="(pedidoSeleccionado.causes_autorizado <=0 && pedidoSeleccionado.no_causes_autorizado <= 0) || (pedidoSeleccionado.presupuesto.causes_disponible - pedidoSeleccionado.causes_autorizado) < 0 ||  (pedidoSeleccionado.presupuesto.no_causes_disponible - pedidoSeleccionado.no_causes_autorizado) < 0" [ngClass]="{ 'is-loading': aprobandoSolicitud }" (click)="aprobar(pedidoSeleccionado)"
         class="button is-primary"><span class="icon is-small"><i class="fa fa-save"></i></span><span>Aprobar presupuesto</span>
       </button>
       <button class="button"  (click)="generarExcelPedido(pedidoSeleccionado.id)">

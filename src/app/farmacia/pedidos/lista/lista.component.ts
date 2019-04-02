@@ -128,6 +128,28 @@ export class ListaComponent implements OnInit {
           this.titulo = "Pedidos ordinarios";
         }
       break;
+      case 'extraordinarios':
+        if(!this.nuevaVersionPresupuesto){
+          this.router.navigate(['/almacen/pedidos']);
+        }
+        this.tipo = 'PXT';
+        if(this.route.snapshot.url.length > 1){
+          if(this.route.snapshot.url[1].path  == "aprobados"){
+            this.titulo = "Pedidos extraordinarios - Borradores aprobados";
+            this.status = "BRA";
+          } else if(this.route.snapshot.url[1].path  == "por-aprobar"){
+            this.titulo = "Pedidos extraordinarios - Por aprobar";
+            this.status = "PA";
+          } else if(this.route.snapshot.url[1].path  == "borradores"){
+            this.titulo = "Pedidos extraordinarios - Borradores";
+            this.status = "BR";
+          } else {
+            this.titulo = "Pedidos extraordinarios";
+          }
+        } else {
+          this.titulo = "Pedidos ordinarios";
+        }
+      break;
       default: this.titulo = "Pedidos"; this.icono = "fa-file"; break;
     }
     //console.log('inicializar lista de pedidos');
@@ -308,7 +330,7 @@ export class ListaComponent implements OnInit {
   }
 
   obtenerDireccion(id:string, status:string): string{
-    if(status == 'BR'){
+    if(status == 'BR' || status == 'BRA'){
       return '/almacen/pedidos/editar/'+id;
     }else{
       return '/almacen/pedidos/ver/'+id;

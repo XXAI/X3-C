@@ -36,6 +36,8 @@ export class ListaComponent implements  OnInit {
 	// # FIN SECCION
 
 
+	tipoPedidoSeleccionado:string = "";
+
 	// # SECCION: Lista 
 	lista: any[] = [];
 	paginaActual = 1;
@@ -85,6 +87,7 @@ export class ListaComponent implements  OnInit {
 				var payload =
 				{
 					q: term,
+					tipo: this.tipoPedidoSeleccionado,
 					page: this.paginaActualBusqueda,
 					per_page: this.resultadosPorPaginaBusqueda
 				}
@@ -152,6 +155,7 @@ export class ListaComponent implements  OnInit {
 		{
 			q: term,
 			page: pagina,
+			tipo: this.tipoPedidoSeleccionado,
 			per_page: this.resultadosPorPaginaBusqueda
 		}
 
@@ -201,7 +205,11 @@ export class ListaComponent implements  OnInit {
 		console.log("Cargando items.");
 
 		this.cargando = true;
-		this.apiService.listaPaginada(pagina, this.resultadosPorPagina).subscribe(
+
+		var payload =  { page: pagina, per_page: this.resultadosPorPagina, tipo: this.tipoPedidoSeleccionado }
+
+		console.log(payload);
+		this.apiService.listaPaginada(payload).subscribe(
 			resultado => {
 				this.cargando = false;
 				this.lista = resultado.data as any[];
@@ -238,6 +246,16 @@ export class ListaComponent implements  OnInit {
 
 			}
 		);
+	}
+
+	changeTipo(value){
+		console.log(value);
+		this.tipoPedidoSeleccionado = value;
+		if(this.busquedaActivada){
+			this.listarBusqueda(this.ultimoTerminoBuscado,1);
+		} else {
+			this.listar(1);
+		}
 	}
 	eliminar(item: any, index): void {
 		if (!confirm("¿Estás seguro de eliminar el pedido?")) {

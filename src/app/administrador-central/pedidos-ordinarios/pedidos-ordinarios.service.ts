@@ -14,12 +14,12 @@ export class PedidosOrdinariosService {
         return this.jwtRequest.get(PedidosOrdinariosService.URL+"/pedidos-ordinarios").map((response: Response) => response.json().data) as Observable<any[]>;
     }
 
-    buscar(payload:any = { q: '', tipo: '',   causes: -1, unidosis: -1, descontinuado: -1, atencion_medica: -1, salud_publica: -1, page: 1, per_page: 20 }): Observable<any> {
+    buscar(payload:any = { q: '', tipo: '', page: 1, per_page: 20 }): Observable<any> {
         return this.jwtRequest.get(PedidosOrdinariosService.URL+"/pedidos-ordinarios", null, payload).map((response: Response) => response.json().data);
     }
 
-    listaPaginada(pagina: number = 1, resultados_por_pagina: number = 20): Observable<any> {
-        return this.jwtRequest.get(PedidosOrdinariosService.URL+"/pedidos-ordinarios", null, { page: pagina, per_page: resultados_por_pagina }).map((response: Response) => response.json().data);
+    listaPaginada(payload: any = {tipo:'', pagina:  1, resultados_por_pagina: 20}): Observable<any> {
+        return this.jwtRequest.get(PedidosOrdinariosService.URL+"/pedidos-ordinarios", null, payload).map((response: Response) => response.json().data);
     }
 
     listaSolicitudes(): Observable<any[]> {
