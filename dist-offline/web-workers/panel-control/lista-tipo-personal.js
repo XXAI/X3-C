@@ -30,7 +30,7 @@ importScripts('../logos.js');
                             colSpan: 7,
                             alignment: 'center'
                         }, {}, {}, {}, {}, {},{}],
-                        [{ text: 'SIAL', style: 'titulo', colSpan: 7, alignment: 'center' },
+                        [{ text: 'SSADII', style: 'titulo', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],
                         [{ text: 'TIPO DE PERSONAL', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },

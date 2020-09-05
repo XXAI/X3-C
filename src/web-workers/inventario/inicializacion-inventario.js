@@ -44,7 +44,7 @@ importScripts('../logos.js');
                             colSpan: 9,
                             alignment: 'center'
                         }, {}, {}, {}, {}, {},{},{},{}],
-                        [{ text: 'SIAL', style: 'titulo', colSpan: 9, alignment: 'center' },
+                        [{ text: 'SSADII', style: 'titulo', colSpan: 9, alignment: 'center' },
                             {}, {}, {}, {}, {}, {},{},{}
                         ],
                         [{ text: 'REPORTE DE INICIALIZACION DE INVENTARIO', style: 'tableHeaderTop', colSpan: 9, alignment: 'center' },

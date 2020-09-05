@@ -89,7 +89,7 @@ importScripts('../../logos.js');
                             colSpan: 9,
                             alignment: 'center'
                         }, {}, {}, {}, {}, {},{},{},{}],
-                        [{ text: 'SIAL', style: 'titulo', colSpan: 9, alignment: 'center' },
+                        [{ text: 'SSADII', style: 'titulo', colSpan: 9, alignment: 'center' },
                             {}, {}, {}, {}, {}, {},{},{}
                         ],
                         [{ text: 'ENTRADA DE MEDICAMENTOS', style: 'tableHeaderTop', colSpan: 9, alignment: 'center' },

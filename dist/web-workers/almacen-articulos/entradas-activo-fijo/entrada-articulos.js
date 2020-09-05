@@ -33,7 +33,7 @@ importScripts('../../logos.js');
                             colSpan: 6,
                             alignment: 'center'
                         }, {}, {}, {}, {}, {}],
-                        [{ text: 'SIAL', style: 'titulo', colSpan: 6, alignment: 'center' },
+                        [{ text: 'SSADII', style: 'titulo', colSpan: 6, alignment: 'center' },
                             {}, {}, {}, {}, {}
                         ],
                         [{ text: 'ENTRADA ARTÍCULOS', style: 'tableHeaderTop', colSpan: 6, alignment: 'center' },

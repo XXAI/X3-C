@@ -34,7 +34,7 @@ importScripts('../../logos.js');
                             colSpan: 7,
                             alignment: 'center'
                         }, {}, {}, {}, {}, {},{}],
-                        [{ text: 'SIAL', style: 'titulo', colSpan: 7, alignment: 'center' },
+                        [{ text: 'SSADII', style: 'titulo', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],
                         [{ text: 'REPORTE ACUSE DE TRANSFERENCIA DE INSUMOS O MEDICAMENTOS', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },

@@ -32,7 +32,7 @@ importScripts('../logos.js');
                             colSpan: 7,
                             alignment: 'center'
                         }, {}, {}, {}, {}, {},{}],
-                        [{ text: 'SIAL', style: 'titulo', colSpan: 7, alignment: 'center' },
+                        [{ text: 'SSADII', style: 'titulo', colSpan: 7, alignment: 'center' },
                             {}, {}, {}, {}, {}, {}
                         ],
                         [{ text: 'AJUSTE MÁS DE INVENTARIO', style: 'tableHeaderTop', colSpan: 7, alignment: 'center' },

@@ -43,7 +43,7 @@ importScripts('../logos.js');
                             colSpan: 8,
                             alignment: 'center'
                         }, {}, {}, {}, {}, {},{},{}],
-                        [{ text: 'SIAL', style: 'titulo', colSpan: 8, alignment: 'center' },
+                        [{ text: 'SSADII', style: 'titulo', colSpan: 8, alignment: 'center' },
                             {}, {}, {}, {}, {}, {},{}
                         ],
                         [{ text: 'LISTA DE CADUCIDADES', style: 'tableHeaderTop', colSpan: 8, alignment: 'center' },
