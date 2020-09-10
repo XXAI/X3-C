@@ -221,12 +221,12 @@ importScripts('../../logos.js');
                 // Footer
                 [
                     {
-                        image: 'marca',
+                        text: '',
                         fit: [100, 100],
                         style: '', colSpan: 2, rowSpan:3, alignment: 'center' ,
                     },'',
                     {
-                        text: 'Facturar 2017 a nombre del Instituto de Salud. Unidad Administrativa Edif. C, Maya Tuxtla Gutiérrez, Chiapas, 29010 R.F.C. ISA-961203- QN5', 
+                        text: 'Facturar 2020 a nombre del Instituto de Salud. Unidad Administrativa Edif. C, Maya Tuxtla Gutiérrez, Chiapas, 29010 R.F.C. ISA-961203- QN5', 
                         style: 'tableHeader', alignment: 'justify', colSpan:3, rowSpan:3
                     },'','',
                     { text: 'SUBTOTAL', style: 'tableHeaderVerde',  alignment: 'center'},{ text: '$ '+(+pedido.insumos.monto).format(2), style: 'tableHeader', alignment: 'center'}
